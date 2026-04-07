@@ -3223,6 +3223,14 @@
         { type: 'fixed', text: 'Demo preview CSS/JS URLs now use dynamic base path — fixes broken styling on GitHub Pages subdirectory hosting' },
         { type: 'fixed', text: 'Site version date corrected to 2026-04-07' }
       ]
+    },
+    {
+      version: 'SITE 2026.04.07.2',
+      date: '2026-04-07',
+      changes: [
+        { type: 'added', text: 'Cache-busting: no-cache meta tags on index.html to prevent browser caching of the HTML page' },
+        { type: 'added', text: 'Auto-reload: inline version check script fetches version.txt on every page load and reloads if a newer version is deployed' }
+      ]
     }
   ];
 
