@@ -7,6 +7,15 @@
 (function () {
   'use strict';
 
+  function getBaseUrl() {
+    var path = window.location.pathname;
+    var idx = path.indexOf('/index.html');
+    if (idx === -1) idx = path.lastIndexOf('/');
+    var base = path.substring(0, idx);
+    if (base.endsWith('/')) base = base.slice(0, -1);
+    return window.location.origin + base;
+  }
+
   var DEMO_COMPONENTS = [
     { id: 'button',       label: 'Button' },
     { id: 'text-input',   label: 'Text Input' },
@@ -190,12 +199,12 @@
   }
 
   function baseHead(title) {
-    var origin = window.location.origin;
+    var origin = getBaseUrl();
     return '<!DOCTYPE html>\n<html lang="en"' + themeAttrString(getThemeAttrs()) + '>\n<head>\n  <meta charset="UTF-8" />\n  <meta name="viewport" content="width=device-width, initial-scale=1.0" />\n  <title>' + title + '</title>\n  <link rel="preconnect" href="https://fonts.googleapis.com" />\n  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Poppins:wght@400;500;700&family=Roboto:wght@400;500;700&family=Lexend:wght@400;500;700&display=swap" rel="stylesheet" />\n  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />\n  <link rel="stylesheet" href="' + origin + '/uds/uds.css" />\n  <style>*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; } body { font-family: var(--uds-font-family); background: var(--uds-color-surface-page-main); color: var(--uds-color-text-primary); }</style>\n</head>\n';
   }
 
   function generateDemoHTML(components) {
-    var origin = window.location.origin;
+    var origin = getBaseUrl();
     var body = assembleHTMLBody(components);
     return baseHead('UDS Demo — HTML') + '<body>\n' + body + '\n<script src="' + origin + '/uds/uds.js"><\/script>\n</body>\n</html>';
   }
@@ -313,7 +322,7 @@
   }
 
   function generateDemoReact(components) {
-    var origin = window.location.origin;
+    var origin = getBaseUrl();
     var stateHooks = buildReactStateHooks(components);
     var jsx = assembleReactJSX(components);
 
@@ -402,7 +411,7 @@
   }
 
   function generateDemoVue(components) {
-    var origin = window.location.origin;
+    var origin = getBaseUrl();
     var template = assembleVueTemplate(components);
     var setup = buildVueSetup(components);
 
@@ -606,7 +615,7 @@
     setTimeout(function () {
       try {
         var zip = new JSZip();
-        var origin = window.location.origin;
+        var origin = getBaseUrl();
 
         if (selectedFramework === 'html') {
           zip.file('index.html', generateDemoHTML(components));

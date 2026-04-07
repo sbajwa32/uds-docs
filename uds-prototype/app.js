@@ -3215,6 +3215,13 @@
         { type: 'fixed', text: 'Fixed IMPL_DATA: nav-header React imports, data-table checkbox handlers' },
         { type: 'fixed', text: 'Demo builder ZIP generators rewritten — React uses real JSX, Vue uses real SFC template, no uds.js' }
       ]
+    },
+    {
+      version: 'SITE 2026.04.06.20',
+      date: '2026-04-06',
+      changes: [
+        { type: 'fixed', text: 'Demo preview CSS/JS URLs now use dynamic base path — fixes broken styling on GitHub Pages subdirectory hosting' }
+      ]
     }
   ];
 
