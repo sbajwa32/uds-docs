@@ -1,0 +1,209 @@
+/* ==========================================================================
+   UDS Component: udc-radio
+   Source of truth: UDS Components Figma — udc-radio
+
+   States: Default | Selected | Disabled | Error | Error Selected
+   Uses native <input type="radio"> hidden behind a custom styled indicator.
+
+   HTML structure (individual option):
+     <label class="udc-radio">
+       <input type="radio" name="group-name" value="option-1" />
+       <span class="udc-radio__control"></span>
+       <span class="udc-radio__label">Label text</span>
+     </label>
+
+   Group wrapper (vertical stack):
+     <div class="udc-radio-group" role="radiogroup" aria-labelledby="id">
+       <span class="udc-radio-group__legend" id="id">Choose one</span>
+       <label class="udc-radio">…</label>
+       <label class="udc-radio">…</label>
+     </div>
+
+   Error: <label class="udc-radio" data-state="error">…</label>
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Radio group — vertical stack
+   -------------------------------------------------------------------------- */
+.udc-radio-group {
+  display:        flex;
+  flex-direction: column;
+  gap:            var(--uds-space-100);
+}
+
+.udc-radio-group .udc-radio {
+  display: flex;
+}
+
+.udc-radio-group__legend {
+  font-family:    var(--uds-font-family);
+  font-size:      var(--uds-font-size-sm);
+  font-weight:    var(--uds-font-weight-medium);
+  line-height:    var(--uds-font-line-height-sm);
+  color:          var(--uds-color-text-primary);
+  margin-bottom:  var(--uds-space-050);
+  padding:        0;
+}
+
+/* --------------------------------------------------------------------------
+   Root — horizontal flex, gap = space/100 (8px)
+   -------------------------------------------------------------------------- */
+.udc-radio {
+  display:      inline-flex;
+  align-items:  center;
+  gap:          var(--uds-space-100);
+  cursor:       pointer;
+  user-select:  none;
+  position:     relative;
+}
+
+/* Hide native input but keep it accessible */
+.udc-radio input[type="radio"] {
+  position:    absolute;
+  width:       24px;
+  height:      24px;
+  opacity:     0;
+  margin:      0;
+  cursor:      pointer;
+  z-index:     1;
+}
+
+/* --------------------------------------------------------------------------
+   Control — the visible radio circle
+   Figma: 24×24 outer with 2px padding → 20×20 circle, 2px stroke
+   -------------------------------------------------------------------------- */
+.udc-radio__control {
+  position:       relative;
+  display:        inline-flex;
+  align-items:    center;
+  justify-content:center;
+  width:          24px;
+  height:         24px;
+  flex-shrink:    0;
+}
+
+/* Outer ring */
+.udc-radio__control::before {
+  content:         '';
+  display:         block;
+  width:           20px;
+  height:          20px;
+  border-radius:   50%;
+  border:          2px solid var(--uds-color-border-primary);
+  background:      transparent;
+  transition:      border-color 120ms ease;
+}
+
+/* Center dot — hidden by default */
+.udc-radio__control::after {
+  content:       '';
+  position:      absolute;
+  top:           50%;
+  left:          50%;
+  width:         12px;
+  height:        12px;
+  border-radius: 50%;
+  transform:     translate(-50%, -50%);
+  background:    transparent;
+  transition:    background-color 120ms ease;
+}
+
+/* --------------------------------------------------------------------------
+   Label — base Medium, text-primary
+   -------------------------------------------------------------------------- */
+.udc-radio__label {
+  font-family:    var(--uds-font-family);
+  font-size:      var(--uds-font-size-base);
+  font-weight:    var(--uds-font-weight-medium);
+  line-height:    var(--uds-font-line-height-base);
+  color:          var(--uds-color-text-primary);
+  letter-spacing: 0;
+}
+
+/* Required dot */
+.udc-radio__required {
+  width:         4px;
+  height:        4px;
+  border-radius: 50%;
+  background:    var(--uds-color-icon-error);
+  flex-shrink:   0;
+  align-self:    flex-start;
+  margin-top:    2px;
+}
+
+/* ==========================================================================
+   SELECTED STATE — center dot fills with interactive color, label turns blue
+   ========================================================================== */
+
+.udc-radio input[type="radio"]:checked ~ .udc-radio__control::after {
+  background: var(--uds-color-icon-interactive);
+}
+
+.udc-radio input[type="radio"]:checked ~ .udc-radio__label {
+  color: var(--uds-color-text-interactive);
+}
+
+/* ==========================================================================
+   HOVER
+   ========================================================================== */
+
+.udc-radio:hover .udc-radio__control::before {
+  border-color: var(--uds-color-border-interactive);
+}
+
+/* ==========================================================================
+   FOCUS-VISIBLE — keyboard focus ring
+   ========================================================================== */
+
+.udc-radio input[type="radio"]:focus-visible ~ .udc-radio__control {
+  outline:        2px solid var(--uds-color-border-outline-focus-visible);
+  outline-offset: 1px;
+  border-radius:  50%;
+}
+
+/* ==========================================================================
+   DISABLED
+   ========================================================================== */
+
+.udc-radio:has(input:disabled) {
+  cursor: not-allowed;
+}
+
+.udc-radio input[type="radio"]:disabled ~ .udc-radio__control::before {
+  border-color: var(--uds-color-border-disabled);
+}
+
+.udc-radio input[type="radio"]:disabled ~ .udc-radio__control::after {
+  background: transparent;
+}
+
+.udc-radio input[type="radio"]:disabled ~ .udc-radio__label {
+  color: var(--uds-color-text-disabled);
+}
+
+/* ==========================================================================
+   ERROR STATE — data-state="error"
+   ========================================================================== */
+
+[data-state="error"].udc-radio .udc-radio__control::before,
+[data-state="error"] .udc-radio .udc-radio__control::before {
+  border-color: var(--uds-color-border-error);
+}
+
+[data-state="error"].udc-radio .udc-radio__label,
+[data-state="error"] .udc-radio .udc-radio__label {
+  color:       var(--uds-color-text-error);
+  font-weight: var(--uds-font-weight-bold);
+}
+
+/* Error + Selected — dot fills with error color */
+[data-state="error"].udc-radio input[type="radio"]:checked ~ .udc-radio__control::after,
+[data-state="error"] .udc-radio input[type="radio"]:checked ~ .udc-radio__control::after {
+  background: var(--uds-color-icon-error);
+}
+
+[data-state="error"].udc-radio input[type="radio"]:checked ~ .udc-radio__label,
+[data-state="error"] .udc-radio input[type="radio"]:checked ~ .udc-radio__label {
+  color:       var(--uds-color-text-error);
+  font-weight: var(--uds-font-weight-bold);
+}

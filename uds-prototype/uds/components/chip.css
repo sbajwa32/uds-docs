@@ -1,0 +1,115 @@
+/* ==========================================================================
+   UDS Component: udc-chip
+   Source of truth: UDS Components Figma — udc-chip
+
+   Variants: default | filter | input | dropdown     (data-variant)
+   States:   default | hover | active | focused
+   Selected: data-selected="true" or aria-selected="true"
+
+   HTML structure:
+     <button class="udc-chip" data-variant="filter">
+       <span class="udc-chip__leading-icon">               ← optional
+         <span class="material-symbols-outlined">check</span>
+       </span>
+       <span class="udc-chip__label">Chip label</span>
+       <span class="udc-chip__trailing-icon">              ← optional
+         <span class="material-symbols-outlined">close</span>
+       </span>
+     </button>
+   ========================================================================== */
+
+.udc-chip {
+  display:          inline-flex;
+  align-items:      center;
+  gap:              var(--uds-space-100);
+  padding:          var(--uds-space-050) var(--uds-space-100);
+  border:           1px solid var(--uds-color-border-primary);
+  border-radius:    var(--uds-border-radius-container);
+  background-color: var(--uds-color-surface-interactive-none);
+  font-family:      var(--uds-font-family);
+  font-size:        var(--uds-font-size-base);
+  font-weight:      var(--uds-font-weight-regular);
+  line-height:      var(--uds-font-line-height-base);
+  color:            var(--uds-color-text-primary);
+  cursor:           pointer;
+  overflow:         hidden;
+  white-space:      nowrap;
+  outline:          none;
+  transition:       background-color 120ms ease, border-color 120ms ease;
+  -webkit-appearance: none;
+  appearance:       none;
+}
+
+/* --------------------------------------------------------------------------
+   Label
+   -------------------------------------------------------------------------- */
+.udc-chip__label {
+  text-align: center;
+}
+
+/* --------------------------------------------------------------------------
+   Icons
+   -------------------------------------------------------------------------- */
+.udc-chip__leading-icon,
+.udc-chip__trailing-icon {
+  display:      flex;
+  align-items:  center;
+  flex-shrink:  0;
+}
+
+.udc-chip__leading-icon .material-symbols-outlined,
+.udc-chip__trailing-icon .material-symbols-outlined {
+  font-size:    var(--uds-font-size-lg);
+  line-height:  1;
+}
+
+/* --------------------------------------------------------------------------
+   Hover
+   -------------------------------------------------------------------------- */
+.udc-chip:hover {
+  background-color: var(--uds-color-surface-interactive-subtle-hover);
+}
+
+/* --------------------------------------------------------------------------
+   Active (pressed)
+   -------------------------------------------------------------------------- */
+.udc-chip:active {
+  background-color: var(--uds-color-surface-interactive-subtle-active);
+}
+
+/* --------------------------------------------------------------------------
+   Focused
+   -------------------------------------------------------------------------- */
+.udc-chip:focus-visible {
+  box-shadow: 0 0 0 2px var(--uds-color-surface-main), 0 0 0 4px var(--uds-color-border-outline-focus-visible);
+}
+
+/* --------------------------------------------------------------------------
+   Selected
+   -------------------------------------------------------------------------- */
+.udc-chip[data-selected="true"],
+.udc-chip[aria-selected="true"] {
+  background-color: var(--uds-color-surface-interactive-active);
+  border-color:     var(--uds-color-surface-interactive-active);
+  color:            var(--uds-color-text-inverse);
+}
+
+.udc-chip[data-selected="true"]:hover,
+.udc-chip[aria-selected="true"]:hover {
+  background-color: var(--uds-color-surface-interactive-hover);
+  border-color:     var(--uds-color-surface-interactive-hover);
+}
+
+.udc-chip[data-selected="true"] .udc-chip__leading-icon,
+.udc-chip[data-selected="true"] .udc-chip__trailing-icon,
+.udc-chip[aria-selected="true"] .udc-chip__leading-icon,
+.udc-chip[aria-selected="true"] .udc-chip__trailing-icon {
+  color: var(--uds-color-icon-inverse);
+}
+
+/* --------------------------------------------------------------------------
+   Variant: Dropdown — trailing chevron
+   -------------------------------------------------------------------------- */
+.udc-chip[data-variant="dropdown"] .udc-chip__trailing-icon .material-symbols-outlined {
+  font-size: var(--uds-font-size-md);
+}

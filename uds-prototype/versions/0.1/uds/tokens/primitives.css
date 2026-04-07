@@ -1,0 +1,309 @@
+/* ==========================================================================
+   UDS Primitive Tokens
+   Source: Figma — _uds-primitive variable collection
+   249 tokens: color (146), font (53), text (2), space (30), border (15), style (3)
+
+   These are raw palette values. Do not use directly in components —
+   reference semantic tokens instead.
+   ========================================================================== */
+
+:root {
+
+  /* ---- Color: Special ---- */
+  --uds-primitive-color-special-none:                rgba(255, 255, 255, 0);
+  --uds-primitive-color-special-white:               #ffffff;
+  --uds-primitive-color-special-black:               #000000;
+
+  /* ---- Color: Neutral ---- */
+  --uds-primitive-color-neutral-10:                  #fafafa;
+  --uds-primitive-color-neutral-20:                  #f5f5f5;
+  --uds-primitive-color-neutral-30:                  #ededed;
+  --uds-primitive-color-neutral-40:                  #d4d4d4;
+  --uds-primitive-color-neutral-50:                  #a3a3a3;
+  --uds-primitive-color-neutral-60-M:                 #737373;
+  --uds-primitive-color-neutral-70:                  #525252;
+  --uds-primitive-color-neutral-80:                  #404040;
+  --uds-primitive-color-neutral-90:                  #262626;
+  --uds-primitive-color-neutral-100:                 #171717;
+  --uds-primitive-color-neutral-110:                 #0a0a0a;
+
+  /* ---- Color: Slate ---- */
+  --uds-primitive-color-slate-10:                    #f8fafc;
+  --uds-primitive-color-slate-20:                    #f1f5f9;
+  --uds-primitive-color-slate-30:                    #e2e8f0;
+  --uds-primitive-color-slate-40:                    #cbd5e1;
+  --uds-primitive-color-slate-50:                    #94a3b8;
+  --uds-primitive-color-slate-60-M:                   #64748b;
+  --uds-primitive-color-slate-70:                    #475569;
+  --uds-primitive-color-slate-80:                    #334155;
+  --uds-primitive-color-slate-90:                    #1e293b;
+  --uds-primitive-color-slate-100:                   #0f172a;
+  --uds-primitive-color-slate-110:                   #020617;
+
+  /* ---- Color: Stone ---- */
+  --uds-primitive-color-stone-10:                    #fafaf9;
+  --uds-primitive-color-stone-20:                    #f5f5f4;
+  --uds-primitive-color-stone-30:                    #e7e5e4;
+  --uds-primitive-color-stone-40:                    #d6d3d1;
+  --uds-primitive-color-stone-50:                    #a8a29e;
+  --uds-primitive-color-stone-60-M:                   #78716c;
+  --uds-primitive-color-stone-70:                    #57534e;
+  --uds-primitive-color-stone-80:                    #44403c;
+  --uds-primitive-color-stone-90:                    #292524;
+  --uds-primitive-color-stone-100:                   #1c1917;
+  --uds-primitive-color-stone-110:                   #0c0a09;
+
+  /* ---- Color: Blue ---- */
+  --uds-primitive-color-blue-10:                     #ecf8ff;
+  --uds-primitive-color-blue-20:                     #d2edff;
+  --uds-primitive-color-blue-30:                     #aeddfd;
+  --uds-primitive-color-blue-40:                     #7dc2ff;
+  --uds-primitive-color-blue-50:                     #38a0ff;
+  --uds-primitive-color-blue-60-M:                    #0480fc;
+  --uds-primitive-color-blue-70:                     #005ff0;
+  --uds-primitive-color-blue-80:                     #004be2;
+  --uds-primitive-color-blue-90:                     #0a3daf;
+  --uds-primitive-color-blue-100:                    #023674;
+  --uds-primitive-color-blue-110:                    #0f2e52;
+
+  /* ---- Color: Cyan ---- */
+  --uds-primitive-color-cyan-10:                     #e3f7fc;
+  --uds-primitive-color-cyan-20:                     #c3effa;
+  --uds-primitive-color-cyan-30:                     #9fe5f6;
+  --uds-primitive-color-cyan-40:                     #75d9f3;
+  --uds-primitive-color-cyan-50:                     #00add9;
+  --uds-primitive-color-cyan-60-M:                    #0086a9;
+  --uds-primitive-color-cyan-70:                     #006a85;
+  --uds-primitive-color-cyan-80:                     #004c5f;
+  --uds-primitive-color-cyan-90:                     #002b36;
+  --uds-primitive-color-cyan-100:                    #001d24;
+  --uds-primitive-color-cyan-110:                    #001217;
+
+  /* ---- Color: Purple ---- */
+  --uds-primitive-color-purple-10:                   #faf5ff;
+  --uds-primitive-color-purple-20:                   #f3e8ff;
+  --uds-primitive-color-purple-30:                   #e9d5ff;
+  --uds-primitive-color-purple-40:                   #d8b4fe;
+  --uds-primitive-color-purple-50:                   #c084fc;
+  --uds-primitive-color-purple-60-M:                  #a855f7;
+  --uds-primitive-color-purple-70:                   #9333ea;
+  --uds-primitive-color-purple-80:                   #7e22ce;
+  --uds-primitive-color-purple-90:                   #6b21a8;
+  --uds-primitive-color-purple-100:                  #581c87;
+  --uds-primitive-color-purple-110:                  #3b0764;
+
+  /* ---- Color: Red ---- */
+  --uds-primitive-color-red-10:                      #fef2f2;
+  --uds-primitive-color-red-20:                      #ffe2e2;
+  --uds-primitive-color-red-30:                      #fecaca;
+  --uds-primitive-color-red-40:                      #fca5a5;
+  --uds-primitive-color-red-50:                      #f87171;
+  --uds-primitive-color-red-60-M:                     #ef4444;
+  --uds-primitive-color-red-70:                      #dc2626;
+  --uds-primitive-color-red-80:                      #b91c1c;
+  --uds-primitive-color-red-90:                      #991b1b;
+  --uds-primitive-color-red-100:                     #7f1d1d;
+  --uds-primitive-color-red-110:                     #450a0a;
+
+  /* ---- Color: Orange ---- */
+  --uds-primitive-color-orange-10:                   #fff7ed;
+  --uds-primitive-color-orange-20:                   #ffedd5;
+  --uds-primitive-color-orange-30:                   #fed7aa;
+  --uds-primitive-color-orange-40:                   #fdba74;
+  --uds-primitive-color-orange-50:                   #fb923c;
+  --uds-primitive-color-orange-60-M:                  #f97316;
+  --uds-primitive-color-orange-70:                   #ea580c;
+  --uds-primitive-color-orange-80:                   #c2410c;
+  --uds-primitive-color-orange-90:                   #9a3412;
+  --uds-primitive-color-orange-100:                  #7c2d12;
+  --uds-primitive-color-orange-110:                  #431407;
+
+  /* ---- Color: Amber ---- */
+  --uds-primitive-color-amber-10:                    #fffbeb;
+  --uds-primitive-color-amber-20:                    #fef3c7;
+  --uds-primitive-color-amber-30:                    #fde68a;
+  --uds-primitive-color-amber-40:                    #fcd34d;
+  --uds-primitive-color-amber-50:                    #fbbf24;
+  --uds-primitive-color-amber-60-M:                   #f59e0b;
+  --uds-primitive-color-amber-70:                    #d97706;
+  --uds-primitive-color-amber-80:                    #b45309;
+  --uds-primitive-color-amber-90:                    #92400e;
+  --uds-primitive-color-amber-100:                   #78350f;
+  --uds-primitive-color-amber-110:                   #451a03;
+
+  /* ---- Color: Yellow ---- */
+  --uds-primitive-color-yellow-10:                   #fefce8;
+  --uds-primitive-color-yellow-20:                   #fef9c3;
+  --uds-primitive-color-yellow-30:                   #fef08a;
+  --uds-primitive-color-yellow-40:                   #fde047;
+  --uds-primitive-color-yellow-50:                   #facc15;
+  --uds-primitive-color-yellow-60-M:                  #eab308;
+  --uds-primitive-color-yellow-70:                   #ca8a04;
+  --uds-primitive-color-yellow-80:                   #a16207;
+  --uds-primitive-color-yellow-90:                   #854d0e;
+  --uds-primitive-color-yellow-100:                  #713f12;
+  --uds-primitive-color-yellow-110:                  #422006;
+
+  /* ---- Color: Lime ---- */
+  --uds-primitive-color-lime-10:                     #f7fee7;
+  --uds-primitive-color-lime-20:                     #ecfccb;
+  --uds-primitive-color-lime-30:                     #d9f99d;
+  --uds-primitive-color-lime-40:                     #bef264;
+  --uds-primitive-color-lime-50:                     #a3e635;
+  --uds-primitive-color-lime-60-M:                    #84cc16;
+  --uds-primitive-color-lime-70:                     #65a30d;
+  --uds-primitive-color-lime-80:                     #4d7c0f;
+  --uds-primitive-color-lime-90:                     #3f6212;
+  --uds-primitive-color-lime-100:                    #365314;
+  --uds-primitive-color-lime-110:                    #1a2e05;
+
+  /* ---- Color: Green ---- */
+  --uds-primitive-color-green-10:                    #f0fdf4;
+  --uds-primitive-color-green-20:                    #dcfce7;
+  --uds-primitive-color-green-30:                    #bbf7d0;
+  --uds-primitive-color-green-40:                    #86efac;
+  --uds-primitive-color-green-50:                    #4ade80;
+  --uds-primitive-color-green-60-M:                   #22c55e;
+  --uds-primitive-color-green-70:                    #16a34a;
+  --uds-primitive-color-green-80:                    #15803d;
+  --uds-primitive-color-green-90:                    #166534;
+  --uds-primitive-color-green-100:                   #14532d;
+  --uds-primitive-color-green-110:                   #052e16;
+
+  /* ---- Color: Emerald ---- */
+  --uds-primitive-color-emerald-10:                  #ecfdf5;
+  --uds-primitive-color-emerald-20:                  #d1fae5;
+  --uds-primitive-color-emerald-30:                  #a7f3d0;
+  --uds-primitive-color-emerald-40:                  #6ee7b7;
+  --uds-primitive-color-emerald-50:                  #34d399;
+  --uds-primitive-color-emerald-60-M:                 #10b981;
+  --uds-primitive-color-emerald-70:                  #059669;
+  --uds-primitive-color-emerald-80:                  #047857;
+  --uds-primitive-color-emerald-90:                  #065f46;
+  --uds-primitive-color-emerald-100:                 #064e3b;
+  --uds-primitive-color-emerald-110:                 #022c22;
+
+  /* ================================================================
+     Font: Family
+     ================================================================ */
+  --uds-primitive-font-family-inter:                 'Inter';
+  --uds-primitive-font-family-poppins:               'Poppins';
+  --uds-primitive-font-family-roboto:                'Roboto';
+  --uds-primitive-font-family-lexend:                'Lexend';
+
+  /* ---- Font: Weight ---- */
+  --uds-primitive-font-weight-inter-regular:         400;
+  --uds-primitive-font-weight-inter-medium:          500;
+  --uds-primitive-font-weight-inter-bold:            700;
+  --uds-primitive-font-weight-poppins-regular:       400;
+  --uds-primitive-font-weight-poppins-medium:        500;
+  --uds-primitive-font-weight-poppins-bold:          700;
+  --uds-primitive-font-weight-roboto-regular:        400;
+  --uds-primitive-font-weight-roboto-medium:         500;
+  --uds-primitive-font-weight-roboto-bold:           700;
+  --uds-primitive-font-weight-lexend-regular:        400;
+  --uds-primitive-font-weight-lexend-medium:         500;
+  --uds-primitive-font-weight-lexend-bold:           700;
+
+  /* ---- Font: Size ---- */
+  --uds-primitive-font-size-xxxs:                    8px;
+  --uds-primitive-font-size-xxs:                     10px;
+  --uds-primitive-font-size-xs:                      12px;
+  --uds-primitive-font-size-sm:                      14px;
+  --uds-primitive-font-size-base:                    16px;
+  --uds-primitive-font-size-md:                      18px;
+  --uds-primitive-font-size-lg:                      20px;
+  --uds-primitive-font-size-xl:                      24px;
+  --uds-primitive-font-size-2xl:                     28px;
+  --uds-primitive-font-size-3xl:                     32px;
+  --uds-primitive-font-size-4xl:                     36px;
+  --uds-primitive-font-size-5xl:                     40px;
+  --uds-primitive-font-size-6xl:                     44px;
+  --uds-primitive-font-size-7xl:                     48px;
+  --uds-primitive-font-size-8xl:                     52px;
+  --uds-primitive-font-size-9xl:                     56px;
+  --uds-primitive-font-size-10xl:                    60px;
+
+  /* ---- Font: Line Height ---- */
+  --uds-primitive-font-line-height-100:              8px;
+  --uds-primitive-font-line-height-150:              12px;
+  --uds-primitive-font-line-height-200:              16px;
+  --uds-primitive-font-line-height-250:              20px;
+  --uds-primitive-font-line-height-300:              24px;
+  --uds-primitive-font-line-height-325:              26px;
+  --uds-primitive-font-line-height-350:              28px;
+  --uds-primitive-font-line-height-400:              32px;
+  --uds-primitive-font-line-height-450:              36px;
+  --uds-primitive-font-line-height-500:              40px;
+  --uds-primitive-font-line-height-550:              44px;
+  --uds-primitive-font-line-height-600:              48px;
+  --uds-primitive-font-line-height-650:              52px;
+  --uds-primitive-font-line-height-700:              56px;
+  --uds-primitive-font-line-height-750:              60px;
+  --uds-primitive-font-line-height-800:              64px;
+  --uds-primitive-font-line-height-850:              68px;
+  --uds-primitive-font-line-height-900:              72px;
+  --uds-primitive-font-line-height-950:              76px;
+  --uds-primitive-font-line-height-1000:             80px;
+
+  /* ---- Text ---- */
+  --uds-primitive-text-case-uppercase:               uppercase;
+  --uds-primitive-text-case-none:                    none;
+
+  /* ---- Space ---- */
+  --uds-primitive-space-0:                           0;
+  --uds-primitive-space-025:                         2px;
+  --uds-primitive-space-050:                         4px;
+  --uds-primitive-space-075:                         6px;
+  --uds-primitive-space-100:                         8px;
+  --uds-primitive-space-125:                         10px;
+  --uds-primitive-space-150:                         12px;
+  --uds-primitive-space-175:                         14px;
+  --uds-primitive-space-200:                         16px;
+  --uds-primitive-space-250:                         20px;
+  --uds-primitive-space-300:                         24px;
+  --uds-primitive-space-350:                         28px;
+  --uds-primitive-space-400:                         32px;
+  --uds-primitive-space-450:                         36px;
+  --uds-primitive-space-500:                         40px;
+  --uds-primitive-space-550:                         44px;
+  --uds-primitive-space-600:                         48px;
+  --uds-primitive-space-650:                         52px;
+  --uds-primitive-space-700:                         56px;
+  --uds-primitive-space-750:                         60px;
+  --uds-primitive-space-800:                         64px;
+  --uds-primitive-space-850:                         68px;
+  --uds-primitive-space-900:                         72px;
+  --uds-primitive-space-950:                         76px;
+  --uds-primitive-space-1000:                        80px;
+  --uds-primitive-space-1050:                        84px;
+  --uds-primitive-space-1100:                        88px;
+  --uds-primitive-space-1150:                        92px;
+  --uds-primitive-space-1200:                        96px;
+  --uds-primitive-space-1250:                        100px;
+
+  /* ---- Border: Radius ---- */
+  --uds-primitive-border-radius-0:                   0;
+  --uds-primitive-border-radius-025:                 2px;
+  --uds-primitive-border-radius-050:                 4px;
+  --uds-primitive-border-radius-075:                 6px;
+  --uds-primitive-border-radius-100:                 8px;
+  --uds-primitive-border-radius-150:                 12px;
+  --uds-primitive-border-radius-200:                 16px;
+  --uds-primitive-border-radius-300:                 24px;
+  --uds-primitive-border-radius-400:                 32px;
+  --uds-primitive-border-radius-600:                 48px;
+  --uds-primitive-border-radius-full:                9999px;
+
+  /* ---- Border: Width ---- */
+  --uds-primitive-border-width-0:                    0;
+  --uds-primitive-border-width-025:                  2px;
+  --uds-primitive-border-width-050:                  4px;
+  --uds-primitive-border-width-100:                  8px;
+
+  /* ---- Style: Icon ---- */
+  --uds-primitive-style-icon-style-md3-outlined:     'Outlined';
+  --uds-primitive-style-icon-style-md3-round:        'Round';
+  --uds-primitive-style-icon-style-md3-filled:       'Filled';
+
+}

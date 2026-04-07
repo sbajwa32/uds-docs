@@ -1,0 +1,128 @@
+/* ==========================================================================
+   UDS Component: udc-list  /  udc-list-item
+   Source of truth: UDS Components Figma — udc-list, _udc-list_item
+
+   List item states: default | hover | active | selected | focused
+   Optional slots:   leading icon, trailing icon
+
+   HTML structure:
+     <div class="udc-list">
+       <div class="udc-list-item" tabindex="0">
+         <span class="udc-list-item__leading-icon">            ← optional
+           <span class="material-symbols-outlined">add_circle_outline</span>
+         </span>
+         <span class="udc-list-item__label">Item text</span>
+         <span class="udc-list-item__trailing-icon">           ← optional
+           <span class="material-symbols-outlined">remove_circle_outline</span>
+         </span>
+       </div>
+       …
+     </div>
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   List wrapper
+   -------------------------------------------------------------------------- */
+.udc-list {
+  display:        flex;
+  flex-direction: column;
+  gap:            0;
+  font-family:    var(--uds-font-family);
+}
+
+/* --------------------------------------------------------------------------
+   List item
+   -------------------------------------------------------------------------- */
+.udc-list-item {
+  display:          flex;
+  align-items:      center;
+  gap:              var(--uds-space-100);
+  height:           var(--uds-space-600);
+  padding:          var(--uds-space-150) var(--uds-space-200);
+  border-radius:    var(--uds-border-radius-input, 8px);
+  border:           1px solid transparent;
+  background-color: var(--uds-color-surface-interactive-none);
+  cursor:           pointer;
+  outline:          none;
+  position:         relative;
+  transition:       background-color 120ms ease;
+  font-size:        var(--uds-font-size-base);
+  font-weight:      var(--uds-font-weight-medium);
+  line-height:      var(--uds-font-line-height-base);
+  color:            var(--uds-color-text-primary);
+}
+
+/* --------------------------------------------------------------------------
+   Label
+   -------------------------------------------------------------------------- */
+.udc-list-item__label {
+  flex:             1 1 0%;
+  min-width:        0;
+  overflow:         hidden;
+  text-overflow:    ellipsis;
+  white-space:      nowrap;
+}
+
+/* --------------------------------------------------------------------------
+   Icons
+   -------------------------------------------------------------------------- */
+.udc-list-item__leading-icon,
+.udc-list-item__trailing-icon {
+  display:      flex;
+  align-items:  center;
+  flex-shrink:  0;
+  color:        var(--uds-color-icon-primary);
+}
+
+.udc-list-item__leading-icon .material-symbols-outlined,
+.udc-list-item__trailing-icon .material-symbols-outlined {
+  font-size:    var(--uds-font-size-2xl);
+  line-height:  1;
+}
+
+/* Adjust padding when leading/trailing icons present */
+.udc-list-item:has(.udc-list-item__leading-icon) {
+  padding-left: var(--uds-space-150);
+}
+
+.udc-list-item:has(.udc-list-item__trailing-icon) {
+  padding-right: var(--uds-space-150);
+}
+
+/* --------------------------------------------------------------------------
+   Hover
+   -------------------------------------------------------------------------- */
+.udc-list-item:hover {
+  background-color: var(--uds-color-surface-interactive-subtle-hover);
+}
+
+/* --------------------------------------------------------------------------
+   Active (pressed)
+   -------------------------------------------------------------------------- */
+.udc-list-item:active {
+  background-color: var(--uds-color-surface-interactive-subtle-active);
+}
+
+/* --------------------------------------------------------------------------
+   Selected (aria-selected or data-selected)
+   -------------------------------------------------------------------------- */
+.udc-list-item[aria-selected="true"],
+.udc-list-item[data-selected="true"] {
+  background-color: var(--uds-color-surface-interactive-active);
+  color:            var(--uds-color-text-inverse);
+}
+
+.udc-list-item[aria-selected="true"] .udc-list-item__leading-icon,
+.udc-list-item[aria-selected="true"] .udc-list-item__trailing-icon,
+.udc-list-item[data-selected="true"] .udc-list-item__leading-icon,
+.udc-list-item[data-selected="true"] .udc-list-item__trailing-icon {
+  color: var(--uds-color-icon-inverse);
+}
+
+/* --------------------------------------------------------------------------
+   Focused
+   -------------------------------------------------------------------------- */
+.udc-list-item:focus-visible {
+  background-color: var(--uds-color-surface-interactive-subtle);
+  box-shadow:       0 0 0 3px var(--uds-color-border-outline-focus-visible);
+}

@@ -1,0 +1,251 @@
+/* ==========================================================================
+   UDS Component: udc-text-input
+   Source of truth: UDS Components Figma — udc-text-input
+
+   States: default | error (data-state="error") | focus (:focus-within)
+   Optional slots: leading icon, trailing action button, helper text, counter
+
+   HTML structure:
+     <div class="udc-text-input">
+       <label class="udc-text-input__label">
+         Label text
+         <span class="udc-text-input__required"></span>   ← optional
+       </label>
+       <div class="udc-text-input__field">
+         <span class="udc-text-input__leading-icon">…</span>  ← optional
+         <input type="text" placeholder="Placeholder" />
+         <button class="udc-text-input__trailing-btn">…</button> ← optional
+       </div>
+       <div class="udc-text-input__helper">
+         <span>Helper text</span>
+         <span class="udc-text-input__counter">0/20</span>  ← optional
+       </div>
+     </div>
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Root wrapper — vertical stack, gap = space/050 (4px)
+   -------------------------------------------------------------------------- */
+.udc-text-input {
+  display:        flex;
+  flex-direction: column;
+  gap:            var(--uds-space-050);
+}
+
+/* --------------------------------------------------------------------------
+   Label — sm Medium, primary text
+   -------------------------------------------------------------------------- */
+.udc-text-input__label {
+  display:        inline-flex;
+  align-items:    center;
+  gap:            var(--uds-space-050);
+  font-family:    var(--uds-font-family);
+  font-size:      var(--uds-font-size-sm);
+  font-weight:    var(--uds-font-weight-medium);
+  line-height:    var(--uds-font-line-height-sm);
+  color:          var(--uds-color-text-primary);
+  letter-spacing: 0;
+}
+
+/* Required dot (red circle) */
+.udc-text-input__required {
+  width:         4px;
+  height:        4px;
+  border-radius: 50%;
+  background:    var(--uds-color-icon-error);
+  flex-shrink:   0;
+}
+
+/* --------------------------------------------------------------------------
+   Text field container — the bordered box
+   Figma: surface-main bg, border-primary 1px, radius/input, h=48px
+   Padding: top/right/bottom = space/075 (6px), left = space/100 (8px)
+   -------------------------------------------------------------------------- */
+.udc-text-input__field {
+  display:          flex;
+  align-items:      center;
+  gap:              0;
+  min-height:       48px;
+  padding:          var(--uds-space-075) var(--uds-space-075) var(--uds-space-075) var(--uds-space-100);
+  background-color: var(--uds-color-surface-main);
+  border:           1px solid var(--uds-color-border-primary);
+  border-radius:    var(--uds-border-radius-input);
+  transition:       border-color 120ms ease, box-shadow 120ms ease;
+}
+
+/* The actual <input> element */
+.udc-text-input__field input {
+  flex:            1 1 0%;
+  min-width:       0;
+  border:          none;
+  outline:         none;
+  background:      transparent;
+  padding:         0 var(--uds-space-075) 0 var(--uds-space-050);
+  font-family:     var(--uds-font-family);
+  font-size:       var(--uds-font-size-base);
+  font-weight:     var(--uds-font-weight-regular);
+  line-height:     var(--uds-font-line-height-base);
+  color:           var(--uds-color-text-primary);
+  letter-spacing:  0;
+}
+
+.udc-text-input__field input::placeholder {
+  color: var(--uds-color-text-secondary);
+}
+
+/* --------------------------------------------------------------------------
+   Leading icon — secondary color, 24×24 with 2px horizontal padding
+   -------------------------------------------------------------------------- */
+.udc-text-input__leading-icon {
+  display:     flex;
+  align-items: center;
+  padding:     0 2px;
+  color:       var(--uds-color-icon-secondary);
+  flex-shrink: 0;
+}
+
+.udc-text-input__leading-icon svg {
+  width:  24px;
+  height: 24px;
+  fill:   currentColor;
+}
+
+.udc-text-input__leading-icon .material-symbols-outlined {
+  font-size: 24px;
+  line-height: 1;
+}
+
+/* --------------------------------------------------------------------------
+   Trailing action button — ghost icon button, 36×36
+   -------------------------------------------------------------------------- */
+.udc-text-input__trailing-btn {
+  display:          flex;
+  align-items:      center;
+  justify-content:  center;
+  width:            36px;
+  height:           36px;
+  padding:          var(--uds-space-075);
+  margin-left:      var(--uds-space-050);
+  background:       var(--uds-color-surface-interactive-none);
+  border:           none;
+  border-radius:    var(--uds-border-radius-input);
+  color:            var(--uds-color-icon-secondary);
+  cursor:           pointer;
+  flex-shrink:      0;
+  transition:       background-color 120ms ease;
+  -webkit-appearance: none;
+  appearance:       none;
+  outline:          none;
+}
+
+.udc-text-input__trailing-btn:hover {
+  background: var(--uds-color-surface-interactive-subtle-hover);
+}
+
+.udc-text-input__trailing-btn:active {
+  background: var(--uds-color-surface-interactive-subtle-active);
+}
+
+.udc-text-input__trailing-btn svg {
+  width:  24px;
+  height: 24px;
+  fill:   currentColor;
+}
+
+.udc-text-input__trailing-btn .material-symbols-outlined {
+  font-size: 24px;
+  line-height: 1;
+}
+
+/* --------------------------------------------------------------------------
+   Helper row — helper text + character counter, spread apart
+   -------------------------------------------------------------------------- */
+.udc-text-input__helper {
+  display:         flex;
+  justify-content: space-between;
+  gap:             var(--uds-space-100);
+  font-family:     var(--uds-font-family);
+  font-size:       var(--uds-font-size-xs);
+  font-weight:     var(--uds-font-weight-regular);
+  line-height:     var(--uds-font-line-height-xs);
+  color:           var(--uds-color-text-secondary);
+  letter-spacing:  0;
+}
+
+.udc-text-input__counter {
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+/* ==========================================================================
+   FOCUS STATE — :focus-within on the field wrapper
+   Figma: border stays gray, separate 2px blue outline ring (radius 12)
+   ========================================================================== */
+
+.udc-text-input__field:focus-within {
+  box-shadow: 0 0 0 2px var(--uds-color-surface-white), 0 0 0 4px var(--uds-color-border-outline-focus-visible);
+}
+
+/* ==========================================================================
+   ERROR STATE — data-state="error"
+   ========================================================================== */
+
+/* Label turns red + bold */
+[data-state="error"].udc-text-input .udc-text-input__label,
+[data-state="error"] .udc-text-input__label {
+  color:       var(--uds-color-text-error);
+  font-weight: var(--uds-font-weight-bold);
+}
+
+/* Field border turns red */
+[data-state="error"].udc-text-input .udc-text-input__field,
+[data-state="error"] .udc-text-input__field {
+  border-color: var(--uds-color-border-error);
+}
+
+/* Focus ring stays blue even in error state — border remains red */
+[data-state="error"].udc-text-input .udc-text-input__field:focus-within,
+[data-state="error"] .udc-text-input__field:focus-within {
+  box-shadow: 0 0 0 2px var(--uds-color-surface-white), 0 0 0 4px var(--uds-color-border-outline-focus-visible);
+}
+
+/* Input text + placeholder turn red */
+[data-state="error"].udc-text-input .udc-text-input__field input,
+[data-state="error"] .udc-text-input__field input {
+  color: var(--uds-color-text-error);
+}
+
+[data-state="error"].udc-text-input .udc-text-input__field input::placeholder,
+[data-state="error"] .udc-text-input__field input::placeholder {
+  color: var(--uds-color-text-error);
+}
+
+/* Helper text turns red (counter stays secondary) */
+[data-state="error"].udc-text-input .udc-text-input__helper,
+[data-state="error"] .udc-text-input__helper {
+  color: var(--uds-color-text-error);
+}
+
+[data-state="error"].udc-text-input .udc-text-input__counter,
+[data-state="error"] .udc-text-input__counter {
+  color: var(--uds-color-text-secondary);
+}
+
+/* ==========================================================================
+   DISABLED STATE
+   ========================================================================== */
+
+.udc-text-input__field:has(input:disabled) {
+  background-color: var(--uds-color-surface-interactive-disabled);
+  border-color:     transparent;
+  cursor:           not-allowed;
+}
+
+.udc-text-input__field input:disabled {
+  color:  var(--uds-color-text-disabled-bold);
+  cursor: not-allowed;
+}
+
+.udc-text-input__field input:disabled::placeholder {
+  color: var(--uds-color-text-disabled);
+}

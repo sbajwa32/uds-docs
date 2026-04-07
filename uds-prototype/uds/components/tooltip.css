@@ -1,0 +1,80 @@
+/* ==========================================================================
+   UDS Component: udc-tooltip
+   Source of truth: UDS Components Figma — udc-tooltip
+
+   CSS-only component — no JS needed. Show on hover/focus of a trigger.
+
+   HTML structure:
+     <span class="udc-tooltip-wrapper">
+       <button>Hover me</button>
+       <span class="udc-tooltip" role="tooltip">Tooltip text</span>
+     </span>
+
+   Or use aria-describedby pattern for complex triggers.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Wrapper — positions the tooltip relative to the trigger
+   -------------------------------------------------------------------------- */
+.udc-tooltip-wrapper {
+  position:   relative;
+  display:    inline-flex;
+}
+
+/* --------------------------------------------------------------------------
+   Tooltip bubble
+   -------------------------------------------------------------------------- */
+.udc-tooltip {
+  position:         absolute;
+  bottom:           calc(100% + var(--uds-space-100));
+  left:             50%;
+  transform:        translateX(-50%);
+  max-width:        250px;
+  padding:          var(--uds-space-150) var(--uds-space-200);
+  background-color: var(--uds-color-surface-main);
+  border-radius:    var(--uds-border-radius-container);
+  box-shadow:       var(--uds-shadow-depth-300);
+  font-family:      var(--uds-font-family);
+  font-size:        var(--uds-font-size-base);
+  font-weight:      var(--uds-font-weight-regular);
+  line-height:      var(--uds-font-line-height-base);
+  color:            var(--uds-color-text-primary);
+  white-space:      normal;
+  pointer-events:   none;
+  opacity:          0;
+  visibility:       hidden;
+  transition:       opacity 150ms ease, visibility 150ms ease;
+  z-index:          1000;
+}
+
+/* --------------------------------------------------------------------------
+   Position variants
+   -------------------------------------------------------------------------- */
+.udc-tooltip[data-position="bottom"] {
+  bottom:    auto;
+  top:       calc(100% + var(--uds-space-100));
+}
+
+.udc-tooltip[data-position="left"] {
+  bottom:    auto;
+  top:       50%;
+  left:      auto;
+  right:     calc(100% + var(--uds-space-100));
+  transform: translateY(-50%);
+}
+
+.udc-tooltip[data-position="right"] {
+  bottom:    auto;
+  top:       50%;
+  left:      calc(100% + var(--uds-space-100));
+  transform: translateY(-50%);
+}
+
+/* --------------------------------------------------------------------------
+   Show on hover / focus of wrapper children
+   -------------------------------------------------------------------------- */
+.udc-tooltip-wrapper:hover > .udc-tooltip,
+.udc-tooltip-wrapper:focus-within > .udc-tooltip {
+  opacity:    1;
+  visibility: visible;
+}

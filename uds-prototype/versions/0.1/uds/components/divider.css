@@ -1,0 +1,26 @@
+/* ==========================================================================
+   UDS Component: udc-divider-horizontal
+   Source: UDS Components (Figma) · node 5749:10953
+
+   Usage:
+     <hr class="udc-divider-horizontal" />
+     <hr class="udc-divider-horizontal" data-padding="md" />
+
+   Props (data attributes):
+     data-padding   sm* | md | lg | xl
+                    sm=4px  md=8px  lg=12px  xl=16px  (vertical margin)
+   ========================================================================== */
+
+.udc-divider-horizontal {
+  display: block;
+  width:   100%;
+  height:  0;
+  border:  none;
+  border-top: 1px solid var(--uds-color-border-tertiary);
+  border-radius: var(--uds-border-radius-full);
+  margin:  var(--uds-space-050) 0; /* sm = 4px */
+}
+
+.udc-divider-horizontal[data-padding="md"] { margin: var(--uds-space-100) 0; }
+.udc-divider-horizontal[data-padding="lg"] { margin: var(--uds-space-150) 0; }
+.udc-divider-horizontal[data-padding="xl"] { margin: var(--uds-space-200) 0; }

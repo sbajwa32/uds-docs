@@ -1,0 +1,184 @@
+/* ==========================================================================
+   UDS Component: udc-checkbox
+   Source of truth: UDS Components Figma — udc-checkbox
+
+   Variants: Selected=True/False × State (Default, Hover, Active, Focused, Disabled, Error)
+   Uses native <input type="checkbox"> hidden behind a custom styled indicator.
+
+   HTML structure:
+     <label class="udc-checkbox">
+       <input type="checkbox" />
+       <span class="udc-checkbox__control"></span>
+       <span class="udc-checkbox__label">Label text</span>
+     </label>
+
+   Error:    <label class="udc-checkbox" data-state="error">…</label>
+   Required: add <span class="udc-checkbox__required"></span> after __label
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Root — horizontal flex, gap = space/100 (8px)
+   -------------------------------------------------------------------------- */
+.udc-checkbox {
+  display:      inline-flex;
+  align-items:  center;
+  gap:          var(--uds-space-100);
+  cursor:       pointer;
+  user-select:  none;
+  position:     relative;
+}
+
+/* Hide native input but keep it accessible */
+.udc-checkbox input[type="checkbox"] {
+  position:    absolute;
+  width:       24px;
+  height:      24px;
+  opacity:     0;
+  margin:      0;
+  cursor:      pointer;
+  z-index:     1;
+}
+
+/* --------------------------------------------------------------------------
+   Control — the visible checkbox box
+   Figma: 24×24 outer, 3px padding → 18×18 inner, radius 4, stroke 1px
+   -------------------------------------------------------------------------- */
+.udc-checkbox__control {
+  position:       relative;
+  display:        inline-flex;
+  align-items:    center;
+  justify-content:center;
+  width:          24px;
+  height:         24px;
+  flex-shrink:    0;
+}
+
+.udc-checkbox__control::before {
+  content:         '';
+  display:         block;
+  width:           18px;
+  height:          18px;
+  border-radius:   4px;
+  border:          1px solid var(--uds-color-border-primary);
+  background:      transparent;
+  transition:      background-color 120ms ease, border-color 120ms ease;
+}
+
+/* Checkmark — hidden by default */
+.udc-checkbox__control::after {
+  content:    '';
+  position:   absolute;
+  top:        50%;
+  left:       50%;
+  width:      13px;
+  height:     10px;
+  transform:  translate(-50%, -50%);
+  opacity:    0;
+  transition: opacity 120ms ease;
+  background: var(--uds-color-icon-inverse);
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 13 10'%3E%3Cpath d='M1 5l3.5 3.5L12 1' stroke='white' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  -webkit-mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 13 10'%3E%3Cpath d='M1 5l3.5 3.5L12 1' stroke='white' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  mask-size: contain;
+  mask-repeat: no-repeat;
+}
+
+/* --------------------------------------------------------------------------
+   Label — base Medium, text-primary
+   -------------------------------------------------------------------------- */
+.udc-checkbox__label {
+  font-family:    var(--uds-font-family);
+  font-size:      var(--uds-font-size-base);
+  font-weight:    var(--uds-font-weight-medium);
+  line-height:    var(--uds-font-line-height-base);
+  color:          var(--uds-color-text-primary);
+  letter-spacing: 0;
+}
+
+/* Required dot */
+.udc-checkbox__required {
+  width:         4px;
+  height:        4px;
+  border-radius: 50%;
+  background:    var(--uds-color-icon-error);
+  flex-shrink:   0;
+  align-self:    flex-start;
+  margin-top:    2px;
+}
+
+/* ==========================================================================
+   CHECKED STATE
+   Inner box fills with interactive color, checkmark becomes visible
+   ========================================================================== */
+
+.udc-checkbox input[type="checkbox"]:checked ~ .udc-checkbox__control::before {
+  background:   var(--uds-color-surface-interactive-default);
+  border-color: var(--uds-color-surface-interactive-default);
+}
+
+.udc-checkbox input[type="checkbox"]:checked ~ .udc-checkbox__control::after {
+  opacity: 1;
+}
+
+/* ==========================================================================
+   HOVER — subtle ring around the control
+   ========================================================================== */
+
+.udc-checkbox:hover .udc-checkbox__control::before {
+  border-color: var(--uds-color-border-interactive);
+}
+
+/* ==========================================================================
+   FOCUS-VISIBLE — keyboard focus ring
+   ========================================================================== */
+
+.udc-checkbox input[type="checkbox"]:focus-visible ~ .udc-checkbox__control {
+  outline:        2px solid var(--uds-color-border-outline-focus-visible);
+  outline-offset: 1px;
+  border-radius:  6px;
+}
+
+/* ==========================================================================
+   DISABLED
+   ========================================================================== */
+
+.udc-checkbox:has(input:disabled) {
+  cursor: not-allowed;
+}
+
+.udc-checkbox input[type="checkbox"]:disabled ~ .udc-checkbox__control::before {
+  background:   var(--uds-color-surface-interactive-disabled);
+  border-color: var(--uds-color-border-disabled);
+}
+
+.udc-checkbox input[type="checkbox"]:disabled:checked ~ .udc-checkbox__control::before {
+  background:   var(--uds-color-surface-interactive-disabled);
+  border-color: var(--uds-color-border-disabled);
+}
+
+.udc-checkbox input[type="checkbox"]:disabled ~ .udc-checkbox__label {
+  color: var(--uds-color-text-disabled);
+}
+
+/* ==========================================================================
+   ERROR STATE — data-state="error"
+   ========================================================================== */
+
+[data-state="error"].udc-checkbox .udc-checkbox__control::before,
+[data-state="error"] .udc-checkbox .udc-checkbox__control::before {
+  background:   var(--uds-color-surface-interactive-red-subtle);
+  border-color: var(--uds-color-border-error);
+}
+
+[data-state="error"].udc-checkbox input[type="checkbox"]:checked ~ .udc-checkbox__control::before,
+[data-state="error"] .udc-checkbox input[type="checkbox"]:checked ~ .udc-checkbox__control::before {
+  background:   var(--uds-color-surface-interactive-red-subtle);
+  border-color: var(--uds-color-border-error);
+}
+
+[data-state="error"].udc-checkbox .udc-checkbox__label,
+[data-state="error"] .udc-checkbox .udc-checkbox__label {
+  color:       var(--uds-color-text-error);
+  font-weight: var(--uds-font-weight-bold);
+}

@@ -1,0 +1,192 @@
+/* ==========================================================================
+   UDS Component: udc-notification
+   Source of truth: UDS Components Figma — udc-notification
+
+   Variants: info (default) | success | error | warning  (data-variant)
+   Styles:   subtle (default) | prominent (data-prominent="true") | inline (data-inline="true")
+
+   HTML structure:
+     <div class="udc-notification" data-variant="info">
+       <span class="udc-notification__icon">
+         <span class="material-symbols-outlined">info</span>
+       </span>
+       <span class="udc-notification__text">Message here</span>
+       <button class="udc-notification__close" aria-label="Dismiss">
+         <span class="material-symbols-outlined">close</span>
+       </button>
+     </div>
+   ========================================================================== */
+
+.udc-notification {
+  display:          flex;
+  align-items:      center;
+  gap:              var(--uds-space-100);
+  padding:          var(--uds-space-150) var(--uds-space-200);
+  border-radius:    var(--uds-border-radius-container-sm, 4px);
+  overflow:         hidden;
+  font-family:      var(--uds-font-family);
+  font-size:        var(--uds-font-size-base);
+  font-weight:      var(--uds-font-weight-medium);
+  line-height:      var(--uds-font-line-height-base);
+  letter-spacing:   0;
+}
+
+/* --------------------------------------------------------------------------
+   Icons — 24×24 with 2px padding
+   -------------------------------------------------------------------------- */
+.udc-notification__icon {
+  display:     flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.udc-notification__icon .material-symbols-outlined {
+  font-size:   var(--uds-font-size-2xl);
+  line-height: 1;
+}
+
+/* --------------------------------------------------------------------------
+   Text
+   -------------------------------------------------------------------------- */
+.udc-notification__text {
+  flex: 1 1 0%;
+  min-width: 0;
+}
+
+/* --------------------------------------------------------------------------
+   Close button (optional)
+   -------------------------------------------------------------------------- */
+.udc-notification__close {
+  display:          flex;
+  align-items:      center;
+  justify-content:  center;
+  padding:          0;
+  margin:           0;
+  margin-left:      auto;
+  background:       transparent;
+  border:           none;
+  cursor:           pointer;
+  opacity:          0.6;
+  flex-shrink:      0;
+  transition:       opacity 120ms ease;
+  -webkit-appearance: none;
+  appearance:       none;
+}
+
+.udc-notification__close:hover { opacity: 1; }
+
+.udc-notification__close:focus-visible {
+  opacity: 1;
+  outline: 2px solid var(--uds-color-border-outline-focus-visible);
+  outline-offset: -2px;
+  border-radius: var(--uds-border-radius-container-sm);
+}
+
+.udc-notification__close .material-symbols-outlined {
+  font-size:   var(--uds-font-size-xl);
+  line-height: 1;
+}
+
+/* ==========================================================================
+   INFO (default) — subtle
+   ========================================================================== */
+.udc-notification,
+.udc-notification[data-variant="info"] {
+  background-color: var(--uds-color-surface-info-subtle);
+  color:            var(--uds-color-text-info);
+}
+
+.udc-notification .udc-notification__icon,
+.udc-notification[data-variant="info"] .udc-notification__icon {
+  color: var(--uds-color-icon-info);
+}
+
+.udc-notification .udc-notification__close,
+.udc-notification[data-variant="info"] .udc-notification__close {
+  color: var(--uds-color-text-info);
+}
+
+/* ==========================================================================
+   SUCCESS — subtle
+   ========================================================================== */
+.udc-notification[data-variant="success"] {
+  background-color: var(--uds-color-surface-success-subtle);
+  color:            var(--uds-color-text-success);
+}
+
+.udc-notification[data-variant="success"] .udc-notification__icon {
+  color: var(--uds-color-icon-success);
+}
+
+.udc-notification[data-variant="success"] .udc-notification__close {
+  color: var(--uds-color-text-success);
+}
+
+/* ==========================================================================
+   ERROR — subtle
+   ========================================================================== */
+.udc-notification[data-variant="error"] {
+  background-color: var(--uds-color-surface-error-subtle);
+  color:            var(--uds-color-text-error);
+}
+
+.udc-notification[data-variant="error"] .udc-notification__icon {
+  color: var(--uds-color-icon-error);
+}
+
+.udc-notification[data-variant="error"] .udc-notification__close {
+  color: var(--uds-color-text-error);
+}
+
+/* ==========================================================================
+   WARNING — subtle
+   ========================================================================== */
+.udc-notification[data-variant="warning"] {
+  background-color: var(--uds-color-surface-warning-subtle);
+  color:            var(--uds-color-text-warning);
+}
+
+.udc-notification[data-variant="warning"] .udc-notification__icon {
+  color: var(--uds-color-icon-warning);
+}
+
+.udc-notification[data-variant="warning"] .udc-notification__close {
+  color: var(--uds-color-text-warning);
+}
+
+/* ==========================================================================
+   PROMINENT — filled background, inverse text
+   ========================================================================== */
+.udc-notification[data-prominent="true"] {
+  color: var(--uds-color-text-inverse);
+}
+
+.udc-notification[data-prominent="true"] .udc-notification__icon,
+.udc-notification[data-prominent="true"] .udc-notification__close {
+  color: var(--uds-color-text-inverse);
+}
+
+.udc-notification[data-variant="info"][data-prominent="true"],
+.udc-notification[data-prominent="true"] {
+  background-color: var(--uds-color-surface-info);
+}
+
+.udc-notification[data-variant="success"][data-prominent="true"] {
+  background-color: var(--uds-color-surface-success);
+}
+
+.udc-notification[data-variant="error"][data-prominent="true"] {
+  background-color: var(--uds-color-surface-error);
+}
+
+.udc-notification[data-variant="warning"][data-prominent="true"] {
+  background-color: var(--uds-color-surface-warning);
+}
+
+/* ==========================================================================
+   INLINE — no background, no padding
+   ========================================================================== */
+.udc-notification[data-inline="true"] {
+  background-color: transparent;
+  padding:          0;
+}

@@ -1,0 +1,142 @@
+/* ==========================================================================
+   UDS Component: udc-search
+   Source of truth: UDS Components Figma — udc-search-bar
+
+   States: default | hover | active | focused | error
+   Reuses the text-input field pattern with a fixed search icon.
+
+   HTML structure:
+     <div class="udc-search">
+       <div class="udc-search__field">
+         <span class="udc-search__icon">
+           <span class="material-symbols-outlined">search</span>
+         </span>
+         <input type="search" placeholder="Search..." />
+         <button class="udc-search__clear" aria-label="Clear">
+           <span class="material-symbols-outlined">clear</span>
+         </button>
+       </div>
+     </div>
+   ========================================================================== */
+
+.udc-search {
+  display:        flex;
+  flex-direction: column;
+  gap:            var(--uds-space-050);
+  font-family:    var(--uds-font-family);
+  position:       relative;
+}
+
+/* --------------------------------------------------------------------------
+   Field container
+   -------------------------------------------------------------------------- */
+.udc-search__field {
+  display:          flex;
+  align-items:      center;
+  gap:              0;
+  min-height:       var(--uds-space-600);
+  padding:          var(--uds-space-075) var(--uds-space-075) var(--uds-space-075) var(--uds-space-100);
+  border:           1px solid var(--uds-color-border-primary);
+  border-radius:    var(--uds-border-radius-input);
+  background-color: var(--uds-color-surface-main);
+  transition:       background-color 120ms ease, border-color 120ms ease;
+  overflow:         hidden;
+}
+
+/* --------------------------------------------------------------------------
+   Search icon (leading)
+   -------------------------------------------------------------------------- */
+.udc-search__icon {
+  display:      flex;
+  align-items:  center;
+  padding:      0 var(--uds-space-025);
+  flex-shrink:  0;
+  color:        var(--uds-color-icon-secondary);
+}
+
+.udc-search__icon .material-symbols-outlined {
+  font-size:    var(--uds-font-size-2xl);
+  line-height:  1;
+}
+
+/* --------------------------------------------------------------------------
+   Input
+   -------------------------------------------------------------------------- */
+.udc-search__field input {
+  flex:             1 1 0%;
+  min-width:        0;
+  border:           none;
+  outline:          none;
+  background:       transparent;
+  font-family:      var(--uds-font-family);
+  font-size:        var(--uds-font-size-base);
+  font-weight:      var(--uds-font-weight-regular);
+  line-height:      var(--uds-font-line-height-base);
+  color:            var(--uds-color-text-primary);
+  padding:          0 var(--uds-space-050);
+}
+
+.udc-search__field input::placeholder {
+  color: var(--uds-color-text-secondary);
+}
+
+/* --------------------------------------------------------------------------
+   Clear button (trailing)
+   -------------------------------------------------------------------------- */
+.udc-search__clear {
+  display:          none;
+  align-items:      center;
+  justify-content:  center;
+  width:            36px;
+  height:           36px;
+  padding:          var(--uds-space-075);
+  border:           none;
+  border-radius:    var(--uds-border-radius-input);
+  background:       var(--uds-color-surface-interactive-none);
+  color:            var(--uds-color-icon-secondary);
+  cursor:           pointer;
+  flex-shrink:      0;
+  -webkit-appearance: none;
+  appearance:       none;
+}
+
+.udc-search__clear .material-symbols-outlined {
+  font-size:    var(--uds-font-size-2xl);
+  line-height:  1;
+}
+
+.udc-search__clear:hover {
+  background: var(--uds-color-surface-interactive-subtle-hover);
+}
+
+.udc-search__clear:focus-visible {
+  outline: 2px solid var(--uds-color-border-outline-focus-visible);
+  outline-offset: -2px;
+}
+
+/* Show clear when input has value (JS adds data-has-value) */
+.udc-search[data-has-value="true"] .udc-search__clear {
+  display: flex;
+}
+
+/* --------------------------------------------------------------------------
+   Hover
+   -------------------------------------------------------------------------- */
+.udc-search__field:hover {
+  background-color: var(--uds-color-surface-subtle);
+}
+
+/* --------------------------------------------------------------------------
+   Focus
+   -------------------------------------------------------------------------- */
+.udc-search:focus-within .udc-search__field {
+  border-color: var(--uds-color-border-primary);
+  box-shadow: 0 0 0 2px var(--uds-color-surface-main), 0 0 0 4px var(--uds-color-border-outline-focus-visible);
+}
+
+/* --------------------------------------------------------------------------
+   Error
+   -------------------------------------------------------------------------- */
+.udc-search[data-state="error"]:focus-within .udc-search__field {
+  box-shadow: 0 0 0 2px var(--uds-color-surface-main), 0 0 0 4px var(--uds-color-border-error);
+}

@@ -1,0 +1,1934 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UDS — Urban Design System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Poppins:wght@400;500;700&family=Roboto:wght@400;500;700&family=Lexend:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+  <link rel="stylesheet" href="./uds/uds.css?v=32" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html {
+      background: var(--uds-color-surface-page-main);
+      color: var(--uds-color-text-primary);
+    }
+    body {
+      font-family: var(--uds-font-family);
+      font-size: var(--uds-font-size-base);
+      line-height: var(--uds-font-line-height-base);
+      min-height: 100vh;
+    }
+
+    /* =====================================================================
+       Top header — fixed branding bar + appearance bar
+       ===================================================================== */
+    .sg-header {
+      position: sticky; top: 0; z-index: 100;
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+    .sg-brand-bar {
+      background: var(--uds-color-surface-interactive-default); color: var(--uds-color-text-inverse);
+      padding: 0 24px; height: 40px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .sg-brand-bar-title {
+      font-size: 14px; font-weight: 700; letter-spacing: 0.04em;
+    }
+    .sg-brand-bar-subtitle {
+      font-size: 12px; font-weight: 400; opacity: 0.6;
+    }
+    .sg-brand-bar-version {
+      font-size: 12px; font-weight: 500; opacity: 0.7;
+    }
+    .sg-brand-bar-build {
+      font-size: 11px; font-weight: 400; opacity: 0.5;
+      padding-left: 12px; border-left: 1px solid rgba(255,255,255,0.25);
+    }
+    .sg-theme-bar {
+      background: var(--uds-color-surface-alt); border-bottom: 1px solid var(--uds-color-border-secondary);
+      padding: 8px 24px; display: flex; align-items: center; gap: 20px;
+      height: 44px; overflow-x: auto; overflow-y: hidden; white-space: nowrap;
+      scrollbar-width: thin; scrollbar-color: var(--uds-color-border-secondary) transparent;
+    }
+    .sg-theme-bar::-webkit-scrollbar { height: 3px; }
+    .sg-theme-bar::-webkit-scrollbar-thumb { background: var(--uds-color-border-secondary); border-radius: 3px; }
+    .sg-theme-bar::-webkit-scrollbar-track { background: transparent; }
+    .sg-theme-bar-label {
+      font-family: var(--uds-font-family); font-size: var(--uds-font-size-xs); font-weight: var(--uds-font-weight-bold);
+      text-transform: uppercase; letter-spacing: 0.06em; color: var(--uds-color-text-secondary); flex-shrink: 0;
+    }
+    .sg-theme-group { display: flex; align-items: center; gap: var(--uds-space-075); flex-shrink: 0; }
+
+    /* =====================================================================
+       Shell layout
+       ===================================================================== */
+    .sg-shell { display: grid; grid-template-columns: 260px 1fr; min-height: calc(100vh - 84px); }
+
+    .sg-sidebar {
+      position: sticky; top: 84px; height: calc(100vh - 84px); overflow-y: auto;
+      border-right: 1px solid var(--uds-color-border-secondary);
+      padding: 20px 0; background: var(--uds-color-surface-page-main); font-size: 14px;
+    }
+    .sg-sidebar::-webkit-scrollbar { width: 4px; }
+    .sg-sidebar::-webkit-scrollbar-thumb { background: var(--uds-color-border-secondary); border-radius: 4px; }
+    .sg-sidebar-heading {
+      display: block; font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.06em; color: var(--uds-color-text-secondary); padding: 16px 24px 6px;
+    }
+    .sg-sidebar-heading:first-child { padding-top: 0; }
+    .sg-sidebar-link {
+      display: block; padding: 5px 24px 5px 27px; color: var(--uds-color-text-primary);
+      text-decoration: none; border-left: 3px solid transparent;
+      transition: background 80ms, border-color 80ms, color 80ms; font-size: 14px;
+    }
+    .sg-sidebar-link:hover { background: var(--uds-color-surface-subtle); }
+    .sg-sidebar-link.active {
+      color: var(--uds-color-text-interactive); border-left-color: var(--uds-color-border-interactive);
+      font-weight: 500; background: var(--uds-color-surface-subtle);
+    }
+    .sg-sidebar-link.disabled { color: var(--uds-color-text-disabled); pointer-events: none; }
+
+    /* =====================================================================
+       Main content + pages
+       ===================================================================== */
+    .sg-main { padding: 40px 56px 80px; max-width: 880px; min-width: 0; overflow-y: auto; height: calc(100vh - 44px); }
+    [data-page] { display: none; }
+    [data-page].active { display: block; }
+
+    .sg-page-title { font-size: 36px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 8px; }
+    .sg-page-desc { font-size: 16px; color: var(--uds-color-text-secondary); line-height: 1.6; margin-bottom: 24px; }
+
+    /* =====================================================================
+       Per-component tab bar (reuses udc-tabs look)
+       ===================================================================== */
+    .sg-page-tabs { display: flex; border-bottom: 1px solid var(--uds-color-border-primary); margin-bottom: 32px; }
+    .sg-page-tab {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 12px 20px; border: none; border-bottom: 2px solid transparent;
+      margin-bottom: -1px; background: transparent; cursor: pointer; white-space: nowrap;
+      font-family: 'Inter', system-ui, sans-serif; font-size: 14px; font-weight: 500;
+      color: var(--uds-color-text-primary); letter-spacing: 0;
+      transition: background-color 120ms, border-color 120ms, color 120ms;
+      -webkit-appearance: none; appearance: none; outline: none;
+    }
+    .sg-page-tab:hover { background: var(--uds-color-surface-interactive-subtle-hover); color: var(--uds-color-text-interactive); }
+    .sg-page-tab[aria-selected="true"] { color: var(--uds-color-text-interactive); border-bottom-color: var(--uds-color-border-interactive); }
+    [data-tab-panel] { display: none; }
+    [data-tab-panel].active { display: block; }
+
+    /* =====================================================================
+       Sections / Examples / Code blocks
+       ===================================================================== */
+    .sg-section { margin-bottom: 56px; }
+    .sg-subsection { margin-top: 32px; }
+    .sg-subsection-title { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
+    .sg-subsection-desc { font-size: 14px; color: var(--uds-color-text-secondary); line-height: 1.6; margin-bottom: 16px; }
+
+    .sg-example { border: 1px solid var(--uds-color-border-secondary); border-radius: 8px; overflow: hidden; margin-bottom: 24px; }
+    .sg-example-preview { padding: 24px; display: flex; flex-wrap: wrap; gap: 12px; align-items: center; background: var(--uds-color-surface-main); }
+    .sg-example-preview[data-direction="column"] { flex-direction: column; align-items: flex-start; }
+    .sg-example-code { border-top: 1px solid var(--uds-color-border-secondary); }
+    .sg-example-code summary {
+      display: flex; align-items: center; gap: 6px; padding: 8px 16px;
+      font-size: 13px; font-weight: 500; color: var(--uds-color-text-secondary);
+      cursor: pointer; user-select: none; background: var(--uds-color-surface-subtle); list-style: none;
+    }
+    .sg-example-code summary::-webkit-details-marker { display: none; }
+    .sg-example-code summary::before { content: '\25B6'; font-size: 9px; transition: transform 150ms; }
+    .sg-example-code[open] summary::before { transform: rotate(90deg); }
+    .sg-example-code pre {
+      padding: 16px 20px; margin: 0; font-size: 13px;
+      font-family: 'SF Mono', 'Fira Code', 'JetBrains Mono', 'Menlo', monospace;
+      overflow-x: auto; line-height: 1.6; color: var(--uds-color-text-primary); background: var(--uds-color-surface-subtle);
+    }
+
+    /* =====================================================================
+       Token displays
+       ===================================================================== */
+    .sg-swatch-group { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
+    .sg-swatch { display: flex; flex-direction: column; align-items: center; gap: 6px; width: 72px; }
+    .sg-swatch-color { width: 72px; height: 48px; border-radius: var(--uds-border-radius-container); border: 1px solid var(--uds-color-border-secondary); }
+    .sg-swatch-label { font-size: 10px; color: var(--uds-color-text-secondary); text-align: center; line-height: 1.3; }
+
+    .sg-token-table { display: flex; flex-direction: column; gap: 6px; margin-bottom: 24px; }
+    .sg-token-row { display: flex; align-items: center; gap: 12px; padding: 6px 12px; border-radius: 6px; background: var(--uds-color-surface-subtle); }
+    .sg-token-swatch { width: 32px; height: 32px; border-radius: 6px; border: 1px solid var(--uds-color-border-secondary); flex-shrink: 0; }
+    .sg-token-name { font-size: 12px; font-weight: 500; color: var(--uds-color-text-primary); min-width: 260px; font-family: 'SF Mono', 'Fira Code', monospace; }
+    .sg-token-value { font-size: 11px; color: var(--uds-color-text-secondary); flex: 1; }
+    .sg-token-copy {
+      margin-left: auto; flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center;
+      width: 28px; height: 28px; border: none; border-radius: 4px; background: transparent;
+      color: var(--uds-color-text-secondary); cursor: pointer; opacity: 0;
+      transition: opacity 120ms, background 120ms, color 120ms;
+    }
+    .sg-token-copy .material-symbols-outlined { font-size: 16px; }
+    .sg-token-row:hover .sg-token-copy { opacity: 1; }
+    .sg-token-copy:hover { background: var(--uds-color-surface-alt); color: var(--uds-color-text-primary); }
+    .sg-token-copy.copied { opacity: 1; color: var(--uds-color-text-success); }
+
+    /* =====================================================================
+       Code tab reference table
+       ===================================================================== */
+    .sg-api-table { width: 100%; border-collapse: collapse; font-size: 13px; line-height: 1.6; margin-bottom: 24px; }
+    .sg-api-table th { text-align: left; padding: 8px 12px; border-bottom: 2px solid var(--uds-color-border-secondary); font-weight: 600; }
+    .sg-api-table td { padding: 8px 12px; border-bottom: 1px solid var(--uds-color-border-tertiary); }
+    .sg-api-table code { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 12px; background: var(--uds-color-surface-subtle); padding: 2px 6px; border-radius: 4px; }
+
+    /* =====================================================================
+       Usage tab
+       ===================================================================== */
+    .sg-usage-section { margin-bottom: 24px; }
+    .sg-usage-section h4 { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+    .sg-usage-section ul { padding-left: 20px; line-height: 1.8; font-size: 14px; color: var(--uds-color-text-secondary); }
+    .sg-usage-section li { margin-bottom: 4px; }
+
+    /* =====================================================================
+       Playground
+       ===================================================================== */
+    .sg-playground-layout {
+      display: flex; flex-wrap: wrap; gap: 24px;
+    }
+    .sg-playground-left {
+      display: flex; flex-wrap: wrap; gap: 24px; align-content: start;
+      flex: 1 1 100%;
+    }
+    .sg-playground-preview { flex: 1 1 200px; }
+    .sg-playground-controls { flex: 0 0 280px; }
+    .sg-playground-right {
+      flex: 1 1 100%; min-width: 0; display: flex; flex-direction: column; gap: 16px;
+    }
+    @media (min-width: 1200px) {
+      .sg-main:has([data-tab-panel="playground"].active) { max-width: 1400px; }
+      .sg-playground-left { flex: 1 1 0; min-width: 420px; }
+      .sg-playground-right { flex: 1 1 0; min-width: 380px; }
+    }
+    .sg-playground-preview {
+      padding: 32px 24px; border: 1px solid var(--uds-color-border-secondary); border-radius: 8px;
+      background: var(--uds-color-surface-main); display: flex; align-items: center; justify-content: center;
+      min-height: 160px;
+    }
+    .sg-playground-controls {
+      padding: 16px; border: 1px solid var(--uds-color-border-secondary); border-radius: 8px;
+      background: var(--uds-color-surface-subtle); display: flex; flex-direction: column; gap: 12px;
+    }
+    .sg-playground-code {
+      padding: 16px 20px; font-size: 13px; line-height: 1.6; border-radius: 8px;
+      font-family: 'SF Mono', 'Fira Code', 'JetBrains Mono', 'Menlo', monospace;
+      background: var(--uds-color-surface-subtle); border: 1px solid var(--uds-color-border-secondary);
+      overflow-x: auto; white-space: pre-wrap; color: var(--uds-color-text-primary);
+    }
+
+    /* Copy button for code blocks */
+    .sg-code-wrap { position: relative; }
+    .sg-code-copy {
+      position: absolute; top: 8px; right: 8px;
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 32px; height: 32px; border: 1px solid var(--uds-color-border-secondary);
+      border-radius: 6px; background: var(--uds-color-surface-main);
+      cursor: pointer; color: var(--uds-color-text-secondary); transition: background 120ms, color 120ms;
+      z-index: 2;
+    }
+    .sg-code-copy:hover { background: var(--uds-color-surface-subtle); color: var(--uds-color-text-primary); }
+    .sg-code-copy .material-symbols-outlined { font-size: 18px; }
+    .sg-code-copy[data-copied] { color: var(--uds-primitive-color-green-70); border-color: var(--uds-primitive-color-green-70); }
+    .sg-pg-control { display: flex; flex-direction: column; gap: 4px; }
+    .sg-pg-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--uds-color-text-secondary); }
+    .sg-pg-select, .sg-pg-input {
+      font-family: 'Inter', system-ui, sans-serif; font-size: 13px; padding: 6px 8px;
+      border: 1px solid var(--uds-color-border-primary); border-radius: 6px;
+      background: var(--uds-color-surface-main); color: var(--uds-color-text-primary);
+    }
+    .sg-pg-checkbox { width: 18px; height: 18px; accent-color: var(--uds-color-surface-interactive-default); }
+
+    /* Icon picker */
+    .sg-icon-picker { position: relative; }
+    .sg-icon-picker-trigger {
+      display: flex; align-items: center; gap: 8px; width: 100%; padding: 6px 8px;
+      font-family: 'Inter', system-ui, sans-serif; font-size: 13px; cursor: pointer;
+      border: 1px solid var(--uds-color-border-primary); border-radius: 6px;
+      background: var(--uds-color-surface-main); color: var(--uds-color-text-primary);
+      text-align: left;
+    }
+    .sg-icon-picker-trigger:hover { border-color: var(--uds-color-border-interactive); }
+    .sg-icon-picker-trigger .material-symbols-outlined { font-size: 20px; color: var(--uds-color-icon-secondary); }
+    .sg-icon-picker-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .sg-icon-picker-dropdown {
+      position: absolute; top: 100%; left: 0; right: 0; z-index: 100;
+      margin-top: 4px; border: 1px solid var(--uds-color-border-primary); border-radius: 8px;
+      background: var(--uds-color-surface-main); box-shadow: 0 8px 24px rgba(0,0,0,.12);
+      max-height: 320px; display: flex; flex-direction: column;
+    }
+    .sg-icon-picker-search {
+      font-family: 'Inter', system-ui, sans-serif; font-size: 13px; padding: 10px 12px;
+      border: none; border-bottom: 1px solid var(--uds-color-border-secondary); outline: none;
+      background: transparent; color: var(--uds-color-text-primary); border-radius: 8px 8px 0 0;
+    }
+    .sg-icon-picker-search::placeholder { color: var(--uds-color-text-secondary); }
+    .sg-icon-picker-results { overflow-y: auto; flex: 1; padding: 4px; }
+    .sg-icon-picker-item {
+      display: flex; align-items: center; gap: 8px; width: 100%; padding: 6px 8px;
+      border: none; border-radius: 4px; background: transparent; cursor: pointer;
+      font-family: 'Inter', system-ui, sans-serif; font-size: 12px;
+      color: var(--uds-color-text-primary); text-align: left;
+    }
+    .sg-icon-picker-item:hover { background: var(--uds-color-surface-subtle); }
+    .sg-icon-picker-item.active { background: var(--uds-color-surface-interactive-subtle-hover); color: var(--uds-color-text-interactive); }
+    .sg-icon-picker-item .material-symbols-outlined { font-size: 20px; color: var(--uds-color-icon-secondary); }
+    .sg-icon-picker-item.active .material-symbols-outlined { color: var(--uds-color-icon-interactive); }
+    .sg-icon-picker-empty { padding: 16px 12px; font-size: 13px; color: var(--uds-color-text-secondary); text-align: center; }
+
+    /* =====================================================================
+       Getting Started page
+       ===================================================================== */
+    .sg-sidebar-link--getting-started {
+      font-weight: 600; padding-top: 4px !important; padding-bottom: 12px !important;
+      margin-bottom: 4px; border-bottom: 1px solid var(--uds-color-border-tertiary);
+    }
+    .sg-package-cards {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 16px; margin: 20px 0 32px;
+    }
+    .sg-package-card {
+      border: 1px solid var(--uds-color-border-secondary); border-radius: 12px;
+      padding: 24px; background: var(--uds-color-surface-white);
+      display: flex; flex-direction: column; gap: 12px;
+    }
+    .sg-package-card h3 {
+      margin: 0; font-size: 16px; font-weight: 700; color: var(--uds-color-text-primary);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .sg-package-card h3 .material-symbols-outlined { font-size: 22px; color: var(--uds-color-icon-interactive); }
+    .sg-package-card p { margin: 0; font-size: 13px; color: var(--uds-color-text-secondary); line-height: 1.5; }
+    .sg-package-card code {
+      display: block; font-family: 'SF Mono','Fira Code',monospace; font-size: 12px;
+      background: var(--uds-color-surface-subtle); padding: 10px 14px; border-radius: 6px;
+      color: var(--uds-color-text-primary); white-space: nowrap; overflow-x: auto;
+    }
+    .sg-download-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 10px 20px; border-radius: 8px; border: none; cursor: pointer;
+      font-size: 14px; font-weight: 600; font-family: 'Inter', system-ui, sans-serif;
+      background: var(--uds-color-surface-interactive-default); color: #fff;
+      text-decoration: none; transition: background 120ms;
+    }
+    .sg-download-btn:hover { background: var(--uds-color-surface-interactive-hover); }
+    .sg-download-btn .material-symbols-outlined { font-size: 20px; }
+    .sg-file-tree {
+      font-family: 'SF Mono','Fira Code',monospace; font-size: 13px; line-height: 1.8;
+      background: var(--uds-color-surface-subtle); border-radius: 8px;
+      padding: 20px 24px; margin: 16px 0 28px; color: var(--uds-color-text-primary);
+    }
+    .sg-file-tree .dir { color: var(--uds-color-text-interactive); font-weight: 600; }
+    .sg-file-tree .comment { color: var(--uds-color-text-secondary); font-weight: 400; }
+
+    /* =====================================================================
+       Framework selector
+       ===================================================================== */
+    .sg-fw-bar {
+      display: flex; align-items: center; gap: 8px; margin-bottom: 20px;
+      padding: 8px 12px; background: var(--uds-color-surface-subtle);
+      border-radius: 8px; font-size: 13px; font-family: 'Inter', system-ui, sans-serif;
+    }
+    .sg-fw-bar-label { font-weight: 500; color: var(--uds-color-text-secondary); white-space: nowrap; }
+    .sg-fw-btn {
+      padding: 4px 12px; border-radius: 6px; border: 1px solid transparent;
+      font-size: 13px; font-weight: 500; cursor: pointer;
+      background: transparent; color: var(--uds-color-text-secondary);
+      font-family: 'Inter', system-ui, sans-serif; transition: all 120ms;
+    }
+    .sg-fw-btn:hover { background: var(--uds-color-surface-alt); color: var(--uds-color-text-primary); }
+    .sg-fw-btn[aria-selected="true"] {
+      background: var(--uds-color-surface-interactive-default);
+      color: #fff; border-color: var(--uds-color-surface-interactive-default);
+    }
+
+    [data-fw-panel] { display: none; }
+    [data-fw-panel].active { display: block; }
+
+    /* =====================================================================
+       Implementation Reference (expandable section below playground code)
+       ===================================================================== */
+    .sg-impl-details {
+      border: 1px solid var(--uds-color-border-secondary);
+      border-radius: 8px; overflow: hidden;
+    }
+    .sg-impl-details summary {
+      padding: 12px 16px; font-size: 13px; font-weight: 600;
+      font-family: 'Inter', system-ui, sans-serif;
+      cursor: pointer; user-select: none;
+      background: var(--uds-color-surface-subtle); color: var(--uds-color-text-primary);
+      display: flex; align-items: center; gap: 8px;
+      list-style: none;
+    }
+    .sg-impl-details summary::-webkit-details-marker { display: none; }
+    .sg-impl-details summary::before {
+      content: ''; display: inline-block; width: 0; height: 0;
+      border-left: 5px solid var(--uds-color-text-secondary);
+      border-top: 4px solid transparent; border-bottom: 4px solid transparent;
+      transition: transform 150ms;
+    }
+    .sg-impl-details[open] summary::before { transform: rotate(90deg); }
+    .sg-impl-details[open] summary { border-bottom: 1px solid var(--uds-color-border-secondary); }
+    .sg-impl-body { padding: 0; }
+    .sg-impl-tabs {
+      display: flex; gap: 0; border-bottom: 1px solid var(--uds-color-border-secondary);
+      background: var(--uds-color-surface-subtle); padding: 0 12px;
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+    .sg-impl-tab {
+      padding: 8px 14px; font-size: 12px; font-weight: 500; cursor: pointer;
+      border: none; background: transparent; color: var(--uds-color-text-secondary);
+      border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all 120ms;
+    }
+    .sg-impl-tab:hover { color: var(--uds-color-text-primary); }
+    .sg-impl-tab[aria-selected="true"] {
+      color: var(--uds-color-text-interactive); border-bottom-color: var(--uds-color-border-interactive);
+    }
+    .sg-impl-panel { display: none; position: relative; }
+    .sg-impl-panel.active { display: block; }
+    .sg-impl-panel pre {
+      margin: 0; padding: 16px 20px; font-size: 12px; line-height: 1.65;
+      font-family: 'SF Mono', 'Fira Code', 'JetBrains Mono', 'Menlo', monospace;
+      background: var(--uds-color-surface-page-main); color: var(--uds-color-text-primary);
+      overflow-x: auto; white-space: pre; max-height: 480px; overflow-y: auto;
+    }
+    .sg-impl-tokens {
+      padding: 16px 20px; display: grid; grid-template-columns: 1fr 1fr;
+      gap: 4px 24px; font-size: 12px; font-family: 'SF Mono', 'Fira Code', monospace;
+      max-height: 480px; overflow-y: auto; background: var(--uds-color-surface-page-main);
+    }
+    .sg-impl-token-group {
+      grid-column: 1 / -1; font-weight: 600; font-size: 11px;
+      text-transform: uppercase; letter-spacing: 0.04em;
+      color: var(--uds-color-text-secondary); padding: 8px 0 4px;
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+    .sg-impl-token-group:first-child { padding-top: 0; }
+    .sg-impl-token-row {
+      display: flex; align-items: center; gap: 8px; padding: 3px 0;
+      color: var(--uds-color-text-primary);
+    }
+    .sg-impl-token-swatch {
+      width: 14px; height: 14px; border-radius: 3px; flex-shrink: 0;
+      border: 1px solid var(--uds-color-border-secondary);
+    }
+    .sg-impl-token-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .sg-impl-token-val { color: var(--uds-color-text-secondary); white-space: nowrap; }
+
+    /* =====================================================================
+       Utility
+       ===================================================================== */
+    .sg-row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+    code.sg-inline-code { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 12px; background: var(--uds-color-surface-subtle); padding: 2px 6px; border-radius: 4px; }
+    .sg-changelog-empty { font-size: 14px; color: var(--uds-color-text-secondary); padding: 32px 0; }
+
+    /* =====================================================================
+       Version dropdown (header)
+       ===================================================================== */
+    .sg-version-select {
+      margin-left: auto; font-size: 12px; font-weight: 500;
+      font-family: 'Inter', system-ui, sans-serif;
+      background: rgba(255,255,255,0.12); color: var(--uds-color-text-inverse);
+      border: 1px solid rgba(255,255,255,0.2); border-radius: 4px;
+      padding: 2px 6px; cursor: pointer; appearance: none;
+      -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='none'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23fff' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 6px center; padding-right: 20px;
+    }
+    .sg-version-select:hover { background: rgba(255,255,255,0.2); }
+    .sg-version-select option { background: #1a1a2e; color: #fff; }
+
+    /* =====================================================================
+       Component status badges
+       ===================================================================== */
+    .sg-status-badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em;
+      padding: 2px 8px; border-radius: 10px; vertical-align: middle; margin-left: 10px;
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+    .sg-status-badge--placeholder  { background: #6b7280; color: #fff; }
+    .sg-status-badge--blocked      { background: #ef4444; color: #fff; }
+    .sg-status-badge--in-progress  { background: #f97316; color: #fff; }
+    .sg-status-badge--review       { background: #eab308; color: #1a1a2e; }
+    .sg-status-badge--production   { background: #22c55e; color: #fff; }
+    .sg-status-badge--deprecated   { background: #ef4444; color: #fff; text-decoration: line-through; }
+    .sg-status-since { font-size: 10px; font-weight: 400; opacity: 0.7; margin-left: 4px; text-transform: none; letter-spacing: 0; }
+
+    /* =====================================================================
+       Global changelog page
+       ===================================================================== */
+    .sg-cl-version { margin-bottom: 40px; padding-bottom: 32px; border-bottom: 1px solid var(--uds-color-border-secondary); }
+    .sg-cl-version:last-child { border-bottom: none; }
+    .sg-cl-header { display: flex; align-items: baseline; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+    .sg-cl-ver-num { font-size: 28px; font-weight: 700; letter-spacing: -0.02em; color: var(--uds-color-text-primary); }
+    .sg-cl-ver-date { font-size: 14px; color: var(--uds-color-text-secondary); font-weight: 400; }
+    .sg-cl-migration {
+      margin-bottom: 20px; padding: 12px 16px; border-radius: 8px;
+      background: var(--uds-color-surface-warning-subtle, #fef3c7);
+      border-left: 4px solid var(--uds-color-text-warning, #f59e0b);
+      font-size: 13px; line-height: 1.6;
+    }
+    .sg-cl-migration-title {
+      font-weight: 700; font-size: 12px; text-transform: uppercase;
+      letter-spacing: 0.04em; margin-bottom: 4px; color: var(--uds-color-text-warning, #b45309);
+    }
+    .sg-cl-group { margin-bottom: 16px; }
+    .sg-cl-group-title {
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.06em; margin-bottom: 8px; padding: 4px 0; color: var(--uds-color-text-secondary);
+    }
+    .sg-cl-group-title--added      { color: #22c55e; }
+    .sg-cl-group-title--changed    { color: #3b82f6; }
+    .sg-cl-group-title--fixed      { color: #8b5cf6; }
+    .sg-cl-group-title--deprecated { color: #f59e0b; }
+    .sg-cl-group-title--removed    { color: #ef4444; }
+    .sg-cl-item {
+      font-size: 14px; line-height: 1.7; padding-left: 16px; position: relative; color: var(--uds-color-text-primary);
+    }
+    .sg-cl-item::before {
+      content: ''; position: absolute; left: 0; top: 10px;
+      width: 6px; height: 6px; border-radius: 50%; background: var(--uds-color-text-secondary);
+    }
+    .sg-cl-item--deprecated::before { background: #f59e0b; }
+    .sg-cl-item--removed::before   { background: #ef4444; }
+    .sg-cl-component {
+      font-size: 11px; font-weight: 600; background: var(--uds-color-surface-subtle);
+      padding: 1px 6px; border-radius: 4px; margin-right: 4px; color: var(--uds-color-text-secondary);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- =====================================================================
+       HEADER: branding + appearance controls
+       ===================================================================== -->
+  <header class="sg-header">
+  <div class="sg-brand-bar">
+    <span class="sg-brand-bar-title">UDS</span>
+    <span class="sg-brand-bar-subtitle">Urban Design System</span>
+    <select class="sg-version-select" id="sg-version-dropdown" aria-label="UDS version"></select>
+    <span class="sg-brand-bar-build">SITE 2026.04.02.15</span>
+  </div>
+  <div class="sg-theme-bar">
+    <div class="sg-theme-group">
+      <span class="sg-theme-bar-label">Color</span>
+      <button class="udc-button-primary active" data-size="sm" data-set-color-scheme="">Base</button>
+      <button class="udc-button-secondary" data-size="sm" data-set-color-scheme="dark">Dark</button>
+    </div>
+    <div class="sg-theme-group">
+      <span class="sg-theme-bar-label">Brand</span>
+      <button class="udc-button-primary active" data-size="sm" data-set-theme="">Default</button>
+      <button class="udc-button-secondary" data-size="sm" data-set-theme="resman">ResMan</button>
+      <button class="udc-button-secondary" data-size="sm" data-set-theme="anyonehome">AnyoneHome</button>
+      <button class="udc-button-secondary" data-size="sm" data-set-theme="inhabit">Inhabit</button>
+    </div>
+    <div class="sg-theme-group">
+      <span class="sg-theme-bar-label">Font</span>
+      <button class="udc-button-primary active" data-size="sm" data-set-font="">Inter</button>
+      <button class="udc-button-secondary" data-size="sm" data-set-font="poppins">Poppins</button>
+      <button class="udc-button-secondary" data-size="sm" data-set-font="roboto">Roboto</button>
+      <button class="udc-button-secondary" data-size="sm" data-set-font="lexend">Lexend</button>
+    </div>
+    <div class="sg-theme-group">
+      <span class="sg-theme-bar-label">Scale</span>
+      <button class="udc-button-secondary" data-size="sm" data-set-font-scale="smaller">Smaller</button>
+      <button class="udc-button-primary active" data-size="sm" data-set-font-scale="">Default</button>
+      <button class="udc-button-secondary" data-size="sm" data-set-font-scale="larger">Larger</button>
+    </div>
+    <div class="sg-theme-group">
+      <span class="sg-theme-bar-label">Density</span>
+      <button class="udc-button-primary active" data-size="sm" data-set-density="">Default</button>
+      <button class="udc-button-secondary" data-size="sm" data-set-density="comfortable">Comfortable</button>
+    </div>
+  </div>
+  </header>
+
+  <!-- =====================================================================
+       SHELL: sidebar + main
+       ===================================================================== -->
+  <div class="sg-shell">
+
+    <nav class="sg-sidebar">
+      <a class="sg-sidebar-link sg-sidebar-link--getting-started" href="#/changelog">
+        <span class="material-symbols-outlined" style="font-size:18px;vertical-align:-3px;margin-right:6px;">history</span>Changelog
+      </a>
+      <a class="sg-sidebar-link sg-sidebar-link--getting-started" href="#/getting-started">
+        <span class="material-symbols-outlined" style="font-size:18px;vertical-align:-3px;margin-right:6px;">download</span>Getting Started
+      </a>
+      <span class="sg-sidebar-heading">Foundations</span>
+      <a class="sg-sidebar-link" href="#/semantic-colors">Semantic Colors</a>
+      <a class="sg-sidebar-link" href="#/primitive-colors">Primitive Colors</a>
+      <a class="sg-sidebar-link" href="#/text-styles">Text Styles</a>
+      <a class="sg-sidebar-link" href="#/spacing">Spacing</a>
+
+      <span class="sg-sidebar-heading">Forms &amp; Actions</span>
+      <a class="sg-sidebar-link" href="#/button">Button</a>
+      <a class="sg-sidebar-link" href="#/text-input">Text Input</a>
+      <a class="sg-sidebar-link disabled">Text Area</a>
+      <a class="sg-sidebar-link" href="#/checkbox">Checkbox</a>
+      <a class="sg-sidebar-link" href="#/radio">Radio</a>
+      <a class="sg-sidebar-link disabled">Dropdown</a>
+
+      <span class="sg-sidebar-heading">Status &amp; Indicators</span>
+      <a class="sg-sidebar-link" href="#/badge">Badge</a>
+
+      <span class="sg-sidebar-heading">Layout</span>
+      <a class="sg-sidebar-link" href="#/divider">Divider</a>
+      <a class="sg-sidebar-link" href="#/icon-wrapper">Icon Wrapper</a>
+      <a class="sg-sidebar-link" href="#/spacer">Spacer</a>
+
+      <span class="sg-sidebar-heading">Navigation</span>
+      <a class="sg-sidebar-link" href="#/breadcrumb">Breadcrumb</a>
+      <a class="sg-sidebar-link" href="#/tabs">Tabs</a>
+      <a class="sg-sidebar-link" href="#/nav">Nav</a>
+
+      <span class="sg-sidebar-heading">Content</span>
+      <a class="sg-sidebar-link disabled">Tile</a>
+      <a class="sg-sidebar-link disabled">List</a>
+      <a class="sg-sidebar-link disabled">Data Table</a>
+
+      <span class="sg-sidebar-heading">Feedback</span>
+      <a class="sg-sidebar-link disabled">Notification</a>
+      <a class="sg-sidebar-link disabled">Dialog</a>
+    </nav>
+
+    <main class="sg-main">
+
+      <!-- =================================================================
+           CHANGELOG
+           ================================================================= -->
+      <div data-page="changelog" data-default-tab="none">
+        <h1 class="sg-page-title">Changelog</h1>
+        <p class="sg-page-desc">All notable changes to the Urban Design System.</p>
+        <div id="sg-global-changelog"></div>
+      </div>
+
+      <!-- =================================================================
+           GETTING STARTED
+           ================================================================= -->
+      <div data-page="getting-started">
+        <h1 class="sg-page-title">Getting Started</h1>
+        <p class="sg-page-desc">UDS (Urban Design System) is a <strong>vanilla-first</strong> design system. It ships as CSS + a small JavaScript file — no framework dependency. It works with any stack: plain HTML, React, Vue, Angular, Svelte, or anything else. Add the files to your project, then copy component markup from the docs.</p>
+
+        <h2 class="sg-page-title" style="font-size:22px;margin-top:8px;">How it works</h2>
+        <div class="sg-package-cards">
+          <div class="sg-package-card">
+            <h3><span class="material-symbols-outlined">download</span> 1. Get the files</h3>
+            <p>Download the UDS bundle below (CSS + JS), or copy the <code style="display:inline;padding:2px 5px;">uds/</code> folder from the shared repository.</p>
+          </div>
+          <div class="sg-package-card">
+            <h3><span class="material-symbols-outlined">link</span> 2. Add to your project</h3>
+            <p>Link <code style="display:inline;padding:2px 5px;">uds.css</code> for styling and <code style="display:inline;padding:2px 5px;">uds.js</code> for component behavior (tabs, validation, etc.).</p>
+          </div>
+          <div class="sg-package-card">
+            <h3><span class="material-symbols-outlined">content_copy</span> 3. Copy &amp; paste</h3>
+            <p>Browse component pages, copy the markup from any example or playground, and paste it into your project. Done.</p>
+          </div>
+        </div>
+
+        <h2 class="sg-page-title" style="font-size:22px;margin-top:0;">Download</h2>
+        <p class="sg-page-desc">The bundle contains all tokens (colors, spacing, typography), every component stylesheet, and the JS behavior file. No dependencies, no build step.</p>
+
+        <a class="sg-download-btn" id="gs-download-btn" href="#" style="margin-bottom:8px;">
+          <span class="material-symbols-outlined">download</span> Download UDS (.zip)
+        </a>
+        <p style="font-size:13px;color:var(--uds-color-text-secondary);margin-top:4px;">Or, if your team uses a shared repo, copy the <code class="sg-inline-code">uds/</code> folder directly into your project.</p>
+
+        <h2 class="sg-page-title" style="font-size:22px;margin-top:40px;">File Structure</h2>
+        <p class="sg-page-desc">You can import <code class="sg-inline-code">uds.css</code> for the full bundle, or cherry-pick individual token and component files.</p>
+
+        <pre class="sg-file-tree"><span class="dir">uds/</span>
+├── <strong>uds.css</strong>              <span class="comment">← master stylesheet (import this)</span>
+├── <strong>uds.js</strong>               <span class="comment">← component behavior (tabs, validation, etc.)</span>
+├── <span class="dir">tokens/</span>
+│   ├── primitives.css   <span class="comment">← raw color palette</span>
+│   ├── semantic.css     <span class="comment">← themed color, spacing, font tokens</span>
+│   └── text-styles.css  <span class="comment">← typography utility classes</span>
+└── <span class="dir">components/</span>
+    ├── button.css
+    ├── text-input.css
+    ├── checkbox.css
+    ├── radio.css
+    ├── badge.css
+    ├── divider.css
+    ├── icon-wrapper.css
+    ├── spacer.css
+    ├── breadcrumb.css
+    └── tab-horizontal.css</pre>
+
+        <h2 class="sg-page-title" style="font-size:22px;">Setup by Framework</h2>
+        <p class="sg-page-desc">UDS is plain CSS — the setup is the same idea everywhere. Add the stylesheet and the icon font, then use the class names.</p>
+
+        <h3 class="sg-subsection-title">Plain HTML</h3>
+        <p class="sg-subsection-desc">Add the icon font, the stylesheet, and the JS file. No build tools needed.</p>
+        <pre class="sg-playground-code">&lt;head&gt;
+  &lt;!-- Material Symbols icon font (required for icons) --&gt;
+  &lt;link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" /&gt;
+
+  &lt;!-- UDS stylesheet --&gt;
+  &lt;link rel="stylesheet" href="uds/uds.css" /&gt;
+&lt;/head&gt;
+
+&lt;body&gt;
+  &lt;!-- Use any UDS component — copy markup from the docs --&gt;
+  &lt;button class="udc-button-primary"&gt;Save changes&lt;/button&gt;
+
+  &lt;!-- UDS behaviors (auto-initialises tabs, validation, etc.) --&gt;
+  &lt;script src="uds/uds.js"&gt;&lt;/script&gt;
+&lt;/body&gt;</pre>
+
+        <h3 class="sg-subsection-title" style="margin-top:32px;">React (CRA / Vite / Next.js)</h3>
+        <p class="sg-subsection-desc">Copy the <code class="sg-inline-code">uds/</code> folder into your <code class="sg-inline-code">src/</code> directory. Import the CSS once. In React, you manage state with hooks — UDS provides the styling via CSS classes, and you write the logic natively.</p>
+        <pre class="sg-playground-code">/* src/index.js or src/main.jsx */
+import './uds/uds.css';
+</pre>
+        <pre class="sg-playground-code" style="margin-top:12px;">import { useState } from 'react';
+
+function SearchInput() {
+  const [query, setQuery] = useState('');
+
+  return (
+    &lt;div className="udc-text-input"&gt;
+      &lt;label className="udc-text-input__label"&gt;Search&lt;/label&gt;
+      &lt;div className="udc-text-input__field"&gt;
+        &lt;span className="udc-text-input__leading-icon"&gt;
+          &lt;span className="material-symbols-outlined"&gt;search&lt;/span&gt;
+        &lt;/span&gt;
+        &lt;input
+          type="text"
+          placeholder="Search..."
+          value={query}
+          onChange={(e) =&gt; setQuery(e.target.value)}
+        /&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  );
+}</pre>
+        <p style="font-size:13px;color:var(--uds-color-text-secondary);margin-top:8px;line-height:1.6;">Note: In React you don't need <code class="sg-inline-code">uds.js</code> — React handles component logic natively via hooks. The UDS CSS classes provide all the styling.</p>
+
+        <h3 class="sg-subsection-title" style="margin-top:32px;">Vue 3</h3>
+        <p class="sg-subsection-desc">Copy the <code class="sg-inline-code">uds/</code> folder into your project. Import the CSS once. Vue handles state with <code class="sg-inline-code">ref()</code> and <code class="sg-inline-code">v-model</code> — UDS provides the styling.</p>
+        <pre class="sg-playground-code">/* main.js */
+import './uds/uds.css';
+import { createApp } from 'vue';
+import App from './App.vue';
+createApp(App).mount('#app');
+</pre>
+        <pre class="sg-playground-code" style="margin-top:12px;">&lt;script setup&gt;
+import { ref } from 'vue';
+
+const query = ref('');
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;div class="udc-text-input"&gt;
+    &lt;label class="udc-text-input__label"&gt;Search&lt;/label&gt;
+    &lt;div class="udc-text-input__field"&gt;
+      &lt;span class="udc-text-input__leading-icon"&gt;
+        &lt;span class="material-symbols-outlined"&gt;search&lt;/span&gt;
+      &lt;/span&gt;
+      &lt;input type="text" placeholder="Search..." v-model="query" /&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/template&gt;</pre>
+        <p style="font-size:13px;color:var(--uds-color-text-secondary);margin-top:8px;line-height:1.6;">Note: In Vue you don't need <code class="sg-inline-code">uds.js</code> — Vue handles reactivity natively. The UDS CSS classes provide all the styling.</p>
+
+        <h3 class="sg-subsection-title" style="margin-top:32px;">Angular / Svelte / Others</h3>
+        <p class="sg-subsection-desc">Same approach — import <code class="sg-inline-code">uds.css</code> in your global styles and add <code class="sg-inline-code">uds.js</code> for component behavior. The class names and HTML patterns are the same everywhere. Use the <strong>HTML / CSS</strong> tab on each component page for the base markup, and handle state in your framework's native way.</p>
+
+        <h2 class="sg-page-title" style="font-size:22px;margin-top:40px;">Using the Docs</h2>
+        <p class="sg-page-desc">Each component page in the sidebar has everything you need:</p>
+        <table class="sg-api-table" style="margin-top:12px;"><thead><tr><th>Tab</th><th>What you'll find</th></tr></thead><tbody>
+          <tr><td><strong>Examples</strong></td><td>Live previews with a "Show code" toggle — copy the HTML directly</td></tr>
+          <tr><td><strong>Code</strong></td><td>CSS import path, full list of classes, data attributes, and framework-specific usage</td></tr>
+          <tr><td><strong>Playground</strong></td><td>Interactive sandbox — configure any prop and get the exact markup to paste into your code</td></tr>
+          <tr><td><strong>Usage</strong></td><td>When to use, when not to use, and accessibility notes</td></tr>
+        </tbody></table>
+        <p style="font-size:13px;color:var(--uds-color-text-secondary);margin-top:12px;line-height:1.6;">Use the <strong>Framework</strong> toggle at the top of Code tabs and Playgrounds to switch between vanilla HTML, React (with hooks), and Vue (with Composition API). Each framework shows native, idiomatic code — not auto-converted HTML.</p>
+
+        <h2 class="sg-page-title" style="font-size:22px;margin-top:40px;">Theming</h2>
+        <p class="sg-page-desc">UDS supports multiple themes via <code class="sg-inline-code">data-*</code> attributes on the <code class="sg-inline-code">&lt;html&gt;</code> element. Set them to switch color schemes, brands, fonts, and density at runtime — no rebuild needed.</p>
+        <pre class="sg-playground-code">&lt;!-- Light mode (default — no attributes needed) --&gt;
+&lt;html&gt;
+
+&lt;!-- Dark mode --&gt;
+&lt;html data-color-scheme="dark"&gt;
+
+&lt;!-- Brand override --&gt;
+&lt;html data-theme="resman"&gt;
+
+&lt;!-- Combine multiple --&gt;
+&lt;html data-color-scheme="dark" data-theme="anyonehome" data-font="poppins"&gt;</pre>
+
+        <h3 class="sg-subsection-title" style="margin-top:28px;">Available theme attributes</h3>
+        <table class="sg-api-table"><thead><tr><th>Attribute</th><th>Values</th><th>Effect</th></tr></thead><tbody>
+          <tr><td><code>data-color-scheme</code></td><td><code>dark</code></td><td>Dark mode (light is default)</td></tr>
+          <tr><td><code>data-theme</code></td><td><code>resman</code>, <code>anyonehome</code>, <code>inhabit</code></td><td>Brand accent colors</td></tr>
+          <tr><td><code>data-font</code></td><td><code>poppins</code>, <code>roboto</code>, <code>lexend</code></td><td>Font family override</td></tr>
+          <tr><td><code>data-font-scale</code></td><td><code>smaller</code>, <code>larger</code></td><td>Global font size scale</td></tr>
+          <tr><td><code>data-density</code></td><td><code>comfortable</code></td><td>Relaxed spacing</td></tr>
+        </tbody></table>
+        <p style="font-size:13px;color:var(--uds-color-text-secondary);margin-top:12px;line-height:1.6;">Try these live using the appearance bar at the top of this site.</p>
+      </div>
+
+      <!-- =================================================================
+           FOUNDATION: SEMANTIC COLORS (no tabs)
+           ================================================================= -->
+      <div data-page="semantic-colors" data-default-tab="preview">
+        <h1 class="sg-page-title">Semantic Colors</h1>
+        <p class="sg-page-desc">Role-based color tokens that adapt across themes, brands, and light/dark modes. Use these instead of primitives in component and layout code.</p>
+        <div class="sg-page-tabs" role="tablist">
+          <button class="sg-page-tab" data-tab="preview" aria-selected="true">Preview</button>
+          <button class="sg-page-tab" data-tab="code">Code</button>
+        </div>
+
+        <div data-tab-panel="preview" class="active">
+        <div class="sg-subsection">
+          <h3 class="sg-subsection-title">Interactive surfaces</h3>
+          <p class="sg-subsection-desc">Primary action colors that change per brand. Tokens marked * shift when switching brands.</p>
+          <div class="sg-token-table">
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-surface-interactive-none); background-image:linear-gradient(45deg,#ccc 25%,transparent 25%,transparent 75%,#ccc 75%),linear-gradient(45deg,#ccc 25%,transparent 25%,transparent 75%,#ccc 75%);background-size:8px 8px;background-position:0 0,4px 4px;"></div><span class="sg-token-name">--uds-color-surface-interactive-none</span><span class="sg-token-value">transparent</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-surface-interactive-neutral)"></div><span class="sg-token-name">--uds-color-surface-interactive-neutral</span><span class="sg-token-value">neutral bg</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-surface-interactive-default)"></div><span class="sg-token-name">--uds-color-surface-interactive-default</span><span class="sg-token-value">primary action bg *</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-surface-interactive-hover)"></div><span class="sg-token-name">--uds-color-surface-interactive-hover</span><span class="sg-token-value">hover *</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-surface-interactive-active)"></div><span class="sg-token-name">--uds-color-surface-interactive-active</span><span class="sg-token-value">pressed *</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-surface-interactive-subtle)"></div><span class="sg-token-name">--uds-color-surface-interactive-subtle</span><span class="sg-token-value">ghost bg *</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-surface-interactive-subtle-hover)"></div><span class="sg-token-name">--uds-color-surface-interactive-subtle-hover</span><span class="sg-token-value">ghost hover *</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-surface-interactive-subtle-active)"></div><span class="sg-token-name">--uds-color-surface-interactive-subtle-active</span><span class="sg-token-value">ghost pressed *</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-surface-interactive-disabled)"></div><span class="sg-token-name">--uds-color-surface-interactive-disabled</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-surface-interactive-red)"></div><span class="sg-token-name">--uds-color-surface-interactive-red</span><span class="sg-token-value">danger action bg</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-surface-interactive-red-hover)"></div><span class="sg-token-name">--uds-color-surface-interactive-red-hover</span><span class="sg-token-value">danger hover</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-surface-interactive-red-active)"></div><span class="sg-token-name">--uds-color-surface-interactive-red-active</span><span class="sg-token-value">danger pressed</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-surface-interactive-red-subtle)"></div><span class="sg-token-name">--uds-color-surface-interactive-red-subtle</span><span class="sg-token-value">danger ghost bg</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-surface-interactive-red-subtle-hover)"></div><span class="sg-token-name">--uds-color-surface-interactive-red-subtle-hover</span><span class="sg-token-value">danger ghost hover</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-surface-interactive-red-subtle-active)"></div><span class="sg-token-name">--uds-color-surface-interactive-red-subtle-active</span><span class="sg-token-value">danger ghost pressed</span></div>
+          </div>
+        </div>
+
+        <div class="sg-subsection">
+          <h3 class="sg-subsection-title">Status surfaces</h3>
+          <div class="sg-token-table">
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-surface-info)"></div><span class="sg-token-name">--uds-color-surface-info</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-surface-info-subtle)"></div><span class="sg-token-name">--uds-color-surface-info-subtle</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-surface-error)"></div><span class="sg-token-name">--uds-color-surface-error</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-surface-error-subtle)"></div><span class="sg-token-name">--uds-color-surface-error-subtle</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-surface-warning)"></div><span class="sg-token-name">--uds-color-surface-warning</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-surface-warning-subtle)"></div><span class="sg-token-name">--uds-color-surface-warning-subtle</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-surface-success)"></div><span class="sg-token-name">--uds-color-surface-success</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-surface-success-subtle)"></div><span class="sg-token-name">--uds-color-surface-success-subtle</span></div>
+          </div>
+        </div>
+
+        <div class="sg-subsection">
+          <h3 class="sg-subsection-title">Page surfaces</h3>
+          <div class="sg-token-table">
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-surface-page-main)"></div><span class="sg-token-name">--uds-color-surface-page-main</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-surface-page-subtle)"></div><span class="sg-token-name">--uds-color-surface-page-subtle</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-surface-page-alt)"></div><span class="sg-token-name">--uds-color-surface-page-alt</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-surface-page-bold)"></div><span class="sg-token-name">--uds-color-surface-page-bold</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-surface-page-inverse)"></div><span class="sg-token-name">--uds-color-surface-page-inverse</span></div>
+          </div>
+        </div>
+
+        <div class="sg-subsection">
+          <h3 class="sg-subsection-title">Component surfaces (neutral scale)</h3>
+          <div class="sg-token-table">
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-surface-none); background-image:linear-gradient(45deg,#ccc 25%,transparent 25%,transparent 75%,#ccc 75%),linear-gradient(45deg,#ccc 25%,transparent 25%,transparent 75%,#ccc 75%);background-size:8px 8px;background-position:0 0,4px 4px;"></div><span class="sg-token-name">--uds-color-surface-none</span><span class="sg-token-value">transparent</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-surface-main)"></div><span class="sg-token-name">--uds-color-surface-main</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-surface-subtle)"></div><span class="sg-token-name">--uds-color-surface-subtle</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-surface-alt)"></div><span class="sg-token-name">--uds-color-surface-alt</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-surface-bold)"></div><span class="sg-token-name">--uds-color-surface-bold</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-surface-xbold)"></div><span class="sg-token-name">--uds-color-surface-xbold</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-surface-xxbold)"></div><span class="sg-token-name">--uds-color-surface-xxbold</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-surface-inverse)"></div><span class="sg-token-name">--uds-color-surface-inverse</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-surface-white)"></div><span class="sg-token-name">--uds-color-surface-white</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-surface-black)"></div><span class="sg-token-name">--uds-color-surface-black</span></div>
+          </div>
+        </div>
+
+        <div class="sg-subsection">
+          <h3 class="sg-subsection-title">Text</h3>
+          <div class="sg-token-table">
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-text-brand)"></div><span class="sg-token-name">--uds-color-text-brand</span><span class="sg-token-value">changes per brand *</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-text-primary)"></div><span class="sg-token-name">--uds-color-text-primary</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-text-inverse)"></div><span class="sg-token-name">--uds-color-text-inverse</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-text-secondary)"></div><span class="sg-token-name">--uds-color-text-secondary</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-text-disabled)"></div><span class="sg-token-name">--uds-color-text-disabled</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-text-disabled-bold)"></div><span class="sg-token-name">--uds-color-text-disabled-bold</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-text-interactive)"></div><span class="sg-token-name">--uds-color-text-interactive</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-text-interactive-hover)"></div><span class="sg-token-name">--uds-color-text-interactive-hover</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-text-interactive-active)"></div><span class="sg-token-name">--uds-color-text-interactive-active</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-text-interactive-neutral)"></div><span class="sg-token-name">--uds-color-text-interactive-neutral</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-text-info)"></div><span class="sg-token-name">--uds-color-text-info</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-text-success)"></div><span class="sg-token-name">--uds-color-text-success</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-text-error)"></div><span class="sg-token-name">--uds-color-text-error</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-text-warning)"></div><span class="sg-token-name">--uds-color-text-warning</span></div>
+          </div>
+        </div>
+
+        <div class="sg-subsection">
+          <h3 class="sg-subsection-title">Border</h3>
+          <div class="sg-token-table">
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-border-none); background-image:linear-gradient(45deg,#ccc 25%,transparent 25%,transparent 75%,#ccc 75%),linear-gradient(45deg,#ccc 25%,transparent 25%,transparent 75%,#ccc 75%);background-size:8px 8px;background-position:0 0,4px 4px;"></div><span class="sg-token-name">--uds-color-border-none</span><span class="sg-token-value">transparent</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-border-brand)"></div><span class="sg-token-name">--uds-color-border-brand</span><span class="sg-token-value">changes per brand *</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-border-primary)"></div><span class="sg-token-name">--uds-color-border-primary</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-border-secondary)"></div><span class="sg-token-name">--uds-color-border-secondary</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-border-tertiary)"></div><span class="sg-token-name">--uds-color-border-tertiary</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-border-inverse)"></div><span class="sg-token-name">--uds-color-border-inverse</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-border-disabled)"></div><span class="sg-token-name">--uds-color-border-disabled</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-border-interactive)"></div><span class="sg-token-name">--uds-color-border-interactive</span><span class="sg-token-value">*</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-border-interactive-hover)"></div><span class="sg-token-name">--uds-color-border-interactive-hover</span><span class="sg-token-value">*</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-border-interactive-active)"></div><span class="sg-token-name">--uds-color-border-interactive-active</span><span class="sg-token-value">*</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-border-subtle-interactive)"></div><span class="sg-token-name">--uds-color-border-subtle-interactive</span><span class="sg-token-value">*</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-border-subtle-interactive-hover)"></div><span class="sg-token-name">--uds-color-border-subtle-interactive-hover</span><span class="sg-token-value">*</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-border-subtle-interactive-active)"></div><span class="sg-token-name">--uds-color-border-subtle-interactive-active</span><span class="sg-token-value">*</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-border-info)"></div><span class="sg-token-name">--uds-color-border-info</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-border-success)"></div><span class="sg-token-name">--uds-color-border-success</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-border-error)"></div><span class="sg-token-name">--uds-color-border-error</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-border-warning)"></div><span class="sg-token-name">--uds-color-border-warning</span></div>
+          </div>
+        </div>
+
+        <div class="sg-subsection">
+          <h3 class="sg-subsection-title">Outline (focus / interaction rings)</h3>
+          <div class="sg-token-table">
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-border-outline-hover)"></div><span class="sg-token-name">--uds-color-border-outline-hover</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-border-outline-active)"></div><span class="sg-token-name">--uds-color-border-outline-active</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-border-outline-focus-visible)"></div><span class="sg-token-name">--uds-color-border-outline-focus-visible</span></div>
+          </div>
+        </div>
+
+        <div class="sg-subsection">
+          <h3 class="sg-subsection-title">Brand surfaces</h3>
+          <p class="sg-subsection-desc">Brand colors for logos and brand marks. Static tokens stay the same across all modes.</p>
+          <div class="sg-token-table">
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-surface-brand-dynamic-bold)"></div><span class="sg-token-name">--uds-color-surface-brand-dynamic-bold</span><span class="sg-token-value">active brand accent *</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-surface-brand-resman-bold)"></div><span class="sg-token-name">--uds-color-surface-brand-resman-bold</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-surface-brand-resman-static)"></div><span class="sg-token-name">--uds-color-surface-brand-resman-static</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-surface-brand-anyonehome-bold)"></div><span class="sg-token-name">--uds-color-surface-brand-anyonehome-bold</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-surface-brand-anyonehome-static)"></div><span class="sg-token-name">--uds-color-surface-brand-anyonehome-static</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-surface-brand-inhabit-bold)"></div><span class="sg-token-name">--uds-color-surface-brand-inhabit-bold</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-surface-brand-inhabit-static)"></div><span class="sg-token-name">--uds-color-surface-brand-inhabit-static</span></div>
+          </div>
+        </div>
+
+        <div class="sg-subsection">
+          <h3 class="sg-subsection-title">Icon</h3>
+          <div class="sg-token-table">
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-icon-none); background-image:linear-gradient(45deg,#ccc 25%,transparent 25%,transparent 75%,#ccc 75%),linear-gradient(45deg,#ccc 25%,transparent 25%,transparent 75%,#ccc 75%);background-size:8px 8px;background-position:0 0,4px 4px;"></div><span class="sg-token-name">--uds-color-icon-none</span><span class="sg-token-value">transparent</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-icon-brand)"></div><span class="sg-token-name">--uds-color-icon-brand</span><span class="sg-token-value">changes per brand *</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-icon-primary)"></div><span class="sg-token-name">--uds-color-icon-primary</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-icon-inverse)"></div><span class="sg-token-name">--uds-color-icon-inverse</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-icon-secondary)"></div><span class="sg-token-name">--uds-color-icon-secondary</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-icon-disabled)"></div><span class="sg-token-name">--uds-color-icon-disabled</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-icon-disabled-bold)"></div><span class="sg-token-name">--uds-color-icon-disabled-bold</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-icon-interactive)"></div><span class="sg-token-name">--uds-color-icon-interactive</span><span class="sg-token-value">*</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-icon-interactive-hover)"></div><span class="sg-token-name">--uds-color-icon-interactive-hover</span><span class="sg-token-value">*</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-icon-interactive-active)"></div><span class="sg-token-name">--uds-color-icon-interactive-active</span><span class="sg-token-value">*</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-icon-info)"></div><span class="sg-token-name">--uds-color-icon-info</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-icon-success)"></div><span class="sg-token-name">--uds-color-icon-success</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-icon-error)"></div><span class="sg-token-name">--uds-color-icon-error</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-color-icon-warning)"></div><span class="sg-token-name">--uds-color-icon-warning</span></div>
+          </div>
+        </div>
+        </div><!-- /preview -->
+
+        <div data-tab-panel="code">
+          <h3 class="sg-subsection-title">Import</h3>
+          <pre class="sg-playground-code" style="margin-bottom:24px;">@import url('./tokens/semantic.css');</pre>
+
+          <h3 class="sg-subsection-title">Base Semantic Color Tokens (Light Mode)</h3>
+          <p class="sg-subsection-desc">The default color tokens applied to <code class="sg-inline-code">:root</code>. Dark mode, brand, font, scale, and density overrides are also included in the file via <code class="sg-inline-code">[data-*]</code> attribute selectors.</p>
+          <pre class="sg-playground-code">:root {
+
+  /* ---- TEXT ---- */
+  --uds-color-text-primary:               #171717;
+  --uds-color-text-secondary:             #a3a3a3;
+  --uds-color-text-inverse:               #f5f5f5;
+  --uds-color-text-disabled:              #d4d4d4;
+  --uds-color-text-disabled-bold:         #a3a3a3;
+  --uds-color-text-success:               #16a34a;
+  --uds-color-text-error:                 #dc2626;
+  --uds-color-text-warning:               #ea580c;
+  --uds-color-text-info:                  #005ff0;
+  --uds-color-text-interactive:           #005ff0;
+  --uds-color-text-interactive-hover:     #0480fc;
+  --uds-color-text-interactive-active:    #004be2;
+  --uds-color-text-interactive-neutral:   #171717;
+  --uds-color-text-brand:                 #005ff0;
+
+  /* ---- SURFACE — page ---- */
+  --uds-color-surface-page-main:          #fafafa;
+  --uds-color-surface-page-alt:           #ededed;
+  --uds-color-surface-page-bold:          #a3a3a3;
+  --uds-color-surface-page-subtle:        #f5f5f5;
+  --uds-color-surface-page-inverse:       #0a0a0a;
+
+  /* ---- SURFACE — neutral scale ---- */
+  --uds-color-surface-none:               transparent;
+  --uds-color-surface-white:              #ffffff;
+  --uds-color-surface-black:              #000000;
+  --uds-color-surface-main:               #fafafa;
+  --uds-color-surface-subtle:             #f5f5f5;
+  --uds-color-surface-alt:                #ededed;
+  --uds-color-surface-bold:               #d4d4d4;
+  --uds-color-surface-xbold:              #a3a3a3;
+  --uds-color-surface-xxbold:             #737373;
+  --uds-color-surface-inverse:            #0a0a0a;
+
+  /* ---- SURFACE — status ---- */
+  --uds-color-surface-info:               #005ff0;
+  --uds-color-surface-info-subtle:        #d2edff;
+  --uds-color-surface-error:              #dc2626;
+  --uds-color-surface-error-subtle:       #ffe2e2;
+  --uds-color-surface-warning:            #ea580c;
+  --uds-color-surface-warning-subtle:     #ffedd5;
+  --uds-color-surface-success:            #16a34a;
+  --uds-color-surface-success-subtle:     #dcfce7;
+
+  /* ---- SURFACE — interactive ---- */
+  --uds-color-surface-interactive-none:          transparent;
+  --uds-color-surface-interactive-neutral:       #fafafa;
+  --uds-color-surface-interactive-default:       #005ff0;
+  --uds-color-surface-interactive-hover:         #0480fc;
+  --uds-color-surface-interactive-active:        #004be2;
+  --uds-color-surface-interactive-disabled:      #ededed;
+  --uds-color-surface-interactive-subtle:        #ecf8ff;
+  --uds-color-surface-interactive-subtle-hover:  #d2edff;
+  --uds-color-surface-interactive-subtle-active: #aeddfd;
+  --uds-color-surface-interactive-red:           #dc2626;
+  --uds-color-surface-interactive-red-hover:     #ef4444;
+  --uds-color-surface-interactive-red-active:    #b91c1c;
+  --uds-color-surface-interactive-red-subtle:    #fef2f2;
+  --uds-color-surface-interactive-red-subtle-hover:  #ffe2e2;
+  --uds-color-surface-interactive-red-subtle-active: #fecaca;
+
+  /* ---- SURFACE — brand ---- */
+  --uds-color-surface-brand-resman-static:       #002b36;
+  --uds-color-surface-brand-resman-bold:         #002b36;
+  --uds-color-surface-brand-anyonehome-static:   #65a30d;
+  --uds-color-surface-brand-anyonehome-bold:     #65a30d;
+  --uds-color-surface-brand-inhabit-static:      #d97706;
+  --uds-color-surface-brand-inhabit-bold:        #d97706;
+  --uds-color-surface-brand-dynamic-bold:        #023674;
+
+  /* ---- BORDER ---- */
+  --uds-color-border-none:                    transparent;
+  --uds-color-border-primary:                 #a3a3a3;
+  --uds-color-border-secondary:               #d4d4d4;
+  --uds-color-border-tertiary:                #ededed;
+  --uds-color-border-inverse:                 #525252;
+  --uds-color-border-disabled:                #d4d4d4;
+  --uds-color-border-success:                 #16a34a;
+  --uds-color-border-error:                   #dc2626;
+  --uds-color-border-warning:                 #ea580c;
+  --uds-color-border-info:                    #005ff0;
+  --uds-color-border-outline-hover:           #004be2;
+  --uds-color-border-outline-active:          #0a3daf;
+  --uds-color-border-outline-focus-visible:   #0480fc;
+  --uds-color-border-interactive:             #005ff0;
+  --uds-color-border-interactive-hover:       #0480fc;
+  --uds-color-border-interactive-active:      #004be2;
+  --uds-color-border-subtle-interactive:      #d2edff;
+  --uds-color-border-subtle-interactive-hover:  #aeddfd;
+  --uds-color-border-subtle-interactive-active: #7dc2ff;
+  --uds-color-border-brand:                   #005ff0;
+
+  /* ---- ICON ---- */
+  --uds-color-icon-none:                      transparent;
+  --uds-color-icon-primary:                   #171717;
+  --uds-color-icon-secondary:                 #a3a3a3;
+  --uds-color-icon-inverse:                   #f5f5f5;
+  --uds-color-icon-disabled:                  #d4d4d4;
+  --uds-color-icon-disabled-bold:             #a3a3a3;
+  --uds-color-icon-success:                   #16a34a;
+  --uds-color-icon-error:                     #dc2626;
+  --uds-color-icon-warning:                   #ea580c;
+  --uds-color-icon-info:                      #005ff0;
+  --uds-color-icon-interactive:               #005ff0;
+  --uds-color-icon-interactive-hover:         #0480fc;
+  --uds-color-icon-interactive-active:        #004be2;
+  --uds-color-icon-brand:                     #005ff0;
+
+}</pre>
+        </div>
+      </div>
+
+      <!-- =================================================================
+           FOUNDATION: PRIMITIVE COLORS (no tabs)
+           ================================================================= -->
+      <div data-page="primitive-colors" data-default-tab="preview">
+        <h1 class="sg-page-title">Primitive Colors</h1>
+        <p class="sg-page-desc">Raw palette values. These are referenced by semantic tokens — avoid using primitives directly in component code.</p>
+        <div class="sg-page-tabs" role="tablist">
+          <button class="sg-page-tab" data-tab="preview" aria-selected="true">Preview</button>
+          <button class="sg-page-tab" data-tab="code">Code</button>
+        </div>
+
+        <div data-tab-panel="preview" class="active">
+          <div class="sg-subsection" id="prim-special"><h3 class="sg-subsection-title">Special</h3><div class="sg-token-list">
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-primitive-color-special-white)"></div><span class="sg-token-name">--uds-primitive-color-special-white</span><span class="sg-token-value">#ffffff</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-primitive-color-special-black)"></div><span class="sg-token-name">--uds-primitive-color-special-black</span><span class="sg-token-value">#000000</span></div>
+            <div class="sg-token-row"><div class="sg-token-swatch" style="background:var(--uds-primitive-color-special-none); background-image:linear-gradient(45deg,#ccc 25%,transparent 25%,transparent 75%,#ccc 75%),linear-gradient(45deg,#ccc 25%,transparent 25%,transparent 75%,#ccc 75%);background-size:8px 8px;background-position:0 0,4px 4px;"></div><span class="sg-token-name">--uds-primitive-color-special-none</span><span class="sg-token-value">transparent</span></div>
+          </div></div>
+
+          <div class="sg-subsection" id="prim-slate"><h3 class="sg-subsection-title">Slate</h3><div class="sg-token-list"></div></div>
+          <div class="sg-subsection" id="prim-neutral"><h3 class="sg-subsection-title">Neutral</h3><div class="sg-token-list"></div></div>
+          <div class="sg-subsection" id="prim-stone"><h3 class="sg-subsection-title">Stone</h3><div class="sg-token-list"></div></div>
+          <div class="sg-subsection" id="prim-blue"><h3 class="sg-subsection-title">Blue</h3><div class="sg-token-list"></div></div>
+          <div class="sg-subsection" id="prim-cyan"><h3 class="sg-subsection-title">Cyan</h3><div class="sg-token-list"></div></div>
+          <div class="sg-subsection" id="prim-purple"><h3 class="sg-subsection-title">Purple</h3><div class="sg-token-list"></div></div>
+          <div class="sg-subsection" id="prim-red"><h3 class="sg-subsection-title">Red</h3><div class="sg-token-list"></div></div>
+          <div class="sg-subsection" id="prim-orange"><h3 class="sg-subsection-title">Orange</h3><div class="sg-token-list"></div></div>
+          <div class="sg-subsection" id="prim-amber"><h3 class="sg-subsection-title">Amber</h3><div class="sg-token-list"></div></div>
+          <div class="sg-subsection" id="prim-yellow"><h3 class="sg-subsection-title">Yellow</h3><div class="sg-token-list"></div></div>
+          <div class="sg-subsection" id="prim-lime"><h3 class="sg-subsection-title">Lime</h3><div class="sg-token-list"></div></div>
+          <div class="sg-subsection" id="prim-green"><h3 class="sg-subsection-title">Green</h3><div class="sg-token-list"></div></div>
+          <div class="sg-subsection" id="prim-emerald"><h3 class="sg-subsection-title">Emerald</h3><div class="sg-token-list"></div></div>
+        </div>
+
+        <div data-tab-panel="code">
+          <h3 class="sg-subsection-title">Import</h3>
+          <pre class="sg-playground-code" style="margin-bottom:24px;">@import url('./tokens/primitives.css');</pre>
+          <h3 class="sg-subsection-title">All Primitive Color Tokens</h3>
+          <p class="sg-subsection-desc">Copy the full CSS below to include all primitive color tokens in your project.</p>
+          <pre class="sg-playground-code" id="prim-code-block">:root {
+
+  /* Special */
+  --uds-primitive-color-special-white:       #ffffff;
+  --uds-primitive-color-special-black:       #000000;
+  --uds-primitive-color-special-none: rgba(255, 255, 255, 0);
+
+  /* Slate */
+  --uds-primitive-color-slate-10:   #f8fafc;
+  --uds-primitive-color-slate-20:   #f1f5f9;
+  --uds-primitive-color-slate-30:   #e2e8f0;
+  --uds-primitive-color-slate-40:   #cbd5e1;
+  --uds-primitive-color-slate-50:   #94a3b8;
+  --uds-primitive-color-slate-60-M:   #64748b;
+  --uds-primitive-color-slate-70:   #475569;
+  --uds-primitive-color-slate-80:   #334155;
+  --uds-primitive-color-slate-90:   #1e293b;
+  --uds-primitive-color-slate-100:  #0f172a;
+  --uds-primitive-color-slate-110:  #020617;
+
+  /* Neutral */
+  --uds-primitive-color-neutral-10:  #fafafa;
+  --uds-primitive-color-neutral-20:  #f5f5f5;
+  --uds-primitive-color-neutral-30:  #ededed;
+  --uds-primitive-color-neutral-40:  #d4d4d4;
+  --uds-primitive-color-neutral-50:  #a3a3a3;
+  --uds-primitive-color-neutral-60-M:  #737373;
+  --uds-primitive-color-neutral-70:  #525252;
+  --uds-primitive-color-neutral-80:  #404040;
+  --uds-primitive-color-neutral-90:  #262626;
+  --uds-primitive-color-neutral-100: #171717;
+  --uds-primitive-color-neutral-110: #0a0a0a;
+
+  /* Stone */
+  --uds-primitive-color-stone-10:   #fafaf9;
+  --uds-primitive-color-stone-20:   #f5f5f4;
+  --uds-primitive-color-stone-30:   #e7e5e4;
+  --uds-primitive-color-stone-40:   #d6d3d1;
+  --uds-primitive-color-stone-50:   #a8a29e;
+  --uds-primitive-color-stone-60-M:   #78716c;
+  --uds-primitive-color-stone-70:   #57534e;
+  --uds-primitive-color-stone-80:   #44403c;
+  --uds-primitive-color-stone-90:   #292524;
+  --uds-primitive-color-stone-100:  #1c1917;
+  --uds-primitive-color-stone-110:  #0c0a09;
+
+  /* Blue */
+  --uds-primitive-color-blue-10:   #ecf8ff;
+  --uds-primitive-color-blue-20:   #d2edff;
+  --uds-primitive-color-blue-30:   #aeddfd;
+  --uds-primitive-color-blue-40:   #7dc2ff;
+  --uds-primitive-color-blue-50:   #38a0ff;
+  --uds-primitive-color-blue-60-M:   #0480fc;
+  --uds-primitive-color-blue-70:   #005ff0;
+  --uds-primitive-color-blue-80:   #004be2;
+  --uds-primitive-color-blue-90:   #0a3daf;
+  --uds-primitive-color-blue-100:  #023674;
+  --uds-primitive-color-blue-110:  #0f2e52;
+
+  /* Cyan */
+  --uds-primitive-color-cyan-10:   #e3f7fc;
+  --uds-primitive-color-cyan-20:   #c3effa;
+  --uds-primitive-color-cyan-30:   #9fe5f6;
+  --uds-primitive-color-cyan-40:   #75d9f3;
+  --uds-primitive-color-cyan-50:   #00add9;
+  --uds-primitive-color-cyan-60-M:   #0086a9;
+  --uds-primitive-color-cyan-70:   #006a85;
+  --uds-primitive-color-cyan-80:   #004c5f;
+  --uds-primitive-color-cyan-90:   #002b36;
+  --uds-primitive-color-cyan-100:  #001d24;
+  --uds-primitive-color-cyan-110:  #001217;
+
+  /* Purple */
+  --uds-primitive-color-purple-10:   #faf5ff;
+  --uds-primitive-color-purple-20:   #f3e8ff;
+  --uds-primitive-color-purple-30:   #e9d5ff;
+  --uds-primitive-color-purple-40:   #d8b4fe;
+  --uds-primitive-color-purple-50:   #c084fc;
+  --uds-primitive-color-purple-60-M:   #a855f7;
+  --uds-primitive-color-purple-70:   #9333ea;
+  --uds-primitive-color-purple-80:   #7e22ce;
+  --uds-primitive-color-purple-90:   #6b21a8;
+  --uds-primitive-color-purple-100:  #581c87;
+  --uds-primitive-color-purple-110:  #3b0764;
+
+  /* Red */
+  --uds-primitive-color-red-10:   #fef2f2;
+  --uds-primitive-color-red-20:   #ffe2e2;
+  --uds-primitive-color-red-30:   #fecaca;
+  --uds-primitive-color-red-40:   #fca5a5;
+  --uds-primitive-color-red-50:   #f87171;
+  --uds-primitive-color-red-60-M:   #ef4444;
+  --uds-primitive-color-red-70:   #dc2626;
+  --uds-primitive-color-red-80:   #b91c1c;
+  --uds-primitive-color-red-90:   #991b1b;
+  --uds-primitive-color-red-100:  #7f1d1d;
+  --uds-primitive-color-red-110:  #450a0a;
+
+  /* Orange */
+  --uds-primitive-color-orange-10:   #fff7ed;
+  --uds-primitive-color-orange-20:   #ffedd5;
+  --uds-primitive-color-orange-30:   #fed7aa;
+  --uds-primitive-color-orange-40:   #fdba74;
+  --uds-primitive-color-orange-50:   #fb923c;
+  --uds-primitive-color-orange-60-M:   #f97316;
+  --uds-primitive-color-orange-70:   #ea580c;
+  --uds-primitive-color-orange-80:   #c2410c;
+  --uds-primitive-color-orange-90:   #9a3412;
+  --uds-primitive-color-orange-100:  #7c2d12;
+  --uds-primitive-color-orange-110:  #431407;
+
+  /* Amber */
+  --uds-primitive-color-amber-10:   #fffbeb;
+  --uds-primitive-color-amber-20:   #fef3c7;
+  --uds-primitive-color-amber-30:   #fde68a;
+  --uds-primitive-color-amber-40:   #fcd34d;
+  --uds-primitive-color-amber-50:   #fbbf24;
+  --uds-primitive-color-amber-60-M:   #f59e0b;
+  --uds-primitive-color-amber-70:   #d97706;
+  --uds-primitive-color-amber-80:   #b45309;
+  --uds-primitive-color-amber-90:   #92400e;
+  --uds-primitive-color-amber-100:  #78350f;
+  --uds-primitive-color-amber-110:  #451a03;
+
+  /* Yellow */
+  --uds-primitive-color-yellow-10:   #fefce8;
+  --uds-primitive-color-yellow-20:   #fef9c3;
+  --uds-primitive-color-yellow-30:   #fef08a;
+  --uds-primitive-color-yellow-40:   #fde047;
+  --uds-primitive-color-yellow-50:   #facc15;
+  --uds-primitive-color-yellow-60-M:   #eab308;
+  --uds-primitive-color-yellow-70:   #ca8a04;
+  --uds-primitive-color-yellow-80:   #a16207;
+  --uds-primitive-color-yellow-90:   #854d0e;
+  --uds-primitive-color-yellow-100:  #713f12;
+  --uds-primitive-color-yellow-110:  #422006;
+
+  /* Lime */
+  --uds-primitive-color-lime-10:   #f7fee7;
+  --uds-primitive-color-lime-20:   #ecfccb;
+  --uds-primitive-color-lime-30:   #d9f99d;
+  --uds-primitive-color-lime-40:   #bef264;
+  --uds-primitive-color-lime-50:   #a3e635;
+  --uds-primitive-color-lime-60-M:   #84cc16;
+  --uds-primitive-color-lime-70:   #65a30d;
+  --uds-primitive-color-lime-80:   #4d7c0f;
+  --uds-primitive-color-lime-90:   #3f6212;
+  --uds-primitive-color-lime-100:  #365314;
+  --uds-primitive-color-lime-110:  #1a2e05;
+
+  /* Green */
+  --uds-primitive-color-green-10:   #f0fdf4;
+  --uds-primitive-color-green-20:   #dcfce7;
+  --uds-primitive-color-green-30:   #bbf7d0;
+  --uds-primitive-color-green-40:   #86efac;
+  --uds-primitive-color-green-50:   #4ade80;
+  --uds-primitive-color-green-60-M:   #22c55e;
+  --uds-primitive-color-green-70:   #16a34a;
+  --uds-primitive-color-green-80:   #15803d;
+  --uds-primitive-color-green-90:   #166534;
+  --uds-primitive-color-green-100:  #14532d;
+  --uds-primitive-color-green-110:  #052e16;
+
+  /* Emerald */
+  --uds-primitive-color-emerald-10:   #ecfdf5;
+  --uds-primitive-color-emerald-20:   #d1fae5;
+  --uds-primitive-color-emerald-30:   #a7f3d0;
+  --uds-primitive-color-emerald-40:   #6ee7b7;
+  --uds-primitive-color-emerald-50:   #34d399;
+  --uds-primitive-color-emerald-60-M:   #10b981;
+  --uds-primitive-color-emerald-70:   #059669;
+  --uds-primitive-color-emerald-80:   #047857;
+  --uds-primitive-color-emerald-90:   #065f46;
+  --uds-primitive-color-emerald-100:  #064e3b;
+  --uds-primitive-color-emerald-110:  #022c22;
+
+}</pre>
+        </div>
+      </div>
+
+      <!-- =================================================================
+           FOUNDATION: TEXT STYLES (no tabs)
+           ================================================================= -->
+      <div data-page="text-styles">
+        <h1 class="sg-page-title">Text Styles</h1>
+        <p class="sg-page-desc">35 typography utility classes built on semantic font tokens. Each maps 1:1 to a Figma text style and responds to font family, scale, and density changes via the theme bar above.</p>
+        <div id="text-styles-content"></div>
+      </div>
+
+      <!-- =================================================================
+           FOUNDATION: SPACING (no tabs)
+           ================================================================= -->
+      <div data-page="spacing">
+        <h1 class="sg-page-title">Spacing</h1>
+        <p class="sg-page-desc">A consistent spacing scale used for padding, margins, and gaps. Switch the <strong>Density</strong> control above to see the comfortable mode adjustments.</p>
+        <div class="sg-example">
+          <div class="sg-example-preview" style="align-items:flex-end; gap:16px;">
+            <div style="text-align:center"><div style="width:var(--uds-space-050);height:var(--uds-space-050);background:var(--uds-color-surface-interactive-default);margin:0 auto 4px;min-width:2px;min-height:2px;"></div><span class="sg-swatch-label">050</span></div>
+            <div style="text-align:center"><div style="width:var(--uds-space-100);height:var(--uds-space-100);background:var(--uds-color-surface-interactive-default);margin:0 auto 4px;"></div><span class="sg-swatch-label">100</span></div>
+            <div style="text-align:center"><div style="width:var(--uds-space-150);height:var(--uds-space-150);background:var(--uds-color-surface-interactive-default);margin:0 auto 4px;"></div><span class="sg-swatch-label">150</span></div>
+            <div style="text-align:center"><div style="width:var(--uds-space-200);height:var(--uds-space-200);background:var(--uds-color-surface-interactive-default);margin:0 auto 4px;"></div><span class="sg-swatch-label">200</span></div>
+            <div style="text-align:center"><div style="width:var(--uds-space-300);height:var(--uds-space-300);background:var(--uds-color-surface-interactive-default);margin:0 auto 4px;"></div><span class="sg-swatch-label">300</span></div>
+            <div style="text-align:center"><div style="width:var(--uds-space-400);height:var(--uds-space-400);background:var(--uds-color-surface-interactive-default);margin:0 auto 4px;"></div><span class="sg-swatch-label">400</span></div>
+            <div style="text-align:center"><div style="width:var(--uds-space-500);height:var(--uds-space-500);background:var(--uds-color-surface-interactive-default);margin:0 auto 4px;"></div><span class="sg-swatch-label">500</span></div>
+            <div style="text-align:center"><div style="width:var(--uds-space-600);height:var(--uds-space-600);background:var(--uds-color-surface-interactive-default);margin:0 auto 4px;"></div><span class="sg-swatch-label">600</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- =================================================================
+           COMPONENT PAGES — each has 5 tabs
+           ================================================================= -->
+
+      <!-- BUTTON -->
+      <div data-page="button">
+        <h1 class="sg-page-title">Button</h1>
+        <p class="sg-page-desc">A button triggers an event or action. Switch the <strong>Brand</strong> control to see accent color changes.</p>
+        <div class="sg-page-tabs" role="tablist">
+          <button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button>
+          <button class="sg-page-tab" data-tab="code">Code</button>
+          <button class="sg-page-tab" data-tab="usage">Usage</button>
+          <button class="sg-page-tab" data-tab="changelog">Changelog</button>
+          <button class="sg-page-tab" data-tab="playground">Playground</button>
+        </div>
+
+        <div data-tab-panel="examples" class="active">
+          <div class="sg-subsection"><h3 class="sg-subsection-title">Variants</h3><p class="sg-subsection-desc">Primary, secondary, and ghost buttons provide different levels of visual emphasis.</p><div class="sg-example"><div class="sg-example-preview"><button class="udc-button-primary">Primary</button><button class="udc-button-secondary">Secondary</button><button class="udc-button-ghost">Ghost</button></div><details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;button class="udc-button-primary"&gt;Primary&lt;/button&gt;
+&lt;button class="udc-button-secondary"&gt;Secondary&lt;/button&gt;
+&lt;button class="udc-button-ghost"&gt;Ghost&lt;/button&gt;</code></pre></details></div></div>
+          <div class="sg-subsection"><h3 class="sg-subsection-title">Sizes</h3><p class="sg-subsection-desc">Small and default sizes. Use <code class="sg-inline-code">data-size="sm"</code> for compact variant.</p><div class="sg-example"><div class="sg-example-preview"><button class="udc-button-primary" data-size="sm">Small</button><button class="udc-button-primary">Default</button><button class="udc-button-secondary" data-size="sm">Small</button><button class="udc-button-secondary">Default</button><button class="udc-button-ghost" data-size="sm">Small</button><button class="udc-button-ghost">Default</button></div><details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;button class="udc-button-primary" data-size="sm"&gt;Small&lt;/button&gt;
+&lt;button class="udc-button-primary"&gt;Default&lt;/button&gt;</code></pre></details></div></div>
+          <div class="sg-subsection"><h3 class="sg-subsection-title">Leading icon</h3><p class="sg-subsection-desc">Add a leading icon with <code class="sg-inline-code">data-leading-icon</code>. Left padding is automatically reduced.</p><div class="sg-example"><div class="sg-example-preview"><button class="udc-button-primary" data-leading-icon><span class="material-symbols-outlined">add</span> Create</button><button class="udc-button-secondary" data-leading-icon><span class="material-symbols-outlined">edit</span> Edit</button><button class="udc-button-ghost" data-leading-icon><span class="material-symbols-outlined">download</span> Download</button></div><details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;button class="udc-button-primary" data-leading-icon&gt;
+  &lt;span class="material-symbols-outlined"&gt;add&lt;/span&gt; Create
+&lt;/button&gt;</code></pre></details></div></div>
+          <div class="sg-subsection"><h3 class="sg-subsection-title">Trailing icon</h3><p class="sg-subsection-desc">Add a trailing icon with <code class="sg-inline-code">data-trailing-icon</code>. Right padding is automatically reduced.</p><div class="sg-example"><div class="sg-example-preview"><button class="udc-button-primary" data-trailing-icon>Next <span class="material-symbols-outlined">arrow_forward</span></button><button class="udc-button-secondary" data-trailing-icon>Options <span class="material-symbols-outlined">expand_more</span></button><button class="udc-button-ghost" data-trailing-icon>More <span class="material-symbols-outlined">chevron_right</span></button></div><details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;button class="udc-button-primary" data-trailing-icon&gt;
+  Next &lt;span class="material-symbols-outlined"&gt;arrow_forward&lt;/span&gt;
+&lt;/button&gt;</code></pre></details></div></div>
+          <div class="sg-subsection"><h3 class="sg-subsection-title">Icon only</h3><p class="sg-subsection-desc">Square buttons with only an icon. Use <code class="sg-inline-code">data-icon-only</code> and always provide an <code class="sg-inline-code">aria-label</code>.</p><div class="sg-example"><div class="sg-example-preview"><button class="udc-button-primary" data-icon-only aria-label="Add"><span class="material-symbols-outlined">add</span></button><button class="udc-button-secondary" data-icon-only aria-label="Settings"><span class="material-symbols-outlined">settings</span></button><button class="udc-button-ghost" data-icon-only aria-label="Close"><span class="material-symbols-outlined">close</span></button><button class="udc-button-primary" data-icon-only data-size="sm" aria-label="Add small"><span class="material-symbols-outlined">add</span></button><button class="udc-button-secondary" data-icon-only data-size="sm" aria-label="Settings small"><span class="material-symbols-outlined">settings</span></button><button class="udc-button-ghost" data-icon-only data-size="sm" aria-label="Close small"><span class="material-symbols-outlined">close</span></button></div><details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;button class="udc-button-primary" data-icon-only aria-label="Add"&gt;
+  &lt;span class="material-symbols-outlined"&gt;add&lt;/span&gt;
+&lt;/button&gt;</code></pre></details></div></div>
+          <div class="sg-subsection"><h3 class="sg-subsection-title">Destructive</h3><p class="sg-subsection-desc">Use <code class="sg-inline-code">data-btn-color="danger"</code> on the button or a parent to signal destructive actions (maps to Figma's <em>Destructive=True</em>).</p><div class="sg-example"><div class="sg-example-preview" data-btn-color="danger"><button class="udc-button-primary" data-leading-icon><span class="material-symbols-outlined">delete</span> Delete</button><button class="udc-button-secondary">Cancel account</button><button class="udc-button-ghost">Remove</button></div><details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;div data-btn-color="danger"&gt;
+  &lt;button class="udc-button-primary" data-leading-icon&gt;
+    &lt;span class="material-symbols-outlined"&gt;delete&lt;/span&gt; Delete
+  &lt;/button&gt;
+&lt;/div&gt;</code></pre></details></div></div>
+          <div class="sg-subsection"><h3 class="sg-subsection-title">Disabled</h3><p class="sg-subsection-desc">Disabled buttons use a dedicated fill and text color — not opacity.</p><div class="sg-example"><div class="sg-example-preview"><button class="udc-button-primary" disabled>Disabled</button><button class="udc-button-secondary" disabled>Disabled</button><button class="udc-button-ghost" disabled>Disabled</button></div><details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;button class="udc-button-primary" disabled&gt;Disabled&lt;/button&gt;</code></pre></details></div></div>
+          <div class="sg-subsection"><h3 class="sg-subsection-title">Selected</h3><p class="sg-subsection-desc">Toggle-style selection via <code class="sg-inline-code">aria-selected="true"</code>.</p><div class="sg-example"><div class="sg-example-preview"><button class="udc-button-primary" aria-selected="true">Selected</button><button class="udc-button-secondary" aria-selected="true">Selected</button><button class="udc-button-ghost" aria-selected="true">Selected</button></div><details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;button class="udc-button-primary" aria-selected="true"&gt;Selected&lt;/button&gt;</code></pre></details></div></div>
+          <div class="sg-subsection"><h3 class="sg-subsection-title">Color palettes</h3><p class="sg-subsection-desc">Wrap buttons in a container with <code class="sg-inline-code">data-btn-color</code> to override the accent.</p><div class="sg-example"><div class="sg-example-preview" data-direction="column" style="gap:16px;"><div style="display:flex;gap:12px;align-items:center;"><span style="width:72px;font-size:11px;color:var(--uds-color-text-secondary);flex-shrink:0;">brand</span><button class="udc-button-primary">Primary</button><button class="udc-button-secondary">Secondary</button><button class="udc-button-ghost">Ghost</button></div><div style="display:flex;gap:12px;align-items:center;" data-btn-color="danger"><span style="width:72px;font-size:11px;color:var(--uds-color-text-secondary);flex-shrink:0;">danger</span><button class="udc-button-primary">Primary</button><button class="udc-button-secondary">Secondary</button><button class="udc-button-ghost">Ghost</button></div><div style="display:flex;gap:12px;align-items:center;" data-btn-color="success"><span style="width:72px;font-size:11px;color:var(--uds-color-text-secondary);flex-shrink:0;">success</span><button class="udc-button-primary">Primary</button><button class="udc-button-secondary">Secondary</button><button class="udc-button-ghost">Ghost</button></div><div style="display:flex;gap:12px;align-items:center;" data-btn-color="warning"><span style="width:72px;font-size:11px;color:var(--uds-color-text-secondary);flex-shrink:0;">warning</span><button class="udc-button-primary">Primary</button><button class="udc-button-secondary">Secondary</button><button class="udc-button-ghost">Ghost</button></div><div style="display:flex;gap:12px;align-items:center;" data-btn-color="neutral"><span style="width:72px;font-size:11px;color:var(--uds-color-text-secondary);flex-shrink:0;">neutral</span><button class="udc-button-primary">Primary</button><button class="udc-button-secondary">Secondary</button><button class="udc-button-ghost">Ghost</button></div></div><details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;div data-btn-color="danger"&gt;
+  &lt;button class="udc-button-primary"&gt;Delete&lt;/button&gt;
+&lt;/div&gt;</code></pre></details></div></div>
+        </div>
+
+        <div data-tab-panel="code">
+          <h3 class="sg-subsection-title">Import</h3>
+          <pre class="sg-playground-code" style="margin-bottom:24px;">@import url('./components/button.css');</pre>
+          <h3 class="sg-subsection-title">CSS Classes</h3>
+          <table class="sg-api-table"><thead><tr><th>Class</th><th>Description</th></tr></thead><tbody><tr><td><code>.udc-button-primary</code></td><td>Primary filled button (brand color background)</td></tr><tr><td><code>.udc-button-secondary</code></td><td>Secondary outlined button (border, no fill)</td></tr><tr><td><code>.udc-button-ghost</code></td><td>Ghost button (text only, subtle hover)</td></tr></tbody></table>
+          <h3 class="sg-subsection-title">Data Attributes</h3>
+          <table class="sg-api-table"><thead><tr><th>Attribute</th><th>Values</th><th>Description</th></tr></thead><tbody><tr><td><code>data-size</code></td><td><code>sm</code></td><td>Small size with reduced padding</td></tr><tr><td><code>data-leading-icon</code></td><td>—</td><td>Indicates a leading icon is present; reduces left padding</td></tr><tr><td><code>data-trailing-icon</code></td><td>—</td><td>Indicates a trailing icon is present; reduces right padding</td></tr><tr><td><code>data-icon-only</code></td><td>—</td><td>Icon-only square button (equal padding, no gap)</td></tr><tr><td><code>data-btn-color</code></td><td><code>danger</code>, <code>success</code>, <code>warning</code>, <code>neutral</code></td><td>Override accent color (maps to Figma's Destructive=True for danger)</td></tr><tr><td><code>aria-selected</code></td><td><code>true</code></td><td>Selected/active toggle state</td></tr><tr><td><code>disabled</code></td><td>—</td><td>Disabled state</td></tr></tbody></table>
+        </div>
+
+        <div data-tab-panel="usage">
+          <div class="sg-usage-section"><h4>When to use</h4><ul><li>To trigger an action or event (submit, save, cancel, delete)</li><li>To navigate the user to a new context when combined with routing</li><li>Primary for the main action, secondary for alternatives, ghost for low-emphasis</li></ul></div>
+          <div class="sg-usage-section"><h4>When not to use</h4><ul><li>For navigation links — use an anchor (<code>&lt;a&gt;</code>) instead</li><li>When you need more than 2–3 buttons in a row — consider a dropdown or action menu</li></ul></div>
+          <div class="sg-usage-section"><h4>Accessibility</h4><ul><li>Always use a <code>&lt;button&gt;</code> element, not a <code>&lt;div&gt;</code> or <code>&lt;span&gt;</code></li><li>Provide visible text labels; icon-only buttons need <code>aria-label</code></li><li>Use <code>disabled</code> attribute — the component handles styling automatically</li><li>Focus ring uses <code>--uds-color-border-outline-focus-visible</code></li></ul></div>
+        </div>
+
+        <div data-tab-panel="changelog"><p class="sg-changelog-empty">No changes recorded yet. This component was introduced in the initial release.</p></div>
+        <div data-tab-panel="playground"></div>
+      </div>
+
+      <!-- TEXT INPUT -->
+      <div data-page="text-input">
+        <h1 class="sg-page-title">Text Input</h1>
+        <p class="sg-page-desc">A text input lets users enter a single line of text. Includes label, optional helper text, character counter, and icon slots.</p>
+        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="usage">Usage</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
+        <div data-tab-panel="examples" class="active">
+          <div class="sg-subsection"><h3 class="sg-subsection-title">Default</h3><p class="sg-subsection-desc">Standard text input with label, placeholder, helper text, and counter.</p><div class="sg-example"><div class="sg-example-preview"><div class="udc-text-input" style="max-width:320px;"><label class="udc-text-input__label">Full name <span class="udc-text-input__required"></span></label><div class="udc-text-input__field"><input type="text" placeholder="Enter your full name" /></div><div class="udc-text-input__helper"><span>First and last name required</span><span class="udc-text-input__counter">0/60</span></div></div></div><details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;div class="udc-text-input"&gt;
+  &lt;label class="udc-text-input__label"&gt;Full name&lt;/label&gt;
+  &lt;div class="udc-text-input__field"&gt;
+    &lt;input type="text" placeholder="Enter your full name" /&gt;
+  &lt;/div&gt;
+  &lt;div class="udc-text-input__helper"&gt;
+    &lt;span&gt;First and last name required&lt;/span&gt;
+    &lt;span class="udc-text-input__counter"&gt;0/60&lt;/span&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre></details></div></div>
+          <div class="sg-subsection"><h3 class="sg-subsection-title">Error state</h3><p class="sg-subsection-desc">Apply <code>data-state="error"</code> to the root wrapper.</p><div class="sg-example"><div class="sg-example-preview"><div class="udc-text-input" data-state="error" style="max-width:320px;"><label class="udc-text-input__label">Email <span class="udc-text-input__required"></span></label><div class="udc-text-input__field"><input type="email" placeholder="Enter email" value="not-an-email" /></div><div class="udc-text-input__helper"><span>Please enter a valid email</span></div></div></div><details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;div class="udc-text-input" data-state="error"&gt;…&lt;/div&gt;</code></pre></details></div></div>
+          <div class="sg-subsection"><h3 class="sg-subsection-title">Leading icon</h3><p class="sg-subsection-desc">Add a leading icon slot inside the field container.</p><div class="sg-example"><div class="sg-example-preview"><div class="udc-text-input" style="max-width:320px;"><label class="udc-text-input__label">Search</label><div class="udc-text-input__field"><span class="udc-text-input__leading-icon"><span class="material-symbols-outlined">search</span></span><input type="text" placeholder="Search..." /></div></div></div><details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;div class="udc-text-input"&gt;
+  &lt;label class="udc-text-input__label"&gt;Search&lt;/label&gt;
+  &lt;div class="udc-text-input__field"&gt;
+    &lt;span class="udc-text-input__leading-icon"&gt;
+      &lt;span class="material-symbols-outlined"&gt;search&lt;/span&gt;
+    &lt;/span&gt;
+    &lt;input type="text" placeholder="Search..." /&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre></details></div></div>
+          <div class="sg-subsection"><h3 class="sg-subsection-title">Trailing button</h3><p class="sg-subsection-desc">Add a trailing action button (e.g. clear, visibility toggle).</p><div class="sg-example"><div class="sg-example-preview"><div class="udc-text-input" style="max-width:320px;"><label class="udc-text-input__label">Password</label><div class="udc-text-input__field"><input type="password" placeholder="Enter password" /><button class="udc-text-input__trailing-btn" type="button"><span class="material-symbols-outlined">visibility</span></button></div></div></div><details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;div class="udc-text-input"&gt;
+  &lt;label class="udc-text-input__label"&gt;Password&lt;/label&gt;
+  &lt;div class="udc-text-input__field"&gt;
+    &lt;input type="password" placeholder="Enter password" /&gt;
+    &lt;button class="udc-text-input__trailing-btn" type="button"&gt;
+      &lt;span class="material-symbols-outlined"&gt;visibility&lt;/span&gt;
+    &lt;/button&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre></details></div></div>
+          <div class="sg-subsection"><h3 class="sg-subsection-title">Leading icon + trailing button</h3><p class="sg-subsection-desc">Both icon slots used together.</p><div class="sg-example"><div class="sg-example-preview"><div class="udc-text-input" style="max-width:320px;"><label class="udc-text-input__label">Location</label><div class="udc-text-input__field"><span class="udc-text-input__leading-icon"><span class="material-symbols-outlined">location_on</span></span><input type="text" placeholder="Enter address" /><button class="udc-text-input__trailing-btn" type="button"><span class="material-symbols-outlined">my_location</span></button></div><div class="udc-text-input__helper"><span>We'll use this for delivery</span></div></div></div><details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;div class="udc-text-input"&gt;
+  &lt;label class="udc-text-input__label"&gt;Location&lt;/label&gt;
+  &lt;div class="udc-text-input__field"&gt;
+    &lt;span class="udc-text-input__leading-icon"&gt;
+      &lt;span class="material-symbols-outlined"&gt;location_on&lt;/span&gt;
+    &lt;/span&gt;
+    &lt;input type="text" placeholder="Enter address" /&gt;
+    &lt;button class="udc-text-input__trailing-btn" type="button"&gt;
+      &lt;span class="material-symbols-outlined"&gt;my_location&lt;/span&gt;
+    &lt;/button&gt;
+  &lt;/div&gt;
+  &lt;div class="udc-text-input__helper"&gt;
+    &lt;span&gt;We'll use this for delivery&lt;/span&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre></details></div></div>
+          <div class="sg-subsection"><h3 class="sg-subsection-title">Disabled</h3><div class="sg-example"><div class="sg-example-preview"><div class="udc-text-input" style="max-width:320px;"><label class="udc-text-input__label">Account ID</label><div class="udc-text-input__field"><input type="text" placeholder="Auto-generated" disabled /></div></div></div><details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;input type="text" disabled /&gt;</code></pre></details></div></div>
+        </div>
+        <div data-tab-panel="code">
+          <h3 class="sg-subsection-title">Import</h3><pre class="sg-playground-code" style="margin-bottom:24px;">@import url('./components/text-input.css');</pre>
+          <h3 class="sg-subsection-title">CSS Classes</h3>
+          <table class="sg-api-table"><thead><tr><th>Class</th><th>Description</th></tr></thead><tbody><tr><td><code>.udc-text-input</code></td><td>Root wrapper (vertical stack)</td></tr><tr><td><code>.udc-text-input__label</code></td><td>Label text</td></tr><tr><td><code>.udc-text-input__required</code></td><td>Red dot indicator</td></tr><tr><td><code>.udc-text-input__field</code></td><td>The bordered input container</td></tr><tr><td><code>.udc-text-input__leading-icon</code></td><td>Leading icon slot</td></tr><tr><td><code>.udc-text-input__trailing-btn</code></td><td>Trailing action button</td></tr><tr><td><code>.udc-text-input__helper</code></td><td>Helper text row</td></tr><tr><td><code>.udc-text-input__counter</code></td><td>Character counter</td></tr></tbody></table>
+          <h3 class="sg-subsection-title">Data Attributes</h3>
+          <table class="sg-api-table"><thead><tr><th>Attribute</th><th>Values</th><th>Description</th></tr></thead><tbody><tr><td><code>data-state</code></td><td><code>error</code></td><td>Error state styling</td></tr><tr><td><code>disabled</code></td><td>—</td><td>On the <code>&lt;input&gt;</code> element</td></tr></tbody></table>
+        </div>
+        <div data-tab-panel="usage"><div class="sg-usage-section"><h4>When to use</h4><ul><li>Single-line text entry: names, emails, search queries</li><li>When you need validation feedback (error state)</li></ul></div><div class="sg-usage-section"><h4>Accessibility</h4><ul><li>Always pair with a visible <code>&lt;label&gt;</code></li><li>Use <code>placeholder</code> for hints, never as a label replacement</li><li>Error messages should be announced via <code>aria-describedby</code></li></ul></div></div>
+        <div data-tab-panel="changelog"><p class="sg-changelog-empty">No changes recorded yet.</p></div>
+        <div data-tab-panel="playground"></div>
+      </div>
+
+      <!-- CHECKBOX -->
+      <div data-page="checkbox">
+        <h1 class="sg-page-title">Checkbox</h1>
+        <p class="sg-page-desc">A checkbox lets users select one or more options from a set.</p>
+        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="usage">Usage</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
+        <div data-tab-panel="examples" class="active">
+          <div class="sg-subsection"><h3 class="sg-subsection-title">Default</h3><div class="sg-example"><div class="sg-example-preview" style="display:flex;flex-direction:column;gap:12px;"><label class="udc-checkbox"><input type="checkbox" /><span class="udc-checkbox__control"></span><span class="udc-checkbox__label">Unchecked</span></label><label class="udc-checkbox"><input type="checkbox" checked /><span class="udc-checkbox__control"></span><span class="udc-checkbox__label">Checked</span></label></div><details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;label class="udc-checkbox"&gt;
+  &lt;input type="checkbox" /&gt;
+  &lt;span class="udc-checkbox__control"&gt;&lt;/span&gt;
+  &lt;span class="udc-checkbox__label"&gt;Label&lt;/span&gt;
+&lt;/label&gt;</code></pre></details></div></div>
+          <div class="sg-subsection"><h3 class="sg-subsection-title">Disabled</h3><div class="sg-example"><div class="sg-example-preview" style="display:flex;flex-direction:column;gap:12px;"><label class="udc-checkbox"><input type="checkbox" disabled /><span class="udc-checkbox__control"></span><span class="udc-checkbox__label">Disabled</span></label><label class="udc-checkbox"><input type="checkbox" checked disabled /><span class="udc-checkbox__control"></span><span class="udc-checkbox__label">Disabled checked</span></label></div><details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;input type="checkbox" disabled /&gt;</code></pre></details></div></div>
+          <div class="sg-subsection"><h3 class="sg-subsection-title">Error state</h3><div class="sg-example"><div class="sg-example-preview" style="display:flex;flex-direction:column;gap:12px;"><label class="udc-checkbox" data-state="error"><input type="checkbox" /><span class="udc-checkbox__control"></span><span class="udc-checkbox__label">Required field</span></label></div><details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;label class="udc-checkbox" data-state="error"&gt;…&lt;/label&gt;</code></pre></details></div></div>
+        </div>
+        <div data-tab-panel="code"><h3 class="sg-subsection-title">Import</h3><pre class="sg-playground-code" style="margin-bottom:24px;">@import url('./components/checkbox.css');</pre><h3 class="sg-subsection-title">CSS Classes</h3><table class="sg-api-table"><thead><tr><th>Class</th><th>Description</th></tr></thead><tbody><tr><td><code>.udc-checkbox</code></td><td>Root label wrapper</td></tr><tr><td><code>.udc-checkbox__control</code></td><td>Visual checkbox indicator</td></tr><tr><td><code>.udc-checkbox__label</code></td><td>Label text</td></tr><tr><td><code>.udc-checkbox__required</code></td><td>Required dot indicator</td></tr></tbody></table></div>
+        <div data-tab-panel="usage"><div class="sg-usage-section"><h4>When to use</h4><ul><li>Multiple selections from a set</li><li>Binary on/off toggles (terms agreement, opt-in)</li></ul></div><div class="sg-usage-section"><h4>Accessibility</h4><ul><li>Uses native <code>&lt;input type="checkbox"&gt;</code> for screen reader support</li><li>The visible indicator is purely decorative — the native input handles interaction</li></ul></div></div>
+        <div data-tab-panel="changelog"><p class="sg-changelog-empty">No changes recorded yet.</p></div>
+        <div data-tab-panel="playground"></div>
+      </div>
+
+      <!-- RADIO -->
+      <div data-page="radio">
+        <h1 class="sg-page-title">Radio</h1>
+        <p class="sg-page-desc">A radio button lets users select exactly one option from a set.</p>
+        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="usage">Usage</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
+        <div data-tab-panel="examples" class="active">
+          <div class="sg-subsection"><h3 class="sg-subsection-title">Default group</h3><div class="sg-example"><div class="sg-example-preview"><div class="udc-radio-group" role="radiogroup" aria-labelledby="demo-notif-label"><span class="udc-radio-group__legend" id="demo-notif-label">Notification preference</span><label class="udc-radio"><input type="radio" name="demo-notif" value="email" checked /><span class="udc-radio__control"></span><span class="udc-radio__label">Email</span></label><label class="udc-radio"><input type="radio" name="demo-notif" value="sms" /><span class="udc-radio__control"></span><span class="udc-radio__label">SMS</span></label><label class="udc-radio"><input type="radio" name="demo-notif" value="push" /><span class="udc-radio__control"></span><span class="udc-radio__label">Push notification</span></label></div></div><details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;div class="udc-radio-group" role="radiogroup"&gt;
+  &lt;span class="udc-radio-group__legend"&gt;Label&lt;/span&gt;
+  &lt;label class="udc-radio"&gt;
+    &lt;input type="radio" name="group" value="a" checked /&gt;
+    &lt;span class="udc-radio__control"&gt;&lt;/span&gt;
+    &lt;span class="udc-radio__label"&gt;Option&lt;/span&gt;
+  &lt;/label&gt;
+&lt;/div&gt;</code></pre></details></div></div>
+          <div class="sg-subsection"><h3 class="sg-subsection-title">Disabled</h3><div class="sg-example"><div class="sg-example-preview" style="display:flex;flex-direction:column;gap:12px;"><label class="udc-radio"><input type="radio" name="demo-dis" disabled /><span class="udc-radio__control"></span><span class="udc-radio__label">Disabled</span></label></div><details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;input type="radio" disabled /&gt;</code></pre></details></div></div>
+          <div class="sg-subsection"><h3 class="sg-subsection-title">Error state</h3><div class="sg-example"><div class="sg-example-preview" style="display:flex;flex-direction:column;gap:12px;"><label class="udc-radio" data-state="error"><input type="radio" name="demo-err" /><span class="udc-radio__control"></span><span class="udc-radio__label">Error</span></label></div><details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;label class="udc-radio" data-state="error"&gt;…&lt;/label&gt;</code></pre></details></div></div>
+        </div>
+        <div data-tab-panel="code"><h3 class="sg-subsection-title">Import</h3><pre class="sg-playground-code" style="margin-bottom:24px;">@import url('./components/radio.css');</pre><h3 class="sg-subsection-title">CSS Classes</h3><table class="sg-api-table"><thead><tr><th>Class</th><th>Description</th></tr></thead><tbody><tr><td><code>.udc-radio-group</code></td><td>Vertical stack wrapper</td></tr><tr><td><code>.udc-radio-group__legend</code></td><td>Group label</td></tr><tr><td><code>.udc-radio</code></td><td>Individual radio label</td></tr><tr><td><code>.udc-radio__control</code></td><td>Visual circle indicator</td></tr><tr><td><code>.udc-radio__label</code></td><td>Label text</td></tr></tbody></table></div>
+        <div data-tab-panel="usage"><div class="sg-usage-section"><h4>When to use</h4><ul><li>Mutually exclusive selection from 2–5 options</li><li>When the user must see all options at once</li></ul></div><div class="sg-usage-section"><h4>When not to use</h4><ul><li>For more than 5 options — use a dropdown select instead</li><li>For multiple selections — use checkboxes</li></ul></div></div>
+        <div data-tab-panel="changelog"><p class="sg-changelog-empty">No changes recorded yet.</p></div>
+        <div data-tab-panel="playground"></div>
+      </div>
+
+      <!-- BADGE -->
+      <div data-page="badge">
+        <h1 class="sg-page-title">Badge</h1>
+        <p class="sg-page-desc">A badge is a visual indicator for categorization, status, or labels.</p>
+        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="usage">Usage</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
+        <div data-tab-panel="examples" class="active">
+          <div class="sg-subsection"><h3 class="sg-subsection-title">Prominent (filled)</h3><div class="sg-example"><div class="sg-example-preview"><span class="udc-badge">Info</span><span class="udc-badge" data-variant="secondary">Secondary</span><span class="udc-badge" data-variant="success">Success</span><span class="udc-badge" data-variant="error">Error</span><span class="udc-badge" data-variant="warning">Warning</span></div><details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;span class="udc-badge"&gt;Info&lt;/span&gt;
+&lt;span class="udc-badge" data-variant="success"&gt;Success&lt;/span&gt;</code></pre></details></div></div>
+          <div class="sg-subsection"><h3 class="sg-subsection-title">Subtle</h3><div class="sg-example"><div class="sg-example-preview"><span class="udc-badge" data-prominent="false">Info</span><span class="udc-badge" data-variant="secondary" data-prominent="false">Secondary</span><span class="udc-badge" data-variant="success" data-prominent="false">Success</span><span class="udc-badge" data-variant="error" data-prominent="false">Error</span><span class="udc-badge" data-variant="warning" data-prominent="false">Warning</span></div><details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;span class="udc-badge" data-prominent="false"&gt;Info&lt;/span&gt;</code></pre></details></div></div>
+          <div class="sg-subsection"><h3 class="sg-subsection-title">Small size</h3><div class="sg-example"><div class="sg-example-preview"><span class="udc-badge" data-size="sm">Info</span><span class="udc-badge" data-variant="success" data-size="sm">Success</span><span class="udc-badge" data-variant="error" data-size="sm">Error</span></div><details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;span class="udc-badge" data-size="sm"&gt;Info&lt;/span&gt;</code></pre></details></div></div>
+        </div>
+        <div data-tab-panel="code"><h3 class="sg-subsection-title">Import</h3><pre class="sg-playground-code" style="margin-bottom:24px;">@import url('./components/badge.css');</pre><h3 class="sg-subsection-title">Data Attributes</h3><table class="sg-api-table"><thead><tr><th>Attribute</th><th>Values</th><th>Description</th></tr></thead><tbody><tr><td><code>data-variant</code></td><td><code>secondary</code>, <code>success</code>, <code>error</code>, <code>warning</code></td><td>Color variant (default is info/blue)</td></tr><tr><td><code>data-prominent</code></td><td><code>false</code></td><td>Subtle/tinted style</td></tr><tr><td><code>data-size</code></td><td><code>sm</code></td><td>Compact size</td></tr></tbody></table></div>
+        <div data-tab-panel="usage"><div class="sg-usage-section"><h4>When to use</h4><ul><li>Status indicators (active, pending, error)</li><li>Categorization labels</li><li>Counts or notification indicators</li></ul></div></div>
+        <div data-tab-panel="changelog"><p class="sg-changelog-empty">No changes recorded yet.</p></div>
+        <div data-tab-panel="playground"></div>
+      </div>
+
+      <!-- DIVIDER -->
+      <div data-page="divider">
+        <h1 class="sg-page-title">Divider</h1>
+        <p class="sg-page-desc">A horizontal divider separates content into clear groups.</p>
+        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="usage">Usage</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
+        <div data-tab-panel="examples" class="active">
+          <div class="sg-subsection"><h3 class="sg-subsection-title">Padding variants</h3><div class="sg-example"><div class="sg-example-preview" data-direction="column" style="gap:0;width:100%;"><p style="font-size:13px;color:var(--uds-color-text-secondary);">sm (default)</p><hr class="udc-divider-horizontal" /><p style="font-size:13px;color:var(--uds-color-text-secondary);">md</p><hr class="udc-divider-horizontal" data-padding="md" /><p style="font-size:13px;color:var(--uds-color-text-secondary);">lg</p><hr class="udc-divider-horizontal" data-padding="lg" /><p style="font-size:13px;color:var(--uds-color-text-secondary);">xl</p><hr class="udc-divider-horizontal" data-padding="xl" /><p style="font-size:13px;color:var(--uds-color-text-secondary);">Content after</p></div><details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;hr class="udc-divider-horizontal" /&gt;
+&lt;hr class="udc-divider-horizontal" data-padding="md" /&gt;
+&lt;hr class="udc-divider-horizontal" data-padding="lg" /&gt;
+&lt;hr class="udc-divider-horizontal" data-padding="xl" /&gt;</code></pre></details></div></div>
+        </div>
+        <div data-tab-panel="code"><h3 class="sg-subsection-title">Import</h3><pre class="sg-playground-code" style="margin-bottom:24px;">@import url('./components/divider.css');</pre><table class="sg-api-table"><thead><tr><th>Attribute</th><th>Values</th></tr></thead><tbody><tr><td><code>data-padding</code></td><td><code>md</code>, <code>lg</code>, <code>xl</code> (default: sm)</td></tr></tbody></table></div>
+        <div data-tab-panel="usage"><div class="sg-usage-section"><h4>When to use</h4><ul><li>Separate content sections in a list or layout</li><li>Provide visual breathing room between groups</li></ul></div></div>
+        <div data-tab-panel="changelog"><p class="sg-changelog-empty">No changes recorded yet.</p></div>
+        <div data-tab-panel="playground"></div>
+      </div>
+
+      <!-- ICON WRAPPER -->
+      <div data-page="icon-wrapper">
+        <h1 class="sg-page-title">Icon Wrapper</h1>
+        <p class="sg-page-desc">An icon wrapper constrains an icon to a fixed size with consistent inner padding.</p>
+        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="usage">Usage</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
+        <div data-tab-panel="examples" class="active">
+          <div class="sg-subsection"><h3 class="sg-subsection-title">Sizes</h3><div class="sg-example"><div class="sg-example-preview" style="align-items:flex-end;gap:20px;"><div style="text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px;"><span class="udc-icon-wrapper" data-size="16" style="color:var(--uds-color-surface-interactive-default);"><span class="material-symbols-outlined">info</span></span><span class="sg-swatch-label">16</span></div><div style="text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px;"><span class="udc-icon-wrapper" style="color:var(--uds-color-surface-interactive-default);"><span class="material-symbols-outlined">info</span></span><span class="sg-swatch-label">24</span></div><div style="text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px;"><span class="udc-icon-wrapper" data-size="48" style="color:var(--uds-color-surface-interactive-default);"><span class="material-symbols-outlined">info</span></span><span class="sg-swatch-label">48</span></div><div style="text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px;"><span class="udc-icon-wrapper" data-size="64" style="color:var(--uds-color-surface-interactive-default);"><span class="material-symbols-outlined">info</span></span><span class="sg-swatch-label">64</span></div></div><details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;span class="udc-icon-wrapper" data-size="24"&gt;
+  &lt;span class="material-symbols-outlined"&gt;info&lt;/span&gt;
+&lt;/span&gt;</code></pre></details></div></div>
+        </div>
+        <div data-tab-panel="code"><h3 class="sg-subsection-title">Import</h3><pre class="sg-playground-code" style="margin-bottom:24px;">@import url('./components/icon-wrapper.css');</pre><table class="sg-api-table"><thead><tr><th>Attribute</th><th>Values</th></tr></thead><tbody><tr><td><code>data-size</code></td><td><code>16</code>, <code>20</code>, <code>24</code> (default), <code>32</code>, <code>48</code>, <code>64</code></td></tr></tbody></table></div>
+        <div data-tab-panel="usage"><div class="sg-usage-section"><h4>When to use</h4><ul><li>Wrap Material Symbols icons to constrain to a consistent size</li><li>Color is inherited from parent — use semantic icon tokens</li></ul></div></div>
+        <div data-tab-panel="changelog"><p class="sg-changelog-empty">No changes recorded yet.</p></div>
+        <div data-tab-panel="playground"></div>
+      </div>
+
+      <!-- SPACER -->
+      <div data-page="spacer">
+        <h1 class="sg-page-title">Spacer</h1>
+        <p class="sg-page-desc">A spacer adds consistent whitespace between elements using the spacing scale.</p>
+        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="usage">Usage</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
+        <div data-tab-panel="examples" class="active">
+          <div class="sg-subsection"><h3 class="sg-subsection-title">Sizes</h3><div class="sg-example"><div class="sg-example-preview" data-direction="column" style="gap:8px;"><div style="display:flex;align-items:center;gap:0;"><span class="udc-badge">Before</span><div class="udc-spacer" data-size="100" style="background:var(--uds-color-surface-info-subtle);outline:1px dashed var(--uds-color-border-interactive);"></div><span class="udc-badge" data-variant="success">After (100)</span></div><div style="display:flex;align-items:center;gap:0;"><span class="udc-badge">Before</span><div class="udc-spacer" data-size="300" style="background:var(--uds-color-surface-info-subtle);outline:1px dashed var(--uds-color-border-interactive);"></div><span class="udc-badge" data-variant="success">After (300)</span></div><div style="display:flex;align-items:center;gap:0;"><span class="udc-badge">Before</span><div class="udc-spacer" data-size="600" style="background:var(--uds-color-surface-info-subtle);outline:1px dashed var(--uds-color-border-interactive);"></div><span class="udc-badge" data-variant="success">After (600)</span></div></div><details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;div class="udc-spacer" data-size="300"&gt;&lt;/div&gt;</code></pre></details></div></div>
+        </div>
+        <div data-tab-panel="code"><h3 class="sg-subsection-title">Import</h3><pre class="sg-playground-code" style="margin-bottom:24px;">@import url('./components/spacer.css');</pre><table class="sg-api-table"><thead><tr><th>Attribute</th><th>Values</th></tr></thead><tbody><tr><td><code>data-size</code></td><td><code>050</code>, <code>075</code>, <code>100</code>, <code>150</code>, <code>200</code>, <code>300</code>, <code>400</code>, <code>600</code></td></tr></tbody></table></div>
+        <div data-tab-panel="usage"><div class="sg-usage-section"><h4>When to use</h4><ul><li>Add spacing between elements in a flex/grid layout</li><li>Prefer CSS gap or margin when possible — spacer is for explicit visual gaps</li></ul></div></div>
+        <div data-tab-panel="changelog"><p class="sg-changelog-empty">No changes recorded yet.</p></div>
+        <div data-tab-panel="playground"></div>
+      </div>
+
+      <!-- BREADCRUMB -->
+      <div data-page="breadcrumb">
+        <h1 class="sg-page-title">Breadcrumb</h1>
+        <p class="sg-page-desc">A breadcrumb shows the user's location in a page hierarchy.</p>
+        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="usage">Usage</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
+        <div data-tab-panel="examples" class="active">
+          <div class="sg-subsection"><h3 class="sg-subsection-title">Framed (default)</h3><div class="sg-example"><div class="sg-example-preview"><nav class="udc-breadcrumb" aria-label="Breadcrumb framed"><ol><li><a href="javascript:void(0)">Home</a></li><li><a href="javascript:void(0)">Products</a></li><li aria-current="page">Widget Pro</li></ol></nav></div><details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;nav class="udc-breadcrumb" aria-label="Breadcrumb"&gt;
+  &lt;ol&gt;
+    &lt;li&gt;&lt;a href="#"&gt;Home&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="#"&gt;Products&lt;/a&gt;&lt;/li&gt;
+    &lt;li aria-current="page"&gt;Widget Pro&lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/nav&gt;</code></pre></details></div></div>
+          <div class="sg-subsection"><h3 class="sg-subsection-title">Frameless</h3><div class="sg-example"><div class="sg-example-preview"><nav class="udc-breadcrumb" data-frameless aria-label="Breadcrumb frameless"><ol><li><a href="javascript:void(0)">Dashboard</a></li><li><a href="javascript:void(0)">Settings</a></li><li aria-current="page">Profile</li></ol></nav></div><details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;nav class="udc-breadcrumb" data-frameless&gt;…&lt;/nav&gt;</code></pre></details></div></div>
+          <div class="sg-subsection"><h3 class="sg-subsection-title">Deep hierarchy</h3><div class="sg-example"><div class="sg-example-preview"><nav class="udc-breadcrumb" aria-label="Breadcrumb deep"><ol><li><a href="javascript:void(0)">Home</a></li><li><a href="javascript:void(0)">Category</a></li><li><a href="javascript:void(0)">Sub-category</a></li><li><a href="javascript:void(0)">Section</a></li><li aria-current="page">Current Page</li></ol></nav></div><details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;nav class="udc-breadcrumb"&gt;
+  &lt;ol&gt;…5 items…&lt;/ol&gt;
+&lt;/nav&gt;</code></pre></details></div></div>
+        </div>
+        <div data-tab-panel="code"><h3 class="sg-subsection-title">Import</h3><pre class="sg-playground-code" style="margin-bottom:24px;">@import url('./components/breadcrumb.css');</pre><table class="sg-api-table"><thead><tr><th>Attribute</th><th>Description</th></tr></thead><tbody><tr><td><code>data-frameless</code></td><td>Removes the pill container</td></tr><tr><td><code>aria-current="page"</code></td><td>Marks the current page (bold, non-interactive)</td></tr></tbody></table></div>
+        <div data-tab-panel="usage"><div class="sg-usage-section"><h4>When to use</h4><ul><li>Show hierarchical page location</li><li>Help users navigate back to parent pages</li></ul></div><div class="sg-usage-section"><h4>Accessibility</h4><ul><li>Use <code>&lt;nav aria-label="Breadcrumb"&gt;</code> with an <code>&lt;ol&gt;</code></li><li>Mark current page with <code>aria-current="page"</code></li></ul></div></div>
+        <div data-tab-panel="changelog"><p class="sg-changelog-empty">No changes recorded yet.</p></div>
+        <div data-tab-panel="playground"></div>
+      </div>
+
+      <!-- TABS -->
+      <div data-page="tabs">
+        <h1 class="sg-page-title">Tabs</h1>
+        <p class="sg-page-desc">Horizontal tabs let users switch between related views in a single content area.</p>
+        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="usage">Usage</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
+        <div data-tab-panel="examples" class="active">
+          <div class="sg-subsection"><h3 class="sg-subsection-title">Default</h3><div class="sg-example"><div class="sg-example-preview"><div class="udc-tabs" role="tablist"><button class="udc-tab" role="tab" aria-selected="true">Overview</button><button class="udc-tab" role="tab">Details</button><button class="udc-tab" role="tab">History</button></div></div><details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;div class="udc-tabs" role="tablist"&gt;
+  &lt;button class="udc-tab" role="tab" aria-selected="true"&gt;Overview&lt;/button&gt;
+  &lt;button class="udc-tab" role="tab"&gt;Details&lt;/button&gt;
+&lt;/div&gt;</code></pre></details></div></div>
+          <div class="sg-subsection"><h3 class="sg-subsection-title">Small size</h3><div class="sg-example"><div class="sg-example-preview"><div class="udc-tabs" role="tablist" data-size="sm"><button class="udc-tab" role="tab" aria-selected="true">Tab 1</button><button class="udc-tab" role="tab">Tab 2</button><button class="udc-tab" role="tab">Tab 3</button><button class="udc-tab" role="tab">Tab 4</button></div></div><details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;div class="udc-tabs" role="tablist" data-size="sm"&gt;…&lt;/div&gt;</code></pre></details></div></div>
+          <div class="sg-subsection"><h3 class="sg-subsection-title">Disabled tab</h3><div class="sg-example"><div class="sg-example-preview"><div class="udc-tabs" role="tablist"><button class="udc-tab" role="tab" aria-selected="true">Active</button><button class="udc-tab" role="tab">Normal</button><button class="udc-tab" role="tab" disabled>Disabled</button></div></div><details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;button class="udc-tab" role="tab" disabled&gt;Disabled&lt;/button&gt;</code></pre></details></div></div>
+        </div>
+        <div data-tab-panel="code"><h3 class="sg-subsection-title">Import</h3><pre class="sg-playground-code" style="margin-bottom:24px;">@import url('./components/tab-horizontal.css');</pre><table class="sg-api-table"><thead><tr><th>Class / Attribute</th><th>Description</th></tr></thead><tbody><tr><td><code>.udc-tabs</code></td><td>Tab bar container</td></tr><tr><td><code>.udc-tab</code></td><td>Individual tab button</td></tr><tr><td><code>data-size="sm"</code></td><td>Compact vertical padding</td></tr><tr><td><code>aria-selected="true"</code></td><td>Active tab</td></tr><tr><td><code>disabled</code></td><td>Disabled tab</td></tr></tbody></table></div>
+        <div data-tab-panel="usage"><div class="sg-usage-section"><h4>When to use</h4><ul><li>Switch between related views without leaving the page</li><li>Organize content into logical groups</li></ul></div><div class="sg-usage-section"><h4>Accessibility</h4><ul><li>Use <code>role="tablist"</code> on the container and <code>role="tab"</code> on each button</li><li>Connect tabs to panels with <code>aria-controls</code> and <code>aria-labelledby</code></li></ul></div></div>
+        <div data-tab-panel="changelog"><p class="sg-changelog-empty">No changes recorded yet.</p></div>
+        <div data-tab-panel="playground"></div>
+      </div>
+
+      <!-- NAV -->
+      <div data-page="nav">
+        <h1 class="sg-page-title">Nav</h1>
+        <p class="sg-page-desc">A navigation system composed of a header bar, vertical sidebar, bento dropdown, and supporting sub-components for application-level wayfinding.</p>
+        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="usage">Usage</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
+
+        <div data-tab-panel="examples" class="active">
+
+          <!-- Nav Header -->
+          <div class="sg-subsection"><h3 class="sg-subsection-title">Nav Header</h3>
+            <div class="sg-example"><div class="sg-example-preview" style="background:var(--uds-color-surface-page);padding:0;overflow:auto;">
+              <div class="udc-nav-header">
+                <div class="udc-nav-header__left">
+                  <div class="udc-nav-logo"><span class="material-symbols-outlined" style="font-size:32px;color:var(--uds-color-icon-interactive);">apartment</span></div>
+                  <div class="udc-nav-bento-wrapper">
+                    <button class="udc-nav-bento-button" aria-expanded="false" aria-haspopup="true">
+                      <span class="material-symbols-outlined" style="color:var(--uds-color-icon-interactive);">dashboard</span>
+                      Boardroom
+                      <span class="material-symbols-outlined udc-nav-bento-button__chevron">keyboard_arrow_down</span>
+                    </button>
+                    <div class="udc-nav-bento" data-open="false">
+                      <div class="udc-nav-bento__list">
+                        <button class="udc-nav-button" aria-selected="true"><span class="material-symbols-outlined">space_dashboard</span><span class="udc-nav-button__label">Dashboard</span></button>
+                        <button class="udc-nav-button"><span class="material-symbols-outlined">book</span><span class="udc-nav-button__label">Leasing / CRM</span></button>
+                        <button class="udc-nav-button"><span class="material-symbols-outlined">contact_phone</span><span class="udc-nav-button__label">People / Contacts</span></button>
+                        <button class="udc-nav-button"><span class="material-symbols-outlined">home_work</span><span class="udc-nav-button__label">Property / Assets</span></button>
+                        <button class="udc-nav-button"><span class="material-symbols-outlined">monetization_on</span><span class="udc-nav-button__label">Accounting / Finance</span></button>
+                        <button class="udc-nav-button"><span class="material-symbols-outlined">summarize</span><span class="udc-nav-button__label">Compliance / Reporting</span></button>
+                        <button class="udc-nav-button"><span class="material-symbols-outlined">admin_panel_settings</span><span class="udc-nav-button__label">Admin / Settings</span></button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="udc-nav-header__center">
+                  <div class="udc-nav-search">
+                    <span class="material-symbols-outlined">auto_awesome</span>
+                    <input class="udc-nav-search__input" type="text" placeholder="Search or ask a question">
+                  </div>
+                </div>
+                <div class="udc-nav-header__right">
+                  <button class="udc-nav-mywork">
+                    <span class="material-symbols-outlined">notifications_active</span>
+                    My Work
+                    <span class="udc-badge" data-variant="warning" style="width:24px;height:24px;padding:0;display:inline-flex;align-items:center;justify-content:center;">5</span>
+                  </button>
+                  <div class="udc-nav-account">
+                    <button class="udc-button-ghost" data-icon-only><span class="material-symbols-outlined">notifications</span></button>
+                    <button class="udc-button-ghost" data-icon-only><span class="material-symbols-outlined">settings</span></button>
+                    <button class="udc-button-ghost" data-icon-only><span class="material-symbols-outlined">account_circle</span></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;div class="udc-nav-header"&gt;
+  &lt;div class="udc-nav-header__left"&gt;
+    &lt;div class="udc-nav-logo"&gt;…&lt;/div&gt;
+    &lt;div class="udc-nav-bento-wrapper"&gt;
+      &lt;button class="udc-nav-bento-button" aria-expanded="false"&gt;
+        &lt;span class="material-symbols-outlined"&gt;dashboard&lt;/span&gt;
+        Boardroom
+        &lt;span class="material-symbols-outlined udc-nav-bento-button__chevron"&gt;keyboard_arrow_down&lt;/span&gt;
+      &lt;/button&gt;
+      &lt;div class="udc-nav-bento" data-open="false"&gt;…&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class="udc-nav-header__center"&gt;
+    &lt;div class="udc-nav-search"&gt;…&lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class="udc-nav-header__right"&gt;
+    &lt;button class="udc-nav-mywork"&gt;…&lt;/button&gt;
+    &lt;div class="udc-nav-account"&gt;…&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre></details></div>
+          </div>
+
+          <!-- Nav Vertical -->
+          <div class="sg-subsection"><h3 class="sg-subsection-title">Nav Vertical (sidebar)</h3>
+            <div class="sg-example"><div class="sg-example-preview" style="max-width:240px;">
+              <nav class="udc-nav-vertical" aria-label="Main navigation">
+                <button class="udc-nav-button" aria-selected="true"><span class="material-symbols-outlined">space_dashboard</span><span class="udc-nav-button__label">Dashboard</span></button>
+                <button class="udc-nav-button"><span class="material-symbols-outlined">book</span><span class="udc-nav-button__label">Leasing / CRM</span></button>
+                <button class="udc-nav-button"><span class="material-symbols-outlined">contact_phone</span><span class="udc-nav-button__label">People / Contacts</span></button>
+                <button class="udc-nav-button"><span class="material-symbols-outlined">home_work</span><span class="udc-nav-button__label">Property / Assets</span></button>
+                <button class="udc-nav-button"><span class="material-symbols-outlined">monetization_on</span><span class="udc-nav-button__label">Accounting / Finance</span></button>
+                <button class="udc-nav-button"><span class="material-symbols-outlined">summarize</span><span class="udc-nav-button__label">Compliance / Reporting</span></button>
+                <button class="udc-nav-button"><span class="material-symbols-outlined">admin_panel_settings</span><span class="udc-nav-button__label">Admin / Settings</span></button>
+              </nav>
+            </div>
+            <details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;nav class="udc-nav-vertical" aria-label="Main navigation"&gt;
+  &lt;button class="udc-nav-button" aria-selected="true"&gt;
+    &lt;span class="material-symbols-outlined"&gt;space_dashboard&lt;/span&gt;
+    &lt;span class="udc-nav-button__label"&gt;Dashboard&lt;/span&gt;
+  &lt;/button&gt;
+  &lt;button class="udc-nav-button"&gt;
+    &lt;span class="material-symbols-outlined"&gt;book&lt;/span&gt;
+    &lt;span class="udc-nav-button__label"&gt;Leasing / CRM&lt;/span&gt;
+  &lt;/button&gt;
+  …
+&lt;/nav&gt;</code></pre></details></div>
+          </div>
+
+          <!-- Nav Bento (standalone) -->
+          <div class="sg-subsection"><h3 class="sg-subsection-title">Nav Bento (dropdown panel)</h3>
+            <div class="sg-example"><div class="sg-example-preview" style="min-height:420px;">
+              <div class="udc-nav-bento-wrapper">
+                <button class="udc-nav-bento-button" aria-expanded="false" aria-haspopup="true">
+                  <span class="material-symbols-outlined" style="color:var(--uds-color-icon-interactive);">dashboard</span>
+                  Boardroom
+                  <span class="material-symbols-outlined udc-nav-bento-button__chevron">keyboard_arrow_down</span>
+                </button>
+                <div class="udc-nav-bento" data-open="true" style="position:relative;top:auto;">
+                  <div class="udc-nav-bento__tiles">
+                    <a class="udc-nav-tile" href="javascript:void(0)"><span class="material-symbols-outlined">home</span>Transaction</a>
+                    <a class="udc-nav-tile" href="javascript:void(0)"><span class="material-symbols-outlined">assignment</span>Leads</a>
+                    <a class="udc-nav-tile" href="javascript:void(0)"><span class="material-symbols-outlined">monetization_on</span>Accounting</a>
+                  </div>
+                  <div class="udc-nav-bento__list">
+                    <button class="udc-nav-button" aria-selected="true"><span class="material-symbols-outlined">space_dashboard</span><span class="udc-nav-button__label">Boardroom</span></button>
+                    <button class="udc-nav-button"><span class="material-symbols-outlined">verified_user</span><span class="udc-nav-button__label">Compliance Center</span></button>
+                    <button class="udc-nav-button"><span class="material-symbols-outlined">person</span><span class="udc-nav-button__label">Personal</span></button>
+                    <button class="udc-nav-button"><span class="material-symbols-outlined">business</span><span class="udc-nav-button__label">Commercial</span><span class="udc-nav-button__trailing"><span class="material-symbols-outlined">open_in_new</span></span></button>
+                    <button class="udc-nav-button"><span class="material-symbols-outlined">manage_accounts</span><span class="udc-nav-button__label">Accounts</span></button>
+                    <button class="udc-nav-button"><span class="material-symbols-outlined">real_estate_agent</span><span class="udc-nav-button__label">Property</span></button>
+                    <button class="udc-nav-button"><span class="material-symbols-outlined">monetization_on</span><span class="udc-nav-button__label">Accounting</span></button>
+                    <button class="udc-nav-button"><span class="material-symbols-outlined">bar_chart</span><span class="udc-nav-button__label">Reporting</span></button>
+                    <button class="udc-nav-button"><span class="material-symbols-outlined">build</span><span class="udc-nav-button__label">Tools</span></button>
+                    <button class="udc-nav-button"><span class="material-symbols-outlined">admin_panel_settings</span><span class="udc-nav-button__label">Admin</span></button>
+                  </div>
+                  <a class="udc-nav-bento__footer" href="javascript:void(0)">Customize menu</a>
+                </div>
+              </div>
+            </div>
+            <details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;div class="udc-nav-bento-wrapper"&gt;
+  &lt;button class="udc-nav-bento-button" aria-expanded="false"&gt;
+    &lt;span class="material-symbols-outlined"&gt;dashboard&lt;/span&gt;
+    Boardroom
+    &lt;span class="material-symbols-outlined udc-nav-bento-button__chevron"&gt;keyboard_arrow_down&lt;/span&gt;
+  &lt;/button&gt;
+  &lt;div class="udc-nav-bento" data-open="false"&gt;
+    &lt;div class="udc-nav-bento__tiles"&gt;
+      &lt;a class="udc-nav-tile"&gt;…&lt;/a&gt;
+    &lt;/div&gt;
+    &lt;div class="udc-nav-bento__list"&gt;
+      &lt;button class="udc-nav-button" aria-selected="true"&gt;…&lt;/button&gt;
+      &lt;button class="udc-nav-button"&gt;…&lt;/button&gt;
+    &lt;/div&gt;
+    &lt;a class="udc-nav-bento__footer"&gt;Customize menu&lt;/a&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre></details></div>
+          </div>
+
+          <!-- Nav Button Vertical (rail) -->
+          <div class="sg-subsection"><h3 class="sg-subsection-title">Nav Button Vertical (rail)</h3>
+            <div class="sg-example"><div class="sg-example-preview" style="display:flex;gap:8px;">
+              <button class="udc-nav-button-vertical"><span class="material-symbols-outlined">home</span>Home</button>
+              <button class="udc-nav-button-vertical" aria-selected="true"><span class="material-symbols-outlined">book</span>Leads</button>
+              <button class="udc-nav-button-vertical"><span class="material-symbols-outlined">monetization_on</span>Finance</button>
+            </div>
+            <details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;button class="udc-nav-button-vertical"&gt;
+  &lt;span class="material-symbols-outlined"&gt;home&lt;/span&gt;
+  Home
+&lt;/button&gt;
+&lt;button class="udc-nav-button-vertical" aria-selected="true"&gt;…&lt;/button&gt;</code></pre></details></div>
+          </div>
+
+          <!-- Full App Layout -->
+          <div class="sg-subsection"><h3 class="sg-subsection-title">Full App Layout</h3>
+            <div class="sg-example"><div class="sg-example-preview" style="background:var(--uds-color-surface-page);padding:0;overflow:hidden;border-radius:var(--uds-border-radius-container-lg);">
+              <div style="border-bottom:1px solid var(--uds-color-border-secondary);">
+                <div class="udc-nav-header">
+                  <div class="udc-nav-header__left">
+                    <div class="udc-nav-logo"><span class="material-symbols-outlined" style="font-size:32px;color:var(--uds-color-icon-interactive);">apartment</span></div>
+                    <button class="udc-nav-bento-button">
+                      <span class="material-symbols-outlined" style="color:var(--uds-color-icon-interactive);">dashboard</span>
+                      Boardroom
+                      <span class="material-symbols-outlined udc-nav-bento-button__chevron">keyboard_arrow_down</span>
+                    </button>
+                  </div>
+                  <div class="udc-nav-header__center">
+                    <div class="udc-nav-search">
+                      <span class="material-symbols-outlined">auto_awesome</span>
+                      <input class="udc-nav-search__input" type="text" placeholder="Search or ask a question">
+                    </div>
+                  </div>
+                  <div class="udc-nav-header__right">
+                    <div class="udc-nav-account">
+                      <button class="udc-button-ghost" data-icon-only><span class="material-symbols-outlined">notifications</span></button>
+                      <button class="udc-button-ghost" data-icon-only><span class="material-symbols-outlined">settings</span></button>
+                      <button class="udc-button-ghost" data-icon-only><span class="material-symbols-outlined">account_circle</span></button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div style="display:flex;min-height:300px;">
+                <nav class="udc-nav-vertical" aria-label="App nav" style="width:200px;padding:var(--uds-space-100);border-right:1px solid var(--uds-color-border-secondary);">
+                  <button class="udc-nav-button" aria-selected="true"><span class="material-symbols-outlined">space_dashboard</span><span class="udc-nav-button__label">Dashboard</span></button>
+                  <button class="udc-nav-button"><span class="material-symbols-outlined">book</span><span class="udc-nav-button__label">Leasing / CRM</span></button>
+                  <button class="udc-nav-button"><span class="material-symbols-outlined">contact_phone</span><span class="udc-nav-button__label">People / Contacts</span></button>
+                  <button class="udc-nav-button"><span class="material-symbols-outlined">home_work</span><span class="udc-nav-button__label">Property / Assets</span></button>
+                  <button class="udc-nav-button"><span class="material-symbols-outlined">monetization_on</span><span class="udc-nav-button__label">Accounting / Finance</span></button>
+                  <button class="udc-nav-button"><span class="material-symbols-outlined">summarize</span><span class="udc-nav-button__label">Compliance / Reporting</span></button>
+                  <button class="udc-nav-button"><span class="material-symbols-outlined">admin_panel_settings</span><span class="udc-nav-button__label">Admin / Settings</span></button>
+                </nav>
+                <div style="flex:1;padding:var(--uds-space-300);color:var(--uds-color-text-secondary);font-family:var(--uds-font-family);font-size:var(--uds-font-size-base);">
+                  <p>Main content area</p>
+                </div>
+              </div>
+            </div>
+            <details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;!-- Full app layout with header + sidebar --&gt;
+&lt;div class="udc-nav-header"&gt;…&lt;/div&gt;
+&lt;div style="display:flex;"&gt;
+  &lt;nav class="udc-nav-vertical" style="width:200px;"&gt;
+    &lt;button class="udc-nav-button" aria-selected="true"&gt;…&lt;/button&gt;
+    &lt;button class="udc-nav-button"&gt;…&lt;/button&gt;
+  &lt;/nav&gt;
+  &lt;main&gt;…&lt;/main&gt;
+&lt;/div&gt;</code></pre></details></div>
+          </div>
+
+        </div>
+
+        <div data-tab-panel="code">
+          <h3 class="sg-subsection-title">Import</h3>
+          <pre class="sg-playground-code" style="margin-bottom:24px;">@import url('./components/nav.css');</pre>
+          <table class="sg-api-table">
+            <thead><tr><th>Class / Attribute</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td><code>.udc-nav-header</code></td><td>Top header bar (3-column grid)</td></tr>
+              <tr><td><code>.udc-nav-header__left</code></td><td>Left section (logo + bento trigger)</td></tr>
+              <tr><td><code>.udc-nav-header__center</code></td><td>Center section (search)</td></tr>
+              <tr><td><code>.udc-nav-header__right</code></td><td>Right section (actions)</td></tr>
+              <tr><td><code>.udc-nav-vertical</code></td><td>Sidebar vertical nav container</td></tr>
+              <tr><td><code>.udc-nav-button</code></td><td>Individual nav item (icon + label)</td></tr>
+              <tr><td><code>.udc-nav-button-vertical</code></td><td>Compact rail nav item (icon over label)</td></tr>
+              <tr><td><code>.udc-nav-bento-wrapper</code></td><td>Positioning context for bento dropdown</td></tr>
+              <tr><td><code>.udc-nav-bento-button</code></td><td>Pill trigger for the bento dropdown</td></tr>
+              <tr><td><code>.udc-nav-bento</code></td><td>Dropdown panel (shown with <code>data-open="true"</code>)</td></tr>
+              <tr><td><code>.udc-nav-bento__tiles</code></td><td>Optional shortcut tile row inside bento</td></tr>
+              <tr><td><code>.udc-nav-bento__list</code></td><td>Main list inside bento</td></tr>
+              <tr><td><code>.udc-nav-tile</code></td><td>Compact tile shortcut (icon + label)</td></tr>
+              <tr><td><code>.udc-nav-search</code></td><td>Search bar component</td></tr>
+              <tr><td><code>.udc-nav-mywork</code></td><td>"My Work" action button with badge</td></tr>
+              <tr><td><code>.udc-nav-account</code></td><td>Account actions group (icon buttons)</td></tr>
+              <tr><td><code>.udc-nav-logo</code></td><td>Logo container</td></tr>
+              <tr><td><code>aria-selected="true"</code></td><td>Active/selected nav item</td></tr>
+              <tr><td><code>aria-expanded</code></td><td>Bento button open state</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div data-tab-panel="usage">
+          <div class="sg-usage-section"><h4>When to use</h4>
+            <ul>
+              <li>Provide application-level navigation (header bar + sidebar)</li>
+              <li>Allow switching between major application sections via the bento dropdown</li>
+              <li>Show the current page context with the vertical nav sidebar</li>
+            </ul>
+          </div>
+          <div class="sg-usage-section"><h4>Sub-components</h4>
+            <ul>
+              <li><strong>Nav Header</strong> — Full-width top bar with logo, bento trigger, search, and action buttons</li>
+              <li><strong>Nav Vertical</strong> — Sidebar list of nav items with icon + label</li>
+              <li><strong>Nav Bento</strong> — Dropdown panel for switching between apps/modules</li>
+              <li><strong>Nav Button Vertical</strong> — Compact rail-style nav with icon above label</li>
+              <li><strong>Nav Tile</strong> — Compact shortcut tile (used inside bento)</li>
+            </ul>
+          </div>
+          <div class="sg-usage-section"><h4>Accessibility</h4>
+            <ul>
+              <li>Use <code>aria-label</code> on <code>&lt;nav&gt;</code> elements to describe the navigation region</li>
+              <li>Use <code>aria-selected="true"</code> on the currently active nav item</li>
+              <li>Use <code>aria-expanded</code> on the bento trigger to announce dropdown state</li>
+              <li>Support keyboard navigation: Arrow keys to move between items, Escape to close bento</li>
+            </ul>
+          </div>
+        </div>
+
+        <div data-tab-panel="changelog"><p class="sg-changelog-empty">No changes recorded yet.</p></div>
+        <div data-tab-panel="playground"></div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- =====================================================================
+       INIT SCRIPTS
+       ===================================================================== -->
+  <script>
+    // Generate primitive color swatches dynamically
+    ['slate','neutral','stone','blue','cyan','purple','red','orange','amber','yellow','lime','green','emerald'].forEach(family => {
+      const el = document.querySelector('#prim-' + family + ' .sg-swatch-group');
+      if (!el) return;
+      [10,20,30,40,50,60,70,80,90,100,110].forEach(step => {
+        const token = '--uds-primitive-color-' + family + '-' + step;
+        el.innerHTML += '<div class="sg-swatch"><div class="sg-swatch-color" style="background:var(' + token + ')"></div><span class="sg-swatch-label">' + step + '</span></div>';
+      });
+    });
+
+    // Generate text styles content dynamically
+    (function() {
+      const c = document.getElementById('text-styles-content');
+      if (!c) return;
+
+      function makeRow(cls, label, spec) {
+        return '<div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;"><span class="' + cls + '">' + label + '</span><span style="font-size:11px;color:#6b7280;white-space:nowrap;">.' + cls + ' &middot; ' + spec + '</span></div>';
+      }
+
+      const sections = [
+        { title: 'Headings', desc: 'Always Bold weight.', items: [
+          ['uds-text-heading-h1', 'Heading H1', '32/44 Bold'], ['uds-text-heading-h2', 'Heading H2', '24/32 Bold'],
+          ['uds-text-heading-h3', 'Heading H3', '18/26 Bold'], ['uds-text-heading-h4', 'Heading H4', '16/24 Bold']
+        ]},
+        { title: 'Paragraphs', desc: '6 sizes x 3 weights = 18 styles.', items: [
+          ['uds-text-paragraph-xl', 'Paragraph XL', '20/28 Regular'], ['uds-text-paragraph-xl-medium', 'Paragraph XL Medium', '20/28 Medium'], ['uds-text-paragraph-xl-bold', 'Paragraph XL Bold', '20/28 Bold'],
+          ['uds-text-paragraph-lg', 'Paragraph LG', '18/26 Regular'], ['uds-text-paragraph-lg-medium', 'Paragraph LG Medium', '18/26 Medium'], ['uds-text-paragraph-lg-bold', 'Paragraph LG Bold', '18/26 Bold'],
+          ['uds-text-paragraph-md', 'Paragraph MD', '16/24 Regular'], ['uds-text-paragraph-md-medium', 'Paragraph MD Medium', '16/24 Medium'], ['uds-text-paragraph-md-bold', 'Paragraph MD Bold', '16/24 Bold'],
+          ['uds-text-paragraph-base', 'Paragraph Base', '14/20 Regular'], ['uds-text-paragraph-base-medium', 'Paragraph Base Medium', '14/20 Medium'], ['uds-text-paragraph-base-bold', 'Paragraph Base Bold', '14/20 Bold'],
+          ['uds-text-paragraph-sm', 'Paragraph SM', '12/16 Regular'], ['uds-text-paragraph-sm-medium', 'Paragraph SM Medium', '12/16 Medium'], ['uds-text-paragraph-sm-bold', 'Paragraph SM Bold', '12/16 Bold'],
+          ['uds-text-paragraph-xs', 'Paragraph XS', '10/12 Regular'], ['uds-text-paragraph-xs-medium', 'Paragraph XS Medium', '10/12 Medium'], ['uds-text-paragraph-xs-bold', 'Paragraph XS Bold', '10/12 Bold']
+        ]},
+        { title: 'Labels', desc: '2 sizes x 3 weights = 6 styles.', items: [
+          ['uds-text-label-base', 'Label Base', '14/20 Regular'], ['uds-text-label-base-medium', 'Label Base Medium', '14/20 Medium'], ['uds-text-label-base-bold', 'Label Base Bold', '14/20 Bold'],
+          ['uds-text-label-sm', 'Label SM', '12/16 Regular'], ['uds-text-label-sm-medium', 'Label SM Medium', '12/16 Medium'], ['uds-text-label-sm-bold', 'Label SM Bold', '12/16 Bold']
+        ]},
+        { title: 'Inputs', desc: 'Form input text styles.', items: [
+          ['uds-text-input-base', 'Input Base', '14/20 Regular'], ['uds-text-input-base-medium', 'Input Base Medium', '14/20 Medium'], ['uds-text-input-base-bold', 'Input Base Bold', '14/20 Bold'],
+          ['uds-text-input-helper', 'Input Helper', '10/12 Regular']
+        ]},
+        { title: 'Data', desc: 'Table cell styles.', items: [
+          ['uds-text-data-cell', 'Data Cell', '14/20 Regular'], ['uds-text-data-cell-medium', 'Data Cell Medium', '14/20 Medium'], ['uds-text-data-cell-bold', 'Data Cell Bold', '14/20 Bold']
+        ]}
+      ];
+
+      sections.forEach(s => {
+        let html = '<div class="sg-subsection"><h3 class="sg-subsection-title">' + s.title + '</h3>';
+        if (s.desc) html += '<p class="sg-subsection-desc">' + s.desc + '</p>';
+        html += '<div class="sg-example"><div class="sg-example-preview" data-direction="column" style="gap:12px;">';
+        s.items.forEach(i => { html += makeRow(i[0], i[1], i[2]); });
+        html += '</div></div></div>';
+        c.innerHTML += html;
+      });
+    })();
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3/dist/jszip.min.js"></script>
+  <script src="./material-icons.js"></script>
+  <script src="./uds/uds.js?v=18"></script>
+  <script src="./app.js?v=32"></script>
+
+</body>
+</html>
