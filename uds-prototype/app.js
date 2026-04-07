@@ -3217,10 +3217,11 @@
       ]
     },
     {
-      version: 'SITE 2026.04.06.20',
-      date: '2026-04-06',
+      version: 'SITE 2026.04.07.1',
+      date: '2026-04-07',
       changes: [
-        { type: 'fixed', text: 'Demo preview CSS/JS URLs now use dynamic base path — fixes broken styling on GitHub Pages subdirectory hosting' }
+        { type: 'fixed', text: 'Demo preview CSS/JS URLs now use dynamic base path — fixes broken styling on GitHub Pages subdirectory hosting' },
+        { type: 'fixed', text: 'Site version date corrected to 2026-04-07' }
       ]
     }
   ];
