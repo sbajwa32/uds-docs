@@ -3244,6 +3244,17 @@
         { type: 'added', text: 'npm install section on Getting Started with import examples' },
         { type: 'added', text: 'AI Assist link in sidebar with smart_toy icon' }
       ]
+    },
+    {
+      version: 'SITE 2026.04.07.4',
+      date: '2026-04-07',
+      changes: [
+        { type: 'fixed', text: 'Cursor rule (.mdc): added Google Fonts link tags, project boilerplate for React/Vue/HTML, app shell composition pattern' },
+        { type: 'fixed', text: 'Cursor rule (.mdc): expanded data-table, dropdown, search with full BEM element markup' },
+        { type: 'fixed', text: 'Cursor rule (.mdc): added custom CSS guidance — use UDS tokens even for non-component layouts' },
+        { type: 'fixed', text: 'ai-context.json: added React/Vue patterns for ALL 21 components, required_fonts, app_shell, custom_css_rule' },
+        { type: 'fixed', text: 'Fixed search component emoji in .mdc — now uses Material Symbols Outlined icons' }
+      ]
     }
   ];
 
