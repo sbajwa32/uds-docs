@@ -3217,24 +3217,24 @@
       ]
     },
     {
-      version: 'SITE 2026.04.07.1',
-      date: '2026-04-07',
+      version: 'SITE 2026.04.14.1',
+      date: '2026-04-14',
       changes: [
         { type: 'fixed', text: 'Demo preview CSS/JS URLs now use dynamic base path — fixes broken styling on GitHub Pages subdirectory hosting' },
         { type: 'fixed', text: 'Site version date corrected to 2026-04-07' }
       ]
     },
     {
-      version: 'SITE 2026.04.07.2',
-      date: '2026-04-07',
+      version: 'SITE 2026.04.14.2',
+      date: '2026-04-14',
       changes: [
         { type: 'added', text: 'Cache-busting: no-cache meta tags on index.html to prevent browser caching of the HTML page' },
         { type: 'added', text: 'Auto-reload: inline version check script fetches version.txt on every page load and reloads if a newer version is deployed' }
       ]
     },
     {
-      version: 'SITE 2026.04.07.3',
-      date: '2026-04-07',
+      version: 'SITE 2026.04.14.3',
+      date: '2026-04-14',
       changes: [
         { type: 'added', text: 'AI Assist page — token reference, component catalog, framework patterns, do/donts, theming, full example, and download Cursor rule button' },
         { type: 'added', text: 'ai-context.json — machine-readable endpoint with complete UDS context for AI tools' },
@@ -3246,8 +3246,8 @@
       ]
     },
     {
-      version: 'SITE 2026.04.07.4',
-      date: '2026-04-07',
+      version: 'SITE 2026.04.14.4',
+      date: '2026-04-14',
       changes: [
         { type: 'fixed', text: 'Cursor rule (.mdc): added Google Fonts link tags, project boilerplate for React/Vue/HTML, app shell composition pattern' },
         { type: 'fixed', text: 'Cursor rule (.mdc): expanded data-table, dropdown, search with full BEM element markup' },
