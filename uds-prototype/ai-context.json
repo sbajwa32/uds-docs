@@ -1,0 +1,88 @@
+{
+  "name": "UDS — Urban Design System",
+  "version": "0.2",
+  "docsUrl": "https://sbajwa32.github.io/uds-docs/",
+  "description": "CSS-first design system with semantic tokens and BEM-style components. Works with HTML, React, Vue, or any framework.",
+  "install": {
+    "npm": "npm install uds-core",
+    "cdn_css": "https://sbajwa32.github.io/uds-docs/uds/uds.css",
+    "cdn_js": "https://sbajwa32.github.io/uds-docs/uds/uds.js"
+  },
+  "tokens": {
+    "color": {
+      "surface": ["--uds-color-surface-main", "--uds-color-surface-page-main", "--uds-color-surface-subtle", "--uds-color-surface-alt", "--uds-color-surface-interactive-default", "--uds-color-surface-interactive-hover", "--uds-color-surface-interactive-active", "--uds-color-surface-interactive-none", "--uds-color-surface-interactive-subtle", "--uds-color-surface-interactive-subtle-hover", "--uds-color-surface-interactive-subtle-active", "--uds-color-surface-info", "--uds-color-surface-info-subtle", "--uds-color-surface-success", "--uds-color-surface-success-subtle", "--uds-color-surface-warning", "--uds-color-surface-warning-subtle", "--uds-color-surface-error", "--uds-color-surface-error-subtle"],
+      "text": ["--uds-color-text-primary", "--uds-color-text-secondary", "--uds-color-text-inverse", "--uds-color-text-interactive", "--uds-color-text-disabled", "--uds-color-text-info", "--uds-color-text-success", "--uds-color-text-warning", "--uds-color-text-error"],
+      "border": ["--uds-color-border-primary", "--uds-color-border-secondary", "--uds-color-border-interactive", "--uds-color-border-disabled", "--uds-color-border-error", "--uds-color-border-outline-focus-visible"],
+      "icon": ["--uds-color-icon-primary", "--uds-color-icon-secondary", "--uds-color-icon-inverse", "--uds-color-icon-interactive", "--uds-color-icon-success", "--uds-color-icon-error", "--uds-color-icon-info", "--uds-color-icon-warning", "--uds-color-icon-disabled"]
+    },
+    "space": ["--uds-space-025", "--uds-space-050", "--uds-space-075", "--uds-space-100", "--uds-space-125", "--uds-space-150", "--uds-space-200", "--uds-space-250", "--uds-space-300", "--uds-space-400", "--uds-space-500", "--uds-space-550", "--uds-space-600", "--uds-space-700", "--uds-space-800", "--uds-space-1000"],
+    "font": {
+      "family": "--uds-font-family",
+      "size": ["--uds-font-size-xs", "--uds-font-size-sm", "--uds-font-size-base", "--uds-font-size-md", "--uds-font-size-lg", "--uds-font-size-xl", "--uds-font-size-2xl", "--uds-font-size-3xl", "--uds-font-size-4xl", "--uds-font-size-5xl"],
+      "weight": ["--uds-font-weight-regular", "--uds-font-weight-medium", "--uds-font-weight-bold"],
+      "lineHeight": ["--uds-font-line-height-base", "--uds-font-line-height-250", "--uds-font-line-height-400"]
+    },
+    "border": {
+      "radius": ["--uds-border-radius-container-sm", "--uds-border-radius-input", "--uds-border-radius-container", "--uds-border-radius-container-md", "--uds-border-radius-container-xl", "--uds-border-radius-container-full"],
+      "width": ["--uds-border-width-input", "--uds-border-width-input-selected"]
+    },
+    "shadow": ["--uds-shadow-depth-100", "--uds-shadow-depth-300", "--uds-shadow-depth-500", "--uds-shadow-bento", "--uds-overlay-backdrop"]
+  },
+  "theming": {
+    "attributes": {
+      "data-color-scheme": { "values": ["dark"], "description": "Light is default; set 'dark' for dark mode" },
+      "data-theme": { "values": ["resman", "anyonehome", "inhabit"], "description": "Brand override; default is 'base'" },
+      "data-font": { "values": ["poppins", "roboto", "lexend"], "description": "Font family; default is Inter" },
+      "data-font-scale": { "values": ["smaller", "larger"], "description": "Font scale; default is standard" },
+      "data-density": { "values": ["comfortable"], "description": "Spacing density; default is compact" }
+    },
+    "apply_to": "<html> element"
+  },
+  "components": [
+    { "id": "button", "classes": ["udc-button-primary", "udc-button-secondary", "udc-button-ghost"], "variants": ["data-size=\"sm\"", "data-leading-icon", "data-trailing-icon", "data-icon-only", "data-btn-color=\"danger\"", "disabled"], "html": "<button class=\"udc-button-primary\">Label</button>", "react": "<button className=\"udc-button-primary\">Label</button>", "vue": "<button class=\"udc-button-primary\">Label</button>" },
+    { "id": "text-input", "classes": ["udc-text-input"], "elements": ["__label", "__required", "__field", "__helper", "__counter", "__trailing-btn"], "states": ["data-state=\"error\""], "html": "<div class=\"udc-text-input\"><label class=\"udc-text-input__label\">Label</label><div class=\"udc-text-input__field\"><input type=\"text\" placeholder=\"...\" /></div></div>", "react": "<div className=\"udc-text-input\"><label className=\"udc-text-input__label\">Label</label><div className=\"udc-text-input__field\"><input type=\"text\" value={val} onChange={e => setVal(e.target.value)} /></div></div>", "vue": "<div class=\"udc-text-input\"><label class=\"udc-text-input__label\">Label</label><div class=\"udc-text-input__field\"><input type=\"text\" v-model=\"val\" /></div></div>" },
+    { "id": "checkbox", "classes": ["udc-checkbox"], "elements": ["__control", "__label"], "html": "<label class=\"udc-checkbox\"><input type=\"checkbox\" /><span class=\"udc-checkbox__control\"></span><span class=\"udc-checkbox__label\">Label</span></label>" },
+    { "id": "radio", "classes": ["udc-radio", "udc-radio-group"], "elements": ["__control", "__label", "__legend"], "html": "<div class=\"udc-radio-group\" role=\"radiogroup\"><label class=\"udc-radio\"><input type=\"radio\" name=\"g\" /><span class=\"udc-radio__control\"></span><span class=\"udc-radio__label\">Option</span></label></div>" },
+    { "id": "dropdown", "classes": ["udc-dropdown"], "elements": ["__label", "__trigger", "__value", "__chevron", "__list", "__item", "__helper"], "states": ["data-state=\"error\"", "aria-disabled=\"true\"", "data-open=\"true\""], "html": "<div class=\"udc-dropdown\"><label class=\"udc-dropdown__label\">Label</label><div class=\"udc-dropdown__trigger\" tabindex=\"0\" role=\"combobox\">...</div><div class=\"udc-dropdown__list\" role=\"listbox\">...</div></div>" },
+    { "id": "search", "classes": ["udc-search"], "elements": ["__field", "__icon", "__clear"], "states": ["data-state=\"error\"", "data-has-value=\"true\""], "html": "<div class=\"udc-search\"><div class=\"udc-search__field\"><span class=\"udc-search__icon\"><span class=\"material-symbols-outlined\">search</span></span><input type=\"search\" placeholder=\"Search...\" /><button class=\"udc-search__clear\" aria-label=\"Clear\"><span class=\"material-symbols-outlined\">clear</span></button></div></div>" },
+    { "id": "badge", "classes": ["udc-badge"], "variants": ["data-variant=\"success|warning|error|info|secondary\"", "data-prominent=\"true|false\"", "data-size=\"sm\""], "html": "<span class=\"udc-badge\" data-variant=\"success\">Active</span>" },
+    { "id": "chip", "classes": ["udc-chip"], "elements": ["__label", "__leading-icon", "__trailing-icon"], "variants": ["data-variant=\"filter|input|dropdown\"", "aria-selected=\"true\""], "html": "<button class=\"udc-chip\" data-variant=\"filter\"><span class=\"udc-chip__label\">Filter</span></button>" },
+    { "id": "divider", "classes": ["udc-divider-horizontal"], "variants": ["data-padding=\"md|lg|xl\""], "html": "<hr class=\"udc-divider-horizontal\" />" },
+    { "id": "icon-wrapper", "classes": ["udc-icon-wrapper"], "variants": ["data-size=\"16|20|24|32|48\""], "html": "<span class=\"udc-icon-wrapper\" data-size=\"24\"><span class=\"material-symbols-outlined\">info</span></span>" },
+    { "id": "spacer", "classes": ["udc-spacer"], "variants": ["data-size=\"050|100|200|300|400|600\""], "html": "<div class=\"udc-spacer\" data-size=\"200\"></div>" },
+    { "id": "breadcrumb", "classes": ["udc-breadcrumb"], "html": "<nav class=\"udc-breadcrumb\" aria-label=\"Breadcrumb\"><ol><li><a href=\"#\">Home</a></li><li aria-current=\"page\">Current</li></ol></nav>" },
+    { "id": "tabs", "classes": ["udc-tabs", "udc-tab"], "html": "<div class=\"udc-tabs\" role=\"tablist\"><button class=\"udc-tab\" role=\"tab\" aria-selected=\"true\">Tab 1</button></div>" },
+    { "id": "nav-header", "classes": ["udc-nav-header"], "elements": ["__left", "__right", "udc-nav-logo", "udc-nav-bento-wrapper", "udc-nav-bento-button", "udc-nav-bento"], "html": "<div class=\"udc-nav-header\"><div class=\"udc-nav-header__left\">...</div><div class=\"udc-nav-header__right\">...</div></div>" },
+    { "id": "nav-vertical", "classes": ["udc-nav-vertical", "udc-nav-button"], "elements": ["__label"], "variants": ["data-leading-icons=\"false\"", "aria-selected=\"true\""], "html": "<nav class=\"udc-nav-vertical\"><button class=\"udc-nav-button\" aria-selected=\"true\"><span class=\"material-symbols-outlined\">home</span><span class=\"udc-nav-button__label\">Home</span></button></nav>" },
+    { "id": "tile", "classes": ["udc-tile"], "elements": ["__content", "__label", "__required", "__body", "__chevron"], "states": ["aria-selected=\"true\"", "aria-disabled=\"true\""], "html": "<div class=\"udc-tile\" tabindex=\"0\"><div class=\"udc-tile__content\"><div class=\"udc-tile__label\">Title</div><div class=\"udc-tile__body\">Description</div></div><span class=\"udc-tile__chevron\"><span class=\"material-symbols-outlined\">chevron_right</span></span></div>" },
+    { "id": "list", "classes": ["udc-list", "udc-list-item"], "elements": ["__label", "__leading-icon", "__trailing-icon"], "states": ["aria-selected=\"true\""], "html": "<div class=\"udc-list\"><div class=\"udc-list-item\" tabindex=\"0\" aria-selected=\"true\"><span class=\"udc-list-item__label\">Item</span></div></div>" },
+    { "id": "data-table", "classes": ["udc-data-table"], "elements": ["udc-dt-check", "udc-dt-sort", "udc-dt-filter", "udc-dt-action", "udc-dt-align-right", "udc-dt-align-center", "udc-dt-prominent"], "states": ["data-striped=\"true\"", "data-highlight=\"error\""], "html": "<div class=\"udc-data-table\"><table><thead><tr><th>Header</th></tr></thead><tbody><tr><td>Cell</td></tr></tbody></table></div>" },
+    { "id": "notification", "classes": ["udc-notification"], "elements": ["__icon", "__text", "__close"], "variants": ["data-variant=\"info|success|error|warning\"", "data-prominent=\"true\"", "data-inline=\"true\""], "html": "<div class=\"udc-notification\" data-variant=\"info\"><span class=\"udc-notification__icon\"><span class=\"material-symbols-outlined\">info</span></span><span class=\"udc-notification__text\">Message</span></div>" },
+    { "id": "dialog", "classes": ["udc-dialog-backdrop", "udc-dialog"], "elements": ["__header", "__title", "__close", "__body", "__footer"], "states": ["data-open=\"true|false\""], "html": "<div class=\"udc-dialog-backdrop\" data-open=\"false\"><div class=\"udc-dialog\" role=\"dialog\" aria-modal=\"true\"><div class=\"udc-dialog__header\"><h2 class=\"udc-dialog__title\">Title</h2><button class=\"udc-dialog__close\" aria-label=\"Close\"><span class=\"material-symbols-outlined\">close</span></button></div><div class=\"udc-dialog__body\">Content</div><div class=\"udc-dialog__footer\"><button class=\"udc-button-primary\">Confirm</button></div></div></div>" },
+    { "id": "tooltip", "classes": ["udc-tooltip-wrapper", "udc-tooltip"], "variants": ["data-position=\"top|bottom|left|right\""], "html": "<span class=\"udc-tooltip-wrapper\"><button>Trigger</button><span class=\"udc-tooltip\" role=\"tooltip\">Tooltip text</span></span>" }
+  ],
+  "framework_rules": {
+    "react": {
+      "css_import": "import 'uds-core/uds.css';",
+      "no_uds_js": true,
+      "use_hooks": true,
+      "jsx_attributes": "className, htmlFor, tabIndex, onChange, onClick",
+      "controlled_inputs": true,
+      "banned": ["dangerouslySetInnerHTML", "class (use className)", "uds.js"]
+    },
+    "vue": {
+      "css_import": "import 'uds-core/uds.css';",
+      "no_uds_js": true,
+      "composition_api": true,
+      "template_attributes": "class, v-model, @click, :aria-selected",
+      "script_setup": true,
+      "banned": ["v-html", "Options API (data/methods/mounted)", "uds.js"]
+    },
+    "html": {
+      "css_link": "<link rel=\"stylesheet\" href=\"uds/uds.css\" />",
+      "js_script": "<script src=\"uds/uds.js\"></script>",
+      "uses_uds_js": true
+    }
+  },
+  "icons": "Material Symbols Outlined — load via Google Fonts CDN"
+}

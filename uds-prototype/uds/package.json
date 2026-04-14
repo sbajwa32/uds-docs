@@ -1,0 +1,21 @@
+{
+  "name": "uds-core",
+  "version": "0.2.0",
+  "description": "UDS (Urban Design System) — CSS-first design system with semantic tokens, 21+ components, and multi-theme support. Works with any stack: HTML, React, Vue, Angular, Svelte.",
+  "keywords": ["design-system", "css", "tokens", "components", "urban-design-system"],
+  "author": "UDS Team",
+  "license": "MIT",
+  "style": "uds.css",
+  "main": "uds.js",
+  "files": [
+    "uds.css",
+    "uds.js",
+    "tokens/",
+    "components/"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sbajwa32/uds-docs"
+  },
+  "homepage": "https://sbajwa32.github.io/uds-docs/"
+}

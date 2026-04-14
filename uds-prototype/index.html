@@ -621,7 +621,7 @@
   </style>
   <script>
     (function () {
-      var SITE_VERSION = '2026.04.07.2';
+      var SITE_VERSION = '2026.04.07.3';
       var base = window.location.pathname.replace(/\/index\.html$/, '').replace(/\/$/, '');
       fetch(base + '/version.txt?_=' + Date.now()).then(function (r) {
         if (!r.ok) return;
@@ -659,7 +659,7 @@
       <span class="udc-tooltip" role="tooltip" data-position="bottom">Build Demo</span>
     </span>
     <select class="sg-version-select" id="sg-version-dropdown" aria-label="UDS version"></select>
-    <span class="sg-brand-bar-build">SITE 2026.04.07.2</span>
+    <span class="sg-brand-bar-build">SITE 2026.04.07.3</span>
   </div>
 
   <!-- Pre-flight checklist dialog -->
@@ -799,11 +799,14 @@
   <div class="sg-shell">
 
     <nav class="sg-sidebar">
+      <a class="sg-sidebar-link sg-sidebar-link--getting-started" href="#/ai-assist">
+        <span class="material-symbols-outlined" style="font-size:18px;vertical-align:-3px;margin-right:6px;" aria-hidden="true">smart_toy</span>AI Assist
+      </a>
       <a class="sg-sidebar-link sg-sidebar-link--getting-started" href="#/changelog">
-        <span class="material-symbols-outlined" style="font-size:18px;vertical-align:-3px;margin-right:6px;">history</span>Changelog
+        <span class="material-symbols-outlined" style="font-size:18px;vertical-align:-3px;margin-right:6px;" aria-hidden="true">history</span>Changelog
       </a>
       <a class="sg-sidebar-link sg-sidebar-link--getting-started" href="#/getting-started">
-        <span class="material-symbols-outlined" style="font-size:18px;vertical-align:-3px;margin-right:6px;">download</span>Getting Started
+        <span class="material-symbols-outlined" style="font-size:18px;vertical-align:-3px;margin-right:6px;" aria-hidden="true">download</span>Getting Started
       </a>
       <span class="sg-sidebar-heading">Foundations</span>
       <a class="sg-sidebar-link" href="#/semantic-colors">Semantic Colors</a>
@@ -851,6 +854,201 @@
       <!-- =================================================================
            CHANGELOG
            ================================================================= -->
+      <!-- AI ASSIST -->
+      <div data-page="ai-assist" data-default-tab="overview">
+        <h1 class="sg-page-title">AI Assist</h1>
+        <p class="sg-page-desc">Everything an AI agent needs to use the Urban Design System. Point your AI coding tool at this page or download the Cursor rule file.</p>
+        <div class="sg-page-tabs" role="tablist">
+          <button class="sg-page-tab" data-tab="overview" aria-selected="true">Overview</button>
+          <button class="sg-page-tab" data-tab="tokens">Tokens</button>
+          <button class="sg-page-tab" data-tab="components">Components</button>
+          <button class="sg-page-tab" data-tab="framework">Framework Patterns</button>
+          <button class="sg-page-tab" data-tab="theming">Theming</button>
+          <button class="sg-page-tab" data-tab="rules">Do's &amp; Don'ts</button>
+        </div>
+
+        <!-- OVERVIEW TAB -->
+        <div data-tab-panel="overview" class="active">
+          <div class="sg-subsection">
+            <h3 class="sg-subsection-title">What is UDS?</h3>
+            <p class="sg-subsection-desc">UDS (Urban Design System) is a CSS-first design system with semantic tokens and BEM-style components. It works with any stack — HTML, React, Vue, Angular, Svelte — no framework dependency.</p>
+          </div>
+
+          <div class="sg-subsection">
+            <h3 class="sg-subsection-title">For AI Agents</h3>
+            <p class="sg-subsection-desc">If you're an AI coding assistant, here's what you need:</p>
+            <ul style="font-size:var(--uds-font-size-base);line-height:1.8;color:var(--uds-color-text-primary);padding-left:var(--uds-space-250);">
+              <li><strong>Machine-readable context:</strong> Fetch <a href="ai-context.json" style="color:var(--uds-color-text-interactive);">ai-context.json</a> for the complete token list, component catalog, and framework rules in structured JSON.</li>
+              <li><strong>Cursor rule:</strong> Download <code class="sg-inline-code">uds-design-system.mdc</code> and place it in <code class="sg-inline-code">.cursor/rules/</code> — it contains everything inline.</li>
+              <li><strong>Install UDS:</strong> <code class="sg-inline-code">npm install uds-core</code> then <code class="sg-inline-code">import 'uds-core/uds.css'</code></li>
+              <li><strong>Icons:</strong> Material Symbols Outlined from Google Fonts CDN.</li>
+            </ul>
+          </div>
+
+          <div class="sg-subsection" style="display:flex;gap:var(--uds-space-200);flex-wrap:wrap;">
+            <button class="udc-button-primary" id="sg-download-mdc-btn" style="display:inline-flex;align-items:center;gap:var(--uds-space-100);">
+              <span class="material-symbols-outlined" style="font-size:var(--uds-font-size-xl);">download</span>Download Cursor Rule (.mdc)
+            </button>
+            <a href="ai-context.json" target="_blank" class="udc-button-secondary" style="display:inline-flex;align-items:center;gap:var(--uds-space-100);text-decoration:none;">
+              <span class="material-symbols-outlined" style="font-size:var(--uds-font-size-xl);">data_object</span>View ai-context.json
+            </a>
+          </div>
+
+          <div class="sg-subsection">
+            <h3 class="sg-subsection-title">Full Example — Tenant Dashboard</h3>
+            <p class="sg-subsection-desc">Here's how UDS components compose together in a real page:</p>
+            <pre class="sg-playground-code" style="font-size:var(--uds-font-size-sm);line-height:1.6;max-height:400px;overflow:auto;">&lt;!-- Nav Header --&gt;
+&lt;div class="udc-nav-header"&gt;
+  &lt;div class="udc-nav-header__left"&gt;
+    &lt;div class="udc-nav-logo"&gt;...&lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class="udc-nav-header__right"&gt;
+    &lt;button class="udc-button-ghost" data-icon-only&gt;
+      &lt;span class="material-symbols-outlined"&gt;notifications&lt;/span&gt;
+    &lt;/button&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- App Shell --&gt;
+&lt;div style="display:flex;"&gt;
+  &lt;!-- Sidebar --&gt;
+  &lt;nav class="udc-nav-vertical"&gt;
+    &lt;button class="udc-nav-button" aria-selected="true"&gt;
+      &lt;span class="material-symbols-outlined"&gt;space_dashboard&lt;/span&gt;
+      &lt;span class="udc-nav-button__label"&gt;Dashboard&lt;/span&gt;
+    &lt;/button&gt;
+  &lt;/nav&gt;
+
+  &lt;!-- Main Content --&gt;
+  &lt;main style="flex:1;padding:var(--uds-space-300);"&gt;
+    &lt;!-- Breadcrumb --&gt;
+    &lt;nav class="udc-breadcrumb" aria-label="Breadcrumb"&gt;
+      &lt;ol&gt;&lt;li&gt;&lt;a href="#"&gt;Home&lt;/a&gt;&lt;/li&gt;&lt;li aria-current="page"&gt;Dashboard&lt;/li&gt;&lt;/ol&gt;
+    &lt;/nav&gt;
+
+    &lt;!-- Notification --&gt;
+    &lt;div class="udc-notification" data-variant="info"&gt;
+      &lt;span class="udc-notification__icon"&gt;&lt;span class="material-symbols-outlined"&gt;info&lt;/span&gt;&lt;/span&gt;
+      &lt;span class="udc-notification__text"&gt;3 invoices pending review.&lt;/span&gt;
+    &lt;/div&gt;
+
+    &lt;!-- Search + Filter Chips --&gt;
+    &lt;div class="udc-search"&gt;...&lt;/div&gt;
+    &lt;button class="udc-chip" data-variant="filter" aria-selected="true"&gt;
+      &lt;span class="udc-chip__label"&gt;All&lt;/span&gt;
+    &lt;/button&gt;
+
+    &lt;!-- Data Table --&gt;
+    &lt;div class="udc-data-table"&gt;
+      &lt;table&gt;
+        &lt;thead&gt;&lt;tr&gt;&lt;th&gt;Tenant&lt;/th&gt;&lt;th&gt;Status&lt;/th&gt;&lt;th&gt;Balance&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
+        &lt;tbody&gt;&lt;tr&gt;
+          &lt;td&gt;Brian Smith&lt;/td&gt;
+          &lt;td&gt;&lt;span class="udc-badge" data-variant="success"&gt;Active&lt;/span&gt;&lt;/td&gt;
+          &lt;td&gt;$0.00&lt;/td&gt;
+        &lt;/tr&gt;&lt;/tbody&gt;
+      &lt;/table&gt;
+    &lt;/div&gt;
+  &lt;/main&gt;
+&lt;/div&gt;</pre>
+          </div>
+        </div>
+
+        <!-- TOKENS TAB -->
+        <div data-tab-panel="tokens">
+          <div id="sg-ai-tokens"></div>
+        </div>
+
+        <!-- COMPONENTS TAB -->
+        <div data-tab-panel="components">
+          <div id="sg-ai-components"></div>
+        </div>
+
+        <!-- FRAMEWORK TAB -->
+        <div data-tab-panel="framework">
+          <div class="sg-subsection">
+            <h3 class="sg-subsection-title">React</h3>
+            <pre class="sg-playground-code">import 'uds-core/uds.css';
+// Use className, useState for state, no uds.js
+&lt;button className="udc-button-primary" onClick={() => setOpen(true)}&gt;Open&lt;/button&gt;</pre>
+          </div>
+          <div class="sg-subsection">
+            <h3 class="sg-subsection-title">Vue</h3>
+            <pre class="sg-playground-code">&lt;script setup&gt;
+import { ref } from 'vue';
+import 'uds-core/uds.css';
+const open = ref(false);
+&lt;/script&gt;
+&lt;template&gt;
+  &lt;button class="udc-button-primary" @click="open = true"&gt;Open&lt;/button&gt;
+&lt;/template&gt;</pre>
+          </div>
+          <div class="sg-subsection">
+            <h3 class="sg-subsection-title">Vanilla HTML</h3>
+            <pre class="sg-playground-code">&lt;link rel="stylesheet" href="uds/uds.css" /&gt;
+&lt;script src="uds/uds.js"&gt;&lt;/script&gt;
+&lt;button class="udc-button-primary"&gt;Open&lt;/button&gt;</pre>
+          </div>
+        </div>
+
+        <!-- THEMING TAB -->
+        <div data-tab-panel="theming">
+          <div class="sg-subsection">
+            <p class="sg-subsection-desc">Apply these attributes to the <code class="sg-inline-code">&lt;html&gt;</code> element:</p>
+            <table class="sg-api-table">
+              <thead><tr><th>Attribute</th><th>Values</th><th>Description</th></tr></thead>
+              <tbody>
+                <tr><td><code>data-color-scheme</code></td><td><code>dark</code></td><td>Dark mode (light is default)</td></tr>
+                <tr><td><code>data-theme</code></td><td><code>resman</code>, <code>anyonehome</code>, <code>inhabit</code></td><td>Brand override (base is default)</td></tr>
+                <tr><td><code>data-font</code></td><td><code>poppins</code>, <code>roboto</code>, <code>lexend</code></td><td>Font family (Inter is default)</td></tr>
+                <tr><td><code>data-font-scale</code></td><td><code>smaller</code>, <code>larger</code></td><td>Font scale</td></tr>
+                <tr><td><code>data-density</code></td><td><code>comfortable</code></td><td>Relaxed spacing</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- RULES TAB -->
+        <div data-tab-panel="rules">
+          <div class="sg-subsection">
+            <h3 class="sg-subsection-title" style="color:var(--uds-color-text-success);">DO</h3>
+            <pre class="sg-playground-code">color: var(--uds-color-text-primary);
+padding: var(--uds-space-200);
+font-family: var(--uds-font-family);
+border-radius: var(--uds-border-radius-input);
+box-shadow: var(--uds-shadow-depth-300);</pre>
+          </div>
+          <div class="sg-subsection">
+            <h3 class="sg-subsection-title" style="color:var(--uds-color-text-error);">DON'T</h3>
+            <pre class="sg-playground-code">color: #171717;
+padding: 16px;
+font-family: 'Inter', sans-serif;
+border-radius: 8px;
+box-shadow: 0 4px 12px rgba(0,0,0,0.08);</pre>
+          </div>
+          <div class="sg-subsection">
+            <h3 class="sg-subsection-title">React Specific</h3>
+            <ul style="font-size:var(--uds-font-size-base);line-height:1.8;padding-left:var(--uds-space-250);">
+              <li>Use <code class="sg-inline-code">className</code> not <code class="sg-inline-code">class</code></li>
+              <li>Use <code class="sg-inline-code">useState</code> for all interactive state</li>
+              <li>Controlled inputs: <code class="sg-inline-code">value={val} onChange={e => setVal(e.target.value)}</code></li>
+              <li>NEVER use <code class="sg-inline-code">dangerouslySetInnerHTML</code></li>
+              <li>NEVER load <code class="sg-inline-code">uds.js</code></li>
+            </ul>
+          </div>
+          <div class="sg-subsection">
+            <h3 class="sg-subsection-title">Vue Specific</h3>
+            <ul style="font-size:var(--uds-font-size-base);line-height:1.8;padding-left:var(--uds-space-250);">
+              <li>Always use <code class="sg-inline-code">&lt;script setup&gt;</code> with Composition API</li>
+              <li>Use <code class="sg-inline-code">ref()</code> for state, <code class="sg-inline-code">v-model</code> for inputs</li>
+              <li>NEVER use <code class="sg-inline-code">v-html</code></li>
+              <li>NEVER use Options API (<code class="sg-inline-code">data()</code>, <code class="sg-inline-code">methods</code>)</li>
+              <li>NEVER load <code class="sg-inline-code">uds.js</code></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
       <div data-page="changelog" data-default-tab="uds">
         <h1 class="sg-page-title">Changelog</h1>
         <p class="sg-page-desc">All notable changes to the Urban Design System and the documentation site.</p>
@@ -891,9 +1089,28 @@
         <a class="sg-download-btn" id="gs-download-btn" href="#" style="margin-bottom:8px;">
           <span class="material-symbols-outlined">download</span> Download UDS (.zip)
         </a>
-        <p style="font-size:13px;color:var(--uds-color-text-secondary);margin-top:4px;">Or, if your team uses a shared repo, copy the <code class="sg-inline-code">uds/</code> folder directly into your project.</p>
+        <p style="font-size:var(--uds-font-size-sm);color:var(--uds-color-text-secondary);margin-top:var(--uds-space-050);">Or, if your team uses a shared repo, copy the <code class="sg-inline-code">uds/</code> folder directly into your project.</p>
 
-        <h2 class="sg-page-title" style="font-size:22px;margin-top:40px;">File Structure</h2>
+        <h2 class="sg-page-title" style="font-size:22px;margin-top:var(--uds-space-500);">npm</h2>
+        <p class="sg-page-desc">Install UDS as an npm package for React, Vue, or any bundler-based project.</p>
+        <pre class="sg-playground-code" style="margin-bottom:var(--uds-space-100);">npm install uds-core</pre>
+        <pre class="sg-playground-code" style="margin-bottom:var(--uds-space-200);">// In your entry file (main.jsx, main.js, etc.)
+import 'uds-core/uds.css';</pre>
+        <p style="font-size:var(--uds-font-size-sm);color:var(--uds-color-text-secondary);">Works with Vite, Next.js, and Nuxt. React and Vue manage component state natively — no <code class="sg-inline-code">uds.js</code> needed.</p>
+
+        <h2 class="sg-page-title" style="font-size:22px;margin-top:var(--uds-space-500);">CDN</h2>
+        <p class="sg-page-desc">Add UDS to any page with two tags — no build step required.</p>
+        <pre class="sg-playground-code" style="margin-bottom:var(--uds-space-200);">&lt;link rel="stylesheet" href="https://sbajwa32.github.io/uds-docs/uds/uds.css" /&gt;
+&lt;script src="https://sbajwa32.github.io/uds-docs/uds/uds.js"&gt;&lt;/script&gt;</pre>
+        <p style="font-size:var(--uds-font-size-sm);color:var(--uds-color-text-secondary);margin-bottom:var(--uds-space-100);">Pin to a specific version:</p>
+        <pre class="sg-playground-code" style="margin-bottom:var(--uds-space-200);">&lt;link rel="stylesheet" href="https://sbajwa32.github.io/uds-docs/versions/0.2/uds/uds.css" /&gt;</pre>
+
+        <h2 class="sg-page-title" style="font-size:22px;margin-top:var(--uds-space-500);">AI Assist</h2>
+        <p class="sg-page-desc">Using Cursor or another AI coding tool? Download the UDS rule file and drop it in your project.</p>
+        <pre class="sg-playground-code" style="margin-bottom:var(--uds-space-100);">your-project/.cursor/rules/uds-design-system.mdc</pre>
+        <p style="font-size:var(--uds-font-size-sm);color:var(--uds-color-text-secondary);margin-bottom:var(--uds-space-200);">The rule tells your AI to use UDS tokens and components automatically. See the <a href="#/ai-assist" style="color:var(--uds-color-text-interactive);">AI Assist</a> page for details and downloads.</p>
+
+        <h2 class="sg-page-title" style="font-size:22px;margin-top:var(--uds-space-500);">File Structure</h2>
         <p class="sg-page-desc">You can import <code class="sg-inline-code">uds.css</code> for the full bundle, or cherry-pick individual token and component files.</p>
 
         <pre class="sg-file-tree"><span class="dir">uds/</span>
@@ -3174,7 +3391,7 @@ const query = ref('');
   <script src="https://cdn.jsdelivr.net/npm/jszip@3/dist/jszip.min.js"></script>
   <script src="./material-icons.js"></script>
   <script src="./uds/uds.js?v=29"></script>
-  <script src="./app.js?v=64"></script>
+  <script src="./app.js?v=65"></script>
   <script src="./demo-builder.js?v=8"></script>
 
 </body>

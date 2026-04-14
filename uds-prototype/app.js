@@ -3231,6 +3231,19 @@
         { type: 'added', text: 'Cache-busting: no-cache meta tags on index.html to prevent browser caching of the HTML page' },
         { type: 'added', text: 'Auto-reload: inline version check script fetches version.txt on every page load and reloads if a newer version is deployed' }
       ]
+    },
+    {
+      version: 'SITE 2026.04.07.3',
+      date: '2026-04-07',
+      changes: [
+        { type: 'added', text: 'AI Assist page — token reference, component catalog, framework patterns, do/donts, theming, full example, and download Cursor rule button' },
+        { type: 'added', text: 'ai-context.json — machine-readable endpoint with complete UDS context for AI tools' },
+        { type: 'added', text: 'Downloadable uds-design-system.mdc — self-contained Cursor rule with framework detection, token ref, component catalog' },
+        { type: 'added', text: 'npm package.json for uds-core — ready for npm publish' },
+        { type: 'added', text: 'CDN section on Getting Started with GitHub Pages URLs and version pinning' },
+        { type: 'added', text: 'npm install section on Getting Started with import examples' },
+        { type: 'added', text: 'AI Assist link in sidebar with smart_toy icon' }
+      ]
     }
   ];
 
@@ -3592,6 +3605,89 @@
   renderComponentLinks();
   initVersionDropdown();
   initAllChangelogs();
+
+  function initAiAssistPage() {
+    var tokenSlot = document.getElementById('sg-ai-tokens');
+    if (tokenSlot) {
+      var tokenGroups = {
+        'Surface Colors': ['--uds-color-surface-main','--uds-color-surface-page-main','--uds-color-surface-subtle','--uds-color-surface-alt','--uds-color-surface-interactive-default','--uds-color-surface-interactive-hover','--uds-color-surface-info','--uds-color-surface-info-subtle','--uds-color-surface-success','--uds-color-surface-success-subtle','--uds-color-surface-warning','--uds-color-surface-warning-subtle','--uds-color-surface-error','--uds-color-surface-error-subtle'],
+        'Text Colors': ['--uds-color-text-primary','--uds-color-text-secondary','--uds-color-text-inverse','--uds-color-text-interactive','--uds-color-text-disabled','--uds-color-text-info','--uds-color-text-success','--uds-color-text-warning','--uds-color-text-error'],
+        'Border Colors': ['--uds-color-border-primary','--uds-color-border-secondary','--uds-color-border-interactive','--uds-color-border-error','--uds-color-border-outline-focus-visible'],
+        'Icon Colors': ['--uds-color-icon-primary','--uds-color-icon-secondary','--uds-color-icon-inverse','--uds-color-icon-interactive'],
+        'Spacing': ['--uds-space-050 (4px)','--uds-space-100 (8px)','--uds-space-150 (12px)','--uds-space-200 (16px)','--uds-space-250 (20px)','--uds-space-300 (24px)','--uds-space-400 (32px)','--uds-space-500 (40px)','--uds-space-600 (48px)','--uds-space-700 (56px)','--uds-space-800 (64px)','--uds-space-1000 (80px)'],
+        'Font': ['--uds-font-family','--uds-font-size-xs (10px)','--uds-font-size-sm (12px)','--uds-font-size-base (14px)','--uds-font-size-md (16px)','--uds-font-size-lg (18px)','--uds-font-size-xl (20px)','--uds-font-size-2xl (24px)','--uds-font-size-3xl (28px)','--uds-font-size-5xl (36px)','--uds-font-weight-regular (400)','--uds-font-weight-medium (500)','--uds-font-weight-bold (700)'],
+        'Border Radius': ['--uds-border-radius-container-sm (4px)','--uds-border-radius-input (8px)','--uds-border-radius-container-md (12px)','--uds-border-radius-container-xl (24px)','--uds-border-radius-container-full (9999px)'],
+        'Shadows': ['--uds-shadow-depth-100','--uds-shadow-depth-300','--uds-shadow-depth-500','--uds-shadow-bento','--uds-overlay-backdrop']
+      };
+      var html = '';
+      Object.keys(tokenGroups).forEach(function (group) {
+        html += '<h3 class="sg-subsection-title">' + group + '</h3><div class="sg-token-table">';
+        tokenGroups[group].forEach(function (t) {
+          var name = t.split(' (')[0];
+          var desc = t.indexOf('(') !== -1 ? t.split('(')[1].replace(')', '') : '';
+          var resolved = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+          var isColor = name.indexOf('color') !== -1;
+          html += '<div class="sg-token-row">';
+          if (isColor && resolved) html += '<div class="sg-token-swatch" style="background:' + resolved + ';"></div>';
+          html += '<span class="sg-token-name">' + name + '</span>';
+          html += '<span class="sg-token-value">' + (desc || resolved || '') + '</span>';
+          html += '</div>';
+        });
+        html += '</div>';
+      });
+      tokenSlot.innerHTML = html;
+    }
+
+    var compSlot = document.getElementById('sg-ai-components');
+    if (compSlot) {
+      var compData = [
+        { name: 'Button', cls: 'udc-button-primary / secondary / ghost', html: '<button class="udc-button-primary">Label</button>' },
+        { name: 'Text Input', cls: 'udc-text-input', html: '<div class="udc-text-input"><label class="udc-text-input__label">Label</label><div class="udc-text-input__field"><input /></div></div>' },
+        { name: 'Checkbox', cls: 'udc-checkbox', html: '<label class="udc-checkbox"><input type="checkbox" /><span class="udc-checkbox__control"></span><span class="udc-checkbox__label">Label</span></label>' },
+        { name: 'Radio', cls: 'udc-radio', html: '<label class="udc-radio"><input type="radio" /><span class="udc-radio__control"></span><span class="udc-radio__label">Label</span></label>' },
+        { name: 'Dropdown', cls: 'udc-dropdown', html: '<div class="udc-dropdown"><div class="udc-dropdown__trigger" role="combobox">...</div><div class="udc-dropdown__list" role="listbox">...</div></div>' },
+        { name: 'Search', cls: 'udc-search', html: '<div class="udc-search"><div class="udc-search__field"><span class="udc-search__icon">...</span><input type="search" /></div></div>' },
+        { name: 'Badge', cls: 'udc-badge', html: '<span class="udc-badge" data-variant="success">Active</span>' },
+        { name: 'Chip', cls: 'udc-chip', html: '<button class="udc-chip" data-variant="filter"><span class="udc-chip__label">Filter</span></button>' },
+        { name: 'Tabs', cls: 'udc-tabs + udc-tab', html: '<div class="udc-tabs" role="tablist"><button class="udc-tab" role="tab">Tab</button></div>' },
+        { name: 'Data Table', cls: 'udc-data-table', html: '<div class="udc-data-table"><table>...</table></div>' },
+        { name: 'Tile', cls: 'udc-tile', html: '<div class="udc-tile" tabindex="0"><div class="udc-tile__content"><div class="udc-tile__label">Label</div></div></div>' },
+        { name: 'List', cls: 'udc-list + udc-list-item', html: '<div class="udc-list"><div class="udc-list-item" tabindex="0">...</div></div>' },
+        { name: 'Notification', cls: 'udc-notification', html: '<div class="udc-notification" data-variant="info"><span class="udc-notification__icon">...</span><span class="udc-notification__text">Msg</span></div>' },
+        { name: 'Dialog', cls: 'udc-dialog-backdrop + udc-dialog', html: '<div class="udc-dialog-backdrop" data-open="false"><div class="udc-dialog" role="dialog">...</div></div>' },
+        { name: 'Tooltip', cls: 'udc-tooltip-wrapper + udc-tooltip', html: '<span class="udc-tooltip-wrapper"><button>Trigger</button><span class="udc-tooltip" role="tooltip">Text</span></span>' },
+        { name: 'Breadcrumb', cls: 'udc-breadcrumb', html: '<nav class="udc-breadcrumb" aria-label="Breadcrumb"><ol><li>...</li></ol></nav>' },
+        { name: 'Nav Header', cls: 'udc-nav-header', html: '<div class="udc-nav-header"><div class="udc-nav-header__left">...</div></div>' },
+        { name: 'Nav Vertical', cls: 'udc-nav-vertical + udc-nav-button', html: '<nav class="udc-nav-vertical"><button class="udc-nav-button">...</button></nav>' },
+        { name: 'Divider', cls: 'udc-divider-horizontal', html: '<hr class="udc-divider-horizontal" />' },
+        { name: 'Spacer', cls: 'udc-spacer', html: '<div class="udc-spacer" data-size="200"></div>' },
+        { name: 'Icon Wrapper', cls: 'udc-icon-wrapper', html: '<span class="udc-icon-wrapper" data-size="24"><span class="material-symbols-outlined">info</span></span>' }
+      ];
+      var tbl = '<table class="sg-api-table"><thead><tr><th>Component</th><th>CSS Class</th><th>Minimal HTML</th></tr></thead><tbody>';
+      compData.forEach(function (c) {
+        tbl += '<tr><td><strong>' + c.name + '</strong></td><td><code>' + c.cls + '</code></td><td><code style="font-size:11px;word-break:break-all;">' + c.html.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</code></td></tr>';
+      });
+      tbl += '</tbody></table>';
+      compSlot.innerHTML = tbl;
+    }
+
+    var mdcBtn = document.getElementById('sg-download-mdc-btn');
+    if (mdcBtn) {
+      mdcBtn.addEventListener('click', function () {
+        var base = window.location.pathname.replace(/\/index\.html$/, '').replace(/\/$/, '');
+        fetch(base + '/uds-design-system.mdc').then(function (r) { return r.text(); }).then(function (text) {
+          var blob = new Blob([text], { type: 'text/plain' });
+          var url = URL.createObjectURL(blob);
+          var a = document.createElement('a');
+          a.href = url; a.download = 'uds-design-system.mdc';
+          document.body.appendChild(a); a.click(); document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+        });
+      });
+    }
+  }
+
+  initAiAssistPage();
 
   const { pageId, tab } = parseHash();
   navigate(pageId, tab);

@@ -1,0 +1,95 @@
+---
+description: UDS (Urban Design System) — use this design system for all UI. Tokens for colors/spacing/fonts, 21 components, multi-theme support.
+alwaysApply: true
+---
+
+# UDS Design System
+
+You are building UI with the **Urban Design System (UDS)**. Always use UDS tokens and components. Never hardcode colors, spacing, fonts, or reinvent components that UDS provides.
+
+**Docs:** https://sbajwa32.github.io/uds-docs/
+**Install:** `npm install uds-core` then `import 'uds-core/uds.css'`
+**Icons:** Material Symbols Outlined (Google Fonts CDN)
+
+## Framework Detection
+
+Check `package.json` to determine the framework:
+- If `react` in dependencies → use React patterns (className, hooks, no uds.js)
+- If `vue` in dependencies → use Vue patterns (class, ref, script setup, no uds.js)
+- Otherwise → use vanilla HTML patterns (class, uds.js for behavior)
+
+## Tokens — Use These, Never Hardcode
+
+### Colors
+- **Surface:** `--uds-color-surface-main`, `surface-subtle`, `surface-alt`, `surface-interactive-default`, `surface-interactive-hover`, `surface-info`, `surface-success`, `surface-warning`, `surface-error` (+ `-subtle` variants)
+- **Text:** `--uds-color-text-primary`, `text-secondary`, `text-inverse`, `text-interactive`, `text-disabled`, `text-info`, `text-success`, `text-warning`, `text-error`
+- **Border:** `--uds-color-border-primary`, `border-secondary`, `border-interactive`, `border-error`, `border-outline-focus-visible`
+- **Icon:** `--uds-color-icon-primary`, `icon-secondary`, `icon-inverse`, `icon-interactive`
+
+### Spacing
+`--uds-space-050` (4px), `100` (8px), `150` (12px), `200` (16px), `250` (20px), `300` (24px), `400` (32px), `500` (40px), `600` (48px), `700` (56px), `800` (64px), `1000` (80px)
+
+### Typography
+- **Family:** `var(--uds-font-family)` — never hardcode 'Inter' etc.
+- **Size:** `--uds-font-size-xs` (10), `sm` (12), `base` (14), `md` (16), `lg` (18), `xl` (20), `2xl` (24), `3xl` (28), `5xl` (36)
+- **Weight:** `--uds-font-weight-regular` (400), `medium` (500), `bold` (700)
+
+### Border Radius
+`--uds-border-radius-container-sm` (4px), `input` (8px), `container-md` (12px), `container-xl` (24px), `container-full` (9999px)
+
+### Shadows
+`--uds-shadow-depth-100`, `depth-300`, `depth-500`, `bento`, `--uds-overlay-backdrop`
+
+## Components — 21 Available
+
+| Component | Class | Minimal HTML |
+|-----------|-------|-------------|
+| Button | `udc-button-primary` / `secondary` / `ghost` | `<button class="udc-button-primary">Label</button>` |
+| Text Input | `udc-text-input` | `<div class="udc-text-input"><label class="udc-text-input__label">…</label><div class="udc-text-input__field"><input /></div></div>` |
+| Checkbox | `udc-checkbox` | `<label class="udc-checkbox"><input type="checkbox" /><span class="udc-checkbox__control"></span><span class="udc-checkbox__label">…</span></label>` |
+| Radio | `udc-radio` | `<label class="udc-radio"><input type="radio" /><span class="udc-radio__control"></span><span class="udc-radio__label">…</span></label>` |
+| Dropdown | `udc-dropdown` | `<div class="udc-dropdown"><div class="udc-dropdown__trigger" role="combobox">…</div><div class="udc-dropdown__list" role="listbox">…</div></div>` |
+| Search | `udc-search` | `<div class="udc-search"><div class="udc-search__field"><span class="udc-search__icon">🔍</span><input type="search" /><button class="udc-search__clear">✕</button></div></div>` |
+| Badge | `udc-badge` | `<span class="udc-badge" data-variant="success">Active</span>` |
+| Chip | `udc-chip` | `<button class="udc-chip" data-variant="filter"><span class="udc-chip__label">…</span></button>` |
+| Tabs | `udc-tabs` + `udc-tab` | `<div class="udc-tabs" role="tablist"><button class="udc-tab" role="tab" aria-selected="true">…</button></div>` |
+| Data Table | `udc-data-table` | `<div class="udc-data-table"><table>…</table></div>` |
+| Tile | `udc-tile` | `<div class="udc-tile" tabindex="0"><div class="udc-tile__content"><div class="udc-tile__label">…</div></div></div>` |
+| List | `udc-list` + `udc-list-item` | `<div class="udc-list"><div class="udc-list-item" tabindex="0">…</div></div>` |
+| Notification | `udc-notification` | `<div class="udc-notification" data-variant="info"><span class="udc-notification__icon">…</span><span class="udc-notification__text">…</span></div>` |
+| Dialog | `udc-dialog-backdrop` + `udc-dialog` | `<div class="udc-dialog-backdrop" data-open="false"><div class="udc-dialog" role="dialog">…</div></div>` |
+| Tooltip | `udc-tooltip-wrapper` + `udc-tooltip` | `<span class="udc-tooltip-wrapper"><button>Trigger</button><span class="udc-tooltip" role="tooltip">…</span></span>` |
+| Breadcrumb | `udc-breadcrumb` | `<nav class="udc-breadcrumb" aria-label="Breadcrumb"><ol><li>…</li></ol></nav>` |
+| Nav Header | `udc-nav-header` | `<div class="udc-nav-header"><div class="udc-nav-header__left">…</div><div class="udc-nav-header__right">…</div></div>` |
+| Nav Vertical | `udc-nav-vertical` + `udc-nav-button` | `<nav class="udc-nav-vertical"><button class="udc-nav-button" aria-selected="true">…</button></nav>` |
+| Divider | `udc-divider-horizontal` | `<hr class="udc-divider-horizontal" />` |
+| Spacer | `udc-spacer` | `<div class="udc-spacer" data-size="200"></div>` |
+| Icon Wrapper | `udc-icon-wrapper` | `<span class="udc-icon-wrapper" data-size="24"><span class="material-symbols-outlined">icon_name</span></span>` |
+
+## Theming (apply to `<html>`)
+
+- `data-color-scheme="dark"` — dark mode
+- `data-theme="resman|anyonehome|inhabit"` — brand
+- `data-font="poppins|roboto|lexend"` — font family
+- `data-font-scale="smaller|larger"` — text scale
+- `data-density="comfortable"` — relaxed spacing
+
+## Do's and Don'ts
+
+DO: `color: var(--uds-color-text-primary)` / DON'T: `color: #171717`
+DO: `padding: var(--uds-space-200)` / DON'T: `padding: 16px`
+DO: `font-family: var(--uds-font-family)` / DON'T: `font-family: 'Inter'`
+DO: `border-radius: var(--uds-border-radius-input)` / DON'T: `border-radius: 8px`
+
+### React specific:
+- Use `className` not `class`
+- Use `useState` for component state (open/close, selected, checked)
+- Use controlled inputs (`value` + `onChange`)
+- NEVER use `dangerouslySetInnerHTML`
+- NEVER load `uds.js` — React manages state with hooks
+
+### Vue specific:
+- Use `<script setup>` with `ref()` from vue
+- Use `v-model` for inputs, `@click` for events, `:attr` for bindings
+- NEVER use `v-html`
+- NEVER load `uds.js` — Vue manages state with refs
