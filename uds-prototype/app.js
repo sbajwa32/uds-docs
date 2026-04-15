@@ -3255,6 +3255,16 @@
         { type: 'fixed', text: 'ai-context.json: added React/Vue patterns for ALL 21 components, required_fonts, app_shell, custom_css_rule' },
         { type: 'fixed', text: 'Fixed search component emoji in .mdc — now uses Material Symbols Outlined icons' }
       ]
+    },
+    {
+      version: 'SITE 2026.04.15.1',
+      date: '2026-04-15',
+      changes: [
+        { type: 'fixed', text: 'Site versioning permanently fixed — bump-site.sh script uses system date command, updates all 3 locations automatically' },
+        { type: 'fixed', text: 'Corrected all wrongly-dated changelog entries from 2026.04.07 to 2026.04.14' },
+        { type: 'added', text: 'bump-site.sh — automated version bumping script, eliminates manual date/version errors' },
+        { type: 'changed', text: 'Master workflow and site-changelog rules now mandate using bump-site.sh instead of manual edits' }
+      ]
     }
   ];
 
