@@ -3265,6 +3265,21 @@
         { type: 'added', text: 'bump-site.sh — automated version bumping script, eliminates manual date/version errors' },
         { type: 'changed', text: 'Master workflow and site-changelog rules now mandate using bump-site.sh instead of manual edits' }
       ]
+    },
+    {
+      version: 'SITE 2026.04.15.2',
+      date: '2026-04-15',
+      changes: [
+        { type: 'added', text: 'Token Architecture section — explains primitive vs semantic token cascade, bans --uds-primitive-* in components' },
+        { type: 'added', text: 'Theming Mechanism section — explains HOW data attributes change token values, with before/after examples' },
+        { type: 'added', text: 'Token Usage Guide — when to use surface-main vs surface-subtle vs surface-alt, text-primary vs text-secondary etc.' },
+        { type: 'added', text: 'Text style utility classes reference (.uds-text-heading-xl, .uds-text-paragraph-base etc.)' },
+        { type: 'added', text: 'Component decision guide — Tile vs List, Chip vs Badge, Dropdown vs Radio etc.' },
+        { type: 'added', text: 'Keyboard interaction patterns for React/Vue (dropdown, dialog, tabs, list, tile, data-table)' },
+        { type: 'added', text: 'Error/validation patterns — validate on blur, data-state error, helper text replacement' },
+        { type: 'added', text: 'Common icon reference with Material Symbols names by category' },
+        { type: 'fixed', text: 'All token references now use full variable names (no ambiguous shorthand)' }
+      ]
     }
   ];
 

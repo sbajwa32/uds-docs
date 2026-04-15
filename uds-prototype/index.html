@@ -621,7 +621,7 @@
   </style>
   <script>
     (function () {
-      var SITE_VERSION = '2026.04.15.1';
+      var SITE_VERSION = '2026.04.15.2';
       var base = window.location.pathname.replace(/\/index\.html$/, '').replace(/\/$/, '');
       fetch(base + '/version.txt?_=' + Date.now()).then(function (r) {
         if (!r.ok) return;
@@ -659,7 +659,7 @@
       <span class="udc-tooltip" role="tooltip" data-position="bottom">Build Demo</span>
     </span>
     <select class="sg-version-select" id="sg-version-dropdown" aria-label="UDS version"></select>
-    <span class="sg-brand-bar-build">SITE 2026.04.15.1</span>
+    <span class="sg-brand-bar-build">SITE 2026.04.15.2</span>
   </div>
 
   <!-- Pre-flight checklist dialog -->
@@ -956,6 +956,34 @@
 
         <!-- TOKENS TAB -->
         <div data-tab-panel="tokens">
+          <div class="sg-subsection" style="margin-bottom:var(--uds-space-400);padding:var(--uds-space-300);background:var(--uds-color-surface-warning-subtle);border-radius:var(--uds-border-radius-input);border-left:4px solid var(--uds-color-text-warning);">
+            <h3 class="sg-subsection-title" style="color:var(--uds-color-text-warning);margin-top:0;">Token Architecture — Primitives vs Semantics</h3>
+            <p style="font-size:var(--uds-font-size-base);line-height:1.7;margin-bottom:var(--uds-space-200);">UDS has TWO layers of tokens. <strong>Primitive tokens</strong> (<code class="sg-inline-code">--uds-primitive-*</code>) are raw palette values that NEVER change across themes. <strong>Semantic tokens</strong> (<code class="sg-inline-code">--uds-color-*</code>, <code class="sg-inline-code">--uds-space-*</code>, etc.) reference primitives and CHANGE when themes switch.</p>
+            <p style="font-size:var(--uds-font-size-base);line-height:1.7;margin-bottom:var(--uds-space-200);"><strong>Flow:</strong> Figma variable → Primitive CSS token → Semantic CSS token → Your code</p>
+            <p style="font-size:var(--uds-font-size-base);font-weight:var(--uds-font-weight-bold);color:var(--uds-color-text-error);">RULE: If a variable name contains "primitive", NEVER use it in component code. Only use semantic tokens.</p>
+          </div>
+
+          <div class="sg-subsection">
+            <h3 class="sg-subsection-title">When to Use Which Token</h3>
+            <table class="sg-api-table">
+              <thead><tr><th>Token</th><th>When to use</th></tr></thead>
+              <tbody>
+                <tr><td><code>--uds-color-surface-page-main</code></td><td>Full page background</td></tr>
+                <tr><td><code>--uds-color-surface-main</code></td><td>Card / content area backgrounds</td></tr>
+                <tr><td><code>--uds-color-surface-subtle</code></td><td>Headers, table headers, secondary areas</td></tr>
+                <tr><td><code>--uds-color-surface-alt</code></td><td>Zebra stripes, alternate rows, code blocks</td></tr>
+                <tr><td><code>--uds-color-surface-interactive-default</code></td><td>Primary button fill, active accent</td></tr>
+                <tr><td><code>--uds-color-text-primary</code></td><td>Main body text, headings</td></tr>
+                <tr><td><code>--uds-color-text-secondary</code></td><td>Helper text, labels, captions, timestamps</td></tr>
+                <tr><td><code>--uds-color-text-inverse</code></td><td>Text on dark/filled backgrounds</td></tr>
+                <tr><td><code>--uds-color-text-interactive</code></td><td>Links, active tab labels, selected items</td></tr>
+                <tr><td><code>--uds-color-border-primary</code></td><td>Default borders (input fields, cards)</td></tr>
+                <tr><td><code>--uds-color-border-secondary</code></td><td>Subtle dividers, table cell borders</td></tr>
+                <tr><td><code>--uds-color-border-outline-focus-visible</code></td><td>Focus rings (keyboard navigation)</td></tr>
+              </tbody>
+            </table>
+          </div>
+
           <div id="sg-ai-tokens"></div>
         </div>
 
@@ -994,17 +1022,48 @@ const open = ref(false);
         <!-- THEMING TAB -->
         <div data-tab-panel="theming">
           <div class="sg-subsection">
-            <p class="sg-subsection-desc">Apply these attributes to the <code class="sg-inline-code">&lt;html&gt;</code> element:</p>
+            <h3 class="sg-subsection-title">How Theming Works</h3>
+            <p class="sg-subsection-desc">Theming works by setting data attributes on <code class="sg-inline-code">&lt;html&gt;</code>. When these change, semantic token VALUES change automatically — your component code stays the same.</p>
+            <pre class="sg-playground-code" style="margin-bottom:var(--uds-space-300);">/* Same token, different values per theme */
+--uds-color-surface-main:    #fafafa   /* light mode (default) */
+--uds-color-surface-main:    #1a1a1a   /* data-color-scheme="dark" */
+
+--uds-color-text-interactive: #005ff0  /* base brand (default) */
+--uds-color-text-interactive: #0066cc  /* data-theme="resman" */
+
+/* Your code: always use the semantic token */
+background: var(--uds-color-surface-main);  /* works in ALL themes */</pre>
+          </div>
+
+          <div class="sg-subsection" style="padding:var(--uds-space-200);background:var(--uds-color-surface-error-subtle);border-radius:var(--uds-border-radius-input);border-left:4px solid var(--uds-color-text-error);margin-bottom:var(--uds-space-300);">
+            <p style="font-size:var(--uds-font-size-base);font-weight:var(--uds-font-weight-bold);color:var(--uds-color-text-error);margin-bottom:var(--uds-space-050);">Why Primitives Break Theming</p>
+            <p style="font-size:var(--uds-font-size-base);line-height:1.7;"><code class="sg-inline-code">--uds-primitive-color-blue-60-M</code> is ALWAYS <code class="sg-inline-code">#005ff0</code> regardless of theme.<br/><code class="sg-inline-code">--uds-color-text-interactive</code> changes per brand/mode.<br/>If you use the primitive, your UI breaks when themes switch.</p>
+          </div>
+
+          <div class="sg-subsection">
+            <h3 class="sg-subsection-title">Available Modes</h3>
             <table class="sg-api-table">
-              <thead><tr><th>Attribute</th><th>Values</th><th>Description</th></tr></thead>
+              <thead><tr><th>Attribute</th><th>Values</th><th>Default</th><th>Description</th></tr></thead>
               <tbody>
-                <tr><td><code>data-color-scheme</code></td><td><code>dark</code></td><td>Dark mode (light is default)</td></tr>
-                <tr><td><code>data-theme</code></td><td><code>resman</code>, <code>anyonehome</code>, <code>inhabit</code></td><td>Brand override (base is default)</td></tr>
-                <tr><td><code>data-font</code></td><td><code>poppins</code>, <code>roboto</code>, <code>lexend</code></td><td>Font family (Inter is default)</td></tr>
-                <tr><td><code>data-font-scale</code></td><td><code>smaller</code>, <code>larger</code></td><td>Font scale</td></tr>
-                <tr><td><code>data-density</code></td><td><code>comfortable</code></td><td>Relaxed spacing</td></tr>
+                <tr><td><code>data-color-scheme</code></td><td><code>dark</code></td><td>light</td><td>Dark mode — all surfaces, text, borders invert</td></tr>
+                <tr><td><code>data-theme</code></td><td><code>resman</code>, <code>anyonehome</code>, <code>inhabit</code></td><td>base</td><td>Brand — accent colors (interactive, info, links) change</td></tr>
+                <tr><td><code>data-font</code></td><td><code>poppins</code>, <code>roboto</code>, <code>lexend</code></td><td>Inter</td><td>Font family — all text changes typeface</td></tr>
+                <tr><td><code>data-font-scale</code></td><td><code>smaller</code>, <code>larger</code></td><td>default</td><td>All font sizes scale proportionally</td></tr>
+                <tr><td><code>data-density</code></td><td><code>comfortable</code></td><td>compact</td><td>All spacing tokens increase</td></tr>
               </tbody>
             </table>
+          </div>
+
+          <div class="sg-subsection">
+            <h3 class="sg-subsection-title">Implementation</h3>
+            <pre class="sg-playground-code">/* Dark mode — just set the attribute, everything adapts */
+&lt;html data-color-scheme="dark"&gt;
+
+/* Brand switching — accent colors change automatically */
+&lt;html data-theme="resman"&gt;
+
+/* Combine modes freely */
+&lt;html data-color-scheme="dark" data-theme="resman" data-font="poppins"&gt;</pre>
           </div>
         </div>
 
@@ -1045,6 +1104,56 @@ box-shadow: 0 4px 12px rgba(0,0,0,0.08);</pre>
               <li>NEVER use Options API (<code class="sg-inline-code">data()</code>, <code class="sg-inline-code">methods</code>)</li>
               <li>NEVER load <code class="sg-inline-code">uds.js</code></li>
             </ul>
+          </div>
+
+          <div class="sg-subsection">
+            <h3 class="sg-subsection-title" style="color:var(--uds-color-text-error);">Primitives Ban</h3>
+            <pre class="sg-playground-code">/* NEVER use primitive tokens in components */
+DON'T: color: var(--uds-primitive-color-blue-60-M);
+DO:    color: var(--uds-color-text-interactive);
+
+/* Primitives don't change with themes. Semantics do. */</pre>
+          </div>
+
+          <div class="sg-subsection">
+            <h3 class="sg-subsection-title">Keyboard Patterns (React/Vue)</h3>
+            <p class="sg-subsection-desc">Since React/Vue don't load <code class="sg-inline-code">uds.js</code>, implement these behaviors natively:</p>
+            <table class="sg-api-table">
+              <thead><tr><th>Component</th><th>Keyboard Behavior</th></tr></thead>
+              <tbody>
+                <tr><td>Dropdown</td><td>ArrowUp/Down navigate items, Enter/Space select, Escape close</td></tr>
+                <tr><td>Dialog</td><td>Escape close, Tab cycles within (focus trap), auto-focus first element on open</td></tr>
+                <tr><td>Tabs</td><td>ArrowLeft/Right between tabs, Home/End for first/last</td></tr>
+                <tr><td>List</td><td>ArrowUp/Down navigate, Enter/Space select</td></tr>
+                <tr><td>Tile</td><td>Enter/Space toggle selection</td></tr>
+                <tr><td>Data Table sort</td><td>Enter/Space on header to cycle sort direction</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="sg-subsection">
+            <h3 class="sg-subsection-title">Error &amp; Validation Patterns</h3>
+            <ul style="font-size:var(--uds-font-size-base);line-height:1.8;padding-left:var(--uds-space-250);">
+              <li>Validate on <strong>blur</strong> (not every keystroke)</li>
+              <li>Set <code class="sg-inline-code">data-state="error"</code> on the <code class="sg-inline-code">udc-text-input</code> or <code class="sg-inline-code">udc-dropdown</code> wrapper</li>
+              <li>Replace helper text with the error message</li>
+              <li>Clear error on next input event</li>
+              <li>For form-level errors, show <code class="sg-inline-code">udc-notification</code> with <code class="sg-inline-code">data-variant="error"</code></li>
+            </ul>
+          </div>
+
+          <div class="sg-subsection">
+            <h3 class="sg-subsection-title">Common Icons</h3>
+            <p class="sg-subsection-desc">Material Symbols Outlined — browse at <a href="https://fonts.google.com/icons" target="_blank" style="color:var(--uds-color-text-interactive);">fonts.google.com/icons</a></p>
+            <table class="sg-api-table">
+              <thead><tr><th>Category</th><th>Icons</th></tr></thead>
+              <tbody>
+                <tr><td>Navigation</td><td><code>space_dashboard</code>, <code>book</code>, <code>contact_phone</code>, <code>home_work</code>, <code>monetization_on</code>, <code>settings</code>, <code>account_circle</code>, <code>notifications</code></td></tr>
+                <tr><td>Actions</td><td><code>add</code>, <code>edit</code>, <code>delete</code>, <code>close</code>, <code>search</code>, <code>clear</code>, <code>download</code>, <code>more_vert</code>, <code>chevron_right</code></td></tr>
+                <tr><td>Status</td><td><code>info</code>, <code>check_circle</code>, <code>error_outline</code>, <code>warning_amber</code></td></tr>
+                <tr><td>Content</td><td><code>apartment</code>, <code>home</code>, <code>mail</code>, <code>phone</code>, <code>calendar_today</code></td></tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
@@ -3391,7 +3500,7 @@ const query = ref('');
   <script src="https://cdn.jsdelivr.net/npm/jszip@3/dist/jszip.min.js"></script>
   <script src="./material-icons.js"></script>
   <script src="./uds/uds.js?v=29"></script>
-  <script src="./app.js?v=68"></script>
+  <script src="./app.js?v=69"></script>
   <script src="./demo-builder.js?v=8"></script>
 
 </body>

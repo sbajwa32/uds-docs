@@ -92,5 +92,57 @@
       "js_script": "<script src=\"uds/uds.js\"></script>",
       "uses_uds_js": true
     }
+  },
+  "tokenArchitecture": {
+    "primitive": "NEVER use --uds-primitive-* tokens in component code. They are raw palette values that don't change with themes.",
+    "semantic": "ALWAYS use --uds-color-*, --uds-space-*, --uds-font-*, --uds-border-*, --uds-shadow-* tokens. They adapt to themes.",
+    "flow": "Figma variable → Primitive CSS token → Semantic CSS token → Your code",
+    "rule": "If a variable name contains 'primitive', NEVER use it."
+  },
+  "tokenUsage": {
+    "surface-page-main": "Full page background",
+    "surface-main": "Card/content area backgrounds",
+    "surface-subtle": "Headers, table headers, secondary areas",
+    "surface-alt": "Zebra stripes, alternate rows, code blocks",
+    "surface-interactive-default": "Primary button fill, active accent",
+    "text-primary": "Main body text, headings",
+    "text-secondary": "Helper text, labels, captions, timestamps",
+    "text-inverse": "Text on dark/filled backgrounds",
+    "text-interactive": "Links, active tab labels, selected items",
+    "text-disabled": "Disabled form fields, inactive items",
+    "border-primary": "Default borders (input fields, cards)",
+    "border-secondary": "Subtle dividers, table cell borders",
+    "border-interactive": "Selected/active borders",
+    "border-outline-focus-visible": "Focus rings (keyboard navigation)"
+  },
+  "textStyles": [".uds-text-heading-xl", ".uds-text-heading-lg", ".uds-text-heading-base", ".uds-text-paragraph-base", ".uds-text-paragraph-sm", ".uds-text-label-base-bold", ".uds-text-label-base-medium", ".uds-text-label-sm-medium"],
+  "componentGuidance": {
+    "tile_vs_list": "Tile for selection cards with title+description; List for simple menu rows",
+    "chip_vs_badge": "Chip is interactive (filter, remove, toggle); Badge is static (status label)",
+    "dropdown_vs_radio": "Dropdown for 4+ options or space-constrained; Radio for 2-4 visible choices",
+    "notification_vs_dialog": "Notification for inline status banners; Dialog for blocking confirmations",
+    "search_vs_text_input": "Search has leading search icon + auto-clear; Text Input for form fields"
+  },
+  "keyboardPatterns": {
+    "dropdown": "ArrowUp/Down navigate items, Enter/Space select, Escape close",
+    "dialog": "Escape close, Tab cycles within (focus trap), auto-focus first element on open",
+    "tabs": "ArrowLeft/Right between tabs, Home/End for first/last",
+    "list": "ArrowUp/Down navigate, Enter/Space select",
+    "tile": "Enter/Space toggle selection",
+    "data_table_sort": "Enter/Space on header cycles sort direction"
+  },
+  "errorPatterns": {
+    "validate_on": "blur (not every keystroke)",
+    "show_error": "Set data-state='error' on udc-text-input or udc-dropdown wrapper",
+    "error_message": "Replace helper text with error message",
+    "clear_error": "Clear on next input event",
+    "form_level": "Show udc-notification with data-variant='error'"
+  },
+  "commonIcons": {
+    "navigation": ["space_dashboard", "book", "contact_phone", "home_work", "monetization_on", "settings", "account_circle", "notifications"],
+    "actions": ["add", "edit", "delete", "close", "search", "clear", "download", "more_vert", "chevron_right", "keyboard_arrow_down"],
+    "status": ["info", "check_circle", "error_outline", "warning_amber"],
+    "content": ["apartment", "home", "mail", "phone", "calendar_today"],
+    "library": "https://fonts.google.com/icons"
   }
 }

@@ -5,22 +5,23 @@ alwaysApply: true
 
 # UDS Design System
 
-You are building UI with the **Urban Design System (UDS)**. Always use UDS tokens and components. Never hardcode colors, spacing, fonts, or reinvent components that UDS provides. For custom layouts that UDS doesn't cover (hero sections, pricing cards, stats grids, etc.), still use UDS tokens for ALL values.
+You are building UI with the **Urban Design System (UDS)**. Always use UDS tokens and components. Never hardcode colors, spacing, fonts, or reinvent components that UDS provides. For custom layouts that UDS doesn't cover, still use UDS tokens for ALL values.
 
 **Docs:** https://sbajwa32.github.io/uds-docs/
+**AI context (JSON):** https://sbajwa32.github.io/uds-docs/ai-context.json
 **Install:** `npm install uds-core` then `import 'uds-core/uds.css'`
+**Icons:** Material Symbols Outlined — browse at https://fonts.google.com/icons
 
 ## Framework Detection
 
 Check `package.json` to determine the framework:
-- If `react` in dependencies → use React patterns (className, hooks, no uds.js)
-- If `vue` in dependencies → use Vue patterns (class, ref, script setup, no uds.js)
-- Otherwise → use vanilla HTML patterns (class, uds.js for behavior)
+- If `react` in dependencies → React patterns (className, hooks, NO uds.js)
+- If `vue` in dependencies → Vue patterns (class, ref, script setup, NO uds.js)
+- Otherwise → vanilla HTML (class, uds.js handles behavior)
 
 ## Required External Links
 
-ALWAYS include these in `<head>` (or via your framework's font loading):
-
+ALWAYS include in `<head>`:
 ```html
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -28,119 +29,120 @@ ALWAYS include these in `<head>` (or via your framework's font loading):
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
 ```
 
-## Project Boilerplate
+## Token Architecture — Primitives vs Semantics
 
-### React (Vite)
-```jsx
-// main.jsx
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import 'uds-core/uds.css';
-import App from './App.jsx';
-ReactDOM.createRoot(document.getElementById('root')).render(<App />);
-```
-```html
-<!-- index.html -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
-  <title>App</title>
-</head>
-<body><div id="root"></div><script type="module" src="/src/main.jsx"></script></body>
-</html>
-```
+UDS has TWO layers of CSS custom properties:
 
-### Vue (Vite)
-```js
-// main.js
-import { createApp } from 'vue';
-import 'uds-core/uds.css';
-import App from './App.vue';
-createApp(App).mount('#app');
+**PRIMITIVE tokens** (`--uds-primitive-*`):
+Raw palette values. Example: `--uds-primitive-color-blue-60-M: #005ff0`
+These are the raw building blocks. They NEVER change across themes.
+**NEVER use primitives in component code.**
+
+**SEMANTIC tokens** (`--uds-color-*`, `--uds-space-*`, `--uds-font-*`, etc.):
+Purpose-based tokens that reference primitives via `var()` chains.
+Example: `--uds-color-text-interactive: var(--uds-primitive-color-blue-60-M)`
+These CHANGE values when themes/modes switch.
+**ALWAYS use semantic tokens.**
+
+The flow: `Figma variable → Primitive CSS token → Semantic CSS token → Your code`
+
+**RULE: If a variable name contains `primitive`, NEVER use it. Only use semantic tokens.**
+
+## Theming — How It Works
+
+UDS supports 6 color modes, 4 font families, 3 font scales, and 2 density modes. Theming works by setting data attributes on `<html>`. When these change, semantic token VALUES change automatically — your code stays the same.
+
+**Example — same CSS, different themes:**
+```
+--uds-color-surface-main:  #fafafa   ← light mode (default)
+--uds-color-surface-main:  #1a1a1a   ← when data-color-scheme="dark"
+--uds-color-text-interactive: #005ff0 ← base brand (default)
+--uds-color-text-interactive: #0066cc ← when data-theme="resman"
 ```
 
-### Vanilla HTML
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
-  <link rel="stylesheet" href="uds/uds.css" />
-</head>
-<body>
-  <!-- Your content -->
-  <script src="uds/uds.js"></script>
-</body>
-</html>
-```
+Your component uses `var(--uds-color-surface-main)` and it works in ALL themes.
 
-## App Shell Pattern
+**WHY primitives break theming:**
+`--uds-primitive-color-blue-60-M` is ALWAYS `#005ff0` regardless of theme.
+`--uds-color-text-interactive` changes per brand/mode. Use the semantic one.
 
-When building a full application, compose the shell like this:
+**Available modes** (set on `<html>`):
+| Attribute | Values | Default |
+|-----------|--------|---------|
+| `data-color-scheme` | `dark` | light |
+| `data-theme` | `resman`, `anyonehome`, `inhabit` | base |
+| `data-font` | `poppins`, `roboto`, `lexend` | Inter |
+| `data-font-scale` | `smaller`, `larger` | default |
+| `data-density` | `comfortable` | default (compact) |
 
-```html
-<!-- Nav Header (full width, top) -->
-<div class="udc-nav-header">
-  <div class="udc-nav-header__left">
-    <div class="udc-nav-logo"><span class="material-symbols-outlined">apartment</span><span class="udc-nav-logo__text">App Name</span></div>
-  </div>
-  <div class="udc-nav-header__right">
-    <button class="udc-button-ghost" data-icon-only><span class="material-symbols-outlined">notifications</span></button>
-    <button class="udc-button-ghost" data-icon-only><span class="material-symbols-outlined">account_circle</span></button>
-  </div>
-</div>
+**To implement dark mode** — just set `<html data-color-scheme="dark">`. All tokens adapt. No code changes.
+**To implement brand switching** — set `<html data-theme="resman">`. Accent colors shift. Components unchanged.
 
-<!-- Body: Sidebar + Main -->
-<div style="display:flex; min-height:calc(100vh - 64px);">
-  <!-- Sidebar -->
-  <nav class="udc-nav-vertical" style="width:240px; border-right:1px solid var(--uds-color-border-secondary); padding:var(--uds-space-200) 0;">
-    <button class="udc-nav-button" aria-selected="true">
-      <span class="material-symbols-outlined">space_dashboard</span>
-      <span class="udc-nav-button__label">Dashboard</span>
-    </button>
-    <button class="udc-nav-button">
-      <span class="material-symbols-outlined">book</span>
-      <span class="udc-nav-button__label">Leasing</span>
-    </button>
-  </nav>
+## Tokens — When to Use Which
 
-  <!-- Main Content -->
-  <main style="flex:1; padding:var(--uds-space-300); overflow-y:auto;">
-    <nav class="udc-breadcrumb" aria-label="Breadcrumb"><ol><li><a href="#">Home</a></li><li aria-current="page">Dashboard</li></ol></nav>
-    <!-- Page content here -->
-  </main>
-</div>
-```
+### Surface Colors (backgrounds)
+| Token | When to use |
+|-------|-------------|
+| `--uds-color-surface-page-main` | Full page background |
+| `--uds-color-surface-main` | Card / content area backgrounds |
+| `--uds-color-surface-subtle` | Headers, table headers, secondary areas |
+| `--uds-color-surface-alt` | Zebra stripes, alternate rows, code blocks |
+| `--uds-color-surface-interactive-default` | Primary button fill, active accent |
+| `--uds-color-surface-interactive-hover` | Hover state of interactive-default |
+| `--uds-color-surface-interactive-subtle` | Focused backgrounds, soft selection |
+| `--uds-color-surface-interactive-subtle-hover` | Hover on subtle interactive |
+| `--uds-color-surface-interactive-none` | Transparent interactive (ghost) |
+| `--uds-color-surface-info` / `success` / `warning` / `error` | Status-colored filled containers |
+| `--uds-color-surface-info-subtle` / `success-subtle` / etc. | Light-tinted status containers |
 
-## Tokens — Use These, Never Hardcode
+### Text Colors
+| Token | When to use |
+|-------|-------------|
+| `--uds-color-text-primary` | Main body text, headings |
+| `--uds-color-text-secondary` | Helper text, labels, captions, timestamps |
+| `--uds-color-text-inverse` | Text on dark/filled backgrounds (buttons, prominent badges) |
+| `--uds-color-text-interactive` | Links, active tab labels, selected items |
+| `--uds-color-text-disabled` | Disabled form fields, inactive items |
+| `--uds-color-text-info` / `success` / `warning` / `error` | Status messages, validation text |
 
-### Colors
-- **Surface:** `--uds-color-surface-main`, `surface-page-main`, `surface-subtle`, `surface-alt`, `surface-interactive-default`, `surface-interactive-hover`, `surface-interactive-active`, `surface-interactive-none`, `surface-interactive-subtle`, `surface-interactive-subtle-hover`, `surface-info`, `surface-info-subtle`, `surface-success`, `surface-success-subtle`, `surface-warning`, `surface-warning-subtle`, `surface-error`, `surface-error-subtle`
-- **Text:** `--uds-color-text-primary`, `text-secondary`, `text-inverse`, `text-interactive`, `text-disabled`, `text-info`, `text-success`, `text-warning`, `text-error`
-- **Border:** `--uds-color-border-primary`, `border-secondary`, `border-interactive`, `border-disabled`, `border-error`, `border-outline-focus-visible`
-- **Icon:** `--uds-color-icon-primary`, `icon-secondary`, `icon-inverse`, `icon-interactive`, `icon-disabled`
+### Border Colors
+| Token | When to use |
+|-------|-------------|
+| `--uds-color-border-primary` | Default borders (input fields, cards) |
+| `--uds-color-border-secondary` | Subtle dividers, table cell borders |
+| `--uds-color-border-interactive` | Selected/active borders, focus accents |
+| `--uds-color-border-error` | Error state borders |
+| `--uds-color-border-outline-focus-visible` | Focus rings (keyboard navigation) |
 
 ### Spacing
-`--uds-space-025` (2px), `050` (4px), `075` (6px), `100` (8px), `125` (10px), `150` (12px), `200` (16px), `250` (20px), `300` (24px), `400` (32px), `500` (40px), `550` (44px), `600` (48px), `700` (56px), `800` (64px), `1000` (80px)
+`--uds-space-025` (2px), `--uds-space-050` (4px), `--uds-space-075` (6px), `--uds-space-100` (8px), `--uds-space-125` (10px), `--uds-space-150` (12px), `--uds-space-200` (16px), `--uds-space-250` (20px), `--uds-space-300` (24px), `--uds-space-400` (32px), `--uds-space-500` (40px), `--uds-space-600` (48px), `--uds-space-700` (56px), `--uds-space-800` (64px), `--uds-space-1000` (80px)
 
 ### Typography
-- **Family:** `var(--uds-font-family)` — never hardcode 'Inter' etc.
-- **Size:** `--uds-font-size-xs` (10), `sm` (12), `base` (14), `md` (16), `lg` (18), `xl` (20), `2xl` (24), `3xl` (28), `4xl` (32), `5xl` (36)
-- **Weight:** `--uds-font-weight-regular` (400), `medium` (500), `bold` (700)
-- **Line height:** `--uds-font-line-height-base` (20px), `line-height-250` (16px), `line-height-400` (28px)
+- **Family:** `var(--uds-font-family)` — NEVER hardcode font names
+- **Size:** `--uds-font-size-xs` (10px), `--uds-font-size-sm` (12px), `--uds-font-size-base` (14px), `--uds-font-size-md` (16px), `--uds-font-size-lg` (18px), `--uds-font-size-xl` (20px), `--uds-font-size-2xl` (24px), `--uds-font-size-3xl` (28px), `--uds-font-size-4xl` (32px), `--uds-font-size-5xl` (36px)
+- **Weight:** `--uds-font-weight-regular` (400), `--uds-font-weight-medium` (500), `--uds-font-weight-bold` (700)
+- **Line height:** `--uds-font-line-height-base` (20px), `--uds-font-line-height-250` (16px), `--uds-font-line-height-400` (28px)
+
+### Text Style Utility Classes (optional)
+Pre-built classes from `text-styles.css`:
+- `.uds-text-heading-xl`, `.uds-text-heading-lg`, `.uds-text-heading-base`
+- `.uds-text-paragraph-base`, `.uds-text-paragraph-sm`
+- `.uds-text-label-base-bold`, `.uds-text-label-base-medium`, `.uds-text-label-sm-medium`
 
 ### Border Radius
-`--uds-border-radius-container-sm` (4px), `input` (8px), `container` (8px), `container-md` (12px), `container-xl` (24px), `container-full` (9999px)
+`--uds-border-radius-container-sm` (4px), `--uds-border-radius-input` (8px), `--uds-border-radius-container` (8px), `--uds-border-radius-container-md` (12px), `--uds-border-radius-container-xl` (24px), `--uds-border-radius-container-full` (9999px)
 
 ### Shadows
-`--uds-shadow-depth-100` (subtle), `depth-300` (dropdown), `depth-500` (dialog), `bento` (nav panel), `--uds-overlay-backdrop` (dialog overlay)
+`--uds-shadow-depth-100` (subtle hover), `--uds-shadow-depth-300` (dropdown/tooltip), `--uds-shadow-depth-500` (dialog), `--uds-shadow-bento` (nav panel), `--uds-overlay-backdrop` (dialog overlay)
 
 ## Components — 21 Available
+
+### When to Use Which
+- **Tile vs List**: Tile for selection cards with title+description; List for simple menu rows
+- **Chip vs Badge**: Chip is interactive (filter, remove, toggle); Badge is static (status label)
+- **Dropdown vs Radio**: Dropdown for 4+ options or space-constrained; Radio for 2-4 visible choices
+- **Notification vs Dialog**: Notification for inline status banners; Dialog for blocking confirmations
+- **Search vs Text Input**: Search has a leading search icon + auto-clear; Text Input for form fields
 
 ### Button
 `udc-button-primary` / `udc-button-secondary` / `udc-button-ghost`
@@ -174,14 +176,13 @@ States: `data-open="true"`, `data-state="error"`, `aria-disabled="true"`
   </div>
   <div class="udc-dropdown__list" role="listbox">
     <div class="udc-dropdown__item" role="option">Option A</div>
-    <div class="udc-dropdown__item" role="option">Option B</div>
   </div>
 </div>
 ```
 
 ### Search
 `udc-search` → `__field`, `__icon`, `__clear`
-States: `data-state="error"`, `data-has-value="true"` (JS sets this)
+States: `data-state="error"`, `data-has-value="true"`
 ```html
 <div class="udc-search">
   <div class="udc-search__field">
@@ -193,8 +194,8 @@ States: `data-state="error"`, `data-has-value="true"` (JS sets this)
 ```
 
 ### Data Table
-`udc-data-table` with helper classes: `udc-dt-check` (checkbox col), `udc-dt-sort` (sortable header), `udc-dt-filter`, `udc-dt-action` (menu col), `udc-dt-align-right`, `udc-dt-align-center`, `udc-dt-prominent`
-States: `data-striped="true"`, `data-highlight="error"` (on row)
+`udc-data-table` + `udc-dt-check`, `udc-dt-sort`, `udc-dt-filter`, `udc-dt-action`, `udc-dt-align-right`, `udc-dt-align-center`, `udc-dt-prominent`
+States: `data-striped="true"`, `data-highlight="error"`
 ```html
 <div class="udc-data-table">
   <table>
@@ -216,59 +217,146 @@ States: `data-striped="true"`, `data-highlight="error"` (on row)
 </div>
 ```
 
-### Checkbox / Radio / Badge / Chip / Tabs / Tile / List / Notification / Dialog / Tooltip / Breadcrumb / Nav Header / Nav Vertical / Divider / Spacer / Icon Wrapper
-See component table below for quick patterns:
+### Other Components Quick Reference
 
 | Component | Class | Key HTML |
 |-----------|-------|----------|
 | Checkbox | `udc-checkbox` | `<label class="udc-checkbox"><input type="checkbox" /><span class="udc-checkbox__control"></span><span class="udc-checkbox__label">Label</span></label>` |
 | Radio | `udc-radio` in `udc-radio-group[role=radiogroup]` | `<label class="udc-radio"><input type="radio" name="g" /><span class="udc-radio__control"></span><span class="udc-radio__label">Opt</span></label>` |
-| Badge | `udc-badge` | `<span class="udc-badge" data-variant="success\|warning\|error\|info\|secondary">Label</span>` |
-| Chip | `udc-chip` | `<button class="udc-chip" data-variant="filter\|input\|dropdown" aria-selected="true"><span class="udc-chip__leading-icon"><span class="material-symbols-outlined">check</span></span><span class="udc-chip__label">Label</span></button>` |
+| Badge | `udc-badge` | `<span class="udc-badge" data-variant="success|warning|error|info|secondary">Label</span>` |
+| Chip | `udc-chip` | `<button class="udc-chip" data-variant="filter|input|dropdown" aria-selected="true"><span class="udc-chip__leading-icon"><span class="material-symbols-outlined">check</span></span><span class="udc-chip__label">Label</span></button>` |
 | Tabs | `udc-tabs` + `udc-tab` | `<div class="udc-tabs" role="tablist"><button class="udc-tab" role="tab" aria-selected="true">Tab</button></div>` |
 | Tile | `udc-tile[tabindex=0]` | `<div class="udc-tile" tabindex="0"><div class="udc-tile__content"><div class="udc-tile__label">Title</div><div class="udc-tile__body">Desc</div></div><span class="udc-tile__chevron"><span class="material-symbols-outlined">chevron_right</span></span></div>` |
 | List | `udc-list` + `udc-list-item[tabindex=0]` | `<div class="udc-list"><div class="udc-list-item" tabindex="0" aria-selected="true"><span class="udc-list-item__label">Item</span></div></div>` |
 | Notification | `udc-notification[data-variant]` | `<div class="udc-notification" data-variant="info"><span class="udc-notification__icon"><span class="material-symbols-outlined">info</span></span><span class="udc-notification__text">Msg</span><button class="udc-notification__close" aria-label="Dismiss"><span class="material-symbols-outlined">close</span></button></div>` |
-| Dialog | `udc-dialog-backdrop[data-open]` + `udc-dialog[role=dialog]` | `<div class="udc-dialog-backdrop" data-open="false"><div class="udc-dialog" role="dialog" aria-modal="true"><div class="udc-dialog__header"><h2 class="udc-dialog__title">Title</h2><button class="udc-dialog__close" aria-label="Close"><span class="material-symbols-outlined">close</span></button></div><div class="udc-dialog__body">Content</div><div class="udc-dialog__footer"><button class="udc-button-secondary">Cancel</button><button class="udc-button-primary">Confirm</button></div></div></div>` |
-| Tooltip | `udc-tooltip-wrapper` + `udc-tooltip[role=tooltip]` | `<span class="udc-tooltip-wrapper"><button>Trigger</button><span class="udc-tooltip" role="tooltip" data-position="top\|bottom\|left\|right">Text</span></span>` |
+| Dialog | `udc-dialog-backdrop[data-open]` | `<div class="udc-dialog-backdrop" data-open="false"><div class="udc-dialog" role="dialog" aria-modal="true"><div class="udc-dialog__header"><h2 class="udc-dialog__title">Title</h2><button class="udc-dialog__close" aria-label="Close"><span class="material-symbols-outlined">close</span></button></div><div class="udc-dialog__body">Content</div><div class="udc-dialog__footer"><button class="udc-button-secondary">Cancel</button><button class="udc-button-primary">Confirm</button></div></div></div>` |
+| Tooltip | `udc-tooltip-wrapper` + `udc-tooltip[role=tooltip]` | `<span class="udc-tooltip-wrapper"><button>Trigger</button><span class="udc-tooltip" role="tooltip" data-position="top|bottom|left|right">Text</span></span>` |
 | Breadcrumb | `udc-breadcrumb[aria-label]` | `<nav class="udc-breadcrumb" aria-label="Breadcrumb"><ol><li><a href="#">Home</a></li><li aria-current="page">Current</li></ol></nav>` |
+| Nav Header | `udc-nav-header` | `<div class="udc-nav-header"><div class="udc-nav-header__left"><div class="udc-nav-logo"><span class="material-symbols-outlined">apartment</span><span class="udc-nav-logo__text">App</span></div></div><div class="udc-nav-header__right">...</div></div>` |
+| Nav Vertical | `udc-nav-vertical` + `udc-nav-button` | `<nav class="udc-nav-vertical"><button class="udc-nav-button" aria-selected="true"><span class="material-symbols-outlined">home</span><span class="udc-nav-button__label">Home</span></button></nav>` |
 | Divider | `udc-divider-horizontal` | `<hr class="udc-divider-horizontal" />` |
 | Spacer | `udc-spacer[data-size]` | `<div class="udc-spacer" data-size="200"></div>` |
-| Icon Wrapper | `udc-icon-wrapper[data-size]` | `<span class="udc-icon-wrapper" data-size="24"><span class="material-symbols-outlined">icon_name</span></span>` |
+| Icon Wrapper | `udc-icon-wrapper[data-size]` | `<span class="udc-icon-wrapper" data-size="24"><span class="material-symbols-outlined">info</span></span>` |
 
-## Theming (apply to `<html>`)
+## App Shell Pattern
 
-- `data-color-scheme="dark"` — dark mode (light is default)
-- `data-theme="resman|anyonehome|inhabit"` — brand (base is default)
-- `data-font="poppins|roboto|lexend"` — font (Inter is default)
-- `data-font-scale="smaller|larger"` — scale
-- `data-density="comfortable"` — relaxed spacing
+```html
+<div class="udc-nav-header">
+  <div class="udc-nav-header__left">
+    <div class="udc-nav-logo"><span class="material-symbols-outlined">apartment</span><span class="udc-nav-logo__text">App Name</span></div>
+  </div>
+  <div class="udc-nav-header__right">
+    <button class="udc-button-ghost" data-icon-only><span class="material-symbols-outlined">notifications</span></button>
+    <button class="udc-button-ghost" data-icon-only><span class="material-symbols-outlined">account_circle</span></button>
+  </div>
+</div>
+<div style="display:flex; min-height:calc(100vh - 64px);">
+  <nav class="udc-nav-vertical" style="width:240px; border-right:1px solid var(--uds-color-border-secondary); padding:var(--uds-space-200) 0;">
+    <button class="udc-nav-button" aria-selected="true"><span class="material-symbols-outlined">space_dashboard</span><span class="udc-nav-button__label">Dashboard</span></button>
+  </nav>
+  <main style="flex:1; padding:var(--uds-space-300); overflow-y:auto;">
+    <!-- Page content -->
+  </main>
+</div>
+```
+
+## Keyboard Patterns for React/Vue
+
+Since React/Vue don't use `uds.js`, implement these keyboard behaviors:
+
+- **Dropdown**: ArrowUp/Down to navigate items, Enter/Space to select, Escape to close
+- **Dialog**: Escape to close, Tab cycles within dialog (focus trap), auto-focus first element on open
+- **Tabs**: ArrowLeft/Right between tabs, Home/End for first/last
+- **List**: ArrowUp/Down to navigate, Enter/Space to select
+- **Tile**: Enter/Space to toggle selection
+- **Data Table sort**: Enter/Space on header to cycle sort direction
+
+## Error & Validation Patterns
+
+- Validate on **blur** (not every keystroke)
+- Set `data-state="error"` on the `udc-text-input` or `udc-dropdown` wrapper
+- Replace helper text with the error message
+- Clear error on next input event
+- For form-level errors, show `<div class="udc-notification" data-variant="error">...</div>`
+
+## Common Icons
+
+Navigation: `space_dashboard`, `book`, `contact_phone`, `home_work`, `monetization_on`, `settings`, `account_circle`, `notifications`
+Actions: `add`, `edit`, `delete`, `close`, `search`, `clear`, `download`, `more_vert`, `chevron_right`, `keyboard_arrow_down`
+Status: `info`, `check_circle`, `error_outline`, `warning_amber`
+Content: `apartment`, `home`, `mail`, `phone`, `calendar_today`
 
 ## Do's and Don'ts
 
-DO: `color: var(--uds-color-text-primary)` / DON'T: `color: #171717`
-DO: `padding: var(--uds-space-200)` / DON'T: `padding: 16px`
-DO: `font-family: var(--uds-font-family)` / DON'T: `font-family: 'Inter'`
-DO: `border-radius: var(--uds-border-radius-input)` / DON'T: `border-radius: 8px`
-DO: `box-shadow: var(--uds-shadow-depth-300)` / DON'T: `box-shadow: 0 4px 12px rgba(0,0,0,0.08)`
-
-### Custom CSS
-For layouts or elements NOT covered by UDS components (hero sections, pricing cards, stat grids, etc.):
-- STILL use UDS tokens for ALL values (colors, spacing, fonts, radii, shadows)
-- Use UDS surface/text/border tokens for backgrounds, text, and borders
-- Use UDS spacing tokens for padding, margin, and gap
-- Use `var(--uds-font-family)` for any text
+```
+DO:    var(--uds-color-text-primary)           DON'T: #171717
+DO:    var(--uds-color-surface-main)           DON'T: #fafafa
+DO:    var(--uds-space-200)                    DON'T: 16px
+DO:    var(--uds-font-family)                  DON'T: 'Inter', sans-serif
+DO:    var(--uds-border-radius-input)          DON'T: 8px
+DO:    var(--uds-shadow-depth-300)             DON'T: 0 4px 12px rgba(0,0,0,0.08)
+DO:    var(--uds-color-text-interactive)       DON'T: var(--uds-primitive-color-blue-60-M)
+```
 
 ### React:
-- Use `className` not `class`
-- Use `useState` for all interactive state (open/close, selected, checked, input values)
-- Controlled inputs: `value={val} onChange={e => setVal(e.target.value)}`
-- NEVER use `dangerouslySetInnerHTML`
-- NEVER load `uds.js` — React manages state with hooks
+- `className` not `class`, `htmlFor` not `for`, `tabIndex` not `tabindex`
+- `useState` for ALL interactive state, controlled inputs with `value` + `onChange`
+- NEVER: `dangerouslySetInnerHTML`, `uds.js`, uncontrolled inputs
 
 ### Vue:
-- Always `<script setup>` with Composition API
-- `ref()` for state, `v-model` for inputs, `@click` for events, `:attr` for bindings
-- NEVER use `v-html`
-- NEVER use Options API (`data()`, `methods`, `mounted()`)
-- NEVER load `uds.js` — Vue manages state with refs
+- `<script setup>` + Composition API, `ref()` for state, `v-model` for inputs
+- NEVER: `v-html`, Options API, `uds.js`
+
+### Custom CSS (non-UDS layouts):
+Use UDS tokens for ALL values. Example:
+```css
+.my-hero {
+  background: var(--uds-color-surface-subtle);
+  padding: var(--uds-space-500) var(--uds-space-300);
+  border-radius: var(--uds-border-radius-container-md);
+  font-family: var(--uds-font-family);
+}
+.my-hero h1 {
+  font-size: var(--uds-font-size-5xl);
+  font-weight: var(--uds-font-weight-bold);
+  color: var(--uds-color-text-primary);
+  margin-bottom: var(--uds-space-200);
+}
+```
+
+## Project Boilerplate
+
+### React (Vite)
+```jsx
+// main.jsx
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import 'uds-core/uds.css';
+import App from './App.jsx';
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+```
+
+### Vue (Vite)
+```js
+// main.js
+import { createApp } from 'vue';
+import 'uds-core/uds.css';
+import App from './App.vue';
+createApp(App).mount('#app');
+```
+
+### Vanilla HTML
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+  <link rel="stylesheet" href="uds/uds.css" />
+</head>
+<body>
+  <script src="uds/uds.js"></script>
+</body>
+</html>
+```
