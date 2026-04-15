@@ -144,5 +144,48 @@
     "status": ["info", "check_circle", "error_outline", "warning_amber"],
     "content": ["apartment", "home", "mail", "phone", "calendar_today"],
     "library": "https://fonts.google.com/icons"
+  },
+  "namingConvention": {
+    "prefix": "udc-",
+    "meaning": "Urban Design Component",
+    "pattern": "BEM: udc-{component}, udc-{component}__{element}",
+    "variants": "Data attributes: data-variant, data-size, data-state",
+    "never": ["uds-", "udc_", "unprefixed custom names"]
+  },
+  "patternMapping": {
+    "toast/alert/banner": "udc-notification",
+    "modal/popup/confirm": "udc-dialog",
+    "select/dropdown": "udc-dropdown",
+    "tag/filter pill": "udc-chip",
+    "status label": "udc-badge",
+    "card with action": "udc-tile",
+    "sidebar nav": "udc-nav-vertical",
+    "top app bar": "udc-nav-header",
+    "search bar": "udc-search",
+    "data grid": "udc-data-table",
+    "hover popup": "udc-tooltip",
+    "toggle/switch": "NOT in UDS — build custom with tokens",
+    "pagination": "NOT in UDS — build custom with tokens",
+    "accordion": "NOT in UDS — build custom with tokens"
+  },
+  "complianceChecklist": [
+    "No hex colors — use var(--uds-color-*)",
+    "No px spacing — use var(--uds-space-*)",
+    "No hardcoded fonts — use var(--uds-font-family)",
+    "No --uds-primitive-* tokens — semantic only",
+    "No custom components when UDS has an equivalent",
+    "Framework syntax correct (className for React)",
+    "Keyboard behaviors implemented (React/Vue)",
+    "Form inputs controlled (React: value+onChange, Vue: v-model)",
+    "No uds.js in React/Vue"
+  ],
+  "criticalRules": [
+    "NEVER use --uds-primitive-* tokens. Only semantic tokens.",
+    "NEVER hardcode colors, spacing, or fonts. Always var(--uds-*).",
+    "NEVER load uds.js in React or Vue. Use hooks/refs."
+  ],
+  "iconGuidance": {
+    "udc-icon-wrapper": "Use for standalone icons needing standardized sizing (16/20/24/32/48px)",
+    "bare_span": "Use bare <span class='material-symbols-outlined'> inside UDS components that already handle icon sizing"
   }
 }

@@ -621,7 +621,7 @@
   </style>
   <script>
     (function () {
-      var SITE_VERSION = '2026.04.15.2';
+      var SITE_VERSION = '2026.04.15.3';
       var base = window.location.pathname.replace(/\/index\.html$/, '').replace(/\/$/, '');
       fetch(base + '/version.txt?_=' + Date.now()).then(function (r) {
         if (!r.ok) return;
@@ -659,7 +659,7 @@
       <span class="udc-tooltip" role="tooltip" data-position="bottom">Build Demo</span>
     </span>
     <select class="sg-version-select" id="sg-version-dropdown" aria-label="UDS version"></select>
-    <span class="sg-brand-bar-build">SITE 2026.04.15.2</span>
+    <span class="sg-brand-bar-build">SITE 2026.04.15.3</span>
   </div>
 
   <!-- Pre-flight checklist dialog -->
@@ -856,6 +856,20 @@
            ================================================================= -->
       <!-- AI ASSIST -->
       <div data-page="ai-assist" data-default-tab="overview">
+        <!-- Machine-readable summary for AI agents — processed first when fetching this URL -->
+        <div class="ai-context-summary" style="display:none;" aria-hidden="true">
+          UDS (Urban Design System) — CSS-first design system.
+          CRITICAL RULES:
+          1. NEVER use --uds-primitive-* tokens. Only semantic tokens (--uds-color-*, --uds-space-*, --uds-font-*).
+          2. NEVER hardcode colors (#xxx), spacing (16px), or fonts ('Inter'). Always use var(--uds-*).
+          3. NEVER load uds.js in React or Vue. React uses useState hooks. Vue uses ref() composables.
+          Install: npm install uds-core, then import 'uds-core/uds.css'.
+          Icons: Material Symbols Outlined from Google Fonts CDN.
+          Component prefix: udc- (e.g. udc-button-primary, udc-dropdown, udc-data-table).
+          Theming: set data-color-scheme="dark" on html for dark mode. Semantic tokens adapt automatically.
+          Pattern mapping: toast→udc-notification, modal→udc-dialog, select→udc-dropdown, tag→udc-chip, status→udc-badge, card→udc-tile, sidebar→udc-nav-vertical, topbar→udc-nav-header.
+          Full JSON context: https://sbajwa32.github.io/uds-docs/ai-context.json
+        </div>
         <h1 class="sg-page-title">AI Assist</h1>
         <p class="sg-page-desc">Everything an AI agent needs to use the Urban Design System. Point your AI coding tool at this page or download the Cursor rule file.</p>
         <div class="sg-page-tabs" role="tablist">
@@ -3500,7 +3514,7 @@ const query = ref('');
   <script src="https://cdn.jsdelivr.net/npm/jszip@3/dist/jszip.min.js"></script>
   <script src="./material-icons.js"></script>
   <script src="./uds/uds.js?v=29"></script>
-  <script src="./app.js?v=69"></script>
+  <script src="./app.js?v=70"></script>
   <script src="./demo-builder.js?v=8"></script>
 
 </body>

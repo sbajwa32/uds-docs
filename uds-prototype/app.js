@@ -3280,6 +3280,21 @@
         { type: 'added', text: 'Common icon reference with Material Symbols names by category' },
         { type: 'fixed', text: 'All token references now use full variable names (no ambiguous shorthand)' }
       ]
+    },
+    {
+      version: 'SITE 2026.04.15.3',
+      date: '2026-04-15',
+      changes: [
+        { type: 'added', text: 'Critical rules repeated at top AND bottom of .mdc for maximum AI compliance' },
+        { type: 'added', text: 'udc- naming convention section explaining BEM prefix pattern' },
+        { type: 'added', text: 'Common UI Pattern → UDS Component mapping table (13 patterns)' },
+        { type: 'added', text: 'Icon wrapper vs bare icon guidance' },
+        { type: 'added', text: 'All 21 components expanded to multi-line code blocks (was compressed single-line)' },
+        { type: 'added', text: 'Common Mistakes section with 7 wrong→right code pairs' },
+        { type: 'added', text: 'Compliance Checklist at end of .mdc — 9-point pre-output verification' },
+        { type: 'added', text: 'Machine-readable summary block at top of AI Assist page for URL-based AI consumption' },
+        { type: 'added', text: 'ai-context.json: namingConvention, patternMapping, complianceChecklist, criticalRules, iconGuidance' }
+      ]
     }
   ];
 
