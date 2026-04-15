@@ -52,6 +52,43 @@ Check `package.json`:
 - `vue` in dependencies → Vue (class, ref, script setup, NO uds.js)
 - Otherwise → vanilla HTML (class, uds.js handles behavior)
 
+## Project Boilerplate
+
+### React (Vite)
+```jsx
+// main.jsx
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import 'uds-core/uds.css';
+import App from './App.jsx';
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+```
+
+### Vue (Vite)
+```js
+// main.js
+import { createApp } from 'vue';
+import 'uds-core/uds.css';
+import App from './App.vue';
+createApp(App).mount('#app');
+```
+
+### Vanilla HTML
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+  <link rel="stylesheet" href="uds/uds.css" />
+</head>
+<body>
+  <script src="uds/uds.js"></script>
+</body>
+</html>
+```
+
 ## Required External Links
 
 ALWAYS include in `<head>`:
@@ -98,7 +135,7 @@ Dark mode: `<html data-color-scheme="dark">` — everything adapts.
 | `--uds-color-surface-subtle` | Headers, table headers |
 | `--uds-color-surface-alt` | Zebra stripes, code blocks |
 | `--uds-color-surface-interactive-default` | Primary button fill |
-| `--uds-color-surface-info-subtle` / `success-subtle` / `warning-subtle` / `error-subtle` | Status containers |
+| `--uds-color-surface-info-subtle`, `--uds-color-surface-success-subtle`, `--uds-color-surface-warning-subtle`, `--uds-color-surface-error-subtle` | Status containers |
 
 ### Text
 | Token | Use for |
@@ -109,13 +146,33 @@ Dark mode: `<html data-color-scheme="dark">` — everything adapts.
 | `--uds-color-text-interactive` | Links, active items |
 | `--uds-color-text-disabled` | Disabled fields |
 
+### Icon Colors
+| Token | Use for |
+|-------|---------|
+| `--uds-color-icon-primary` | Default icon color |
+| `--uds-color-icon-secondary` | Subtle/muted icons |
+| `--uds-color-icon-inverse` | Icons on filled backgrounds |
+| `--uds-color-icon-interactive` | Clickable/active icons |
+| `--uds-color-icon-disabled` | Disabled state icons |
+
+### Border Colors
+| Token | Use for |
+|-------|---------|
+| `--uds-color-border-default` | Default borders, dividers |
+| `--uds-color-border-secondary` | Subtle borders, sidebar separators |
+| `--uds-color-border-interactive` | Focused or active input borders |
+| `--uds-color-border-disabled` | Disabled input/field borders |
+| `--uds-color-border-error` | Error state borders |
+| `--uds-color-border-inverse` | Borders on filled backgrounds |
+
 ### Spacing
 `--uds-space-050` (4px), `--uds-space-100` (8px), `--uds-space-150` (12px), `--uds-space-200` (16px), `--uds-space-300` (24px), `--uds-space-400` (32px), `--uds-space-500` (40px), `--uds-space-600` (48px), `--uds-space-700` (56px), `--uds-space-1000` (80px)
 
 ### Typography
 - Family: `var(--uds-font-family)` — NEVER hardcode
-- Size: `--uds-font-size-xs` (10), `sm` (12), `base` (14), `md` (16), `lg` (18), `xl` (20), `2xl` (24), `3xl` (28), `5xl` (36)
-- Weight: `--uds-font-weight-regular` (400), `medium` (500), `bold` (700)
+- Size: `--uds-font-size-xs` (10px), `--uds-font-size-sm` (12px), `--uds-font-size-base` (14px), `--uds-font-size-md` (16px), `--uds-font-size-lg` (18px), `--uds-font-size-xl` (20px), `--uds-font-size-2xl` (24px), `--uds-font-size-3xl` (28px), `--uds-font-size-5xl` (36px)
+- Weight: `--uds-font-weight-regular` (400), `--uds-font-weight-medium` (500), `--uds-font-weight-bold` (700)
+- Line height: `--uds-font-line-height-base` (20px), `--uds-font-line-height-250` (16px), `--uds-font-line-height-400` (28px)
 
 ### Text Style Classes (optional)
 `.uds-text-heading-xl`, `.uds-text-heading-lg`, `.uds-text-paragraph-base`, `.uds-text-label-base-bold`, `.uds-text-label-sm-medium`
@@ -481,43 +538,6 @@ For anything UDS doesn't cover, use tokens for ALL values:
   font-weight: var(--uds-font-weight-bold);
   color: var(--uds-color-text-primary);
 }
-```
-
-## Project Boilerplate
-
-### React (Vite)
-```jsx
-// main.jsx
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import 'uds-core/uds.css';
-import App from './App.jsx';
-ReactDOM.createRoot(document.getElementById('root')).render(<App />);
-```
-
-### Vue (Vite)
-```js
-// main.js
-import { createApp } from 'vue';
-import 'uds-core/uds.css';
-import App from './App.vue';
-createApp(App).mount('#app');
-```
-
-### Vanilla HTML
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
-  <link rel="stylesheet" href="uds/uds.css" />
-</head>
-<body>
-  <script src="uds/uds.js"></script>
-</body>
-</html>
 ```
 
 ## Compliance Checklist — Verify Before Outputting Code

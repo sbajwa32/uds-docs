@@ -3295,6 +3295,18 @@
         { type: 'added', text: 'Machine-readable summary block at top of AI Assist page for URL-based AI consumption' },
         { type: 'added', text: 'ai-context.json: namingConvention, patternMapping, complianceChecklist, criticalRules, iconGuidance' }
       ]
+    },
+    {
+      version: 'SITE 2026.04.15.4',
+      date: '2026-04-15',
+      changes: [
+        { type: 'fixed', text: 'Typography section in .mdc now uses full variable names (--uds-font-size-sm instead of sm shorthand)' },
+        { type: 'fixed', text: 'Status container tokens in .mdc now use full variable names instead of shorthand' },
+        { type: 'added', text: 'Icon color tokens section (--uds-color-icon-*) added to .mdc token reference' },
+        { type: 'added', text: 'Line-height tokens (--uds-font-line-height-*) added to .mdc typography section' },
+        { type: 'added', text: 'Border color tokens section (--uds-color-border-*) added to .mdc with 6 tokens including disabled' },
+        { type: 'changed', text: 'Project Boilerplate section moved higher in .mdc — now directly after Framework Detection for faster AI discovery' }
+      ]
     }
   ];
 

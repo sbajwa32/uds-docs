@@ -621,7 +621,7 @@
   </style>
   <script>
     (function () {
-      var SITE_VERSION = '2026.04.15.3';
+      var SITE_VERSION = '2026.04.15.4';
       var base = window.location.pathname.replace(/\/index\.html$/, '').replace(/\/$/, '');
       fetch(base + '/version.txt?_=' + Date.now()).then(function (r) {
         if (!r.ok) return;
@@ -659,7 +659,7 @@
       <span class="udc-tooltip" role="tooltip" data-position="bottom">Build Demo</span>
     </span>
     <select class="sg-version-select" id="sg-version-dropdown" aria-label="UDS version"></select>
-    <span class="sg-brand-bar-build">SITE 2026.04.15.3</span>
+    <span class="sg-brand-bar-build">SITE 2026.04.15.4</span>
   </div>
 
   <!-- Pre-flight checklist dialog -->
@@ -3514,7 +3514,7 @@ const query = ref('');
   <script src="https://cdn.jsdelivr.net/npm/jszip@3/dist/jszip.min.js"></script>
   <script src="./material-icons.js"></script>
   <script src="./uds/uds.js?v=29"></script>
-  <script src="./app.js?v=70"></script>
+  <script src="./app.js?v=71"></script>
   <script src="./demo-builder.js?v=8"></script>
 
 </body>
