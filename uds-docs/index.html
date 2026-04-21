@@ -100,8 +100,6 @@
     .sg-demo-history-meta strong { font-size: var(--uds-font-size-base); display: block; margin-bottom: var(--uds-space-050); }
     .sg-demo-history-meta span { font-size: var(--uds-font-size-sm); color: var(--uds-color-text-secondary); }
 
-    .sg-demo-fw-bar { display: flex; align-items: center; gap: var(--uds-space-100); margin-bottom: var(--uds-space-200); }
-    .sg-demo-fw-bar .sg-fw-label { font-size: var(--uds-font-size-sm); font-weight: var(--uds-font-weight-bold); color: var(--uds-color-text-secondary); text-transform: uppercase; letter-spacing: 0.04em; margin-right: var(--uds-space-050); }
 
     .sg-demo-select-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--uds-space-150); }
     .sg-demo-select-row span { font-size: var(--uds-font-size-sm); font-weight: var(--uds-font-weight-bold); color: var(--uds-color-text-primary); }
@@ -429,30 +427,6 @@
     .sg-file-tree .comment { color: var(--uds-color-text-secondary); font-weight: 400; }
 
     /* =====================================================================
-       Framework selector
-       ===================================================================== */
-    .sg-fw-bar {
-      display: flex; align-items: center; gap: 8px; margin-bottom: 20px;
-      padding: 8px 12px; background: var(--uds-color-surface-subtle);
-      border-radius: 8px; font-size: 13px; font-family: var(--uds-font-family);
-    }
-    .sg-fw-bar-label { font-weight: 500; color: var(--uds-color-text-secondary); white-space: nowrap; }
-    .sg-fw-btn {
-      padding: 4px 12px; border-radius: 6px; border: 1px solid transparent;
-      font-size: 13px; font-weight: 500; cursor: pointer;
-      background: transparent; color: var(--uds-color-text-secondary);
-      font-family: var(--uds-font-family); transition: all 120ms;
-    }
-    .sg-fw-btn:hover { background: var(--uds-color-surface-alt); color: var(--uds-color-text-primary); }
-    .sg-fw-btn[aria-selected="true"] {
-      background: var(--uds-color-surface-interactive-default);
-      color: #fff; border-color: var(--uds-color-surface-interactive-default);
-    }
-
-    [data-fw-panel] { display: none; }
-    [data-fw-panel].active { display: block; }
-
-    /* =====================================================================
        Implementation Reference (expandable section below playground code)
        ===================================================================== */
     .sg-impl-details {
@@ -621,7 +595,7 @@
   </style>
   <script>
     (function () {
-      var SITE_VERSION = '2026.04.15.4';
+      var SITE_VERSION = '2026.04.21.1';
       var base = window.location.pathname.replace(/\/index\.html$/, '').replace(/\/$/, '');
       fetch(base + '/version.txt?_=' + Date.now()).then(function (r) {
         if (!r.ok) return;
@@ -659,7 +633,7 @@
       <span class="udc-tooltip" role="tooltip" data-position="bottom">Build Demo</span>
     </span>
     <select class="sg-version-select" id="sg-version-dropdown" aria-label="UDS version"></select>
-    <span class="sg-brand-bar-build">SITE 2026.04.15.4</span>
+    <span class="sg-brand-bar-build">SITE 2026.04.21.1</span>
   </div>
 
   <!-- Pre-flight checklist dialog -->
@@ -732,13 +706,6 @@
       <div class="udc-dialog__body">
         <div id="sg-demo-history-slot">
           <div class="sg-demo-history-empty">No previous builds</div>
-        </div>
-
-        <div class="sg-demo-fw-bar">
-          <span class="sg-fw-label">Framework</span>
-          <label class="udc-radio"><input type="radio" name="demo-fw" value="html" checked data-demo-fw="html" /><span class="udc-radio__control"></span><span class="udc-radio__label">HTML / CSS</span></label>
-          <label class="udc-radio"><input type="radio" name="demo-fw" value="react" data-demo-fw="react" /><span class="udc-radio__control"></span><span class="udc-radio__label">React</span></label>
-          <label class="udc-radio"><input type="radio" name="demo-fw" value="vue" data-demo-fw="vue" /><span class="udc-radio__control"></span><span class="udc-radio__label">Vue</span></label>
         </div>
 
         <div class="sg-demo-select-row">
@@ -3514,8 +3481,8 @@ const query = ref('');
   <script src="https://cdn.jsdelivr.net/npm/jszip@3/dist/jszip.min.js"></script>
   <script src="./material-icons.js"></script>
   <script src="./uds/uds.js?v=29"></script>
-  <script src="./app.js?v=71"></script>
-  <script src="./demo-builder.js?v=8"></script>
+  <script src="./app.js?v=72"></script>
+  <script src="./demo-builder.js?v=9"></script>
 
 </body>
 </html>

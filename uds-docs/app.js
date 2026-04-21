@@ -64,45 +64,6 @@
   }
 
   /* ========================================================================
-     2b. FRAMEWORK SELECTOR
-     ======================================================================== */
-  var currentFramework = localStorage.getItem('uds-framework') || 'html';
-
-  function setFramework(fw) {
-    currentFramework = fw;
-    localStorage.setItem('uds-framework', fw);
-    document.querySelectorAll('.sg-fw-btn').forEach(function (b) {
-      b.setAttribute('aria-selected', b.dataset.fw === fw ? 'true' : 'false');
-    });
-    document.querySelectorAll('[data-fw-panel]').forEach(function (p) {
-      p.classList.toggle('active', p.getAttribute('data-fw-panel') === fw);
-    });
-    refreshPlaygrounds();
-  }
-
-  function buildFrameworkBar() {
-    var bar = document.createElement('div');
-    bar.className = 'sg-fw-bar';
-    bar.innerHTML = '<span class="sg-fw-bar-label">Framework</span>';
-    ['html', 'react', 'vue'].forEach(function (fw) {
-      var btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'sg-fw-btn';
-      btn.textContent = fw === 'html' ? 'HTML / CSS' : fw.charAt(0).toUpperCase() + fw.slice(1);
-      btn.dataset.fw = fw;
-      btn.setAttribute('aria-selected', fw === currentFramework ? 'true' : 'false');
-      btn.addEventListener('click', function () { setFramework(fw); });
-      bar.appendChild(btn);
-    });
-    return bar;
-  }
-
-  /* ========================================================================
-     2c. FRAMEWORK CODE GENERATORS
-     Each component has handcrafted React / Vue output — no string hacks.
-     ======================================================================== */
-
-  /* ========================================================================
      3. SPA ROUTER
      ======================================================================== */
   function parseHash() {
@@ -376,8 +337,6 @@
 
     const right = document.createElement('div');
     right.className = 'sg-playground-right';
-    right.appendChild(buildFrameworkBar());
-
     const codeWrap = document.createElement('div');
     codeWrap.className = 'sg-code-wrap';
     const copyBtn = buildCopyButton(function() { return codeEl.textContent; });
@@ -395,10 +354,7 @@
     function update() {
       const result = cfg.render(state);
       previewEl.innerHTML = result.html;
-      var code = result.code;
-      if (currentFramework === 'react' && result.reactCode) code = result.reactCode;
-      else if (currentFramework === 'vue' && result.vueCode) code = result.vueCode;
-      codeEl.textContent = code;
+      codeEl.textContent = result.code;
     }
 
     cfg.controls.forEach(ctrl => {
@@ -525,7 +481,7 @@
           if (s.destructive) vueLines.push('  </div>');
           vueLines.push('</template>');
           var vueCode = vueLines.join('\n');
-          return { html, code, reactCode, vueCode };
+          return { html, code };
         }
 
         if (s.showLeadingIcon) btnAttrs.push('data-leading-icon');
@@ -573,7 +529,7 @@
         if (s.destructive) vL.push('  </div>');
         vL.push('</template>');
         var vueCode2 = vL.join('\n');
-        return { html, code, reactCode: reactCode2, vueCode: vueCode2 };
+        return { html, code };
       }
     },
 
@@ -698,7 +654,7 @@
         vLines.push('</template>');
         var vueCode = vLines.join('\n');
 
-        return { html: h, code: h, reactCode, vueCode };
+        return { html: h, code: h };
       }
     },
 
@@ -881,7 +837,7 @@
         vLines.push('</template>');
         var vueCode = vLines.join('\n');
 
-        return { html: h, code: h, reactCode, vueCode };
+        return { html: h, code: h };
       }
     },
 
@@ -935,7 +891,7 @@
         vLines.push('  </label>');
         vLines.push('</template>');
 
-        return { html: code, code, reactCode: rLines.join('\n'), vueCode: vLines.join('\n') };
+        return { html: code, code };
       }
     },
 
@@ -1009,7 +965,7 @@
         vLines.push('  </div>');
         vLines.push('</template>');
 
-        return { html: h, code: h, reactCode: rLines.join('\n'), vueCode: vLines.join('\n') };
+        return { html: h, code: h };
       }
     },
 
@@ -1035,7 +991,7 @@
 
         var rCode = 'function StatusBadge() {\n  return <span className="udc-badge"' + attrStr + '>' + esc(s.label) + '</span>;\n}';
         var vCode = '<template>\n  <span class="udc-badge"' + attrStr + '>' + esc(s.label) + '</span>\n</template>\n\n<script setup>\n// CSS-only — no script needed\n</script>';
-        return { html: code, code, reactCode: rCode, vueCode: vCode };
+        return { html: code, code };
       }
     },
 
@@ -1104,7 +1060,7 @@
         vLines.push('  </nav>');
         vLines.push('</template>');
 
-        return { html: h, code: h, reactCode: rLines.join('\n'), vueCode: vLines.join('\n') };
+        return { html: h, code: h };
       }
     },
 
@@ -1184,7 +1140,7 @@
         vLines.push('  </div>');
         vLines.push('</template>');
 
-        return { html: h, code: h, reactCode: rLines.join('\n'), vueCode: vLines.join('\n') };
+        return { html: h, code: h };
       }
     },
 
@@ -1200,7 +1156,7 @@
         const html = '<div style="width:100%;"><p style="font-size:13px;color:var(--uds-color-text-secondary);">Content above</p>' + code + '<p style="font-size:13px;color:var(--uds-color-text-secondary);">Content below</p></div>';
         var reactCode = 'function Divider() {\n  return <hr className="udc-divider-horizontal"' + padAttr + ' />;\n}';
         var vueCode = '<template>\n  <hr class="udc-divider-horizontal"' + padAttr + ' />\n</template>\n\n<script setup>\n// CSS-only\n</script>';
-        return { html, code, reactCode, vueCode };
+        return { html, code };
       }
     },
 
@@ -1224,7 +1180,7 @@
         const code = '<span class="udc-icon-wrapper"' + sizeAttr + ' style="color:' + colorToken + ';">\n  ' + icon + '\n</span>';
         var reactCode = 'function Icon() {\n  return (\n    <span\n      className="udc-icon-wrapper"\n' + (sizeAttr ? '      ' + sizeAttr + '\n' : '') + '      style={{ color: \'' + colorToken + '\' }}\n    >\n      <span className="material-symbols-outlined">' + esc(s.icon || 'info') + '</span>\n    </span>\n  );\n}';
         var vueCode = '<template>\n  <span class="udc-icon-wrapper"' + sizeAttr + ' :style="{ color: \'' + colorToken + '\' }">\n    <span class="material-symbols-outlined">' + esc(s.icon || 'info') + '</span>\n  </span>\n</template>\n\n<script setup>\n// CSS-only\n</script>';
-        return { html: code, code, reactCode, vueCode };
+        return { html: code, code };
       }
     },
 
@@ -1241,7 +1197,7 @@
         const html = '<div style="display:flex;align-items:center;gap:0;"><span class="udc-badge">Before</span><div class="udc-spacer" data-size="' + s.size + '" style="background:var(--uds-color-surface-info-subtle);outline:1px dashed var(--uds-color-border-interactive);"></div><span class="udc-badge" data-variant="success">After</span></div>';
         var reactCode = 'function Spacer() {\n  return <div className="udc-spacer" data-size="' + s.size + '" />;\n}';
         var vueCode = '<template>\n  <div class="udc-spacer" data-size="' + s.size + '"></div>\n</template>\n\n<script setup>\n// CSS-only\n</script>';
-        return { html, code, reactCode, vueCode };
+        return { html, code };
       }
     },
 
@@ -1343,7 +1299,7 @@
         vL.push('  </div>');
         vL.push('</template>');
         var vueCode = vL.join('\n');
-        return { html: html, code: code, reactCode: reactCode, vueCode: vueCode };
+        return { html: html, code: code };
       }
     },
 
@@ -1426,7 +1382,7 @@
           vueCode = vL.join('\n');
         }
 
-        return { html: html, code: code, reactCode: reactCode, vueCode: vueCode };
+        return { html: html, code: code };
       }
     },
 
@@ -1461,7 +1417,7 @@
 
         var vueCode = "<script setup>\nimport { ref } from 'vue';\nconst visible = ref(true);\n</script>\n\n<template>\n  <div v-if=\"visible\" class=\"udc-notification\" data-variant=\"" + s.variant + "\"" + styleAttr + ">\n    <span class=\"udc-notification__icon\">\n      <span class=\"material-symbols-outlined\">" + icon + "</span>\n    </span>\n    <span class=\"udc-notification__text\">" + s.message + "</span>" + (s.dismissible ? "\n    <button class=\"udc-notification__close\" aria-label=\"Dismiss\" @click=\"visible = false\">\n      <span class=\"material-symbols-outlined\">close</span>\n    </button>" : "") + "\n  </div>\n</template>";
 
-        return { html: html, code: code, reactCode: reactCode, vueCode: vueCode };
+        return { html: html, code: code };
       }
     },
 
@@ -1490,7 +1446,7 @@
 
         var vueCode = "<script setup>\ndefineProps({ open: Boolean });\nconst emit = defineEmits(['close']);\n</script>\n\n<template>\n  <div v-if=\"open\" class=\"udc-dialog-backdrop\" data-open=\"true\" @click.self=\"emit('close')\">\n    <div class=\"udc-dialog\" role=\"dialog\" aria-modal=\"true\">\n      <div class=\"udc-dialog__header\">\n        <h2 class=\"udc-dialog__title\">" + s.title + "</h2>\n        <button class=\"udc-dialog__close\" aria-label=\"Close\" @click=\"emit('close')\">\n          <span class=\"material-symbols-outlined\">close</span>\n        </button>\n      </div>\n      <div class=\"udc-dialog__body\">\n        <slot />\n      </div>\n      <div class=\"udc-dialog__footer\">\n        <button class=\"udc-button-secondary\" @click=\"emit('close')\">" + s.secondaryLabel + "</button>\n        <button class=\"udc-button-primary\">" + s.primaryLabel + "</button>\n      </div>\n    </div>\n  </div>\n</template>";
 
-        return { html: previewHtml, code: code, reactCode: reactCode, vueCode: vueCode };
+        return { html: previewHtml, code: code };
       }
     },
 
@@ -1651,7 +1607,7 @@
         vL.push('        </tr>', '      </tbody>', '    </table>', '  </div>', '</template>');
         var vueCode = vL.join('\n');
 
-        return { html: html, code: code, reactCode: reactCode, vueCode: vueCode };
+        return { html: html, code: code };
       }
     },
 
@@ -1682,7 +1638,7 @@
 
         var vueCode = "<script setup>\nimport { ref } from 'vue';\n\nconst props = defineProps({\n  label: String,\n  body: Array,\n  required: Boolean,\n  showChevron: { type: Boolean, default: true },\n  disabled: Boolean\n});\nconst selected = ref(false);\nfunction toggle() { if (!props.disabled) selected.value = !selected.value; }\n</script>\n\n<template>\n  <div class=\"udc-tile\" :tabindex=\"disabled ? -1 : 0\"\n    :aria-selected=\"selected\" :aria-disabled=\"disabled || undefined\"\n    @click=\"toggle\">\n    <div class=\"udc-tile__content\">\n      <div class=\"udc-tile__label\">\n        {{ label }}\n        <span v-if=\"required\" class=\"udc-tile__required\" />\n      </div>\n      <div v-for=\"(line, i) in body\" :key=\"i\" class=\"udc-tile__body\">{{ line }}</div>\n    </div>\n    <span v-if=\"showChevron\" class=\"udc-tile__chevron\">\n      <span class=\"material-symbols-outlined\">chevron_right</span>\n    </span>\n  </div>\n</template>";
 
-        return { html: html, code: code, reactCode: reactCode, vueCode: vueCode };
+        return { html: html, code: code };
       }
     },
 
@@ -1736,7 +1692,7 @@
         vL.push('    </div>', '  </div>', '</template>');
         var vueCode = vL.join('\n');
 
-        return { html: html, code: code, reactCode: reactCode, vueCode: vueCode };
+        return { html: html, code: code };
       }
     },
 
@@ -1766,7 +1722,7 @@
 
         var vueCode = "<script setup>\ndefineProps({ label: String, variant: String, selected: Boolean });\nconst emit = defineEmits(['toggle', 'dismiss']);\n</script>\n\n<template>\n  <button class=\"udc-chip\"" + varAttr + "\n    :aria-selected=\"selected\"\n    @click=\"variant === 'input' && selected ? emit('dismiss') : emit('toggle')\">\n" + (s.leadingIcon ? "    <span class=\"udc-chip__leading-icon\"><span class=\"material-symbols-outlined\">check</span></span>\n" : "") + "    <span class=\"udc-chip__label\">{{ label }}</span>\n" + (s.trailingIcon ? "    <span class=\"udc-chip__trailing-icon\"><span class=\"material-symbols-outlined\">" + trailingName + "</span></span>\n" : "") + "  </button>\n</template>";
 
-        return { html: html, code: code, reactCode: reactCode, vueCode: vueCode };
+        return { html: html, code: code };
       }
     },
 
@@ -1786,7 +1742,7 @@
 
         var vueCode = "<script setup>\nimport { ref, computed } from 'vue';\n\nconst props = defineProps({ placeholder: { type: String, default: '" + s.placeholder + "' } });\nconst emit = defineEmits(['search']);\nconst value = ref('');\nconst hasValue = computed(() => value.value.length > 0);\n\nfunction clear() { value.value = ''; emit('search', ''); }\nfunction onInput(e) { value.value = e.target.value; emit('search', e.target.value); }\n</script>\n\n<template>\n  <div class=\"udc-search\"" + stateAttr + " :data-has-value=\"hasValue ? 'true' : 'false'\">\n    <div class=\"udc-search__field\">\n      <span class=\"udc-search__icon\">\n        <span class=\"material-symbols-outlined\">search</span>\n      </span>\n      <input type=\"search\" :placeholder=\"placeholder\" :value=\"value\" @input=\"onInput\" />\n      <button class=\"udc-search__clear\" aria-label=\"Clear\" @click=\"clear\">\n        <span class=\"material-symbols-outlined\">clear</span>\n      </button>\n    </div>\n  </div>\n</template>";
 
-        return { html: html, code: code, reactCode: reactCode, vueCode: vueCode };
+        return { html: html, code: code };
       }
     },
 
@@ -1808,7 +1764,7 @@
 
         var vueCode = "<script setup>\ndefineProps({ text: String, position: String });\n</script>\n\n<template>\n  <span class=\"udc-tooltip-wrapper\">\n    <slot />\n    <span class=\"udc-tooltip\" role=\"tooltip\"" + posAttr + ">\n      " + s.text + "\n    </span>\n  </span>\n</template>";
 
-        return { html: html, code: code, reactCode: reactCode, vueCode: vueCode };
+        return { html: html, code: code };
       }
     }
   };
@@ -2514,61 +2470,15 @@
   function updateComponentTab(panel, data) {
     var pre = panel._pre;
     if (!pre) return;
-    if (currentFramework === 'react') pre.textContent = data.react();
-    else if (currentFramework === 'vue') pre.textContent = data.vue();
-    else pre.textContent = data.html();
+    pre.textContent = data.html();
   }
 
   function updateBehaviorTab(panel, data) {
     var pre = panel._pre;
     if (!pre) return;
-    if (currentFramework === 'html') {
-      if (data.jsFunc) {
-        fetchJsBehavior(data.jsFunc, function (code) { pre.textContent = code; });
-      }
-    } else if (currentFramework === 'react') {
-      pre.textContent = getReactBehavior(data.jsFunc);
-    } else if (currentFramework === 'vue') {
-      pre.textContent = getVueBehavior(data.jsFunc);
+    if (data.jsFunc) {
+      fetchJsBehavior(data.jsFunc, function (code) { pre.textContent = code; });
     }
-  }
-
-  function getReactBehavior(funcName) {
-    var behaviors = {
-      initTextInput: 'import { useState, useRef, useCallback } from \'react\';\n\nfunction useTextInput({ required, pattern, patternMessage }) {\n  const [value, setValue] = useState(\'\');\n  const [error, setError] = useState(\'\');\n\n  const validate = useCallback(() => {\n    if (required && !value.trim()) {\n      setError(\'This field is required\');\n    } else if (pattern && value && !new RegExp(pattern).test(value)) {\n      setError(patternMessage || \'Invalid format\');\n    } else {\n      setError(\'\');\n    }\n  }, [value, required, pattern, patternMessage]);\n\n  const clear = useCallback(() => setValue(\'\'), []);\n\n  return { value, setValue, error, validate, clear };\n}',
-      initTabs: 'import { useState, useCallback } from \'react\';\n\nfunction useTabs(tabs) {\n  const enabledTabs = tabs.filter(t => !t.disabled);\n  const [active, setActive] = useState(enabledTabs[0]?.id);\n\n  const onKeyDown = useCallback((e, tabId) => {\n    const ids = enabledTabs.map(t => t.id);\n    const idx = ids.indexOf(tabId);\n    let next;\n\n    if (e.key === \'ArrowRight\') {\n      next = ids[(idx + 1) % ids.length];\n    } else if (e.key === \'ArrowLeft\') {\n      next = ids[(idx - 1 + ids.length) % ids.length];\n    } else if (e.key === \'Home\') {\n      next = ids[0];\n    } else if (e.key === \'End\') {\n      next = ids[ids.length - 1];\n    }\n    if (next) { e.preventDefault(); setActive(next); }\n  }, [enabledTabs]);\n\n  return { active, setActive, onKeyDown };\n}',
-      initCheckbox: 'import { useRef, useEffect } from \'react\';\n\nfunction useIndeterminate(ref, indeterminate) {\n  useEffect(() => {\n    if (ref.current) ref.current.indeterminate = !!indeterminate;\n  }, [ref, indeterminate]);\n}',
-      initDropdown: "import { useState, useRef, useEffect, useCallback } from 'react';\n\nfunction useDropdown(options) {\n  const [open, setOpen] = useState(false);\n  const [selected, setSelected] = useState(null);\n  const ref = useRef(null);\n\n  const toggle = useCallback(() => setOpen(o => !o), []);\n  const select = useCallback((opt) => { setSelected(opt); setOpen(false); }, []);\n\n  useEffect(() => {\n    const close = (e) => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };\n    document.addEventListener('click', close);\n    return () => document.removeEventListener('click', close);\n  }, []);\n\n  return { open, selected, toggle, select, ref };\n}",
-      initNotification: "import { useState, useCallback } from 'react';\n\nfunction useNotification() {\n  const [visible, setVisible] = useState(true);\n  const dismiss = useCallback(() => setVisible(false), []);\n  return { visible, dismiss };\n}",
-      initDialog: "import { useEffect, useRef, useCallback } from 'react';\n\nfunction useDialog(open, onClose) {\n  const dialogRef = useRef(null);\n\n  useEffect(() => {\n    if (!open) return;\n    const handleEsc = (e) => { if (e.key === 'Escape') onClose(); };\n    document.addEventListener('keydown', handleEsc);\n    return () => document.removeEventListener('keydown', handleEsc);\n  }, [open, onClose]);\n\n  const handleBackdrop = useCallback((e) => {\n    if (e.target === e.currentTarget) onClose();\n  }, [onClose]);\n\n  return { dialogRef, handleBackdrop };\n}",
-      initTile: "import { useState, useCallback } from 'react';\n\nfunction useTileSelection(initialSelected = null) {\n  const [selected, setSelected] = useState(initialSelected);\n  const toggle = useCallback((id) => {\n    setSelected(prev => prev === id ? null : id);\n  }, []);\n  return { selected, toggle };\n}",
-      initList: "import { useState, useCallback } from 'react';\n\nfunction useListSelection(initialIndex = 0) {\n  const [selected, setSelected] = useState(initialIndex);\n  const select = useCallback((idx) => setSelected(idx), []);\n  return { selected, select };\n}",
-      initDataTable: "import { useState, useCallback } from 'react';\n\nfunction useDataTable(rowCount) {\n  const [checked, setChecked] = useState(new Set());\n  const [sortCol, setSortCol] = useState(null);\n  const [sortDir, setSortDir] = useState(null);\n\n  const toggleAll = useCallback(() => {\n    setChecked(prev => prev.size === rowCount ? new Set() : new Set(Array.from({length: rowCount}, (_, i) => i)));\n  }, [rowCount]);\n\n  const toggleRow = useCallback((idx) => {\n    setChecked(prev => { const next = new Set(prev); next.has(idx) ? next.delete(idx) : next.add(idx); return next; });\n  }, []);\n\n  const cycleSort = useCallback((col) => {\n    if (sortCol !== col) { setSortCol(col); setSortDir('asc'); }\n    else if (sortDir === 'asc') setSortDir('desc');\n    else { setSortCol(null); setSortDir(null); }\n  }, [sortCol, sortDir]);\n\n  return { checked, toggleAll, toggleRow, allChecked: checked.size === rowCount, sortCol, sortDir, cycleSort };\n}",
-      initNavBento: "import { useState, useRef, useEffect } from 'react';\n\nfunction useBentoDropdown() {\n  const [open, setOpen] = useState(false);\n  const ref = useRef(null);\n\n  useEffect(() => {\n    const close = (e) => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };\n    document.addEventListener('click', close);\n    return () => document.removeEventListener('click', close);\n  }, []);\n\n  return { open, toggle: () => setOpen(o => !o), close: () => setOpen(false), ref };\n}",
-      initNavVertical: "import { useState, useCallback } from 'react';\n\nfunction useNavVertical(items) {\n  const [active, setActive] = useState(items[0]?.id ?? null);\n  const select = useCallback((id) => setActive(id), []);\n  return { active, select };\n}",
-      initChip: "import { useState, useCallback } from 'react';\n\nfunction useChipGroup(initial = new Set()) {\n  const [selected, setSelected] = useState(initial);\n\n  const toggle = useCallback((label) => {\n    setSelected(prev => {\n      const next = new Set(prev);\n      next.has(label) ? next.delete(label) : next.add(label);\n      return next;\n    });\n  }, []);\n\n  const dismiss = useCallback((label) => {\n    setSelected(prev => { const next = new Set(prev); next.delete(label); return next; });\n  }, []);\n\n  return { selected, toggle, dismiss, isSelected: (l) => selected.has(l) };\n}",
-      initSearch: "import { useState, useCallback } from 'react';\n\nfunction useSearch(onSearch) {\n  const [value, setValue] = useState('');\n  const hasValue = value.length > 0;\n\n  const clear = useCallback(() => { setValue(''); onSearch?.(''); }, [onSearch]);\n  const onChange = useCallback((e) => { setValue(e.target.value); onSearch?.(e.target.value); }, [onSearch]);\n\n  return { value, hasValue, clear, onChange };\n}"
-    };
-    return behaviors[funcName] || '// No React equivalent needed — CSS-only component';
-  }
-
-  function getVueBehavior(funcName) {
-    var behaviors = {
-      initTextInput: 'import { ref, computed } from \'vue\';\n\nexport function useTextInput({ required, pattern, patternMessage } = {}) {\n  const value = ref(\'\');\n  const error = ref(\'\');\n\n  function validate() {\n    if (required && !value.value.trim()) {\n      error.value = \'This field is required\';\n    } else if (pattern && value.value && !new RegExp(pattern).test(value.value)) {\n      error.value = patternMessage || \'Invalid format\';\n    } else {\n      error.value = \'\';\n    }\n  }\n\n  function clear() { value.value = \'\'; }\n\n  const state = computed(() => error.value ? \'error\' : undefined);\n\n  return { value, error, validate, clear, state };\n}',
-      initTabs: 'import { ref } from \'vue\';\n\nexport function useTabs(tabs) {\n  const enabledTabs = tabs.filter(t => !t.disabled);\n  const active = ref(enabledTabs[0]?.id);\n\n  function onKeyDown(e, tabId) {\n    const ids = enabledTabs.map(t => t.id);\n    const idx = ids.indexOf(tabId);\n    let next;\n\n    if (e.key === \'ArrowRight\') {\n      next = ids[(idx + 1) % ids.length];\n    } else if (e.key === \'ArrowLeft\') {\n      next = ids[(idx - 1 + ids.length) % ids.length];\n    } else if (e.key === \'Home\') {\n      next = ids[0];\n    } else if (e.key === \'End\') {\n      next = ids[ids.length - 1];\n    }\n    if (next) { e.preventDefault(); active.value = next; }\n  }\n\n  return { active, onKeyDown };\n}',
-      initCheckbox: 'import { ref, watch, onMounted } from \'vue\';\n\nexport function useIndeterminate(inputRef, indeterminate) {\n  const isIndeterminate = ref(indeterminate);\n\n  function apply() {\n    if (inputRef.value) inputRef.value.indeterminate = isIndeterminate.value;\n  }\n\n  onMounted(apply);\n  watch(isIndeterminate, apply);\n\n  return isIndeterminate;\n}',
-      initDropdown: "import { ref, onMounted, onUnmounted } from 'vue';\n\nexport function useDropdown() {\n  const open = ref(false);\n  const selected = ref(null);\n  const wrapperRef = ref(null);\n\n  function toggle() { open.value = !open.value; }\n  function select(opt) { selected.value = opt; open.value = false; }\n\n  function onClickOutside(e) {\n    if (wrapperRef.value && !wrapperRef.value.contains(e.target)) open.value = false;\n  }\n\n  onMounted(() => document.addEventListener('click', onClickOutside));\n  onUnmounted(() => document.removeEventListener('click', onClickOutside));\n\n  return { open, selected, toggle, select, wrapperRef };\n}",
-      initNotification: "import { ref } from 'vue';\n\nexport function useNotification() {\n  const visible = ref(true);\n  function dismiss() { visible.value = false; }\n  return { visible, dismiss };\n}",
-      initDialog: "import { watch, onUnmounted } from 'vue';\n\nexport function useDialog(open, emit) {\n  function close() { emit('close'); }\n\n  function onEsc(e) { if (e.key === 'Escape' && open.value) close(); }\n  function onBackdrop(e) { if (e.target === e.currentTarget) close(); }\n\n  watch(open, (val) => {\n    if (val) document.addEventListener('keydown', onEsc);\n    else document.removeEventListener('keydown', onEsc);\n  });\n\n  onUnmounted(() => document.removeEventListener('keydown', onEsc));\n\n  return { close, onBackdrop };\n}",
-      initTile: "import { ref } from 'vue';\n\nexport function useTileSelection() {\n  const selected = ref(null);\n  function toggle(id) { selected.value = selected.value === id ? null : id; }\n  return { selected, toggle };\n}",
-      initList: "import { ref } from 'vue';\n\nexport function useListSelection(initial = 0) {\n  const selected = ref(initial);\n  function select(idx) { selected.value = idx; }\n  return { selected, select };\n}",
-      initDataTable: "import { ref, computed } from 'vue';\n\nexport function useDataTable(rowCount) {\n  const checked = ref(new Set());\n  const sortCol = ref(null);\n  const sortDir = ref(null);\n\n  const allChecked = computed(() => checked.value.size === rowCount);\n\n  function toggleAll() {\n    checked.value = allChecked.value ? new Set() : new Set(Array.from({length: rowCount}, (_, i) => i));\n  }\n  function toggleRow(idx) {\n    const s = new Set(checked.value);\n    s.has(idx) ? s.delete(idx) : s.add(idx);\n    checked.value = s;\n  }\n  function cycleSort(col) {\n    if (sortCol.value !== col) { sortCol.value = col; sortDir.value = 'asc'; }\n    else if (sortDir.value === 'asc') sortDir.value = 'desc';\n    else { sortCol.value = null; sortDir.value = null; }\n  }\n\n  return { checked, allChecked, toggleAll, toggleRow, sortCol, sortDir, cycleSort };\n}",
-      initNavBento: "import { ref, onMounted, onUnmounted } from 'vue';\n\nexport function useBentoDropdown() {\n  const open = ref(false);\n  const wrapperRef = ref(null);\n\n  function toggle() { open.value = !open.value; }\n  function close() { open.value = false; }\n\n  function onClickOutside(e) {\n    if (wrapperRef.value && !wrapperRef.value.contains(e.target)) close();\n  }\n\n  onMounted(() => document.addEventListener('click', onClickOutside));\n  onUnmounted(() => document.removeEventListener('click', onClickOutside));\n\n  return { open, toggle, close, wrapperRef };\n}",
-      initNavVertical: "import { ref } from 'vue';\n\nexport function useNavVertical(items) {\n  const active = ref(items[0]?.id ?? null);\n  function select(id) { active.value = id; }\n  return { active, select };\n}",
-      initChip: "import { ref } from 'vue';\n\nexport function useChipGroup(initial = []) {\n  const selected = ref(new Set(initial));\n\n  function toggle(label) {\n    const s = new Set(selected.value);\n    s.has(label) ? s.delete(label) : s.add(label);\n    selected.value = s;\n  }\n\n  function dismiss(label) {\n    const s = new Set(selected.value);\n    s.delete(label);\n    selected.value = s;\n  }\n\n  return { selected, toggle, dismiss, isSelected: (l) => selected.value.has(l) };\n}",
-      initSearch: "import { ref, computed } from 'vue';\n\nexport function useSearch(emit) {\n  const value = ref('');\n  const hasValue = computed(() => value.value.length > 0);\n\n  function clear() { value.value = ''; emit('search', ''); }\n  function onInput(e) { value.value = e.target.value; emit('search', value.value); }\n\n  return { value, hasValue, clear, onInput };\n}"
-    };
-    return behaviors[funcName] || '// No Vue equivalent needed — CSS-only component';
   }
 
   function buildTokensPanel(panel, tokenGroups) {
@@ -2704,159 +2614,6 @@
     });
   });
 
-  /* ========================================================================
-     10. FRAMEWORK SWITCHER FOR CODE TABS
-     ======================================================================== */
-  var CODE_TAB_CONFIGS = {
-    'semantic-colors': {
-      react: "/* src/index.js — import UDS once at the top */\nimport './uds/uds.css';\n\n/* ----- MyCard.module.css ----- */\n.card {\n  background: var(--uds-color-surface-main);\n  border: 1px solid var(--uds-color-border-primary);\n  border-radius: var(--uds-border-radius-card);\n  padding: var(--uds-space-300);\n}\n\n.title {\n  color: var(--uds-color-text-primary);\n  font-family: var(--uds-font-family);\n}\n\n.subtitle {\n  color: var(--uds-color-text-secondary);\n}\n\n/* ----- MyCard.jsx ----- */\nimport styles from './MyCard.module.css';\n\nfunction MyCard() {\n  return (\n    <div className={styles.card}>\n      <h2 className={styles.title}>Card title</h2>\n      <p className={styles.subtitle}>Description text</p>\n    </div>\n  );\n}",
-      vue: "<style scoped>\n.card {\n  background: var(--uds-color-surface-main);\n  border: 1px solid var(--uds-color-border-primary);\n  border-radius: var(--uds-border-radius-card);\n  padding: var(--uds-space-300);\n}\n\n.title {\n  color: var(--uds-color-text-primary);\n  font-family: var(--uds-font-family);\n}\n\n.subtitle {\n  color: var(--uds-color-text-secondary);\n}\n</style>\n\n<template>\n  <div class=\"card\">\n    <h2 class=\"title\">Card title</h2>\n    <p class=\"subtitle\">Description text</p>\n  </div>\n</template>",
-      note: 'Use UDS tokens via var() in your stylesheets — CSS Modules, scoped styles, or plain CSS. Avoid inline styles for tokens.'
-    },
-    'primitive-colors': {
-      react: "/* Primitives are available as CSS custom properties.\n   Prefer semantic tokens in component code — \n   use primitives only for one-off overrides. */\n\n/* ----- Highlight.module.css ----- */\n.highlight {\n  background: var(--uds-primitive-color-yellow-100);\n  border-left: 3px solid var(--uds-primitive-color-yellow-500);\n  padding: var(--uds-space-200);\n}\n\n/* ----- Highlight.jsx ----- */\nimport styles from './Highlight.module.css';\n\nfunction Highlight({ children }) {\n  return <div className={styles.highlight}>{children}</div>;\n}",
-      vue: "<!-- Prefer semantic tokens — use primitives for one-off overrides -->\n\n<style scoped>\n.highlight {\n  background: var(--uds-primitive-color-yellow-100);\n  border-left: 3px solid var(--uds-primitive-color-yellow-500);\n  padding: var(--uds-space-200);\n}\n</style>\n\n<template>\n  <div class=\"highlight\">\n    <slot />\n  </div>\n</template>",
-      note: 'Primitive tokens are raw palette values. Prefer semantic tokens in component code.'
-    },
-    'button': {
-      react: "/* UDS CSS is already imported in your app entry point */\n\nfunction MyPage() {\n  return (\n    <>\n      <button className=\"udc-button-primary\">Save</button>\n      <button className=\"udc-button-secondary\">Cancel</button>\n      <button className=\"udc-button-ghost\">More</button>\n    </>\n  );\n}",
-      vue: "<!-- UDS CSS is already imported in main.js -->\n\n<template>\n  <button class=\"udc-button-primary\">Save</button>\n  <button class=\"udc-button-secondary\">Cancel</button>\n  <button class=\"udc-button-ghost\">More</button>\n</template>"
-    },
-    'text-input': {
-      react: "import { useState } from 'react';\n\nfunction EmailInput() {\n  const [value, setValue] = useState('');\n\n  return (\n    <div className=\"udc-text-input\">\n      <label className=\"udc-text-input__label\">\n        Email\n        <span className=\"udc-text-input__required\"></span>\n      </label>\n      <div className=\"udc-text-input__field\">\n        <input type=\"email\" placeholder=\"Enter email...\" value={value} onChange={e => setValue(e.target.value)} />\n      </div>\n      <div className=\"udc-text-input__helper\">\n        <span>We'll never share your email</span>\n      </div>\n    </div>\n  );\n}",
-      vue: "<script setup>\nimport { ref } from 'vue';\n\nconst value = ref('');\n</script>\n\n<template>\n  <div class=\"udc-text-input\">\n    <label class=\"udc-text-input__label\">\n      Email\n      <span class=\"udc-text-input__required\"></span>\n    </label>\n    <div class=\"udc-text-input__field\">\n      <input type=\"email\" placeholder=\"Enter email...\" v-model=\"value\" />\n    </div>\n    <div class=\"udc-text-input__helper\">\n      <span>We'll never share your email</span>\n    </div>\n  </div>\n</template>"
-    },
-    'dropdown': {
-      react: "import { useState } from 'react';\n\nfunction FruitPicker() {\n  const [open, setOpen] = useState(false);\n  const [selected, setSelected] = useState('');\n  const options = ['Apple', 'Banana', 'Cherry'];\n\n  return (\n    <div className=\"udc-dropdown\" data-open={open ? 'true' : 'false'}>\n      <label className=\"udc-dropdown__label\">Favourite fruit</label>\n      <div className=\"udc-dropdown__trigger\" tabIndex={0} role=\"combobox\" aria-expanded={open} onClick={() => setOpen(!open)}>\n        <span className=\"udc-dropdown__value\" {...(selected ? {} : {'data-placeholder': true})}>{selected || 'Choose...'}</span>\n        <span className=\"udc-dropdown__chevron\"><span className=\"material-symbols-outlined\">keyboard_arrow_down</span></span>\n      </div>\n      <div className=\"udc-dropdown__list\" role=\"listbox\">\n        {options.map(opt => (\n          <div key={opt} className=\"udc-dropdown__item\" role=\"option\" aria-selected={selected === opt} onClick={() => { setSelected(opt); setOpen(false); }}>{opt}</div>\n        ))}\n      </div>\n      <div className=\"udc-dropdown__helper\"><span>Pick one</span></div>\n    </div>\n  );\n}",
-      vue: "<script setup>\nimport { ref } from 'vue';\n\nconst open = ref(false);\nconst selected = ref('');\nconst options = ['Apple', 'Banana', 'Cherry'];\n\nfunction select(opt) { selected.value = opt; open.value = false; }\n</script>\n\n<template>\n  <div class=\"udc-dropdown\" :data-open=\"open ? 'true' : 'false'\">\n    <label class=\"udc-dropdown__label\">Favourite fruit</label>\n    <div class=\"udc-dropdown__trigger\" tabindex=\"0\" role=\"combobox\" :aria-expanded=\"open\" @click=\"open = !open\">\n      <span class=\"udc-dropdown__value\" :data-placeholder=\"!selected || undefined\">{{ selected || 'Choose...' }}</span>\n      <span class=\"udc-dropdown__chevron\"><span class=\"material-symbols-outlined\">keyboard_arrow_down</span></span>\n    </div>\n    <div class=\"udc-dropdown__list\" role=\"listbox\">\n      <div v-for=\"opt in options\" :key=\"opt\" class=\"udc-dropdown__item\" role=\"option\" :aria-selected=\"selected === opt\" @click=\"select(opt)\">{{ opt }}</div>\n    </div>\n    <div class=\"udc-dropdown__helper\"><span>Pick one</span></div>\n  </div>\n</template>"
-    },
-    'checkbox': {
-      react: "import { useState } from 'react';\n\nfunction TermsCheckbox() {\n  const [accepted, setAccepted] = useState(false);\n\n  return (\n    <label className=\"udc-checkbox\">\n      <input type=\"checkbox\" checked={accepted} onChange={() => setAccepted(!accepted)} />\n      <span className=\"udc-checkbox__control\"></span>\n      <span className=\"udc-checkbox__label\">Accept terms</span>\n    </label>\n  );\n}",
-      vue: "<script setup>\nimport { ref } from 'vue';\n\nconst accepted = ref(false);\n</script>\n\n<template>\n  <label class=\"udc-checkbox\">\n    <input type=\"checkbox\" v-model=\"accepted\" />\n    <span class=\"udc-checkbox__control\"></span>\n    <span class=\"udc-checkbox__label\">Accept terms</span>\n  </label>\n</template>"
-    },
-    'radio': {
-      react: "import { useState } from 'react';\n\nfunction NotificationPref() {\n  const [pref, setPref] = useState('email');\n\n  return (\n    <div className=\"udc-radio-group\" role=\"radiogroup\">\n      <span className=\"udc-radio-group__legend\">Preference</span>\n      {['email', 'sms'].map(val => (\n        <label key={val} className=\"udc-radio\">\n          <input type=\"radio\" name=\"pref\" value={val} checked={pref === val} onChange={() => setPref(val)} />\n          <span className=\"udc-radio__control\"></span>\n          <span className=\"udc-radio__label\">{val.charAt(0).toUpperCase() + val.slice(1)}</span>\n        </label>\n      ))}\n    </div>\n  );\n}",
-      vue: "<script setup>\nimport { ref } from 'vue';\n\nconst pref = ref('email');\n</script>\n\n<template>\n  <div class=\"udc-radio-group\" role=\"radiogroup\">\n    <span class=\"udc-radio-group__legend\">Preference</span>\n    <label v-for=\"val in ['email', 'sms']\" :key=\"val\" class=\"udc-radio\">\n      <input type=\"radio\" name=\"pref\" :value=\"val\" v-model=\"pref\" />\n      <span class=\"udc-radio__control\"></span>\n      <span class=\"udc-radio__label\">{{ val.charAt(0).toUpperCase() + val.slice(1) }}</span>\n    </label>\n  </div>\n</template>"
-    },
-    'badge': {
-      react: "function StatusBadges() {\n  return (\n    <>\n      <span className=\"udc-badge\">Default</span>\n      <span className=\"udc-badge\" data-variant=\"success\">Active</span>\n      <span className=\"udc-badge\" data-variant=\"error\" data-prominent=\"false\">Error</span>\n    </>\n  );\n}",
-      vue: "<template>\n  <span class=\"udc-badge\">Default</span>\n  <span class=\"udc-badge\" data-variant=\"success\">Active</span>\n  <span class=\"udc-badge\" data-variant=\"error\" data-prominent=\"false\">Error</span>\n</template>"
-    },
-    'breadcrumb': {
-      react: "function PageBreadcrumb() {\n  return (\n    <nav className=\"udc-breadcrumb\" aria-label=\"Breadcrumb\">\n      <ol>\n        <li><a href=\"/\">Home</a></li>\n        <li><a href=\"/products\">Products</a></li>\n        <li aria-current=\"page\">Widget Pro</li>\n      </ol>\n    </nav>\n  );\n}",
-      vue: "<template>\n  <nav class=\"udc-breadcrumb\" aria-label=\"Breadcrumb\">\n    <ol>\n      <li><a href=\"/\">Home</a></li>\n      <li><a href=\"/products\">Products</a></li>\n      <li aria-current=\"page\">Widget Pro</li>\n    </ol>\n  </nav>\n</template>"
-    },
-    'tabs': {
-      react: "import { useState } from 'react';\n\nfunction SectionTabs() {\n  const [active, setActive] = useState(0);\n  const tabs = ['Overview', 'Details', 'History'];\n\n  return (\n    <div className=\"udc-tabs\" role=\"tablist\">\n      {tabs.map((label, i) => (\n        <button key={i} className=\"udc-tab\" role=\"tab\" aria-selected={active === i} disabled={label === 'History'} onClick={() => setActive(i)}>{label}</button>\n      ))}\n    </div>\n  );\n}",
-      vue: "<script setup>\nimport { ref } from 'vue';\n\nconst active = ref(0);\nconst tabs = ['Overview', 'Details', 'History'];\n</script>\n\n<template>\n  <div class=\"udc-tabs\" role=\"tablist\">\n    <button v-for=\"(label, i) in tabs\" :key=\"i\" class=\"udc-tab\" role=\"tab\" :aria-selected=\"active === i\" :disabled=\"label === 'History'\" @click=\"active = i\">{{ label }}</button>\n  </div>\n</template>"
-    },
-    'divider': {
-      react: "/* In your JSX */\n<hr className=\"udc-divider-horizontal\" />\n<hr className=\"udc-divider-horizontal\" data-padding=\"lg\" />",
-      vue: "<template>\n  <hr class=\"udc-divider-horizontal\" />\n  <hr class=\"udc-divider-horizontal\" data-padding=\"lg\" />\n</template>"
-    },
-    'icon-wrapper': {
-      react: "<span className=\"udc-icon-wrapper\" data-size=\"32\"\n  style={{ color: 'var(--uds-color-icon-interactive)' }}>\n  <span className=\"material-symbols-outlined\">info</span>\n</span>",
-      vue: "<template>\n  <span class=\"udc-icon-wrapper\" data-size=\"32\"\n    :style=\"{ color: 'var(--uds-color-icon-interactive)' }\">\n    <span class=\"material-symbols-outlined\">info</span>\n  </span>\n</template>"
-    },
-    'spacer': {
-      react: "<div className=\"udc-spacer\" data-size=\"200\"></div>",
-      vue: "<template>\n  <div class=\"udc-spacer\" data-size=\"200\"></div>\n</template>"
-    },
-    'nav-header': {
-      react: "import { useState, useRef, useEffect } from 'react';\nimport './uds/uds.css';\n\nfunction NavBento({ appName, open, onToggle }) {\n  const ref = useRef(null);\n  useEffect(() => {\n    const close = (e) => { if (ref.current && !ref.current.contains(e.target)) onToggle(false); };\n    document.addEventListener('click', close);\n    return () => document.removeEventListener('click', close);\n  }, [onToggle]);\n  return (\n    <div className=\"udc-nav-bento-wrapper\" ref={ref}>\n      <button className=\"udc-nav-bento-button\" aria-expanded={open} onClick={() => onToggle(!open)}>\n        <span className=\"material-symbols-outlined\">dashboard</span>\n        {appName}\n        <span className=\"material-symbols-outlined udc-nav-bento-button__chevron\">keyboard_arrow_down</span>\n      </button>\n      <div className=\"udc-nav-bento\" data-open={open}>…</div>\n    </div>\n  );\n}\n\nexport default function NavHeader() {\n  const [bentoOpen, setBentoOpen] = useState(false);\n  return (\n    <div className=\"udc-nav-header\">\n      <div className=\"udc-nav-header__left\">\n        <div className=\"udc-nav-logo\">…</div>\n        <NavBento appName=\"Boardroom\" open={bentoOpen} onToggle={setBentoOpen} />\n      </div>\n      <div className=\"udc-nav-header__center\">…</div>\n      <div className=\"udc-nav-header__right\">…</div>\n    </div>\n  );\n}",
-      vue: "<script setup>\nimport { ref } from 'vue';\nconst bentoOpen = ref(false);\n</script>\n\n<template>\n  <div class=\"udc-nav-header\">\n    <div class=\"udc-nav-header__left\">\n      <div class=\"udc-nav-logo\">…</div>\n      <div class=\"udc-nav-bento-wrapper\">\n        <button class=\"udc-nav-bento-button\" :aria-expanded=\"bentoOpen\" @click=\"bentoOpen = !bentoOpen\">\n          <span class=\"material-symbols-outlined\">dashboard</span>\n          Boardroom\n          <span class=\"material-symbols-outlined udc-nav-bento-button__chevron\">keyboard_arrow_down</span>\n        </button>\n        <div class=\"udc-nav-bento\" :data-open=\"bentoOpen\">…</div>\n      </div>\n    </div>\n  </div>\n</template>"
-    },
-    'nav-vertical': {
-      react: "import { useState } from 'react';\nimport './uds/uds.css';\n\nconst navItems = [\n  { icon: 'space_dashboard', label: 'Dashboard' },\n  { icon: 'book', label: 'Leasing / CRM' },\n  { icon: 'contact_phone', label: 'People / Contacts' },\n];\n\nexport default function NavVertical({ leadingIcons = true }) {\n  const [selected, setSelected] = useState(0);\n  return (\n    <nav className=\"udc-nav-vertical\" data-leading-icons={leadingIcons ? undefined : 'false'} aria-label=\"Main navigation\">\n      {navItems.map((item, i) => (\n        <button key={i} className=\"udc-nav-button\" aria-selected={selected === i} onClick={() => setSelected(i)}>\n          {leadingIcons && <span className=\"material-symbols-outlined\">{item.icon}</span>}\n          <span className=\"udc-nav-button__label\">{item.label}</span>\n        </button>\n      ))}\n    </nav>\n  );\n}",
-      vue: "<script setup>\nimport { ref } from 'vue';\n\ndefineProps({ leadingIcons: { type: Boolean, default: true } });\nconst selected = ref(0);\nconst navItems = [\n  { icon: 'space_dashboard', label: 'Dashboard' },\n  { icon: 'book', label: 'Leasing / CRM' },\n];\n</script>\n\n<template>\n  <nav class=\"udc-nav-vertical\" :data-leading-icons=\"leadingIcons ? undefined : 'false'\">\n    <button v-for=\"(item, i) in navItems\" :key=\"i\" class=\"udc-nav-button\" :aria-selected=\"selected === i\" @click=\"selected = i\">\n      <span v-if=\"leadingIcons\" class=\"material-symbols-outlined\">{{ item.icon }}</span>\n      <span class=\"udc-nav-button__label\">{{ item.label }}</span>\n    </button>\n  </nav>\n</template>"
-    },
-    'data-table': {
-      react: "import { useState } from 'react';\n\nconst rows = [\n  { name: 'Brian Smith', status: 'Delivered', variant: 'success', amount: '$75' },\n  { name: 'Catherine Lee', status: 'Low Confidence', variant: 'warning', amount: '$100' },\n];\n\nfunction InvoiceTable() {\n  const [checked, setChecked] = useState(new Set());\n\n  function toggleRow(i) { setChecked(prev => { const s = new Set(prev); s.has(i) ? s.delete(i) : s.add(i); return s; }); }\n  function toggleAll() { setChecked(prev => prev.size === rows.length ? new Set() : new Set(rows.map((_, i) => i))); }\n\n  return (\n    <div className=\"udc-data-table\">\n      <table>\n        <thead><tr>\n          <th className=\"udc-dt-check\"><input type=\"checkbox\" checked={checked.size === rows.length} onChange={toggleAll} /></th>\n          <th>Name</th><th>Status</th><th className=\"udc-dt-align-right\">Amount</th>\n        </tr></thead>\n        <tbody>\n          {rows.map((r, i) => (\n            <tr key={i}>\n              <td className=\"udc-dt-check\"><input type=\"checkbox\" checked={checked.has(i)} onChange={() => toggleRow(i)} /></td>\n              <td>{r.name}</td>\n              <td><span className=\"udc-badge\" data-variant={r.variant}>{r.status}</span></td>\n              <td className=\"udc-dt-align-right\">{r.amount}</td>\n            </tr>\n          ))}\n        </tbody>\n      </table>\n    </div>\n  );\n}",
-      vue: "<script setup>\nimport { ref } from 'vue';\n\nconst rows = [\n  { name: 'Brian Smith', status: 'Delivered', variant: 'success', amount: '$75' },\n  { name: 'Catherine Lee', status: 'Low Confidence', variant: 'warning', amount: '$100' },\n];\nconst checked = ref(new Set());\n\nfunction toggleRow(i) { const s = new Set(checked.value); s.has(i) ? s.delete(i) : s.add(i); checked.value = s; }\nfunction toggleAll() { checked.value = checked.value.size === rows.length ? new Set() : new Set(rows.map((_, i) => i)); }\n</script>\n\n<template>\n  <div class=\"udc-data-table\">\n    <table>\n      <thead><tr>\n        <th class=\"udc-dt-check\"><input type=\"checkbox\" :checked=\"checked.size === rows.length\" @change=\"toggleAll\" /></th>\n        <th>Name</th><th>Status</th><th class=\"udc-dt-align-right\">Amount</th>\n      </tr></thead>\n      <tbody>\n        <tr v-for=\"(r, i) in rows\" :key=\"i\">\n          <td class=\"udc-dt-check\"><input type=\"checkbox\" :checked=\"checked.has(i)\" @change=\"toggleRow(i)\" /></td>\n          <td>{{ r.name }}</td>\n          <td><span class=\"udc-badge\" :data-variant=\"r.variant\">{{ r.status }}</span></td>\n          <td class=\"udc-dt-align-right\">{{ r.amount }}</td>\n        </tr>\n      </tbody>\n    </table>\n  </div>\n</template>"
-    },
-    'tile': {
-      react: "import { useState } from 'react';\n\nfunction TileGroup() {\n  const [selected, setSelected] = useState(null);\n\n  return (\n    <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>\n      {['Upload CSV', 'Manual Entry', 'API Sync'].map((label, i) => (\n        <div\n          key={i}\n          className=\"udc-tile\"\n          tabIndex={0}\n          aria-selected={selected === i}\n          onClick={() => setSelected(i)}\n        >\n          <div className=\"udc-tile__content\">\n            <div className=\"udc-tile__label\">{label}</div>\n            <div className=\"udc-tile__body\">Description text</div>\n          </div>\n          <span className=\"udc-tile__chevron\">\n            <span className=\"material-symbols-outlined\">chevron_right</span>\n          </span>\n        </div>\n      ))}\n    </div>\n  );\n}",
-      vue: "<script setup>\nimport { ref } from 'vue';\n\nconst selected = ref(null);\nconst options = ['Upload CSV', 'Manual Entry', 'API Sync'];\n</script>\n\n<template>\n  <div style=\"display: flex; gap: 16px; flex-wrap: wrap;\">\n    <div\n      v-for=\"(label, i) in options\" :key=\"i\"\n      class=\"udc-tile\" tabindex=\"0\"\n      :aria-selected=\"selected === i\"\n      @click=\"selected = i\">\n      <div class=\"udc-tile__content\">\n        <div class=\"udc-tile__label\">{{ label }}</div>\n        <div class=\"udc-tile__body\">Description text</div>\n      </div>\n      <span class=\"udc-tile__chevron\">\n        <span class=\"material-symbols-outlined\">chevron_right</span>\n      </span>\n    </div>\n  </div>\n</template>"
-    },
-    'list': {
-      react: "import { useState } from 'react';\n\nconst items = ['Dashboard', 'Leasing / CRM', 'People / Contacts'];\n\nfunction MyList() {\n  const [selected, setSelected] = useState(0);\n\n  return (\n    <div className=\"udc-list\">\n      {items.map((label, i) => (\n        <div\n          key={i}\n          className=\"udc-list-item\"\n          tabIndex={0}\n          aria-selected={selected === i}\n          onClick={() => setSelected(i)}\n        >\n          <span className=\"udc-list-item__label\">{label}</span>\n        </div>\n      ))}\n    </div>\n  );\n}",
-      vue: "<script setup>\nimport { ref } from 'vue';\n\nconst selected = ref(0);\nconst items = ['Dashboard', 'Leasing / CRM', 'People / Contacts'];\n</script>\n\n<template>\n  <div class=\"udc-list\">\n    <div\n      v-for=\"(label, i) in items\" :key=\"i\"\n      class=\"udc-list-item\" tabindex=\"0\"\n      :aria-selected=\"selected === i\"\n      @click=\"selected = i\">\n      <span class=\"udc-list-item__label\">{{ label }}</span>\n    </div>\n  </div>\n</template>"
-    },
-    'notification': {
-      react: "import { useState } from 'react';\n\nfunction Notification({ variant = 'info', prominent, inline, message, dismissible }) {\n  const [visible, setVisible] = useState(true);\n  if (!visible) return null;\n\n  const icons = { info: 'info', success: 'check_circle', error: 'error_outline', warning: 'warning_amber' };\n\n  return (\n    <div className=\"udc-notification\" data-variant={variant}\n      data-prominent={prominent || undefined} data-inline={inline || undefined}>\n      <span className=\"udc-notification__icon\">\n        <span className=\"material-symbols-outlined\">{icons[variant]}</span>\n      </span>\n      <span className=\"udc-notification__text\">{message}</span>\n      {dismissible && (\n        <button className=\"udc-notification__close\" aria-label=\"Dismiss\" onClick={() => setVisible(false)}>\n          <span className=\"material-symbols-outlined\">close</span>\n        </button>\n      )}\n    </div>\n  );\n}",
-      vue: "<script setup>\nimport { ref } from 'vue';\n\nconst props = defineProps({ variant: String, prominent: Boolean, inline: Boolean, message: String, dismissible: Boolean });\nconst visible = ref(true);\nconst icons = { info: 'info', success: 'check_circle', error: 'error_outline', warning: 'warning_amber' };\n</script>\n\n<template>\n  <div v-if=\"visible\" class=\"udc-notification\" :data-variant=\"variant\"\n    :data-prominent=\"prominent || undefined\" :data-inline=\"inline || undefined\">\n    <span class=\"udc-notification__icon\">\n      <span class=\"material-symbols-outlined\">{{ icons[variant] }}</span>\n    </span>\n    <span class=\"udc-notification__text\">{{ message }}</span>\n    <button v-if=\"dismissible\" class=\"udc-notification__close\" aria-label=\"Dismiss\" @click=\"visible = false\">\n      <span class=\"material-symbols-outlined\">close</span>\n    </button>\n  </div>\n</template>"
-    },
-    'dialog': {
-      react: "import { useState } from 'react';\n\nfunction Dialog({ open, onClose, title, children, primaryLabel = 'Confirm', secondaryLabel = 'Cancel', onConfirm }) {\n  if (!open) return null;\n\n  return (\n    <div className=\"udc-dialog-backdrop\" data-open=\"true\" onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}>\n      <div className=\"udc-dialog\" role=\"dialog\" aria-modal=\"true\">\n        <div className=\"udc-dialog__header\">\n          <h2 className=\"udc-dialog__title\">{title}</h2>\n          <button className=\"udc-dialog__close\" aria-label=\"Close\" onClick={onClose}>\n            <span className=\"material-symbols-outlined\">close</span>\n          </button>\n        </div>\n        <div className=\"udc-dialog__body\">{children}</div>\n        <div className=\"udc-dialog__footer\">\n          <button className=\"udc-button-secondary\" onClick={onClose}>{secondaryLabel}</button>\n          <button className=\"udc-button-primary\" onClick={onConfirm}>{primaryLabel}</button>\n        </div>\n      </div>\n    </div>\n  );\n}",
-      vue: "<script setup>\ndefineProps({ open: Boolean, title: String, primaryLabel: { type: String, default: 'Confirm' }, secondaryLabel: { type: String, default: 'Cancel' } });\nconst emit = defineEmits(['close', 'confirm']);\n</script>\n\n<template>\n  <div v-if=\"open\" class=\"udc-dialog-backdrop\" data-open=\"true\" @click.self=\"emit('close')\">\n    <div class=\"udc-dialog\" role=\"dialog\" aria-modal=\"true\">\n      <div class=\"udc-dialog__header\">\n        <h2 class=\"udc-dialog__title\">{{ title }}</h2>\n        <button class=\"udc-dialog__close\" aria-label=\"Close\" @click=\"emit('close')\">\n          <span class=\"material-symbols-outlined\">close</span>\n        </button>\n      </div>\n      <div class=\"udc-dialog__body\"><slot /></div>\n      <div class=\"udc-dialog__footer\">\n        <button class=\"udc-button-secondary\" @click=\"emit('close')\">{{ secondaryLabel }}</button>\n        <button class=\"udc-button-primary\" @click=\"emit('confirm')\">{{ primaryLabel }}</button>\n      </div>\n    </div>\n  </div>\n</template>"
-    },
-    'chip': {
-      react: "import { useState } from 'react';\n\nconst filters = ['All', 'Active', 'Pending'];\n\nfunction ChipGroup() {\n  const [selected, setSelected] = useState(new Set(['Active']));\n  function toggle(f) {\n    setSelected(prev => { const s = new Set(prev); s.has(f) ? s.delete(f) : s.add(f); return s; });\n  }\n  return (\n    <div style={{ display: 'flex', gap: 8 }}>\n      {filters.map(f => (\n        <button key={f} className=\"udc-chip\" data-variant=\"filter\" aria-selected={selected.has(f)} onClick={() => toggle(f)}>\n          {selected.has(f) && <span className=\"udc-chip__leading-icon\"><span className=\"material-symbols-outlined\">check</span></span>}\n          <span className=\"udc-chip__label\">{f}</span>\n        </button>\n      ))}\n    </div>\n  );\n}",
-      vue: "<script setup>\nimport { ref } from 'vue';\nconst filters = ['All', 'Active', 'Pending'];\nconst selected = ref(new Set(['Active']));\nfunction toggle(f) { const s = new Set(selected.value); s.has(f) ? s.delete(f) : s.add(f); selected.value = s; }\n</script>\n\n<template>\n  <div style=\"display:flex;gap:8px;\">\n    <button v-for=\"f in filters\" :key=\"f\" class=\"udc-chip\" data-variant=\"filter\" :aria-selected=\"selected.has(f)\" @click=\"toggle(f)\">\n      <span v-if=\"selected.has(f)\" class=\"udc-chip__leading-icon\"><span class=\"material-symbols-outlined\">check</span></span>\n      <span class=\"udc-chip__label\">{{ f }}</span>\n    </button>\n  </div>\n</template>"
-    },
-    'search': {
-      react: "import { useState, useCallback } from 'react';\n\nfunction SearchBar({ placeholder = 'Search...', onSearch }) {\n  const [value, setValue] = useState('');\n  const clear = useCallback(() => { setValue(''); onSearch?.(''); }, [onSearch]);\n  return (\n    <div className=\"udc-search\" data-has-value={value.length > 0 ? 'true' : 'false'}>\n      <div className=\"udc-search__field\">\n        <span className=\"udc-search__icon\"><span className=\"material-symbols-outlined\">search</span></span>\n        <input type=\"search\" placeholder={placeholder} value={value} onChange={e => { setValue(e.target.value); onSearch?.(e.target.value); }} />\n        <button className=\"udc-search__clear\" aria-label=\"Clear\" onClick={clear}><span className=\"material-symbols-outlined\">clear</span></button>\n      </div>\n    </div>\n  );\n}",
-      vue: "<script setup>\nimport { ref, computed } from 'vue';\ndefineProps({ placeholder: { type: String, default: 'Search...' } });\nconst emit = defineEmits(['search']);\nconst value = ref('');\nconst hasValue = computed(() => value.value.length > 0);\nfunction clear() { value.value = ''; emit('search', ''); }\n</script>\n\n<template>\n  <div class=\"udc-search\" :data-has-value=\"hasValue ? 'true' : 'false'\">\n    <div class=\"udc-search__field\">\n      <span class=\"udc-search__icon\"><span class=\"material-symbols-outlined\">search</span></span>\n      <input type=\"search\" :placeholder=\"placeholder\" :value=\"value\" @input=\"value = $event.target.value; emit('search', value)\" />\n      <button class=\"udc-search__clear\" aria-label=\"Clear\" @click=\"clear\"><span class=\"material-symbols-outlined\">clear</span></button>\n    </div>\n  </div>\n</template>"
-    },
-    'tooltip': {
-      react: "function Tooltip({ children, text, position }) {\n  return (\n    <span className=\"udc-tooltip-wrapper\">\n      {children}\n      <span className=\"udc-tooltip\" role=\"tooltip\" data-position={position || undefined}>{text}</span>\n    </span>\n  );\n}",
-      vue: "<script setup>\ndefineProps({ text: String, position: String });\n</script>\n\n<template>\n  <span class=\"udc-tooltip-wrapper\">\n    <slot />\n    <span class=\"udc-tooltip\" role=\"tooltip\" :data-position=\"position\">{{ text }}</span>\n  </span>\n</template>"
-    }
-  };
-
-  document.querySelectorAll('[data-tab-panel="code"]').forEach(function (panel) {
-    var page = panel.closest('[data-page]');
-    if (!page) return;
-    var pageId = page.getAttribute('data-page');
-    var cfg = CODE_TAB_CONFIGS[pageId];
-    if (!cfg) return;
-
-    var bar = buildFrameworkBar();
-    panel.insertBefore(bar, panel.firstChild);
-
-    var htmlPanel = document.createElement('div');
-    htmlPanel.setAttribute('data-fw-panel', 'html');
-    htmlPanel.className = currentFramework === 'html' ? 'active' : '';
-    while (panel.childNodes.length > 1) {
-      htmlPanel.appendChild(panel.childNodes[1]);
-    }
-    panel.appendChild(htmlPanel);
-
-    ['react', 'vue'].forEach(function (fw) {
-      var fwPanel = document.createElement('div');
-      fwPanel.setAttribute('data-fw-panel', fw);
-      fwPanel.className = currentFramework === fw ? 'active' : '';
-
-      var fwLabel = fw === 'react' ? 'React' : 'Vue';
-      var impTitle = document.createElement('h3');
-      impTitle.className = 'sg-subsection-title';
-      impTitle.textContent = fwLabel + ' Usage';
-      fwPanel.appendChild(impTitle);
-
-      var codePre = document.createElement('pre');
-      codePre.className = 'sg-playground-code';
-      codePre.textContent = cfg[fw];
-      fwPanel.appendChild(codePre);
-
-      if (cfg.note) {
-        var note = document.createElement('p');
-        note.className = 'sg-subsection-desc';
-        note.style.marginTop = '16px';
-        note.textContent = cfg.note;
-        fwPanel.appendChild(note);
-      }
-
-      fwPanel.querySelectorAll('pre.sg-playground-code').forEach(function (pre) {
-        var wrap = document.createElement('div');
-        wrap.className = 'sg-code-wrap';
-        pre.parentNode.insertBefore(wrap, pre);
-        wrap.appendChild(pre);
-        wrap.appendChild(buildCopyButton(function () { return pre.textContent; }));
-      });
-
-      panel.appendChild(fwPanel);
-    });
-  });
 
   /* ========================================================================
      11. DOWNLOAD UDS ZIP
@@ -3306,6 +3063,17 @@
         { type: 'added', text: 'Line-height tokens (--uds-font-line-height-*) added to .mdc typography section' },
         { type: 'added', text: 'Border color tokens section (--uds-color-border-*) added to .mdc with 6 tokens including disabled' },
         { type: 'changed', text: 'Project Boilerplate section moved higher in .mdc — now directly after Framework Detection for faster AI discovery' }
+      ]
+    },
+    {
+      version: 'SITE 2026.04.21.1',
+      date: '2026-04-21',
+      changes: [
+        { type: 'changed', text: 'Site reshape Phase 1: pivoting to design-to-engineering handoff spec. Storybook will now handle framework-specific (React/Vue) component implementations.' },
+        { type: 'removed', text: 'All React/Vue code generation stripped from Playgrounds, Code tabs, Implementation Reference, and Demo Builder. Doc site now shows vanilla HTML/CSS/JS only.' },
+        { type: 'removed', text: 'Framework selector bar removed from component pages (CODE_TAB_CONFIGS, buildFrameworkBar, currentFramework, setFramework, getReactBehavior, getVueBehavior)' },
+        { type: 'removed', text: 'Demo Builder simplified to vanilla HTML only. Vite ZIP scaffolds for React/Vue removed.' },
+        { type: 'removed', text: 'versions/0.1/ snapshot directory deleted — fresh start for next release' }
       ]
     }
   ];
