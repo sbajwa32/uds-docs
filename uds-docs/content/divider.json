@@ -1,0 +1,44 @@
+{
+  "component": "divider",
+  "title": "Divider",
+  "description": "A divider creates visual separation between related content.",
+  "whenToUse": "To separate groups of related content. Between sections within a card or panel.",
+  "whenNotToUse": "When whitespace alone provides sufficient separation. Do not use as decoration.",
+  "acceptanceCriteria": [],
+  "dependencies": {
+    "css": [
+      "uds/components/divider.css"
+    ],
+    "js": []
+  },
+  "props": [],
+  "events": [],
+  "slots": [],
+  "states": [],
+  "contentGuidelines": null,
+  "commonlyPairedWith": [],
+  "dosDonts": {
+    "dos": [],
+    "donts": []
+  },
+  "accessibility": {
+    "keyboard": [],
+    "screenReader": [],
+    "wcag": [],
+    "contrast": []
+  },
+  "knownIssues": [],
+  "performance": null,
+  "motion": null,
+  "responsive": null,
+  "visualHierarchy": null,
+  "densityBehavior": null,
+  "owner": {
+    "designer": "Unassigned",
+    "developer": "Unassigned"
+  },
+  "draft": false,
+  "figmaNodeId": null,
+  "storybookSlug": null,
+  "_legacyAccessibilityNotes": "Purely presentational — use <hr> for semantic separation if appropriate, otherwise role=\"separator\"."
+}

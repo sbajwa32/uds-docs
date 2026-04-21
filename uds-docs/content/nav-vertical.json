@@ -1,0 +1,59 @@
+{
+  "component": "nav-vertical",
+  "title": "Nav Vertical",
+  "description": "A vertical navigation list for primary app sections. Typically lives in a sidebar.",
+  "whenToUse": "In the left sidebar of an application shell. When there are 4+ primary destinations.",
+  "whenNotToUse": "For secondary or contextual navigation (use a list or tabs). On mobile without a collapsible shell.",
+  "acceptanceCriteria": [],
+  "dependencies": {
+    "css": [
+      "uds/components/nav-vertical.css"
+    ],
+    "js": [
+      "uds/components/nav-vertical.js"
+    ]
+  },
+  "props": [],
+  "events": [],
+  "slots": [],
+  "states": [],
+  "contentGuidelines": null,
+  "commonlyPairedWith": [],
+  "dosDonts": {
+    "dos": [],
+    "donts": []
+  },
+  "accessibility": {
+    "keyboard": [
+      {
+        "key": "Tab",
+        "action": "Move focus to the nav"
+      },
+      {
+        "key": "Arrow keys",
+        "action": "Move focus between nav buttons"
+      },
+      {
+        "key": "Enter / Space",
+        "action": "Activate focused nav button"
+      }
+    ],
+    "screenReader": [],
+    "wcag": [],
+    "contrast": []
+  },
+  "knownIssues": [],
+  "performance": null,
+  "motion": null,
+  "responsive": null,
+  "visualHierarchy": null,
+  "densityBehavior": null,
+  "owner": {
+    "designer": "Unassigned",
+    "developer": "Unassigned"
+  },
+  "draft": false,
+  "figmaNodeId": null,
+  "storybookSlug": null,
+  "_legacyAccessibilityNotes": "Use <nav aria-label=\"Main\"> on the container. aria-selected or aria-current=\"page\" on the active item."
+}

@@ -1,0 +1,55 @@
+{
+  "component": "text-input",
+  "title": "Text Input",
+  "description": "A text input lets users enter a single line of text. Includes label, optional helper text, character counter, and icon slots.",
+  "whenToUse": "Single-line text entry: names, emails, search queries. When you need validation feedback (error state).",
+  "whenNotToUse": "For multi-line entry, use a textarea. For choosing from a predefined set, use a dropdown.",
+  "acceptanceCriteria": [],
+  "dependencies": {
+    "css": [
+      "uds/components/text-input.css"
+    ],
+    "js": [
+      "uds/components/text-input.js"
+    ]
+  },
+  "props": [],
+  "events": [],
+  "slots": [],
+  "states": [],
+  "contentGuidelines": null,
+  "commonlyPairedWith": [],
+  "dosDonts": {
+    "dos": [],
+    "donts": []
+  },
+  "accessibility": {
+    "keyboard": [
+      {
+        "key": "Tab",
+        "action": "Move focus to/from the input"
+      },
+      {
+        "key": "Enter",
+        "action": "Submit the parent form (if applicable)"
+      }
+    ],
+    "screenReader": [],
+    "wcag": [],
+    "contrast": []
+  },
+  "knownIssues": [],
+  "performance": null,
+  "motion": null,
+  "responsive": null,
+  "visualHierarchy": null,
+  "densityBehavior": null,
+  "owner": {
+    "designer": "Unassigned",
+    "developer": "Unassigned"
+  },
+  "draft": false,
+  "figmaNodeId": null,
+  "storybookSlug": null,
+  "_legacyAccessibilityNotes": "Always pair with a visible <label>. Use placeholder for hints, never as a label replacement. Error messages should be announced via aria-describedby."
+}

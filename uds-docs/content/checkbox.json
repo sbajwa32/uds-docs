@@ -1,0 +1,55 @@
+{
+  "component": "checkbox",
+  "title": "Checkbox",
+  "description": "A checkbox lets users select one or more options from a set.",
+  "whenToUse": "Multiple selections from a set. Binary on/off toggles (terms agreement, opt-in).",
+  "whenNotToUse": "For mutually exclusive choices, use a radio group instead.",
+  "acceptanceCriteria": [],
+  "dependencies": {
+    "css": [
+      "uds/components/checkbox.css"
+    ],
+    "js": [
+      "uds/components/checkbox.js"
+    ]
+  },
+  "props": [],
+  "events": [],
+  "slots": [],
+  "states": [],
+  "contentGuidelines": null,
+  "commonlyPairedWith": [],
+  "dosDonts": {
+    "dos": [],
+    "donts": []
+  },
+  "accessibility": {
+    "keyboard": [
+      {
+        "key": "Space",
+        "action": "Toggle checked state"
+      },
+      {
+        "key": "Tab",
+        "action": "Move focus to/from the checkbox"
+      }
+    ],
+    "screenReader": [],
+    "wcag": [],
+    "contrast": []
+  },
+  "knownIssues": [],
+  "performance": null,
+  "motion": null,
+  "responsive": null,
+  "visualHierarchy": null,
+  "densityBehavior": null,
+  "owner": {
+    "designer": "Unassigned",
+    "developer": "Unassigned"
+  },
+  "draft": false,
+  "figmaNodeId": null,
+  "storybookSlug": null,
+  "_legacyAccessibilityNotes": "Uses native <input type=\"checkbox\"> for screen reader support. The visible indicator is purely decorative — the native input handles interaction."
+}

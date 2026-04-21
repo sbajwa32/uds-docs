@@ -1,0 +1,53 @@
+{
+  "component": "tooltip",
+  "title": "Tooltip",
+  "description": "A tooltip shows supplemental information on hover or focus of a trigger element. CSS-only — no JS required.",
+  "whenToUse": "For icon-only button labels. For abbreviations or terms requiring explanation. For short hints on sparse UIs.",
+  "whenNotToUse": "For critical information the user must see — use inline text or a notification. For interactive content — tooltips should not contain buttons or links.",
+  "acceptanceCriteria": [],
+  "dependencies": {
+    "css": [
+      "uds/components/tooltip.css"
+    ],
+    "js": []
+  },
+  "props": [],
+  "events": [],
+  "slots": [],
+  "states": [],
+  "contentGuidelines": null,
+  "commonlyPairedWith": [],
+  "dosDonts": {
+    "dos": [],
+    "donts": []
+  },
+  "accessibility": {
+    "keyboard": [
+      {
+        "key": "Tab",
+        "action": "Focus the wrapped element — tooltip appears on focus"
+      },
+      {
+        "key": "Escape",
+        "action": "Not supported in this CSS-only version"
+      }
+    ],
+    "screenReader": [],
+    "wcag": [],
+    "contrast": []
+  },
+  "knownIssues": [],
+  "performance": null,
+  "motion": null,
+  "responsive": null,
+  "visualHierarchy": null,
+  "densityBehavior": null,
+  "owner": {
+    "designer": "Unassigned",
+    "developer": "Unassigned"
+  },
+  "draft": false,
+  "figmaNodeId": null,
+  "storybookSlug": null,
+  "_legacyAccessibilityNotes": "Use role=\"tooltip\" on the tooltip element. The trigger should have aria-describedby pointing to the tooltip id for screen reader support."
+}

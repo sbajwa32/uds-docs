@@ -1,0 +1,44 @@
+{
+  "component": "badge",
+  "title": "Badge",
+  "description": "A badge communicates status, category, or count in a compact visual form.",
+  "whenToUse": "To label status or state (active/pending/error). To communicate a category tag. To show counts or notifications.",
+  "whenNotToUse": "For interactive filter tags, use a Chip component instead.",
+  "acceptanceCriteria": [],
+  "dependencies": {
+    "css": [
+      "uds/components/badge.css"
+    ],
+    "js": []
+  },
+  "props": [],
+  "events": [],
+  "slots": [],
+  "states": [],
+  "contentGuidelines": null,
+  "commonlyPairedWith": [],
+  "dosDonts": {
+    "dos": [],
+    "donts": []
+  },
+  "accessibility": {
+    "keyboard": [],
+    "screenReader": [],
+    "wcag": [],
+    "contrast": []
+  },
+  "knownIssues": [],
+  "performance": null,
+  "motion": null,
+  "responsive": null,
+  "visualHierarchy": null,
+  "densityBehavior": null,
+  "owner": {
+    "designer": "Unassigned",
+    "developer": "Unassigned"
+  },
+  "draft": false,
+  "figmaNodeId": null,
+  "storybookSlug": null,
+  "_legacyAccessibilityNotes": "Badges are decorative by default; convey meaning via surrounding text as well. Do not rely on color alone — the label text carries the meaning."
+}

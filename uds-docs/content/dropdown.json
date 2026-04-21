@@ -1,0 +1,63 @@
+{
+  "component": "dropdown",
+  "title": "Dropdown",
+  "description": "A dropdown lets users select a single value from a list of options. It combines a trigger button with a floating option list.",
+  "whenToUse": "Single selection from a list of 5+ options. When you need to conserve vertical space compared to radio buttons. Form fields where the user picks from a predefined set.",
+  "whenNotToUse": "For 2–4 options, use radio buttons instead so all options are visible. For text-entry with suggestions, use a combobox/autocomplete. For navigation, use nav or tabs.",
+  "acceptanceCriteria": [],
+  "dependencies": {
+    "css": [
+      "uds/components/dropdown.css"
+    ],
+    "js": [
+      "uds/components/dropdown.js"
+    ]
+  },
+  "props": [],
+  "events": [],
+  "slots": [],
+  "states": [],
+  "contentGuidelines": null,
+  "commonlyPairedWith": [],
+  "dosDonts": {
+    "dos": [],
+    "donts": []
+  },
+  "accessibility": {
+    "keyboard": [
+      {
+        "key": "Enter / Space",
+        "action": "Open/close the dropdown"
+      },
+      {
+        "key": "Arrow keys",
+        "action": "Navigate options"
+      },
+      {
+        "key": "Enter",
+        "action": "Select focused option"
+      },
+      {
+        "key": "Escape",
+        "action": "Close the dropdown"
+      }
+    ],
+    "screenReader": [],
+    "wcag": [],
+    "contrast": []
+  },
+  "knownIssues": [],
+  "performance": null,
+  "motion": null,
+  "responsive": null,
+  "visualHierarchy": null,
+  "densityBehavior": null,
+  "owner": {
+    "designer": "Unassigned",
+    "developer": "Unassigned"
+  },
+  "draft": false,
+  "figmaNodeId": null,
+  "storybookSlug": null,
+  "_legacyAccessibilityNotes": "Use role=\"combobox\" on the trigger and role=\"listbox\" on the list. aria-expanded announces open/closed state."
+}

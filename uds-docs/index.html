@@ -288,6 +288,60 @@
     .sg-usage-section li { margin-bottom: 4px; }
 
     /* =====================================================================
+       Guidelines tab (JSON-driven)
+       ===================================================================== */
+    .sg-gl-group { margin-bottom: var(--uds-space-500); padding-bottom: var(--uds-space-300); border-bottom: 1px solid var(--uds-color-border-secondary); }
+    .sg-gl-group:last-child { border-bottom: none; }
+    .sg-gl-group-title { font-family: var(--uds-font-family); font-size: var(--uds-font-size-xl); font-weight: var(--uds-font-weight-bold); color: var(--uds-color-text-primary); margin: 0 0 var(--uds-space-200); letter-spacing: -0.01em; }
+    .sg-gl-section { margin-bottom: var(--uds-space-300); }
+    .sg-gl-subhead { font-family: var(--uds-font-family); font-size: var(--uds-font-size-md); font-weight: var(--uds-font-weight-bold); color: var(--uds-color-text-primary); margin: 0 0 var(--uds-space-150); }
+    .sg-gl-prose { font-family: var(--uds-font-family); font-size: var(--uds-font-size-base); line-height: 1.65; color: var(--uds-color-text-secondary); margin: 0; }
+    .sg-gl-prose code { font-family: monospace; font-size: 0.9em; background: var(--uds-color-surface-alt); padding: 1px 6px; border-radius: var(--uds-border-radius-container-sm); }
+    .sg-gl-list { padding-left: var(--uds-space-300); line-height: 1.7; font-family: var(--uds-font-family); font-size: var(--uds-font-size-base); color: var(--uds-color-text-secondary); margin: 0; }
+    .sg-gl-list li { margin-bottom: var(--uds-space-050); }
+    .sg-gl-list code { font-family: monospace; font-size: 0.9em; background: var(--uds-color-surface-alt); padding: 1px 6px; border-radius: var(--uds-border-radius-container-sm); }
+    .sg-gl-list .sg-gl-kind { display: inline-block; margin-left: var(--uds-space-100); font-size: var(--uds-font-size-xs); font-weight: var(--uds-font-weight-bold); color: var(--uds-color-text-tertiary); text-transform: uppercase; letter-spacing: 0.05em; }
+
+    .sg-gl-checklist { list-style: none; padding: 0; margin: 0; font-family: var(--uds-font-family); font-size: var(--uds-font-size-base); color: var(--uds-color-text-secondary); }
+    .sg-gl-checklist li { display: flex; align-items: flex-start; gap: var(--uds-space-100); padding: var(--uds-space-100) 0; border-bottom: 1px dashed var(--uds-color-border-secondary); line-height: 1.5; }
+    .sg-gl-checklist li:last-child { border-bottom: none; }
+    .sg-gl-check { flex-shrink: 0; width: 18px; height: 18px; border-radius: var(--uds-border-radius-container-sm); border: 1.5px solid var(--uds-color-border-default); background: var(--uds-color-surface-main); margin-top: 2px; }
+
+    .sg-gl-table { width: 100%; border-collapse: collapse; font-family: var(--uds-font-family); font-size: var(--uds-font-size-sm); margin: 0; }
+    .sg-gl-table thead tr { background: var(--uds-color-surface-subtle); }
+    .sg-gl-table th { text-align: left; padding: var(--uds-space-100) var(--uds-space-150); font-weight: var(--uds-font-weight-bold); color: var(--uds-color-text-primary); border-bottom: 1px solid var(--uds-color-border-default); font-size: var(--uds-font-size-xs); text-transform: uppercase; letter-spacing: 0.05em; }
+    .sg-gl-table td { padding: var(--uds-space-100) var(--uds-space-150); border-bottom: 1px solid var(--uds-color-border-secondary); color: var(--uds-color-text-secondary); vertical-align: top; line-height: 1.5; }
+    .sg-gl-table td code { font-family: monospace; font-size: 0.9em; background: var(--uds-color-surface-alt); padding: 1px 6px; border-radius: var(--uds-border-radius-container-sm); }
+    .sg-gl-table kbd { font-family: monospace; font-size: 0.85em; background: var(--uds-color-surface-alt); border: 1px solid var(--uds-color-border-default); padding: 2px 8px; border-radius: var(--uds-border-radius-container-sm); box-shadow: 0 1px 0 var(--uds-color-border-default); }
+
+    .sg-gl-dodont-cols { display: grid; grid-template-columns: 1fr 1fr; gap: var(--uds-space-300); }
+    .sg-gl-dodont-col { padding: var(--uds-space-200); border-radius: var(--uds-border-radius-container-md); }
+    .sg-gl-do { background: var(--uds-color-surface-success-subtle); border: 1px solid var(--uds-color-border-success); }
+    .sg-gl-dont { background: var(--uds-color-surface-error-subtle); border: 1px solid var(--uds-color-border-error); }
+    .sg-gl-dodont .sg-gl-subhead { color: var(--uds-color-text-primary); margin-bottom: var(--uds-space-100); }
+    @media (max-width: 720px) { .sg-gl-dodont-cols { grid-template-columns: 1fr; } }
+
+    .sg-gl-paired { font-family: var(--uds-font-family); font-size: var(--uds-font-size-base); color: var(--uds-color-text-secondary); margin: 0; }
+    .sg-gl-link { color: var(--uds-color-text-interactive); text-decoration: none; }
+    .sg-gl-link:hover { text-decoration: underline; }
+
+    .sg-gl-owner p { font-family: var(--uds-font-family); font-size: var(--uds-font-size-sm); color: var(--uds-color-text-secondary); margin: 0 0 var(--uds-space-050); }
+    .sg-gl-owner strong { color: var(--uds-color-text-primary); font-weight: var(--uds-font-weight-bold); }
+
+    .sg-guidelines-empty { padding: var(--uds-space-500) 0; color: var(--uds-color-text-tertiary); font-family: var(--uds-font-family); font-size: var(--uds-font-size-base); text-align: center; }
+
+    /* Spec completeness indicator (pill in component header, dot in sidebar) */
+    .sg-spec-completeness { display: inline-flex; align-items: center; gap: 4px; padding: 2px 10px; border-radius: var(--uds-border-radius-container-full); font-family: var(--uds-font-family); font-size: var(--uds-font-size-xs); font-weight: var(--uds-font-weight-bold); margin-left: var(--uds-space-100); vertical-align: middle; }
+    .sg-spec-completeness[data-level="high"] { background: var(--uds-color-surface-success-subtle); color: var(--uds-color-text-success); border: 1px solid var(--uds-color-border-success); }
+    .sg-spec-completeness[data-level="med"]  { background: var(--uds-color-surface-warning-subtle); color: var(--uds-color-text-warning); border: 1px solid var(--uds-color-border-warning); }
+    .sg-spec-completeness[data-level="low"]  { background: var(--uds-color-surface-error-subtle); color: var(--uds-color-text-error); border: 1px solid var(--uds-color-border-error); }
+
+    .sg-sidebar-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: transparent; margin-left: 6px; vertical-align: middle; flex-shrink: 0; }
+    .sg-sidebar-dot[data-level="high"] { background: var(--uds-color-icon-success); }
+    .sg-sidebar-dot[data-level="med"]  { background: var(--uds-color-icon-warning); }
+    .sg-sidebar-dot[data-level="low"]  { background: var(--uds-color-icon-error); }
+
+    /* =====================================================================
        Playground
        ===================================================================== */
     .sg-playground-layout {
@@ -595,7 +649,7 @@
   </style>
   <script>
     (function () {
-      var SITE_VERSION = '2026.04.21.1';
+      var SITE_VERSION = '2026.04.21.2';
       var base = window.location.pathname.replace(/\/index\.html$/, '').replace(/\/$/, '');
       fetch(base + '/version.txt?_=' + Date.now()).then(function (r) {
         if (!r.ok) return;
@@ -633,7 +687,7 @@
       <span class="udc-tooltip" role="tooltip" data-position="bottom">Build Demo</span>
     </span>
     <select class="sg-version-select" id="sg-version-dropdown" aria-label="UDS version"></select>
-    <span class="sg-brand-bar-build">SITE 2026.04.21.1</span>
+    <span class="sg-brand-bar-build">SITE 2026.04.21.2</span>
   </div>
 
   <!-- Pre-flight checklist dialog -->
@@ -1886,7 +1940,7 @@ const query = ref('');
         <div class="sg-page-tabs" role="tablist">
           <button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button>
           <button class="sg-page-tab" data-tab="code">Code</button>
-          <button class="sg-page-tab" data-tab="usage">Usage</button>
+          <button class="sg-page-tab" data-tab="guidelines">Guidelines</button>
           <button class="sg-page-tab" data-tab="changelog">Changelog</button>
           <button class="sg-page-tab" data-tab="playground">Playground</button>
         </div>
@@ -1927,7 +1981,7 @@ const query = ref('');
           <table class="sg-api-table"><thead><tr><th>Attribute</th><th>Values</th><th>Description</th></tr></thead><tbody><tr><td><code>data-size</code></td><td><code>sm</code></td><td>Small size with reduced padding</td></tr><tr><td><code>data-leading-icon</code></td><td>—</td><td>Indicates a leading icon is present; reduces left padding</td></tr><tr><td><code>data-trailing-icon</code></td><td>—</td><td>Indicates a trailing icon is present; reduces right padding</td></tr><tr><td><code>data-icon-only</code></td><td>—</td><td>Icon-only square button (equal padding, no gap)</td></tr><tr><td><code>data-btn-color</code></td><td><code>danger</code>, <code>success</code>, <code>warning</code>, <code>neutral</code></td><td>Override accent color (maps to Figma's Destructive=True for danger)</td></tr><tr><td><code>aria-selected</code></td><td><code>true</code></td><td>Selected/active toggle state</td></tr><tr><td><code>disabled</code></td><td>—</td><td>Disabled state</td></tr></tbody></table>
         </div>
 
-        <div data-tab-panel="usage">
+        <div data-tab-panel="guidelines">
           <div class="sg-usage-section"><h4>When to use</h4><ul><li>To trigger an action or event (submit, save, cancel, delete)</li><li>To navigate the user to a new context when combined with routing</li><li>Primary for the main action, secondary for alternatives, ghost for low-emphasis</li></ul></div>
           <div class="sg-usage-section"><h4>When not to use</h4><ul><li>For navigation links — use an anchor (<code>&lt;a&gt;</code>) instead</li><li>When you need more than 2–3 buttons in a row — consider a dropdown or action menu</li></ul></div>
           <div class="sg-usage-section"><h4>Accessibility</h4><ul><li>Always use a <code>&lt;button&gt;</code> element, not a <code>&lt;div&gt;</code> or <code>&lt;span&gt;</code></li><li>Provide visible text labels; icon-only buttons need <code>aria-label</code></li><li>Use <code>disabled</code> attribute — the component handles styling automatically</li><li>Focus ring uses <code>--uds-color-border-outline-focus-visible</code></li></ul></div>
@@ -1941,7 +1995,7 @@ const query = ref('');
       <div data-page="text-input">
         <h1 class="sg-page-title">Text Input</h1>
         <p class="sg-page-desc">A text input lets users enter a single line of text. Includes label, optional helper text, character counter, and icon slots.</p>
-        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="usage">Usage</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
+        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="guidelines">Guidelines</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
         <div data-tab-panel="examples" class="active">
           <div class="sg-subsection"><h3 class="sg-subsection-title">Default</h3><p class="sg-subsection-desc">Standard text input with label, placeholder, helper text, and counter.</p><div class="sg-example"><div class="sg-example-preview"><div class="udc-text-input" style="max-width:320px;"><label class="udc-text-input__label">Full name <span class="udc-text-input__required"></span></label><div class="udc-text-input__field"><input type="text" placeholder="Enter your full name" /></div><div class="udc-text-input__helper"><span>First and last name required</span><span class="udc-text-input__counter">0/60</span></div></div></div><details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;div class="udc-text-input"&gt;
   &lt;label class="udc-text-input__label"&gt;Full name&lt;/label&gt;
@@ -1996,7 +2050,7 @@ const query = ref('');
           <h3 class="sg-subsection-title">Data Attributes</h3>
           <table class="sg-api-table"><thead><tr><th>Attribute</th><th>Values</th><th>Description</th></tr></thead><tbody><tr><td><code>data-state</code></td><td><code>error</code></td><td>Error state styling</td></tr><tr><td><code>disabled</code></td><td>—</td><td>On the <code>&lt;input&gt;</code> element</td></tr></tbody></table>
         </div>
-        <div data-tab-panel="usage"><div class="sg-usage-section"><h4>When to use</h4><ul><li>Single-line text entry: names, emails, search queries</li><li>When you need validation feedback (error state)</li></ul></div><div class="sg-usage-section"><h4>Accessibility</h4><ul><li>Always pair with a visible <code>&lt;label&gt;</code></li><li>Use <code>placeholder</code> for hints, never as a label replacement</li><li>Error messages should be announced via <code>aria-describedby</code></li></ul></div></div>
+        <div data-tab-panel="guidelines"><div class="sg-usage-section"><h4>When to use</h4><ul><li>Single-line text entry: names, emails, search queries</li><li>When you need validation feedback (error state)</li></ul></div><div class="sg-usage-section"><h4>Accessibility</h4><ul><li>Always pair with a visible <code>&lt;label&gt;</code></li><li>Use <code>placeholder</code> for hints, never as a label replacement</li><li>Error messages should be announced via <code>aria-describedby</code></li></ul></div></div>
         <div data-tab-panel="changelog"><p class="sg-changelog-empty">No changes recorded yet.</p></div>
         <div data-tab-panel="playground"></div>
       </div>
@@ -2005,7 +2059,7 @@ const query = ref('');
       <div data-page="checkbox">
         <h1 class="sg-page-title">Checkbox</h1>
         <p class="sg-page-desc">A checkbox lets users select one or more options from a set.</p>
-        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="usage">Usage</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
+        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="guidelines">Guidelines</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
         <div data-tab-panel="examples" class="active">
           <div class="sg-subsection"><h3 class="sg-subsection-title">Default</h3><div class="sg-example"><div class="sg-example-preview" style="display:flex;flex-direction:column;gap:12px;"><label class="udc-checkbox"><input type="checkbox" /><span class="udc-checkbox__control"></span><span class="udc-checkbox__label">Unchecked</span></label><label class="udc-checkbox"><input type="checkbox" checked /><span class="udc-checkbox__control"></span><span class="udc-checkbox__label">Checked</span></label></div><details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;label class="udc-checkbox"&gt;
   &lt;input type="checkbox" /&gt;
@@ -2016,7 +2070,7 @@ const query = ref('');
           <div class="sg-subsection"><h3 class="sg-subsection-title">Error state</h3><div class="sg-example"><div class="sg-example-preview" style="display:flex;flex-direction:column;gap:12px;"><label class="udc-checkbox" data-state="error"><input type="checkbox" /><span class="udc-checkbox__control"></span><span class="udc-checkbox__label">Required field</span></label></div><details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;label class="udc-checkbox" data-state="error"&gt;…&lt;/label&gt;</code></pre></details></div></div>
         </div>
         <div data-tab-panel="code"><h3 class="sg-subsection-title">Import</h3><pre class="sg-playground-code" style="margin-bottom:24px;">@import url('./components/checkbox.css');</pre><h3 class="sg-subsection-title">CSS Classes</h3><table class="sg-api-table"><thead><tr><th>Class</th><th>Description</th></tr></thead><tbody><tr><td><code>.udc-checkbox</code></td><td>Root label wrapper</td></tr><tr><td><code>.udc-checkbox__control</code></td><td>Visual checkbox indicator</td></tr><tr><td><code>.udc-checkbox__label</code></td><td>Label text</td></tr><tr><td><code>.udc-checkbox__required</code></td><td>Required dot indicator</td></tr></tbody></table></div>
-        <div data-tab-panel="usage"><div class="sg-usage-section"><h4>When to use</h4><ul><li>Multiple selections from a set</li><li>Binary on/off toggles (terms agreement, opt-in)</li></ul></div><div class="sg-usage-section"><h4>Accessibility</h4><ul><li>Uses native <code>&lt;input type="checkbox"&gt;</code> for screen reader support</li><li>The visible indicator is purely decorative — the native input handles interaction</li></ul></div></div>
+        <div data-tab-panel="guidelines"><div class="sg-usage-section"><h4>When to use</h4><ul><li>Multiple selections from a set</li><li>Binary on/off toggles (terms agreement, opt-in)</li></ul></div><div class="sg-usage-section"><h4>Accessibility</h4><ul><li>Uses native <code>&lt;input type="checkbox"&gt;</code> for screen reader support</li><li>The visible indicator is purely decorative — the native input handles interaction</li></ul></div></div>
         <div data-tab-panel="changelog"><p class="sg-changelog-empty">No changes recorded yet.</p></div>
         <div data-tab-panel="playground"></div>
       </div>
@@ -2025,7 +2079,7 @@ const query = ref('');
       <div data-page="radio">
         <h1 class="sg-page-title">Radio</h1>
         <p class="sg-page-desc">A radio button lets users select exactly one option from a set.</p>
-        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="usage">Usage</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
+        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="guidelines">Guidelines</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
         <div data-tab-panel="examples" class="active">
           <div class="sg-subsection"><h3 class="sg-subsection-title">Default group</h3><div class="sg-example"><div class="sg-example-preview"><div class="udc-radio-group" role="radiogroup" aria-labelledby="demo-notif-label"><span class="udc-radio-group__legend" id="demo-notif-label">Notification preference</span><label class="udc-radio"><input type="radio" name="demo-notif" value="email" checked /><span class="udc-radio__control"></span><span class="udc-radio__label">Email</span></label><label class="udc-radio"><input type="radio" name="demo-notif" value="sms" /><span class="udc-radio__control"></span><span class="udc-radio__label">SMS</span></label><label class="udc-radio"><input type="radio" name="demo-notif" value="push" /><span class="udc-radio__control"></span><span class="udc-radio__label">Push notification</span></label></div></div><details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;div class="udc-radio-group" role="radiogroup"&gt;
   &lt;span class="udc-radio-group__legend"&gt;Label&lt;/span&gt;
@@ -2039,7 +2093,7 @@ const query = ref('');
           <div class="sg-subsection"><h3 class="sg-subsection-title">Error state</h3><div class="sg-example"><div class="sg-example-preview" style="display:flex;flex-direction:column;gap:12px;"><label class="udc-radio" data-state="error"><input type="radio" name="demo-err" /><span class="udc-radio__control"></span><span class="udc-radio__label">Error</span></label></div><details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;label class="udc-radio" data-state="error"&gt;…&lt;/label&gt;</code></pre></details></div></div>
         </div>
         <div data-tab-panel="code"><h3 class="sg-subsection-title">Import</h3><pre class="sg-playground-code" style="margin-bottom:24px;">@import url('./components/radio.css');</pre><h3 class="sg-subsection-title">CSS Classes</h3><table class="sg-api-table"><thead><tr><th>Class</th><th>Description</th></tr></thead><tbody><tr><td><code>.udc-radio-group</code></td><td>Vertical stack wrapper</td></tr><tr><td><code>.udc-radio-group__legend</code></td><td>Group label</td></tr><tr><td><code>.udc-radio</code></td><td>Individual radio label</td></tr><tr><td><code>.udc-radio__control</code></td><td>Visual circle indicator</td></tr><tr><td><code>.udc-radio__label</code></td><td>Label text</td></tr></tbody></table></div>
-        <div data-tab-panel="usage"><div class="sg-usage-section"><h4>When to use</h4><ul><li>Mutually exclusive selection from 2–5 options</li><li>When the user must see all options at once</li></ul></div><div class="sg-usage-section"><h4>When not to use</h4><ul><li>For more than 5 options — use a dropdown select instead</li><li>For multiple selections — use checkboxes</li></ul></div></div>
+        <div data-tab-panel="guidelines"><div class="sg-usage-section"><h4>When to use</h4><ul><li>Mutually exclusive selection from 2–5 options</li><li>When the user must see all options at once</li></ul></div><div class="sg-usage-section"><h4>When not to use</h4><ul><li>For more than 5 options — use a dropdown select instead</li><li>For multiple selections — use checkboxes</li></ul></div></div>
         <div data-tab-panel="changelog"><p class="sg-changelog-empty">No changes recorded yet.</p></div>
         <div data-tab-panel="playground"></div>
       </div>
@@ -2048,7 +2102,7 @@ const query = ref('');
       <div data-page="dropdown">
         <h1 class="sg-page-title">Dropdown</h1>
         <p class="sg-page-desc">A dropdown lets users select a single value from a list of options. It combines a trigger button with a floating option list.</p>
-        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="usage">Usage</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
+        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="guidelines">Guidelines</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
 
         <div data-tab-panel="examples" class="active">
           <!-- Default -->
@@ -2148,7 +2202,7 @@ const query = ref('');
           </tbody></table>
         </div>
 
-        <div data-tab-panel="usage">
+        <div data-tab-panel="guidelines">
           <div class="sg-usage-section"><h4>When to use</h4><ul>
             <li>Single selection from a list of 5+ options</li>
             <li>When you need to conserve vertical space compared to radio buttons</li>
@@ -2175,7 +2229,7 @@ const query = ref('');
       <div data-page="badge">
         <h1 class="sg-page-title">Badge</h1>
         <p class="sg-page-desc">A badge is a visual indicator for categorization, status, or labels.</p>
-        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="usage">Usage</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
+        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="guidelines">Guidelines</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
         <div data-tab-panel="examples" class="active">
           <div class="sg-subsection"><h3 class="sg-subsection-title">Prominent (filled)</h3><div class="sg-example"><div class="sg-example-preview"><span class="udc-badge">Info</span><span class="udc-badge" data-variant="secondary">Secondary</span><span class="udc-badge" data-variant="success">Success</span><span class="udc-badge" data-variant="error">Error</span><span class="udc-badge" data-variant="warning">Warning</span></div><details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;span class="udc-badge"&gt;Info&lt;/span&gt;
 &lt;span class="udc-badge" data-variant="success"&gt;Success&lt;/span&gt;</code></pre></details></div></div>
@@ -2183,7 +2237,7 @@ const query = ref('');
           <div class="sg-subsection"><h3 class="sg-subsection-title">Small size</h3><div class="sg-example"><div class="sg-example-preview"><span class="udc-badge" data-size="sm">Info</span><span class="udc-badge" data-variant="success" data-size="sm">Success</span><span class="udc-badge" data-variant="error" data-size="sm">Error</span></div><details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;span class="udc-badge" data-size="sm"&gt;Info&lt;/span&gt;</code></pre></details></div></div>
         </div>
         <div data-tab-panel="code"><h3 class="sg-subsection-title">Import</h3><pre class="sg-playground-code" style="margin-bottom:24px;">@import url('./components/badge.css');</pre><h3 class="sg-subsection-title">Data Attributes</h3><table class="sg-api-table"><thead><tr><th>Attribute</th><th>Values</th><th>Description</th></tr></thead><tbody><tr><td><code>data-variant</code></td><td><code>secondary</code>, <code>success</code>, <code>error</code>, <code>warning</code></td><td>Color variant (default is info/blue)</td></tr><tr><td><code>data-prominent</code></td><td><code>false</code></td><td>Subtle/tinted style</td></tr><tr><td><code>data-size</code></td><td><code>sm</code></td><td>Compact size</td></tr></tbody></table></div>
-        <div data-tab-panel="usage"><div class="sg-usage-section"><h4>When to use</h4><ul><li>Status indicators (active, pending, error)</li><li>Categorization labels</li><li>Counts or notification indicators</li></ul></div></div>
+        <div data-tab-panel="guidelines"><div class="sg-usage-section"><h4>When to use</h4><ul><li>Status indicators (active, pending, error)</li><li>Categorization labels</li><li>Counts or notification indicators</li></ul></div></div>
         <div data-tab-panel="changelog"><p class="sg-changelog-empty">No changes recorded yet.</p></div>
         <div data-tab-panel="playground"></div>
       </div>
@@ -2192,7 +2246,7 @@ const query = ref('');
       <div data-page="divider">
         <h1 class="sg-page-title">Divider</h1>
         <p class="sg-page-desc">A horizontal divider separates content into clear groups.</p>
-        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="usage">Usage</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
+        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="guidelines">Guidelines</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
         <div data-tab-panel="examples" class="active">
           <div class="sg-subsection"><h3 class="sg-subsection-title">Padding variants</h3><div class="sg-example"><div class="sg-example-preview" data-direction="column" style="gap:0;width:100%;"><p style="font-size:13px;color:var(--uds-color-text-secondary);">sm (default)</p><hr class="udc-divider-horizontal" /><p style="font-size:13px;color:var(--uds-color-text-secondary);">md</p><hr class="udc-divider-horizontal" data-padding="md" /><p style="font-size:13px;color:var(--uds-color-text-secondary);">lg</p><hr class="udc-divider-horizontal" data-padding="lg" /><p style="font-size:13px;color:var(--uds-color-text-secondary);">xl</p><hr class="udc-divider-horizontal" data-padding="xl" /><p style="font-size:13px;color:var(--uds-color-text-secondary);">Content after</p></div><details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;hr class="udc-divider-horizontal" /&gt;
 &lt;hr class="udc-divider-horizontal" data-padding="md" /&gt;
@@ -2200,7 +2254,7 @@ const query = ref('');
 &lt;hr class="udc-divider-horizontal" data-padding="xl" /&gt;</code></pre></details></div></div>
         </div>
         <div data-tab-panel="code"><h3 class="sg-subsection-title">Import</h3><pre class="sg-playground-code" style="margin-bottom:24px;">@import url('./components/divider.css');</pre><table class="sg-api-table"><thead><tr><th>Attribute</th><th>Values</th></tr></thead><tbody><tr><td><code>data-padding</code></td><td><code>md</code>, <code>lg</code>, <code>xl</code> (default: sm)</td></tr></tbody></table></div>
-        <div data-tab-panel="usage"><div class="sg-usage-section"><h4>When to use</h4><ul><li>Separate content sections in a list or layout</li><li>Provide visual breathing room between groups</li></ul></div></div>
+        <div data-tab-panel="guidelines"><div class="sg-usage-section"><h4>When to use</h4><ul><li>Separate content sections in a list or layout</li><li>Provide visual breathing room between groups</li></ul></div></div>
         <div data-tab-panel="changelog"><p class="sg-changelog-empty">No changes recorded yet.</p></div>
         <div data-tab-panel="playground"></div>
       </div>
@@ -2209,14 +2263,14 @@ const query = ref('');
       <div data-page="icon-wrapper">
         <h1 class="sg-page-title">Icon Wrapper</h1>
         <p class="sg-page-desc">An icon wrapper constrains an icon to a fixed size with consistent inner padding.</p>
-        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="usage">Usage</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
+        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="guidelines">Guidelines</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
         <div data-tab-panel="examples" class="active">
           <div class="sg-subsection"><h3 class="sg-subsection-title">Sizes</h3><div class="sg-example"><div class="sg-example-preview" style="align-items:flex-end;gap:20px;"><div style="text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px;"><span class="udc-icon-wrapper" data-size="16" style="color:var(--uds-color-surface-interactive-default);"><span class="material-symbols-outlined">info</span></span><span class="sg-swatch-label">16</span></div><div style="text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px;"><span class="udc-icon-wrapper" style="color:var(--uds-color-surface-interactive-default);"><span class="material-symbols-outlined">info</span></span><span class="sg-swatch-label">24</span></div><div style="text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px;"><span class="udc-icon-wrapper" data-size="48" style="color:var(--uds-color-surface-interactive-default);"><span class="material-symbols-outlined">info</span></span><span class="sg-swatch-label">48</span></div><div style="text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px;"><span class="udc-icon-wrapper" data-size="64" style="color:var(--uds-color-surface-interactive-default);"><span class="material-symbols-outlined">info</span></span><span class="sg-swatch-label">64</span></div></div><details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;span class="udc-icon-wrapper" data-size="24"&gt;
   &lt;span class="material-symbols-outlined"&gt;info&lt;/span&gt;
 &lt;/span&gt;</code></pre></details></div></div>
         </div>
         <div data-tab-panel="code"><h3 class="sg-subsection-title">Import</h3><pre class="sg-playground-code" style="margin-bottom:24px;">@import url('./components/icon-wrapper.css');</pre><table class="sg-api-table"><thead><tr><th>Attribute</th><th>Values</th></tr></thead><tbody><tr><td><code>data-size</code></td><td><code>16</code>, <code>20</code>, <code>24</code> (default), <code>32</code>, <code>48</code>, <code>64</code></td></tr></tbody></table></div>
-        <div data-tab-panel="usage"><div class="sg-usage-section"><h4>When to use</h4><ul><li>Wrap Material Symbols icons to constrain to a consistent size</li><li>Color is inherited from parent — use semantic icon tokens</li></ul></div></div>
+        <div data-tab-panel="guidelines"><div class="sg-usage-section"><h4>When to use</h4><ul><li>Wrap Material Symbols icons to constrain to a consistent size</li><li>Color is inherited from parent — use semantic icon tokens</li></ul></div></div>
         <div data-tab-panel="changelog"><p class="sg-changelog-empty">No changes recorded yet.</p></div>
         <div data-tab-panel="playground"></div>
       </div>
@@ -2225,12 +2279,12 @@ const query = ref('');
       <div data-page="spacer">
         <h1 class="sg-page-title">Spacer</h1>
         <p class="sg-page-desc">A spacer adds consistent whitespace between elements using the spacing scale.</p>
-        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="usage">Usage</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
+        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="guidelines">Guidelines</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
         <div data-tab-panel="examples" class="active">
           <div class="sg-subsection"><h3 class="sg-subsection-title">Sizes</h3><div class="sg-example"><div class="sg-example-preview" data-direction="column" style="gap:8px;"><div style="display:flex;align-items:center;gap:0;"><span class="udc-badge">Before</span><div class="udc-spacer" data-size="100" style="background:var(--uds-color-surface-info-subtle);outline:1px dashed var(--uds-color-border-interactive);"></div><span class="udc-badge" data-variant="success">After (100)</span></div><div style="display:flex;align-items:center;gap:0;"><span class="udc-badge">Before</span><div class="udc-spacer" data-size="300" style="background:var(--uds-color-surface-info-subtle);outline:1px dashed var(--uds-color-border-interactive);"></div><span class="udc-badge" data-variant="success">After (300)</span></div><div style="display:flex;align-items:center;gap:0;"><span class="udc-badge">Before</span><div class="udc-spacer" data-size="600" style="background:var(--uds-color-surface-info-subtle);outline:1px dashed var(--uds-color-border-interactive);"></div><span class="udc-badge" data-variant="success">After (600)</span></div></div><details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;div class="udc-spacer" data-size="300"&gt;&lt;/div&gt;</code></pre></details></div></div>
         </div>
         <div data-tab-panel="code"><h3 class="sg-subsection-title">Import</h3><pre class="sg-playground-code" style="margin-bottom:24px;">@import url('./components/spacer.css');</pre><table class="sg-api-table"><thead><tr><th>Attribute</th><th>Values</th></tr></thead><tbody><tr><td><code>data-size</code></td><td><code>050</code>, <code>075</code>, <code>100</code>, <code>150</code>, <code>200</code>, <code>300</code>, <code>400</code>, <code>600</code></td></tr></tbody></table></div>
-        <div data-tab-panel="usage"><div class="sg-usage-section"><h4>When to use</h4><ul><li>Add spacing between elements in a flex/grid layout</li><li>Prefer CSS gap or margin when possible — spacer is for explicit visual gaps</li></ul></div></div>
+        <div data-tab-panel="guidelines"><div class="sg-usage-section"><h4>When to use</h4><ul><li>Add spacing between elements in a flex/grid layout</li><li>Prefer CSS gap or margin when possible — spacer is for explicit visual gaps</li></ul></div></div>
         <div data-tab-panel="changelog"><p class="sg-changelog-empty">No changes recorded yet.</p></div>
         <div data-tab-panel="playground"></div>
       </div>
@@ -2239,7 +2293,7 @@ const query = ref('');
       <div data-page="breadcrumb">
         <h1 class="sg-page-title">Breadcrumb</h1>
         <p class="sg-page-desc">A breadcrumb shows the user's location in a page hierarchy.</p>
-        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="usage">Usage</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
+        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="guidelines">Guidelines</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
         <div data-tab-panel="examples" class="active">
           <div class="sg-subsection"><h3 class="sg-subsection-title">Framed (default)</h3><div class="sg-example"><div class="sg-example-preview"><nav class="udc-breadcrumb" aria-label="Breadcrumb framed"><ol><li><a href="javascript:void(0)">Home</a></li><li><a href="javascript:void(0)">Products</a></li><li aria-current="page">Widget Pro</li></ol></nav></div><details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;nav class="udc-breadcrumb" aria-label="Breadcrumb"&gt;
   &lt;ol&gt;
@@ -2254,7 +2308,7 @@ const query = ref('');
 &lt;/nav&gt;</code></pre></details></div></div>
         </div>
         <div data-tab-panel="code"><h3 class="sg-subsection-title">Import</h3><pre class="sg-playground-code" style="margin-bottom:24px;">@import url('./components/breadcrumb.css');</pre><table class="sg-api-table"><thead><tr><th>Attribute</th><th>Description</th></tr></thead><tbody><tr><td><code>data-frameless</code></td><td>Removes the pill container</td></tr><tr><td><code>aria-current="page"</code></td><td>Marks the current page (bold, non-interactive)</td></tr></tbody></table></div>
-        <div data-tab-panel="usage"><div class="sg-usage-section"><h4>When to use</h4><ul><li>Show hierarchical page location</li><li>Help users navigate back to parent pages</li></ul></div><div class="sg-usage-section"><h4>Accessibility</h4><ul><li>Use <code>&lt;nav aria-label="Breadcrumb"&gt;</code> with an <code>&lt;ol&gt;</code></li><li>Mark current page with <code>aria-current="page"</code></li></ul></div></div>
+        <div data-tab-panel="guidelines"><div class="sg-usage-section"><h4>When to use</h4><ul><li>Show hierarchical page location</li><li>Help users navigate back to parent pages</li></ul></div><div class="sg-usage-section"><h4>Accessibility</h4><ul><li>Use <code>&lt;nav aria-label="Breadcrumb"&gt;</code> with an <code>&lt;ol&gt;</code></li><li>Mark current page with <code>aria-current="page"</code></li></ul></div></div>
         <div data-tab-panel="changelog"><p class="sg-changelog-empty">No changes recorded yet.</p></div>
         <div data-tab-panel="playground"></div>
       </div>
@@ -2263,7 +2317,7 @@ const query = ref('');
       <div data-page="tabs">
         <h1 class="sg-page-title">Tabs</h1>
         <p class="sg-page-desc">Horizontal tabs let users switch between related views in a single content area.</p>
-        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="usage">Usage</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
+        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="guidelines">Guidelines</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
         <div data-tab-panel="examples" class="active">
           <div class="sg-subsection"><h3 class="sg-subsection-title">Default</h3><div class="sg-example"><div class="sg-example-preview"><div class="udc-tabs" role="tablist"><button class="udc-tab" role="tab" aria-selected="true">Overview</button><button class="udc-tab" role="tab">Details</button><button class="udc-tab" role="tab">History</button></div></div><details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;div class="udc-tabs" role="tablist"&gt;
   &lt;button class="udc-tab" role="tab" aria-selected="true"&gt;Overview&lt;/button&gt;
@@ -2273,7 +2327,7 @@ const query = ref('');
           <div class="sg-subsection"><h3 class="sg-subsection-title">Disabled tab</h3><div class="sg-example"><div class="sg-example-preview"><div class="udc-tabs" role="tablist"><button class="udc-tab" role="tab" aria-selected="true">Active</button><button class="udc-tab" role="tab">Normal</button><button class="udc-tab" role="tab" disabled>Disabled</button></div></div><details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;button class="udc-tab" role="tab" disabled&gt;Disabled&lt;/button&gt;</code></pre></details></div></div>
         </div>
         <div data-tab-panel="code"><h3 class="sg-subsection-title">Import</h3><pre class="sg-playground-code" style="margin-bottom:24px;">@import url('./components/tab-horizontal.css');</pre><table class="sg-api-table"><thead><tr><th>Class / Attribute</th><th>Description</th></tr></thead><tbody><tr><td><code>.udc-tabs</code></td><td>Tab bar container</td></tr><tr><td><code>.udc-tab</code></td><td>Individual tab button</td></tr><tr><td><code>data-size="sm"</code></td><td>Compact vertical padding</td></tr><tr><td><code>aria-selected="true"</code></td><td>Active tab</td></tr><tr><td><code>disabled</code></td><td>Disabled tab</td></tr></tbody></table></div>
-        <div data-tab-panel="usage"><div class="sg-usage-section"><h4>When to use</h4><ul><li>Switch between related views without leaving the page</li><li>Organize content into logical groups</li></ul></div><div class="sg-usage-section"><h4>Accessibility</h4><ul><li>Use <code>role="tablist"</code> on the container and <code>role="tab"</code> on each button</li><li>Connect tabs to panels with <code>aria-controls</code> and <code>aria-labelledby</code></li></ul></div></div>
+        <div data-tab-panel="guidelines"><div class="sg-usage-section"><h4>When to use</h4><ul><li>Switch between related views without leaving the page</li><li>Organize content into logical groups</li></ul></div><div class="sg-usage-section"><h4>Accessibility</h4><ul><li>Use <code>role="tablist"</code> on the container and <code>role="tab"</code> on each button</li><li>Connect tabs to panels with <code>aria-controls</code> and <code>aria-labelledby</code></li></ul></div></div>
         <div data-tab-panel="changelog"><p class="sg-changelog-empty">No changes recorded yet.</p></div>
         <div data-tab-panel="playground"></div>
       </div>
@@ -2282,7 +2336,7 @@ const query = ref('');
       <div data-page="nav-header">
         <h1 class="sg-page-title">Nav Header</h1>
         <p class="sg-page-desc">A top-level application header bar with logo, bento dropdown for app switching, search, and user action buttons.</p>
-        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="usage">Usage</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
+        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="guidelines">Guidelines</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
 
         <div data-tab-panel="examples" class="active">
           <div class="sg-subsection"><h3 class="sg-subsection-title">Default</h3>
@@ -2396,7 +2450,7 @@ const query = ref('');
             </tbody>
           </table>
         </div>
-        <div data-tab-panel="usage">
+        <div data-tab-panel="guidelines">
           <div class="sg-usage-section"><h4>When to use</h4><ul><li>Top-level application chrome with logo, app switching, search, and user actions</li><li>The bento dropdown lets users switch between major application modules</li></ul></div>
           <div class="sg-usage-section"><h4>Accessibility</h4><ul><li>Use <code>aria-expanded</code> on the bento trigger to announce dropdown state</li><li>Press Escape to close the bento dropdown</li><li>The bento list items use <code>.udc-nav-button</code> for consistent keyboard interaction</li></ul></div>
         </div>
@@ -2408,7 +2462,7 @@ const query = ref('');
       <div data-page="nav-vertical">
         <h1 class="sg-page-title">Nav Vertical</h1>
         <p class="sg-page-desc">A vertical sidebar navigation list with icon + label items. Supports leading-icon and text-only variants.</p>
-        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="usage">Usage</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
+        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="guidelines">Guidelines</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
         <div data-tab-panel="examples" class="active">
           <div class="sg-subsection"><h3 class="sg-subsection-title">With Leading Icons</h3>
             <div class="sg-example"><div class="sg-example-preview" style="max-width:240px;">
@@ -2478,7 +2532,7 @@ const query = ref('');
             </tbody>
           </table>
         </div>
-        <div data-tab-panel="usage">
+        <div data-tab-panel="guidelines">
           <div class="sg-usage-section"><h4>When to use</h4><ul><li>Sidebar navigation for section-level page switching</li><li>Use "With Leading Icons" for primary app nav, "Without" for settings or secondary nav</li><li>Use the rail variant for collapsed/compact sidebars</li></ul></div>
           <div class="sg-usage-section"><h4>Variants (from Figma)</h4><ul><li><strong>Leading Icons = True</strong> — Icon + label (default)</li><li><strong>Leading Icons = False</strong> — Label only, extra left padding</li></ul></div>
           <div class="sg-usage-section"><h4>Accessibility</h4><ul><li>Use <code>aria-label</code> on the <code>&lt;nav&gt;</code> element</li><li>Mark active item with <code>aria-selected="true"</code></li><li>Arrow keys navigate between items</li></ul></div>
@@ -2491,7 +2545,7 @@ const query = ref('');
       <div data-page="data-table">
         <h1 class="sg-page-title">Data Table</h1>
         <p class="sg-page-desc">A data grid with sortable headers, row selection via checkboxes, cell types (text, badge, action button), alignment helpers, and error highlighting.</p>
-        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="usage">Usage</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
+        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="guidelines">Guidelines</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
         <div data-tab-panel="examples" class="active">
 
           <div class="sg-subsection"><h3 class="sg-subsection-title">Basic table</h3>
@@ -2679,7 +2733,7 @@ const query = ref('');
             </tbody>
           </table>
         </div>
-        <div data-tab-panel="usage">
+        <div data-tab-panel="guidelines">
           <div class="sg-usage-section"><h4>When to use</h4><ul><li>Displaying tabular data: invoices, tenants, properties, transactions</li><li>Tables requiring row selection, sorting, or inline actions</li><li>Data grids that may overflow horizontally on smaller screens</li></ul></div>
           <div class="sg-usage-section"><h4>Cell types (from Figma)</h4><ul><li><strong>Text</strong> — Default text with optional leading/trailing icons, alignment, and prominent styling</li><li><strong>Badge</strong> — Status indicators using <code>.udc-badge</code></li><li><strong>Checkbox</strong> — Row selection via checkbox</li><li><strong>Ghost button</strong> — Action menu (e.g. more_vert)</li><li><strong>Dropdown</strong> — Inline dropdown for editable cells</li></ul></div>
           <div class="sg-usage-section"><h4>Accessibility</h4><ul><li>Use semantic <code>&lt;table&gt;</code>, <code>&lt;thead&gt;</code>, <code>&lt;tbody&gt;</code>, <code>&lt;th&gt;</code>, <code>&lt;td&gt;</code></li><li>Header checkbox toggles all row checkboxes; indeterminate state for partial selection</li><li>Sort direction is conveyed via <code>data-dir</code> and visual icon</li></ul></div>
@@ -2692,7 +2746,7 @@ const query = ref('');
       <div data-page="tile">
         <h1 class="sg-page-title">Tile</h1>
         <p class="sg-page-desc">A selectable card with a label, body text, and optional trailing chevron. Supports default, hover, selected, focused, and disabled states.</p>
-        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="usage">Usage</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
+        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="guidelines">Guidelines</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
         <div data-tab-panel="examples" class="active">
 
           <div class="sg-subsection"><h3 class="sg-subsection-title">Default</h3>
@@ -2797,7 +2851,7 @@ const query = ref('');
             </tbody>
           </table>
         </div>
-        <div data-tab-panel="usage">
+        <div data-tab-panel="guidelines">
           <div class="sg-usage-section"><h4>When to use</h4><ul><li>Selection cards (e.g. choose an upload method, pick a plan)</li><li>Navigation cards that link to detail views</li><li>Summary cards displaying key information with a drill-down chevron</li></ul></div>
           <div class="sg-usage-section"><h4>States</h4><ul><li><strong>Default</strong> — Subtle border on surface-main background</li><li><strong>Hover</strong> — Light interactive background</li><li><strong>Selected</strong> — Info-subtle background with interactive border</li><li><strong>Focused</strong> — Focus ring around the tile</li><li><strong>Disabled</strong> — Muted, no pointer events, chevron hidden</li></ul></div>
           <div class="sg-usage-section"><h4>Accessibility</h4><ul><li>Use <code>tabindex="0"</code> for keyboard focus</li><li>Mark active tile with <code>aria-selected="true"</code></li><li>Set <code>aria-disabled="true"</code> for non-interactive tiles</li></ul></div>
@@ -2810,7 +2864,7 @@ const query = ref('');
       <div data-page="list">
         <h1 class="sg-page-title">List</h1>
         <p class="sg-page-desc">A vertical list of selectable items with optional leading and trailing icons. Supports default, hover, active, selected, and focused states.</p>
-        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="usage">Usage</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
+        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="guidelines">Guidelines</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
         <div data-tab-panel="examples" class="active">
 
           <div class="sg-subsection"><h3 class="sg-subsection-title">Basic list</h3>
@@ -2894,7 +2948,7 @@ const query = ref('');
             </tbody>
           </table>
         </div>
-        <div data-tab-panel="usage">
+        <div data-tab-panel="guidelines">
           <div class="sg-usage-section"><h4>When to use</h4><ul><li>Menu-like selection from a list of options</li><li>Settings lists, action lists, or sidebar menus</li><li>Any vertical collection requiring single-select</li></ul></div>
           <div class="sg-usage-section"><h4>Variants (from Figma)</h4><ul><li>1–10 items per list (composable)</li><li>Items support leading and/or trailing icons</li><li>5 interaction states: Default, Hover, Active, Selected, Focused</li></ul></div>
           <div class="sg-usage-section"><h4>Accessibility</h4><ul><li>Use <code>tabindex="0"</code> on each item for keyboard access</li><li>ArrowUp/Down navigates between items</li><li>Enter/Space selects the focused item</li><li>Selected state uses <code>aria-selected="true"</code></li></ul></div>
@@ -2907,7 +2961,7 @@ const query = ref('');
       <div data-page="notification">
         <h1 class="sg-page-title">Notification</h1>
         <p class="sg-page-desc">Inline status banners for info, success, error, and warning messages. Supports subtle, prominent, and inline styles.</p>
-        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="usage">Usage</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
+        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="guidelines">Guidelines</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
         <div data-tab-panel="examples" class="active">
 
           <div class="sg-subsection"><h3 class="sg-subsection-title">Info (default)</h3>
@@ -3025,7 +3079,7 @@ const query = ref('');
             </tbody>
           </table>
         </div>
-        <div data-tab-panel="usage">
+        <div data-tab-panel="guidelines">
           <div class="sg-usage-section"><h4>When to use</h4><ul><li>System-level status messages (save confirmations, error alerts)</li><li>Form validation summaries</li><li>Warning banners at the top of pages or sections</li></ul></div>
           <div class="sg-usage-section"><h4>Variants</h4><ul><li><strong>Info</strong> — General informational messages</li><li><strong>Success</strong> — Positive confirmations</li><li><strong>Error</strong> — Error messages requiring attention</li><li><strong>Warning</strong> — Cautionary messages</li></ul></div>
           <div class="sg-usage-section"><h4>Styles</h4><ul><li><strong>Subtle</strong> (default) — Light colored background</li><li><strong>Prominent</strong> — Fully saturated background, white text</li><li><strong>Inline</strong> — No background, icon + colored text only</li></ul></div>
@@ -3039,7 +3093,7 @@ const query = ref('');
       <div data-page="dialog">
         <h1 class="sg-page-title">Dialog</h1>
         <p class="sg-page-desc">A modal overlay with a title bar, scrollable content area, and action footer. Supports 1–4 content slots.</p>
-        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="usage">Usage</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
+        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="guidelines">Guidelines</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
         <div data-tab-panel="examples" class="active">
 
           <div class="sg-subsection"><h3 class="sg-subsection-title">1-slot dialog</h3>
@@ -3169,7 +3223,7 @@ const query = ref('');
             </tbody>
           </table>
         </div>
-        <div data-tab-panel="usage">
+        <div data-tab-panel="guidelines">
           <div class="sg-usage-section"><h4>When to use</h4><ul><li>Confirmations that require user attention (delete, discard changes)</li><li>Forms or wizards that should not navigate away from the current page</li><li>Content previews or detail views on top of existing content</li></ul></div>
           <div class="sg-usage-section"><h4>Slots</h4><ul><li>The dialog body accepts any number of child elements</li><li>In Figma, variants show 1–4 predefined slots for layout guidance</li></ul></div>
           <div class="sg-usage-section"><h4>Accessibility</h4><ul><li>Always include <code>role="dialog"</code> and <code>aria-modal="true"</code></li><li>Link title with <code>aria-labelledby</code></li><li>Pressing <strong>Escape</strong> closes the dialog</li><li>Clicking the backdrop closes the dialog</li><li>Trap focus inside the dialog while open</li></ul></div>
@@ -3182,7 +3236,7 @@ const query = ref('');
       <div data-page="chip">
         <h1 class="sg-page-title">Chip</h1>
         <p class="sg-page-desc">Compact elements for filtering, input tags, and dropdown triggers. Supports selected state, leading/trailing icons, and four variants.</p>
-        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="usage">Usage</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
+        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="guidelines">Guidelines</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
         <div data-tab-panel="examples" class="active">
 
           <div class="sg-subsection"><h3 class="sg-subsection-title">Filter chips</h3>
@@ -3258,7 +3312,7 @@ const query = ref('');
             </tbody>
           </table>
         </div>
-        <div data-tab-panel="usage">
+        <div data-tab-panel="guidelines">
           <div class="sg-usage-section"><h4>When to use</h4><ul><li>Filter lists or tables (Filter variant)</li><li>Tag inputs for multi-select fields (Input variant)</li><li>Compact dropdown triggers (Dropdown variant)</li></ul></div>
           <div class="sg-usage-section"><h4>Variants</h4><ul><li><strong>Default</strong> — Static chip with optional leading/trailing icons</li><li><strong>Filter</strong> — Toggleable; shows check icon when selected</li><li><strong>Input</strong> — Removable tag; click close or press Delete to remove</li><li><strong>Dropdown</strong> — Triggers a dropdown; shows chevron trailing icon</li></ul></div>
           <div class="sg-usage-section"><h4>Accessibility</h4><ul><li>Uses <code>&lt;button&gt;</code> for keyboard activation</li><li><code>aria-selected</code> conveys selection state</li><li>Input chips can be dismissed with Delete/Backspace</li></ul></div>
@@ -3271,7 +3325,7 @@ const query = ref('');
       <div data-page="search">
         <h1 class="sg-page-title">Search</h1>
         <p class="sg-page-desc">A search input with a leading search icon and a clear button that appears when the field has a value. Supports default, hover, focused, and error states.</p>
-        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="usage">Usage</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
+        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="guidelines">Guidelines</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
         <div data-tab-panel="examples" class="active">
 
           <div class="sg-subsection"><h3 class="sg-subsection-title">Default</h3>
@@ -3328,7 +3382,7 @@ const query = ref('');
             </tbody>
           </table>
         </div>
-        <div data-tab-panel="usage">
+        <div data-tab-panel="guidelines">
           <div class="sg-usage-section"><h4>When to use</h4><ul><li>Global search bars in navigation headers</li><li>Filtering within tables, lists, or content areas</li><li>Quick-find functionality in sidebars or dialogs</li></ul></div>
           <div class="sg-usage-section"><h4>States</h4><ul><li><strong>Default</strong> — Placeholder text visible</li><li><strong>Hover</strong> — Subtle background</li><li><strong>Active/Focused</strong> — Blue focus ring, clear button appears</li><li><strong>Error</strong> — Red focus ring</li></ul></div>
           <div class="sg-usage-section"><h4>Accessibility</h4><ul><li>Uses native <code>&lt;input type="search"&gt;</code></li><li>Clear button has <code>aria-label="Clear"</code></li><li>Focus returns to input after clearing</li></ul></div>
@@ -3341,7 +3395,7 @@ const query = ref('');
       <div data-page="tooltip">
         <h1 class="sg-page-title">Tooltip</h1>
         <p class="sg-page-desc">A lightweight text popover that appears on hover or focus. CSS-only — no JavaScript required. Supports top, bottom, left, and right positioning.</p>
-        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="usage">Usage</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
+        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="guidelines">Guidelines</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
         <div data-tab-panel="examples" class="active">
 
           <div class="sg-subsection"><h3 class="sg-subsection-title">Top (default)</h3>
@@ -3407,7 +3461,7 @@ const query = ref('');
             </tbody>
           </table>
         </div>
-        <div data-tab-panel="usage">
+        <div data-tab-panel="guidelines">
           <div class="sg-usage-section"><h4>When to use</h4><ul><li>Supplementary information on icon-only buttons</li><li>Brief explanations for UI elements</li><li>Showing full text for truncated content</li></ul></div>
           <div class="sg-usage-section"><h4>Implementation</h4><ul><li>CSS-only — no JavaScript required</li><li>Shows on hover of the wrapper or focus-within</li><li>Max-width 250px, text wraps naturally</li><li>Shadow uses <code>--uds-shadow-depth-300</code> token</li></ul></div>
           <div class="sg-usage-section"><h4>Accessibility</h4><ul><li>Always include <code>role="tooltip"</code></li><li>Link trigger to tooltip with <code>aria-describedby</code> for complex cases</li><li>Tooltip shows on focus-within, so keyboard users can access it</li></ul></div>
@@ -3481,7 +3535,7 @@ const query = ref('');
   <script src="https://cdn.jsdelivr.net/npm/jszip@3/dist/jszip.min.js"></script>
   <script src="./material-icons.js"></script>
   <script src="./uds/uds.js?v=29"></script>
-  <script src="./app.js?v=72"></script>
+  <script src="./app.js?v=73"></script>
   <script src="./demo-builder.js?v=9"></script>
 
 </body>

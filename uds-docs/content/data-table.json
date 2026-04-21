@@ -1,0 +1,59 @@
+{
+  "component": "data-table",
+  "title": "Data Table",
+  "description": "A sortable, selectable table for displaying tabular data with headers, checkboxes, and action columns.",
+  "whenToUse": "For displaying structured tabular data. When users need to sort, filter, or select rows. For data review and bulk actions.",
+  "whenNotToUse": "For simple key/value pairs — use a definition list. For highly complex data — consider a specialized grid component outside UDS.",
+  "acceptanceCriteria": [],
+  "dependencies": {
+    "css": [
+      "uds/components/data-table.css"
+    ],
+    "js": [
+      "uds/components/data-table.js"
+    ]
+  },
+  "props": [],
+  "events": [],
+  "slots": [],
+  "states": [],
+  "contentGuidelines": null,
+  "commonlyPairedWith": [],
+  "dosDonts": {
+    "dos": [],
+    "donts": []
+  },
+  "accessibility": {
+    "keyboard": [
+      {
+        "key": "Tab",
+        "action": "Move focus through interactive elements"
+      },
+      {
+        "key": "Enter / Space",
+        "action": "Activate sortable headers; toggle checkboxes"
+      },
+      {
+        "key": "Arrow keys",
+        "action": "Move focus within rows (optional)"
+      }
+    ],
+    "screenReader": [],
+    "wcag": [],
+    "contrast": []
+  },
+  "knownIssues": [],
+  "performance": null,
+  "motion": null,
+  "responsive": null,
+  "visualHierarchy": null,
+  "densityBehavior": null,
+  "owner": {
+    "designer": "Unassigned",
+    "developer": "Unassigned"
+  },
+  "draft": false,
+  "figmaNodeId": null,
+  "storybookSlug": null,
+  "_legacyAccessibilityNotes": "Use semantic <table>, <thead>, <tbody>. Sortable headers announce current sort direction via aria-sort."
+}

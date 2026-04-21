@@ -1,0 +1,53 @@
+{
+  "component": "button",
+  "title": "Button",
+  "description": "A button triggers an action or event. Primary for main actions, secondary for alternatives, ghost for low-emphasis.",
+  "whenToUse": "Use buttons to trigger an action (submit, save, cancel, delete). Primary for the main action; secondary for alternatives; ghost for low-emphasis.",
+  "whenNotToUse": "Do not use buttons for navigation links — use an anchor (<a>) instead. Avoid more than 2–3 buttons in a row; consider a dropdown or action menu.",
+  "acceptanceCriteria": [],
+  "dependencies": {
+    "css": [
+      "uds/components/button.css"
+    ],
+    "js": []
+  },
+  "props": [],
+  "events": [],
+  "slots": [],
+  "states": [],
+  "contentGuidelines": null,
+  "commonlyPairedWith": [],
+  "dosDonts": {
+    "dos": [],
+    "donts": []
+  },
+  "accessibility": {
+    "keyboard": [
+      {
+        "key": "Space / Enter",
+        "action": "Activate the button"
+      },
+      {
+        "key": "Tab",
+        "action": "Move focus to/from the button"
+      }
+    ],
+    "screenReader": [],
+    "wcag": [],
+    "contrast": []
+  },
+  "knownIssues": [],
+  "performance": null,
+  "motion": null,
+  "responsive": null,
+  "visualHierarchy": null,
+  "densityBehavior": null,
+  "owner": {
+    "designer": "Unassigned",
+    "developer": "Unassigned"
+  },
+  "draft": false,
+  "figmaNodeId": null,
+  "storybookSlug": null,
+  "_legacyAccessibilityNotes": "Always use a <button> element, not a <div> or <span>. Provide visible text labels; icon-only buttons need aria-label. Focus ring uses --uds-color-border-outline-focus-visible."
+}

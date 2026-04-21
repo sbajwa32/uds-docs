@@ -1,0 +1,44 @@
+{
+  "component": "spacer",
+  "title": "Spacer",
+  "description": "A spacer adds consistent vertical or horizontal space using UDS space tokens.",
+  "whenToUse": "When CSS gap or margin is not available (e.g. in a flow where children cannot be flex/grid items). To enforce a specific token-sized gap.",
+  "whenNotToUse": "When you can use CSS gap or margin with tokens directly. Prefer CSS layout properties.",
+  "acceptanceCriteria": [],
+  "dependencies": {
+    "css": [
+      "uds/components/spacer.css"
+    ],
+    "js": []
+  },
+  "props": [],
+  "events": [],
+  "slots": [],
+  "states": [],
+  "contentGuidelines": null,
+  "commonlyPairedWith": [],
+  "dosDonts": {
+    "dos": [],
+    "donts": []
+  },
+  "accessibility": {
+    "keyboard": [],
+    "screenReader": [],
+    "wcag": [],
+    "contrast": []
+  },
+  "knownIssues": [],
+  "performance": null,
+  "motion": null,
+  "responsive": null,
+  "visualHierarchy": null,
+  "densityBehavior": null,
+  "owner": {
+    "designer": "Unassigned",
+    "developer": "Unassigned"
+  },
+  "draft": false,
+  "figmaNodeId": null,
+  "storybookSlug": null,
+  "_legacyAccessibilityNotes": "Decorative only. Do not place interactive elements inside a spacer."
+}

@@ -1,0 +1,55 @@
+{
+  "component": "tile",
+  "title": "Tile",
+  "description": "A selectable tile presents a choice with a label and optional description. Commonly used for mutually exclusive options in a card-like layout.",
+  "whenToUse": "For visual, card-like option selection (e.g. \"Upload CSV / Manual Entry / API Sync\"). When you want more prominence than radio buttons.",
+  "whenNotToUse": "For simple text-only choices — use radio buttons. For navigation — use nav.",
+  "acceptanceCriteria": [],
+  "dependencies": {
+    "css": [
+      "uds/components/tile.css"
+    ],
+    "js": [
+      "uds/components/tile.js"
+    ]
+  },
+  "props": [],
+  "events": [],
+  "slots": [],
+  "states": [],
+  "contentGuidelines": null,
+  "commonlyPairedWith": [],
+  "dosDonts": {
+    "dos": [],
+    "donts": []
+  },
+  "accessibility": {
+    "keyboard": [
+      {
+        "key": "Tab",
+        "action": "Move focus to the tile"
+      },
+      {
+        "key": "Enter / Space",
+        "action": "Toggle selection"
+      }
+    ],
+    "screenReader": [],
+    "wcag": [],
+    "contrast": []
+  },
+  "knownIssues": [],
+  "performance": null,
+  "motion": null,
+  "responsive": null,
+  "visualHierarchy": null,
+  "densityBehavior": null,
+  "owner": {
+    "designer": "Unassigned",
+    "developer": "Unassigned"
+  },
+  "draft": false,
+  "figmaNodeId": null,
+  "storybookSlug": null,
+  "_legacyAccessibilityNotes": "Use aria-selected for selection state. Tiles are keyboard-focusable (tabindex=\"0\") unless disabled."
+}

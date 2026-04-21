@@ -1,0 +1,174 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "UDS Component Content Schema",
+  "description": "Schema for per-component spec JSON files. Every field is optional — the renderer hides sections where data is missing or empty. See uds-docs/content/<component>.json for examples.",
+  "type": "object",
+  "properties": {
+    "component": { "type": "string", "description": "Component ID matching data-page attribute" },
+    "title": { "type": "string" },
+    "description": { "type": "string", "description": "One-paragraph summary of the component's purpose" },
+
+    "whenToUse": { "type": "string" },
+    "whenNotToUse": { "type": "string", "description": "Include suggested alternative component" },
+
+    "acceptanceCriteria": {
+      "type": "array",
+      "description": "Checklist items. This IS the ship checklist — when all items are verified (design + dev), the component can move to Production Ready.",
+      "items": { "type": "string" }
+    },
+
+    "dependencies": {
+      "type": "object",
+      "properties": {
+        "css": { "type": "array", "items": { "type": "string" }, "description": "e.g. uds/components/button.css" },
+        "js":  { "type": "array", "items": { "type": "string" }, "description": "e.g. uds/components/dropdown.js" },
+        "tokens": { "type": "object", "description": "Groups of CSS custom properties the component uses, e.g. { Surface: [...], Typography: [...] }" }
+      }
+    },
+
+    "props": {
+      "type": "array",
+      "description": "Web component attributes/props the Storybook implementation should support.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "type": { "type": "string", "description": "'string' | 'boolean' | 'number' | 'enum' | 'object'" },
+          "default": { "type": ["string", "boolean", "number", "null"] },
+          "required": { "type": "boolean" },
+          "enum": { "type": "array", "items": { "type": "string" }, "description": "For type=enum, the allowed values" },
+          "description": { "type": "string" }
+        },
+        "required": ["name", "type"]
+      }
+    },
+
+    "events": {
+      "type": "array",
+      "description": "Custom events the component should dispatch.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+          "payload": { "type": "string", "description": "Event detail shape" }
+        },
+        "required": ["name"]
+      }
+    },
+
+    "slots": {
+      "type": "array",
+      "description": "Named slots or content regions inside the component.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "description": { "type": "string" }
+        },
+        "required": ["name"]
+      }
+    },
+
+    "states": {
+      "type": "array",
+      "description": "Every interactive state the component supports. Include 'not applicable' entries to make coverage explicit.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string", "description": "default | hover | active | focus | focus-visible | selected | disabled | error | loading | empty | not-applicable" },
+          "description": { "type": "string" },
+          "hasVisual": { "type": "boolean", "description": "Whether this state has a distinct visual treatment" }
+        },
+        "required": ["name"]
+      }
+    },
+
+    "contentGuidelines": { "type": "string", "description": "Character limits, truncation, empty state copy, error tone" },
+
+    "commonlyPairedWith": { "type": "array", "items": { "type": "string" }, "description": "Component IDs (e.g. 'dialog', 'button')" },
+
+    "dosDonts": {
+      "type": "object",
+      "properties": {
+        "dos":   { "type": "array", "items": { "type": "string" } },
+        "donts": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+
+    "accessibility": {
+      "type": "object",
+      "properties": {
+        "keyboard": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "key": { "type": "string" },
+              "action": { "type": "string" }
+            },
+            "required": ["key", "action"]
+          }
+        },
+        "screenReader": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "trigger": { "type": "string" },
+              "announcement": { "type": "string" }
+            },
+            "required": ["trigger", "announcement"]
+          }
+        },
+        "wcag": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "criterion": { "type": "string", "description": "e.g. '2.1.1'" },
+              "level": { "type": "string", "description": "A | AA | AAA" },
+              "howMet": { "type": "string" }
+            },
+            "required": ["criterion", "level"]
+          }
+        },
+        "contrast": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "foreground": { "type": "string", "description": "Token name or hex" },
+              "background": { "type": "string" },
+              "ratio": { "type": "number" },
+              "passes": { "type": "string", "description": "AA | AAA | fail" }
+            }
+          }
+        }
+      }
+    },
+
+    "knownIssues": { "type": "array", "items": { "type": "string" } },
+
+    "performance": { "type": ["string", "null"], "description": "Component-specific performance notes. Leave null unless there are specific concerns (e.g. virtualize Data Table at 200+ rows)." },
+
+    "motion": { "type": ["string", "null"], "description": "DEFERRED: UDS has no motion tokens yet. Leave null." },
+    "responsive": { "type": ["string", "null"], "description": "DEFERRED: UDS has no breakpoint tokens yet. Leave null." },
+
+    "visualHierarchy": { "type": ["string", "null"], "description": "Where this component fits in page layout (primary action vs secondary, etc.)" },
+    "densityBehavior": { "type": ["string", "null"], "description": "Appearance differences between compact vs comfortable density" },
+
+    "owner": {
+      "type": "object",
+      "properties": {
+        "designer":  { "type": "string" },
+        "developer": { "type": "string" }
+      }
+    },
+
+    "draft": { "type": "boolean", "default": false, "description": "When true, hide from sidebar/routing on production. Show with ?draft=1." },
+
+    "figmaNodeId": { "type": ["string", "null"], "description": "Deep-link to specific variant node in Figma. If null, falls back to component page link." },
+    "storybookSlug": { "type": ["string", "null"], "description": "Storybook story path, e.g. 'components-button--primary'. If null, falls back to the Storybook home." }
+  }
+}

@@ -131,6 +131,7 @@
     if (panel) panel.classList.add('active');
 
     if (tabId === 'playground') initPlayground(pageId);
+    if (tabId === 'guidelines' || tabId === 'usage') initGuidelines(pageId);
   }
 
   document.querySelectorAll('.sg-page-tabs').forEach(function (tablist) {
@@ -294,6 +295,458 @@
 
     return wrap;
   }
+
+  /* ========================================================================
+     4b. GUIDELINES RENDERER (JSON-driven)
+     Renders the Guidelines tab from content/<component>.json.
+     Empty/null fields are hidden. Computes spec completeness score.
+     ======================================================================== */
+  const contentCache = {};           // componentId -> JSON data (once loaded)
+  const guidelinesInited = {};       // componentId -> true
+  const completenessScores = {};     // componentId -> { filled, total, pct }
+
+  // Which schema fields count toward completeness. Motion/responsive are
+  // excluded (deferred until UDS has the foundation tokens).
+  const COMPLETENESS_FIELDS = [
+    'description', 'whenToUse', 'whenNotToUse',
+    'acceptanceCriteria', 'dependencies.css',
+    'props', 'events', 'slots', 'states',
+    'contentGuidelines', 'commonlyPairedWith', 'dosDonts',
+    'accessibility.keyboard', 'accessibility.screenReader',
+    'accessibility.wcag', 'accessibility.contrast',
+    'knownIssues',
+    'visualHierarchy', 'densityBehavior',
+    'owner', 'figmaNodeId', 'storybookSlug'
+  ];
+
+  function getField(obj, path) {
+    return path.split('.').reduce(function (o, k) { return o == null ? undefined : o[k]; }, obj);
+  }
+
+  function isFilled(v) {
+    if (v == null) return false;
+    if (typeof v === 'string') return v.trim().length > 0;
+    if (Array.isArray(v)) return v.length > 0;
+    if (typeof v === 'object') {
+      if ('dos' in v || 'donts' in v) return (v.dos && v.dos.length > 0) || (v.donts && v.donts.length > 0);
+      if ('designer' in v || 'developer' in v) {
+        return (v.designer && v.designer !== 'Unassigned') || (v.developer && v.developer !== 'Unassigned');
+      }
+      return Object.keys(v).length > 0;
+    }
+    return !!v;
+  }
+
+  function computeCompleteness(data) {
+    var filled = 0;
+    COMPLETENESS_FIELDS.forEach(function (path) {
+      if (isFilled(getField(data, path))) filled++;
+    });
+    var total = COMPLETENESS_FIELDS.length;
+    return { filled: filled, total: total, pct: Math.round((filled / total) * 100) };
+  }
+
+  function loadContent(componentId) {
+    if (contentCache[componentId]) return Promise.resolve(contentCache[componentId]);
+    return fetch('./content/' + componentId + '.json').then(function (r) {
+      if (!r.ok) throw new Error('Content not found: ' + componentId);
+      return r.json();
+    }).then(function (data) {
+      contentCache[componentId] = data;
+      completenessScores[componentId] = computeCompleteness(data);
+      return data;
+    }).catch(function () { return null; });
+  }
+
+  function initGuidelines(pageId) {
+    if (guidelinesInited[pageId]) return;
+    var page = document.querySelector('[data-page="' + pageId + '"]');
+    if (!page) return;
+    var panel = page.querySelector('[data-tab-panel="guidelines"], [data-tab-panel="usage"]');
+    if (!panel) return;
+
+    loadContent(pageId).then(function (data) {
+      if (!data) return;
+      panel.innerHTML = '';
+      renderGuidelines(panel, data);
+      guidelinesInited[pageId] = true;
+      updateCompletenessIndicator(pageId);
+    });
+  }
+
+  function renderGuidelines(panel, d) {
+    // 1. Overview: description, whenToUse, whenNotToUse
+    var overview = [];
+    if (d.description) overview.push(sectionProse('Description', d.description));
+    if (d.whenToUse) overview.push(sectionProse('When to use', d.whenToUse));
+    if (d.whenNotToUse) overview.push(sectionProse('When not to use', d.whenNotToUse));
+    if (overview.length) panel.appendChild(groupSection('Overview', overview));
+
+    // 2. Specification: acceptance criteria, dependencies, props, events, slots
+    var spec = [];
+    if (isFilled(d.acceptanceCriteria)) spec.push(sectionList('Acceptance Criteria', d.acceptanceCriteria, true));
+    if (d.dependencies && (isFilled(d.dependencies.css) || isFilled(d.dependencies.js))) {
+      spec.push(sectionDependencies(d.dependencies));
+    }
+    if (isFilled(d.props)) spec.push(sectionPropsTable(d.props));
+    if (isFilled(d.events)) spec.push(sectionEventsTable(d.events));
+    if (isFilled(d.slots)) spec.push(sectionSlotsTable(d.slots));
+    if (spec.length) panel.appendChild(groupSection('Specification', spec));
+
+    // 3. Behavior: states, content guidelines, density, hierarchy
+    var behavior = [];
+    if (isFilled(d.states)) behavior.push(sectionStatesTable(d.states));
+    if (d.contentGuidelines) behavior.push(sectionProse('Content Guidelines', d.contentGuidelines));
+    if (d.visualHierarchy) behavior.push(sectionProse('Visual Hierarchy', d.visualHierarchy));
+    if (d.densityBehavior) behavior.push(sectionProse('Density Behavior', d.densityBehavior));
+    if (behavior.length) panel.appendChild(groupSection('Behavior', behavior));
+
+    // 4. Patterns
+    var patterns = [];
+    if (d.dosDonts && (isFilled(d.dosDonts.dos) || isFilled(d.dosDonts.donts))) {
+      patterns.push(sectionDosDonts(d.dosDonts));
+    }
+    if (isFilled(d.commonlyPairedWith)) patterns.push(sectionPairedWith(d.commonlyPairedWith));
+    if (patterns.length) panel.appendChild(groupSection('Patterns', patterns));
+
+    // 5. Accessibility
+    var a11y = d.accessibility || {};
+    var a11yParts = [];
+    if (isFilled(a11y.keyboard)) a11yParts.push(sectionKeyboardTable(a11y.keyboard));
+    if (isFilled(a11y.screenReader)) a11yParts.push(sectionScreenReaderTable(a11y.screenReader));
+    if (isFilled(a11y.wcag)) a11yParts.push(sectionWcagTable(a11y.wcag));
+    if (isFilled(a11y.contrast)) a11yParts.push(sectionContrastTable(a11y.contrast));
+    if (d._legacyAccessibilityNotes) a11yParts.push(sectionProse('Additional Notes', d._legacyAccessibilityNotes));
+    if (a11yParts.length) panel.appendChild(groupSection('Accessibility', a11yParts));
+
+    // 6. Known Issues
+    if (isFilled(d.knownIssues)) {
+      panel.appendChild(groupSection('Known Issues', [sectionList('', d.knownIssues, false)]));
+    }
+
+    // 7. Ownership
+    if (d.owner && ((d.owner.designer && d.owner.designer !== 'Unassigned') || (d.owner.developer && d.owner.developer !== 'Unassigned'))) {
+      panel.appendChild(groupSection('Ownership', [sectionOwnership(d.owner)]));
+    }
+
+    // If nothing to render, show a friendly empty state
+    if (!panel.children.length) {
+      var empty = document.createElement('div');
+      empty.className = 'sg-guidelines-empty';
+      empty.innerHTML = '<p>No guidelines captured yet. This spec is in progress.</p>';
+      panel.appendChild(empty);
+    }
+  }
+
+  // ----- Section builders -----
+  function groupSection(title, children) {
+    var el = document.createElement('section');
+    el.className = 'sg-gl-group';
+    var h = document.createElement('h3');
+    h.className = 'sg-gl-group-title';
+    h.textContent = title;
+    el.appendChild(h);
+    children.forEach(function (c) { el.appendChild(c); });
+    return el;
+  }
+
+  function subhead(title) {
+    if (!title) return null;
+    var h = document.createElement('h4');
+    h.className = 'sg-gl-subhead';
+    h.textContent = title;
+    return h;
+  }
+
+  function sectionProse(title, text) {
+    var wrap = document.createElement('div');
+    wrap.className = 'sg-gl-section';
+    var sh = subhead(title); if (sh) wrap.appendChild(sh);
+    var p = document.createElement('p');
+    p.className = 'sg-gl-prose';
+    p.innerHTML = text;
+    wrap.appendChild(p);
+    return wrap;
+  }
+
+  function sectionList(title, items, checklist) {
+    var wrap = document.createElement('div');
+    wrap.className = 'sg-gl-section';
+    var sh = subhead(title); if (sh) wrap.appendChild(sh);
+    var ul = document.createElement('ul');
+    ul.className = checklist ? 'sg-gl-checklist' : 'sg-gl-list';
+    items.forEach(function (item) {
+      var li = document.createElement('li');
+      if (checklist) {
+        li.innerHTML = '<span class="sg-gl-check" aria-hidden="true"></span><span>' + item + '</span>';
+      } else {
+        li.textContent = item;
+      }
+      ul.appendChild(li);
+    });
+    wrap.appendChild(ul);
+    return wrap;
+  }
+
+  function sectionDependencies(deps) {
+    var wrap = document.createElement('div');
+    wrap.className = 'sg-gl-section';
+    wrap.appendChild(subhead('Dependencies'));
+    var list = [];
+    (deps.css || []).forEach(function (f) { list.push({ kind: 'CSS', path: f }); });
+    (deps.js || []).forEach(function (f) { list.push({ kind: 'JS', path: f }); });
+    var ul = document.createElement('ul');
+    ul.className = 'sg-gl-list';
+    list.forEach(function (it) {
+      var li = document.createElement('li');
+      li.innerHTML = '<code>' + it.path + '</code> <span class="sg-gl-kind">' + it.kind + '</span>';
+      ul.appendChild(li);
+    });
+    wrap.appendChild(ul);
+    return wrap;
+  }
+
+  function sectionPropsTable(props) {
+    var wrap = document.createElement('div');
+    wrap.className = 'sg-gl-section';
+    wrap.appendChild(subhead('Props / Attributes'));
+    var tbl = document.createElement('table');
+    tbl.className = 'sg-gl-table';
+    tbl.innerHTML = '<thead><tr><th>Name</th><th>Type</th><th>Default</th><th>Required</th><th>Description</th></tr></thead>';
+    var body = document.createElement('tbody');
+    props.forEach(function (p) {
+      var tr = document.createElement('tr');
+      var typeStr = p.type || '';
+      if (p.enum && p.enum.length) typeStr += ' (' + p.enum.map(function(e){return "'"+e+"'";}).join(' | ') + ')';
+      var def = (p.default === null || p.default === undefined) ? '' : String(p.default);
+      tr.innerHTML = '<td><code>' + p.name + '</code></td><td>' + esc(typeStr) + '</td><td>' + (def ? '<code>' + esc(def) + '</code>' : '') + '</td><td>' + (p.required ? '<strong>yes</strong>' : 'no') + '</td><td>' + esc(p.description || '') + '</td>';
+      body.appendChild(tr);
+    });
+    tbl.appendChild(body);
+    wrap.appendChild(tbl);
+    return wrap;
+  }
+
+  function sectionEventsTable(events) {
+    var wrap = document.createElement('div');
+    wrap.className = 'sg-gl-section';
+    wrap.appendChild(subhead('Events Emitted'));
+    var tbl = document.createElement('table');
+    tbl.className = 'sg-gl-table';
+    tbl.innerHTML = '<thead><tr><th>Event</th><th>Payload</th><th>Description</th></tr></thead>';
+    var body = document.createElement('tbody');
+    events.forEach(function (e) {
+      var tr = document.createElement('tr');
+      tr.innerHTML = '<td><code>' + e.name + '</code></td><td>' + esc(e.payload || '') + '</td><td>' + esc(e.description || '') + '</td>';
+      body.appendChild(tr);
+    });
+    tbl.appendChild(body);
+    wrap.appendChild(tbl);
+    return wrap;
+  }
+
+  function sectionSlotsTable(slots) {
+    var wrap = document.createElement('div');
+    wrap.className = 'sg-gl-section';
+    wrap.appendChild(subhead('Slots / Content Model'));
+    var tbl = document.createElement('table');
+    tbl.className = 'sg-gl-table';
+    tbl.innerHTML = '<thead><tr><th>Slot</th><th>Description</th></tr></thead>';
+    var body = document.createElement('tbody');
+    slots.forEach(function (s) {
+      var tr = document.createElement('tr');
+      tr.innerHTML = '<td><code>' + s.name + '</code></td><td>' + esc(s.description || '') + '</td>';
+      body.appendChild(tr);
+    });
+    tbl.appendChild(body);
+    wrap.appendChild(tbl);
+    return wrap;
+  }
+
+  function sectionStatesTable(states) {
+    var wrap = document.createElement('div');
+    wrap.className = 'sg-gl-section';
+    wrap.appendChild(subhead('States Coverage'));
+    var tbl = document.createElement('table');
+    tbl.className = 'sg-gl-table';
+    tbl.innerHTML = '<thead><tr><th>State</th><th>Has Visual</th><th>Description</th></tr></thead>';
+    var body = document.createElement('tbody');
+    states.forEach(function (s) {
+      var tr = document.createElement('tr');
+      tr.innerHTML = '<td><code>' + s.name + '</code></td><td>' + (s.hasVisual ? 'yes' : 'no') + '</td><td>' + esc(s.description || '') + '</td>';
+      body.appendChild(tr);
+    });
+    tbl.appendChild(body);
+    wrap.appendChild(tbl);
+    return wrap;
+  }
+
+  function sectionDosDonts(dd) {
+    var wrap = document.createElement('div');
+    wrap.className = 'sg-gl-section sg-gl-dodont';
+    var cols = document.createElement('div');
+    cols.className = 'sg-gl-dodont-cols';
+    var dos = document.createElement('div');
+    dos.className = 'sg-gl-dodont-col sg-gl-do';
+    dos.innerHTML = '<h4 class="sg-gl-subhead">Do</h4>';
+    var dul = document.createElement('ul'); dul.className = 'sg-gl-list';
+    (dd.dos || []).forEach(function (t) { var li = document.createElement('li'); li.textContent = t; dul.appendChild(li); });
+    dos.appendChild(dul);
+
+    var donts = document.createElement('div');
+    donts.className = 'sg-gl-dodont-col sg-gl-dont';
+    donts.innerHTML = '<h4 class="sg-gl-subhead">Don\'t</h4>';
+    var xul = document.createElement('ul'); xul.className = 'sg-gl-list';
+    (dd.donts || []).forEach(function (t) { var li = document.createElement('li'); li.textContent = t; xul.appendChild(li); });
+    donts.appendChild(xul);
+
+    cols.appendChild(dos); cols.appendChild(donts);
+    wrap.appendChild(cols);
+    return wrap;
+  }
+
+  function sectionPairedWith(ids) {
+    var wrap = document.createElement('div');
+    wrap.className = 'sg-gl-section';
+    wrap.appendChild(subhead('Commonly Paired With'));
+    var p = document.createElement('p');
+    p.className = 'sg-gl-paired';
+    ids.forEach(function (id, i) {
+      if (i > 0) p.appendChild(document.createTextNode(', '));
+      var a = document.createElement('a');
+      a.href = '#/' + id;
+      a.textContent = id;
+      a.className = 'sg-gl-link';
+      p.appendChild(a);
+    });
+    wrap.appendChild(p);
+    return wrap;
+  }
+
+  function sectionKeyboardTable(rows) {
+    var wrap = document.createElement('div');
+    wrap.className = 'sg-gl-section';
+    wrap.appendChild(subhead('Keyboard'));
+    var tbl = document.createElement('table');
+    tbl.className = 'sg-gl-table';
+    tbl.innerHTML = '<thead><tr><th>Key</th><th>Action</th></tr></thead>';
+    var body = document.createElement('tbody');
+    rows.forEach(function (r) {
+      var tr = document.createElement('tr');
+      tr.innerHTML = '<td><kbd>' + esc(r.key) + '</kbd></td><td>' + esc(r.action) + '</td>';
+      body.appendChild(tr);
+    });
+    tbl.appendChild(body);
+    wrap.appendChild(tbl);
+    return wrap;
+  }
+
+  function sectionScreenReaderTable(rows) {
+    var wrap = document.createElement('div');
+    wrap.className = 'sg-gl-section';
+    wrap.appendChild(subhead('Screen Reader'));
+    var tbl = document.createElement('table');
+    tbl.className = 'sg-gl-table';
+    tbl.innerHTML = '<thead><tr><th>Trigger</th><th>Announcement</th></tr></thead>';
+    var body = document.createElement('tbody');
+    rows.forEach(function (r) {
+      var tr = document.createElement('tr');
+      tr.innerHTML = '<td>' + esc(r.trigger) + '</td><td>' + esc(r.announcement) + '</td>';
+      body.appendChild(tr);
+    });
+    tbl.appendChild(body);
+    wrap.appendChild(tbl);
+    return wrap;
+  }
+
+  function sectionWcagTable(rows) {
+    var wrap = document.createElement('div');
+    wrap.className = 'sg-gl-section';
+    wrap.appendChild(subhead('WCAG 2.2 Criteria'));
+    var tbl = document.createElement('table');
+    tbl.className = 'sg-gl-table';
+    tbl.innerHTML = '<thead><tr><th>Criterion</th><th>Level</th><th>How met</th></tr></thead>';
+    var body = document.createElement('tbody');
+    rows.forEach(function (r) {
+      var tr = document.createElement('tr');
+      tr.innerHTML = '<td><code>' + esc(r.criterion) + '</code></td><td>' + esc(r.level) + '</td><td>' + esc(r.howMet || '') + '</td>';
+      body.appendChild(tr);
+    });
+    tbl.appendChild(body);
+    wrap.appendChild(tbl);
+    return wrap;
+  }
+
+  function sectionContrastTable(rows) {
+    var wrap = document.createElement('div');
+    wrap.className = 'sg-gl-section';
+    wrap.appendChild(subhead('Color Contrast'));
+    var tbl = document.createElement('table');
+    tbl.className = 'sg-gl-table';
+    tbl.innerHTML = '<thead><tr><th>Foreground</th><th>Background</th><th>Ratio</th><th>Passes</th></tr></thead>';
+    var body = document.createElement('tbody');
+    rows.forEach(function (r) {
+      var tr = document.createElement('tr');
+      tr.innerHTML = '<td><code>' + esc(r.foreground) + '</code></td><td><code>' + esc(r.background) + '</code></td><td>' + (r.ratio || '') + '</td><td>' + esc(r.passes || '') + '</td>';
+      body.appendChild(tr);
+    });
+    tbl.appendChild(body);
+    wrap.appendChild(tbl);
+    return wrap;
+  }
+
+  function sectionOwnership(owner) {
+    var wrap = document.createElement('div');
+    wrap.className = 'sg-gl-section sg-gl-owner';
+    wrap.innerHTML = '<p><strong>Designer:</strong> ' + esc(owner.designer || 'Unassigned') + '</p><p><strong>Developer:</strong> ' + esc(owner.developer || 'Unassigned') + '</p>';
+    return wrap;
+  }
+
+  function updateCompletenessIndicator(pageId) {
+    var score = completenessScores[pageId];
+    if (!score) return;
+    var level = score.pct >= 80 ? 'high' : (score.pct >= 50 ? 'med' : 'low');
+
+    // Update / create pill next to component page title
+    var title = document.querySelector('[data-page="' + pageId + '"] .sg-page-title');
+    if (title) {
+      var pill = title.parentNode.querySelector('.sg-spec-completeness');
+      if (!pill) {
+        pill = document.createElement('span');
+        pill.className = 'sg-spec-completeness';
+        title.appendChild(pill);
+      }
+      pill.textContent = 'Spec ' + score.filled + '/' + score.total;
+      pill.setAttribute('data-level', level);
+      pill.setAttribute('title', score.pct + '% complete');
+    }
+
+    // Update / create sidebar dot
+    var link = document.querySelector('.sg-sidebar-link[href="#/' + pageId + '"]');
+    if (link) {
+      var dot = link.querySelector('.sg-sidebar-dot');
+      if (!dot) {
+        dot = document.createElement('span');
+        dot.className = 'sg-sidebar-dot';
+        link.appendChild(dot);
+      }
+      dot.setAttribute('data-level', level);
+      dot.setAttribute('title', score.pct + '% spec complete');
+    }
+  }
+
+  // Preload content and completeness for all component JSONs so sidebar dots
+  // and header pills can render immediately without waiting for tab open.
+  (function preloadAllContent() {
+    var links = document.querySelectorAll('.sg-sidebar-link[href^="#/"]');
+    links.forEach(function (l) {
+      var id = (l.getAttribute('href') || '').replace('#/', '');
+      if (!id) return;
+      loadContent(id).then(function (data) {
+        if (data) updateCompletenessIndicator(id);
+      });
+    });
+  })();
 
   /* ========================================================================
      5. PLAYGROUND ENGINE
@@ -3074,6 +3527,17 @@
         { type: 'removed', text: 'Framework selector bar removed from component pages (CODE_TAB_CONFIGS, buildFrameworkBar, currentFramework, setFramework, getReactBehavior, getVueBehavior)' },
         { type: 'removed', text: 'Demo Builder simplified to vanilla HTML only. Vite ZIP scaffolds for React/Vue removed.' },
         { type: 'removed', text: 'versions/0.1/ snapshot directory deleted — fresh start for next release' }
+      ]
+    },
+    {
+      version: 'SITE 2026.04.21.2',
+      date: '2026-04-21',
+      changes: [
+        { type: 'changed', text: 'Site reshape Phase 2: per-component spec content moved from hand-coded HTML to JSON files (content/*.json) with schema and client-side renderer.' },
+        { type: 'added', text: 'content/schema.json — JSON schema for per-component spec data (description, props, events, slots, states, accessibility, owner, etc.)' },
+        { type: 'added', text: 'content/<component>.json — 21 initial JSON files populated from existing Usage content and IMPL_DATA' },
+        { type: 'added', text: 'Guidelines tab (renamed from Usage) rendered by renderGuidelines() from JSON. Empty sections are hidden automatically.' },
+        { type: 'added', text: 'Spec completeness indicator: "Spec X/Y" pill next to each component title + colored dot in sidebar (green ≥80%, yellow 50–80%, red <50%)' }
       ]
     }
   ];

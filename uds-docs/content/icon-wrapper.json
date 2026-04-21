@@ -1,0 +1,44 @@
+{
+  "component": "icon-wrapper",
+  "title": "Icon Wrapper",
+  "description": "A container for icons that standardizes sizing (16/20/24/32/48px) and applies the current text color.",
+  "whenToUse": "When placing standalone Material Symbols icons that need sizing standardization. To apply a specific icon color via CSS variables.",
+  "whenNotToUse": "For icons inside components that already handle sizing (e.g. buttons). Do not use for decorative shapes.",
+  "acceptanceCriteria": [],
+  "dependencies": {
+    "css": [
+      "uds/components/icon-wrapper.css"
+    ],
+    "js": []
+  },
+  "props": [],
+  "events": [],
+  "slots": [],
+  "states": [],
+  "contentGuidelines": null,
+  "commonlyPairedWith": [],
+  "dosDonts": {
+    "dos": [],
+    "donts": []
+  },
+  "accessibility": {
+    "keyboard": [],
+    "screenReader": [],
+    "wcag": [],
+    "contrast": []
+  },
+  "knownIssues": [],
+  "performance": null,
+  "motion": null,
+  "responsive": null,
+  "visualHierarchy": null,
+  "densityBehavior": null,
+  "owner": {
+    "designer": "Unassigned",
+    "developer": "Unassigned"
+  },
+  "draft": false,
+  "figmaNodeId": null,
+  "storybookSlug": null,
+  "_legacyAccessibilityNotes": "If the icon conveys meaning, wrap or label it accessibly (aria-label). Decorative icons should have aria-hidden=\"true\"."
+}

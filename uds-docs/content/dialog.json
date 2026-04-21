@@ -1,0 +1,59 @@
+{
+  "component": "dialog",
+  "title": "Dialog",
+  "description": "A modal dialog overlays the page to focus the user on a single task or decision.",
+  "whenToUse": "For confirmations of destructive actions. For short forms that need focus. For critical information requiring acknowledgement.",
+  "whenNotToUse": "For non-blocking notifications (use Notification). For multi-step flows (use a dedicated page or wizard).",
+  "acceptanceCriteria": [],
+  "dependencies": {
+    "css": [
+      "uds/components/dialog.css"
+    ],
+    "js": [
+      "uds/components/dialog.js"
+    ]
+  },
+  "props": [],
+  "events": [],
+  "slots": [],
+  "states": [],
+  "contentGuidelines": null,
+  "commonlyPairedWith": [],
+  "dosDonts": {
+    "dos": [],
+    "donts": []
+  },
+  "accessibility": {
+    "keyboard": [
+      {
+        "key": "Tab / Shift+Tab",
+        "action": "Cycle focus within the dialog (focus trap)"
+      },
+      {
+        "key": "Escape",
+        "action": "Close the dialog"
+      },
+      {
+        "key": "Enter",
+        "action": "Activate primary action (when appropriate)"
+      }
+    ],
+    "screenReader": [],
+    "wcag": [],
+    "contrast": []
+  },
+  "knownIssues": [],
+  "performance": null,
+  "motion": null,
+  "responsive": null,
+  "visualHierarchy": null,
+  "densityBehavior": null,
+  "owner": {
+    "designer": "Unassigned",
+    "developer": "Unassigned"
+  },
+  "draft": false,
+  "figmaNodeId": null,
+  "storybookSlug": null,
+  "_legacyAccessibilityNotes": "Use role=\"dialog\" with aria-modal=\"true\" and an accessible name via aria-labelledby. Focus should move into the dialog on open and restore on close."
+}

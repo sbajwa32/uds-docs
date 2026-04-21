@@ -1,0 +1,57 @@
+{
+  "component": "radio",
+  "title": "Radio",
+  "description": "A radio button lets users select exactly one option from a set.",
+  "whenToUse": "Mutually exclusive selection from 2–5 options. When the user must see all options at once.",
+  "whenNotToUse": "For more than 5 options, use a dropdown select instead. For multiple selections, use checkboxes.",
+  "acceptanceCriteria": [],
+  "dependencies": {
+    "css": [
+      "uds/components/radio.css"
+    ],
+    "js": []
+  },
+  "props": [],
+  "events": [],
+  "slots": [],
+  "states": [],
+  "contentGuidelines": null,
+  "commonlyPairedWith": [],
+  "dosDonts": {
+    "dos": [],
+    "donts": []
+  },
+  "accessibility": {
+    "keyboard": [
+      {
+        "key": "Tab",
+        "action": "Move focus into/out of the group"
+      },
+      {
+        "key": "Arrow keys",
+        "action": "Move between radios in the group"
+      },
+      {
+        "key": "Space",
+        "action": "Select the focused radio"
+      }
+    ],
+    "screenReader": [],
+    "wcag": [],
+    "contrast": []
+  },
+  "knownIssues": [],
+  "performance": null,
+  "motion": null,
+  "responsive": null,
+  "visualHierarchy": null,
+  "densityBehavior": null,
+  "owner": {
+    "designer": "Unassigned",
+    "developer": "Unassigned"
+  },
+  "draft": false,
+  "figmaNodeId": null,
+  "storybookSlug": null,
+  "_legacyAccessibilityNotes": "Use role=\"radiogroup\" on the container with an accessible label (via aria-labelledby or the legend element)."
+}
