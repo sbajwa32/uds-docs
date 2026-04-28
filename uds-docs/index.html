@@ -352,6 +352,161 @@
     .sg-sidebar-heading:first-of-type { margin-top: var(--uds-space-200); }
 
     /* =====================================================================
+       Realistic data examples (data-consuming components)
+       ===================================================================== */
+    .sg-realistic-data {
+      margin-top: var(--uds-space-500);
+      padding-top: var(--uds-space-400);
+      border-top: 1px solid var(--uds-color-border-secondary);
+    }
+    .sg-realistic-heading {
+      font-family: var(--uds-font-family);
+      font-size: var(--uds-font-size-xl);
+      font-weight: var(--uds-font-weight-bold);
+      color: var(--uds-color-text-primary);
+      letter-spacing: -0.01em;
+      margin: 0 0 var(--uds-space-100);
+    }
+    .sg-realistic-lead {
+      font-family: var(--uds-font-family);
+      font-size: var(--uds-font-size-base);
+      color: var(--uds-color-text-secondary);
+      line-height: 1.5;
+      margin: 0 0 var(--uds-space-300);
+    }
+
+    /* =====================================================================
+       Token search (modal)
+       ===================================================================== */
+    .sg-token-search {
+      position: fixed; inset: 0; z-index: 200;
+      background: var(--uds-overlay-backdrop);
+      display: none; align-items: flex-start; justify-content: center;
+      padding: 80px 24px 24px;
+    }
+    .sg-token-search[data-open="true"] { display: flex; }
+    .sg-token-search__panel {
+      width: 100%; max-width: 640px;
+      background: var(--uds-color-surface-main);
+      border: 1px solid var(--uds-color-border-secondary);
+      border-radius: var(--uds-border-radius-container-md);
+      box-shadow: var(--uds-shadow-depth-500, 0 24px 60px rgba(0,0,0,0.18));
+      overflow: hidden;
+      display: flex; flex-direction: column;
+      max-height: calc(100vh - 120px);
+    }
+    .sg-token-search__field {
+      display: flex; align-items: center; gap: var(--uds-space-100);
+      padding: var(--uds-space-200);
+      border-bottom: 1px solid var(--uds-color-border-secondary);
+    }
+    .sg-token-search__icon {
+      color: var(--uds-color-icon-secondary); font-size: 20px;
+    }
+    .sg-token-search__input {
+      flex: 1; border: none; outline: none; background: transparent;
+      font-family: var(--uds-font-family); font-size: var(--uds-font-size-md);
+      color: var(--uds-color-text-primary);
+    }
+    .sg-token-search__input::placeholder { color: var(--uds-color-text-tertiary); }
+    .sg-token-search__hint, .sg-token-search__footer kbd {
+      display: inline-flex; align-items: center; justify-content: center;
+      min-width: 22px; padding: 1px 6px;
+      font-family: monospace; font-size: var(--uds-font-size-xs);
+      background: var(--uds-color-surface-alt);
+      border: 1px solid var(--uds-color-border-default);
+      border-radius: var(--uds-border-radius-container-sm);
+      color: var(--uds-color-text-secondary);
+    }
+    .sg-token-search__results {
+      flex: 1; overflow-y: auto; padding: var(--uds-space-100) 0;
+    }
+    .sg-token-search__empty {
+      padding: var(--uds-space-300) var(--uds-space-200);
+      text-align: center;
+      font-family: var(--uds-font-family); font-size: var(--uds-font-size-sm);
+      color: var(--uds-color-text-tertiary);
+    }
+    .sg-token-search__group-title {
+      padding: var(--uds-space-100) var(--uds-space-200) var(--uds-space-050);
+      font-family: var(--uds-font-family); font-size: var(--uds-font-size-xs);
+      font-weight: var(--uds-font-weight-bold);
+      color: var(--uds-color-text-tertiary);
+      text-transform: uppercase; letter-spacing: 0.06em;
+    }
+    .sg-token-search__row {
+      display: flex; align-items: center; gap: var(--uds-space-150);
+      padding: var(--uds-space-100) var(--uds-space-200);
+      cursor: pointer; user-select: none;
+      font-family: var(--uds-font-family);
+      transition: background 80ms ease;
+    }
+    .sg-token-search__row:hover,
+    .sg-token-search__row[data-active="true"] {
+      background: var(--uds-color-surface-interactive-subtle-hover);
+    }
+    .sg-token-search__swatch {
+      flex-shrink: 0; width: 18px; height: 18px;
+      border-radius: var(--uds-border-radius-container-sm);
+      border: 1px solid var(--uds-color-border-default);
+      background-clip: padding-box;
+    }
+    .sg-token-search__name {
+      flex: 1; min-width: 0;
+      font-family: monospace;
+      font-size: var(--uds-font-size-sm);
+      color: var(--uds-color-text-primary);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .sg-token-search__name mark {
+      background: var(--uds-color-surface-warning-subtle);
+      color: inherit; padding: 0 2px; border-radius: 2px;
+    }
+    .sg-token-search__value {
+      flex-shrink: 0;
+      font-family: monospace;
+      font-size: var(--uds-font-size-xs);
+      color: var(--uds-color-text-secondary);
+      max-width: 180px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .sg-token-search__category {
+      flex-shrink: 0;
+      font-size: var(--uds-font-size-xs);
+      font-weight: var(--uds-font-weight-bold);
+      color: var(--uds-color-text-tertiary);
+      text-transform: uppercase; letter-spacing: 0.04em;
+    }
+    .sg-token-search__footer {
+      display: flex; gap: var(--uds-space-200);
+      padding: var(--uds-space-100) var(--uds-space-200);
+      border-top: 1px solid var(--uds-color-border-secondary);
+      background: var(--uds-color-surface-subtle);
+      font-family: var(--uds-font-family); font-size: var(--uds-font-size-xs);
+      color: var(--uds-color-text-secondary);
+    }
+    .sg-token-search__footer kbd { margin-right: 4px; }
+
+    /* =====================================================================
+       Draft mode (?draft=1) — show drafts with watermark
+       ===================================================================== */
+    [data-draft-mode="true"] [data-draft="true"] {
+      position: relative;
+    }
+    [data-draft-mode="true"] [data-draft="true"]::before {
+      content: 'DRAFT';
+      position: absolute; top: 8px; right: 8px; z-index: 50;
+      padding: 2px 10px;
+      background: var(--uds-color-surface-warning-subtle);
+      color: var(--uds-color-text-warning);
+      border: 1px solid var(--uds-color-border-warning);
+      border-radius: var(--uds-border-radius-container-full);
+      font-family: var(--uds-font-family); font-size: var(--uds-font-size-xs);
+      font-weight: var(--uds-font-weight-bold);
+      letter-spacing: 0.06em;
+    }
+
+    /* =====================================================================
        Example-only banner (top of every code-bearing tab panel)
        ===================================================================== */
     .sg-example-only-banner {
@@ -818,7 +973,7 @@
   </style>
   <script>
     (function () {
-      var SITE_VERSION = '2026.04.28.2';
+      var SITE_VERSION = '2026.04.28.3';
       var base = window.location.pathname.replace(/\/index\.html$/, '').replace(/\/$/, '');
       fetch(base + '/version.txt?_=' + Date.now()).then(function (r) {
         if (!r.ok) return;
@@ -856,7 +1011,7 @@
       <span class="udc-tooltip" role="tooltip" data-position="bottom">Build Demo</span>
     </span>
     <select class="sg-version-select" id="sg-version-dropdown" aria-label="UDS version"></select>
-    <span class="sg-brand-bar-build">SITE 2026.04.28.2</span>
+    <span class="sg-brand-bar-build">SITE 2026.04.28.3</span>
   </div>
 
   <!-- Pre-flight checklist dialog -->
@@ -915,6 +1070,32 @@
       </div>
       <div class="udc-dialog__footer">
         <button class="udc-button-primary" onclick="this.closest('.udc-dialog-backdrop').setAttribute('data-open','false');">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Token search modal -->
+  <div class="sg-token-search" id="sg-token-search" data-open="false" role="dialog" aria-modal="true" aria-labelledby="sg-token-search-input">
+    <div class="sg-token-search__panel">
+      <div class="sg-token-search__field">
+        <span class="material-symbols-outlined sg-token-search__icon">search</span>
+        <input
+          type="search"
+          id="sg-token-search-input"
+          class="sg-token-search__input"
+          placeholder="Search tokens (try 'color-text', 'space-200', 'border-radius'...)"
+          autocomplete="off"
+          spellcheck="false"
+        />
+        <kbd class="sg-token-search__hint">Esc</kbd>
+      </div>
+      <div class="sg-token-search__results" id="sg-token-search-results">
+        <div class="sg-token-search__empty">Start typing to search across <span id="sg-token-search-count">all</span> UDS tokens.</div>
+      </div>
+      <div class="sg-token-search__footer">
+        <span><kbd>↑</kbd><kbd>↓</kbd> navigate</span>
+        <span><kbd>Enter</kbd> open</span>
+        <span><kbd>Esc</kbd> close</span>
       </div>
     </div>
   </div>
@@ -4104,7 +4285,7 @@ const query = ref('');
   <script src="https://cdn.jsdelivr.net/npm/jszip@3/dist/jszip.min.js"></script>
   <script src="./material-icons.js"></script>
   <script src="./uds/uds.js?v=29"></script>
-  <script src="./app.js?v=76"></script>
+  <script src="./app.js?v=78"></script>
   <script src="./demo-builder.js?v=9"></script>
 
 </body>

@@ -3574,6 +3574,16 @@
         { type: 'added', text: 'Migration Guides page — per-version upgrade notes, starting with 0.1 → 0.2' },
         { type: 'changed', text: 'Sidebar reorganized: existing groups + new Patterns and Reference groups at the bottom' }
       ]
+    },
+    {
+      version: 'SITE 2026.04.28.3',
+      date: '2026-04-28',
+      changes: [
+        { type: 'added', text: 'Site reshape Phase 5: token search, draft mode, and realistic data examples.' },
+        { type: 'added', text: 'Token search modal — open with / or Cmd/Ctrl+K. Indexes every --uds-* custom property, fuzzy-matches name+value, click a result to copy var(--name) to the clipboard.' },
+        { type: 'added', text: 'Draft mode — set "draft": true in content/<component>.json to hide a component from production. Append ?draft=1 to any URL to view drafts with a DRAFT watermark.' },
+        { type: 'added', text: 'Realistic data examples on data-consuming components (Data Table, List, Dropdown, Search, Breadcrumb): tiny / large / long-content / empty / loading-state previews showing how the component handles real-world content.' }
+      ]
     }
   ];
 
@@ -3961,6 +3971,465 @@
     });
   }
 
+  /* ========================================================================
+     4c. TOKEN SEARCH (modal: / or Cmd/Ctrl+K)
+     Walks document.styleSheets at load, builds a search index of all
+     --uds-* custom properties, and offers a fuzzy-match modal.
+     ======================================================================== */
+  var TOKEN_INDEX = [];
+
+  function buildTokenIndex() {
+    if (TOKEN_INDEX.length) return TOKEN_INDEX;
+    var seen = {};
+
+    function walkRules(rules) {
+      if (!rules) return;
+      Array.prototype.forEach.call(rules, function (rule) {
+        // CSSImportRule — recurse into the imported stylesheet
+        if (rule.type === 3 || (rule.styleSheet && rule.href)) {
+          try { walkRules(rule.styleSheet && rule.styleSheet.cssRules); } catch (e) { /* cross-origin */ }
+          return;
+        }
+        // CSSMediaRule / CSSSupportsRule / CSSLayerBlockRule — recurse
+        if (rule.cssRules && !rule.style) {
+          walkRules(rule.cssRules);
+          return;
+        }
+        if (!rule.style) return;
+        for (var i = 0; i < rule.style.length; i++) {
+          var name = rule.style[i];
+          if (name.indexOf('--uds-') !== 0) continue;
+          if (seen[name]) continue;
+          seen[name] = true;
+          var value = rule.style.getPropertyValue(name).trim();
+          TOKEN_INDEX.push({
+            name: name,
+            value: value,
+            category: tokenCategory(name)
+          });
+        }
+      });
+    }
+
+    Array.prototype.forEach.call(document.styleSheets, function (sheet) {
+      var rules;
+      try { rules = sheet.cssRules || sheet.rules; } catch (e) { return; }
+      walkRules(rules);
+    });
+
+    // Fallback: read computed style on :root for any tokens we missed
+    // (catches cases where a sheet's rules aren't introspectable but the
+    // var() cascaded to the document).
+    var computed = getComputedStyle(document.documentElement);
+    for (var i = 0; i < computed.length; i++) {
+      var name = computed[i];
+      if (name.indexOf('--uds-') !== 0 || seen[name]) continue;
+      seen[name] = true;
+      TOKEN_INDEX.push({
+        name: name,
+        value: computed.getPropertyValue(name).trim(),
+        category: tokenCategory(name)
+      });
+    }
+
+    // Resolve values for any tokens whose recorded value is itself a var()
+    // chain — helps the swatch render for color tokens.
+    TOKEN_INDEX.forEach(function (t) {
+      if (t.value && t.value.indexOf('var(') === 0) {
+        var resolved = computed.getPropertyValue(t.name).trim();
+        if (resolved) t.value = resolved;
+      }
+    });
+
+    // Sort: semantic before primitive, then alphabetical.
+    TOKEN_INDEX.sort(function (a, b) {
+      var aPrim = a.name.indexOf('--uds-primitive-') === 0 ? 1 : 0;
+      var bPrim = b.name.indexOf('--uds-primitive-') === 0 ? 1 : 0;
+      if (aPrim !== bPrim) return aPrim - bPrim;
+      return a.name.localeCompare(b.name);
+    });
+    return TOKEN_INDEX;
+  }
+
+  function tokenCategory(name) {
+    if (name.indexOf('--uds-color-') === 0) return 'color';
+    if (name.indexOf('--uds-space-') === 0) return 'space';
+    if (name.indexOf('--uds-font-') === 0) return 'font';
+    if (name.indexOf('--uds-border-') === 0) return 'border';
+    if (name.indexOf('--uds-shadow-') === 0 || name.indexOf('--uds-overlay-') === 0) return 'shadow';
+    if (name.indexOf('--uds-primitive-') === 0) return 'primitive';
+    return 'other';
+  }
+
+  function isColorValue(v) {
+    if (!v) return false;
+    return /^#|^rgb|^hsl|^oklch|^color\(/i.test(v.trim());
+  }
+
+  function escapeRegex(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+
+  function searchTokens(query) {
+    var idx = buildTokenIndex();
+    if (!query) return idx.slice(0, 50);
+    var q = query.toLowerCase().replace(/^--/, '');
+    return idx.filter(function (t) {
+      return t.name.toLowerCase().indexOf(q) !== -1 ||
+             t.value.toLowerCase().indexOf(q) !== -1;
+    }).slice(0, 100);
+  }
+
+  function highlightMatch(name, query) {
+    if (!query) return name;
+    var q = query.replace(/^--/, '');
+    if (!q) return name;
+    var re = new RegExp('(' + escapeRegex(q) + ')', 'gi');
+    return name.replace(re, '<mark>$1</mark>');
+  }
+
+  function renderTokenSearchResults(query) {
+    var resultsEl = document.getElementById('sg-token-search-results');
+    var countEl = document.getElementById('sg-token-search-count');
+    if (!resultsEl) return;
+    var results = searchTokens(query);
+    if (countEl) countEl.textContent = String(buildTokenIndex().length);
+
+    if (!results.length) {
+      resultsEl.innerHTML = '<div class="sg-token-search__empty">No tokens match "' + escapeHtml(query) + '"</div>';
+      return;
+    }
+
+    // Group by category for visual structure
+    var groups = {};
+    results.forEach(function (t) {
+      var g = t.category;
+      if (!groups[g]) groups[g] = [];
+      groups[g].push(t);
+    });
+    var order = ['color', 'font', 'space', 'border', 'shadow', 'primitive', 'other'];
+    var html = '';
+    var rowIndex = 0;
+    order.forEach(function (g) {
+      if (!groups[g] || !groups[g].length) return;
+      html += '<div class="sg-token-search__group-title">' + g + '</div>';
+      groups[g].forEach(function (t) {
+        var swatch = isColorValue(t.value)
+          ? '<span class="sg-token-search__swatch" style="background:' + t.value + '"></span>'
+          : '<span class="sg-token-search__swatch" style="background:transparent;border:none;"></span>';
+        html += '<div class="sg-token-search__row" data-token="' + escapeHtml(t.name) + '" data-row-index="' + rowIndex + '"' + (rowIndex === 0 ? ' data-active="true"' : '') + '>' +
+                  swatch +
+                  '<span class="sg-token-search__name">' + highlightMatch(t.name, query) + '</span>' +
+                  '<span class="sg-token-search__value">' + escapeHtml(t.value || '') + '</span>' +
+                  '<span class="sg-token-search__category">' + g + '</span>' +
+                '</div>';
+        rowIndex++;
+      });
+    });
+    resultsEl.innerHTML = html;
+
+    // Click to copy + close
+    resultsEl.querySelectorAll('.sg-token-search__row').forEach(function (row) {
+      row.addEventListener('click', function () {
+        var name = row.getAttribute('data-token');
+        if (name && navigator.clipboard) {
+          navigator.clipboard.writeText('var(' + name + ')').catch(function () {});
+        }
+        closeTokenSearch();
+      });
+    });
+  }
+
+  function escapeHtml(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  function openTokenSearch() {
+    var modal = document.getElementById('sg-token-search');
+    if (!modal) return;
+    modal.setAttribute('data-open', 'true');
+    var input = document.getElementById('sg-token-search-input');
+    if (input) {
+      input.value = '';
+      renderTokenSearchResults('');
+      requestAnimationFrame(function () { input.focus(); });
+    }
+  }
+
+  function closeTokenSearch() {
+    var modal = document.getElementById('sg-token-search');
+    if (modal) modal.setAttribute('data-open', 'false');
+  }
+
+  function moveTokenSearchActive(delta) {
+    var resultsEl = document.getElementById('sg-token-search-results');
+    if (!resultsEl) return;
+    var rows = resultsEl.querySelectorAll('.sg-token-search__row');
+    if (!rows.length) return;
+    var current = -1;
+    for (var i = 0; i < rows.length; i++) {
+      if (rows[i].getAttribute('data-active') === 'true') { current = i; break; }
+    }
+    var next = Math.max(0, Math.min(rows.length - 1, current + delta));
+    rows.forEach(function (r) { r.removeAttribute('data-active'); });
+    rows[next].setAttribute('data-active', 'true');
+    rows[next].scrollIntoView({ block: 'nearest' });
+  }
+
+  function activateTokenSearchRow() {
+    var resultsEl = document.getElementById('sg-token-search-results');
+    if (!resultsEl) return;
+    var active = resultsEl.querySelector('.sg-token-search__row[data-active="true"]');
+    if (active) active.click();
+  }
+
+  function initTokenSearch() {
+    if (!document.getElementById('sg-token-search')) return;
+
+    document.addEventListener('keydown', function (e) {
+      // Open on / (when not typing in another input) or Cmd/Ctrl+K
+      var isCmdK = (e.key === 'k' || e.key === 'K') && (e.metaKey || e.ctrlKey);
+      var isSlash = e.key === '/' && !e.metaKey && !e.ctrlKey && !e.altKey;
+      var target = e.target;
+      var typing = target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable);
+
+      var modal = document.getElementById('sg-token-search');
+      var isOpen = modal && modal.getAttribute('data-open') === 'true';
+
+      if (!isOpen && isCmdK) { e.preventDefault(); openTokenSearch(); return; }
+      if (!isOpen && isSlash && !typing) { e.preventDefault(); openTokenSearch(); return; }
+      if (isOpen) {
+        if (e.key === 'Escape') { e.preventDefault(); closeTokenSearch(); return; }
+        if (e.key === 'ArrowDown') { e.preventDefault(); moveTokenSearchActive(1); return; }
+        if (e.key === 'ArrowUp')   { e.preventDefault(); moveTokenSearchActive(-1); return; }
+        if (e.key === 'Enter')     { e.preventDefault(); activateTokenSearchRow(); return; }
+      }
+    });
+
+    // Wire input
+    var input = document.getElementById('sg-token-search-input');
+    if (input) {
+      input.addEventListener('input', function () { renderTokenSearchResults(input.value); });
+    }
+
+    // Click outside panel closes
+    var modal = document.getElementById('sg-token-search');
+    if (modal) {
+      modal.addEventListener('click', function (e) {
+        if (e.target === modal) closeTokenSearch();
+      });
+    }
+  }
+
+  /* ========================================================================
+     4d. DRAFT MODE (?draft=1)
+     Hides components/pages with data-draft="true" on production, shows them
+     with a DRAFT watermark when ?draft=1 is in the URL.
+     ======================================================================== */
+  function applyDraftMode() {
+    var params = new URLSearchParams(window.location.search);
+    var draftMode = params.get('draft') === '1';
+    document.documentElement.setAttribute('data-draft-mode', draftMode ? 'true' : 'false');
+
+    if (!draftMode) {
+      // Hide draft pages and their sidebar links
+      document.querySelectorAll('[data-page][data-draft="true"], .sg-sidebar-link[data-draft="true"]').forEach(function (el) {
+        el.style.display = 'none';
+      });
+    }
+
+    // Apply draft attribute to component page wrappers based on content JSON.
+    // This runs after preloadAllContent populates contentCache.
+    if (typeof COMPONENT_STATUS !== 'undefined') {
+      var pending = Object.keys(COMPONENT_STATUS).length;
+      var poll = setInterval(function () {
+        Object.keys(COMPONENT_STATUS).forEach(function (id) {
+          var data = contentCache[id];
+          if (!data) return;
+          if (data.draft === true) {
+            var page = document.querySelector('[data-page="' + id + '"]');
+            var link = document.querySelector('.sg-sidebar-link[href="#/' + id + '"]');
+            if (page) page.setAttribute('data-draft', 'true');
+            if (link) link.setAttribute('data-draft', 'true');
+            if (!draftMode) {
+              if (page) page.style.display = 'none';
+              if (link) link.style.display = 'none';
+            }
+          }
+        });
+        // Stop polling once all content has loaded (or after 3 seconds)
+        var loaded = Object.keys(COMPONENT_STATUS).filter(function (id) { return contentCache[id]; }).length;
+        if (loaded >= pending) clearInterval(poll);
+      }, 200);
+      setTimeout(function () { clearInterval(poll); }, 3000);
+    }
+  }
+
+  /* ========================================================================
+     4e. REALISTIC DATA EXAMPLES (5 data-consuming components)
+     ======================================================================== */
+  var REALISTIC_DATA = {
+    'data-table': function () {
+      var tinyHTML = '<div class="udc-data-table"><table>' +
+        '<thead><tr><th class="udc-dt-check"><input type="checkbox" /></th><th>Tenant</th><th>Status</th><th>Property</th><th class="udc-dt-align-right">Balance</th></tr></thead>' +
+        '<tbody><tr><td class="udc-dt-check"><input type="checkbox" /></td><td>Brian Smith</td><td><span class="udc-badge" data-variant="success">Active</span></td><td>Riverbend</td><td class="udc-dt-align-right">$0.00</td></tr></tbody>' +
+        '</table></div>';
+      var rows = '';
+      var firstNames = ['Brian','Catherine','David','Eva','Frank','Grace','Hannah','Isaac','Julia','Kevin','Linda','Mike','Nadia','Owen','Paula','Quinn','Rachel','Sam','Tina','Umar','Viv','Wes','Xavier','Yara','Zane'];
+      var lastNames = ['Smith','Lee','Brown','White','Garcia','Patel','Kim','Nguyen','O\'Connor','Schmidt','Hassan','Rivera','Tan','Park','Davis','Cohen'];
+      var props = ['Riverbend Estates','Sunnyvale Towers','Cedar Hills','Oakwood Gardens','Maple Court','Lakeside Plaza','Ironwood Mills'];
+      var statuses = [
+        { l: 'Active', v: 'success', amt: '$0.00' },
+        { l: 'Pending', v: 'warning', amt: '$1,200' },
+        { l: 'Overdue', v: 'error', amt: '$3,450' }
+      ];
+      for (var i = 0; i < 50; i++) {
+        var first = firstNames[i % firstNames.length];
+        var last = lastNames[(i * 3) % lastNames.length];
+        var prop = props[i % props.length];
+        var s = statuses[i % statuses.length];
+        rows += '<tr><td class="udc-dt-check"><input type="checkbox" /></td><td>' + first + ' ' + last + '</td><td><span class="udc-badge" data-variant="' + s.v + '">' + s.l + '</span></td><td>' + prop + '</td><td class="udc-dt-align-right">' + s.amt + '</td></tr>';
+      }
+      var largeHTML = '<div class="udc-data-table" style="max-height:300px;overflow-y:auto;"><table>' +
+        '<thead><tr><th class="udc-dt-check"><input type="checkbox" /></th><th>Tenant</th><th>Status</th><th>Property</th><th class="udc-dt-align-right">Balance</th></tr></thead>' +
+        '<tbody>' + rows + '</tbody></table></div>';
+      var longHTML = '<div class="udc-data-table"><table>' +
+        '<thead><tr><th class="udc-dt-check"><input type="checkbox" /></th><th>Tenant</th><th>Property</th></tr></thead>' +
+        '<tbody>' +
+        '<tr><td class="udc-dt-check"><input type="checkbox" /></td><td>Aleksandra-Constance Wojciechowska-Nakamura</td><td>The Reserve at Ironwood Mills — Building 3, Penthouse Suite</td></tr>' +
+        '<tr><td class="udc-dt-check"><input type="checkbox" /></td><td>陈伟 (Chen Wei)</td><td>Sunnyvale Towers — Unit 4B</td></tr>' +
+        '<tr><td class="udc-dt-check"><input type="checkbox" /></td><td>عبد الله الخطيب (Abdullah Al-Khatib)</td><td>Riverbend Estates</td></tr>' +
+        '</tbody></table></div>';
+      var emptyHTML = '<div class="udc-data-table"><table>' +
+        '<thead><tr><th>Tenant</th><th>Status</th><th>Property</th></tr></thead></table>' +
+        '<div style="padding:48px 24px;text-align:center;color:var(--uds-color-text-tertiary);font-family:var(--uds-font-family);font-size:14px;">' +
+        '<span class="material-symbols-outlined" style="font-size:32px;display:block;margin-bottom:8px;">inbox</span>' +
+        'No tenants yet. <a href="#/" style="color:var(--uds-color-text-interactive);">Add your first tenant</a>.</div></div>';
+      var loadingHTML = '<div class="udc-data-table"><table>' +
+        '<thead><tr><th>Tenant</th><th>Status</th><th>Property</th></tr></thead>' +
+        '<tbody>' +
+          '<tr><td><div style="height:14px;background:var(--uds-color-surface-alt);border-radius:4px;width:140px;"></div></td><td><div style="height:14px;background:var(--uds-color-surface-alt);border-radius:4px;width:60px;"></div></td><td><div style="height:14px;background:var(--uds-color-surface-alt);border-radius:4px;width:160px;"></div></td></tr>' +
+          '<tr><td><div style="height:14px;background:var(--uds-color-surface-alt);border-radius:4px;width:120px;"></div></td><td><div style="height:14px;background:var(--uds-color-surface-alt);border-radius:4px;width:50px;"></div></td><td><div style="height:14px;background:var(--uds-color-surface-alt);border-radius:4px;width:140px;"></div></td></tr>' +
+        '</tbody></table></div>';
+      return [
+        { title: 'Tiny dataset (1 row)', desc: 'How the table looks with a single row.', html: tinyHTML },
+        { title: 'Large dataset (50 rows, scrollable)', desc: 'Table behavior at scale. Production tables should virtualize at 200+ rows.', html: largeHTML },
+        { title: 'Long content', desc: 'Names and properties stress-test truncation, including non-Latin scripts.', html: longHTML },
+        { title: 'Empty state', desc: 'When there are no rows, show an empty state with a call to action.', html: emptyHTML },
+        { title: 'Loading state', desc: 'Skeleton rows while data is fetching.', html: loadingHTML }
+      ];
+    },
+    'list': function () {
+      var tinyHTML = '<div class="udc-list" style="max-width:280px;"><div class="udc-list-item" tabindex="0"><span class="udc-list-item__label">Single item</span></div></div>';
+      var largeRows = '';
+      var labels = ['Dashboard','Leasing / CRM','People / Contacts','Property / Assets','Accounting','Maintenance','Inspections','Documents','Reports','Settings','Support','Audit Log','Integrations','Webhooks','API Keys','Team Members','Billing','Notifications','Saved Searches','Custom Fields','Workflows','Templates','Imports','Exports','Tasks'];
+      labels.forEach(function (label, i) {
+        largeRows += '<div class="udc-list-item" tabindex="0"' + (i === 0 ? ' aria-selected="true"' : '') + '><span class="udc-list-item__label">' + label + '</span></div>';
+      });
+      var largeHTML = '<div class="udc-list" style="max-width:280px;max-height:300px;overflow-y:auto;">' + largeRows + '</div>';
+      var longHTML = '<div class="udc-list" style="max-width:280px;">' +
+        '<div class="udc-list-item" tabindex="0"><span class="udc-list-item__label">A very long settings option name that overflows and needs ellipsis</span></div>' +
+        '<div class="udc-list-item" tabindex="0"><span class="udc-list-item__label">非常に長いリスト項目テキスト</span></div>' +
+        '</div>';
+      var emptyHTML = '<div class="udc-list" style="max-width:280px;padding:32px 16px;text-align:center;color:var(--uds-color-text-tertiary);font-family:var(--uds-font-family);font-size:14px;">No items found.</div>';
+      var loadingHTML = '<div class="udc-list" style="max-width:280px;">' +
+        '<div class="udc-list-item"><div style="height:14px;background:var(--uds-color-surface-alt);border-radius:4px;width:160px;"></div></div>' +
+        '<div class="udc-list-item"><div style="height:14px;background:var(--uds-color-surface-alt);border-radius:4px;width:120px;"></div></div>' +
+        '<div class="udc-list-item"><div style="height:14px;background:var(--uds-color-surface-alt);border-radius:4px;width:140px;"></div></div>' +
+        '</div>';
+      return [
+        { title: 'Tiny dataset (1 item)', desc: 'A list with a single item still renders cleanly.', html: tinyHTML },
+        { title: 'Large dataset (25 items, scrollable)', desc: 'Lists over a viewport-worth of items should scroll within their container.', html: largeHTML },
+        { title: 'Long content', desc: 'Long labels truncate; non-Latin scripts render correctly.', html: longHTML },
+        { title: 'Empty state', desc: 'Show a helpful message rather than a blank container.', html: emptyHTML },
+        { title: 'Loading state', desc: 'Skeleton rows while items are loading.', html: loadingHTML }
+      ];
+    },
+    'dropdown': function () {
+      var tinyHTML = '<div class="udc-dropdown" style="max-width:300px;"><label class="udc-dropdown__label">Status</label><div class="udc-dropdown__trigger" tabindex="0" role="combobox" aria-expanded="false" aria-haspopup="listbox"><span class="udc-dropdown__value">Active</span><span class="udc-dropdown__chevron"><span class="material-symbols-outlined">keyboard_arrow_down</span></span></div></div>';
+      var optionRows = '';
+      var countries = ['Afghanistan','Albania','Algeria','Andorra','Angola','Argentina','Armenia','Australia','Austria','Azerbaijan','Bangladesh','Belarus','Belgium','Bolivia','Brazil','Bulgaria','Cambodia','Canada','Chile','China','Colombia','Croatia','Czech Republic','Denmark','Egypt','Finland','France','Germany','Ghana','Greece','Hungary','Iceland','India','Indonesia','Ireland','Israel','Italy','Japan','Jordan','Kenya','Korea','Lebanon','Mexico','Morocco','Netherlands','Norway','Pakistan','Peru','Poland','Portugal','Romania','Russia','Saudi Arabia','Singapore','Spain','Sweden','Switzerland','Thailand','Turkey','Ukraine','United Kingdom','United States','Vietnam'];
+      countries.forEach(function (c) { optionRows += '<div class="udc-dropdown__item" role="option">' + c + '</div>'; });
+      var largeHTML = '<div class="udc-dropdown" data-open="true" style="max-width:300px;"><label class="udc-dropdown__label">Country</label><div class="udc-dropdown__trigger" tabindex="0" role="combobox" aria-expanded="true" aria-haspopup="listbox"><span class="udc-dropdown__value">United States</span><span class="udc-dropdown__chevron"><span class="material-symbols-outlined">keyboard_arrow_down</span></span></div><div class="udc-dropdown__list" role="listbox" style="max-height:240px;overflow-y:auto;">' + optionRows + '</div></div>';
+      var longHTML = '<div class="udc-dropdown" style="max-width:300px;"><label class="udc-dropdown__label">Lease type</label><div class="udc-dropdown__trigger" tabindex="0" role="combobox" aria-expanded="false" aria-haspopup="listbox"><span class="udc-dropdown__value">Short-term residential lease with optional renewal clause</span><span class="udc-dropdown__chevron"><span class="material-symbols-outlined">keyboard_arrow_down</span></span></div></div>';
+      var emptyHTML = '<div class="udc-dropdown" data-open="true" style="max-width:300px;"><label class="udc-dropdown__label">Tags</label><div class="udc-dropdown__trigger" tabindex="0" role="combobox" aria-expanded="true" aria-haspopup="listbox"><span class="udc-dropdown__value" data-placeholder>Select tags...</span><span class="udc-dropdown__chevron"><span class="material-symbols-outlined">keyboard_arrow_down</span></span></div><div class="udc-dropdown__list" role="listbox"><div style="padding:16px;text-align:center;color:var(--uds-color-text-tertiary);font-family:var(--uds-font-family);font-size:14px;">No tags available</div></div></div>';
+      return [
+        { title: 'Tiny option set', desc: 'A dropdown bound to a small fixed list.', html: tinyHTML },
+        { title: 'Large option set (60+ countries, scrollable)', desc: 'Long option lists need internal scroll. Consider a typeahead/combobox at 100+ options.', html: largeHTML },
+        { title: 'Long selected value', desc: 'Trigger truncates long selected values rather than wrapping.', html: longHTML },
+        { title: 'Empty state', desc: 'When there are no options, show a helpful empty state inside the popover.', html: emptyHTML }
+      ];
+    },
+    'search': function () {
+      var emptyResultsHTML = '<div style="max-width:480px;"><div class="udc-search"><div class="udc-search__field"><span class="udc-search__icon"><span class="material-symbols-outlined">search</span></span><input type="search" value="zzzzzzz" placeholder="Search..." /><button class="udc-search__clear" aria-label="Clear"><span class="material-symbols-outlined">clear</span></button></div></div><div style="margin-top:16px;padding:32px;text-align:center;color:var(--uds-color-text-tertiary);font-family:var(--uds-font-family);font-size:14px;border:1px dashed var(--uds-color-border-secondary);border-radius:8px;"><span class="material-symbols-outlined" style="font-size:32px;display:block;margin-bottom:8px;">search_off</span>No results for "zzzzzzz". Try a different keyword.</div></div>';
+      var withResultsHTML = '<div style="max-width:480px;"><div class="udc-search" data-has-value="true"><div class="udc-search__field"><span class="udc-search__icon"><span class="material-symbols-outlined">search</span></span><input type="search" value="riverbend" placeholder="Search..." /><button class="udc-search__clear" aria-label="Clear"><span class="material-symbols-outlined">clear</span></button></div></div><ul style="margin-top:8px;padding:0;list-style:none;border:1px solid var(--uds-color-border-secondary);border-radius:8px;overflow:hidden;font-family:var(--uds-font-family);font-size:14px;"><li style="padding:10px 14px;border-bottom:1px solid var(--uds-color-border-secondary);"><strong>Riverbend</strong> Estates — 24 units</li><li style="padding:10px 14px;border-bottom:1px solid var(--uds-color-border-secondary);"><strong>Riverbend</strong> Penthouse 4B</li><li style="padding:10px 14px;">Maintenance request at <strong>Riverbend</strong></li></ul></div>';
+      var loadingHTML = '<div style="max-width:480px;"><div class="udc-search" data-has-value="true"><div class="udc-search__field"><span class="udc-search__icon"><span class="material-symbols-outlined">search</span></span><input type="search" value="loading..." placeholder="Search..." /><button class="udc-search__clear" aria-label="Clear"><span class="material-symbols-outlined">clear</span></button></div></div><div style="margin-top:8px;border:1px solid var(--uds-color-border-secondary);border-radius:8px;padding:8px;display:flex;flex-direction:column;gap:8px;"><div style="height:14px;background:var(--uds-color-surface-alt);border-radius:4px;width:80%;"></div><div style="height:14px;background:var(--uds-color-surface-alt);border-radius:4px;width:60%;"></div><div style="height:14px;background:var(--uds-color-surface-alt);border-radius:4px;width:70%;"></div></div></div>';
+      return [
+        { title: 'With results', desc: 'Typical search-with-suggestions pattern.', html: withResultsHTML },
+        { title: 'Empty state (no matches)', desc: 'When the query returns nothing, show a helpful empty state.', html: emptyResultsHTML },
+        { title: 'Loading state', desc: 'Skeleton suggestions while results stream in.', html: loadingHTML }
+      ];
+    },
+    'breadcrumb': function () {
+      var deepHTML = '<nav class="udc-breadcrumb" aria-label="Breadcrumb"><ol><li><a href="#">Home</a></li><li><a href="#">Properties</a></li><li><a href="#">Riverbend Estates</a></li><li><a href="#">Building 3</a></li><li><a href="#">Floor 4</a></li><li aria-current="page">Penthouse 4B</li></ol></nav>';
+      var longHTML = '<nav class="udc-breadcrumb" aria-label="Breadcrumb" style="max-width:480px;"><ol><li><a href="#">Home</a></li><li><a href="#">Some really long property collection name that needs truncation</a></li><li aria-current="page">Building with another lengthy name</li></ol></nav>';
+      var rootHTML = '<nav class="udc-breadcrumb" aria-label="Breadcrumb"><ol><li aria-current="page">Home</li></ol></nav>';
+      return [
+        { title: 'Deep hierarchy (6 levels)', desc: 'Breadcrumbs scale with depth. Wrap to multiple lines on narrow viewports.', html: deepHTML },
+        { title: 'Long segment names', desc: 'Long names should truncate, not wrap awkwardly. Configure max-width on segments.', html: longHTML },
+        { title: 'Root only', desc: 'When there is only one level, render just the current page (no separator).', html: rootHTML }
+      ];
+    }
+  };
+
+  function renderRealisticData() {
+    Object.keys(REALISTIC_DATA).forEach(function (id) {
+      var page = document.querySelector('[data-page="' + id + '"]');
+      if (!page) return;
+      var examplesPanel = page.querySelector('[data-tab-panel="examples"]');
+      if (!examplesPanel) return;
+      if (examplesPanel.querySelector('.sg-realistic-data')) return;
+
+      var wrap = document.createElement('div');
+      wrap.className = 'sg-realistic-data';
+      var heading = document.createElement('h2');
+      heading.className = 'sg-realistic-heading';
+      heading.textContent = 'Realistic data examples';
+      wrap.appendChild(heading);
+
+      var lead = document.createElement('p');
+      lead.className = 'sg-realistic-lead';
+      lead.textContent = 'How this component looks with realistic content sizes, edge cases, and states.';
+      wrap.appendChild(lead);
+
+      var examples;
+      try { examples = REALISTIC_DATA[id](); } catch (e) { examples = []; }
+      examples.forEach(function (ex) {
+        var sub = document.createElement('div');
+        sub.className = 'sg-subsection';
+        var t = document.createElement('h3');
+        t.className = 'sg-subsection-title';
+        t.textContent = ex.title;
+        sub.appendChild(t);
+        if (ex.desc) {
+          var d = document.createElement('p');
+          d.className = 'sg-subsection-desc';
+          d.textContent = ex.desc;
+          sub.appendChild(d);
+        }
+        var card = document.createElement('div');
+        card.className = 'sg-example';
+        var preview = document.createElement('div');
+        preview.className = 'sg-example-preview';
+        preview.style.display = 'block';
+        preview.innerHTML = ex.html;
+        card.appendChild(preview);
+        sub.appendChild(card);
+        wrap.appendChild(sub);
+      });
+
+      examplesPanel.appendChild(wrap);
+    });
+  }
+
   // Render the Roadmap > Components table from COMPONENT_STATUS.
   function renderRoadmapComponents() {
     var slot = document.getElementById('sg-roadmap-components');
@@ -4092,9 +4561,12 @@
   renderStatusBadges();
   renderComponentLinks();
   renderComponentHeaderExtras();
+  renderRealisticData();
   renderExampleOnlyBanners();
   preloadAllContent();
   renderRoadmapComponents();
+  initTokenSearch();
+  applyDraftMode();
   initVersionDropdown();
   initAllChangelogs();
 
