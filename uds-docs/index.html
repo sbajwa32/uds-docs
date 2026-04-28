@@ -204,6 +204,96 @@
     }
 
     /* =====================================================================
+       Not-for-production banner (component header)
+       ===================================================================== */
+    .sg-not-for-production {
+      display: flex; align-items: flex-start; gap: var(--uds-space-150);
+      padding: var(--uds-space-150) var(--uds-space-200);
+      background: var(--uds-color-surface-warning-subtle);
+      border: 1px solid var(--uds-color-border-warning);
+      border-radius: var(--uds-border-radius-container-md);
+      font-family: var(--uds-font-family); font-size: var(--uds-font-size-sm);
+      color: var(--uds-color-text-primary); line-height: 1.5;
+      margin-bottom: var(--uds-space-300);
+    }
+    .sg-not-for-production .material-symbols-outlined {
+      color: var(--uds-color-icon-warning); flex-shrink: 0; font-size: 20px;
+    }
+
+    /* =====================================================================
+       Last updated + Recent changes (collapsible)
+       ===================================================================== */
+    .sg-recent-changes {
+      margin-bottom: var(--uds-space-300);
+      border: 1px solid var(--uds-color-border-secondary);
+      border-radius: var(--uds-border-radius-container-md);
+      background: var(--uds-color-surface-subtle);
+      font-family: var(--uds-font-family);
+    }
+    .sg-recent-changes > summary {
+      list-style: none; cursor: pointer;
+      padding: var(--uds-space-150) var(--uds-space-200);
+      display: flex; align-items: center; gap: var(--uds-space-100);
+      font-size: var(--uds-font-size-sm);
+      color: var(--uds-color-text-secondary);
+    }
+    .sg-recent-changes > summary::-webkit-details-marker { display: none; }
+    .sg-recent-changes[open] > summary { border-bottom: 1px solid var(--uds-color-border-secondary); }
+    .sg-recent-label { font-weight: var(--uds-font-weight-bold); color: var(--uds-color-text-primary); }
+    .sg-recent-version { color: var(--uds-color-text-primary); font-weight: var(--uds-font-weight-medium); }
+    .sg-recent-date { color: var(--uds-color-text-tertiary); }
+    .sg-recent-toggle { margin-left: auto; color: var(--uds-color-text-interactive); font-weight: var(--uds-font-weight-medium); }
+    .sg-recent-changes[open] .sg-recent-toggle::before { content: "Hide recent changes"; }
+    .sg-recent-changes[open] .sg-recent-toggle { font-size: 0; }
+    .sg-recent-changes[open] .sg-recent-toggle::before { font-size: var(--uds-font-size-sm); }
+    .sg-recent-inner { padding: var(--uds-space-200); }
+    .sg-recent-release { margin-bottom: var(--uds-space-200); }
+    .sg-recent-release:last-child { margin-bottom: 0; }
+    .sg-recent-release-title { font-size: var(--uds-font-size-sm); font-weight: var(--uds-font-weight-bold); color: var(--uds-color-text-primary); margin-bottom: var(--uds-space-100); }
+    .sg-recent-release ul { list-style: none; padding: 0; margin: 0; }
+    .sg-recent-release li {
+      font-size: var(--uds-font-size-sm); color: var(--uds-color-text-secondary);
+      line-height: 1.6; padding: var(--uds-space-050) 0;
+    }
+    .sg-recent-type {
+      display: inline-block; min-width: 64px; padding: 1px 8px; margin-right: var(--uds-space-100);
+      font-size: var(--uds-font-size-xs); font-weight: var(--uds-font-weight-bold);
+      text-transform: uppercase; letter-spacing: 0.04em;
+      border-radius: var(--uds-border-radius-container-sm); text-align: center;
+    }
+    .sg-recent-type--added      { background: var(--uds-color-surface-success-subtle); color: var(--uds-color-text-success); }
+    .sg-recent-type--changed    { background: var(--uds-color-surface-warning-subtle); color: var(--uds-color-text-warning); }
+    .sg-recent-type--fixed      { background: var(--uds-color-surface-info-subtle); color: var(--uds-color-text-info); }
+    .sg-recent-type--removed,
+    .sg-recent-type--deprecated { background: var(--uds-color-surface-error-subtle); color: var(--uds-color-text-error); }
+    .sg-recent-full {
+      display: inline-block; margin-top: var(--uds-space-100);
+      font-size: var(--uds-font-size-sm); color: var(--uds-color-text-interactive); text-decoration: none;
+    }
+    .sg-recent-full:hover { text-decoration: underline; }
+
+    /* =====================================================================
+       Example-only banner (top of every code-bearing tab panel)
+       ===================================================================== */
+    .sg-example-only-banner {
+      display: flex; align-items: center; gap: var(--uds-space-100);
+      padding: var(--uds-space-100) var(--uds-space-200);
+      background: var(--uds-color-surface-info-subtle);
+      border: 1px solid var(--uds-color-border-info);
+      border-radius: var(--uds-border-radius-container-sm);
+      font-family: var(--uds-font-family); font-size: var(--uds-font-size-xs);
+      font-weight: var(--uds-font-weight-medium);
+      color: var(--uds-color-text-info);
+      margin-bottom: var(--uds-space-300);
+    }
+    .sg-example-only-banner .material-symbols-outlined {
+      font-size: 16px; flex-shrink: 0;
+    }
+    .sg-example-only-banner strong {
+      font-weight: var(--uds-font-weight-bold); color: var(--uds-color-text-primary);
+    }
+
+    /* =====================================================================
        Per-component tab bar (reuses udc-tabs look)
        ===================================================================== */
     .sg-page-tabs { display: flex; border-bottom: 1px solid var(--uds-color-border-primary); margin-bottom: var(--uds-space-400); }
@@ -649,7 +739,7 @@
   </style>
   <script>
     (function () {
-      var SITE_VERSION = '2026.04.21.2';
+      var SITE_VERSION = '2026.04.28.1';
       var base = window.location.pathname.replace(/\/index\.html$/, '').replace(/\/$/, '');
       fetch(base + '/version.txt?_=' + Date.now()).then(function (r) {
         if (!r.ok) return;
@@ -687,7 +777,7 @@
       <span class="udc-tooltip" role="tooltip" data-position="bottom">Build Demo</span>
     </span>
     <select class="sg-version-select" id="sg-version-dropdown" aria-label="UDS version"></select>
-    <span class="sg-brand-bar-build">SITE 2026.04.21.2</span>
+    <span class="sg-brand-bar-build">SITE 2026.04.28.1</span>
   </div>
 
   <!-- Pre-flight checklist dialog -->
@@ -3535,7 +3625,7 @@ const query = ref('');
   <script src="https://cdn.jsdelivr.net/npm/jszip@3/dist/jszip.min.js"></script>
   <script src="./material-icons.js"></script>
   <script src="./uds/uds.js?v=29"></script>
-  <script src="./app.js?v=73"></script>
+  <script src="./app.js?v=75"></script>
   <script src="./demo-builder.js?v=9"></script>
 
 </body>

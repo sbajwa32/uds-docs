@@ -780,6 +780,12 @@
 
     panel.innerHTML = '';
 
+    // Re-add the "Example only" banner since we wiped the panel.
+    var pgBanner = document.createElement('div');
+    pgBanner.className = 'sg-example-only-banner';
+    pgBanner.innerHTML = '<span class="material-symbols-outlined">code_blocks</span><span><strong>Example only.</strong> All code on this page is reference. Production components live in Storybook.</span>';
+    panel.appendChild(pgBanner);
+
     const layout = document.createElement('div');
     layout.className = 'sg-playground-layout';
 
@@ -3539,6 +3545,19 @@
         { type: 'added', text: 'Guidelines tab (renamed from Usage) rendered by renderGuidelines() from JSON. Empty sections are hidden automatically.' },
         { type: 'added', text: 'Spec completeness indicator: "Spec X/Y" pill next to each component title + colored dot in sidebar (green ≥80%, yellow 50–80%, red <50%)' }
       ]
+    },
+    {
+      version: 'SITE 2026.04.28.1',
+      date: '2026-04-28',
+      changes: [
+        { type: 'added', text: 'Site reshape Phase 3: component page header enhancements.' },
+        { type: 'added', text: '"View in Storybook" button on every component page (placeholder URL until Storybook is live)' },
+        { type: 'added', text: '"Report Issue" button — opens a GitHub issue template prefilled with component context' },
+        { type: 'added', text: '"Not production-ready" banner appears on any component whose status is not "production"' },
+        { type: 'added', text: '"Last updated" collapsible box at the top of every component page showing the last 1-2 changelog entries with type pills (added/changed/fixed/removed)' },
+        { type: 'added', text: '"Example only" banner at the top of Examples / Code / Playground tab panels — reinforces that the doc site is reference, Storybook is production' },
+        { type: 'changed', text: 'Figma button now reads "Figma (variant)" when a per-variant node ID is present in the JSON content' }
+      ]
     }
   ];
 
@@ -3803,6 +3822,11 @@
     });
   }
 
+  // Placeholder Storybook base URL — update when Storybook is live
+  var STORYBOOK_BASE_URL = 'https://storybook.example.com';
+  // Placeholder GitHub repo for issue reports
+  var GITHUB_REPO = 'sbajwa32/uds-docs';
+
   function renderComponentLinks() {
     Object.keys(COMPONENT_STATUS).forEach(function (id) {
       var page = document.querySelector('[data-page="' + id + '"]');
@@ -3813,12 +3837,16 @@
       var bar = document.createElement('div');
       bar.className = 'sg-page-links';
 
-      var nodeId = FIGMA_LINKS[id];
+      // View in Figma (variant deep-link when available)
+      var data = contentCache[id] || {};
+      var variantNode = data.figmaNodeId;
+      var pageNode = FIGMA_LINKS[id];
       var figmaLink = document.createElement('a');
       figmaLink.className = 'sg-page-link';
-      figmaLink.innerHTML = '<span class="material-symbols-outlined">design_services</span>Figma';
-      if (nodeId) {
-        figmaLink.href = 'https://www.figma.com/design/1XJoUJgtNpw4R0IIT3VjoK/UDS-Components?node-id=' + nodeId;
+      var figmaLabel = variantNode ? 'Figma (variant)' : 'Figma';
+      figmaLink.innerHTML = '<span class="material-symbols-outlined">design_services</span>' + figmaLabel;
+      if (variantNode || pageNode) {
+        figmaLink.href = 'https://www.figma.com/design/1XJoUJgtNpw4R0IIT3VjoK/UDS-Components?node-id=' + (variantNode || pageNode);
         figmaLink.target = '_blank';
         figmaLink.rel = 'noopener noreferrer';
       } else {
@@ -3826,14 +3854,127 @@
       }
       bar.appendChild(figmaLink);
 
+      // View in Storybook
+      var sbLink = document.createElement('a');
+      sbLink.className = 'sg-page-link';
+      sbLink.innerHTML = '<span class="material-symbols-outlined">auto_awesome</span>Storybook';
+      var slug = data.storybookSlug;
+      sbLink.href = slug ? STORYBOOK_BASE_URL + '/?path=/story/' + slug : STORYBOOK_BASE_URL;
+      sbLink.target = '_blank';
+      sbLink.rel = 'noopener noreferrer';
+      sbLink.setAttribute('title', 'Placeholder — update STORYBOOK_BASE_URL once Storybook is live');
+      bar.appendChild(sbLink);
+
+      // View on GitHub (disabled placeholder)
       var ghLink = document.createElement('a');
       ghLink.className = 'sg-page-link';
       ghLink.setAttribute('aria-disabled', 'true');
       ghLink.innerHTML = '<span class="material-symbols-outlined">code</span>GitHub';
       bar.appendChild(ghLink);
 
+      // Report Issue — opens a GitHub issue template
+      var issueLink = document.createElement('a');
+      issueLink.className = 'sg-page-link';
+      issueLink.innerHTML = '<span class="material-symbols-outlined">bug_report</span>Report Issue';
+      var title = encodeURIComponent('[' + (data.title || id) + '] ');
+      var body = encodeURIComponent('Component: ' + id + '\nPage: ' + location.href + '\n\nDescribe the issue or feedback:\n\n');
+      issueLink.href = 'https://github.com/' + GITHUB_REPO + '/issues/new?title=' + title + '&body=' + body;
+      issueLink.target = '_blank';
+      issueLink.rel = 'noopener noreferrer';
+      bar.appendChild(issueLink);
+
       desc.insertAdjacentElement('afterend', bar);
     });
+  }
+
+  // "Not for production" banner + Last updated timestamp + Recent changes highlight
+  function renderComponentHeaderExtras() {
+    Object.keys(COMPONENT_STATUS).forEach(function (id) {
+      var info = COMPONENT_STATUS[id];
+      var page = document.querySelector('[data-page="' + id + '"]');
+      if (!page) return;
+
+      // "Not for production" banner
+      if (info.status !== 'production' && !page.querySelector('.sg-not-for-production')) {
+        var banner = document.createElement('div');
+        banner.className = 'sg-not-for-production';
+        var label = STATUS_LABELS[info.status] ? STATUS_LABELS[info.status].label : info.status;
+        banner.innerHTML = '<span class="material-symbols-outlined">warning_amber</span>' +
+                           '<span><strong>Not production-ready.</strong> Status: ' + label + '. Specs and behavior may change. See the Storybook implementation for shippable code.</span>';
+        var anchor = page.querySelector('.sg-page-links') || page.querySelector('.sg-page-desc');
+        if (anchor) anchor.insertAdjacentElement('afterend', banner);
+      }
+
+      // Last updated timestamp + Recent changes highlight (from global CHANGELOG)
+      if (!page.querySelector('.sg-recent-changes')) {
+        var compEntries = collectComponentChangelog(id);
+        if (compEntries.length > 0) {
+          var last = compEntries[0];
+          var box = document.createElement('details');
+          box.className = 'sg-recent-changes';
+          var summary = document.createElement('summary');
+          summary.innerHTML = '<span class="sg-recent-label">Last updated:</span> <span class="sg-recent-version">' + last.version + '</span> <span class="sg-recent-date">(' + last.date + ')</span> <span class="sg-recent-toggle">Show recent changes</span>';
+          box.appendChild(summary);
+
+          var inner = document.createElement('div');
+          inner.className = 'sg-recent-inner';
+          compEntries.slice(0, 2).forEach(function (e) {
+            var rel = document.createElement('div');
+            rel.className = 'sg-recent-release';
+            rel.innerHTML = '<div class="sg-recent-release-title">' + e.version + ' — ' + e.date + '</div>';
+            var ul = document.createElement('ul');
+            e.changes.forEach(function (c) {
+              var li = document.createElement('li');
+              li.innerHTML = '<span class="sg-recent-type sg-recent-type--' + c.type + '">' + c.type + '</span> ' + c.text;
+              ul.appendChild(li);
+            });
+            rel.appendChild(ul);
+            inner.appendChild(rel);
+          });
+          var link = document.createElement('a');
+          link.className = 'sg-recent-full';
+          link.href = '#/' + id + '?tab=changelog';
+          link.textContent = 'View full changelog →';
+          inner.appendChild(link);
+          box.appendChild(inner);
+
+          var anchor2 = page.querySelector('.sg-not-for-production') || page.querySelector('.sg-page-links') || page.querySelector('.sg-page-desc');
+          if (anchor2) anchor2.insertAdjacentElement('afterend', box);
+        }
+      }
+    });
+  }
+
+  // Add an "Example only" banner to the top of every code-bearing tab panel.
+  function renderExampleOnlyBanners() {
+    var bannerHTML = '<span class="material-symbols-outlined">code_blocks</span><span><strong>Example only.</strong> All code on this page is reference. Production components live in Storybook.</span>';
+    var selectors = ['examples', 'code', 'playground'];
+    selectors.forEach(function (which) {
+      document.querySelectorAll('[data-tab-panel="' + which + '"]').forEach(function (panel) {
+        if (panel.querySelector(':scope > .sg-example-only-banner')) return;
+        var banner = document.createElement('div');
+        banner.className = 'sg-example-only-banner';
+        banner.innerHTML = bannerHTML;
+        panel.insertBefore(banner, panel.firstChild);
+      });
+    });
+  }
+
+  // Extract per-component changelog entries from the global CHANGELOG array.
+  function collectComponentChangelog(componentId) {
+    if (typeof CHANGELOG === 'undefined') return [];
+    var out = [];
+    CHANGELOG.slice().forEach(function (release) {
+      var matches = (release.changes || []).filter(function (c) {
+        return c.category === 'components' && c.component &&
+               c.component.toLowerCase().replace(/\s+/g, '-') === componentId;
+      });
+      if (matches.length) {
+        out.push({ version: release.version, date: release.date, changes: matches });
+      }
+    });
+    // newest first
+    return out.slice().reverse();
   }
 
   function initVersionDropdown() {
@@ -3898,6 +4039,8 @@
      ======================================================================== */
   renderStatusBadges();
   renderComponentLinks();
+  renderComponentHeaderExtras();
+  renderExampleOnlyBanners();
   initVersionDropdown();
   initAllChangelogs();
 
