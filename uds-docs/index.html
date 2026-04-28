@@ -273,6 +273,85 @@
     .sg-recent-full:hover { text-decoration: underline; }
 
     /* =====================================================================
+       Reference pages (Glossary, FAQ, Contribute, Roadmap, Platform, Migration)
+       ===================================================================== */
+    .sg-glossary { display: grid; grid-template-columns: max-content 1fr; column-gap: var(--uds-space-300); row-gap: var(--uds-space-100); margin: 0; }
+    .sg-glossary dt { font-family: var(--uds-font-family); font-size: var(--uds-font-size-sm); font-weight: var(--uds-font-weight-bold); color: var(--uds-color-text-primary); padding-top: var(--uds-space-100); }
+    .sg-glossary dd { font-family: var(--uds-font-family); font-size: var(--uds-font-size-sm); color: var(--uds-color-text-secondary); line-height: 1.6; padding-top: var(--uds-space-100); border-top: 1px dashed var(--uds-color-border-secondary); margin: 0; }
+    .sg-glossary dt + dd { /* keep border on dd only */ }
+    .sg-glossary dd code, .sg-glossary dt code { font-family: monospace; font-size: 0.9em; background: var(--uds-color-surface-alt); padding: 1px 6px; border-radius: var(--uds-border-radius-container-sm); }
+    @media (max-width: 720px) { .sg-glossary { grid-template-columns: 1fr; } .sg-glossary dt { padding-top: var(--uds-space-200); } }
+
+    .sg-faq {
+      border: 1px solid var(--uds-color-border-secondary);
+      border-radius: var(--uds-border-radius-container-md);
+      margin-bottom: var(--uds-space-100);
+      overflow: hidden;
+    }
+    .sg-faq > summary {
+      list-style: none; cursor: pointer;
+      padding: var(--uds-space-150) var(--uds-space-200);
+      font-family: var(--uds-font-family); font-size: var(--uds-font-size-base);
+      font-weight: var(--uds-font-weight-medium);
+      color: var(--uds-color-text-primary);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .sg-faq > summary::-webkit-details-marker { display: none; }
+    .sg-faq > summary::after { content: '+'; font-size: 20px; color: var(--uds-color-text-secondary); margin-left: var(--uds-space-150); }
+    .sg-faq[open] > summary { border-bottom: 1px solid var(--uds-color-border-secondary); }
+    .sg-faq[open] > summary::after { content: '−'; }
+    .sg-faq > div {
+      padding: var(--uds-space-200);
+      font-family: var(--uds-font-family); font-size: var(--uds-font-size-sm);
+      color: var(--uds-color-text-secondary); line-height: 1.6;
+    }
+    .sg-faq > div code { font-family: monospace; font-size: 0.9em; background: var(--uds-color-surface-alt); padding: 1px 6px; border-radius: var(--uds-border-radius-container-sm); }
+    .sg-faq a { color: var(--uds-color-text-interactive); text-decoration: none; }
+    .sg-faq a:hover { text-decoration: underline; }
+
+    .sg-contribute-steps { padding-left: var(--uds-space-300); font-family: var(--uds-font-family); font-size: var(--uds-font-size-base); color: var(--uds-color-text-secondary); line-height: 1.7; }
+    .sg-contribute-steps li { margin-bottom: var(--uds-space-200); }
+    .sg-contribute-steps strong { color: var(--uds-color-text-primary); font-weight: var(--uds-font-weight-bold); }
+    .sg-contribute-steps code { font-family: monospace; font-size: 0.9em; background: var(--uds-color-surface-alt); padding: 1px 6px; border-radius: var(--uds-border-radius-container-sm); }
+    .sg-contribute-steps a { color: var(--uds-color-text-interactive); text-decoration: none; }
+    .sg-contribute-steps a:hover { text-decoration: underline; }
+
+    .sg-roadmap-list, .sg-platform-list { padding-left: var(--uds-space-300); font-family: var(--uds-font-family); font-size: var(--uds-font-size-sm); color: var(--uds-color-text-secondary); line-height: 1.7; margin: 0; }
+    .sg-roadmap-list li, .sg-platform-list li { margin-bottom: var(--uds-space-100); }
+    .sg-roadmap-list strong, .sg-platform-list strong { color: var(--uds-color-text-primary); font-weight: var(--uds-font-weight-bold); }
+    .sg-roadmap-list code, .sg-platform-list code { font-family: monospace; font-size: 0.9em; background: var(--uds-color-surface-alt); padding: 1px 6px; border-radius: var(--uds-border-radius-container-sm); }
+
+    .sg-roadmap-tag {
+      display: inline-block; margin-left: var(--uds-space-100);
+      padding: 1px 8px; font-size: var(--uds-font-size-xs);
+      font-weight: var(--uds-font-weight-bold); text-transform: uppercase; letter-spacing: 0.04em;
+      border-radius: var(--uds-border-radius-container-full);
+      vertical-align: middle;
+    }
+    .sg-roadmap-tag[data-status="proposed"]    { background: var(--uds-color-surface-info-subtle); color: var(--uds-color-text-info); border: 1px solid var(--uds-color-border-info); }
+    .sg-roadmap-tag[data-status="in-progress"] { background: var(--uds-color-surface-warning-subtle); color: var(--uds-color-text-warning); border: 1px solid var(--uds-color-border-warning); }
+    .sg-roadmap-tag[data-status="approved"]    { background: var(--uds-color-surface-info-subtle); color: var(--uds-color-text-interactive); border: 1px solid var(--uds-color-border-interactive); }
+    .sg-roadmap-tag[data-status="done"]        { background: var(--uds-color-surface-success-subtle); color: var(--uds-color-text-success); border: 1px solid var(--uds-color-border-success); }
+
+    .sg-roadmap-comp-table { width: 100%; border-collapse: collapse; font-family: var(--uds-font-family); font-size: var(--uds-font-size-sm); }
+    .sg-roadmap-comp-table thead tr { background: var(--uds-color-surface-subtle); }
+    .sg-roadmap-comp-table th { text-align: left; padding: var(--uds-space-100) var(--uds-space-150); font-weight: var(--uds-font-weight-bold); color: var(--uds-color-text-primary); border-bottom: 1px solid var(--uds-color-border-default); font-size: var(--uds-font-size-xs); text-transform: uppercase; letter-spacing: 0.05em; }
+    .sg-roadmap-comp-table td { padding: var(--uds-space-100) var(--uds-space-150); border-bottom: 1px solid var(--uds-color-border-secondary); color: var(--uds-color-text-secondary); }
+    .sg-roadmap-comp-table a { color: var(--uds-color-text-interactive); text-decoration: none; }
+    .sg-roadmap-comp-table a:hover { text-decoration: underline; }
+
+    .sg-migration-block {
+      padding: var(--uds-space-300);
+      border: 1px solid var(--uds-color-border-secondary);
+      border-radius: var(--uds-border-radius-container-md);
+      background: var(--uds-color-surface-subtle);
+    }
+
+    /* Sidebar group spacing for new groups */
+    .sg-sidebar-heading { display: block; margin-top: var(--uds-space-300); }
+    .sg-sidebar-heading:first-of-type { margin-top: var(--uds-space-200); }
+
+    /* =====================================================================
        Example-only banner (top of every code-bearing tab panel)
        ===================================================================== */
     .sg-example-only-banner {
@@ -739,7 +818,7 @@
   </style>
   <script>
     (function () {
-      var SITE_VERSION = '2026.04.28.1';
+      var SITE_VERSION = '2026.04.28.2';
       var base = window.location.pathname.replace(/\/index\.html$/, '').replace(/\/$/, '');
       fetch(base + '/version.txt?_=' + Date.now()).then(function (r) {
         if (!r.ok) return;
@@ -777,7 +856,7 @@
       <span class="udc-tooltip" role="tooltip" data-position="bottom">Build Demo</span>
     </span>
     <select class="sg-version-select" id="sg-version-dropdown" aria-label="UDS version"></select>
-    <span class="sg-brand-bar-build">SITE 2026.04.28.1</span>
+    <span class="sg-brand-bar-build">SITE 2026.04.28.2</span>
   </div>
 
   <!-- Pre-flight checklist dialog -->
@@ -958,6 +1037,18 @@
       <a class="sg-sidebar-link" href="#/notification">Notification</a>
       <a class="sg-sidebar-link" href="#/dialog">Dialog</a>
       <a class="sg-sidebar-link" href="#/tooltip">Tooltip</a>
+
+      <span class="sg-sidebar-heading">Patterns</span>
+      <a class="sg-sidebar-link" href="#/recipes">Composition Recipes</a>
+      <a class="sg-sidebar-link" href="#/templates">Layout Templates</a>
+
+      <span class="sg-sidebar-heading">Reference</span>
+      <a class="sg-sidebar-link" href="#/glossary">Glossary</a>
+      <a class="sg-sidebar-link" href="#/faq">FAQ</a>
+      <a class="sg-sidebar-link" href="#/contribute">How to Contribute</a>
+      <a class="sg-sidebar-link" href="#/roadmap">Roadmap</a>
+      <a class="sg-sidebar-link" href="#/platform-support">Platform Support</a>
+      <a class="sg-sidebar-link" href="#/migration-guides">Migration Guides</a>
     </nav>
 
     <main class="sg-main" id="main-content">
@@ -3560,6 +3651,394 @@ const query = ref('');
         <div data-tab-panel="playground"></div>
       </div>
 
+      <!-- =================================================================
+           PATTERNS — Composition Recipes
+           ================================================================= -->
+      <div data-page="recipes">
+        <h1 class="sg-page-title">Composition Recipes</h1>
+        <p class="sg-page-desc">Curated multi-component patterns. Each recipe is a working example of how UDS components compose into common UI patterns. Use them as starting points — copy the structure into Storybook and customize.</p>
+
+        <div class="sg-subsection"><h3 class="sg-subsection-title">Modal form with validation</h3>
+          <p class="sg-subsection-desc">Dialog + Text Input + Dropdown + Notification + primary/secondary buttons. Demonstrates focus trap, validation, and confirm/cancel actions.</p>
+          <div class="sg-example">
+            <div class="sg-example-preview" style="display:block;padding:32px;background:var(--uds-color-surface-page-main);min-height:240px;">
+              <div class="udc-dialog-backdrop" data-open="true" style="position:relative;inset:auto;background:transparent;backdrop-filter:none;">
+                <div class="udc-dialog" role="dialog" aria-modal="true" aria-labelledby="recipe-modal-title" style="margin:0;">
+                  <div class="udc-dialog__header"><h2 class="udc-dialog__title" id="recipe-modal-title">Add Tenant</h2><button class="udc-dialog__close" aria-label="Close"><span class="material-symbols-outlined">close</span></button></div>
+                  <div class="udc-dialog__body" style="display:flex;flex-direction:column;gap:16px;">
+                    <div class="udc-text-input"><label class="udc-text-input__label">Full name<span class="udc-text-input__required"></span></label><div class="udc-text-input__field"><input type="text" placeholder="Brian Smith" /></div><div class="udc-text-input__helper"><span>As it appears on the lease</span></div></div>
+                    <div class="udc-dropdown"><label class="udc-dropdown__label">Property</label><div class="udc-dropdown__trigger" tabindex="0" role="combobox" aria-expanded="false" aria-haspopup="listbox"><span class="udc-dropdown__value" data-placeholder>Select property...</span><span class="udc-dropdown__chevron"><span class="material-symbols-outlined">keyboard_arrow_down</span></span></div></div>
+                    <div class="udc-notification" data-variant="info" data-inline="true"><span class="udc-notification__icon"><span class="material-symbols-outlined">info</span></span><span class="udc-notification__text">Saving will send a welcome email automatically.</span></div>
+                  </div>
+                  <div class="udc-dialog__footer"><button class="udc-button-secondary">Cancel</button><button class="udc-button-primary">Save tenant</button></div>
+                </div>
+              </div>
+            </div>
+            <details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;div class="udc-dialog-backdrop" data-open="true"&gt;
+  &lt;div class="udc-dialog" role="dialog" aria-modal="true" aria-labelledby="title"&gt;
+    &lt;div class="udc-dialog__header"&gt;
+      &lt;h2 class="udc-dialog__title" id="title"&gt;Add Tenant&lt;/h2&gt;
+      &lt;button class="udc-dialog__close" aria-label="Close"&gt;…&lt;/button&gt;
+    &lt;/div&gt;
+    &lt;div class="udc-dialog__body"&gt;
+      &lt;!-- Text Input, Dropdown, Notification components --&gt;
+    &lt;/div&gt;
+    &lt;div class="udc-dialog__footer"&gt;
+      &lt;button class="udc-button-secondary"&gt;Cancel&lt;/button&gt;
+      &lt;button class="udc-button-primary"&gt;Save tenant&lt;/button&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre></details>
+          </div>
+        </div>
+
+        <div class="sg-subsection"><h3 class="sg-subsection-title">Searchable data table</h3>
+          <p class="sg-subsection-desc">Search + Chip filters + Data Table + bulk action bar. Shows the canonical pattern for a list page.</p>
+          <div class="sg-example">
+            <div class="sg-example-preview" style="display:block;padding:24px;">
+              <div style="display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap;margin-bottom:16px;">
+                <div class="udc-search" style="flex:1;min-width:240px;"><div class="udc-search__field"><span class="udc-search__icon"><span class="material-symbols-outlined">search</span></span><input type="search" placeholder="Search tenants..." /></div></div>
+                <div style="display:flex;gap:8px;">
+                  <button class="udc-chip" data-variant="filter" aria-selected="true"><span class="udc-chip__leading-icon"><span class="material-symbols-outlined">check</span></span><span class="udc-chip__label">Active</span></button>
+                  <button class="udc-chip" data-variant="filter"><span class="udc-chip__label">Pending</span></button>
+                  <button class="udc-chip" data-variant="filter"><span class="udc-chip__label">Overdue</span></button>
+                </div>
+              </div>
+              <div class="udc-data-table">
+                <table>
+                  <thead><tr><th class="udc-dt-check"><input type="checkbox" /></th><th>Tenant</th><th>Status</th><th>Property</th></tr></thead>
+                  <tbody>
+                    <tr><td class="udc-dt-check"><input type="checkbox" /></td><td>Brian Smith</td><td><span class="udc-badge" data-variant="success">Active</span></td><td>Riverbend Estates</td></tr>
+                    <tr><td class="udc-dt-check"><input type="checkbox" /></td><td>Catherine Lee</td><td><span class="udc-badge" data-variant="warning">Pending</span></td><td>Sunnyvale Towers</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;!-- Filter bar: Search + Chips --&gt;
+&lt;div style="display:flex;gap:12px;"&gt;
+  &lt;div class="udc-search"&gt;…&lt;/div&gt;
+  &lt;button class="udc-chip" data-variant="filter" aria-selected="true"&gt;Active&lt;/button&gt;
+&lt;/div&gt;
+
+&lt;!-- Table --&gt;
+&lt;div class="udc-data-table"&gt;
+  &lt;table&gt;…&lt;/table&gt;
+&lt;/div&gt;</code></pre></details>
+          </div>
+        </div>
+
+        <div class="sg-subsection"><h3 class="sg-subsection-title">Settings panel with tabs</h3>
+          <p class="sg-subsection-desc">Tabs + List + Text Input + Checkbox + Save action. Pattern for grouped settings or preferences.</p>
+          <div class="sg-example">
+            <div class="sg-example-preview" style="display:block;padding:24px;">
+              <div class="udc-tabs" role="tablist" style="margin-bottom:24px;">
+                <button class="udc-tab" role="tab" aria-selected="true">General</button>
+                <button class="udc-tab" role="tab">Notifications</button>
+                <button class="udc-tab" role="tab">Billing</button>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:16px;max-width:480px;">
+                <div class="udc-text-input"><label class="udc-text-input__label">Display name</label><div class="udc-text-input__field"><input type="text" value="Sunnyvale Towers" /></div></div>
+                <label class="udc-checkbox"><input type="checkbox" checked /><span class="udc-checkbox__control"></span><span class="udc-checkbox__label">Send weekly summary email</span></label>
+                <label class="udc-checkbox"><input type="checkbox" /><span class="udc-checkbox__control"></span><span class="udc-checkbox__label">Allow online payments</span></label>
+                <div style="display:flex;gap:8px;margin-top:8px;"><button class="udc-button-secondary">Cancel</button><button class="udc-button-primary">Save changes</button></div>
+              </div>
+            </div>
+            <details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;div class="udc-tabs" role="tablist"&gt;
+  &lt;button class="udc-tab" aria-selected="true"&gt;General&lt;/button&gt;
+  &lt;button class="udc-tab"&gt;Notifications&lt;/button&gt;
+&lt;/div&gt;
+&lt;!-- Tabbed panel content: Text Input, Checkboxes, action bar --&gt;</code></pre></details>
+          </div>
+        </div>
+
+        <div class="sg-subsection"><h3 class="sg-subsection-title">App shell with nav</h3>
+          <p class="sg-subsection-desc">Nav Header + Nav Vertical + content area. The standard authenticated app layout.</p>
+          <div class="sg-example">
+            <div class="sg-example-preview" style="display:block;padding:0;border:1px solid var(--uds-color-border-secondary);overflow:hidden;">
+              <div class="udc-nav-header"><div class="udc-nav-header__left"><div class="udc-nav-logo"><span class="material-symbols-outlined" style="font-size:24px;color:var(--uds-color-icon-interactive);">apartment</span><span class="udc-nav-logo__text">Boardroom</span></div></div><div class="udc-nav-header__right"><button class="udc-button-ghost" data-icon-only data-size="sm"><span class="material-symbols-outlined">notifications</span></button></div></div>
+              <div style="display:flex;min-height:200px;">
+                <nav class="udc-nav-vertical" aria-label="Main" style="width:200px;border-right:1px solid var(--uds-color-border-secondary);padding:12px 0;">
+                  <button class="udc-nav-button" aria-selected="true"><span class="material-symbols-outlined">space_dashboard</span><span class="udc-nav-button__label">Dashboard</span></button>
+                  <button class="udc-nav-button"><span class="material-symbols-outlined">book</span><span class="udc-nav-button__label">Leasing</span></button>
+                </nav>
+                <div style="flex:1;padding:16px;color:var(--uds-color-text-secondary);font-family:var(--uds-font-family);font-size:14px;">Page content goes here</div>
+              </div>
+            </div>
+            <details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;div class="udc-nav-header"&gt;…&lt;/div&gt;
+&lt;div style="display:flex;min-height:calc(100vh - 64px);"&gt;
+  &lt;nav class="udc-nav-vertical" aria-label="Main"&gt;…&lt;/nav&gt;
+  &lt;main style="flex:1;"&gt;…&lt;/main&gt;
+&lt;/div&gt;</code></pre></details>
+          </div>
+        </div>
+      </div>
+
+      <!-- =================================================================
+           PATTERNS — Layout Templates
+           ================================================================= -->
+      <div data-page="templates">
+        <h1 class="sg-page-title">Layout Templates</h1>
+        <p class="sg-page-desc">Starter page structures. Each template is the bare skeleton — copy, fill in, and ship. All use UDS tokens and components only.</p>
+
+        <div class="sg-subsection"><h3 class="sg-subsection-title">App shell</h3>
+          <p class="sg-subsection-desc">Nav Header + Nav Vertical + main content. Use as the base layout for every authenticated page.</p>
+          <div class="sg-example">
+            <details class="sg-example-code" open><summary>Show code</summary><pre><code>&lt;div class="udc-nav-header"&gt;
+  &lt;div class="udc-nav-header__left"&gt;…brand + bento…&lt;/div&gt;
+  &lt;div class="udc-nav-header__center"&gt;…breadcrumb / search…&lt;/div&gt;
+  &lt;div class="udc-nav-header__right"&gt;…notifications, account…&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;div style="display:flex;min-height:calc(100vh - 64px);"&gt;
+  &lt;nav class="udc-nav-vertical" aria-label="Main" style="width:240px;
+       border-right:1px solid var(--uds-color-border-secondary);"&gt;
+    …nav buttons…
+  &lt;/nav&gt;
+  &lt;main style="flex:1;padding:var(--uds-space-300);overflow-y:auto;"&gt;
+    …page content…
+  &lt;/main&gt;
+&lt;/div&gt;</code></pre></details>
+          </div>
+        </div>
+
+        <div class="sg-subsection"><h3 class="sg-subsection-title">Settings page</h3>
+          <p class="sg-subsection-desc">Header + Tabs + form fields + sticky save bar.</p>
+          <div class="sg-example">
+            <details class="sg-example-code" open><summary>Show code</summary><pre><code>&lt;header style="margin-bottom:var(--uds-space-300);"&gt;
+  &lt;h1&gt;Settings&lt;/h1&gt;
+&lt;/header&gt;
+
+&lt;div class="udc-tabs" role="tablist"&gt;…&lt;/div&gt;
+
+&lt;form style="max-width:640px;display:flex;flex-direction:column;
+              gap:var(--uds-space-200);"&gt;
+  …udc-text-input, udc-dropdown, udc-checkbox…
+&lt;/form&gt;
+
+&lt;div style="position:sticky;bottom:0;display:flex;gap:var(--uds-space-100);
+            justify-content:flex-end;padding:var(--uds-space-200);
+            background:var(--uds-color-surface-main);
+            border-top:1px solid var(--uds-color-border-secondary);"&gt;
+  &lt;button class="udc-button-secondary"&gt;Cancel&lt;/button&gt;
+  &lt;button class="udc-button-primary"&gt;Save changes&lt;/button&gt;
+&lt;/div&gt;</code></pre></details>
+          </div>
+        </div>
+
+        <div class="sg-subsection"><h3 class="sg-subsection-title">Data browsing page</h3>
+          <p class="sg-subsection-desc">Filter bar (Search + Chips) + Data Table + pagination.</p>
+          <div class="sg-example">
+            <details class="sg-example-code" open><summary>Show code</summary><pre><code>&lt;div style="display:flex;gap:var(--uds-space-150);
+            margin-bottom:var(--uds-space-200);"&gt;
+  &lt;div class="udc-search" style="flex:1;"&gt;…&lt;/div&gt;
+  &lt;button class="udc-chip" data-variant="filter"&gt;Active&lt;/button&gt;
+&lt;/div&gt;
+
+&lt;div class="udc-data-table"&gt;
+  &lt;table&gt;…&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;nav style="display:flex;justify-content:flex-end;
+            gap:var(--uds-space-100);margin-top:var(--uds-space-200);"
+     aria-label="Pagination"&gt;
+  …pagination buttons…
+&lt;/nav&gt;</code></pre></details>
+          </div>
+        </div>
+
+        <div class="sg-subsection"><h3 class="sg-subsection-title">Marketing landing</h3>
+          <p class="sg-subsection-desc">Hero + feature tiles + CTA. Simpler header than the app shell.</p>
+          <div class="sg-example">
+            <details class="sg-example-code" open><summary>Show code</summary><pre><code>&lt;header&gt;
+  &lt;nav&gt;…minimal brand + CTA…&lt;/nav&gt;
+&lt;/header&gt;
+
+&lt;section style="padding:var(--uds-space-1000) var(--uds-space-300);
+                text-align:center;"&gt;
+  &lt;h1 class="uds-text-heading-xl"&gt;…&lt;/h1&gt;
+  &lt;p&gt;…&lt;/p&gt;
+  &lt;button class="udc-button-primary"&gt;Get started&lt;/button&gt;
+&lt;/section&gt;
+
+&lt;section style="display:grid;grid-template-columns:repeat(3,1fr);
+                gap:var(--uds-space-300);padding:var(--uds-space-500);"&gt;
+  …udc-tile cards…
+&lt;/section&gt;</code></pre></details>
+          </div>
+        </div>
+      </div>
+
+      <!-- =================================================================
+           REFERENCE — Glossary
+           ================================================================= -->
+      <div data-page="glossary">
+        <h1 class="sg-page-title">Glossary</h1>
+        <p class="sg-page-desc">UDS terminology. Use this when you encounter a term and aren't sure what it means.</p>
+        <dl class="sg-glossary">
+          <dt>Primitive token</dt><dd>A raw token value (e.g. <code>--uds-primitive-color-blue-500: #1f6df0</code>). Never used directly in component code — primitives feed into semantic tokens.</dd>
+          <dt>Semantic token</dt><dd>A purpose-named token (e.g. <code>--uds-color-text-primary</code>). These are what you use in components. Their values change with theme/mode.</dd>
+          <dt>Variant</dt><dd>A distinct visual or behavioral type of a component (e.g. <code>primary</code> / <code>secondary</code> / <code>ghost</code> button variants). Defined as <code>data-*</code> attributes or modifier classes.</dd>
+          <dt>State</dt><dd>An interactive condition (default, hover, active, focus, disabled, error, loading, empty). Different from variants — a button can be in any state regardless of variant.</dd>
+          <dt>Mode</dt><dd>A token-set switch (e.g. light vs dark color scheme). Controlled by <code>data-color-scheme</code> on <code>&lt;html&gt;</code>.</dd>
+          <dt>Theme</dt><dd>A brand-level token override (Base, ResMan, AnyoneHome, Inhabit). Controlled by <code>data-theme</code> on <code>&lt;html&gt;</code>.</dd>
+          <dt>Density</dt><dd>Compactness of UI (compact vs comfortable). Controlled by <code>data-density</code>.</dd>
+          <dt>Font scale</dt><dd>Global type-size multiplier (smaller / default / larger). Controlled by <code>data-font-scale</code>.</dd>
+          <dt>Text style</dt><dd>A predefined typographic role (e.g. <code>uds-text-heading-xl</code>, <code>uds-text-paragraph-base</code>). Composes font-size + line-height + weight in one class.</dd>
+          <dt>Surface</dt><dd>A semantic background-color token (page, main, subtle, alt, etc.). Controls the depth/hierarchy of stacked panels.</dd>
+          <dt>Slot</dt><dd>A named content region inside a component (e.g. Dialog has <code>header</code> / <code>body</code> / <code>footer</code> slots). The Storybook web component must support these.</dd>
+          <dt>Prop / Attribute</dt><dd>An input value the Storybook web component should accept (e.g. <code>variant="primary"</code>, <code>disabled</code>).</dd>
+          <dt>Event</dt><dd>A custom event the Storybook web component should dispatch (e.g. <code>change</code>, <code>dismiss</code>, <code>select</code>).</dd>
+          <dt>Stoplight status</dt><dd>The component readiness indicator: Placeholder → Blocked → In Progress → In Review → Production Ready → Deprecated.</dd>
+          <dt>Spec completeness</dt><dd>How filled-in this component's <code>content/&lt;component&gt;.json</code> spec is. Different from production status — a Production-Ready component might still have an incomplete written spec.</dd>
+        </dl>
+      </div>
+
+      <!-- =================================================================
+           REFERENCE — FAQ
+           ================================================================= -->
+      <div data-page="faq">
+        <h1 class="sg-page-title">FAQ</h1>
+        <p class="sg-page-desc">Common questions about working with UDS.</p>
+
+        <details class="sg-faq"><summary>How do I switch themes?</summary><div>Set <code>data-color-scheme</code>, <code>data-theme</code>, <code>data-font</code>, <code>data-font-scale</code>, or <code>data-density</code> on the <code>&lt;html&gt;</code> element. Semantic tokens automatically resolve to the correct values. Your component code never changes — only the attribute on the root element does.</div></details>
+
+        <details class="sg-faq"><summary>How do I add a new token?</summary><div>Tokens are sourced from Figma. To request a new token, propose it in the Figma file first, get it approved, then export the updated JSON. The release workflow rule will guide you through importing into <code>uds/tokens/</code>.</div></details>
+
+        <details class="sg-faq"><summary>How do I request a new component?</summary><div>Add an entry to the Roadmap page (proposed status). Once approved, follow the How to Contribute guide.</div></details>
+
+        <details class="sg-faq"><summary>How do I report a bug or design issue?</summary><div>Click the <strong>Report Issue</strong> button on any component page — it opens a GitHub issue prefilled with that component's context. For general site bugs, file an issue at the repo.</div></details>
+
+        <details class="sg-faq"><summary>How does versioning work?</summary><div>Two versions exist: <strong>UDS X.Y</strong> (the design system itself, bumped when tokens or components change) and <strong>SITE YYYY.MM.DD.N</strong> (this documentation site, bumped on every site change). Use the version dropdown in the header to view older snapshots.</div></details>
+
+        <details class="sg-faq"><summary>Why is all the code "Example only"?</summary><div>The doc site is the design specification. Production components live in Storybook as framework-agnostic web components. Code on this site is a reference for what the spec implies — it's not what you ship.</div></details>
+
+        <details class="sg-faq"><summary>What happens to the spec when a component is updated?</summary><div>Update <code>content/&lt;component&gt;.json</code> first (the source of truth for the spec). The Guidelines tab and AI context regenerate automatically. Then update the visual implementation in Storybook to match.</div></details>
+
+        <details class="sg-faq"><summary>How do AI agents consume UDS?</summary><div>Two ways: (1) point them at <a href="#/ai-assist">/ai-assist</a> on this site, or (2) drop the downloadable <code>uds-design-system.mdc</code> Cursor rule into <code>.cursor/rules/</code> in any project. The rule is self-contained — no internet fetch required.</div></details>
+
+        <details class="sg-faq"><summary>Why are motion and responsive sections empty?</summary><div>UDS doesn't yet have motion tokens or breakpoint tokens. Until those land in the foundation layer, those Guidelines sections are intentionally deferred to avoid arbitrary values polluting the spec. They're tracked in the Roadmap.</div></details>
+
+        <details class="sg-faq"><summary>What's the difference between Composition Recipes and the Demo Builder?</summary><div>Composition Recipes are <em>curated</em> patterns — vetted multi-component layouts you should reach for. Demo Builder is an <em>experimentation</em> sandbox — pick any components and mock something up. Use Recipes for handoff references; use Demo Builder for ad-hoc exploration.</div></details>
+      </div>
+
+      <!-- =================================================================
+           REFERENCE — How to Contribute
+           ================================================================= -->
+      <div data-page="contribute">
+        <h1 class="sg-page-title">How to Contribute</h1>
+        <p class="sg-page-desc">Workflow for designers proposing new components, tokens, or spec updates.</p>
+
+        <ol class="sg-contribute-steps">
+          <li><strong>Propose in Roadmap.</strong> Add an entry to the <a href="#/roadmap">Roadmap</a> with a short rationale. Tag it as <code>proposed</code>.</li>
+          <li><strong>Get approval.</strong> Async review with at least one designer + one developer. Discuss in the Roadmap entry's GitHub issue.</li>
+          <li><strong>Design in Figma.</strong> Build the component variants and states in the UDS Components file. Apply the appropriate stoplight status emoji to the page name (🟠 in progress, 🟡 review, 🟢 production).</li>
+          <li><strong>Create the spec.</strong> Add <code>content/&lt;component&gt;.json</code> following <a href="https://github.com/sbajwa32/uds-docs/blob/main/uds-docs/content/schema.json">the schema</a>. Fill in <code>description</code>, <code>whenToUse</code>, <code>whenNotToUse</code>, <code>acceptanceCriteria</code>, <code>props</code>, <code>events</code>, <code>slots</code>, <code>states</code>, <code>accessibility.keyboard</code>, and <code>owner</code> at minimum.</li>
+          <li><strong>Add to the doc site.</strong> Add a new <code>&lt;div data-page="..."&gt;</code> in <code>index.html</code> with Examples, Code, Guidelines, Changelog, and Playground tabs. Add a sidebar link. The Guidelines tab will auto-render from the JSON.</li>
+          <li><strong>Notify dev.</strong> File a Storybook issue requesting the web component implementation. Link to the spec page.</li>
+          <li><strong>Land in Storybook.</strong> Developer implements the web component to match the spec 1:1. Both designer and developer review.</li>
+          <li><strong>Update status to Production Ready.</strong> Once shipped, update <code>COMPONENT_STATUS</code> in <code>app.js</code> and the Figma page name emoji to 🟢.</li>
+          <li><strong>Bump UDS version.</strong> If this is a meaningful release, bump UDS X.Y in <code>versions.json</code> and add a CHANGELOG entry under the new release.</li>
+        </ol>
+
+        <h3 class="sg-subsection-title" style="margin-top:var(--uds-space-500);">Editing an existing spec</h3>
+        <p class="sg-subsection-desc">For changes to a component already on the site, edit <code>content/&lt;component&gt;.json</code> directly. The Guidelines tab and spec completeness indicator update automatically. Bump the SITE version, add a SITE_CHANGELOG entry, and a per-component CHANGELOG entry if the change is user-facing.</p>
+
+        <h3 class="sg-subsection-title" style="margin-top:var(--uds-space-500);">Draft spec workflow</h3>
+        <p class="sg-subsection-desc">Set <code>"draft": true</code> in a component's JSON to hide it from the live site. Append <code>?draft=1</code> to any URL to view drafts with a watermark.</p>
+      </div>
+
+      <!-- =================================================================
+           REFERENCE — Roadmap
+           ================================================================= -->
+      <div data-page="roadmap">
+        <h1 class="sg-page-title">Roadmap</h1>
+        <p class="sg-page-desc">What's proposed, in progress, and shipped. The single source of truth for what's coming next in UDS.</p>
+
+        <h3 class="sg-subsection-title">Foundation prerequisites</h3>
+        <p class="sg-subsection-desc">Token sets that must land before specific Guidelines sections become useful.</p>
+        <ul class="sg-roadmap-list">
+          <li><strong>Motion / animation tokens</strong> <span class="sg-roadmap-tag" data-status="proposed">Proposed</span> — durations, easings, transition recipes. Unblocks the Motion section in component Guidelines.</li>
+          <li><strong>Breakpoint tokens</strong> <span class="sg-roadmap-tag" data-status="proposed">Proposed</span> — responsive breakpoint set. Unblocks the Responsive Behavior section in component Guidelines.</li>
+        </ul>
+
+        <h3 class="sg-subsection-title" style="margin-top:var(--uds-space-400);">Components</h3>
+        <p class="sg-subsection-desc">Tracked at <code>COMPONENT_STATUS</code> in <code>app.js</code>. The list below is auto-rendered from that source.</p>
+        <div id="sg-roadmap-components"></div>
+
+        <h3 class="sg-subsection-title" style="margin-top:var(--uds-space-400);">Site features</h3>
+        <ul class="sg-roadmap-list">
+          <li><strong>Token search</strong> <span class="sg-roadmap-tag" data-status="in-progress">In Progress</span> — global keyboard-shortcut search across all UDS tokens.</li>
+          <li><strong>Inline spec editing</strong> <span class="sg-roadmap-tag" data-status="proposed">Proposed</span> — designers edit Guidelines via a schema-generated form, saves create a GitHub PR.</li>
+          <li><strong>Figma → JSON sync</strong> <span class="sg-roadmap-tag" data-status="proposed">Proposed</span> — server-side action to pull Figma updates into <code>content/*.json</code> automatically.</li>
+        </ul>
+      </div>
+
+      <!-- =================================================================
+           REFERENCE — Platform Support
+           ================================================================= -->
+      <div data-page="platform-support">
+        <h1 class="sg-page-title">Platform Support</h1>
+        <p class="sg-page-desc">Browser compatibility, performance baseline, and platform notes that apply across the entire system. Components only override these when they have specific exceptions.</p>
+
+        <h3 class="sg-subsection-title">Browser compatibility</h3>
+        <ul class="sg-platform-list">
+          <li><strong>Modern evergreen browsers.</strong> Chrome, Edge, Firefox, Safari — last 2 major versions.</li>
+          <li><strong>CSS features required:</strong> CSS custom properties, <code>:has()</code>, logical properties, <code>color-mix()</code>, <code>@layer</code>.</li>
+          <li><strong>JS features required:</strong> ES2020+, native modules, <code>fetch</code>, <code>Promise</code>, <code>queueMicrotask</code>.</li>
+          <li><strong>No IE / legacy.</strong> UDS does not support Internet Explorer or non-evergreen browsers. If a project requires those, it cannot use UDS as-is.</li>
+        </ul>
+
+        <h3 class="sg-subsection-title" style="margin-top:var(--uds-space-400);">Performance baseline</h3>
+        <ul class="sg-platform-list">
+          <li><strong>Render budget:</strong> a typical UDS page should hit Largest Contentful Paint &lt; 2s on mid-tier hardware.</li>
+          <li><strong>Bundle size:</strong> <code>uds.css</code> is the only required CSS. Component CSS is loaded via <code>@import</code>.</li>
+          <li><strong>JS overhead:</strong> <code>uds.js</code> is the orchestrator that lazy-imports per-component JS as needed. Vanilla HTML pages need it; framework projects (React/Vue web component consumers) do not.</li>
+          <li><strong>Components with size considerations:</strong> Data Table should virtualize at 200+ rows; Dialog should lazy-mount. See per-component Performance notes for any other exceptions.</li>
+        </ul>
+
+        <h3 class="sg-subsection-title" style="margin-top:var(--uds-space-400);">Web component lifecycle (Storybook)</h3>
+        <ul class="sg-platform-list">
+          <li>Each Storybook web component is framework-agnostic — register the custom element once, then use the tag in any project (React, Vue, vanilla, Lit, etc.).</li>
+          <li>Components must implement <code>connectedCallback</code> for setup and <code>disconnectedCallback</code> for teardown (event listeners, observers).</li>
+          <li>Reflected attributes: <code>variant</code>, <code>size</code>, <code>disabled</code>, <code>open</code>, <code>selected</code>. Property changes update the attribute and vice versa.</li>
+        </ul>
+
+        <h3 class="sg-subsection-title" style="margin-top:var(--uds-space-400);">Server-side rendering</h3>
+        <ul class="sg-platform-list">
+          <li>UDS CSS works in any SSR setup (Next.js, Nuxt, Astro, Rails, etc.) — it's plain CSS with no runtime.</li>
+          <li>Storybook web components hydrate client-side. For SSR-critical content, output the HTML structure server-side using UDS classes; the web component will progressively enhance.</li>
+        </ul>
+      </div>
+
+      <!-- =================================================================
+           REFERENCE — Migration Guides
+           ================================================================= -->
+      <div data-page="migration-guides">
+        <h1 class="sg-page-title">Migration Guides</h1>
+        <p class="sg-page-desc">Per-version upgrade notes. Read these when bumping a project from one UDS version to another. Breaking changes are flagged.</p>
+
+        <div class="sg-migration-block">
+          <h3 class="sg-subsection-title">0.1 → 0.2</h3>
+          <p class="sg-subsection-desc">No breaking changes for token consumers. The doc site has been reshaped into a design-to-engineering handoff spec; framework-specific code (React/Vue) was removed from the docs and now lives in Storybook.</p>
+          <h4 style="font-size:var(--uds-font-size-md);font-weight:var(--uds-font-weight-bold);margin-top:var(--uds-space-200);">For developers</h4>
+          <ul class="sg-platform-list">
+            <li>If you were using the React/Vue snippets from the doc site as production code, switch to the Storybook web components instead.</li>
+            <li>If you were importing <code>uds-core/uds.css</code> for tokens, no change needed — that path is stable.</li>
+            <li>The downloadable Cursor rule (<code>uds-design-system.mdc</code>) was simplified to vanilla-only patterns. Re-download to refresh.</li>
+          </ul>
+          <h4 style="font-size:var(--uds-font-size-md);font-weight:var(--uds-font-weight-bold);margin-top:var(--uds-space-200);">For designers</h4>
+          <ul class="sg-platform-list">
+            <li>Component pages now have a Guidelines tab (renamed from Usage) backed by per-component JSON spec files. Edit those instead of the HTML directly.</li>
+            <li>Spec completeness is now tracked separately from production status — see the colored dot in the sidebar.</li>
+          </ul>
+        </div>
+
+        <div class="sg-migration-block" style="margin-top:var(--uds-space-500);">
+          <h3 class="sg-subsection-title" style="color:var(--uds-color-text-tertiary);">Future versions</h3>
+          <p class="sg-subsection-desc">Migration notes for future UDS versions will appear here as releases ship.</p>
+        </div>
+      </div>
+
     </main>
   </div>
 
@@ -3625,7 +4104,7 @@ const query = ref('');
   <script src="https://cdn.jsdelivr.net/npm/jszip@3/dist/jszip.min.js"></script>
   <script src="./material-icons.js"></script>
   <script src="./uds/uds.js?v=29"></script>
-  <script src="./app.js?v=75"></script>
+  <script src="./app.js?v=76"></script>
   <script src="./demo-builder.js?v=9"></script>
 
 </body>

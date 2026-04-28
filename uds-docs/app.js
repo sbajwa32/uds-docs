@@ -737,16 +737,16 @@
 
   // Preload content and completeness for all component JSONs so sidebar dots
   // and header pills can render immediately without waiting for tab open.
-  (function preloadAllContent() {
-    var links = document.querySelectorAll('.sg-sidebar-link[href^="#/"]');
-    links.forEach(function (l) {
-      var id = (l.getAttribute('href') || '').replace('#/', '');
-      if (!id) return;
+  // Only attempts to load for known component IDs (skips Foundations, Reference,
+  // and Patterns pages which have no content JSON).
+  function preloadAllContent() {
+    if (typeof COMPONENT_STATUS === 'undefined') return;
+    Object.keys(COMPONENT_STATUS).forEach(function (id) {
       loadContent(id).then(function (data) {
         if (data) updateCompletenessIndicator(id);
       });
     });
-  })();
+  }
 
   /* ========================================================================
      5. PLAYGROUND ENGINE
@@ -3558,6 +3558,22 @@
         { type: 'added', text: '"Example only" banner at the top of Examples / Code / Playground tab panels — reinforces that the doc site is reference, Storybook is production' },
         { type: 'changed', text: 'Figma button now reads "Figma (variant)" when a per-variant node ID is present in the JSON content' }
       ]
+    },
+    {
+      version: 'SITE 2026.04.28.2',
+      date: '2026-04-28',
+      changes: [
+        { type: 'added', text: 'Site reshape Phase 4: 8 new pages and reorganized sidebar.' },
+        { type: 'added', text: 'Composition Recipes page — curated multi-component patterns (Modal form, Searchable data table, Settings panel, App shell)' },
+        { type: 'added', text: 'Layout Templates page — starter page structures (App shell, Settings, Data browsing, Marketing landing)' },
+        { type: 'added', text: 'Glossary page — UDS terminology reference (15+ definitions)' },
+        { type: 'added', text: 'FAQ page — 10 placeholder Q&A covering theming, tokens, requests, versioning' },
+        { type: 'added', text: 'How to Contribute page — 9-step workflow for designers proposing new components, plus draft and editing guidance' },
+        { type: 'added', text: 'Roadmap page — Foundation prerequisites, auto-rendered components table from COMPONENT_STATUS, and site-feature roadmap' },
+        { type: 'added', text: 'Platform Support page — browser compatibility, performance baseline, web component lifecycle, SSR notes (replaces per-component Browser Compat / Performance sections)' },
+        { type: 'added', text: 'Migration Guides page — per-version upgrade notes, starting with 0.1 → 0.2' },
+        { type: 'changed', text: 'Sidebar reorganized: existing groups + new Patterns and Reference groups at the bottom' }
+      ]
     }
   ];
 
@@ -3945,6 +3961,42 @@
     });
   }
 
+  // Render the Roadmap > Components table from COMPONENT_STATUS.
+  function renderRoadmapComponents() {
+    var slot = document.getElementById('sg-roadmap-components');
+    if (!slot || typeof COMPONENT_STATUS === 'undefined') return;
+
+    // Map stoplight status -> roadmap status tag
+    var statusToTag = {
+      'placeholder': 'proposed',
+      'blocked':     'proposed',
+      'in-progress': 'in-progress',
+      'review':      'in-progress',
+      'production':  'done',
+      'deprecated':  'done'
+    };
+
+    var ids = Object.keys(COMPONENT_STATUS).sort();
+    var html = '<table class="sg-roadmap-comp-table"><thead><tr>' +
+               '<th>Component</th><th>Status</th><th>Since</th><th>Spec</th>' +
+               '</tr></thead><tbody>';
+    ids.forEach(function (id) {
+      var info = COMPONENT_STATUS[id];
+      var meta = STATUS_LABELS[info.status] || { label: info.status };
+      var tagStatus = statusToTag[info.status] || 'proposed';
+      var score = completenessScores[id];
+      var scoreLabel = score ? score.filled + '/' + score.total : '—';
+      html += '<tr>' +
+              '<td><a href="#/' + id + '">' + (id.charAt(0).toUpperCase() + id.slice(1).replace(/-/g, ' ')) + '</a></td>' +
+              '<td><span class="sg-roadmap-tag" data-status="' + tagStatus + '">' + meta.label + '</span></td>' +
+              '<td>' + (info.since || '—') + '</td>' +
+              '<td>' + scoreLabel + '</td>' +
+              '</tr>';
+    });
+    html += '</tbody></table>';
+    slot.innerHTML = html;
+  }
+
   // Add an "Example only" banner to the top of every code-bearing tab panel.
   function renderExampleOnlyBanners() {
     var bannerHTML = '<span class="material-symbols-outlined">code_blocks</span><span><strong>Example only.</strong> All code on this page is reference. Production components live in Storybook.</span>';
@@ -4041,6 +4093,8 @@
   renderComponentLinks();
   renderComponentHeaderExtras();
   renderExampleOnlyBanners();
+  preloadAllContent();
+  renderRoadmapComponents();
   initVersionDropdown();
   initAllChangelogs();
 
