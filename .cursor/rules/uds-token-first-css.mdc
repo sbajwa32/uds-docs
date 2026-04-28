@@ -1,0 +1,27 @@
+---
+description: Enforces UDS token usage in all CSS — no hardcoded colors, spacing, fonts, or radii.
+globs: ["uds-docs/uds/**/*.css", "uds-docs/index.html"]
+alwaysApply: false
+---
+
+# Token-First CSS
+
+All CSS in UDS component files and the documentation site must use semantic token variables (`var(--uds-...)`) for:
+
+- **Colors**: `--uds-color-*` semantic tokens for surfaces, text, borders, icons. Never use raw hex (#fff, #171717), rgb(), or rgba() as direct values. rgba() is only acceptable inside `var()` fallbacks or for the elevation tokens defined in semantic.css.
+- **Spacing**: `--uds-space-*` tokens for padding, margin, gap, and dimension values (4px → space-050, 8px → space-100, 12px → space-150, 16px → space-200, 24px → space-300, 32px → space-400, 40px → space-500, 48px → space-600, 56px → space-700).
+- **Font sizes**: `--uds-font-size-*` tokens (xs=10, sm=12, base=14, md=16, lg=18, xl=20, 2xl=24, 3xl=28, 4xl=32, 5xl=36).
+- **Font weights**: `--uds-font-weight-*` tokens (regular=400, medium=500, bold=700).
+- **Font family**: `var(--uds-font-family)` — never hardcode 'Inter', 'Poppins', etc.
+- **Border radius**: `--uds-border-radius-*` tokens (container-sm=4, input=8, container-md=12, container-xl=24, container-full=9999).
+- **Shadows**: `--uds-shadow-*` tokens (depth-100, depth-300, depth-500, bento) and `--uds-overlay-backdrop`.
+
+## Exceptions
+
+- Layout-specific widths (sidebar 260px, max-width 1200px) may remain as hardcoded values since they are structural, not design tokens.
+- Scrollbar styling (width 3-4px) may stay as hardcoded px.
+- The monospace font-family for code blocks ('SF Mono', 'Fira Code', etc.) has no UDS token — keep as-is until `--uds-font-family-mono` is added.
+
+## When adding new component CSS
+
+Before writing any CSS property, check if a UDS token exists for that value. If you're unsure, reference `uds/tokens/semantic.css` for the full token list.

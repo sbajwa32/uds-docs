@@ -1,0 +1,44 @@
+---
+description: Master workflow rule — enforces version bump FIRST, then changes, then finalize. Runs on every task that modifies uds-docs/.
+alwaysApply: true
+---
+
+# UDS Master Workflow
+
+## BUMP FIRST — Change Second — Finalize Last
+
+This is NOT a post-hoc checklist. It is a mandatory three-phase workflow.
+
+### Phase 1: BEFORE making any changes
+
+When you receive a request that will modify ANY file in `uds-docs/`, your FIRST action must be:
+
+1. **Run `bash uds-docs/bump-site.sh`** — this script uses the system `date` command to compute the correct version, then updates all 3 locations (index.html display, index.html inline script, version.txt) automatically. NEVER manually set the date or version number.
+2. Read the script output to get the new version string.
+3. Add a stub SITE_CHANGELOG entry in `app.js` using the version and date from the script output.
+
+**WHY:** The date in the conversation system header is from when the conversation STARTED, not the current date. It can be days or weeks stale. The bump script uses the system `date` command as the ONLY source of truth. NEVER guess, calculate, or remember dates.
+
+### Phase 2: Make the actual changes
+
+Now do whatever the user asked for. Edit CSS, HTML, JS, add components, etc.
+
+### Phase 3: Finalize
+
+After all changes are complete:
+
+1. **Fill in the SITE_CHANGELOG stub** with descriptions of what actually changed
+2. **Cache bust** — increment `?v=N` on any script/link tags for files that changed (uds.css, uds.js, app.js, demo-builder.js)
+3. **Token-first CSS** — verify no new hardcoded colors, spacing, fonts
+4. **Component checklist** — if a component was added/modified, verify all pieces exist (CSS, JS where applicable, content/<id>.json, sidebar link, page section)
+5. **Content schema** — if you edited a component's spec, verify it was JSON-side (`content/<component>.json`), not a re-introduction of HTML in `index.html`
+6. **Release workflow** — if UDS `CHANGELOG` was modified, sync Figma release notes IMMEDIATELY via use_figma
+
+## Why this order matters
+
+The previous approach ("run checklist at the end") failed repeatedly because:
+- Small changes felt "too minor" for the checklist
+- By the time the edit was done, the mental task was "complete" and the checklist was skipped
+- The version bump was disconnected from the actual edit
+
+By bumping FIRST, the version is already incremented before any edits begin. The changelog stub is waiting to be filled. These cannot be forgotten because they happen before the work, not after.

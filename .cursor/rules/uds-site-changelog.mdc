@@ -1,0 +1,57 @@
+---
+description: Enforces site version bumping, SITE_CHANGELOG updates, and cache busting on every documentation site change.
+alwaysApply: true
+---
+
+# UDS Site Changelog
+
+Whenever you modify ANY file in `uds-docs/`, you MUST perform these three steps before completing the task:
+
+## 1. Bump the SITE version
+
+**Run `bash uds-docs/bump-site.sh`** — this handles everything:
+- Gets today's date from the system `date` command (NEVER guess)
+- Increments N if same day, resets to `.1` if new day
+- Updates all 3 locations: index.html display, index.html inline SITE_VERSION, version.txt
+
+NEVER manually edit the version string. ALWAYS use the script.
+
+## 2. Add a SITE_CHANGELOG entry
+
+In `uds-docs/app.js`, find the `SITE_CHANGELOG` array. Add or update an entry for the current SITE version:
+
+```javascript
+{
+  version: 'SITE YYYY.MM.DD.N',   // matches the version in index.html
+  date: 'YYYY-MM-DD',
+  changes: [
+    { type: 'added|changed|fixed|removed', text: 'Description of what changed' }
+  ]
+}
+```
+
+- If you're making multiple changes in one session, batch them into a single version entry
+- If an entry for the current version already exists, append to its `changes` array
+- Types: `added` (new feature/page), `changed` (modification), `fixed` (bug fix), `removed` (deletion)
+
+## 3. Cache busting
+
+Three things to update:
+
+### a. Query params on script/link tags in `index.html`:
+- `<link rel="stylesheet" href="./uds/uds.css?v=N" />` — bump if any CSS changed
+- `<script src="./uds/uds.js?v=N"></script>` — bump if any JS changed
+- `<script src="./app.js?v=N"></script>` — bump if app.js changed
+- `<script src="./demo-builder.js?v=N"></script>` — bump if demo-builder.js changed
+
+Only bump the ones where the underlying file actually changed.
+
+### b. Update `version.txt`:
+Write the new SITE version number (just the `YYYY.MM.DD.N` part, no `SITE` prefix) to `uds-docs/version.txt`. This file is fetched on every page load to trigger auto-reload when a new version is deployed.
+
+### c. Update the inline SITE_VERSION in `index.html`:
+Find the `var SITE_VERSION = '...'` string in the inline `<script>` block in `<head>` and update it to match the new version.
+
+## Exceptions
+
+- Do NOT create a site changelog entry for changes that ONLY affect files outside `uds-docs/` (e.g. editing Cursor rules)

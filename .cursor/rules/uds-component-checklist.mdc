@@ -1,0 +1,55 @@
+---
+description: Checklist for implementing new UDS components — ensures consistency across CSS, JS, content JSON, and the doc site.
+globs: ["uds-docs/**"]
+alwaysApply: false
+---
+
+# UDS Component Completeness Checklist
+
+Every new UDS component must include ALL of the following before it is considered complete:
+
+## CSS (`uds/components/{name}.css`)
+- [ ] `:hover` state on interactive elements
+- [ ] `:focus-visible` style with `--uds-color-border-outline-focus-visible` on all focusable elements
+- [ ] `disabled` / `aria-disabled="true"` styling (if applicable)
+- [ ] All colors, spacing, fonts, radii use UDS tokens (see `uds-token-first-css` rule)
+- [ ] Shadow values use `--uds-shadow-*` tokens
+
+## JS (`uds/components/{name}.js`) — only when the component has interactive behavior
+- [ ] IIFE pattern with `window.UDS._init{Name} = init{Name}`
+- [ ] `_udsInit` guard (set AFTER validation, not before)
+- [ ] Keyboard activation (Enter/Space) for any focusable interactive element
+- [ ] Registered in `uds/uds.js` orchestrator COMPONENT_SCRIPTS array
+- [ ] Registered in `UDS.init()` function with correct selector
+
+## Spec — JSON content (`content/{name}.json`)
+This is the source of truth for the Guidelines tab. The renderer fills the tab automatically.
+- [ ] Required minimum: `component`, `title`, `description`, `whenToUse`, `whenNotToUse`, `dependencies.css`, `accessibility.keyboard`, `owner`
+- [ ] Aim for 80%+ spec completeness before marking Production Ready (see `uds-content-schema.mdc`)
+- [ ] Add `figmaNodeId` if a deep-link to a specific variant exists
+- [ ] Add `storybookSlug` once the Storybook story exists
+
+## Documentation site (`index.html`)
+- [ ] Sidebar link enabled (not `disabled` class)
+- [ ] `<div data-page="{name}">` with title, description, tabbed navigation
+- [ ] Examples tab with at least 2-3 example variants
+- [ ] Code tab with vanilla HTML structure (Example only — production code lives in Storybook)
+- [ ] Guidelines tab is an EMPTY `<div data-tab-panel="guidelines"></div>` — `renderGuidelines()` fills it from JSON
+- [ ] Changelog tab (placeholder if no changes yet)
+- [ ] Playground tab (empty div — wired by app.js)
+- [ ] DO NOT add Usage-tab style HTML inside the Guidelines panel — edit the JSON instead
+
+## App logic (`app.js`)
+- [ ] `PLAYGROUNDS['{name}']` with controls array and `render(state)` returning `{ html, code }` (vanilla only — no `reactCode`/`vueCode`)
+  - All icon controls use `type: 'icon-search'`
+- [ ] `IMPL_DATA['{name}']` with `cssFile`, `jsFunc`, `tokens`, `html()`
+- [ ] `COMPONENT_STATUS['{name}']` with status and since version
+- [ ] `FIGMA_LINKS['{name}']` with Figma node ID
+- [ ] `CHANGELOG` entry under the current version with `category: "components"` and `component: "{name}"`
+- [ ] `JS_FUNC_TO_FILE['{funcName}']` mapping (if component has JS)
+- [ ] Component CSS and JS files added to the download ZIP `files` array
+
+## Code quality (vanilla)
+- [ ] All `udc-*` class names match the canonical BEM pattern
+- [ ] All keyboard interactions in JS match the spec's `accessibility.keyboard` table
+- [ ] Realistic data examples added if the component is data-consuming (Data Table, List, Dropdown, Search, Breadcrumb)

@@ -1,0 +1,127 @@
+---
+description: UDS Design System release workflow -- detects Figma version bumps and guides the release process for the documentation site
+alwaysApply: true
+---
+
+# UDS Release Workflow
+
+## Context
+
+The Urban Design System (UDS) spans two Figma files and a documentation site:
+
+- **UDS Tokens** -- Figma file key: `iqKgR73ubUHpQTIcF7XGMy`
+- **UDS Components** -- Figma file key: `1XJoUJgtNpw4R0IIT3VjoK`
+- **Doc site** -- `uds-docs/` directory, version tracked in `app.js` as `UDS_VERSION`
+
+Both Figma files contain a page named `UDS Version: X.Y` (e.g., `UDS Version: 0.1`).
+
+## Version Detection
+
+Whenever you interact with either UDS Figma file (reading components, inspecting tokens, importing assets), you MUST:
+
+1. List pages in the file via `use_figma` and find the page matching `UDS Version: *`
+2. Parse the version number from the page name
+3. Read `UDS_VERSION` from `uds-docs/app.js`
+4. If the Figma version is higher than the site version, alert the user and begin the Release Questionnaire below
+
+Do NOT silently skip this check. If you detect a mismatch, pause your current task and address it first.
+
+## Release Questionnaire
+
+When a version bump is detected, present questions in rounds using the AskQuestion tool.
+
+### Round 1 -- What Changed
+
+- "I noticed UDS went from {old} to {new} in Figma. What's in this release?"
+- "Are there any breaking changes? (renamed tokens, removed classes, changed markup)"
+- Auto-detect component status changes by reading page name prefixes (stoplight icons) from UDS Components and comparing against `COMPONENT_STATUS` in `app.js`. Report any mismatches.
+
+### Round 2 -- Tokens
+
+Always ask: "Please export the token ZIPs from UDS Tokens in Figma and attach them here so I can compare against the current CSS and import any changes."
+
+The expected ZIPs (matching the variable collections in Figma):
+- `_uds-primitive.zip` -- primitive tokens
+- `uds-color.zip` -- semantic color tokens (6 modes)
+- `uds-font.zip` -- font family tokens
+- `uds-font-scale.zip` -- font scale tokens
+- `uds-space.zip` -- space/density tokens
+- `uds-border.zip` -- border radius/width tokens
+
+Once received, unzip each into `/tmp/uds-tokens/`, parse the JSON files, and diff against the current `uds-docs/uds/tokens/primitives.css` and `uds-docs/uds/tokens/semantic.css`. Report:
+- New tokens added
+- Tokens renamed or removed
+- Value changes across modes
+- Any structural changes (new modes, new categories)
+
+If no token changes occurred, the user can say "no token changes" and skip providing ZIPs.
+
+### Round 3 -- New Components
+
+- Auto-detect new components by comparing Figma component pages (those with stoplight prefixes) against the doc site sidebar entries in `index.html`. Report any that exist in Figma but not the site.
+- "Any components deprecated or removed?"
+
+### Round 4 -- Release Prep
+
+- "Should I run release.sh to snapshot v{old} and bump the site to v{new}?"
+- "Should I update the release notes pages in both Figma files?"
+- "Anything else to note for the changelog or migration guide?"
+
+## Automated Release Steps
+
+After the questionnaire, execute these steps in order. NEVER run `release.sh` without explicit user confirmation.
+
+1. **Snapshot**: Run `bash uds-docs/release.sh {new_version}` to archive the current site into `versions/{old}/`
+2. **Update statuses**: Read all component page names from UDS Components, update `COMPONENT_STATUS` in `app.js` to match
+3. **Update CHANGELOG**: Add a new release entry to the `CHANGELOG` array in `app.js`:
+   - Use `category: 'tokens'` for token changes, `category: 'components'` for component changes, `category: null` for global summary
+   - Use correct `type`: `added`, `changed`, `fixed`, `deprecated`, `removed`
+   - Include `migration` field on the release if there are breaking changes
+4. **Regenerate tokens** (if user provides new ZIPs): Unzip exports, regenerate `primitives.css` and `semantic.css`
+5. **Add new components** (if any): Create `data-page` section in `index.html`, add sidebar link, add playground config in `app.js`
+6. **Update Figma release notes**: Populate the new version page in both UDS Tokens and UDS Components with the unified changelog (both Tokens and Components sections, matching the doc site)
+7. **Bump site**: Run `bash uds-docs/bump.sh` to set the initial SITE build counter
+8. **Verify**: Open the browser and confirm changelog, version dropdown, and status badges are correct
+
+## Post-Release Checklist
+
+After all automated steps, print this checklist for the user:
+
+```
+Release v{new} complete. Manual Figma steps remaining:
+- [ ] Publish library in UDS Tokens (with description: "UDS {new} -- {summary}")
+- [ ] Publish library in UDS Components (same description)
+- [ ] Save to Version History in both files (Cmd+Opt+S, title: "UDS {new} -- {summary}")
+- [ ] Update cover page version text in both files
+- [ ] Update component descriptions with @updated {new} tags (for changed components)
+```
+
+## Changelog Sync Rule
+
+Whenever the `CHANGELOG` array in `app.js` is modified — whether during a formal release or an ad-hoc update (e.g., adding a new component, fixing an entry, reordering) — you MUST also update the Release Notes pages in **both** Figma files (`UDS Tokens` and `UDS Components`) to match. The two Figma changelogs must always be identical to each other and to the site changelog. Use `use_figma` to:
+
+1. Navigate to the `UDS Version: X.Y` page in each file
+2. Remove the existing "Release Notes" frame
+3. Rebuild it programmatically with the full changelog content (all versions, newest first), using the established styled format (bold version numbers, gray dates, blue uppercase category headers, colored bullet items)
+
+Never leave Figma changelogs out of sync with the site. If you forget, fix it immediately once noticed.
+
+## Key File References
+
+- `uds-docs/app.js` -- `UDS_VERSION`, `CHANGELOG`, `COMPONENT_STATUS`, `PLAYGROUNDS`
+- `uds-docs/index.html` -- sidebar nav, `data-page` sections, CSS styles
+- `uds-docs/release.sh` -- snapshots site, bumps version, updates `versions.json`
+- `uds-docs/bump.sh` -- increments SITE build counter and cache-busting params
+- `uds-docs/versions.json` -- manifest of archived versions
+
+## Component Status Mapping
+
+Figma page name prefixes map to status values in `COMPONENT_STATUS`:
+
+| Figma Prefix | Status Key     | Badge Label        |
+|-------------|----------------|--------------------|
+| (black)     | `placeholder`  | Not Started        |
+| (red)       | `blocked`      | Blocked            |
+| (orange)    | `in-progress`  | In Progress        |
+| (yellow)    | `review`       | In Review          |
+| (green)     | `production`   | Production Ready   |

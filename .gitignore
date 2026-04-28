@@ -1,5 +1,11 @@
-# Cursor IDE
-.cursor/
+# Cursor IDE — keep settings/cache local, but track rules/skills/agents
+.cursor/*
+!.cursor/rules/
+!.cursor/rules/**
+!.cursor/skills/
+!.cursor/skills/**
+!.cursor/agents/
+!.cursor/agents/**
 
 # macOS
 .DS_Store

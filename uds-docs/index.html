@@ -973,7 +973,7 @@
   </style>
   <script>
     (function () {
-      var SITE_VERSION = '2026.04.28.5';
+      var SITE_VERSION = '2026.04.28.6';
       var base = window.location.pathname.replace(/\/index\.html$/, '').replace(/\/$/, '');
       fetch(base + '/version.txt?_=' + Date.now()).then(function (r) {
         if (!r.ok) return;
@@ -1011,7 +1011,7 @@
       <span class="udc-tooltip" role="tooltip" data-position="bottom">Build Demo</span>
     </span>
     <select class="sg-version-select" id="sg-version-dropdown" aria-label="UDS version"></select>
-    <span class="sg-brand-bar-build">SITE 2026.04.28.5</span>
+    <span class="sg-brand-bar-build">SITE 2026.04.28.6</span>
   </div>
 
   <!-- Pre-flight checklist dialog -->
@@ -1229,6 +1229,7 @@
       <a class="sg-sidebar-link" href="#/glossary">Glossary</a>
       <a class="sg-sidebar-link" href="#/faq">FAQ</a>
       <a class="sg-sidebar-link" href="#/contribute">How to Contribute</a>
+      <a class="sg-sidebar-link" href="#/cursor-workflows">Cursor Workflows</a>
       <a class="sg-sidebar-link" href="#/roadmap">Roadmap</a>
       <a class="sg-sidebar-link" href="#/platform-support">Platform Support</a>
       <a class="sg-sidebar-link" href="#/migration-guides">Migration Guides</a>
@@ -4049,6 +4050,95 @@ registerUdsComponents();</pre>
       </div>
 
       <!-- =================================================================
+           REFERENCE — Cursor Workflows
+           ================================================================= -->
+      <div data-page="cursor-workflows">
+        <h1 class="sg-page-title">Cursor Workflows</h1>
+        <p class="sg-page-desc">UDS uses three layers of Cursor agent guidance to keep designer-led changes safe, repeatable, and shareable. All three are version-controlled in this repo, so anyone cloning gets them automatically.</p>
+
+        <h3 class="sg-subsection-title">Overview</h3>
+        <p class="sg-subsection-desc">Three concepts, ordered from "always on" to "called only when needed":</p>
+        <table class="sg-gl-table" style="margin-bottom:var(--uds-space-400);">
+          <thead><tr><th>Type</th><th>What it is</th><th>Lives in</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>Rule</strong></td>
+              <td>Standing instruction. Always on (or scoped by file globs). The agent reads it on every task.<br/><em>Analogy: "Always wear a seatbelt."</em></td>
+              <td><code>.cursor/rules/*.mdc</code></td>
+            </tr>
+            <tr>
+              <td><strong>Skill</strong></td>
+              <td>How-to procedure. Loaded on demand when the task description matches. The agent itself follows the steps.<br/><em>Analogy: "How to change a tire — read the manual when you need it."</em></td>
+              <td><code>.cursor/skills/&lt;name&gt;/SKILL.md</code></td>
+            </tr>
+            <tr>
+              <td><strong>Subagent</strong></td>
+              <td>Specialist contractor. A new agent spawned in its own context, does its work, returns a result, then disappears.<br/><em>Analogy: "Call the mechanic."</em></td>
+              <td><code>.cursor/agents/&lt;name&gt;.md</code></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3 class="sg-subsection-title" style="margin-top:var(--uds-space-400);">Active Rules</h3>
+        <p class="sg-subsection-desc">Six always-on rules. The agent reads these on every task that touches the doc site.</p>
+        <table class="sg-gl-table">
+          <thead><tr><th>Rule</th><th>What it does</th></tr></thead>
+          <tbody>
+            <tr><td><a class="sg-gl-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/rules/uds-master-preflight.mdc" target="_blank" rel="noopener noreferrer"><code>uds-master-preflight</code></a></td><td>Bump-first workflow — version bump runs FIRST, then changes, then finalize. Forces version + changelog discipline.</td></tr>
+            <tr><td><a class="sg-gl-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/rules/uds-site-changelog.mdc" target="_blank" rel="noopener noreferrer"><code>uds-site-changelog</code></a></td><td>Enforces SITE version bump, SITE_CHANGELOG entry, and cache busting on every site change.</td></tr>
+            <tr><td><a class="sg-gl-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/rules/uds-token-first-css.mdc" target="_blank" rel="noopener noreferrer"><code>uds-token-first-css</code></a></td><td>Bans hardcoded colors / spacing / fonts. All values must come from <code>var(--uds-*)</code> semantic tokens.</td></tr>
+            <tr><td><a class="sg-gl-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/rules/uds-component-checklist.mdc" target="_blank" rel="noopener noreferrer"><code>uds-component-checklist</code></a></td><td>Required checklist for new components: CSS, JS, content JSON, doc-site page, app.js entries.</td></tr>
+            <tr><td><a class="sg-gl-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/rules/uds-content-schema.mdc" target="_blank" rel="noopener noreferrer"><code>uds-content-schema</code></a></td><td>All component spec content lives in <code>content/&lt;component&gt;.json</code>. Never re-introduce spec HTML into <code>index.html</code>.</td></tr>
+            <tr><td><a class="sg-gl-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/rules/uds-release-workflow.mdc" target="_blank" rel="noopener noreferrer"><code>uds-release-workflow</code></a></td><td>UDS release workflow — Figma version detection, token import, Figma release-notes sync.</td></tr>
+          </tbody>
+        </table>
+
+        <h3 class="sg-subsection-title" style="margin-top:var(--uds-space-400);">Active Skills</h3>
+        <p class="sg-subsection-desc">Skills load when the agent sees a task description that matches.</p>
+
+        <div class="sg-migration-block" style="margin-top:var(--uds-space-200);">
+          <h4 style="font-family:var(--uds-font-family);font-size:var(--uds-font-size-md);font-weight:var(--uds-font-weight-bold);margin:0 0 var(--uds-space-100);"><code>new-component</code></h4>
+          <p style="font-family:var(--uds-font-family);font-size:var(--uds-font-size-sm);color:var(--uds-color-text-secondary);line-height:1.6;margin:0 0 var(--uds-space-150);">Scaffold a new UDS component end to end. Creates <code>content/&lt;id&gt;.json</code> with required-minimum fields, an empty CSS file, sidebar entry, page section, <code>COMPONENT_STATUS</code> entry, and bumps the SITE version. Component lands at "placeholder" status with ~6/22 spec completeness — designer fills in the rest over time.</p>
+          <p style="font-family:var(--uds-font-family);font-size:var(--uds-font-size-sm);color:var(--uds-color-text-secondary);margin:0 0 var(--uds-space-150);"><strong>Triggers:</strong> "add a new component", "scaffold a component called X", "set up a new component for Y"</p>
+          <p style="font-family:var(--uds-font-family);font-size:var(--uds-font-size-sm);color:var(--uds-color-text-secondary);margin:0;"><strong>File:</strong> <a class="sg-gl-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/skills/new-component/SKILL.md" target="_blank" rel="noopener noreferrer"><code>.cursor/skills/new-component/SKILL.md</code></a></p>
+        </div>
+
+        <h3 class="sg-subsection-title" style="margin-top:var(--uds-space-400);">Active Subagents</h3>
+        <p class="sg-subsection-desc">Subagents spawn in an isolated context window and return a single result. They keep noisy intermediate work (file reads, parallel scans) out of the main conversation.</p>
+
+        <div class="sg-migration-block" style="margin-top:var(--uds-space-200);">
+          <h4 style="font-family:var(--uds-font-family);font-size:var(--uds-font-size-md);font-weight:var(--uds-font-weight-bold);margin:0 0 var(--uds-space-100);"><code>spec-audit</code> <span class="sg-roadmap-tag" data-status="done" style="margin-left:var(--uds-space-100);">read-only</span></h4>
+          <p style="font-family:var(--uds-font-family);font-size:var(--uds-font-size-sm);color:var(--uds-color-text-secondary);line-height:1.6;margin:0 0 var(--uds-space-150);">Audits <code>content/*.json</code> spec completeness across one or all UDS components. Reports gaps and recommends the highest-impact fields to fill in next. The same scoring logic the "Spec X/22" pill uses on every component page.</p>
+          <p style="font-family:var(--uds-font-family);font-size:var(--uds-font-size-sm);color:var(--uds-color-text-secondary);margin:0 0 var(--uds-space-150);"><strong>Triggers:</strong> "audit our specs", "which components are incomplete?", "audit the X spec", "spec audit before release"</p>
+          <p style="font-family:var(--uds-font-family);font-size:var(--uds-font-size-sm);color:var(--uds-color-text-secondary);margin:0 0 var(--uds-space-150);"><strong>Returns:</strong> Markdown report with aggregate stats (average completeness, list below 50%, list missing required fields) and per-component findings (score, missing required, top 3 recommended next fields).</p>
+          <p style="font-family:var(--uds-font-family);font-size:var(--uds-font-size-sm);color:var(--uds-color-text-secondary);margin:0;"><strong>File:</strong> <a class="sg-gl-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/agents/spec-audit.md" target="_blank" rel="noopener noreferrer"><code>.cursor/agents/spec-audit.md</code></a></p>
+        </div>
+
+        <h3 class="sg-subsection-title" style="margin-top:var(--uds-space-400);">How to invoke</h3>
+        <table class="sg-gl-table">
+          <thead><tr><th>Type</th><th>Auto-trigger</th><th>Manual</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Rule</strong></td><td>Always on (or scoped by globs). No invocation needed — the agent reads it on every relevant task.</td><td>n/a — rules are passive guidance</td></tr>
+            <tr><td><strong>Skill</strong></td><td>The agent loads it automatically when the task description matches the skill's <code>description</code> field.</td><td>Type <code>/skill-name</code> in chat to force it</td></tr>
+            <tr><td><strong>Subagent</strong></td><td>The agent delegates automatically when the task description matches.</td><td>Type <code>/subagent-name</code>, or say "use the &lt;name&gt; subagent to..."</td></tr>
+          </tbody>
+        </table>
+
+        <h3 class="sg-subsection-title" style="margin-top:var(--uds-space-400);">How to add new ones</h3>
+
+        <p class="sg-subsection-desc"><strong>Add a Rule</strong> — drop a <code>.mdc</code> file in <code>.cursor/rules/</code> with frontmatter (<code>description</code>, <code>alwaysApply</code> or <code>globs</code>) and the rule body in markdown. Use rules for standing instructions and project conventions ("always do X", "never use Y").</p>
+
+        <p class="sg-subsection-desc"><strong>Add a Skill</strong> — create <code>.cursor/skills/&lt;name&gt;/SKILL.md</code> with frontmatter (<code>name</code>, <code>description</code>) and a step-by-step procedure. Optionally add <code>scripts/</code>, <code>references/</code>, or <code>assets/</code> subfolders. Use skills for repeatable, well-defined procedures the agent can carry out itself ("scaffold X", "release Y").</p>
+
+        <p class="sg-subsection-desc"><strong>Add a Subagent</strong> — create <code>.cursor/agents/&lt;name&gt;.md</code> with frontmatter (<code>name</code>, <code>description</code>, optionally <code>readonly: true</code>, <code>model</code>, <code>is_background</code>) and the subagent's instructions. Use subagents for tasks that benefit from context isolation: long research, parallel work, or read-only audits.</p>
+
+        <p class="sg-subsection-desc">All three live in the repo and ship with anyone who clones it. The <a class="sg-gl-link" href="#/contribute">How to Contribute</a> page covers when to reach for which.</p>
+
+        <h3 class="sg-subsection-title" style="margin-top:var(--uds-space-400);">Why this matters for designers</h3>
+        <p class="sg-subsection-desc">A designer doesn't need to memorize how to scaffold a component, audit specs, sync changelogs, or run a release. Saying "scaffold a new tooltip component" or "audit our specs" is enough — Cursor picks the right skill or subagent based on the description, and the rules guarantee the version bump and changelog land too. Less ceremony, fewer mistakes, more time on actual design.</p>
+      </div>
+
+      <!-- =================================================================
            REFERENCE — Roadmap
            ================================================================= -->
       <div data-page="roadmap">
@@ -4205,7 +4295,7 @@ registerUdsComponents();</pre>
   <script src="https://cdn.jsdelivr.net/npm/jszip@3/dist/jszip.min.js"></script>
   <script src="./material-icons.js"></script>
   <script src="./uds/uds.js?v=29"></script>
-  <script src="./app.js?v=80"></script>
+  <script src="./app.js?v=81"></script>
   <script src="./demo-builder.js?v=9"></script>
 
 </body>
