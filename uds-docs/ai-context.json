@@ -2,11 +2,14 @@
   "name": "UDS — Urban Design System",
   "version": "0.2",
   "docsUrl": "https://sbajwa32.github.io/uds-docs/",
-  "description": "CSS-first design system with semantic tokens and BEM-style components. Works with HTML, React, Vue, or any framework.",
+  "storybookUrl": "https://storybook.example.com",
+  "description": "CSS-first design system. The doc site is the design specification (this file + the human-facing pages). Production framework-agnostic web components live in Storybook. All code shown on the doc site is example-only — reference, not production.",
+  "exampleOnlyNote": "All HTML/CSS/JS snippets in this file and on the doc site are EXAMPLES. They show the design intent (markup shape, classes, ARIA, keyboard behavior). For production framework code (React, Vue, Svelte, Angular, vanilla custom-element consumers), use the framework-agnostic web components in the UDS Storybook.",
   "install": {
-    "npm": "npm install uds-core",
-    "cdn_css": "https://sbajwa32.github.io/uds-docs/uds/uds.css",
-    "cdn_js": "https://sbajwa32.github.io/uds-docs/uds/uds.js"
+    "tokens_npm": "npm install uds-core",
+    "tokens_css_import": "import 'uds-core/uds.css';",
+    "tokens_cdn": "https://sbajwa32.github.io/uds-docs/uds/uds.css",
+    "components_storybook": "See storybookUrl — register custom elements once, use the tags in any framework"
   },
   "required_fonts": {
     "families": "<link href=\"https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Poppins:wght@400;500;700&family=Roboto:wght@400;500;700&family=Lexend:wght@400;500;700&display=swap\" rel=\"stylesheet\" />",
@@ -32,6 +35,12 @@
     },
     "shadow": ["--uds-shadow-depth-100 (subtle elevation)", "--uds-shadow-depth-300 (dropdown/tooltip)", "--uds-shadow-depth-500 (dialog)", "--uds-shadow-bento (nav panel)", "--uds-overlay-backdrop (dialog overlay)"]
   },
+  "tokenArchitecture": {
+    "primitive": "NEVER use --uds-primitive-* tokens. They are raw palette values that don't change with themes.",
+    "semantic": "ALWAYS use --uds-color-*, --uds-space-*, --uds-font-*, --uds-border-*, --uds-shadow-* tokens. They adapt to themes.",
+    "flow": "Figma variable → Primitive CSS token → Semantic CSS token → Your code",
+    "rule": "If a variable name contains 'primitive', NEVER use it."
+  },
   "theming": {
     "attributes": {
       "data-color-scheme": { "values": ["dark"], "description": "Light is default; set 'dark' for dark mode" },
@@ -42,62 +51,61 @@
     },
     "apply_to": "<html> element"
   },
+  "namingConvention": {
+    "prefix": "udc-",
+    "meaning": "Urban Design Component",
+    "pattern": "BEM: udc-{component}, udc-{component}__{element}",
+    "variants": "Data attributes: data-variant, data-size, data-state",
+    "never": ["uds-", "udc_", "unprefixed custom names"]
+  },
+  "patternMapping": {
+    "toast/alert/banner": "udc-notification",
+    "modal/popup/confirm": "udc-dialog",
+    "select/dropdown": "udc-dropdown",
+    "tag/filter pill": "udc-chip",
+    "status label": "udc-badge",
+    "card with action": "udc-tile",
+    "sidebar nav": "udc-nav-vertical",
+    "top app bar": "udc-nav-header",
+    "search bar": "udc-search",
+    "data grid": "udc-data-table",
+    "hover popup": "udc-tooltip",
+    "toggle/switch": "NOT in UDS yet — build custom with tokens",
+    "pagination": "NOT in UDS yet — build custom with tokens",
+    "accordion": "NOT in UDS yet — build custom with tokens"
+  },
   "components": [
-    { "id": "button", "classes": ["udc-button-primary", "udc-button-secondary", "udc-button-ghost"], "variants": ["data-size=\"sm\"", "data-leading-icon", "data-trailing-icon", "data-icon-only", "data-btn-color=\"danger\"", "disabled"], "html": "<button class=\"udc-button-primary\">Label</button>", "react": "<button className=\"udc-button-primary\">Label</button>", "vue": "<button class=\"udc-button-primary\">Label</button>" },
-    { "id": "text-input", "classes": ["udc-text-input"], "elements": ["__label", "__required", "__field", "__helper", "__counter", "__trailing-btn"], "states": ["data-state=\"error\""], "html": "<div class=\"udc-text-input\"><label class=\"udc-text-input__label\">Label</label><div class=\"udc-text-input__field\"><input type=\"text\" /></div></div>", "react": "<div className=\"udc-text-input\"><label className=\"udc-text-input__label\">Label</label><div className=\"udc-text-input__field\"><input type=\"text\" value={val} onChange={e => setVal(e.target.value)} /></div></div>", "vue": "<div class=\"udc-text-input\"><label class=\"udc-text-input__label\">Label</label><div class=\"udc-text-input__field\"><input type=\"text\" v-model=\"val\" /></div></div>" },
-    { "id": "checkbox", "classes": ["udc-checkbox"], "elements": ["__control", "__label"], "html": "<label class=\"udc-checkbox\"><input type=\"checkbox\" /><span class=\"udc-checkbox__control\"></span><span class=\"udc-checkbox__label\">Label</span></label>", "react": "<label className=\"udc-checkbox\"><input type=\"checkbox\" checked={val} onChange={() => setVal(!val)} /><span className=\"udc-checkbox__control\"></span><span className=\"udc-checkbox__label\">Label</span></label>", "vue": "<label class=\"udc-checkbox\"><input type=\"checkbox\" v-model=\"val\" /><span class=\"udc-checkbox__control\"></span><span class=\"udc-checkbox__label\">Label</span></label>" },
-    { "id": "radio", "classes": ["udc-radio", "udc-radio-group"], "elements": ["__control", "__label", "__legend"], "html": "<div class=\"udc-radio-group\" role=\"radiogroup\"><label class=\"udc-radio\"><input type=\"radio\" name=\"g\" /><span class=\"udc-radio__control\"></span><span class=\"udc-radio__label\">Option</span></label></div>", "react": "<label className=\"udc-radio\"><input type=\"radio\" name=\"g\" checked={val === 'a'} onChange={() => setVal('a')} /><span className=\"udc-radio__control\"></span><span className=\"udc-radio__label\">Option</span></label>", "vue": "<label class=\"udc-radio\"><input type=\"radio\" name=\"g\" value=\"a\" v-model=\"val\" /><span class=\"udc-radio__control\"></span><span class=\"udc-radio__label\">Option</span></label>" },
-    { "id": "dropdown", "classes": ["udc-dropdown"], "elements": ["__label", "__trigger", "__value", "__chevron", "__list", "__item", "__helper"], "states": ["data-state=\"error\"", "aria-disabled=\"true\"", "data-open=\"true\""], "html": "<div class=\"udc-dropdown\"><label class=\"udc-dropdown__label\">Label</label><div class=\"udc-dropdown__trigger\" tabindex=\"0\" role=\"combobox\" aria-expanded=\"false\"><span class=\"udc-dropdown__value\" data-placeholder>Select...</span><span class=\"udc-dropdown__chevron\"><span class=\"material-symbols-outlined\">keyboard_arrow_down</span></span></div><div class=\"udc-dropdown__list\" role=\"listbox\"><div class=\"udc-dropdown__item\" role=\"option\">Option</div></div></div>", "react": "const [open, setOpen] = useState(false); const [val, setVal] = useState(''); // Use data-open={open ? 'true' : 'false'} on wrapper, onClick to toggle", "vue": "const open = ref(false); const val = ref(''); // Use :data-open=\"open ? 'true' : 'false'\" on wrapper, @click to toggle" },
-    { "id": "search", "classes": ["udc-search"], "elements": ["__field", "__icon", "__clear"], "states": ["data-state=\"error\"", "data-has-value=\"true\""], "html": "<div class=\"udc-search\"><div class=\"udc-search__field\"><span class=\"udc-search__icon\"><span class=\"material-symbols-outlined\">search</span></span><input type=\"search\" placeholder=\"Search...\" /><button class=\"udc-search__clear\" aria-label=\"Clear\"><span class=\"material-symbols-outlined\">clear</span></button></div></div>", "react": "const [val, setVal] = useState(''); <div className=\"udc-search\" data-has-value={val.length > 0 ? 'true' : 'false'}>...<input value={val} onChange={e => setVal(e.target.value)} />...<button onClick={() => setVal('')}>", "vue": "const val = ref(''); <div class=\"udc-search\" :data-has-value=\"val.length > 0 ? 'true' : 'false'\">...<input v-model=\"val\" />...<button @click=\"val = ''\">" },
-    { "id": "badge", "classes": ["udc-badge"], "variants": ["data-variant=\"success|warning|error|info|secondary\"", "data-prominent=\"true|false\"", "data-size=\"sm\""], "html": "<span class=\"udc-badge\" data-variant=\"success\">Active</span>", "react": "<span className=\"udc-badge\" data-variant=\"success\">Active</span>", "vue": "<span class=\"udc-badge\" data-variant=\"success\">Active</span>" },
-    { "id": "chip", "classes": ["udc-chip"], "elements": ["__label", "__leading-icon", "__trailing-icon"], "variants": ["data-variant=\"filter|input|dropdown\"", "aria-selected=\"true\""], "html": "<button class=\"udc-chip\" data-variant=\"filter\" aria-selected=\"true\"><span class=\"udc-chip__leading-icon\"><span class=\"material-symbols-outlined\">check</span></span><span class=\"udc-chip__label\">Label</span></button>", "react": "<button className=\"udc-chip\" data-variant=\"filter\" aria-selected={selected} onClick={() => setSelected(!selected)}>...</button>", "vue": "<button class=\"udc-chip\" data-variant=\"filter\" :aria-selected=\"selected\" @click=\"selected = !selected\">...</button>" },
-    { "id": "tabs", "classes": ["udc-tabs", "udc-tab"], "html": "<div class=\"udc-tabs\" role=\"tablist\"><button class=\"udc-tab\" role=\"tab\" aria-selected=\"true\">Tab 1</button></div>", "react": "const [active, setActive] = useState(0); <button className=\"udc-tab\" role=\"tab\" aria-selected={active === 0} onClick={() => setActive(0)}>Tab</button>", "vue": "const active = ref(0); <button class=\"udc-tab\" role=\"tab\" :aria-selected=\"active === 0\" @click=\"active = 0\">Tab</button>" },
-    { "id": "data-table", "classes": ["udc-data-table"], "elements": ["udc-dt-check", "udc-dt-sort", "udc-dt-filter", "udc-dt-action", "udc-dt-align-right", "udc-dt-align-center", "udc-dt-prominent"], "states": ["data-striped=\"true\"", "data-highlight=\"error\""], "html": "<div class=\"udc-data-table\"><table><thead><tr><th class=\"udc-dt-check\"><input type=\"checkbox\" /></th><th>Name <span class=\"udc-dt-sort\" data-dir=\"asc\"></span></th><th>Status</th><th class=\"udc-dt-align-right\">Amount</th><th class=\"udc-dt-action\"></th></tr></thead><tbody><tr><td class=\"udc-dt-check\"><input type=\"checkbox\" /></td><td>Name</td><td><span class=\"udc-badge\" data-variant=\"success\">Active</span></td><td class=\"udc-dt-align-right\">$100</td><td class=\"udc-dt-action\"><button class=\"udc-button-ghost\" data-icon-only><span class=\"material-symbols-outlined\">more_vert</span></button></td></tr></tbody></table></div>", "react": "const [checked, setChecked] = useState(new Set()); // Use checked={checked.has(i)} onChange={() => toggleRow(i)} on each checkbox", "vue": "const checked = ref(new Set()); // Use :checked=\"checked.has(i)\" @change=\"toggleRow(i)\" on each checkbox" },
-    { "id": "tile", "classes": ["udc-tile"], "elements": ["__content", "__label", "__required", "__body", "__chevron"], "states": ["aria-selected=\"true\"", "aria-disabled=\"true\""], "html": "<div class=\"udc-tile\" tabindex=\"0\"><div class=\"udc-tile__content\"><div class=\"udc-tile__label\">Title</div><div class=\"udc-tile__body\">Description</div></div><span class=\"udc-tile__chevron\"><span class=\"material-symbols-outlined\">chevron_right</span></span></div>", "react": "<div className=\"udc-tile\" tabIndex={0} aria-selected={selected === i} onClick={() => setSelected(i)}>...</div>", "vue": "<div class=\"udc-tile\" tabindex=\"0\" :aria-selected=\"selected === i\" @click=\"selected = i\">...</div>" },
-    { "id": "list", "classes": ["udc-list", "udc-list-item"], "elements": ["__label", "__leading-icon", "__trailing-icon"], "states": ["aria-selected=\"true\""], "html": "<div class=\"udc-list\"><div class=\"udc-list-item\" tabindex=\"0\" aria-selected=\"true\"><span class=\"udc-list-item__label\">Item</span></div></div>", "react": "<div className=\"udc-list-item\" tabIndex={0} aria-selected={selected === i} onClick={() => setSelected(i)}>...</div>", "vue": "<div class=\"udc-list-item\" tabindex=\"0\" :aria-selected=\"selected === i\" @click=\"selected = i\">...</div>" },
-    { "id": "notification", "classes": ["udc-notification"], "elements": ["__icon", "__text", "__close"], "variants": ["data-variant=\"info|success|error|warning\"", "data-prominent=\"true\"", "data-inline=\"true\""], "html": "<div class=\"udc-notification\" data-variant=\"info\"><span class=\"udc-notification__icon\"><span class=\"material-symbols-outlined\">info</span></span><span class=\"udc-notification__text\">Message</span><button class=\"udc-notification__close\" aria-label=\"Dismiss\"><span class=\"material-symbols-outlined\">close</span></button></div>", "react": "const [show, setShow] = useState(true); {show && <div className=\"udc-notification\" data-variant=\"info\">...<button onClick={() => setShow(false)}>...</button></div>}", "vue": "const show = ref(true); <div v-if=\"show\" class=\"udc-notification\" data-variant=\"info\">...<button @click=\"show = false\">...</button></div>" },
-    { "id": "dialog", "classes": ["udc-dialog-backdrop", "udc-dialog"], "elements": ["__header", "__title", "__close", "__body", "__footer"], "states": ["data-open=\"true|false\""], "html": "<div class=\"udc-dialog-backdrop\" data-open=\"false\"><div class=\"udc-dialog\" role=\"dialog\" aria-modal=\"true\"><div class=\"udc-dialog__header\"><h2 class=\"udc-dialog__title\">Title</h2><button class=\"udc-dialog__close\" aria-label=\"Close\"><span class=\"material-symbols-outlined\">close</span></button></div><div class=\"udc-dialog__body\">Content</div><div class=\"udc-dialog__footer\"><button class=\"udc-button-secondary\">Cancel</button><button class=\"udc-button-primary\">Confirm</button></div></div></div>", "react": "const [open, setOpen] = useState(false); {open && <div className=\"udc-dialog-backdrop\" data-open=\"true\" onClick={e => { if (e.target === e.currentTarget) setOpen(false); }}>...<button onClick={() => setOpen(false)}>Close</button>...</div>}", "vue": "const open = ref(false); <div v-if=\"open\" class=\"udc-dialog-backdrop\" data-open=\"true\" @click.self=\"open = false\">...<button @click=\"open = false\">Close</button>...</div>" },
-    { "id": "tooltip", "classes": ["udc-tooltip-wrapper", "udc-tooltip"], "variants": ["data-position=\"top|bottom|left|right\""], "html": "<span class=\"udc-tooltip-wrapper\"><button>Trigger</button><span class=\"udc-tooltip\" role=\"tooltip\">Tooltip text</span></span>", "react": "<span className=\"udc-tooltip-wrapper\"><button>Trigger</button><span className=\"udc-tooltip\" role=\"tooltip\">Text</span></span>", "vue": "<span class=\"udc-tooltip-wrapper\"><button>Trigger</button><span class=\"udc-tooltip\" role=\"tooltip\">Text</span></span>" },
-    { "id": "breadcrumb", "classes": ["udc-breadcrumb"], "html": "<nav class=\"udc-breadcrumb\" aria-label=\"Breadcrumb\"><ol><li><a href=\"#\">Home</a></li><li aria-current=\"page\">Current</li></ol></nav>", "react": "<nav className=\"udc-breadcrumb\" aria-label=\"Breadcrumb\"><ol><li><a href=\"#\">Home</a></li><li aria-current=\"page\">Current</li></ol></nav>", "vue": "<nav class=\"udc-breadcrumb\" aria-label=\"Breadcrumb\"><ol><li><a href=\"#\">Home</a></li><li aria-current=\"page\">Current</li></ol></nav>" },
-    { "id": "nav-header", "classes": ["udc-nav-header"], "elements": ["__left", "__right", "udc-nav-logo", "udc-nav-bento-wrapper"], "html": "<div class=\"udc-nav-header\"><div class=\"udc-nav-header__left\"><div class=\"udc-nav-logo\"><span class=\"material-symbols-outlined\">apartment</span><span class=\"udc-nav-logo__text\">App</span></div></div><div class=\"udc-nav-header__right\"><button class=\"udc-button-ghost\" data-icon-only><span class=\"material-symbols-outlined\">account_circle</span></button></div></div>", "react": "Same structure with className", "vue": "Same structure with class" },
-    { "id": "nav-vertical", "classes": ["udc-nav-vertical", "udc-nav-button"], "elements": ["__label"], "variants": ["data-leading-icons=\"false\"", "aria-selected=\"true\""], "html": "<nav class=\"udc-nav-vertical\"><button class=\"udc-nav-button\" aria-selected=\"true\"><span class=\"material-symbols-outlined\">home</span><span class=\"udc-nav-button__label\">Home</span></button></nav>", "react": "const [active, setActive] = useState(0); <button className=\"udc-nav-button\" aria-selected={active === i} onClick={() => setActive(i)}>...</button>", "vue": "const active = ref(0); <button class=\"udc-nav-button\" :aria-selected=\"active === i\" @click=\"active = i\">...</button>" },
-    { "id": "divider", "classes": ["udc-divider-horizontal"], "variants": ["data-padding=\"md|lg|xl\""], "html": "<hr class=\"udc-divider-horizontal\" />", "react": "<hr className=\"udc-divider-horizontal\" />", "vue": "<hr class=\"udc-divider-horizontal\" />" },
-    { "id": "spacer", "classes": ["udc-spacer"], "variants": ["data-size=\"050|100|200|300|400|600\""], "html": "<div class=\"udc-spacer\" data-size=\"200\"></div>", "react": "<div className=\"udc-spacer\" data-size=\"200\" />", "vue": "<div class=\"udc-spacer\" data-size=\"200\"></div>" },
-    { "id": "icon-wrapper", "classes": ["udc-icon-wrapper"], "variants": ["data-size=\"16|20|24|32|48\""], "html": "<span class=\"udc-icon-wrapper\" data-size=\"24\"><span class=\"material-symbols-outlined\">info</span></span>", "react": "<span className=\"udc-icon-wrapper\" data-size=\"24\"><span className=\"material-symbols-outlined\">info</span></span>", "vue": "<span class=\"udc-icon-wrapper\" data-size=\"24\"><span class=\"material-symbols-outlined\">info</span></span>" }
+    { "id": "button", "classes": ["udc-button-primary", "udc-button-secondary", "udc-button-ghost"], "variants": ["data-size=\"sm\"", "data-leading-icon", "data-trailing-icon", "data-icon-only", "data-btn-color=\"danger\"", "disabled"], "html": "<button class=\"udc-button-primary\">Label</button>" },
+    { "id": "text-input", "classes": ["udc-text-input"], "elements": ["__label", "__required", "__field", "__helper", "__counter", "__trailing-btn"], "states": ["data-state=\"error\""], "html": "<div class=\"udc-text-input\"><label class=\"udc-text-input__label\">Label</label><div class=\"udc-text-input__field\"><input type=\"text\" /></div></div>" },
+    { "id": "checkbox", "classes": ["udc-checkbox"], "elements": ["__control", "__label"], "html": "<label class=\"udc-checkbox\"><input type=\"checkbox\" /><span class=\"udc-checkbox__control\"></span><span class=\"udc-checkbox__label\">Label</span></label>" },
+    { "id": "radio", "classes": ["udc-radio", "udc-radio-group"], "elements": ["__control", "__label", "__legend"], "html": "<div class=\"udc-radio-group\" role=\"radiogroup\"><label class=\"udc-radio\"><input type=\"radio\" name=\"g\" /><span class=\"udc-radio__control\"></span><span class=\"udc-radio__label\">Option</span></label></div>" },
+    { "id": "dropdown", "classes": ["udc-dropdown"], "elements": ["__label", "__trigger", "__value", "__chevron", "__list", "__item", "__helper"], "states": ["data-state=\"error\"", "aria-disabled=\"true\"", "data-open=\"true\""], "html": "<div class=\"udc-dropdown\"><label class=\"udc-dropdown__label\">Label</label><div class=\"udc-dropdown__trigger\" tabindex=\"0\" role=\"combobox\" aria-expanded=\"false\"><span class=\"udc-dropdown__value\" data-placeholder>Select...</span><span class=\"udc-dropdown__chevron\"><span class=\"material-symbols-outlined\">keyboard_arrow_down</span></span></div><div class=\"udc-dropdown__list\" role=\"listbox\"><div class=\"udc-dropdown__item\" role=\"option\">Option</div></div></div>" },
+    { "id": "search", "classes": ["udc-search"], "elements": ["__field", "__icon", "__clear"], "states": ["data-state=\"error\"", "data-has-value=\"true\""], "html": "<div class=\"udc-search\"><div class=\"udc-search__field\"><span class=\"udc-search__icon\"><span class=\"material-symbols-outlined\">search</span></span><input type=\"search\" placeholder=\"Search...\" /><button class=\"udc-search__clear\" aria-label=\"Clear\"><span class=\"material-symbols-outlined\">clear</span></button></div></div>" },
+    { "id": "badge", "classes": ["udc-badge"], "variants": ["data-variant=\"success|warning|error|info|secondary\"", "data-prominent=\"true|false\"", "data-size=\"sm\""], "html": "<span class=\"udc-badge\" data-variant=\"success\">Active</span>" },
+    { "id": "chip", "classes": ["udc-chip"], "elements": ["__label", "__leading-icon", "__trailing-icon"], "variants": ["data-variant=\"filter|input|dropdown\"", "aria-selected=\"true\""], "html": "<button class=\"udc-chip\" data-variant=\"filter\" aria-selected=\"true\"><span class=\"udc-chip__leading-icon\"><span class=\"material-symbols-outlined\">check</span></span><span class=\"udc-chip__label\">Label</span></button>" },
+    { "id": "tabs", "classes": ["udc-tabs", "udc-tab"], "html": "<div class=\"udc-tabs\" role=\"tablist\"><button class=\"udc-tab\" role=\"tab\" aria-selected=\"true\">Tab 1</button></div>" },
+    { "id": "data-table", "classes": ["udc-data-table"], "elements": ["udc-dt-check", "udc-dt-sort", "udc-dt-filter", "udc-dt-action", "udc-dt-align-right", "udc-dt-align-center", "udc-dt-prominent"], "states": ["data-striped=\"true\"", "data-highlight=\"error\""], "html": "<div class=\"udc-data-table\"><table><thead><tr><th class=\"udc-dt-check\"><input type=\"checkbox\" /></th><th>Name <span class=\"udc-dt-sort\" data-dir=\"asc\"></span></th><th>Status</th><th class=\"udc-dt-align-right\">Amount</th><th class=\"udc-dt-action\"></th></tr></thead><tbody><tr><td class=\"udc-dt-check\"><input type=\"checkbox\" /></td><td>Name</td><td><span class=\"udc-badge\" data-variant=\"success\">Active</span></td><td class=\"udc-dt-align-right\">$100</td><td class=\"udc-dt-action\"><button class=\"udc-button-ghost\" data-icon-only><span class=\"material-symbols-outlined\">more_vert</span></button></td></tr></tbody></table></div>" },
+    { "id": "tile", "classes": ["udc-tile"], "elements": ["__content", "__label", "__required", "__body", "__chevron"], "states": ["aria-selected=\"true\"", "aria-disabled=\"true\""], "html": "<div class=\"udc-tile\" tabindex=\"0\"><div class=\"udc-tile__content\"><div class=\"udc-tile__label\">Title</div><div class=\"udc-tile__body\">Description</div></div><span class=\"udc-tile__chevron\"><span class=\"material-symbols-outlined\">chevron_right</span></span></div>" },
+    { "id": "list", "classes": ["udc-list", "udc-list-item"], "elements": ["__label", "__leading-icon", "__trailing-icon"], "states": ["aria-selected=\"true\""], "html": "<div class=\"udc-list\"><div class=\"udc-list-item\" tabindex=\"0\" aria-selected=\"true\"><span class=\"udc-list-item__label\">Item</span></div></div>" },
+    { "id": "notification", "classes": ["udc-notification"], "elements": ["__icon", "__text", "__close"], "variants": ["data-variant=\"info|success|error|warning\"", "data-prominent=\"true\"", "data-inline=\"true\""], "html": "<div class=\"udc-notification\" data-variant=\"info\"><span class=\"udc-notification__icon\"><span class=\"material-symbols-outlined\">info</span></span><span class=\"udc-notification__text\">Message</span><button class=\"udc-notification__close\" aria-label=\"Dismiss\"><span class=\"material-symbols-outlined\">close</span></button></div>" },
+    { "id": "dialog", "classes": ["udc-dialog-backdrop", "udc-dialog"], "elements": ["__header", "__title", "__close", "__body", "__footer"], "states": ["data-open=\"true|false\""], "html": "<div class=\"udc-dialog-backdrop\" data-open=\"false\"><div class=\"udc-dialog\" role=\"dialog\" aria-modal=\"true\"><div class=\"udc-dialog__header\"><h2 class=\"udc-dialog__title\">Title</h2><button class=\"udc-dialog__close\" aria-label=\"Close\"><span class=\"material-symbols-outlined\">close</span></button></div><div class=\"udc-dialog__body\">Content</div><div class=\"udc-dialog__footer\"><button class=\"udc-button-secondary\">Cancel</button><button class=\"udc-button-primary\">Confirm</button></div></div></div>" },
+    { "id": "tooltip", "classes": ["udc-tooltip-wrapper", "udc-tooltip"], "variants": ["data-position=\"top|bottom|left|right\""], "html": "<span class=\"udc-tooltip-wrapper\"><button>Trigger</button><span class=\"udc-tooltip\" role=\"tooltip\">Tooltip text</span></span>" },
+    { "id": "breadcrumb", "classes": ["udc-breadcrumb"], "html": "<nav class=\"udc-breadcrumb\" aria-label=\"Breadcrumb\"><ol><li><a href=\"#\">Home</a></li><li aria-current=\"page\">Current</li></ol></nav>" },
+    { "id": "nav-header", "classes": ["udc-nav-header"], "elements": ["__left", "__right", "udc-nav-logo", "udc-nav-bento-wrapper"], "html": "<div class=\"udc-nav-header\"><div class=\"udc-nav-header__left\"><div class=\"udc-nav-logo\"><span class=\"material-symbols-outlined\">apartment</span><span class=\"udc-nav-logo__text\">App</span></div></div><div class=\"udc-nav-header__right\"><button class=\"udc-button-ghost\" data-icon-only><span class=\"material-symbols-outlined\">account_circle</span></button></div></div>" },
+    { "id": "nav-vertical", "classes": ["udc-nav-vertical", "udc-nav-button"], "elements": ["__label"], "variants": ["data-leading-icons=\"false\"", "aria-selected=\"true\""], "html": "<nav class=\"udc-nav-vertical\"><button class=\"udc-nav-button\" aria-selected=\"true\"><span class=\"material-symbols-outlined\">home</span><span class=\"udc-nav-button__label\">Home</span></button></nav>" },
+    { "id": "divider", "classes": ["udc-divider-horizontal"], "variants": ["data-padding=\"md|lg|xl\""], "html": "<hr class=\"udc-divider-horizontal\" />" },
+    { "id": "spacer", "classes": ["udc-spacer"], "variants": ["data-size=\"050|100|200|300|400|600\""], "html": "<div class=\"udc-spacer\" data-size=\"200\"></div>" },
+    { "id": "icon-wrapper", "classes": ["udc-icon-wrapper"], "variants": ["data-size=\"16|20|24|32|48\""], "html": "<span class=\"udc-icon-wrapper\" data-size=\"24\"><span class=\"material-symbols-outlined\">info</span></span>" }
   ],
+  "specSourceOfTruth": {
+    "perComponentJson": "https://sbajwa32.github.io/uds-docs/content/<component>.json",
+    "schema": "https://sbajwa32.github.io/uds-docs/content/schema.json",
+    "fields": ["description", "whenToUse", "whenNotToUse", "acceptanceCriteria", "dependencies", "props", "events", "slots", "states", "contentGuidelines", "commonlyPairedWith", "dosDonts", "accessibility", "knownIssues", "performance", "owner", "draft", "figmaNodeId", "storybookSlug"],
+    "note": "When generating a component implementation, fetch the JSON for that component and align with its acceptanceCriteria, props, events, slots, and accessibility. The component summaries above show the markup shape; the JSON has the full handoff spec."
+  },
   "app_shell": {
     "description": "Standard app layout: nav-header (top) + nav-vertical (sidebar) + main content area",
     "html": "<div class=\"udc-nav-header\">...</div><div style=\"display:flex;min-height:calc(100vh-64px);\"><nav class=\"udc-nav-vertical\" style=\"width:240px;border-right:1px solid var(--uds-color-border-secondary);padding:var(--uds-space-200) 0;\">...</nav><main style=\"flex:1;padding:var(--uds-space-300);overflow-y:auto;\">...</main></div>"
-  },
-  "custom_css_rule": "For layouts or elements NOT covered by UDS components, STILL use UDS tokens for ALL values (colors, spacing, fonts, radii, shadows). Never hardcode.",
-  "framework_rules": {
-    "react": {
-      "css_import": "import 'uds-core/uds.css';",
-      "no_uds_js": true,
-      "use_hooks": true,
-      "jsx_attributes": "className, htmlFor, tabIndex, onChange, onClick",
-      "controlled_inputs": true,
-      "banned": ["dangerouslySetInnerHTML", "class (use className)", "uds.js"]
-    },
-    "vue": {
-      "css_import": "import 'uds-core/uds.css';",
-      "no_uds_js": true,
-      "composition_api": true,
-      "template_attributes": "class, v-model, @click, :aria-selected",
-      "script_setup": true,
-      "banned": ["v-html", "Options API (data/methods/mounted)", "uds.js"]
-    },
-    "html": {
-      "css_link": "<link rel=\"stylesheet\" href=\"uds/uds.css\" />",
-      "js_script": "<script src=\"uds/uds.js\"></script>",
-      "uses_uds_js": true
-    }
-  },
-  "tokenArchitecture": {
-    "primitive": "NEVER use --uds-primitive-* tokens in component code. They are raw palette values that don't change with themes.",
-    "semantic": "ALWAYS use --uds-color-*, --uds-space-*, --uds-font-*, --uds-border-*, --uds-shadow-* tokens. They adapt to themes.",
-    "flow": "Figma variable → Primitive CSS token → Semantic CSS token → Your code",
-    "rule": "If a variable name contains 'primitive', NEVER use it."
   },
   "tokenUsage": {
     "surface-page-main": "Full page background",
@@ -145,47 +153,24 @@
     "content": ["apartment", "home", "mail", "phone", "calendar_today"],
     "library": "https://fonts.google.com/icons"
   },
-  "namingConvention": {
-    "prefix": "udc-",
-    "meaning": "Urban Design Component",
-    "pattern": "BEM: udc-{component}, udc-{component}__{element}",
-    "variants": "Data attributes: data-variant, data-size, data-state",
-    "never": ["uds-", "udc_", "unprefixed custom names"]
-  },
-  "patternMapping": {
-    "toast/alert/banner": "udc-notification",
-    "modal/popup/confirm": "udc-dialog",
-    "select/dropdown": "udc-dropdown",
-    "tag/filter pill": "udc-chip",
-    "status label": "udc-badge",
-    "card with action": "udc-tile",
-    "sidebar nav": "udc-nav-vertical",
-    "top app bar": "udc-nav-header",
-    "search bar": "udc-search",
-    "data grid": "udc-data-table",
-    "hover popup": "udc-tooltip",
-    "toggle/switch": "NOT in UDS — build custom with tokens",
-    "pagination": "NOT in UDS — build custom with tokens",
-    "accordion": "NOT in UDS — build custom with tokens"
-  },
   "complianceChecklist": [
     "No hex colors — use var(--uds-color-*)",
     "No px spacing — use var(--uds-space-*)",
     "No hardcoded fonts — use var(--uds-font-family)",
     "No --uds-primitive-* tokens — semantic only",
-    "No custom components when UDS has an equivalent",
-    "Framework syntax correct (className for React)",
-    "Keyboard behaviors implemented (React/Vue)",
-    "Form inputs controlled (React: value+onChange, Vue: v-model)",
-    "No uds.js in React/Vue"
+    "No custom components when UDS has an equivalent (see patternMapping)",
+    "All interactive components meet keyboard patterns from keyboardPatterns",
+    "All HTML/CSS/JS in this file is example shape — production component code lives in Storybook"
   ],
   "criticalRules": [
     "NEVER use --uds-primitive-* tokens. Only semantic tokens.",
     "NEVER hardcode colors, spacing, or fonts. Always var(--uds-*).",
-    "NEVER load uds.js in React or Vue. Use hooks/refs."
+    "DO NOT copy the example HTML in this file as production framework code. For React/Vue/etc., use the framework-agnostic web components from Storybook.",
+    "When in doubt about behavior or props, fetch content/<component>.json — it has the full spec."
   ],
   "iconGuidance": {
     "udc-icon-wrapper": "Use for standalone icons needing standardized sizing (16/20/24/32/48px)",
     "bare_span": "Use bare <span class='material-symbols-outlined'> inside UDS components that already handle icon sizing"
-  }
+  },
+  "customCssRule": "For layouts or elements NOT covered by UDS components, STILL use UDS tokens for ALL values (colors, spacing, fonts, radii, shadows). Never hardcode."
 }

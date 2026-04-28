@@ -1,20 +1,24 @@
 ---
-description: UDS (Urban Design System) — use this design system for all UI. Tokens for colors/spacing/fonts, 21 components, multi-theme support.
+description: UDS (Urban Design System) — use this design system for all UI. CSS tokens for colors/spacing/fonts, 21 components, multi-theme support. Production components live in Storybook as framework-agnostic web components.
 alwaysApply: true
 ---
 
 # UDS Design System
 
-You are building UI with the **Urban Design System (UDS)**.
+You are building UI with the **Urban Design System (UDS)**. UDS has two layers:
+- **Tokens** — published as `uds-core` on npm. Semantic CSS custom properties for colors, spacing, type, borders, shadows.
+- **Components** — published as **framework-agnostic web components in the UDS Storybook**. Register custom elements once, use the tags in any framework (React, Vue, Svelte, Angular, vanilla, Lit).
 
 **CRITICAL — 3 rules you must NEVER violate:**
 1. **NEVER use `--uds-primitive-*` tokens.** Only use semantic tokens (`--uds-color-*`, `--uds-space-*`, `--uds-font-*`). Primitives don't change with themes.
 2. **NEVER hardcode colors, spacing, or fonts.** No `#171717`, no `16px`, no `'Inter'`. Always `var(--uds-*)`.
-3. **NEVER load `uds.js` in React or Vue.** React uses hooks. Vue uses refs. Only vanilla HTML uses uds.js.
+3. **For components, prefer the Storybook web components.** The HTML examples in this rule show the *design intent* (markup, classes, ARIA, keyboard behavior) — they're a reference. For production code, use `<udc-button>`, `<udc-dialog>`, etc. from Storybook unless you're writing the web component itself.
 
-**Docs:** https://sbajwa32.github.io/uds-docs/
+**Docs (design spec):** https://sbajwa32.github.io/uds-docs/
 **AI context (JSON):** https://sbajwa32.github.io/uds-docs/ai-context.json
-**Install:** `npm install uds-core` then `import 'uds-core/uds.css'`
+**Per-component spec:** https://sbajwa32.github.io/uds-docs/content/<component>.json (acceptance criteria, props, events, slots, states, accessibility)
+**Storybook (production components):** https://storybook.example.com — TODO: update once live
+**Tokens install:** `npm install uds-core` then `import 'uds-core/uds.css'`
 **Icons:** Material Symbols Outlined — browse at https://fonts.google.com/icons
 
 ## Naming Convention
@@ -45,45 +49,40 @@ All UDS component classes use the **`udc-`** prefix (Urban Design Component). Na
 | Pagination | NOT in UDS — build custom with tokens |
 | Accordion | NOT in UDS — build custom with tokens |
 
-## Framework Detection
+## Project Setup
 
-Check `package.json`:
-- `react` in dependencies → React (className, hooks, NO uds.js)
-- `vue` in dependencies → Vue (class, ref, script setup, NO uds.js)
-- Otherwise → vanilla HTML (class, uds.js handles behavior)
+### Tokens (any framework)
+1. Install: `npm install uds-core`
+2. Import once at app entry: `import 'uds-core/uds.css';`
 
-## Project Boilerplate
+### Components — recommended approach
+Use the framework-agnostic web components from the UDS Storybook. Register them once at app entry, then use the custom-element tags anywhere.
 
-### React (Vite)
-```jsx
-// main.jsx
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import 'uds-core/uds.css';
-import App from './App.jsx';
-ReactDOM.createRoot(document.getElementById('root')).render(<App />);
-```
-
-### Vue (Vite)
 ```js
-// main.js
-import { createApp } from 'vue';
+// app entry (any framework)
 import 'uds-core/uds.css';
-import App from './App.vue';
-createApp(App).mount('#app');
+import { registerUdsComponents } from '@uds/components'; // TODO: real package once published
+registerUdsComponents();
 ```
 
-### Vanilla HTML
+```html
+<!-- Then in any framework's template -->
+<udc-button variant="primary">Save</udc-button>
+<udc-dialog open>...</udc-dialog>
+```
+
+### Components — fallback (raw HTML/CSS only)
+If you cannot or should not use the web components (e.g. a strictly server-rendered project, or you're writing the web component itself), copy the HTML structure shown in this rule and the doc site. Use UDS classes and tokens directly. The vanilla HTML pattern requires `uds.js` for interactive behavior:
+
 ```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
   <link rel="stylesheet" href="uds/uds.css" />
 </head>
 <body>
+  <!-- ...UDS markup... -->
   <script src="uds/uds.js"></script>
 </body>
 </html>
@@ -479,7 +478,7 @@ Position: `data-position="top|bottom|left|right"` (default: top).
 </div>
 ```
 
-## Keyboard Patterns (React/Vue)
+## Keyboard Patterns
 
 | Component | Behavior |
 |-----------|----------|
@@ -507,20 +506,16 @@ RIGHT: <div style="background: var(--uds-color-surface-subtle); padding: var(--u
 WRONG: color: var(--uds-primitive-color-blue-60-M);
 RIGHT: color: var(--uds-color-text-interactive);
 
-WRONG: (React) <div class="udc-tile">
-RIGHT: (React) <div className="udc-tile">
+WRONG: Building a custom modal/popup/select/tag/tooltip from scratch
+RIGHT: Use the matching UDS component (see "Common UI Pattern" table above)
 
-WRONG: (React) <input type="text" />  (uncontrolled)
-RIGHT: (React) <input type="text" value={val} onChange={e => setVal(e.target.value)} />
+WRONG: Copying the example HTML from the doc site as production React/Vue code
+RIGHT: Use the framework-agnostic web components from UDS Storybook
+       (e.g. <udc-button>, <udc-dialog>, <udc-data-table>) — they work
+       in any framework. Reach for raw HTML+classes only as a fallback.
 
-WRONG: (Vue) <script> export default { data() { return {} } } </script>
-RIGHT: (Vue) <script setup> import { ref } from 'vue'; const val = ref(''); </script>
-
-WRONG: Building a custom modal/popup from scratch
-RIGHT: Use udc-dialog — it has header, body, footer, backdrop, focus trap
-
-WRONG: Loading <script src="uds.js"> in a React/Vue app
-RIGHT: Remove it — manage all state with useState/ref
+WRONG: Inventing classes like `uds-button`, `myButton`, `udc_button`
+RIGHT: Always use the canonical `udc-{component}` BEM names
 ```
 
 ## Custom CSS
@@ -548,13 +543,19 @@ Before returning ANY code, verify:
 - [ ] No hardcoded font names — use `var(--uds-font-family)`
 - [ ] No `--uds-primitive-*` tokens — semantic only
 - [ ] No custom components when UDS has an equivalent (check the mapping table)
-- [ ] Framework syntax correct (`className` for React, `class` for Vue/HTML)
-- [ ] Interactive components have keyboard behaviors (React/Vue only)
-- [ ] Form inputs are controlled (React: `value`+`onChange`, Vue: `v-model`)
-- [ ] No `uds.js` in React/Vue builds
+- [ ] All `udc-*` classes match the canonical names from this rule
+- [ ] Interactive components meet the documented keyboard patterns
+- [ ] For React/Vue/etc., prefer Storybook web components over copying example HTML
+
+## When You Need More Detail
+
+- **Full per-component spec** (acceptance criteria, props, events, slots, states, accessibility): fetch `https://sbajwa32.github.io/uds-docs/content/<component>.json`
+- **Live token values**: fetch `https://sbajwa32.github.io/uds-docs/uds/uds.css`
+- **Design rationale, do/don'ts, recipes**: browse the doc site at https://sbajwa32.github.io/uds-docs/
+- **Production component implementation**: use the UDS Storybook web components
 
 ## REMEMBER
 
 1. **SEMANTIC tokens only** (`--uds-color-*`, `--uds-space-*`, `--uds-font-*`). NEVER `--uds-primitive-*`.
 2. **NEVER hardcode** colors, spacing, or fonts. Always `var(--uds-*)`.
-3. **React/Vue: NEVER load `uds.js`**. Use hooks/refs for all state.
+3. **The HTML in this rule is example shape, not production framework code**. For React/Vue/etc., use the framework-agnostic web components from the UDS Storybook.

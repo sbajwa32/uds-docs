@@ -973,7 +973,7 @@
   </style>
   <script>
     (function () {
-      var SITE_VERSION = '2026.04.28.3';
+      var SITE_VERSION = '2026.04.28.4';
       var base = window.location.pathname.replace(/\/index\.html$/, '').replace(/\/$/, '');
       fetch(base + '/version.txt?_=' + Date.now()).then(function (r) {
         if (!r.ok) return;
@@ -1011,7 +1011,7 @@
       <span class="udc-tooltip" role="tooltip" data-position="bottom">Build Demo</span>
     </span>
     <select class="sg-version-select" id="sg-version-dropdown" aria-label="UDS version"></select>
-    <span class="sg-brand-bar-build">SITE 2026.04.28.3</span>
+    <span class="sg-brand-bar-build">SITE 2026.04.28.4</span>
   </div>
 
   <!-- Pre-flight checklist dialog -->
@@ -1045,19 +1045,21 @@
         <div class="sg-rule-file">uds-component-checklist.mdc</div>
         <ul>
           <li>CSS: <code>:hover</code>, <code>:focus-visible</code>, disabled states</li>
-          <li>JS: IIFE pattern, <code>_udsInit</code> guard, keyboard handlers</li>
+          <li>JS (when interactive): IIFE pattern, <code>_udsInit</code> guard, keyboard handlers</li>
           <li>Registered in <code>uds.js</code> orchestrator</li>
-          <li>PLAYGROUNDS, IMPL_DATA, CODE_TAB_CONFIGS, STATUS, FIGMA_LINKS entries</li>
-          <li>CHANGELOG entry + JS_FUNC_TO_FILE + React/Vue behavior hooks</li>
+          <li>PLAYGROUNDS, IMPL_DATA, COMPONENT_STATUS, FIGMA_LINKS entries in <code>app.js</code></li>
+          <li>CHANGELOG entry under <code>category: "components"</code></li>
           <li>CSS + JS files added to download ZIP array</li>
         </ul>
 
-        <h3>4. Sample Code Standards</h3>
-        <div class="sg-rule-file">uds-sample-code-standards.mdc</div>
+        <h3>4. Content Schema (spec source of truth)</h3>
+        <div class="sg-rule-file">uds-content-schema.mdc</div>
         <ul>
-          <li>React: proper hooks, no unused setters, no literal <code>{…}</code></li>
-          <li>Vue: Composition API with <code>&lt;script setup&gt;</code></li>
-          <li>All generated code must be valid and copy-pasteable</li>
+          <li>Per-component spec lives in <code>content/&lt;component&gt;.json</code></li>
+          <li>Edit the JSON, NEVER re-introduce spec HTML into <code>index.html</code></li>
+          <li>Empty fields are auto-hidden by the renderer — no placeholder text needed</li>
+          <li>Required minimum: <code>component, title, description, whenToUse, dependencies, accessibility.keyboard, owner</code></li>
+          <li>Aim for 80%+ spec completeness before marking Production Ready</li>
         </ul>
 
         <h3>5. Release Workflow</h3>
@@ -1242,16 +1244,20 @@
         <!-- Machine-readable summary for AI agents — processed first when fetching this URL -->
         <div class="ai-context-summary" style="display:none;" aria-hidden="true">
           UDS (Urban Design System) — CSS-first design system.
+          ARCHITECTURE: Tokens published as 'uds-core' on npm. Components published as framework-agnostic web components in the UDS Storybook. The doc site is the design specification — all HTML/CSS/JS shown here is example only.
           CRITICAL RULES:
           1. NEVER use --uds-primitive-* tokens. Only semantic tokens (--uds-color-*, --uds-space-*, --uds-font-*).
           2. NEVER hardcode colors (#xxx), spacing (16px), or fonts ('Inter'). Always use var(--uds-*).
-          3. NEVER load uds.js in React or Vue. React uses useState hooks. Vue uses ref() composables.
-          Install: npm install uds-core, then import 'uds-core/uds.css'.
+          3. For production component code in any framework, use the Storybook web components (e.g. <udc-button>, <udc-dialog>). Do not copy doc-site example HTML into framework projects as production code.
+          Tokens install: npm install uds-core, then import 'uds-core/uds.css'.
           Icons: Material Symbols Outlined from Google Fonts CDN.
           Component prefix: udc- (e.g. udc-button-primary, udc-dropdown, udc-data-table).
           Theming: set data-color-scheme="dark" on html for dark mode. Semantic tokens adapt automatically.
           Pattern mapping: toast→udc-notification, modal→udc-dialog, select→udc-dropdown, tag→udc-chip, status→udc-badge, card→udc-tile, sidebar→udc-nav-vertical, topbar→udc-nav-header.
           Full JSON context: https://sbajwa32.github.io/uds-docs/ai-context.json
+          Per-component spec (with acceptance criteria, props, events, slots, states, accessibility): https://sbajwa32.github.io/uds-docs/content/&lt;component&gt;.json
+          Schema: https://sbajwa32.github.io/uds-docs/content/schema.json
+          Storybook (production components): see Storybook URL on the doc site.
         </div>
         <h1 class="sg-page-title">AI Assist</h1>
         <p class="sg-page-desc">Everything an AI agent needs to use the Urban Design System. Point your AI coding tool at this page or download the Cursor rule file.</p>
@@ -1259,7 +1265,6 @@
           <button class="sg-page-tab" data-tab="overview" aria-selected="true">Overview</button>
           <button class="sg-page-tab" data-tab="tokens">Tokens</button>
           <button class="sg-page-tab" data-tab="components">Components</button>
-          <button class="sg-page-tab" data-tab="framework">Framework Patterns</button>
           <button class="sg-page-tab" data-tab="theming">Theming</button>
           <button class="sg-page-tab" data-tab="rules">Do's &amp; Don'ts</button>
         </div>
@@ -1389,33 +1394,6 @@
           <div id="sg-ai-components"></div>
         </div>
 
-        <!-- FRAMEWORK TAB -->
-        <div data-tab-panel="framework">
-          <div class="sg-subsection">
-            <h3 class="sg-subsection-title">React</h3>
-            <pre class="sg-playground-code">import 'uds-core/uds.css';
-// Use className, useState for state, no uds.js
-&lt;button className="udc-button-primary" onClick={() => setOpen(true)}&gt;Open&lt;/button&gt;</pre>
-          </div>
-          <div class="sg-subsection">
-            <h3 class="sg-subsection-title">Vue</h3>
-            <pre class="sg-playground-code">&lt;script setup&gt;
-import { ref } from 'vue';
-import 'uds-core/uds.css';
-const open = ref(false);
-&lt;/script&gt;
-&lt;template&gt;
-  &lt;button class="udc-button-primary" @click="open = true"&gt;Open&lt;/button&gt;
-&lt;/template&gt;</pre>
-          </div>
-          <div class="sg-subsection">
-            <h3 class="sg-subsection-title">Vanilla HTML</h3>
-            <pre class="sg-playground-code">&lt;link rel="stylesheet" href="uds/uds.css" /&gt;
-&lt;script src="uds/uds.js"&gt;&lt;/script&gt;
-&lt;button class="udc-button-primary"&gt;Open&lt;/button&gt;</pre>
-          </div>
-        </div>
-
         <!-- THEMING TAB -->
         <div data-tab-panel="theming">
           <div class="sg-subsection">
@@ -1483,23 +1461,12 @@ border-radius: 8px;
 box-shadow: 0 4px 12px rgba(0,0,0,0.08);</pre>
           </div>
           <div class="sg-subsection">
-            <h3 class="sg-subsection-title">React Specific</h3>
+            <h3 class="sg-subsection-title">For Production Code</h3>
             <ul style="font-size:var(--uds-font-size-base);line-height:1.8;padding-left:var(--uds-space-250);">
-              <li>Use <code class="sg-inline-code">className</code> not <code class="sg-inline-code">class</code></li>
-              <li>Use <code class="sg-inline-code">useState</code> for all interactive state</li>
-              <li>Controlled inputs: <code class="sg-inline-code">value={val} onChange={e => setVal(e.target.value)}</code></li>
-              <li>NEVER use <code class="sg-inline-code">dangerouslySetInnerHTML</code></li>
-              <li>NEVER load <code class="sg-inline-code">uds.js</code></li>
-            </ul>
-          </div>
-          <div class="sg-subsection">
-            <h3 class="sg-subsection-title">Vue Specific</h3>
-            <ul style="font-size:var(--uds-font-size-base);line-height:1.8;padding-left:var(--uds-space-250);">
-              <li>Always use <code class="sg-inline-code">&lt;script setup&gt;</code> with Composition API</li>
-              <li>Use <code class="sg-inline-code">ref()</code> for state, <code class="sg-inline-code">v-model</code> for inputs</li>
-              <li>NEVER use <code class="sg-inline-code">v-html</code></li>
-              <li>NEVER use Options API (<code class="sg-inline-code">data()</code>, <code class="sg-inline-code">methods</code>)</li>
-              <li>NEVER load <code class="sg-inline-code">uds.js</code></li>
+              <li>The HTML examples on this site are <strong>example only</strong> — they show the design intent (markup shape, classes, ARIA, keyboard behavior).</li>
+              <li>Use the framework-agnostic <strong>web components from the UDS Storybook</strong> in production projects (any framework).</li>
+              <li>Per-component spec is in <code class="sg-inline-code">content/&lt;component&gt;.json</code> on this site — fetch it for acceptance criteria, props, events, slots, accessibility.</li>
+              <li>Vanilla HTML projects can use <code class="sg-inline-code">uds/uds.css</code> + <code class="sg-inline-code">uds/uds.js</code> directly with the example markup as a fallback.</li>
             </ul>
           </div>
 
@@ -1571,7 +1538,7 @@ DO:    color: var(--uds-color-text-interactive);
            ================================================================= -->
       <div data-page="getting-started">
         <h1 class="sg-page-title">Getting Started</h1>
-        <p class="sg-page-desc">UDS (Urban Design System) is a <strong>vanilla-first</strong> design system. It ships as CSS + a small JavaScript file — no framework dependency. It works with any stack: plain HTML, React, Vue, Angular, Svelte, or anything else. Add the files to your project, then copy component markup from the docs.</p>
+        <p class="sg-page-desc">UDS (Urban Design System) ships in two layers: <strong>tokens</strong> (semantic CSS custom properties) and <strong>components</strong> (framework-agnostic web components in Storybook). Tokens drop into any stack via <code class="sg-inline-code">uds.css</code>; components register once and work in React, Vue, Svelte, Angular, or vanilla. The doc site is the design specification — all code shown is example-only.</p>
 
         <h2 class="sg-page-title" style="font-size:22px;margin-top:8px;">How it works</h2>
         <div class="sg-package-cards">
@@ -1646,95 +1613,48 @@ import 'uds-core/uds.css';</pre>
     ├── spacer.css                  <span class="comment">← CSS-only</span>
     └── breadcrumb.css              <span class="comment">← CSS-only</span></pre>
 
-        <h2 class="sg-page-title" style="font-size:22px;">Setup by Framework</h2>
-        <p class="sg-page-desc">UDS is plain CSS — the setup is the same idea everywhere. Add the stylesheet and the icon font, then use the class names.</p>
+        <h2 class="sg-page-title" style="font-size:22px;">Two Layers</h2>
+        <p class="sg-page-desc">UDS ships in two layers. Use both, or just the tokens layer if you're using the Storybook web components.</p>
 
-        <h3 class="sg-subsection-title">Plain HTML</h3>
-        <p class="sg-subsection-desc">Add the icon font, the stylesheet, and the JS file. No build tools needed.</p>
+        <h3 class="sg-subsection-title">1. Tokens (CSS only)</h3>
+        <p class="sg-subsection-desc">Semantic CSS custom properties for colors, spacing, type, borders, and shadows. Drop the stylesheet in any project — the icon font is a separate link.</p>
         <pre class="sg-playground-code">&lt;head&gt;
   &lt;!-- Material Symbols icon font (required for icons) --&gt;
   &lt;link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" /&gt;
 
-  &lt;!-- UDS stylesheet --&gt;
+  &lt;!-- UDS tokens + base styles --&gt;
   &lt;link rel="stylesheet" href="uds/uds.css" /&gt;
-&lt;/head&gt;
+&lt;/head&gt;</pre>
 
-&lt;body&gt;
-  &lt;!-- Use any UDS component — copy markup from the docs --&gt;
-  &lt;button class="udc-button-primary"&gt;Save changes&lt;/button&gt;
+        <h3 class="sg-subsection-title" style="margin-top:32px;">2. Components — Storybook web components (recommended)</h3>
+        <p class="sg-subsection-desc">Production component code lives in the UDS Storybook as framework-agnostic web components. Register them once at app entry, then use the tags in any framework — React, Vue, Svelte, Angular, vanilla.</p>
+        <pre class="sg-playground-code">// app entry (any framework)
+import 'uds-core/uds.css';
+import { registerUdsComponents } from '@uds/components'; // (TODO: real package once published)
+registerUdsComponents();</pre>
+        <pre class="sg-playground-code" style="margin-top:12px;">&lt;!-- Then in any framework's template --&gt;
+&lt;udc-button variant="primary"&gt;Save&lt;/udc-button&gt;
+&lt;udc-dialog open&gt;...&lt;/udc-dialog&gt;</pre>
+        <p style="font-size:13px;color:var(--uds-color-text-secondary);margin-top:8px;line-height:1.6;">Browse the Storybook for live demos, props, and the full component API. Until the Storybook is live, this section is a placeholder — see the <a href="#/migration-guides" style="color:var(--uds-color-text-interactive);">Migration Guides</a>.</p>
 
-  &lt;!-- UDS behaviors (auto-initialises tabs, validation, etc.) --&gt;
-  &lt;script src="uds/uds.js"&gt;&lt;/script&gt;
-&lt;/body&gt;</pre>
+        <h3 class="sg-subsection-title" style="margin-top:32px;">2b. Components — vanilla HTML fallback</h3>
+        <p class="sg-subsection-desc">If a project can't use web components (strictly server-rendered, etc.), copy the HTML structure shown on each component page into your markup and load <code class="sg-inline-code">uds.js</code> for interactive behavior. Note: <strong>all code on this site is example only</strong> — production code lives in Storybook.</p>
+        <pre class="sg-playground-code">&lt;link rel="stylesheet" href="uds/uds.css" /&gt;
+&lt;script src="uds/uds.js"&gt;&lt;/script&gt;
 
-        <h3 class="sg-subsection-title" style="margin-top:32px;">React (CRA / Vite / Next.js)</h3>
-        <p class="sg-subsection-desc">Copy the <code class="sg-inline-code">uds/</code> folder into your <code class="sg-inline-code">src/</code> directory. Import the CSS once. In React, you manage state with hooks — UDS provides the styling via CSS classes, and you write the logic natively.</p>
-        <pre class="sg-playground-code">/* src/index.js or src/main.jsx */
-import './uds/uds.css';
-</pre>
-        <pre class="sg-playground-code" style="margin-top:12px;">import { useState } from 'react';
-
-function SearchInput() {
-  const [query, setQuery] = useState('');
-
-  return (
-    &lt;div className="udc-text-input"&gt;
-      &lt;label className="udc-text-input__label"&gt;Search&lt;/label&gt;
-      &lt;div className="udc-text-input__field"&gt;
-        &lt;span className="udc-text-input__leading-icon"&gt;
-          &lt;span className="material-symbols-outlined"&gt;search&lt;/span&gt;
-        &lt;/span&gt;
-        &lt;input
-          type="text"
-          placeholder="Search..."
-          value={query}
-          onChange={(e) =&gt; setQuery(e.target.value)}
-        /&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
-  );
-}</pre>
-        <p style="font-size:13px;color:var(--uds-color-text-secondary);margin-top:8px;line-height:1.6;">Note: In React you don't need <code class="sg-inline-code">uds.js</code> — React handles component logic natively via hooks. The UDS CSS classes provide all the styling.</p>
-
-        <h3 class="sg-subsection-title" style="margin-top:32px;">Vue 3</h3>
-        <p class="sg-subsection-desc">Copy the <code class="sg-inline-code">uds/</code> folder into your project. Import the CSS once. Vue handles state with <code class="sg-inline-code">ref()</code> and <code class="sg-inline-code">v-model</code> — UDS provides the styling.</p>
-        <pre class="sg-playground-code">/* main.js */
-import './uds/uds.css';
-import { createApp } from 'vue';
-import App from './App.vue';
-createApp(App).mount('#app');
-</pre>
-        <pre class="sg-playground-code" style="margin-top:12px;">&lt;script setup&gt;
-import { ref } from 'vue';
-
-const query = ref('');
-&lt;/script&gt;
-
-&lt;template&gt;
-  &lt;div class="udc-text-input"&gt;
-    &lt;label class="udc-text-input__label"&gt;Search&lt;/label&gt;
-    &lt;div class="udc-text-input__field"&gt;
-      &lt;span class="udc-text-input__leading-icon"&gt;
-        &lt;span class="material-symbols-outlined"&gt;search&lt;/span&gt;
-      &lt;/span&gt;
-      &lt;input type="text" placeholder="Search..." v-model="query" /&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-&lt;/template&gt;</pre>
-        <p style="font-size:13px;color:var(--uds-color-text-secondary);margin-top:8px;line-height:1.6;">Note: In Vue you don't need <code class="sg-inline-code">uds.js</code> — Vue handles reactivity natively. The UDS CSS classes provide all the styling.</p>
-
-        <h3 class="sg-subsection-title" style="margin-top:32px;">Angular / Svelte / Others</h3>
-        <p class="sg-subsection-desc">Same approach — import <code class="sg-inline-code">uds.css</code> in your global styles and optionally add <code class="sg-inline-code">uds.js</code> for vanilla component behavior. Each interactive component has its own <code class="sg-inline-code">.js</code> file that <code class="sg-inline-code">uds.js</code> auto-loads. The class names and HTML patterns are the same everywhere. Use the <strong>HTML / CSS</strong> tab on each component page for the base markup, and handle state in your framework's native way.</p>
+&lt;!-- Copy markup from any component page --&gt;
+&lt;button class="udc-button-primary"&gt;Save changes&lt;/button&gt;</pre>
 
         <h2 class="sg-page-title" style="font-size:22px;margin-top:40px;">Using the Docs</h2>
-        <p class="sg-page-desc">Each component page in the sidebar has everything you need:</p>
+        <p class="sg-page-desc">Each component page in the sidebar has everything you need to spec the component:</p>
         <table class="sg-api-table" style="margin-top:12px;"><thead><tr><th>Tab</th><th>What you'll find</th></tr></thead><tbody>
-          <tr><td><strong>Examples</strong></td><td>Live previews with a "Show code" toggle — copy the HTML directly</td></tr>
-          <tr><td><strong>Code</strong></td><td>CSS import path, full list of classes, data attributes, and framework-specific usage</td></tr>
-          <tr><td><strong>Playground</strong></td><td>Interactive sandbox — configure any prop and get the exact markup to paste into your code</td></tr>
-          <tr><td><strong>Usage</strong></td><td>When to use, when not to use, and accessibility notes</td></tr>
+          <tr><td><strong>Examples</strong></td><td>Live previews with a "Show code" toggle. Data-consuming components (Data Table, List, Dropdown, Search, Breadcrumb) include realistic data examples (tiny / large / long-content / empty / loading)</td></tr>
+          <tr><td><strong>Code</strong></td><td>Vanilla HTML/CSS structure showing the design intent. Example only — for production framework code, use the Storybook web components</td></tr>
+          <tr><td><strong>Guidelines</strong></td><td>Full handoff spec: when to use, acceptance criteria, props, events, slots, states, accessibility, ownership. Auto-rendered from <code class="sg-inline-code">content/&lt;component&gt;.json</code></td></tr>
+          <tr><td><strong>Changelog</strong></td><td>Per-component release history</td></tr>
+          <tr><td><strong>Playground</strong></td><td>Interactive sandbox — configure variants and states to see the markup the spec implies</td></tr>
         </tbody></table>
-        <p style="font-size:13px;color:var(--uds-color-text-secondary);margin-top:12px;line-height:1.6;">Use the <strong>Framework</strong> toggle at the top of Code tabs and Playgrounds to switch between vanilla HTML, React (with hooks), and Vue (with Composition API). Each framework shows native, idiomatic code — not auto-converted HTML.</p>
+        <p style="font-size:13px;color:var(--uds-color-text-secondary);margin-top:12px;line-height:1.6;">Hit <kbd style="font-family:monospace;background:var(--uds-color-surface-alt);padding:1px 6px;border-radius:4px;border:1px solid var(--uds-color-border-default);">/</kbd> or <kbd style="font-family:monospace;background:var(--uds-color-surface-alt);padding:1px 6px;border-radius:4px;border:1px solid var(--uds-color-border-default);">⌘K</kbd> anywhere to open the global token search.</p>
 
         <h2 class="sg-page-title" style="font-size:22px;margin-top:40px;">Theming</h2>
         <p class="sg-page-desc">UDS supports multiple themes via <code class="sg-inline-code">data-*</code> attributes on the <code class="sg-inline-code">&lt;html&gt;</code> element. Set them to switch color schemes, brands, fonts, and density at runtime — no rebuild needed.</p>
@@ -4285,7 +4205,7 @@ const query = ref('');
   <script src="https://cdn.jsdelivr.net/npm/jszip@3/dist/jszip.min.js"></script>
   <script src="./material-icons.js"></script>
   <script src="./uds/uds.js?v=29"></script>
-  <script src="./app.js?v=78"></script>
+  <script src="./app.js?v=79"></script>
   <script src="./demo-builder.js?v=9"></script>
 
 </body>
