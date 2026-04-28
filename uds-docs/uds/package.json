@@ -1,8 +1,8 @@
 {
   "name": "uds-core",
   "version": "0.2.0",
-  "description": "UDS (Urban Design System) — CSS-first design system with semantic tokens, 21+ components, and multi-theme support. Works with any stack: HTML, React, Vue, Angular, Svelte.",
-  "keywords": ["design-system", "css", "tokens", "components", "urban-design-system"],
+  "description": "UDS (Urban Design System) — token layer for the Urban Design System. Semantic CSS custom properties for colors, spacing, type, borders, and shadows, plus a small JS orchestrator for vanilla HTML projects. For framework-agnostic web components (React, Vue, Svelte, Angular, vanilla), see the UDS Storybook.",
+  "keywords": ["design-system", "css", "tokens", "design-tokens", "urban-design-system"],
   "author": "UDS Team",
   "license": "MIT",
   "style": "uds.css",

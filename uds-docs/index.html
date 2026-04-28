@@ -973,7 +973,7 @@
   </style>
   <script>
     (function () {
-      var SITE_VERSION = '2026.04.28.4';
+      var SITE_VERSION = '2026.04.28.5';
       var base = window.location.pathname.replace(/\/index\.html$/, '').replace(/\/$/, '');
       fetch(base + '/version.txt?_=' + Date.now()).then(function (r) {
         if (!r.ok) return;
@@ -1011,7 +1011,7 @@
       <span class="udc-tooltip" role="tooltip" data-position="bottom">Build Demo</span>
     </span>
     <select class="sg-version-select" id="sg-version-dropdown" aria-label="UDS version"></select>
-    <span class="sg-brand-bar-build">SITE 2026.04.28.4</span>
+    <span class="sg-brand-bar-build">SITE 2026.04.28.5</span>
   </div>
 
   <!-- Pre-flight checklist dialog -->
@@ -1480,8 +1480,8 @@ DO:    color: var(--uds-color-text-interactive);
           </div>
 
           <div class="sg-subsection">
-            <h3 class="sg-subsection-title">Keyboard Patterns (React/Vue)</h3>
-            <p class="sg-subsection-desc">Since React/Vue don't load <code class="sg-inline-code">uds.js</code>, implement these behaviors natively:</p>
+            <h3 class="sg-subsection-title">Keyboard Patterns</h3>
+            <p class="sg-subsection-desc">Every interactive UDS component must support these keyboard interactions. The Storybook web components implement them; vanilla-HTML pages get them from <code class="sg-inline-code">uds.js</code>.</p>
             <table class="sg-api-table">
               <thead><tr><th>Component</th><th>Keyboard Behavior</th></tr></thead>
               <tbody>
@@ -1565,11 +1565,11 @@ DO:    color: var(--uds-color-text-interactive);
         <p style="font-size:var(--uds-font-size-sm);color:var(--uds-color-text-secondary);margin-top:var(--uds-space-050);">Or, if your team uses a shared repo, copy the <code class="sg-inline-code">uds/</code> folder directly into your project.</p>
 
         <h2 class="sg-page-title" style="font-size:22px;margin-top:var(--uds-space-500);">npm</h2>
-        <p class="sg-page-desc">Install UDS as an npm package for React, Vue, or any bundler-based project.</p>
+        <p class="sg-page-desc">Install the UDS token layer as an npm package for any bundler-based project.</p>
         <pre class="sg-playground-code" style="margin-bottom:var(--uds-space-100);">npm install uds-core</pre>
         <pre class="sg-playground-code" style="margin-bottom:var(--uds-space-200);">// In your entry file (main.jsx, main.js, etc.)
 import 'uds-core/uds.css';</pre>
-        <p style="font-size:var(--uds-font-size-sm);color:var(--uds-color-text-secondary);">Works with Vite, Next.js, and Nuxt. React and Vue manage component state natively — no <code class="sg-inline-code">uds.js</code> needed.</p>
+        <p style="font-size:var(--uds-font-size-sm);color:var(--uds-color-text-secondary);">Works with Vite, Next.js, Nuxt, and most bundlers. This is the <strong>token layer</strong> only — for production component code, register the framework-agnostic web components from the UDS Storybook.</p>
 
         <h2 class="sg-page-title" style="font-size:22px;margin-top:var(--uds-space-500);">CDN</h2>
         <p class="sg-page-desc">Add UDS to any page with two tags — no build step required.</p>
@@ -4205,7 +4205,7 @@ registerUdsComponents();</pre>
   <script src="https://cdn.jsdelivr.net/npm/jszip@3/dist/jszip.min.js"></script>
   <script src="./material-icons.js"></script>
   <script src="./uds/uds.js?v=29"></script>
-  <script src="./app.js?v=79"></script>
+  <script src="./app.js?v=80"></script>
   <script src="./demo-builder.js?v=9"></script>
 
 </body>
