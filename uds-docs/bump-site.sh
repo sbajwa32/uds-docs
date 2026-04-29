@@ -22,11 +22,12 @@ NEW_VERSION="${TODAY}.${NEXT_N}"
 echo "Current: SITE ${CURRENT}"
 echo "New:     SITE ${NEW_VERSION}"
 
-# Update index.html display
-sed -i '' "s/SITE ${CURRENT}/SITE ${NEW_VERSION}/" index.html
-
-# Update inline SITE_VERSION in script block
-sed -i '' "s/var SITE_VERSION = '${CURRENT}'/var SITE_VERSION = '${NEW_VERSION}'/" index.html
+# sed -i is portable across BSD (macOS) and GNU (Linux) when given a backup
+# extension; both treat the backup arg as the suffix and a trailing empty
+# string is unsupported on Linux. We use .bak then remove it.
+sed -i.bak "s/SITE ${CURRENT}/SITE ${NEW_VERSION}/" index.html
+sed -i.bak "s/var SITE_VERSION = '${CURRENT}'/var SITE_VERSION = '${NEW_VERSION}'/" index.html
+rm -f index.html.bak
 
 # Update version.txt
 echo "${NEW_VERSION}" > version.txt
