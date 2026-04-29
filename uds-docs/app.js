@@ -477,7 +477,7 @@
     var sh = subhead(title); if (sh) wrap.appendChild(sh);
     var p = document.createElement('p');
     p.className = 'sg-gl-prose';
-    p.innerHTML = text;
+    p.textContent = text;
     wrap.appendChild(p);
     return wrap;
   }
@@ -491,7 +491,13 @@
     items.forEach(function (item) {
       var li = document.createElement('li');
       if (checklist) {
-        li.innerHTML = '<span class="sg-gl-check" aria-hidden="true"></span><span>' + item + '</span>';
+        var check = document.createElement('span');
+        check.className = 'sg-gl-check';
+        check.setAttribute('aria-hidden', 'true');
+        var text = document.createElement('span');
+        text.textContent = item;
+        li.appendChild(check);
+        li.appendChild(text);
       } else {
         li.textContent = item;
       }
@@ -512,7 +518,7 @@
     ul.className = 'sg-gl-list';
     list.forEach(function (it) {
       var li = document.createElement('li');
-      li.innerHTML = '<code>' + it.path + '</code> <span class="sg-gl-kind">' + it.kind + '</span>';
+      li.innerHTML = '<code>' + esc(it.path) + '</code> <span class="sg-gl-kind">' + esc(it.kind) + '</span>';
       ul.appendChild(li);
     });
     wrap.appendChild(ul);
@@ -532,7 +538,7 @@
       var typeStr = p.type || '';
       if (p.enum && p.enum.length) typeStr += ' (' + p.enum.map(function(e){return "'"+e+"'";}).join(' | ') + ')';
       var def = (p.default === null || p.default === undefined) ? '' : String(p.default);
-      tr.innerHTML = '<td><code>' + p.name + '</code></td><td>' + esc(typeStr) + '</td><td>' + (def ? '<code>' + esc(def) + '</code>' : '') + '</td><td>' + (p.required ? '<strong>yes</strong>' : 'no') + '</td><td>' + esc(p.description || '') + '</td>';
+      tr.innerHTML = '<td><code>' + esc(p.name) + '</code></td><td>' + esc(typeStr) + '</td><td>' + (def ? '<code>' + esc(def) + '</code>' : '') + '</td><td>' + (p.required ? '<strong>yes</strong>' : 'no') + '</td><td>' + esc(p.description || '') + '</td>';
       body.appendChild(tr);
     });
     tbl.appendChild(body);
@@ -550,7 +556,7 @@
     var body = document.createElement('tbody');
     events.forEach(function (e) {
       var tr = document.createElement('tr');
-      tr.innerHTML = '<td><code>' + e.name + '</code></td><td>' + esc(e.payload || '') + '</td><td>' + esc(e.description || '') + '</td>';
+      tr.innerHTML = '<td><code>' + esc(e.name) + '</code></td><td>' + esc(e.payload || '') + '</td><td>' + esc(e.description || '') + '</td>';
       body.appendChild(tr);
     });
     tbl.appendChild(body);
@@ -568,7 +574,7 @@
     var body = document.createElement('tbody');
     slots.forEach(function (s) {
       var tr = document.createElement('tr');
-      tr.innerHTML = '<td><code>' + s.name + '</code></td><td>' + esc(s.description || '') + '</td>';
+      tr.innerHTML = '<td><code>' + esc(s.name) + '</code></td><td>' + esc(s.description || '') + '</td>';
       body.appendChild(tr);
     });
     tbl.appendChild(body);
@@ -586,7 +592,7 @@
     var body = document.createElement('tbody');
     states.forEach(function (s) {
       var tr = document.createElement('tr');
-      tr.innerHTML = '<td><code>' + s.name + '</code></td><td>' + (s.hasVisual ? 'yes' : 'no') + '</td><td>' + esc(s.description || '') + '</td>';
+      tr.innerHTML = '<td><code>' + esc(s.name) + '</code></td><td>' + (s.hasVisual ? 'yes' : 'no') + '</td><td>' + esc(s.description || '') + '</td>';
       body.appendChild(tr);
     });
     tbl.appendChild(body);
@@ -3659,6 +3665,7 @@
       date: '2026-04-29',
       changes: [
         { type: 'changed', text: 'Spec audit follow-up — populated 9 component spec JSONs (`content/badge.json`, `divider.json`, `icon-wrapper.json`, `spacer.json`, `button.json`, `text-input.json`, `dropdown.json`, `data-table.json`, `dialog.json`) with `props`, `events`, `slots`, `states`, `acceptanceCriteria`, `accessibility.keyboard`, `accessibility.screenReader`, `accessibility.wcag`, `dosDonts`, `commonlyPairedWith`, `contentGuidelines`, `visualHierarchy`, and `densityBehavior` derived from existing CSS implementations and rendered examples. Average completeness across these 9 went from 22% → 80%+; the four decorative primitives now explicitly document their non-interactive a11y model so screen-reader audits can verify coverage. The Dropdown spec also flags the `add_circle_outline` default leading-icon as a known issue per the visual inspection report.' },
+        { type: 'fixed', text: '`renderGuidelines()` HTML-injection bug — `sectionProse()`, the `Acceptance Criteria` checklist, and `<code>` cells for prop/event/slot/state names all used `innerHTML` with unescaped user content. As soon as a spec mentioned literal HTML element names (e.g. `<input>`, `<button>`), the renderer parsed them as real elements (the Text Input acceptance-criteria list was actually rendering an empty input field inline). Now uses `textContent` for prose and the existing `esc()` helper for code-cell names.' },
         { type: 'fixed', text: '`uds-docs/bump-site.sh`: replaced BSD-only `sed -i \'\'` with portable `sed -i.bak` + cleanup so the preflight bump script works the same on macOS and Linux Cloud Agent VMs. Removed the matching warning from `AGENTS.md`.' }
       ]
     }
