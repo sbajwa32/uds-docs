@@ -1,5 +1,6 @@
 {
   "install": "echo 'No install step needed — UDS docs is a pure HTML/CSS/JS site'",
+  "start": "bash .cursor/desktop-preview.sh",
   "terminals": [
     {
       "name": "UDS doc site (local server)",

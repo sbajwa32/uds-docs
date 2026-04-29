@@ -33,6 +33,16 @@ framework. Edit files, push, GitHub Actions auto-deploys.
   and starts a `python3 -m http.server` on port 4000 inside `uds-docs/`. If
   you need to test a render, `curl http://localhost:4000/` works inside the
   cloud VM.
+- **Desktop preview is pre-wired.** On every fresh Cloud Agent VM, the
+  `start` command in `.cursor/environment.json` runs `.cursor/desktop-preview.sh`
+  which (a) sets Plank to auto-hide so the dock doesn't cover content,
+  (b) waits for the doc-site server on port 4000, and (c) launches Chrome
+  on `DISPLAY=:1` at `http://localhost:4000/` sized to fill the 1920x1200
+  VNC display. To take a screenshot of what the user sees on the desktop
+  preview, `pip3 install pyscreenshot pillow` (already present) and run
+  `DISPLAY=:1 python3 -c "import pyscreenshot; pyscreenshot.grab().save('/tmp/shot.png')"`.
+  To drive the browser (navigate, scroll, hover, click), use `xdotool`
+  with `DISPLAY=:1`. The script is idempotent — re-running it is safe.
 - **The agent VM is Ubuntu.** All the bash scripts (`bump-site.sh`,
   `release.sh`) are POSIX-friendly. `bump-site.sh` uses BSD `sed -i ''` —
   on Linux this becomes `sed -i` (no empty arg). If you hit a sed error in
