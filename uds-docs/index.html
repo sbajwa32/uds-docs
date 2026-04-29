@@ -322,8 +322,211 @@
     .sg-recent-full:hover { text-decoration: underline; }
 
     /* =====================================================================
-       Reference pages (Glossary, FAQ, Contribute, Roadmap, Platform, Migration)
+       Reference pages (About UDS, Glossary, FAQ, Contribute, Roadmap, Platform, Migration)
        ===================================================================== */
+
+    /* About UDS — section-level rhythm */
+    .sg-about-section { margin-bottom: var(--uds-space-700); }
+    .sg-about-section:last-child { margin-bottom: 0; }
+    .sg-about-heading {
+      font-family: var(--uds-font-family);
+      font-size: var(--uds-font-size-2xl);
+      font-weight: var(--uds-font-weight-bold);
+      color: var(--uds-color-text-primary);
+      letter-spacing: -0.01em;
+      margin: 0 0 var(--uds-space-150);
+    }
+    .sg-about-section-desc {
+      font-family: var(--uds-font-family);
+      font-size: var(--uds-font-size-base);
+      color: var(--uds-color-text-secondary);
+      line-height: 1.6;
+      margin: 0 0 var(--uds-space-300);
+    }
+    .sg-about-aside {
+      margin-top: var(--uds-space-300);
+      padding: var(--uds-space-200) var(--uds-space-250);
+      background: var(--uds-color-surface-info-subtle);
+      border-left: 3px solid var(--uds-color-border-info);
+      border-radius: var(--uds-border-radius-container-sm);
+      font-family: var(--uds-font-family);
+      font-size: var(--uds-font-size-sm);
+      color: var(--uds-color-text-secondary);
+      line-height: 1.6;
+    }
+    .sg-about-aside strong { color: var(--uds-color-text-primary); font-weight: var(--uds-font-weight-bold); }
+    .sg-about-aside em { font-style: normal; font-weight: var(--uds-font-weight-medium); color: var(--uds-color-text-primary); }
+    .sg-about-aside code, .sg-about-aside a { font-family: var(--uds-font-family); }
+
+    /* About UDS — Purpose cards (2-up grid) */
+    .sg-about-purpose-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--uds-space-300);
+    }
+    @media (max-width: 880px) { .sg-about-purpose-grid { grid-template-columns: 1fr; } }
+    .sg-about-card {
+      padding: var(--uds-space-300);
+      background: var(--uds-color-surface-main);
+      border: 1px solid var(--uds-color-border-secondary);
+      border-radius: var(--uds-border-radius-container-md);
+      display: flex; flex-direction: column;
+    }
+    .sg-about-card__eyebrow {
+      display: inline-flex; align-items: center; gap: var(--uds-space-100);
+      font-family: var(--uds-font-family);
+      font-size: var(--uds-font-size-xs);
+      font-weight: var(--uds-font-weight-bold);
+      text-transform: uppercase; letter-spacing: 0.06em;
+      color: var(--uds-color-text-tertiary);
+      margin-bottom: var(--uds-space-100);
+    }
+    .sg-about-card__eyebrow .material-symbols-outlined {
+      font-size: 18px;
+      color: var(--uds-color-icon-interactive);
+    }
+    .sg-about-card__title {
+      font-family: var(--uds-font-family);
+      font-size: var(--uds-font-size-lg);
+      font-weight: var(--uds-font-weight-bold);
+      color: var(--uds-color-text-primary);
+      margin: 0 0 var(--uds-space-150);
+      letter-spacing: -0.005em;
+    }
+    .sg-about-card__body {
+      font-family: var(--uds-font-family);
+      font-size: var(--uds-font-size-sm);
+      color: var(--uds-color-text-secondary);
+      line-height: 1.65;
+      margin: 0 0 var(--uds-space-150);
+    }
+    .sg-about-card__body strong, .sg-about-card__list strong { color: var(--uds-color-text-primary); font-weight: var(--uds-font-weight-bold); }
+    .sg-about-card__body code, .sg-about-card__list code, .sg-about-card__note code {
+      font-family: monospace; font-size: 0.9em;
+      background: var(--uds-color-surface-alt);
+      padding: 1px 6px;
+      border-radius: var(--uds-border-radius-container-sm);
+    }
+    .sg-about-card__list {
+      padding-left: var(--uds-space-250);
+      font-family: var(--uds-font-family);
+      font-size: var(--uds-font-size-sm);
+      color: var(--uds-color-text-secondary);
+      line-height: 1.65;
+      margin: 0;
+    }
+    .sg-about-card__list li { margin-bottom: var(--uds-space-075); }
+    .sg-about-card__list li:last-child { margin-bottom: 0; }
+    .sg-about-card__note {
+      margin-top: auto;
+      padding-top: var(--uds-space-200);
+      border-top: 1px dashed var(--uds-color-border-secondary);
+      font-family: var(--uds-font-family);
+      font-size: var(--uds-font-size-sm);
+      color: var(--uds-color-text-secondary);
+      line-height: 1.6;
+    }
+    .sg-about-card__note strong { color: var(--uds-color-text-primary); font-weight: var(--uds-font-weight-bold); }
+
+    /* About UDS — Component lifecycle (numbered vertical list with role + status) */
+    .sg-lifecycle {
+      list-style: none;
+      padding: 0; margin: 0;
+      display: flex; flex-direction: column;
+      gap: var(--uds-space-200);
+    }
+    .sg-lifecycle__step {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: var(--uds-space-200);
+      padding: var(--uds-space-250);
+      background: var(--uds-color-surface-main);
+      border: 1px solid var(--uds-color-border-secondary);
+      border-radius: var(--uds-border-radius-container-md);
+      position: relative;
+    }
+    .sg-lifecycle__step:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      left: calc(var(--uds-space-250) + 16px);
+      top: calc(var(--uds-space-250) + 36px);
+      width: 2px;
+      height: calc(100% - var(--uds-space-250) - 24px);
+      background: var(--uds-color-border-secondary);
+      pointer-events: none;
+    }
+    .sg-lifecycle__num {
+      display: inline-flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      width: 32px; height: 32px;
+      border-radius: var(--uds-border-radius-container-full);
+      background: var(--uds-color-surface-interactive-default);
+      color: var(--uds-color-text-inverse);
+      font-family: var(--uds-font-family);
+      font-size: var(--uds-font-size-base);
+      font-weight: var(--uds-font-weight-bold);
+      position: relative; z-index: 1;
+    }
+    .sg-lifecycle__body { min-width: 0; }
+    .sg-lifecycle__title-row {
+      display: flex; align-items: center; gap: var(--uds-space-150);
+      flex-wrap: wrap;
+      margin-bottom: var(--uds-space-100);
+    }
+    .sg-lifecycle__title {
+      font-family: var(--uds-font-family);
+      font-size: var(--uds-font-size-md);
+      font-weight: var(--uds-font-weight-bold);
+      color: var(--uds-color-text-primary);
+      margin: 0;
+      letter-spacing: -0.005em;
+    }
+    .sg-lifecycle__owner {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 2px 10px;
+      border-radius: var(--uds-border-radius-container-full);
+      font-family: var(--uds-font-family);
+      font-size: var(--uds-font-size-xs);
+      font-weight: var(--uds-font-weight-bold);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .sg-lifecycle__owner .material-symbols-outlined { font-size: 14px; }
+    .sg-lifecycle__owner[data-role="any"]       { background: var(--uds-color-surface-subtle);          color: var(--uds-color-text-secondary); border: 1px solid var(--uds-color-border-secondary); }
+    .sg-lifecycle__owner[data-role="designer"]  { background: var(--uds-color-surface-info-subtle);     color: var(--uds-color-text-info);      border: 1px solid var(--uds-color-border-info); }
+    .sg-lifecycle__owner[data-role="developer"] { background: var(--uds-color-surface-success-subtle);  color: var(--uds-color-text-success);   border: 1px solid var(--uds-color-border-success); }
+    .sg-lifecycle__owner[data-role="both"]      { background: var(--uds-color-surface-warning-subtle);  color: var(--uds-color-text-warning);   border: 1px solid var(--uds-color-border-warning); }
+    .sg-lifecycle__desc {
+      font-family: var(--uds-font-family);
+      font-size: var(--uds-font-size-sm);
+      color: var(--uds-color-text-secondary);
+      line-height: 1.65;
+      margin: 0 0 var(--uds-space-150);
+    }
+    .sg-lifecycle__desc code, .sg-lifecycle__desc strong { /* inherit defaults from parent */ }
+    .sg-lifecycle__desc code {
+      font-family: monospace; font-size: 0.9em;
+      background: var(--uds-color-surface-alt);
+      padding: 1px 6px; border-radius: var(--uds-border-radius-container-sm);
+    }
+    .sg-lifecycle__desc strong { color: var(--uds-color-text-primary); font-weight: var(--uds-font-weight-bold); }
+    .sg-lifecycle__meta {
+      display: flex; align-items: center; gap: var(--uds-space-150);
+      flex-wrap: wrap;
+    }
+    .sg-lifecycle__loc {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-family: var(--uds-font-family);
+      font-size: var(--uds-font-size-xs);
+      color: var(--uds-color-text-tertiary);
+      font-weight: var(--uds-font-weight-medium);
+    }
+    .sg-lifecycle__loc .material-symbols-outlined { font-size: 14px; opacity: 0.8; }
+    @media (max-width: 720px) {
+      .sg-lifecycle__step { grid-template-columns: 1fr; }
+      .sg-lifecycle__step:not(:last-child)::after { display: none; }
+    }
+
     .sg-glossary { display: grid; grid-template-columns: max-content 1fr; column-gap: var(--uds-space-300); row-gap: var(--uds-space-100); margin: 0; }
     .sg-glossary dt { font-family: var(--uds-font-family); font-size: var(--uds-font-size-sm); font-weight: var(--uds-font-weight-bold); color: var(--uds-color-text-primary); padding-top: var(--uds-space-100); }
     .sg-glossary dd { font-family: var(--uds-font-family); font-size: var(--uds-font-size-sm); color: var(--uds-color-text-secondary); line-height: 1.6; padding-top: var(--uds-space-100); border-top: 1px dashed var(--uds-color-border-secondary); margin: 0; }
@@ -1048,7 +1251,7 @@
   </style>
   <script>
     (function () {
-      var SITE_VERSION = '2026.04.29.2';
+      var SITE_VERSION = '2026.04.29.3';
       var base = window.location.pathname.replace(/\/index\.html$/, '').replace(/\/$/, '');
       fetch(base + '/version.txt?_=' + Date.now()).then(function (r) {
         if (!r.ok) return;
@@ -1101,7 +1304,7 @@
       </span>
     </button>
     <select class="sg-version-select" id="sg-version-dropdown" aria-label="UDS version"></select>
-    <span class="sg-brand-bar-build">SITE 2026.04.29.2</span>
+    <span class="sg-brand-bar-build">SITE 2026.04.29.3</span>
   </div>
 
   <!-- Pre-flight checklist dialog -->
@@ -1316,7 +1519,7 @@
       <a class="sg-sidebar-link" href="#/templates">Layout Templates</a>
 
       <span class="sg-sidebar-heading">Reference</span>
-      <a class="sg-sidebar-link" href="#/glossary">Glossary</a>
+      <a class="sg-sidebar-link" href="#/about">About UDS</a>
       <a class="sg-sidebar-link" href="#/faq">FAQ</a>
       <a class="sg-sidebar-link" href="#/contribute">How to Contribute</a>
       <a class="sg-sidebar-link" href="#/cursor-workflows">Cursor Workflows</a>
@@ -4061,11 +4264,153 @@ registerUdsComponents();</pre>
       </div>
 
       <!-- =================================================================
-           REFERENCE — Glossary
+           REFERENCE — About UDS (purpose + lifecycle + glossary)
            ================================================================= -->
-      <div data-page="glossary">
-        <h1 class="sg-page-title">Glossary</h1>
-        <p class="sg-page-desc">UDS terminology. Use this when you encounter a term and aren't sure what it means.</p>
+      <div data-page="about">
+        <h1 class="sg-page-title">About UDS</h1>
+        <p class="sg-page-desc">What UDS is, what this site is for, how a component goes from idea to production, and the terminology you'll encounter along the way.</p>
+
+        <!-- ===== Purpose ===== -->
+        <section class="sg-about-section">
+          <h2 class="sg-about-heading">Purpose</h2>
+
+          <div class="sg-about-purpose-grid">
+            <div class="sg-about-card">
+              <div class="sg-about-card__eyebrow">
+                <span class="material-symbols-outlined">palette</span>
+                The design system
+              </div>
+              <h3 class="sg-about-card__title">Urban Design System (UDS)</h3>
+              <p class="sg-about-card__body">A coherent, themable design system shared across our products. UDS ships in two layers: <strong>tokens</strong> (semantic CSS custom properties for colors, spacing, type, borders, shadows) and <strong>components</strong> (framework-agnostic web components in Storybook). One codebase, one design language, multiple brands (Base, ResMan, AnyoneHome, Inhabit) and color schemes (light, dark) — adapted automatically via <code>data-*</code> attributes.</p>
+              <ul class="sg-about-card__list">
+                <li><strong>Designers</strong> get a consistent visual language, locked-in tokens, and ready-made components — no more bespoke buttons per project.</li>
+                <li><strong>Developers</strong> get framework-agnostic web components and a stable token API. Use them in React, Vue, Svelte, Angular, or vanilla.</li>
+                <li><strong>Product / brand teams</strong> get cross-brand consistency with single-attribute theming.</li>
+              </ul>
+            </div>
+
+            <div class="sg-about-card">
+              <div class="sg-about-card__eyebrow">
+                <span class="material-symbols-outlined">menu_book</span>
+                This site
+              </div>
+              <h3 class="sg-about-card__title">UDS Documentation Site</h3>
+              <p class="sg-about-card__body">The <strong>design specification</strong> layer of UDS — where designers author the contract that developers implement. Every component has a structured JSON spec (<code>content/&lt;component&gt;.json</code>) that defines props, events, slots, states, accessibility, and acceptance criteria. The doc site renders that spec as Guidelines, plus visual examples and an interactive playground.</p>
+              <ul class="sg-about-card__list">
+                <li><strong>Designers</strong> author specs here and confirm visual examples match Figma.</li>
+                <li><strong>Developers</strong> read specs here and ship 1:1 implementations to Storybook.</li>
+                <li><strong>PMs / stakeholders</strong> track component status, spec completeness, and changelog history.</li>
+              </ul>
+              <p class="sg-about-card__note"><strong>All code on this site is example only.</strong> Production framework code lives in the UDS Storybook — see <a class="sg-gl-link" href="#/getting-started">Getting Started</a>.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== Component lifecycle ===== -->
+        <section class="sg-about-section">
+          <h2 class="sg-about-heading">Component Lifecycle</h2>
+          <p class="sg-about-section-desc">From "we need a thing" to "an app uses it in production". Every UDS component flows through these six phases.</p>
+
+          <ol class="sg-lifecycle">
+            <li class="sg-lifecycle__step">
+              <div class="sg-lifecycle__num">1</div>
+              <div class="sg-lifecycle__body">
+                <div class="sg-lifecycle__title-row">
+                  <h3 class="sg-lifecycle__title">Propose</h3>
+                  <span class="sg-lifecycle__owner" data-role="any"><span class="material-symbols-outlined">person</span>Anyone</span>
+                </div>
+                <p class="sg-lifecycle__desc">A need is identified — designer, developer, or PM files an entry on the <a class="sg-gl-link" href="#/roadmap">Roadmap</a> with rationale.</p>
+                <div class="sg-lifecycle__meta">
+                  <span class="sg-lifecycle__loc"><span class="material-symbols-outlined">map</span>Roadmap</span>
+                  <span class="sg-roadmap-tag" data-status="proposed">Proposed</span>
+                </div>
+              </div>
+            </li>
+
+            <li class="sg-lifecycle__step">
+              <div class="sg-lifecycle__num">2</div>
+              <div class="sg-lifecycle__body">
+                <div class="sg-lifecycle__title-row">
+                  <h3 class="sg-lifecycle__title">Design</h3>
+                  <span class="sg-lifecycle__owner" data-role="designer"><span class="material-symbols-outlined">brush</span>Designer</span>
+                </div>
+                <p class="sg-lifecycle__desc">Designer builds variants and states in the UDS Components Figma file. Page name gets the orange dot prefix while in progress.</p>
+                <div class="sg-lifecycle__meta">
+                  <span class="sg-lifecycle__loc"><span class="material-symbols-outlined">design_services</span>Figma — UDS Components</span>
+                  <span class="sg-roadmap-tag" data-status="in-progress">In Progress</span>
+                </div>
+              </div>
+            </li>
+
+            <li class="sg-lifecycle__step">
+              <div class="sg-lifecycle__num">3</div>
+              <div class="sg-lifecycle__body">
+                <div class="sg-lifecycle__title-row">
+                  <h3 class="sg-lifecycle__title">Spec</h3>
+                  <span class="sg-lifecycle__owner" data-role="designer"><span class="material-symbols-outlined">brush</span>Designer</span>
+                </div>
+                <p class="sg-lifecycle__desc">Designer writes the structured spec in <code>content/&lt;id&gt;.json</code> — description, when-to-use, props, events, slots, states, accessibility. The Guidelines tab on the doc site auto-renders from this file. Use the <a class="sg-gl-link" href="#/cursor-workflows"><code>new-component</code> skill</a> to scaffold.</p>
+                <div class="sg-lifecycle__meta">
+                  <span class="sg-lifecycle__loc"><span class="material-symbols-outlined">data_object</span>content/&lt;id&gt;.json</span>
+                  <span class="sg-roadmap-tag" data-status="in-progress">Spec building</span>
+                </div>
+              </div>
+            </li>
+
+            <li class="sg-lifecycle__step">
+              <div class="sg-lifecycle__num">4</div>
+              <div class="sg-lifecycle__body">
+                <div class="sg-lifecycle__title-row">
+                  <h3 class="sg-lifecycle__title">Build</h3>
+                  <span class="sg-lifecycle__owner" data-role="developer"><span class="material-symbols-outlined">code</span>Developer</span>
+                </div>
+                <p class="sg-lifecycle__desc">Developer implements the spec 1:1 as a framework-agnostic web component in Storybook. Acceptance criteria from the JSON drive the work.</p>
+                <div class="sg-lifecycle__meta">
+                  <span class="sg-lifecycle__loc"><span class="material-symbols-outlined">auto_awesome</span>Storybook</span>
+                  <span class="sg-roadmap-tag" data-status="in-progress">In Review</span>
+                </div>
+              </div>
+            </li>
+
+            <li class="sg-lifecycle__step">
+              <div class="sg-lifecycle__num">5</div>
+              <div class="sg-lifecycle__body">
+                <div class="sg-lifecycle__title-row">
+                  <h3 class="sg-lifecycle__title">Ship</h3>
+                  <span class="sg-lifecycle__owner" data-role="both"><span class="material-symbols-outlined">groups</span>Designer + Developer</span>
+                </div>
+                <p class="sg-lifecycle__desc">Spec audit (run the <a class="sg-gl-link" href="#/cursor-workflows"><code>spec-audit</code> subagent</a>), accessibility review, visual review against Figma. Status moves to Production Ready, doc site bumps the UDS version, Figma release notes are updated.</p>
+                <div class="sg-lifecycle__meta">
+                  <span class="sg-lifecycle__loc"><span class="material-symbols-outlined">verified</span>Doc site + Figma + Storybook</span>
+                  <span class="sg-roadmap-tag" data-status="done">Production Ready</span>
+                </div>
+              </div>
+            </li>
+
+            <li class="sg-lifecycle__step">
+              <div class="sg-lifecycle__num">6</div>
+              <div class="sg-lifecycle__body">
+                <div class="sg-lifecycle__title-row">
+                  <h3 class="sg-lifecycle__title">Use</h3>
+                  <span class="sg-lifecycle__owner" data-role="developer"><span class="material-symbols-outlined">code</span>Product teams</span>
+                </div>
+                <p class="sg-lifecycle__desc">Product apps install <code>uds-core</code> for tokens and register the Storybook web components. The component appears in real products. Bug reports and enhancement requests flow back via the <strong>Report Issue</strong> button on each component page.</p>
+                <div class="sg-lifecycle__meta">
+                  <span class="sg-lifecycle__loc"><span class="material-symbols-outlined">rocket_launch</span>Production apps</span>
+                  <span class="sg-roadmap-tag" data-status="done">Live</span>
+                </div>
+              </div>
+            </li>
+          </ol>
+
+          <p class="sg-about-aside"><strong>Three sources of truth.</strong> <em>Figma</em> is the visual source. <em>This doc site</em> (specifically <code>content/*.json</code>) is the design spec. <em>Storybook</em> is the implementation. They stay in sync via the <a class="sg-gl-link" href="#/cursor-workflows">release workflow</a>.</p>
+        </section>
+
+        <!-- ===== Glossary (existing content, retained) ===== -->
+        <section class="sg-about-section">
+          <h2 class="sg-about-heading">Glossary</h2>
+          <p class="sg-about-section-desc">UDS terminology. Use this when you encounter a term and aren't sure what it means.</p>
+
         <dl class="sg-glossary">
           <dt>Primitive token</dt><dd>A raw token value (e.g. <code>--uds-primitive-color-blue-500: #1f6df0</code>). Never used directly in component code — primitives feed into semantic tokens.</dd>
           <dt>Semantic token</dt><dd>A purpose-named token (e.g. <code>--uds-color-text-primary</code>). These are what you use in components. Their values change with theme/mode.</dd>
@@ -4385,7 +4730,7 @@ registerUdsComponents();</pre>
   <script src="https://cdn.jsdelivr.net/npm/jszip@3/dist/jszip.min.js"></script>
   <script src="./material-icons.js"></script>
   <script src="./uds/uds.js?v=29"></script>
-  <script src="./app.js?v=83"></script>
+  <script src="./app.js?v=84"></script>
   <script src="./demo-builder.js?v=9"></script>
 
 </body>
