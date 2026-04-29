@@ -4,26 +4,85 @@
   "description": "A spacer adds consistent vertical or horizontal space using UDS space tokens.",
   "whenToUse": "When CSS gap or margin is not available (e.g. in a flow where children cannot be flex/grid items). To enforce a specific token-sized gap.",
   "whenNotToUse": "When you can use CSS gap or margin with tokens directly. Prefer CSS layout properties.",
-  "acceptanceCriteria": [],
+  "acceptanceCriteria": [
+    "Renders the correct gap for every size token (050–600)",
+    "Both vertical and horizontal axes apply the token to the correct dimension",
+    "Spacer takes no space when its size token resolves to 0",
+    "Spacer is not focusable and produces no SR output"
+  ],
   "dependencies": {
     "css": [
       "uds/components/spacer.css"
     ],
     "js": []
   },
-  "props": [],
+  "props": [
+    {
+      "name": "data-axis",
+      "type": "enum",
+      "enum": [
+        "horizontal",
+        "vertical"
+      ],
+      "default": "vertical",
+      "description": "Whether the spacer adds vertical or horizontal whitespace"
+    },
+    {
+      "name": "data-size",
+      "type": "enum",
+      "enum": [
+        "050",
+        "100",
+        "150",
+        "200",
+        "300",
+        "400",
+        "500",
+        "600"
+      ],
+      "default": "300",
+      "description": "Spacing token to apply, mapping to --uds-space-{N}"
+    }
+  ],
   "events": [],
   "slots": [],
-  "states": [],
-  "contentGuidelines": null,
+  "states": [
+    {
+      "name": "default",
+      "description": "Static gap; no interactive states",
+      "hasVisual": true
+    },
+    {
+      "name": "not-applicable",
+      "description": "Spacer is not focusable or interactive"
+    }
+  ],
+  "contentGuidelines": "Spacer carries no content.",
   "commonlyPairedWith": [],
   "dosDonts": {
-    "dos": [],
-    "donts": []
+    "dos": [
+      "Prefer CSS gap or margin tokens directly when the parent is a flex/grid container",
+      "Use spacer only when the layout method does not allow gap (e.g. flow content)"
+    ],
+    "donts": [
+      "Don't put interactive content inside a spacer",
+      "Don't use spacer to push elements to the edges — use flex/grid alignment instead",
+      "Don't introduce custom sizes — pick from the documented spacing scale"
+    ]
   },
   "accessibility": {
-    "keyboard": [],
-    "screenReader": [],
+    "keyboard": [
+      {
+        "key": "—",
+        "action": "Not focusable; the spacer is decorative whitespace"
+      }
+    ],
+    "screenReader": [
+      {
+        "trigger": "Encountered in reading order",
+        "announcement": "Spacer is invisible to assistive tech; meaning is conveyed by surrounding content order"
+      }
+    ],
     "wcag": [],
     "contrast": []
   },

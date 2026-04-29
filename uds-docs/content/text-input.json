@@ -4,7 +4,17 @@
   "description": "A text input lets users enter a single line of text. Includes label, optional helper text, character counter, and icon slots.",
   "whenToUse": "Single-line text entry: names, emails, search queries. When you need validation feedback (error state).",
   "whenNotToUse": "For multi-line entry, use a textarea. For choosing from a predefined set, use a dropdown.",
-  "acceptanceCriteria": [],
+  "acceptanceCriteria": [
+    "Label is always visible above the field; placeholders never replace labels",
+    "Helper text and counter render below the field with consistent spacing across sizes",
+    "Error state recolors the label, border, helper text, and counter; aria-invalid is set on the underlying <input>",
+    "Required state renders the asterisk and applies aria-required",
+    "Disabled state is non-interactive and meets non-text contrast requirements",
+    "Leading/trailing icon slots accept any Material Symbols Outlined name and remain aligned at all sizes",
+    "Focus ring meets WCAG 2.4.7 in light and dark modes",
+    "Counter shows X/N where N === maxLength when maxLength is set",
+    "input/change/focus/blur events fire matching native <input> semantics"
+  ],
   "dependencies": {
     "css": [
       "uds/components/text-input.css"
@@ -13,37 +23,218 @@
       "uds/components/text-input.js"
     ]
   },
-  "props": [],
-  "events": [],
-  "slots": [],
-  "states": [],
-  "contentGuidelines": null,
-  "commonlyPairedWith": [],
+  "props": [
+    {
+      "name": "data-state",
+      "type": "enum",
+      "enum": [
+        "default",
+        "error"
+      ],
+      "default": "default",
+      "description": "Visual validation state. Use \"error\" when helper text describes a validation failure."
+    },
+    {
+      "name": "name",
+      "type": "string",
+      "description": "Form field name; required for forms"
+    },
+    {
+      "name": "value",
+      "type": "string",
+      "description": "Current input value (controlled or initial)"
+    },
+    {
+      "name": "placeholder",
+      "type": "string",
+      "description": "Hint text shown when the field is empty. Never use as a label substitute."
+    },
+    {
+      "name": "label",
+      "type": "string",
+      "required": true,
+      "description": "Visible label rendered above the field"
+    },
+    {
+      "name": "helperText",
+      "type": "string",
+      "description": "Supporting text below the field. Switches color to error when data-state=error."
+    },
+    {
+      "name": "maxLength",
+      "type": "number",
+      "description": "Character limit; pairs with the inline counter (X/N)"
+    },
+    {
+      "name": "required",
+      "type": "boolean",
+      "default": false,
+      "description": "Renders the required asterisk; sets aria-required"
+    },
+    {
+      "name": "disabled",
+      "type": "boolean",
+      "default": false,
+      "description": "Standard HTML disabled attribute"
+    },
+    {
+      "name": "leadingIcon",
+      "type": "string",
+      "description": "Material Symbols Outlined name rendered inside the input on the left"
+    },
+    {
+      "name": "trailingIcon",
+      "type": "string",
+      "description": "Material Symbols Outlined name rendered inside the input on the right (e.g. visibility toggle)"
+    }
+  ],
+  "events": [
+    {
+      "name": "input",
+      "description": "Fires on every keystroke",
+      "payload": "{ value: string }"
+    },
+    {
+      "name": "change",
+      "description": "Fires on blur when the value has changed",
+      "payload": "{ value: string }"
+    },
+    {
+      "name": "focus",
+      "description": "Fires when the field gains focus",
+      "payload": "FocusEvent"
+    },
+    {
+      "name": "blur",
+      "description": "Fires when the field loses focus",
+      "payload": "FocusEvent"
+    }
+  ],
+  "slots": [
+    {
+      "name": "leading",
+      "description": "Custom leading content (icon, prefix). Prefer the leadingIcon prop for Material Symbols."
+    },
+    {
+      "name": "trailing",
+      "description": "Custom trailing content (icon button, suffix). Used for password reveal, clear, etc."
+    }
+  ],
+  "states": [
+    {
+      "name": "default",
+      "description": "Empty or filled, no validation feedback",
+      "hasVisual": true
+    },
+    {
+      "name": "focus-visible",
+      "description": "Keyboard-focused; outline ring on the field",
+      "hasVisual": true
+    },
+    {
+      "name": "error",
+      "description": "data-state=\"error\" — label, border, and helper text recolor to error tokens",
+      "hasVisual": true
+    },
+    {
+      "name": "disabled",
+      "description": "Reduced contrast, non-interactive",
+      "hasVisual": true
+    },
+    {
+      "name": "loading",
+      "description": "Not yet supported"
+    }
+  ],
+  "contentGuidelines": "Labels: noun phrase, sentence case (\"Full name\", not \"NAME\"). Placeholders: short example value, never \"Enter your name\". Helper text: one short sentence; in error state, describe the fix (\"Use a valid email address\"), not the failure (\"Invalid input\").",
+  "commonlyPairedWith": [
+    "dropdown",
+    "checkbox",
+    "radio",
+    "button",
+    "dialog"
+  ],
   "dosDonts": {
-    "dos": [],
-    "donts": []
+    "dos": [
+      "Always pair an input with a visible <label>",
+      "Use helper text to set expectations BEFORE the user types (\"As it appears on your lease\")",
+      "When maxLength is set, also render a counter so the limit is visible",
+      "Use type=\"email\" / type=\"tel\" / inputmode=\"numeric\" to surface the right mobile keyboard"
+    ],
+    "donts": [
+      "Don't replace labels with placeholders — placeholders disappear and reduce form usability",
+      "Don't validate on every keystroke; wait until blur or submit",
+      "Don't use red borders without an accompanying error message",
+      "Don't disable the field when you really mean read-only — they're different states"
+    ]
   },
   "accessibility": {
     "keyboard": [
       {
-        "key": "Tab",
-        "action": "Move focus to/from the input"
+        "key": "Tab / Shift+Tab",
+        "action": "Move focus to / from the input"
       },
       {
         "key": "Enter",
-        "action": "Submit the parent form (if applicable)"
+        "action": "Submits the parent <form> if applicable"
+      },
+      {
+        "key": "Standard text-edit keys",
+        "action": "Native browser handling: arrows, Home/End, Cmd/Ctrl+A, etc."
       }
     ],
-    "screenReader": [],
-    "wcag": [],
+    "screenReader": [
+      {
+        "trigger": "Input receives focus",
+        "announcement": "[Label], edit — announces \"required\" when required is set, and the current helper text via aria-describedby"
+      },
+      {
+        "trigger": "data-state=\"error\" applied",
+        "announcement": "Helper text is announced as the error message via aria-describedby; consumer should also set aria-invalid=\"true\""
+      }
+    ],
+    "wcag": [
+      {
+        "criterion": "1.3.1",
+        "level": "A",
+        "howMet": "Visible <label> is programmatically associated with the input via for/id"
+      },
+      {
+        "criterion": "3.3.1",
+        "level": "A",
+        "howMet": "Error messages are visible AND announced via aria-describedby"
+      },
+      {
+        "criterion": "3.3.3",
+        "level": "AA",
+        "howMet": "Error helper text suggests how to fix the input"
+      },
+      {
+        "criterion": "1.4.3",
+        "level": "AA",
+        "howMet": "Label, helper, and field text meet 4.5:1 contrast"
+      },
+      {
+        "criterion": "1.4.11",
+        "level": "AA",
+        "howMet": "Border meets 3:1 against the surface; error border uses --uds-color-border-error"
+      },
+      {
+        "criterion": "2.4.7",
+        "level": "AA",
+        "howMet": "Focus ring on focus-within"
+      }
+    ],
     "contrast": []
   },
-  "knownIssues": [],
+  "knownIssues": [
+    "Loading state is not yet specified — disabled is the closest approximation in 0.2"
+  ],
   "performance": null,
   "motion": null,
   "responsive": null,
-  "visualHierarchy": null,
-  "densityBehavior": null,
+  "visualHierarchy": "Form fields are siblings — keep size and spacing consistent. Group related fields with shared labels (e.g. address group) and use a divider between groups in long forms.",
+  "densityBehavior": "Default field height is comfortable; sm size is reserved for filter rows above tables. Don't mix sizes within the same form.",
   "owner": {
     "designer": "Unassigned",
     "developer": "Unassigned"

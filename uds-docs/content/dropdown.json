@@ -4,7 +4,17 @@
   "description": "A dropdown lets users select a single value from a list of options. It combines a trigger button with a floating option list.",
   "whenToUse": "Single selection from a list of 5+ options. When you need to conserve vertical space compared to radio buttons. Form fields where the user picks from a predefined set.",
   "whenNotToUse": "For 2–4 options, use radio buttons instead so all options are visible. For text-entry with suggestions, use a combobox/autocomplete. For navigation, use nav or tabs.",
-  "acceptanceCriteria": [],
+  "acceptanceCriteria": [
+    "Trigger uses role=\"combobox\" with aria-haspopup=\"listbox\" and aria-expanded reflecting data-open",
+    "Listbox uses role=\"listbox\" and options use role=\"option\" with aria-selected on the chosen value",
+    "Open / close updates data-open=\"true|false\" so CSS, JS, and a11y stay in sync",
+    "Keyboard: Enter/Space, Arrow keys, Home/End, Escape, type-ahead all work as documented",
+    "Error state recolors label, trigger border, and helper text; aria-invalid is set",
+    "Closing via outside-click, Escape, and selection all return focus to the trigger",
+    "Leading icon is OPTIONAL — default examples render WITHOUT a leading icon",
+    "When the list opens near the viewport bottom, it flips above the trigger",
+    "Disabled trigger does not open and is skipped by Tab"
+  ],
   "dependencies": {
     "css": [
       "uds/components/dropdown.css"
@@ -13,45 +23,251 @@
       "uds/components/dropdown.js"
     ]
   },
-  "props": [],
-  "events": [],
-  "slots": [],
-  "states": [],
-  "contentGuidelines": null,
-  "commonlyPairedWith": [],
+  "props": [
+    {
+      "name": "data-state",
+      "type": "enum",
+      "enum": [
+        "default",
+        "error"
+      ],
+      "default": "default",
+      "description": "Visual validation state. \"error\" recolors the label, trigger border, and helper text"
+    },
+    {
+      "name": "data-open",
+      "type": "enum",
+      "enum": [
+        "true",
+        "false"
+      ],
+      "default": "false",
+      "description": "Open/closed state of the option list. Reflected from the JS open/close API."
+    },
+    {
+      "name": "options",
+      "type": "object",
+      "description": "Array of { value, label, disabled?, leadingIcon? }"
+    },
+    {
+      "name": "value",
+      "type": "string",
+      "description": "Currently selected value"
+    },
+    {
+      "name": "name",
+      "type": "string",
+      "description": "Form field name; required when used inside a <form>"
+    },
+    {
+      "name": "label",
+      "type": "string",
+      "required": true,
+      "description": "Visible label above the trigger"
+    },
+    {
+      "name": "placeholder",
+      "type": "string",
+      "default": "Select an option",
+      "description": "Trigger text shown when no value is selected"
+    },
+    {
+      "name": "helperText",
+      "type": "string",
+      "description": "Supporting text below the trigger; recolors with data-state=error"
+    },
+    {
+      "name": "required",
+      "type": "boolean",
+      "default": false,
+      "description": "Renders the required asterisk; sets aria-required"
+    },
+    {
+      "name": "disabled",
+      "type": "boolean",
+      "default": false,
+      "description": "Non-interactive trigger"
+    },
+    {
+      "name": "leadingIcon",
+      "type": "string",
+      "description": "Material Symbols Outlined name rendered inside the trigger before the value. OPTIONAL — leave empty for plain text triggers."
+    }
+  ],
+  "events": [
+    {
+      "name": "change",
+      "description": "Fires when the selected value changes",
+      "payload": "{ value: string, option: Option }"
+    },
+    {
+      "name": "open",
+      "description": "Fires when the option list opens",
+      "payload": "void"
+    },
+    {
+      "name": "close",
+      "description": "Fires when the option list closes",
+      "payload": "{ reason: 'select' | 'escape' | 'outside-click' }"
+    }
+  ],
+  "slots": [
+    {
+      "name": "trigger",
+      "description": "Custom trigger content (advanced; defaults to value/placeholder + chevron)"
+    },
+    {
+      "name": "option",
+      "description": "Custom per-option rendering inside the listbox"
+    }
+  ],
+  "states": [
+    {
+      "name": "default",
+      "description": "Closed, no value selected",
+      "hasVisual": true
+    },
+    {
+      "name": "selected",
+      "description": "A value is selected; the trigger displays the chosen label",
+      "hasVisual": true
+    },
+    {
+      "name": "open",
+      "description": "data-open=\"true\" — option list visible, chevron rotated",
+      "hasVisual": true
+    },
+    {
+      "name": "focus-visible",
+      "description": "Keyboard focus on the trigger",
+      "hasVisual": true
+    },
+    {
+      "name": "error",
+      "description": "data-state=\"error\" — label, trigger border, and helper recolor",
+      "hasVisual": true
+    },
+    {
+      "name": "disabled",
+      "description": "Non-interactive trigger; chevron muted",
+      "hasVisual": true
+    },
+    {
+      "name": "loading",
+      "description": "Not yet specified"
+    },
+    {
+      "name": "empty",
+      "description": "Open list with no matching options — render \"No options\" placeholder"
+    }
+  ],
+  "contentGuidelines": "Trigger placeholder: \"Select [thing]\" not \"Choose…\". Option labels: sentence case, parallel grammar (all nouns or all verbs). Avoid all-caps. If options have icons, use them consistently — either every option has one or none do.",
+  "commonlyPairedWith": [
+    "text-input",
+    "checkbox",
+    "button",
+    "dialog"
+  ],
   "dosDonts": {
-    "dos": [],
-    "donts": []
+    "dos": [
+      "Use the WAI-ARIA combobox pattern (role=combobox + aria-haspopup=listbox + aria-expanded)",
+      "Return focus to the trigger after selection or close",
+      "Show the currently selected value in the trigger when closed"
+    ],
+    "donts": [
+      "Don't use a dropdown for 2–4 options — radio buttons are easier to scan",
+      "Don't use a dropdown for free text entry — use a text input or combobox/autocomplete",
+      "Don't hide critical information behind a dropdown that users have to open to see",
+      "Don't render a leading icon by default — current examples in 0.2 incorrectly use add_circle_outline"
+    ]
   },
   "accessibility": {
     "keyboard": [
       {
-        "key": "Enter / Space",
-        "action": "Open/close the dropdown"
+        "key": "Tab / Shift+Tab",
+        "action": "Move focus to / from the trigger"
       },
       {
-        "key": "Arrow keys",
-        "action": "Navigate options"
+        "key": "Enter or Space",
+        "action": "Open the option list when closed; select the focused option when open"
       },
       {
-        "key": "Enter",
-        "action": "Select focused option"
+        "key": "Down arrow",
+        "action": "Open the list (when closed) and move focus to the first option; while open, move to the next option"
+      },
+      {
+        "key": "Up arrow",
+        "action": "Move focus to the previous option (wraps at the top)"
+      },
+      {
+        "key": "Home / End",
+        "action": "Jump to the first / last option"
       },
       {
         "key": "Escape",
-        "action": "Close the dropdown"
+        "action": "Close the list and return focus to the trigger"
+      },
+      {
+        "key": "Type-ahead letter",
+        "action": "Move focus to the next option whose label starts with the typed character"
       }
     ],
-    "screenReader": [],
-    "wcag": [],
+    "screenReader": [
+      {
+        "trigger": "Trigger receives focus",
+        "announcement": "[Label], combobox, [selected value or placeholder], collapsed (or expanded)"
+      },
+      {
+        "trigger": "Option receives focus inside open listbox",
+        "announcement": "[Option label], [N of M] — selected option is announced as \"selected\""
+      },
+      {
+        "trigger": "data-state=\"error\" applied",
+        "announcement": "Helper text is announced via aria-describedby; consumer should also set aria-invalid=\"true\""
+      }
+    ],
+    "wcag": [
+      {
+        "criterion": "1.3.1",
+        "level": "A",
+        "howMet": "role=combobox + aria-haspopup=listbox + aria-expanded follow the WAI-ARIA combobox pattern"
+      },
+      {
+        "criterion": "2.1.1",
+        "level": "A",
+        "howMet": "Full keyboard support: open/close, navigate, select, type-ahead, escape"
+      },
+      {
+        "criterion": "2.4.3",
+        "level": "A",
+        "howMet": "Focus moves predictably: into the list on open, back to the trigger on close"
+      },
+      {
+        "criterion": "2.4.7",
+        "level": "AA",
+        "howMet": "Visible focus ring on the trigger and on the focused option"
+      },
+      {
+        "criterion": "1.4.3",
+        "level": "AA",
+        "howMet": "Trigger and option text meet 4.5:1 contrast"
+      },
+      {
+        "criterion": "1.4.11",
+        "level": "AA",
+        "howMet": "Trigger border meets 3:1 against surface; error border uses --uds-color-border-error"
+      }
+    ],
     "contrast": []
   },
-  "knownIssues": [],
+  "knownIssues": [
+    "Default example uses add_circle_outline as a leading icon, which reads as \"add an item\" not \"select\". The leading icon is OPTIONAL and should not be the default."
+  ],
   "performance": null,
   "motion": null,
   "responsive": null,
-  "visualHierarchy": null,
-  "densityBehavior": null,
+  "visualHierarchy": "Treat dropdowns as form siblings of text inputs; match label position, helper text style, and required indicator.",
+  "densityBehavior": "Trigger height matches the text-input field height at the same density. The option list itself uses the comfortable density regardless of the trigger size for readability.",
   "owner": {
     "designer": "Unassigned",
     "developer": "Unassigned"
