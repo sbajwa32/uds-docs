@@ -3624,6 +3624,15 @@
         { type: 'added', text: 'Visible token search trigger in the middle of the top header — click to open the search modal. Keyboard shortcuts (/ and Cmd/Ctrl+K) still work; the new trigger discloses them as kbd hints inside the box.' },
         { type: 'changed', text: 'Removed margin-left:auto on .sg-version-select so the new header search trigger can occupy the middle of the brand bar via flex auto-margins.' }
       ]
+    },
+    {
+      version: 'SITE 2026.04.29.2',
+      date: '2026-04-29',
+      changes: [
+        { type: 'fixed', text: 'Token search no longer caps at 50 (empty) / 100 (filtered) results. All ~473 UDS tokens now appear; designers searching broad terms like "color" see every match, not just the first hundred.' },
+        { type: 'added', text: 'Token search shows a sticky count line at the top: "473 tokens · semantic first, primitives last · click to copy var(--name)" or "Showing X of Y" when filtered.' },
+        { type: 'added', text: 'Token search group headers (color, font, space, border, shadow, primitive) now show a per-group count pill so you can see at a glance how many tokens are in each category.' }
+      ]
     }
   ];
 
@@ -4110,12 +4119,12 @@
 
   function searchTokens(query) {
     var idx = buildTokenIndex();
-    if (!query) return idx.slice(0, 50);
+    if (!query) return idx.slice();
     var q = query.toLowerCase().replace(/^--/, '');
     return idx.filter(function (t) {
       return t.name.toLowerCase().indexOf(q) !== -1 ||
              t.value.toLowerCase().indexOf(q) !== -1;
-    }).slice(0, 100);
+    });
   }
 
   function highlightMatch(name, query) {
@@ -4128,13 +4137,12 @@
 
   function renderTokenSearchResults(query) {
     var resultsEl = document.getElementById('sg-token-search-results');
-    var countEl = document.getElementById('sg-token-search-count');
     if (!resultsEl) return;
     var results = searchTokens(query);
-    if (countEl) countEl.textContent = String(buildTokenIndex().length);
+    var total = buildTokenIndex().length;
 
     if (!results.length) {
-      resultsEl.innerHTML = '<div class="sg-token-search__empty">No tokens match "' + escapeHtml(query) + '"</div>';
+      resultsEl.innerHTML = '<div class="sg-token-search__empty">No tokens match "' + escapeHtml(query) + '" — searched ' + total + ' tokens.</div>';
       return;
     }
 
@@ -4146,11 +4154,14 @@
       groups[g].push(t);
     });
     var order = ['color', 'font', 'space', 'border', 'shadow', 'primitive', 'other'];
-    var html = '';
+    var countLabel = query
+      ? 'Showing <strong>' + results.length + '</strong> of <strong>' + total + '</strong> tokens'
+      : '<strong>' + total + '</strong> tokens · semantic first, primitives last · click to copy <code>var(--name)</code>';
+    var html = '<div class="sg-token-search__count">' + countLabel + '</div>';
     var rowIndex = 0;
     order.forEach(function (g) {
       if (!groups[g] || !groups[g].length) return;
-      html += '<div class="sg-token-search__group-title">' + g + '</div>';
+      html += '<div class="sg-token-search__group-title">' + g + ' <span class="sg-token-search__group-count">' + groups[g].length + '</span></div>';
       groups[g].forEach(function (t) {
         var swatch = isColorValue(t.value)
           ? '<span class="sg-token-search__swatch" style="background:' + t.value + '"></span>'

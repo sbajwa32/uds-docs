@@ -476,12 +476,38 @@
       font-family: var(--uds-font-family); font-size: var(--uds-font-size-sm);
       color: var(--uds-color-text-tertiary);
     }
+    .sg-token-search__count {
+      padding: var(--uds-space-100) var(--uds-space-200);
+      font-family: var(--uds-font-family); font-size: var(--uds-font-size-xs);
+      color: var(--uds-color-text-secondary);
+      background: var(--uds-color-surface-subtle);
+      border-bottom: 1px solid var(--uds-color-border-secondary);
+      position: sticky; top: 0; z-index: 1;
+    }
+    .sg-token-search__count strong {
+      color: var(--uds-color-text-primary); font-weight: var(--uds-font-weight-bold);
+    }
+    .sg-token-search__count code {
+      font-family: monospace; font-size: 0.95em;
+      background: var(--uds-color-surface-alt); padding: 1px 4px; border-radius: 3px;
+    }
     .sg-token-search__group-title {
-      padding: var(--uds-space-100) var(--uds-space-200) var(--uds-space-050);
+      padding: var(--uds-space-150) var(--uds-space-200) var(--uds-space-050);
       font-family: var(--uds-font-family); font-size: var(--uds-font-size-xs);
       font-weight: var(--uds-font-weight-bold);
       color: var(--uds-color-text-tertiary);
       text-transform: uppercase; letter-spacing: 0.06em;
+      display: flex; align-items: center; gap: var(--uds-space-100);
+    }
+    .sg-token-search__group-count {
+      display: inline-flex; align-items: center; justify-content: center;
+      min-width: 22px; height: 16px; padding: 0 6px;
+      background: var(--uds-color-surface-alt);
+      color: var(--uds-color-text-secondary);
+      border-radius: var(--uds-border-radius-container-full);
+      font-size: 10px; font-weight: var(--uds-font-weight-bold);
+      letter-spacing: 0;
+      text-transform: none;
     }
     .sg-token-search__row {
       display: flex; align-items: center; gap: var(--uds-space-150);
@@ -1022,7 +1048,7 @@
   </style>
   <script>
     (function () {
-      var SITE_VERSION = '2026.04.29.1';
+      var SITE_VERSION = '2026.04.29.2';
       var base = window.location.pathname.replace(/\/index\.html$/, '').replace(/\/$/, '');
       fetch(base + '/version.txt?_=' + Date.now()).then(function (r) {
         if (!r.ok) return;
@@ -1075,7 +1101,7 @@
       </span>
     </button>
     <select class="sg-version-select" id="sg-version-dropdown" aria-label="UDS version"></select>
-    <span class="sg-brand-bar-build">SITE 2026.04.29.1</span>
+    <span class="sg-brand-bar-build">SITE 2026.04.29.2</span>
   </div>
 
   <!-- Pre-flight checklist dialog -->
@@ -1156,7 +1182,7 @@
         <kbd class="sg-token-search__hint">Esc</kbd>
       </div>
       <div class="sg-token-search__results" id="sg-token-search-results">
-        <div class="sg-token-search__empty">Start typing to search across <span id="sg-token-search-count">all</span> UDS tokens.</div>
+        <div class="sg-token-search__empty">Loading tokens…</div>
       </div>
       <div class="sg-token-search__footer">
         <span><kbd>↑</kbd><kbd>↓</kbd> navigate</span>
@@ -4359,7 +4385,7 @@ registerUdsComponents();</pre>
   <script src="https://cdn.jsdelivr.net/npm/jszip@3/dist/jszip.min.js"></script>
   <script src="./material-icons.js"></script>
   <script src="./uds/uds.js?v=29"></script>
-  <script src="./app.js?v=82"></script>
+  <script src="./app.js?v=83"></script>
   <script src="./demo-builder.js?v=9"></script>
 
 </body>
