@@ -44,9 +44,8 @@ framework. Edit files, push, GitHub Actions auto-deploys.
   To drive the browser (navigate, scroll, hover, click), use `xdotool`
   with `DISPLAY=:1`. The script is idempotent — re-running it is safe.
 - **The agent VM is Ubuntu.** All the bash scripts (`bump-site.sh`,
-  `release.sh`) are POSIX-friendly. `bump-site.sh` uses BSD `sed -i ''` —
-  on Linux this becomes `sed -i` (no empty arg). If you hit a sed error in
-  the cloud, that's why; tell the user.
+  `release.sh`) are POSIX-friendly and use `sed -i.bak` with a removed
+  backup so they work the same on macOS and Linux.
 - **Always preflight.** Before making ANY content/code change, run
   `bash uds-docs/bump-site.sh`. This is enforced by
   `.cursor/rules/uds-master-preflight.mdc`.
