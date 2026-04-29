@@ -1,7 +1,8 @@
 /* ==========================================================================
    UDS Demo Site Builder
-   Generates realistic demo pages using selected UDS components.
-   Supports HTML/CSS, React (CDN), and Vue (CDN) live previews + ZIP download.
+   Generates a vanilla HTML/CSS demo page from the selected UDS components.
+   Supports live preview (iframe overlay) and ZIP download. Reference output
+   only — production framework code lives in the UDS Storybook.
    ========================================================================== */
 
 (function () {

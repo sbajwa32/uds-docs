@@ -339,11 +339,24 @@
 
   function computeCompleteness(data) {
     var filled = 0;
+    var filledFields = [];
+    var missingFields = [];
     COMPLETENESS_FIELDS.forEach(function (path) {
-      if (isFilled(getField(data, path))) filled++;
+      if (isFilled(getField(data, path))) {
+        filled++;
+        filledFields.push(path);
+      } else {
+        missingFields.push(path);
+      }
     });
     var total = COMPLETENESS_FIELDS.length;
-    return { filled: filled, total: total, pct: Math.round((filled / total) * 100) };
+    return {
+      filled: filled,
+      total: total,
+      pct: Math.round((filled / total) * 100),
+      filledFields: filledFields,
+      missingFields: missingFields
+    };
   }
 
   function loadContent(componentId) {
@@ -712,13 +725,20 @@
     if (title) {
       var pill = title.parentNode.querySelector('.sg-spec-completeness');
       if (!pill) {
-        pill = document.createElement('span');
+        pill = document.createElement('button');
+        pill.type = 'button';
         pill.className = 'sg-spec-completeness';
+        pill.setAttribute('aria-haspopup', 'dialog');
+        pill.setAttribute('aria-expanded', 'false');
+        pill.addEventListener('click', function (e) {
+          e.preventDefault();
+          toggleSpecPopover(pill, pageId);
+        });
         title.appendChild(pill);
       }
       pill.textContent = 'Spec ' + score.filled + '/' + score.total;
       pill.setAttribute('data-level', level);
-      pill.setAttribute('title', score.pct + '% complete');
+      pill.setAttribute('title', score.pct + '% complete — click for breakdown');
     }
 
     // Update / create sidebar dot
@@ -733,6 +753,106 @@
       dot.setAttribute('data-level', level);
       dot.setAttribute('title', score.pct + '% spec complete');
     }
+  }
+
+  // Human-readable label for each COMPLETENESS_FIELDS path
+  var SPEC_FIELD_LABELS = {
+    'description': 'Description',
+    'whenToUse': 'When to use',
+    'whenNotToUse': 'When not to use',
+    'acceptanceCriteria': 'Acceptance criteria',
+    'dependencies.css': 'CSS dependencies',
+    'props': 'Props / attributes',
+    'events': 'Events emitted',
+    'slots': 'Slots / content model',
+    'states': 'States coverage',
+    'contentGuidelines': 'Content guidelines',
+    'commonlyPairedWith': 'Commonly paired with',
+    'dosDonts': "Do's & don'ts",
+    'accessibility.keyboard': 'Accessibility — keyboard',
+    'accessibility.screenReader': 'Accessibility — screen reader',
+    'accessibility.wcag': 'Accessibility — WCAG criteria',
+    'accessibility.contrast': 'Accessibility — color contrast',
+    'knownIssues': 'Known issues',
+    'visualHierarchy': 'Visual hierarchy',
+    'densityBehavior': 'Density behavior',
+    'owner': 'Owner (designer + developer)',
+    'figmaNodeId': 'Figma node link',
+    'storybookSlug': 'Storybook story slug'
+  };
+
+  function toggleSpecPopover(triggerEl, pageId) {
+    var existing = document.getElementById('sg-spec-popover');
+    if (existing && existing.dataset.for === pageId) {
+      closeSpecPopover();
+      return;
+    }
+    if (existing) closeSpecPopover();
+
+    var score = completenessScores[pageId];
+    if (!score) return;
+
+    var pop = document.createElement('div');
+    pop.id = 'sg-spec-popover';
+    pop.className = 'sg-spec-popover';
+    pop.setAttribute('role', 'dialog');
+    pop.setAttribute('aria-label', 'Spec completeness for ' + pageId);
+    pop.dataset.for = pageId;
+
+    var filledList = (score.filledFields || []).map(function (p) {
+      return '<li class="sg-spec-popover__filled"><span class="sg-spec-popover__check">&#10003;</span>' + (SPEC_FIELD_LABELS[p] || p) + '</li>';
+    }).join('');
+    var missingList = (score.missingFields || []).map(function (p) {
+      return '<li class="sg-spec-popover__missing"><span class="sg-spec-popover__dot"></span>' + (SPEC_FIELD_LABELS[p] || p) + '</li>';
+    }).join('');
+
+    pop.innerHTML =
+      '<div class="sg-spec-popover__header">' +
+        '<strong>Spec ' + score.filled + '/' + score.total + '</strong>' +
+        ' <span class="sg-spec-popover__pct">(' + score.pct + '%)</span>' +
+        '<button type="button" class="sg-spec-popover__close" aria-label="Close"><span class="material-symbols-outlined">close</span></button>' +
+      '</div>' +
+      '<p class="sg-spec-popover__intro">22 spec fields are tracked per component. Filled fields appear in the Guidelines tab; empty ones are hidden until a designer fills them in via <code>content/' + pageId + '.json</code>.</p>' +
+      (missingList ? '<div class="sg-spec-popover__group"><h4>Missing (' + score.missingFields.length + ')</h4><ul>' + missingList + '</ul></div>' : '') +
+      (filledList ? '<div class="sg-spec-popover__group sg-spec-popover__group--filled"><h4>Filled (' + score.filledFields.length + ')</h4><ul>' + filledList + '</ul></div>' : '') +
+      '<p class="sg-spec-popover__footer">Motion and Responsive Behavior are intentionally deferred (UDS does not yet have those token sets). They do not count toward this score.</p>';
+
+    document.body.appendChild(pop);
+    triggerEl.setAttribute('aria-expanded', 'true');
+
+    // Position the popover below the pill
+    var rect = triggerEl.getBoundingClientRect();
+    pop.style.top = (rect.bottom + window.scrollY + 8) + 'px';
+    pop.style.left = (rect.left + window.scrollX) + 'px';
+
+    // Wire close button + click-outside
+    pop.querySelector('.sg-spec-popover__close').addEventListener('click', closeSpecPopover);
+    setTimeout(function () { document.addEventListener('click', specPopoverOutsideHandler); }, 0);
+    document.addEventListener('keydown', specPopoverEscHandler);
+  }
+
+  function closeSpecPopover() {
+    var pop = document.getElementById('sg-spec-popover');
+    if (pop) {
+      var pageId = pop.dataset.for;
+      var trigger = document.querySelector('[data-page="' + pageId + '"] .sg-spec-completeness');
+      if (trigger) trigger.setAttribute('aria-expanded', 'false');
+      pop.remove();
+    }
+    document.removeEventListener('click', specPopoverOutsideHandler);
+    document.removeEventListener('keydown', specPopoverEscHandler);
+  }
+
+  function specPopoverOutsideHandler(e) {
+    var pop = document.getElementById('sg-spec-popover');
+    if (!pop) return;
+    if (pop.contains(e.target)) return;
+    if (e.target.closest('.sg-spec-completeness')) return;
+    closeSpecPopover();
+  }
+
+  function specPopoverEscHandler(e) {
+    if (e.key === 'Escape') closeSpecPopover();
   }
 
   // Preload content and completeness for all component JSONs so sidebar dots
@@ -939,7 +1059,6 @@
           vueLines.push((s.destructive ? '    ' : '  ') + '</button>');
           if (s.destructive) vueLines.push('  </div>');
           vueLines.push('</template>');
-          var vueCode = vueLines.join('\n');
           return { html, code };
         }
 
@@ -987,7 +1106,6 @@
         vL.push((s.destructive ? '    ' : '  ') + '<button ' + vBtnAttrs + '>' + vBtnInner + '</button>');
         if (s.destructive) vL.push('  </div>');
         vL.push('</template>');
-        var vueCode2 = vL.join('\n');
         return { html, code };
       }
     },
@@ -1076,7 +1194,6 @@
         rLines.push('    </div>');
         rLines.push('  );');
         rLines.push('}');
-        var reactCode = rLines.join('\n');
 
         var vLines = [];
         vLines.push('<script setup>');
@@ -1111,7 +1228,6 @@
         }
         vLines.push('  </div>');
         vLines.push('</template>');
-        var vueCode = vLines.join('\n');
 
         return { html: h, code: h };
       }
@@ -1236,7 +1352,6 @@
         rLines.push('    </div>');
         rLines.push('  );');
         rLines.push('}');
-        var reactCode = rLines.join('\n');
 
         var vLines = [];
         vLines.push('<script setup>');
@@ -1294,7 +1409,6 @@
         vLines.push('    </div>');
         vLines.push('  </div>');
         vLines.push('</template>');
-        var vueCode = vLines.join('\n');
 
         return { html: h, code: h };
       }
@@ -1744,7 +1858,6 @@
         rL.push('    </div>');
         rL.push('  );');
         rL.push('}');
-        var reactCode = rL.join('\n');
 
         var vL = ['<script setup>', "import { ref, onMounted, onUnmounted } from 'vue';", '', 'const bentoOpen = ref(false);', '</script>', '', '<template>'];
         vL.push('  <div class="udc-nav-header">');
@@ -1757,7 +1870,6 @@
         vL.push('    </div>');
         vL.push('  </div>');
         vL.push('</template>');
-        var vueCode = vL.join('\n');
         return { html: html, code: code };
       }
     },
@@ -2038,7 +2150,6 @@
         rL.push('              <td' + (amtCls ? ' className="' + amtCls + '"' : '') + '>{row.amount}</td>');
         if (s.showAction) rL.push('              <td className="udc-dt-action"><button className="udc-button-ghost" data-icon-only><span className="material-symbols-outlined">more_vert</span></button></td>');
         rL.push('            </tr>', '          ))}', '        </tbody>', '      </table>', '    </div>', '  );', '}');
-        var reactCode = rL.join('\n');
 
         var vCols = [];
         vCols.push("          <td>{{ row.name }}</td>");
@@ -2064,7 +2175,6 @@
         vL.push('          <td' + (amtCls ? ' class="' + amtCls + '"' : '') + '>{{ row.amount }}</td>');
         if (s.showAction) vL.push('          <td class="udc-dt-action"><button class="udc-button-ghost" data-icon-only><span class="material-symbols-outlined">more_vert</span></button></td>');
         vL.push('        </tr>', '      </tbody>', '    </table>', '  </div>', '</template>');
-        var vueCode = vL.join('\n');
 
         return { html: html, code: code };
       }
@@ -2140,7 +2250,6 @@
         rL.push('          <span className="udc-list-item__label">{label}</span>');
         if (s.trailingIcon) rL.push('          <span className="udc-list-item__trailing-icon"><span className="material-symbols-outlined">' + s.trailingIcon + '</span></span>');
         rL.push('        </div>', '      ))}', '    </div>', '  );', '}');
-        var reactCode = rL.join('\n');
 
         var vL = ['<script setup>', "import { ref } from 'vue';", '', 'const selected = ref(' + (selIdx >= 0 ? selIdx : 'null') + ');', 'const items = ['];
         for (var k = 0; k < count; k++) vL.push("  '" + labels[k % labels.length] + "',");
@@ -2149,7 +2258,6 @@
         vL.push('      <span class="udc-list-item__label">{{ label }}</span>');
         if (s.trailingIcon) vL.push('      <span class="udc-list-item__trailing-icon"><span class="material-symbols-outlined">' + s.trailingIcon + '</span></span>');
         vL.push('    </div>', '  </div>', '</template>');
-        var vueCode = vL.join('\n');
 
         return { html: html, code: code };
       }
@@ -2233,7 +2341,6 @@
      ======================================================================== */
   var IMPL_DATA = {
     button: {
-      cssFile: 'uds/components/button.css',
       jsFunc: null,
       tokens: {
         'Color': [
@@ -2254,18 +2361,11 @@
         'Border': ['--uds-border-radius-input']
       },
       html: function () {
-        return '<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8" />\n  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />\n  <link rel="stylesheet" href="uds/uds.css" />\n</head>\n<body>\n\n  <!-- Primary -->\n  <button class="udc-button-primary">Save changes</button>\n\n  <!-- Secondary -->\n  <button class="udc-button-secondary">Cancel</button>\n\n  <!-- Ghost -->\n  <button class="udc-button-ghost">Learn more</button>\n\n  <!-- With leading icon -->\n  <button class="udc-button-primary" data-icon-position="leading">\n    <span class="material-symbols-outlined">add</span>\n    New item\n  </button>\n\n  <!-- Small + destructive -->\n  <div data-btn-color="danger">\n    <button class="udc-button-primary" data-size="sm">Delete</button>\n  </div>\n\n</body>\n</html>';
+        return '<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8" />\n  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />\n  <link rel="stylesheet" href="uds/uds.css" />\n</head>\n<body>\n\n  <!-- Primary -->\n  <button class="udc-button-primary">Save changes</button>\n\n  <!-- Secondary -->\n  <button class="udc-button-secondary">Cancel</button>\n\n  <!-- Ghost -->\n  <button class="udc-button-ghost">Learn more</button>\n\n  <!-- With leading icon -->\n  <button class="udc-button-primary" data-leading-icon>\n    <span class="material-symbols-outlined">add</span>\n    New item\n  </button>\n\n  <!-- Icon only -->\n  <button class="udc-button-ghost" data-icon-only aria-label="More actions">\n    <span class="material-symbols-outlined">more_vert</span>\n  </button>\n\n  <!-- Small + destructive -->\n  <div data-btn-color="danger">\n    <button class="udc-button-primary" data-size="sm">Delete</button>\n  </div>\n\n</body>\n</html>';
       },
-      react: function () {
-        return 'import \'./uds/uds.css\';\n\nfunction Button({ variant = \'primary\', size, destructive, icon, iconPosition, disabled, children }) {\n  const cls = \'udc-button-\' + variant;\n  const attrs = {};\n  if (size) attrs[\'data-size\'] = size;\n  if (iconPosition) attrs[\'data-icon-position\'] = iconPosition;\n  if (disabled) attrs.disabled = true;\n\n  const btn = (\n    <button className={cls} {...attrs}>\n      {icon && iconPosition === \'leading\' && <span className=\"material-symbols-outlined\">{icon}</span>}\n      {children}\n      {icon && iconPosition === \'trailing\' && <span className=\"material-symbols-outlined\">{icon}</span>}\n    </button>\n  );\n\n  return destructive ? <div data-btn-color=\"danger\">{btn}</div> : btn;\n}\n\nexport default Button;\n\n/* Usage:\n  <Button variant=\"primary\" icon=\"add\" iconPosition=\"leading\">New item</Button>\n  <Button variant=\"secondary\">Cancel</Button>\n  <Button variant=\"primary\" destructive>Delete</Button>\n*/';
-      },
-      vue: function () {
-        return '<script setup>\ndefineProps({\n  variant: { type: String, default: \'primary\' },\n  size: String,\n  destructive: Boolean,\n  icon: String,\n  iconPosition: String,\n  disabled: Boolean,\n});\n</script>\n\n<template>\n  <div v-if=\"destructive\" data-btn-color=\"danger\">\n    <button :class=\"\'udc-button-\' + variant\" :data-size=\"size\" :data-icon-position=\"iconPosition\" :disabled=\"disabled\">\n      <span v-if=\"icon && iconPosition === \'leading\'\" class=\"material-symbols-outlined\">{{ icon }}</span>\n      <slot />\n      <span v-if=\"icon && iconPosition === \'trailing\'\" class=\"material-symbols-outlined\">{{ icon }}</span>\n    </button>\n  </div>\n  <button v-else :class=\"\'udc-button-\' + variant\" :data-size=\"size\" :data-icon-position=\"iconPosition\" :disabled=\"disabled\">\n    <span v-if=\"icon && iconPosition === \'leading\'\" class=\"material-symbols-outlined\">{{ icon }}</span>\n    <slot />\n    <span v-if=\"icon && iconPosition === \'trailing\'\" class=\"material-symbols-outlined\">{{ icon }}</span>\n  </button>\n</template>';
-      }
     },
 
     'text-input': {
-      cssFile: 'uds/components/text-input.css',
       jsFunc: 'initTextInput',
       tokens: {
         'Color': [
@@ -2289,16 +2389,9 @@
       html: function () {
         return '<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8" />\n  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />\n  <link rel="stylesheet" href="uds/uds.css" />\n</head>\n<body>\n\n  <div class="udc-text-input">\n    <label class="udc-text-input__label">Email address</label>\n    <div class="udc-text-input__field">\n      <input type="email" placeholder="you@example.com" required />\n    </div>\n    <div class="udc-text-input__helper">\n      <span>We\'ll never share your email</span>\n    </div>\n  </div>\n\n  <script src="uds/uds.js"><\/script>\n</body>\n</html>';
       },
-      react: function () {
-        return 'import { useState, useRef, useCallback } from \'react\';\nimport \'./uds/uds.css\';\n\nfunction TextInput({ label, helper, placeholder, required, maxLength, disabled, state }) {\n  const [value, setValue] = useState(\'\');\n  const [error, setError] = useState(\'\');\n  const inputRef = useRef(null);\n\n  const validate = useCallback(() => {\n    if (required && !value.trim()) {\n      setError(\'This field is required\');\n      return;\n    }\n    setError(\'\');\n  }, [value, required]);\n\n  const dataState = error ? \'error\' : state;\n\n  return (\n    <div className=\"udc-text-input\" data-state={dataState || undefined}>\n      {label && <label className=\"udc-text-input__label\">{label}</label>}\n      <div className=\"udc-text-input__field\">\n        <input\n          ref={inputRef}\n          value={value}\n          onChange={e => setValue(e.target.value)}\n          onBlur={validate}\n          placeholder={placeholder}\n          required={required}\n          maxLength={maxLength}\n          disabled={disabled}\n        />\n      </div>\n      <div className=\"udc-text-input__helper\">\n        <span>{error || helper}</span>\n        {maxLength && <span className=\"udc-text-input__counter\">{value.length}/{maxLength}</span>}\n      </div>\n    </div>\n  );\n}\n\nexport default TextInput;';
-      },
-      vue: function () {
-        return '<script setup>\nimport { ref, computed } from \'vue\';\n\nconst props = defineProps({\n  label: String,\n  helper: String,\n  placeholder: String,\n  required: Boolean,\n  maxLength: Number,\n  disabled: Boolean,\n  state: String,\n});\n\nconst value = ref(\'\');\nconst error = ref(\'\');\n\nfunction validate() {\n  if (props.required && !value.value.trim()) {\n    error.value = \'This field is required\';\n    return;\n  }\n  error.value = \'\';\n}\n\nconst dataState = computed(() => error.value ? \'error\' : props.state);\n</script>\n\n<template>\n  <div class=\"udc-text-input\" :data-state=\"dataState || undefined\">\n    <label v-if=\"label\" class=\"udc-text-input__label\">{{ label }}</label>\n    <div class=\"udc-text-input__field\">\n      <input\n        v-model=\"value\"\n        @blur=\"validate\"\n        :placeholder=\"placeholder\"\n        :required=\"required\"\n        :maxlength=\"maxLength\"\n        :disabled=\"disabled\"\n      />\n    </div>\n    <div class=\"udc-text-input__helper\">\n      <span>{{ error || helper }}</span>\n      <span v-if=\"maxLength\" class=\"udc-text-input__counter\">{{ value.length }}/{{ maxLength }}</span>\n    </div>\n  </div>\n</template>';
-      }
     },
 
     dropdown: {
-      cssFile: 'uds/components/dropdown.css',
       jsFunc: 'initDropdown',
       tokens: {
         'Color': [
@@ -2324,16 +2417,9 @@
       html: function () {
         return '<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8" />\n  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />\n  <link rel="stylesheet" href="uds/uds.css" />\n</head>\n<body>\n\n  <div class="udc-dropdown">\n    <label class="udc-dropdown__label">Favourite fruit</label>\n    <div class="udc-dropdown__trigger" tabindex="0" role="combobox"\n         aria-expanded="false" aria-haspopup="listbox">\n      <span class="udc-dropdown__leading-icon">\n        <span class="material-symbols-outlined">add_circle_outline</span>\n      </span>\n      <span class="udc-dropdown__value" data-placeholder>Choose...</span>\n      <span class="udc-dropdown__chevron">\n        <span class="material-symbols-outlined">keyboard_arrow_down</span>\n      </span>\n    </div>\n    <div class="udc-dropdown__helper"><span>Pick one fruit</span></div>\n    <div class="udc-dropdown__list" role="listbox">\n      <div class="udc-dropdown__item" role="option">Apple</div>\n      <div class="udc-dropdown__item" role="option">Banana</div>\n      <div class="udc-dropdown__item" role="option">Cherry</div>\n    </div>\n  </div>\n\n  <script src="uds/uds.js"><\/script>\n</body>\n</html>';
       },
-      react: function () {
-        return 'import { useState, useRef, useEffect } from \'react\';\nimport \'./uds/uds.css\';\n\nfunction Dropdown({ label, helper, placeholder, options, required, disabled, state }) {\n  const [open, setOpen] = useState(false);\n  const [selected, setSelected] = useState(\'\');\n  const ref = useRef(null);\n\n  useEffect(() => {\n    const handler = (e) => {\n      if (ref.current && !ref.current.contains(e.target)) setOpen(false);\n    };\n    document.addEventListener(\'click\', handler);\n    return () => document.removeEventListener(\'click\', handler);\n  }, []);\n\n  return (\n    <div className=\"udc-dropdown\" ref={ref} data-state={state || undefined} data-open={open}>\n      {label && <label className=\"udc-dropdown__label\">{label}{required && <span className=\"udc-dropdown__required\" />}</label>}\n      <div\n        className=\"udc-dropdown__trigger\"\n        tabIndex={disabled ? -1 : 0}\n        role=\"combobox\"\n        aria-expanded={open}\n        aria-haspopup=\"listbox\"\n        aria-disabled={disabled || undefined}\n        onClick={() => !disabled && setOpen(!open)}\n      >\n        <span className=\"udc-dropdown__value\" data-placeholder={!selected || undefined}>\n          {selected || placeholder}\n        </span>\n        <span className=\"udc-dropdown__chevron\">\n          <span className=\"material-symbols-outlined\">keyboard_arrow_down</span>\n        </span>\n      </div>\n      {helper && <div className=\"udc-dropdown__helper\"><span>{helper}</span></div>}\n      {open && (\n        <div className=\"udc-dropdown__list\" role=\"listbox\">\n          {options.map((opt) => (\n            <div\n              key={opt}\n              className=\"udc-dropdown__item\"\n              role=\"option\"\n              aria-selected={selected === opt}\n              onClick={() => { setSelected(opt); setOpen(false); }}\n            >\n              {opt}\n            </div>\n          ))}\n        </div>\n      )}\n    </div>\n  );\n}\n\nexport default Dropdown;\n\n/* Usage:\n  <Dropdown\n    label=\"Fruit\"\n    placeholder=\"Choose...\"\n    options={[\'Apple\', \'Banana\', \'Cherry\']}\n    helper=\"Pick one\"\n  />\n*/';
-      },
-      vue: function () {
-        return '<script setup>\nimport { ref } from \'vue\';\n\nconst props = defineProps({\n  label: String,\n  helper: String,\n  placeholder: String,\n  options: Array,\n  required: Boolean,\n  disabled: Boolean,\n  state: String,\n});\n\nconst open = ref(false);\nconst selected = ref(\'\');\n\nfunction select(opt) {\n  selected.value = opt;\n  open.value = false;\n}\n</script>\n\n<template>\n  <div class=\"udc-dropdown\" :data-state=\"state || undefined\" :data-open=\"open\">\n    <label v-if=\"label\" class=\"udc-dropdown__label\">\n      {{ label }}\n      <span v-if=\"required\" class=\"udc-dropdown__required\" />\n    </label>\n    <div\n      class=\"udc-dropdown__trigger\"\n      :tabindex=\"disabled ? -1 : 0\"\n      role=\"combobox\"\n      :aria-expanded=\"open\"\n      aria-haspopup=\"listbox\"\n      :aria-disabled=\"disabled || undefined\"\n      @click=\"!disabled && (open = !open)\"\n    >\n      <span class=\"udc-dropdown__value\" :data-placeholder=\"!selected || undefined\">\n        {{ selected || placeholder }}\n      </span>\n      <span class=\"udc-dropdown__chevron\">\n        <span class=\"material-symbols-outlined\">keyboard_arrow_down</span>\n      </span>\n    </div>\n    <div v-if=\"helper\" class=\"udc-dropdown__helper\"><span>{{ helper }}</span></div>\n    <div v-if=\"open\" class=\"udc-dropdown__list\" role=\"listbox\">\n      <div\n        v-for=\"opt in options\"\n        :key=\"opt\"\n        class=\"udc-dropdown__item\"\n        role=\"option\"\n        :aria-selected=\"selected === opt\"\n        @click=\"select(opt)\"\n      >\n        {{ opt }}\n      </div>\n    </div>\n  </div>\n</template>';
-      }
     },
 
     checkbox: {
-      cssFile: 'uds/components/checkbox.css',
       jsFunc: 'initCheckbox',
       tokens: {
         'Color': [
@@ -2350,16 +2436,9 @@
       html: function () {
         return '<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8" />\n  <link rel="stylesheet" href="uds/uds.css" />\n</head>\n<body>\n\n  <label class="udc-checkbox">\n    <input type="checkbox" />\n    <span class="udc-checkbox__control"></span>\n    <span class="udc-checkbox__label">Accept terms</span>\n  </label>\n\n  <!-- Required -->\n  <label class="udc-checkbox" data-required="true">\n    <input type="checkbox" required />\n    <span class="udc-checkbox__control"></span>\n    <span class="udc-checkbox__label">I agree</span>\n    <span class="udc-checkbox__required"></span>\n  </label>\n\n  <script src="uds/uds.js"><\/script>\n</body>\n</html>';
       },
-      react: function () {
-        return 'import { useState } from \'react\';\nimport \'./uds/uds.css\';\n\nfunction Checkbox({ label, checked: initial = false, required, disabled, error, onChange }) {\n  const [checked, setChecked] = useState(initial);\n\n  function handleChange(e) {\n    setChecked(e.target.checked);\n    onChange?.(e.target.checked);\n  }\n\n  return (\n    <label className=\"udc-checkbox\" data-state={error ? \'error\' : undefined} data-required={required || undefined}>\n      <input type=\"checkbox\" checked={checked} onChange={handleChange} disabled={disabled} required={required} />\n      <span className=\"udc-checkbox__control\" />\n      <span className=\"udc-checkbox__label\">{label}</span>\n      {required && <span className=\"udc-checkbox__required\" />}\n    </label>\n  );\n}\n\nexport default Checkbox;';
-      },
-      vue: function () {
-        return '<script setup>\nimport { ref } from \'vue\';\n\nconst props = defineProps({\n  label: String,\n  required: Boolean,\n  disabled: Boolean,\n  error: Boolean,\n  modelValue: Boolean,\n});\n\nconst emit = defineEmits([\'update:modelValue\']);\nconst checked = ref(props.modelValue);\n\nfunction toggle(e) {\n  checked.value = e.target.checked;\n  emit(\'update:modelValue\', checked.value);\n}\n</script>\n\n<template>\n  <label class=\"udc-checkbox\" :data-state=\"error ? \'error\' : undefined\" :data-required=\"required || undefined\">\n    <input type=\"checkbox\" :checked=\"checked\" @change=\"toggle\" :disabled=\"disabled\" :required=\"required\" />\n    <span class=\"udc-checkbox__control\" />\n    <span class=\"udc-checkbox__label\">{{ label }}</span>\n    <span v-if=\"required\" class=\"udc-checkbox__required\" />\n  </label>\n</template>';
-      }
     },
 
     radio: {
-      cssFile: 'uds/components/radio.css',
       jsFunc: null,
       tokens: {
         'Color': [
@@ -2375,16 +2454,9 @@
       html: function () {
         return '<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8" />\n  <link rel="stylesheet" href="uds/uds.css" />\n</head>\n<body>\n\n  <fieldset class="udc-radio-group">\n    <legend class="udc-radio-group__legend">Preferred contact</legend>\n    <label class="udc-radio">\n      <input type="radio" name="contact" value="email" checked />\n      <span class="udc-radio__control"></span>\n      <span class="udc-radio__label">Email</span>\n    </label>\n    <label class="udc-radio">\n      <input type="radio" name="contact" value="phone" />\n      <span class="udc-radio__control"></span>\n      <span class="udc-radio__label">Phone</span>\n    </label>\n    <label class="udc-radio">\n      <input type="radio" name="contact" value="sms" />\n      <span class="udc-radio__control"></span>\n      <span class="udc-radio__label">SMS</span>\n    </label>\n  </fieldset>\n\n</body>\n</html>';
       },
-      react: function () {
-        return 'import { useState } from \'react\';\nimport \'./uds/uds.css\';\n\nfunction RadioGroup({ legend, name, options, value: initial, disabled, error, onChange }) {\n  const [value, setValue] = useState(initial || options[0]?.value);\n\n  function handleChange(v) {\n    setValue(v);\n    onChange?.(v);\n  }\n\n  return (\n    <fieldset className=\"udc-radio-group\" data-state={error ? \'error\' : undefined}>\n      {legend && <legend className=\"udc-radio-group__legend\">{legend}</legend>}\n      {options.map(opt => (\n        <label key={opt.value} className=\"udc-radio\">\n          <input\n            type=\"radio\" name={name} value={opt.value}\n            checked={value === opt.value}\n            onChange={() => handleChange(opt.value)}\n            disabled={disabled}\n          />\n          <span className=\"udc-radio__control\" />\n          <span className=\"udc-radio__label\">{opt.label}</span>\n        </label>\n      ))}\n    </fieldset>\n  );\n}\n\nexport default RadioGroup;\n\n/* Usage:\n  <RadioGroup\n    legend=\"Contact method\"\n    name=\"contact\"\n    options={[\n      { value: \'email\', label: \'Email\' },\n      { value: \'phone\', label: \'Phone\' },\n    ]}\n  />\n*/';
-      },
-      vue: function () {
-        return '<script setup>\nimport { ref } from \'vue\';\n\nconst props = defineProps({\n  legend: String,\n  name: String,\n  options: Array,\n  modelValue: String,\n  disabled: Boolean,\n  error: Boolean,\n});\n\nconst emit = defineEmits([\'update:modelValue\']);\nconst selected = ref(props.modelValue || props.options?.[0]?.value);\n\nfunction pick(val) {\n  selected.value = val;\n  emit(\'update:modelValue\', val);\n}\n</script>\n\n<template>\n  <fieldset class=\"udc-radio-group\" :data-state=\"error ? \'error\' : undefined\">\n    <legend v-if=\"legend\" class=\"udc-radio-group__legend\">{{ legend }}</legend>\n    <label v-for=\"opt in options\" :key=\"opt.value\" class=\"udc-radio\">\n      <input type=\"radio\" :name=\"name\" :value=\"opt.value\" :checked=\"selected === opt.value\" @change=\"pick(opt.value)\" :disabled=\"disabled\" />\n      <span class=\"udc-radio__control\" />\n      <span class=\"udc-radio__label\">{{ opt.label }}</span>\n    </label>\n  </fieldset>\n</template>';
-      }
     },
 
     badge: {
-      cssFile: 'uds/components/badge.css',
       jsFunc: null,
       tokens: {
         'Color': [
@@ -2403,16 +2475,9 @@
       html: function () {
         return '<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8" />\n  <link rel="stylesheet" href="uds/uds.css" />\n</head>\n<body>\n\n  <span class="udc-badge">Default</span>\n  <span class="udc-badge" data-variant="success">Active</span>\n  <span class="udc-badge" data-variant="error">Failed</span>\n  <span class="udc-badge" data-variant="warning">Pending</span>\n  <span class="udc-badge" data-variant="secondary">Draft</span>\n\n  <!-- Subtle / tinted -->\n  <span class="udc-badge" data-prominent="false">Info</span>\n  <span class="udc-badge" data-variant="success" data-prominent="false">Active</span>\n\n  <!-- Small -->\n  <span class="udc-badge" data-size="sm">Sm</span>\n\n</body>\n</html>';
       },
-      react: function () {
-        return 'import \'./uds/uds.css\';\n\nfunction Badge({ variant, prominent = true, size, children }) {\n  return (\n    <span\n      className=\"udc-badge\"\n      data-variant={variant || undefined}\n      data-prominent={prominent === false ? \'false\' : undefined}\n      data-size={size || undefined}\n    >\n      {children}\n    </span>\n  );\n}\n\nexport default Badge;\n\n/* Usage:\n  <Badge>Default</Badge>\n  <Badge variant=\"success\">Active</Badge>\n  <Badge variant=\"error\" prominent={false}>Failed</Badge>\n  <Badge size=\"sm\">Sm</Badge>\n*/';
-      },
-      vue: function () {
-        return '<script setup>\ndefineProps({\n  variant: String,\n  prominent: { type: Boolean, default: true },\n  size: String,\n});\n</script>\n\n<template>\n  <span\n    class=\"udc-badge\"\n    :data-variant=\"variant || undefined\"\n    :data-prominent=\"prominent === false ? \'false\' : undefined\"\n    :data-size=\"size || undefined\"\n  >\n    <slot />\n  </span>\n</template>';
-      }
     },
 
     breadcrumb: {
-      cssFile: 'uds/components/breadcrumb.css',
       jsFunc: null,
       tokens: {
         'Color': [
@@ -2426,16 +2491,9 @@
       html: function () {
         return '<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8" />\n  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />\n  <link rel="stylesheet" href="uds/uds.css" />\n</head>\n<body>\n\n  <nav class="udc-breadcrumb" aria-label="Breadcrumb">\n    <ol>\n      <li><a href="/">Home</a></li>\n      <li><a href="/products">Products</a></li>\n      <li><a href="/products/widgets" aria-current="page">Widgets</a></li>\n    </ol>\n  </nav>\n\n  <!-- Frameless variant -->\n  <nav class="udc-breadcrumb" data-frameless aria-label="Breadcrumb">\n    <ol>\n      <li><a href="/">Home</a></li>\n      <li><a href="/settings" aria-current="page">Settings</a></li>\n    </ol>\n  </nav>\n\n</body>\n</html>';
       },
-      react: function () {
-        return 'import \'./uds/uds.css\';\n\nfunction Breadcrumb({ items, frameless }) {\n  return (\n    <nav className=\"udc-breadcrumb\" data-frameless={frameless || undefined} aria-label=\"Breadcrumb\">\n      <ol>\n        {items.map((item, i) => (\n          <li key={item.href}>\n            <a href={item.href} aria-current={i === items.length - 1 ? \'page\' : undefined}>\n              {item.label}\n            </a>\n          </li>\n        ))}\n      </ol>\n    </nav>\n  );\n}\n\nexport default Breadcrumb;\n\n/* Usage:\n  <Breadcrumb items={[\n    { href: \'/\', label: \'Home\' },\n    { href: \'/products\', label: \'Products\' },\n    { href: \'/products/widgets\', label: \'Widgets\' },\n  ]} />\n*/';
-      },
-      vue: function () {
-        return '<script setup>\ndefineProps({\n  items: Array,\n  frameless: Boolean,\n});\n</script>\n\n<template>\n  <nav class=\"udc-breadcrumb\" :data-frameless=\"frameless || undefined\" aria-label=\"Breadcrumb\">\n    <ol>\n      <li v-for=\"(item, i) in items\" :key=\"item.href\">\n        <a :href=\"item.href\" :aria-current=\"i === items.length - 1 ? \'page\' : undefined\">\n          {{ item.label }}\n        </a>\n      </li>\n    </ol>\n  </nav>\n</template>';
-      }
     },
 
     tabs: {
-      cssFile: 'uds/components/tab-horizontal.css',
       jsFunc: 'initTabs',
       tokens: {
         'Color': [
@@ -2450,16 +2508,9 @@
       html: function () {
         return '<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8" />\n  <link rel="stylesheet" href="uds/uds.css" />\n</head>\n<body>\n\n  <div class="udc-tabs" role="tablist">\n    <button class="udc-tab" role="tab" aria-selected="true" aria-controls="panel-1" id="tab-1">Overview</button>\n    <button class="udc-tab" role="tab" aria-selected="false" aria-controls="panel-2" id="tab-2">Details</button>\n    <button class="udc-tab" role="tab" aria-selected="false" aria-controls="panel-3" id="tab-3" disabled>Disabled</button>\n  </div>\n\n  <div id="panel-1" role="tabpanel" aria-labelledby="tab-1">Overview content</div>\n  <div id="panel-2" role="tabpanel" aria-labelledby="tab-2" hidden>Details content</div>\n  <div id="panel-3" role="tabpanel" aria-labelledby="tab-3" hidden>Disabled content</div>\n\n  <script src="uds/uds.js"><\/script>\n</body>\n</html>';
       },
-      react: function () {
-        return 'import { useState } from \'react\';\nimport \'./uds/uds.css\';\n\nfunction Tabs({ tabs, size }) {\n  const [active, setActive] = useState(tabs[0]?.id);\n\n  return (\n    <>\n      <div className=\"udc-tabs\" role=\"tablist\" data-size={size || undefined}>\n        {tabs.map(tab => (\n          <button\n            key={tab.id}\n            className=\"udc-tab\"\n            role=\"tab\"\n            aria-selected={active === tab.id}\n            onClick={() => !tab.disabled && setActive(tab.id)}\n            disabled={tab.disabled}\n          >\n            {tab.label}\n          </button>\n        ))}\n      </div>\n      {tabs.map(tab => (\n        <div key={tab.id} role=\"tabpanel\" hidden={active !== tab.id}>\n          {tab.content}\n        </div>\n      ))}\n    </>\n  );\n}\n\nexport default Tabs;\n\n/* Usage:\n  <Tabs tabs={[\n    { id: \'overview\', label: \'Overview\', content: <p>Overview content</p> },\n    { id: \'details\', label: \'Details\', content: <p>Details content</p> },\n    { id: \'disabled\', label: \'Disabled\', content: null, disabled: true },\n  ]} />\n*/';
-      },
-      vue: function () {
-        return '<script setup>\nimport { ref } from \'vue\';\n\nconst props = defineProps({\n  tabs: Array,\n  size: String,\n});\n\nconst active = ref(props.tabs?.[0]?.id);\n</script>\n\n<template>\n  <div class=\"udc-tabs\" role=\"tablist\" :data-size=\"size || undefined\">\n    <button\n      v-for=\"tab in tabs\" :key=\"tab.id\"\n      class=\"udc-tab\" role=\"tab\"\n      :aria-selected=\"active === tab.id\"\n      @click=\"!tab.disabled && (active = tab.id)\"\n      :disabled=\"tab.disabled\"\n    >\n      {{ tab.label }}\n    </button>\n  </div>\n  <div v-for=\"tab in tabs\" :key=\"tab.id\" role=\"tabpanel\" :hidden=\"active !== tab.id\">\n    <slot :name=\"tab.id\" />\n  </div>\n</template>';
-      }
     },
 
     divider: {
-      cssFile: 'uds/components/divider.css',
       jsFunc: null,
       tokens: {
         'Color': ['--uds-color-border-tertiary'],
@@ -2469,31 +2520,17 @@
       html: function () {
         return '<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8" />\n  <link rel="stylesheet" href="uds/uds.css" />\n</head>\n<body>\n\n  <p>Content above</p>\n  <hr class="udc-divider-horizontal" />\n  <p>Content below</p>\n\n  <!-- With padding variants -->\n  <hr class="udc-divider-horizontal" data-padding="md" />\n  <hr class="udc-divider-horizontal" data-padding="lg" />\n  <hr class="udc-divider-horizontal" data-padding="xl" />\n\n</body>\n</html>';
       },
-      react: function () {
-        return 'import \'./uds/uds.css\';\n\nfunction Divider({ padding }) {\n  return <hr className=\"udc-divider-horizontal\" data-padding={padding || undefined} />;\n}\n\nexport default Divider;\n\n/* Usage:\n  <Divider />\n  <Divider padding=\"md\" />\n  <Divider padding=\"lg\" />\n*/';
-      },
-      vue: function () {
-        return '<script setup>\ndefineProps({ padding: String });\n</script>\n\n<template>\n  <hr class=\"udc-divider-horizontal\" :data-padding=\"padding || undefined\" />\n</template>';
-      }
     },
 
     'icon-wrapper': {
-      cssFile: 'uds/components/icon-wrapper.css',
       jsFunc: null,
       tokens: {},
       html: function () {
         return '<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8" />\n  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />\n  <link rel="stylesheet" href="uds/uds.css" />\n</head>\n<body>\n\n  <span class="udc-icon-wrapper" data-size="16"><span class="material-symbols-outlined">info</span></span>\n  <span class="udc-icon-wrapper" data-size="24"><span class="material-symbols-outlined">info</span></span>\n  <span class="udc-icon-wrapper" data-size="48"><span class="material-symbols-outlined">info</span></span>\n\n</body>\n</html>';
       },
-      react: function () {
-        return 'import \'./uds/uds.css\';\n\nfunction Icon({ name, size = 24 }) {\n  return (\n    <span className=\"udc-icon-wrapper\" data-size={size}>\n      <span className=\"material-symbols-outlined\">{name}</span>\n    </span>\n  );\n}\n\nexport default Icon;\n\n/* Usage:\n  <Icon name=\"info\" size={16} />\n  <Icon name=\"settings\" />\n  <Icon name=\"home\" size={48} />\n*/';
-      },
-      vue: function () {
-        return '<script setup>\ndefineProps({\n  name: String,\n  size: { type: [String, Number], default: 24 },\n});\n</script>\n\n<template>\n  <span class=\"udc-icon-wrapper\" :data-size=\"size\">\n    <span class=\"material-symbols-outlined\">{{ name }}</span>\n  </span>\n</template>';
-      }
     },
 
     spacer: {
-      cssFile: 'uds/components/spacer.css',
       jsFunc: null,
       tokens: {
         'Space': ['--uds-space-050','--uds-space-100','--uds-space-150','--uds-space-200','--uds-space-300','--uds-space-400','--uds-space-500','--uds-space-600']
@@ -2501,16 +2538,9 @@
       html: function () {
         return '<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8" />\n  <link rel="stylesheet" href="uds/uds.css" />\n</head>\n<body>\n\n  <div style="display:flex; flex-direction:column;">\n    <p>First section</p>\n    <div class="udc-spacer" data-size="200"></div>\n    <p>Second section</p>\n    <div class="udc-spacer" data-size="400"></div>\n    <p>Third section</p>\n  </div>\n\n</body>\n</html>';
       },
-      react: function () {
-        return 'import \'./uds/uds.css\';\n\nfunction Spacer({ size = \'200\' }) {\n  return <div className=\"udc-spacer\" data-size={size} />;\n}\n\nexport default Spacer;\n\n/* Usage:\n  <Spacer size=\"100\" />\n  <Spacer />            {/* 200 default */}\n  <Spacer size=\"400\" />\n*/';
-      },
-      vue: function () {
-        return '<script setup>\ndefineProps({ size: { type: String, default: \'200\' } });\n</script>\n\n<template>\n  <div class=\"udc-spacer\" :data-size=\"size\" />\n</template>';
-      }
     },
 
     'nav-header': {
-      cssFile: 'uds/components/nav-header.css',
       jsFunc: 'initNavBento',
       tokens: {
         'Surface': [
@@ -2542,16 +2572,9 @@
       html: function () {
         return '<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8" />\n  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />\n  <link rel="stylesheet" href="uds/uds.css" />\n</head>\n<body>\n\n  <div class="udc-nav-header">\n    <div class="udc-nav-header__left">\n      <div class="udc-nav-logo"><span class="material-symbols-outlined" style="font-size:32px;">apartment</span></div>\n      <div class="udc-nav-bento-wrapper">\n        <button class="udc-nav-bento-button" aria-expanded="false">\n          <span class="material-symbols-outlined">dashboard</span>\n          Boardroom\n          <span class="material-symbols-outlined udc-nav-bento-button__chevron">keyboard_arrow_down</span>\n        </button>\n        <div class="udc-nav-bento" data-open="false">\n          <div class="udc-nav-bento__list">\n            <button class="udc-nav-button" aria-selected="true"><span class="material-symbols-outlined">space_dashboard</span><span class="udc-nav-button__label">Dashboard</span></button>\n            <button class="udc-nav-button"><span class="material-symbols-outlined">book</span><span class="udc-nav-button__label">Leasing / CRM</span></button>\n          </div>\n        </div>\n      </div>\n    </div>\n    <div class="udc-nav-header__center">\n      <div class="udc-nav-search">\n        <span class="material-symbols-outlined">auto_awesome</span>\n        <input class="udc-nav-search__input" type="text" placeholder="Search or ask a question">\n      </div>\n    </div>\n    <div class="udc-nav-header__right">\n      <div class="udc-nav-account">\n        <button class="udc-button-ghost" data-icon-only><span class="material-symbols-outlined">notifications</span></button>\n        <button class="udc-button-ghost" data-icon-only><span class="material-symbols-outlined">settings</span></button>\n        <button class="udc-button-ghost" data-icon-only><span class="material-symbols-outlined">account_circle</span></button>\n      </div>\n    </div>\n  </div>\n\n  <script src="uds/uds.js"><\/script>\n</body>\n</html>';
       },
-      react: function () {
-        return "import { useState, useRef, useEffect } from 'react';\nimport './uds/uds.css';\n\nfunction NavBento({ appName, open, onToggle }) {\n  const ref = useRef(null);\n\n  useEffect(() => {\n    function close(e) {\n      if (ref.current && !ref.current.contains(e.target)) onToggle(false);\n    }\n    document.addEventListener('click', close);\n    return () => document.removeEventListener('click', close);\n  }, [onToggle]);\n\n  return (\n    <div className=\"udc-nav-bento-wrapper\" ref={ref}>\n      <button className=\"udc-nav-bento-button\" aria-expanded={open} onClick={() => onToggle(!open)}>\n        <span className=\"material-symbols-outlined\">dashboard</span>\n        {appName}\n        <span className=\"material-symbols-outlined udc-nav-bento-button__chevron\">keyboard_arrow_down</span>\n      </button>\n      <div className=\"udc-nav-bento\" data-open={open}>\n        <div className=\"udc-nav-bento__list\">\n          <button className=\"udc-nav-button\" aria-selected=\"true\">\n            <span className=\"material-symbols-outlined\">space_dashboard</span>\n            <span className=\"udc-nav-button__label\">Dashboard</span>\n          </button>\n        </div>\n      </div>\n    </div>\n  );\n}\n\nexport default function NavHeader() {\n  const [bentoOpen, setBentoOpen] = useState(false);\n  return (\n    <div className=\"udc-nav-header\">\n      <div className=\"udc-nav-header__left\">\n        <div className=\"udc-nav-logo\"><span className=\"material-symbols-outlined\">apartment</span></div>\n        <NavBento appName=\"Boardroom\" open={bentoOpen} onToggle={setBentoOpen} />\n      </div>\n      <div className=\"udc-nav-header__right\">\n        <button className=\"udc-button-ghost\" data-icon-only><span className=\"material-symbols-outlined\">notifications</span></button>\n        <button className=\"udc-button-ghost\" data-icon-only><span className=\"material-symbols-outlined\">account_circle</span></button>\n      </div>\n    </div>\n  );\n}";
-      },
-      vue: function () {
-        return "<script setup>\nimport { ref } from 'vue';\n\nconst bentoOpen = ref(false);\n</script>\n\n<template>\n  <div class=\"udc-nav-header\">\n    <div class=\"udc-nav-header__left\">\n      <div class=\"udc-nav-logo\">…</div>\n      <div class=\"udc-nav-bento-wrapper\">\n        <button class=\"udc-nav-bento-button\" :aria-expanded=\"bentoOpen\" @click=\"bentoOpen = !bentoOpen\">\n          <span class=\"material-symbols-outlined\">dashboard</span>\n          Boardroom\n          <span class=\"material-symbols-outlined udc-nav-bento-button__chevron\">keyboard_arrow_down</span>\n        </button>\n        <div class=\"udc-nav-bento\" :data-open=\"bentoOpen\">…</div>\n      </div>\n    </div>\n    <div class=\"udc-nav-header__center\">…</div>\n    <div class=\"udc-nav-header__right\">…</div>\n  </div>\n</template>";
-      }
     },
 
     'data-table': {
-      cssFile: 'uds/components/data-table.css',
       jsFunc: 'initDataTable',
       tokens: {
         'Surface': [
@@ -2571,15 +2594,8 @@
       html: function () {
         return '<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8" />\n  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />\n  <link rel="stylesheet" href="uds/uds.css" />\n</head>\n<body>\n\n  <div class="udc-data-table">\n    <table>\n      <thead>\n        <tr>\n          <th class="udc-dt-check"><input type="checkbox" /></th>\n          <th>Name <span class="udc-dt-sort"></span></th>\n          <th>Status</th>\n          <th class="udc-dt-align-right">Amount</th>\n          <th class="udc-dt-action"></th>\n        </tr>\n      </thead>\n      <tbody>\n        <tr>\n          <td class="udc-dt-check"><input type="checkbox" /></td>\n          <td>Brian Smith</td>\n          <td><span class="udc-badge" data-variant="success">Delivered</span></td>\n          <td class="udc-dt-align-right">$75</td>\n          <td class="udc-dt-action"><button class="udc-button-ghost" data-icon-only><span class="material-symbols-outlined">more_vert</span></button></td>\n        </tr>\n      </tbody>\n    </table>\n  </div>\n\n  <script src="uds/uds.js"><\/script>\n</body>\n</html>';
       },
-      react: function () {
-        return "import { useState } from 'react';\nimport './uds/uds.css';\n\nconst rows = [\n  { name: 'Brian Smith', status: 'Delivered', statusVariant: 'success', amount: '$75' },\n  { name: 'Catherine Lee', status: 'Low Confidence', statusVariant: 'warning', amount: '$100' },\n];\n\nexport default function DataTable() {\n  const [checked, setChecked] = useState(new Set());\n\n  function toggleRow(i) { setChecked(prev => { const s = new Set(prev); s.has(i) ? s.delete(i) : s.add(i); return s; }); }\n  function toggleAll() { setChecked(prev => prev.size === rows.length ? new Set() : new Set(rows.map((_, i) => i))); }\n\n  return (\n    <div className=\"udc-data-table\">\n      <table>\n        <thead><tr>\n          <th className=\"udc-dt-check\"><input type=\"checkbox\" checked={checked.size === rows.length} onChange={toggleAll} /></th>\n          <th>Name</th><th>Status</th><th className=\"udc-dt-align-right\">Amount</th>\n        </tr></thead>\n        <tbody>\n          {rows.map((row, i) => (\n            <tr key={i}>\n              <td className=\"udc-dt-check\"><input type=\"checkbox\" checked={checked.has(i)} onChange={() => toggleRow(i)} /></td>\n              <td>{row.name}</td>\n              <td><span className=\"udc-badge\" data-variant={row.statusVariant}>{row.status}</span></td>\n              <td className=\"udc-dt-align-right\">{row.amount}</td>\n            </tr>\n          ))}\n        </tbody>\n      </table>\n    </div>\n  );\n}";
-      },
-      vue: function () {
-        return "<script setup>\nimport { ref } from 'vue';\n\nconst rows = [\n  { name: 'Brian Smith', status: 'Delivered', statusVariant: 'success', amount: '$75' },\n  { name: 'Catherine Lee', status: 'Low Confidence', statusVariant: 'warning', amount: '$100' },\n];\nconst checked = ref(new Set());\n\nfunction toggleRow(i) { const s = new Set(checked.value); s.has(i) ? s.delete(i) : s.add(i); checked.value = s; }\nfunction toggleAll() { checked.value = checked.value.size === rows.length ? new Set() : new Set(rows.map((_, i) => i)); }\n</script>\n\n<template>\n  <div class=\"udc-data-table\">\n    <table>\n      <thead><tr>\n        <th class=\"udc-dt-check\"><input type=\"checkbox\" :checked=\"checked.size === rows.length\" @change=\"toggleAll\" /></th>\n        <th>Name</th><th>Status</th><th class=\"udc-dt-align-right\">Amount</th>\n      </tr></thead>\n      <tbody>\n        <tr v-for=\"(row, i) in rows\" :key=\"i\">\n          <td class=\"udc-dt-check\"><input type=\"checkbox\" :checked=\"checked.has(i)\" @change=\"toggleRow(i)\" /></td>\n          <td>{{ row.name }}</td>\n          <td><span class=\"udc-badge\" :data-variant=\"row.statusVariant\">{{ row.status }}</span></td>\n          <td class=\"udc-dt-align-right\">{{ row.amount }}</td>\n        </tr>\n      </tbody>\n    </table>\n  </div>\n</template>";
-      }
     },
     'tile': {
-      cssFile: 'uds/components/tile.css',
       jsFunc: 'initTile',
       tokens: {
         'Surface': [
@@ -2601,15 +2617,8 @@
       html: function () {
         return '<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8" />\n  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />\n  <link rel="stylesheet" href="uds/uds.css" />\n</head>\n<body>\n\n  <div class="udc-tile" tabindex="0">\n    <div class="udc-tile__content">\n      <div class="udc-tile__label">Upload CSV<span class="udc-tile__required"></span></div>\n      <div class="udc-tile__body">Import residents from a spreadsheet</div>\n    </div>\n    <span class="udc-tile__chevron">\n      <span class="material-symbols-outlined">chevron_right</span>\n    </span>\n  </div>\n\n  <script src="uds/uds.js"><\/script>\n</body>\n</html>';
       },
-      react: function () {
-        return "import { useState } from 'react';\nimport './uds/uds.css';\n\nexport default function Tile({ label, body = [], required, showChevron = true, disabled }) {\n  const [selected, setSelected] = useState(false);\n\n  return (\n    <div\n      className=\"udc-tile\"\n      tabIndex={disabled ? -1 : 0}\n      aria-selected={selected}\n      aria-disabled={disabled || undefined}\n      onClick={() => !disabled && setSelected(!selected)}\n    >\n      <div className=\"udc-tile__content\">\n        <div className=\"udc-tile__label\">\n          {label}\n          {required && <span className=\"udc-tile__required\" />}\n        </div>\n        {body.map((line, i) => <div key={i} className=\"udc-tile__body\">{line}</div>)}\n      </div>\n      {showChevron && (\n        <span className=\"udc-tile__chevron\">\n          <span className=\"material-symbols-outlined\">chevron_right</span>\n        </span>\n      )}\n    </div>\n  );\n}";
-      },
-      vue: function () {
-        return "<script setup>\nimport { ref } from 'vue';\n\nconst props = defineProps({\n  label: String,\n  body: { type: Array, default: () => [] },\n  required: Boolean,\n  showChevron: { type: Boolean, default: true },\n  disabled: Boolean\n});\nconst selected = ref(false);\n</script>\n\n<template>\n  <div class=\"udc-tile\" :tabindex=\"disabled ? -1 : 0\"\n    :aria-selected=\"selected\" :aria-disabled=\"disabled || undefined\"\n    @click=\"!disabled && (selected = !selected)\">\n    <div class=\"udc-tile__content\">\n      <div class=\"udc-tile__label\">\n        {{ label }}\n        <span v-if=\"required\" class=\"udc-tile__required\" />\n      </div>\n      <div v-for=\"(line, i) in body\" :key=\"i\" class=\"udc-tile__body\">{{ line }}</div>\n    </div>\n    <span v-if=\"showChevron\" class=\"udc-tile__chevron\">\n      <span class=\"material-symbols-outlined\">chevron_right</span>\n    </span>\n  </div>\n</template>";
-      }
     },
     'list': {
-      cssFile: 'uds/components/list.css',
       jsFunc: 'initList',
       tokens: {
         'Surface': [
@@ -2631,15 +2640,8 @@
       html: function () {
         return '<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8" />\n  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />\n  <link rel="stylesheet" href="uds/uds.css" />\n</head>\n<body>\n\n  <div class="udc-list">\n    <div class="udc-list-item" tabindex="0" aria-selected="true">\n      <span class="udc-list-item__label">Dashboard</span>\n    </div>\n    <div class="udc-list-item" tabindex="0">\n      <span class="udc-list-item__label">Leasing / CRM</span>\n    </div>\n    <div class="udc-list-item" tabindex="0">\n      <span class="udc-list-item__leading-icon"><span class="material-symbols-outlined">add_circle_outline</span></span>\n      <span class="udc-list-item__label">Add new</span>\n    </div>\n  </div>\n\n  <script src="uds/uds.js"><\/script>\n</body>\n</html>';
       },
-      react: function () {
-        return "import { useState } from 'react';\nimport './uds/uds.css';\n\nconst items = [\n  { label: 'Dashboard' },\n  { label: 'Leasing / CRM' },\n  { label: 'People / Contacts' },\n];\n\nexport default function List({ leadingIcon, trailingIcon }) {\n  const [selected, setSelected] = useState(0);\n\n  return (\n    <div className=\"udc-list\">\n      {items.map((item, i) => (\n        <div\n          key={i}\n          className=\"udc-list-item\"\n          tabIndex={0}\n          aria-selected={selected === i}\n          onClick={() => setSelected(i)}\n        >\n          {leadingIcon && (\n            <span className=\"udc-list-item__leading-icon\">\n              <span className=\"material-symbols-outlined\">{leadingIcon}</span>\n            </span>\n          )}\n          <span className=\"udc-list-item__label\">{item.label}</span>\n          {trailingIcon && (\n            <span className=\"udc-list-item__trailing-icon\">\n              <span className=\"material-symbols-outlined\">{trailingIcon}</span>\n            </span>\n          )}\n        </div>\n      ))}\n    </div>\n  );\n}";
-      },
-      vue: function () {
-        return "<script setup>\nimport { ref } from 'vue';\n\ndefineProps({ leadingIcon: String, trailingIcon: String });\nconst selected = ref(0);\nconst items = [\n  { label: 'Dashboard' },\n  { label: 'Leasing / CRM' },\n  { label: 'People / Contacts' },\n];\n</script>\n\n<template>\n  <div class=\"udc-list\">\n    <div\n      v-for=\"(item, i) in items\" :key=\"i\"\n      class=\"udc-list-item\" tabindex=\"0\"\n      :aria-selected=\"selected === i\"\n      @click=\"selected = i\">\n      <span v-if=\"leadingIcon\" class=\"udc-list-item__leading-icon\">\n        <span class=\"material-symbols-outlined\">{{ leadingIcon }}</span>\n      </span>\n      <span class=\"udc-list-item__label\">{{ item.label }}</span>\n      <span v-if=\"trailingIcon\" class=\"udc-list-item__trailing-icon\">\n        <span class=\"material-symbols-outlined\">{{ trailingIcon }}</span>\n      </span>\n    </div>\n  </div>\n</template>";
-      }
     },
     'notification': {
-      cssFile: 'uds/components/notification.css',
       jsFunc: 'initNotification',
       tokens: {
         'Surface': [
@@ -2663,15 +2665,8 @@
       html: function () {
         return '<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8" />\n  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />\n  <link rel="stylesheet" href="uds/uds.css" />\n</head>\n<body>\n\n  <div class="udc-notification" data-variant="info">\n    <span class="udc-notification__icon"><span class="material-symbols-outlined">info</span></span>\n    <span class="udc-notification__text">Informational message</span>\n  </div>\n\n  <div class="udc-notification" data-variant="success" data-prominent="true">\n    <span class="udc-notification__icon"><span class="material-symbols-outlined">check_circle</span></span>\n    <span class="udc-notification__text">Success!</span>\n  </div>\n\n  <div class="udc-notification" data-variant="error" data-inline="true">\n    <span class="udc-notification__icon"><span class="material-symbols-outlined">error_outline</span></span>\n    <span class="udc-notification__text">Something went wrong</span>\n  </div>\n\n  <script src="uds/uds.js"><\/script>\n</body>\n</html>';
       },
-      react: function () {
-        return "import { useState } from 'react';\nimport './uds/uds.css';\n\nexport default function Notification({ variant = 'info', prominent, inline, message, dismissible }) {\n  const [visible, setVisible] = useState(true);\n  if (!visible) return null;\n\n  const variantIcons = { info: 'info', success: 'check_circle', error: 'error_outline', warning: 'warning_amber' };\n\n  return (\n    <div\n      className=\"udc-notification\"\n      data-variant={variant}\n      data-prominent={prominent || undefined}\n      data-inline={inline || undefined}\n    >\n      <span className=\"udc-notification__icon\">\n        <span className=\"material-symbols-outlined\">{variantIcons[variant]}</span>\n      </span>\n      <span className=\"udc-notification__text\">{message}</span>\n      {dismissible && (\n        <button className=\"udc-notification__close\" aria-label=\"Dismiss\" onClick={() => setVisible(false)}>\n          <span className=\"material-symbols-outlined\">close</span>\n        </button>\n      )}\n    </div>\n  );\n}";
-      },
-      vue: function () {
-        return "<script setup>\nimport { ref } from 'vue';\n\nconst props = defineProps({\n  variant: { type: String, default: 'info' },\n  prominent: Boolean,\n  inline: Boolean,\n  message: String,\n  dismissible: Boolean\n});\n\nconst visible = ref(true);\nconst icons = { info: 'info', success: 'check_circle', error: 'error_outline', warning: 'warning_amber' };\n</script>\n\n<template>\n  <div v-if=\"visible\" class=\"udc-notification\"\n    :data-variant=\"variant\"\n    :data-prominent=\"prominent || undefined\"\n    :data-inline=\"inline || undefined\">\n    <span class=\"udc-notification__icon\">\n      <span class=\"material-symbols-outlined\">{{ icons[variant] }}</span>\n    </span>\n    <span class=\"udc-notification__text\">{{ message }}</span>\n    <button v-if=\"dismissible\" class=\"udc-notification__close\" aria-label=\"Dismiss\" @click=\"visible = false\">\n      <span class=\"material-symbols-outlined\">close</span>\n    </button>\n  </div>\n</template>";
-      }
     },
     'dialog': {
-      cssFile: 'uds/components/dialog.css',
       jsFunc: 'initDialog',
       tokens: {
         'Surface': [
@@ -2690,15 +2685,8 @@
       html: function () {
         return '<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8" />\n  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />\n  <link rel="stylesheet" href="uds/uds.css" />\n</head>\n<body>\n\n  <button class="udc-button-primary" onclick="document.getElementById(\'my-dialog\').setAttribute(\'data-open\',\'true\');UDS.init();">Open Dialog</button>\n\n  <div class="udc-dialog-backdrop" id="my-dialog" data-open="false">\n    <div class="udc-dialog" role="dialog" aria-modal="true" aria-labelledby="dlg-title">\n      <div class="udc-dialog__header">\n        <h2 class="udc-dialog__title" id="dlg-title">Dialog title</h2>\n        <button class="udc-dialog__close" aria-label="Close">\n          <span class="material-symbols-outlined">close</span>\n        </button>\n      </div>\n      <div class="udc-dialog__body">\n        <p>Your content goes here.</p>\n      </div>\n      <div class="udc-dialog__footer">\n        <button class="udc-button-secondary">Cancel</button>\n        <button class="udc-button-primary">Confirm</button>\n      </div>\n    </div>\n  </div>\n\n  <script src="uds/uds.js"><\/script>\n</body>\n</html>';
       },
-      react: function () {
-        return "import { useState } from 'react';\nimport './uds/uds.css';\n\nexport default function Dialog({ open, onClose, title, children, primaryLabel = 'Confirm', secondaryLabel = 'Cancel', onConfirm }) {\n  if (!open) return null;\n\n  return (\n    <div className=\"udc-dialog-backdrop\" data-open=\"true\" onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}>\n      <div className=\"udc-dialog\" role=\"dialog\" aria-modal=\"true\">\n        <div className=\"udc-dialog__header\">\n          <h2 className=\"udc-dialog__title\">{title}</h2>\n          <button className=\"udc-dialog__close\" aria-label=\"Close\" onClick={onClose}>\n            <span className=\"material-symbols-outlined\">close</span>\n          </button>\n        </div>\n        <div className=\"udc-dialog__body\">{children}</div>\n        <div className=\"udc-dialog__footer\">\n          <button className=\"udc-button-secondary\" onClick={onClose}>{secondaryLabel}</button>\n          <button className=\"udc-button-primary\" onClick={onConfirm}>{primaryLabel}</button>\n        </div>\n      </div>\n    </div>\n  );\n}";
-      },
-      vue: function () {
-        return "<script setup>\ndefineProps({\n  open: Boolean,\n  title: { type: String, default: 'Dialog title' },\n  primaryLabel: { type: String, default: 'Confirm' },\n  secondaryLabel: { type: String, default: 'Cancel' }\n});\nconst emit = defineEmits(['close', 'confirm']);\n</script>\n\n<template>\n  <div v-if=\"open\" class=\"udc-dialog-backdrop\" data-open=\"true\" @click.self=\"emit('close')\">\n    <div class=\"udc-dialog\" role=\"dialog\" aria-modal=\"true\">\n      <div class=\"udc-dialog__header\">\n        <h2 class=\"udc-dialog__title\">{{ title }}</h2>\n        <button class=\"udc-dialog__close\" aria-label=\"Close\" @click=\"emit('close')\">\n          <span class=\"material-symbols-outlined\">close</span>\n        </button>\n      </div>\n      <div class=\"udc-dialog__body\"><slot /></div>\n      <div class=\"udc-dialog__footer\">\n        <button class=\"udc-button-secondary\" @click=\"emit('close')\">{{ secondaryLabel }}</button>\n        <button class=\"udc-button-primary\" @click=\"emit('confirm')\">{{ primaryLabel }}</button>\n      </div>\n    </div>\n  </div>\n</template>";
-      }
     },
     'nav-vertical': {
-      cssFile: 'uds/components/nav-vertical.css',
       jsFunc: 'initNavVertical',
       tokens: {
         'Surface': [
@@ -2729,15 +2717,8 @@
       html: function () {
         return '<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8" />\n  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />\n  <link rel="stylesheet" href="uds/uds.css" />\n</head>\n<body>\n\n  <nav class="udc-nav-vertical" aria-label="Main navigation">\n    <button class="udc-nav-button" aria-selected="true">\n      <span class="material-symbols-outlined">space_dashboard</span>\n      <span class="udc-nav-button__label">Dashboard</span>\n    </button>\n    <button class="udc-nav-button">\n      <span class="material-symbols-outlined">book</span>\n      <span class="udc-nav-button__label">Leasing / CRM</span>\n    </button>\n  </nav>\n\n  <!-- Without leading icons -->\n  <nav class="udc-nav-vertical" data-leading-icons="false">\n    <button class="udc-nav-button" aria-selected="true">\n      <span class="udc-nav-button__label">Dashboard</span>\n    </button>\n  </nav>\n\n  <script src="uds/uds.js"><\/script>\n</body>\n</html>';
       },
-      react: function () {
-        return "import { useState } from 'react';\nimport './uds/uds.css';\n\nconst navItems = [\n  { icon: 'space_dashboard', label: 'Dashboard' },\n  { icon: 'book', label: 'Leasing / CRM' },\n  { icon: 'contact_phone', label: 'People / Contacts' },\n  { icon: 'home_work', label: 'Property / Assets' },\n  { icon: 'monetization_on', label: 'Accounting / Finance' },\n];\n\nexport default function NavVertical({ leadingIcons = true }) {\n  const [selected, setSelected] = useState(0);\n\n  return (\n    <nav className=\"udc-nav-vertical\" data-leading-icons={leadingIcons ? undefined : 'false'} aria-label=\"Main navigation\">\n      {navItems.map((item, i) => (\n        <button key={i} className=\"udc-nav-button\" aria-selected={selected === i} onClick={() => setSelected(i)}>\n          {leadingIcons && <span className=\"material-symbols-outlined\">{item.icon}</span>}\n          <span className=\"udc-nav-button__label\">{item.label}</span>\n        </button>\n      ))}\n    </nav>\n  );\n}";
-      },
-      vue: function () {
-        return "<script setup>\nimport { ref } from 'vue';\n\ndefineProps({ leadingIcons: { type: Boolean, default: true } });\n\nconst selected = ref(0);\nconst navItems = [\n  { icon: 'space_dashboard', label: 'Dashboard' },\n  { icon: 'book', label: 'Leasing / CRM' },\n  { icon: 'contact_phone', label: 'People / Contacts' },\n  { icon: 'home_work', label: 'Property / Assets' },\n  { icon: 'monetization_on', label: 'Accounting / Finance' },\n];\n</script>\n\n<template>\n  <nav class=\"udc-nav-vertical\" :data-leading-icons=\"leadingIcons ? undefined : 'false'\" aria-label=\"Main navigation\">\n    <button v-for=\"(item, i) in navItems\" :key=\"i\" class=\"udc-nav-button\" :aria-selected=\"selected === i\" @click=\"selected = i\">\n      <span v-if=\"leadingIcons\" class=\"material-symbols-outlined\">{{ item.icon }}</span>\n      <span class=\"udc-nav-button__label\">{{ item.label }}</span>\n    </button>\n  </nav>\n</template>";
-      }
     },
     'chip': {
-      cssFile: 'uds/components/chip.css',
       jsFunc: 'initChip',
       tokens: {
         'Surface': ['--uds-color-surface-interactive-none','--uds-color-surface-interactive-subtle-hover','--uds-color-surface-interactive-subtle-active','--uds-color-surface-interactive-active','--uds-color-surface-interactive-hover','--uds-color-surface-main'],
@@ -2748,11 +2729,8 @@
         'Font': ['--uds-font-family','--uds-font-size-base','--uds-font-size-lg','--uds-font-size-md','--uds-font-weight-regular','--uds-font-line-height-base']
       },
       html: function () { return '<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8" />\n  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />\n  <link rel="stylesheet" href="uds/uds.css" />\n</head>\n<body>\n\n  <button class="udc-chip" data-variant="filter">Chip</button>\n  <button class="udc-chip" data-variant="filter" aria-selected="true">\n    <span class="udc-chip__leading-icon"><span class="material-symbols-outlined">check</span></span>\n    <span class="udc-chip__label">Active</span>\n  </button>\n\n  <script src="uds/uds.js"><\/script>\n</body>\n</html>'; },
-      react: function () { return "import { useState } from 'react';\nimport './uds/uds.css';\n\nconst filters = ['All', 'Active', 'Pending', 'Closed'];\n\nexport default function ChipGroup() {\n  const [selected, setSelected] = useState(new Set(['Active']));\n\n  function toggle(label) {\n    setSelected(prev => {\n      const next = new Set(prev);\n      next.has(label) ? next.delete(label) : next.add(label);\n      return next;\n    });\n  }\n\n  return (\n    <div style={{ display: 'flex', gap: 8 }}>\n      {filters.map(f => (\n        <button\n          key={f}\n          className=\"udc-chip\"\n          data-variant=\"filter\"\n          aria-selected={selected.has(f)}\n          onClick={() => toggle(f)}\n        >\n          {selected.has(f) && <span className=\"udc-chip__leading-icon\"><span className=\"material-symbols-outlined\">check</span></span>}\n          <span className=\"udc-chip__label\">{f}</span>\n        </button>\n      ))}\n    </div>\n  );\n}"; },
-      vue: function () { return "<script setup>\nimport { ref } from 'vue';\n\nconst filters = ['All', 'Active', 'Pending', 'Closed'];\nconst selected = ref(new Set(['Active']));\n\nfunction toggle(label) {\n  const s = new Set(selected.value);\n  s.has(label) ? s.delete(label) : s.add(label);\n  selected.value = s;\n}\n</script>\n\n<template>\n  <div style=\"display: flex; gap: 8px;\">\n    <button\n      v-for=\"f in filters\" :key=\"f\"\n      class=\"udc-chip\" data-variant=\"filter\"\n      :aria-selected=\"selected.has(f)\"\n      @click=\"toggle(f)\">\n      <span v-if=\"selected.has(f)\" class=\"udc-chip__leading-icon\"><span class=\"material-symbols-outlined\">check</span></span>\n      <span class=\"udc-chip__label\">{{ f }}</span>\n    </button>\n  </div>\n</template>"; }
     },
     'search': {
-      cssFile: 'uds/components/search.css',
       jsFunc: 'initSearch',
       tokens: {
         'Surface': ['--uds-color-surface-main','--uds-color-surface-subtle','--uds-color-surface-interactive-none','--uds-color-surface-interactive-subtle-hover'],
@@ -2763,11 +2741,8 @@
         'Font': ['--uds-font-family','--uds-font-size-base','--uds-font-size-2xl','--uds-font-weight-regular','--uds-font-line-height-base']
       },
       html: function () { return '<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8" />\n  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />\n  <link rel="stylesheet" href="uds/uds.css" />\n</head>\n<body>\n\n  <div class="udc-search">\n    <div class="udc-search__field">\n      <span class="udc-search__icon"><span class="material-symbols-outlined">search</span></span>\n      <input type="search" placeholder="Search..." />\n      <button class="udc-search__clear" aria-label="Clear"><span class="material-symbols-outlined">clear</span></button>\n    </div>\n  </div>\n\n  <script src="uds/uds.js"><\/script>\n</body>\n</html>'; },
-      react: function () { return "import { useState, useCallback } from 'react';\nimport './uds/uds.css';\n\nexport default function SearchBar({ placeholder = 'Search...', onSearch }) {\n  const [value, setValue] = useState('');\n  const hasValue = value.length > 0;\n\n  const clear = useCallback(() => {\n    setValue('');\n    onSearch?.('');\n  }, [onSearch]);\n\n  return (\n    <div className=\"udc-search\" data-has-value={hasValue ? 'true' : 'false'}>\n      <div className=\"udc-search__field\">\n        <span className=\"udc-search__icon\">\n          <span className=\"material-symbols-outlined\">search</span>\n        </span>\n        <input\n          type=\"search\"\n          placeholder={placeholder}\n          value={value}\n          onChange={(e) => { setValue(e.target.value); onSearch?.(e.target.value); }}\n        />\n        <button className=\"udc-search__clear\" aria-label=\"Clear\" onClick={clear}>\n          <span className=\"material-symbols-outlined\">clear</span>\n        </button>\n      </div>\n    </div>\n  );\n}"; },
-      vue: function () { return "<script setup>\nimport { ref, computed } from 'vue';\n\ndefineProps({ placeholder: { type: String, default: 'Search...' } });\nconst emit = defineEmits(['search']);\nconst value = ref('');\nconst hasValue = computed(() => value.value.length > 0);\n\nfunction clear() { value.value = ''; emit('search', ''); }\n</script>\n\n<template>\n  <div class=\"udc-search\" :data-has-value=\"hasValue ? 'true' : 'false'\">\n    <div class=\"udc-search__field\">\n      <span class=\"udc-search__icon\"><span class=\"material-symbols-outlined\">search</span></span>\n      <input type=\"search\" :placeholder=\"placeholder\" :value=\"value\" @input=\"value = $event.target.value; emit('search', value)\" />\n      <button class=\"udc-search__clear\" aria-label=\"Clear\" @click=\"clear\">\n        <span class=\"material-symbols-outlined\">clear</span>\n      </button>\n    </div>\n  </div>\n</template>"; }
     },
     'tooltip': {
-      cssFile: 'uds/components/tooltip.css',
       jsFunc: null,
       tokens: {
         'Surface': ['--uds-color-surface-main'],
@@ -2778,8 +2753,6 @@
         'Font': ['--uds-font-family','--uds-font-size-base','--uds-font-weight-regular','--uds-font-line-height-base']
       },
       html: function () { return '<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8" />\n  <link rel="stylesheet" href="uds/uds.css" />\n</head>\n<body style="padding:80px;">\n\n  <span class="udc-tooltip-wrapper">\n    <button class="udc-button-secondary">Hover me</button>\n    <span class="udc-tooltip" role="tooltip">This is a tooltip</span>\n  </span>\n\n</body>\n</html>'; },
-      react: function () { return "import './uds/uds.css';\n\nfunction Tooltip({ children, text, position }) {\n  return (\n    <span className=\"udc-tooltip-wrapper\">\n      {children}\n      <span className=\"udc-tooltip\" role=\"tooltip\" data-position={position || undefined}>\n        {text}\n      </span>\n    </span>\n  );\n}\n\n/* Usage:\n  <Tooltip text=\"Helpful info\" position=\"bottom\">\n    <button className=\"udc-button-secondary\">Hover me</button>\n  </Tooltip>\n*/\n\nexport default Tooltip;"; },
-      vue: function () { return "<script setup>\ndefineProps({\n  text: String,\n  position: { type: String, default: undefined }\n});\n</script>\n\n<template>\n  <span class=\"udc-tooltip-wrapper\">\n    <slot />\n    <span class=\"udc-tooltip\" role=\"tooltip\" :data-position=\"position\">\n      {{ text }}\n    </span>\n  </span>\n</template>"; }
     }
   };
 
@@ -2898,7 +2871,18 @@
         wrap2.appendChild(buildCopyButton(function () { return pre2.textContent; }));
         wrap2.appendChild(pre2);
         panel.appendChild(wrap2);
-        fetchCssFile(data.cssFile, function (text) { pre2.textContent = text; });
+        // Read CSS path from content/<pageId>.json (dependencies.css[0]). JSON is the
+        // single source of truth — IMPL_DATA used to mirror the path; that's been removed.
+        // loadContent is idempotent (cached), so calling it here is safe even if
+        // preloadAllContent already fetched it.
+        loadContent(pageId).then(function (json) {
+          var cssPath = (json && json.dependencies && json.dependencies.css && json.dependencies.css[0]) || null;
+          if (cssPath) {
+            fetchCssFile(cssPath, function (text) { pre2.textContent = text; });
+          } else {
+            pre2.textContent = '/* No CSS dependency declared in content/' + pageId + '.json */';
+          }
+        });
       }
 
       if (td.id === 'behavior') {
@@ -3641,6 +3625,24 @@
         { type: 'added', text: 'About UDS page (#/about) — single landing-page-style entry that explains what UDS is (the design system) versus what this site is (the design specification), the 6-step component lifecycle from Propose to Use with role indicators (designer / developer / both), and absorbs the standalone Glossary page so terminology lives next to its context.' },
         { type: 'added', text: 'Sidebar Reference group now leads with About UDS (replacing standalone Glossary link). Glossary content lives inside the About page.' },
         { type: 'added', text: 'CSS for new About UDS page: .sg-about-section / .sg-about-heading / .sg-about-purpose-grid (2-column grid, collapses to 1 below 880px) / .sg-about-card with eyebrow + title + body + bullet list + bottom-aligned note / .sg-about-aside info banner / .sg-lifecycle vertical numbered list with circular badges, role chips, location indicators, and a connector line between steps.' }
+      ]
+    },
+    {
+      version: 'SITE 2026.04.29.4',
+      date: '2026-04-29',
+      changes: [
+        { type: 'fixed', text: 'Audit fix #3: corrected non-existent token reference in uds-design-system.mdc and 6 places in index.html — `--uds-color-border-default` → `--uds-color-border-primary` (the actual token name in semantic.css). Borders that were silently rendering with no `var()` fallback now render correctly.' },
+        { type: 'fixed', text: 'Audit fix #4: IMPL_DATA.button HTML used `data-icon-position="leading"` (not a real attribute). Replaced with the actual `data-leading-icon` and added an icon-only variant. Copy-paste from Implementation Reference no longer produces broken icon spacing.' },
+        { type: 'fixed', text: 'Audit fix #5: added `?v=1` cache-bust query param to `material-icons.js` script tag, aligning with the SITE cache discipline.' },
+        { type: 'fixed', text: 'Audit fix #6: Roadmap site-features list — Token search status changed from In Progress to Shipped (it shipped in SITE 2026.04.28.3).' },
+        { type: 'fixed', text: 'Audit fix #7: demo-builder.js header comment rewritten — no longer claims React/Vue live previews.' },
+        { type: 'fixed', text: 'Audit fix #8: text-styles demo inline script no longer hardcodes `#6b7280` — now uses `var(--uds-color-text-secondary)` and `var(--uds-font-size-xs)`. Dogfooding fix.' },
+        { type: 'changed', text: 'Audit fix #10: Demo Builder header tooltip clarified — "Build a multi-component HTML demo".' },
+        { type: 'added', text: 'Audit fix #11: Spec X/22 pill on every component page is now an interactive button. Click it to open a popover that lists exactly which fields are filled vs missing (with friendly labels for all 22 fields), explains what motion/responsive deferral means, and links the user to the matching content/<component>.json.' },
+        { type: 'changed', text: 'Audit fix #18: removed static Guidelines HTML from all 21 component pages — every `<div data-tab-panel="guidelines">` is now empty in source. Guidelines tab content is rendered exclusively by `renderGuidelines()` from `content/<component>.json`. Aligns with the uds-content-schema.mdc rule.' },
+        { type: 'removed', text: 'Audit fix #19: stripped 21 dead `react: function () {…}` and 21 dead `vue: function () {…}` properties from IMPL_DATA (~114 lines). Nothing read these — `buildImplSection` only ever called `data.html()`.' },
+        { type: 'changed', text: 'Audit fix #20 (partial): removed 12 trivial dead `var reactCode = X.join("\\n")` / `var vueCode = …` assignments from PLAYGROUNDS render functions. ~25 more references remain inside inline string-builder declarations with embedded JS function expressions; those need a JS-parser-aware tool to remove safely and are deferred.' },
+        { type: 'changed', text: 'Audit fix #21: removed `cssFile` field from all 21 IMPL_DATA entries. The Implementation Reference styles tab now reads the CSS path from `content/<component>.json` `dependencies.css[0]` via `loadContent()`. Single source of truth for CSS dependencies — JSON wins.' }
       ]
     }
   ];

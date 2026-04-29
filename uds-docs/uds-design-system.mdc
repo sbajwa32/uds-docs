@@ -157,7 +157,7 @@ Dark mode: `<html data-color-scheme="dark">` — everything adapts.
 ### Border Colors
 | Token | Use for |
 |-------|---------|
-| `--uds-color-border-default` | Default borders, dividers |
+| `--uds-color-border-primary` | Default borders, dividers |
 | `--uds-color-border-secondary` | Subtle borders, sidebar separators |
 | `--uds-color-border-interactive` | Focused or active input borders |
 | `--uds-color-border-disabled` | Disabled input/field borders |
