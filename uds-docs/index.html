@@ -83,6 +83,55 @@
     .sg-demo-btn:hover { opacity: 1; background: rgba(255,255,255,0.2); }
     .sg-demo-btn .material-symbols-outlined { font-size: 18px; line-height: 1; }
 
+    /* Inline token-search trigger in the brand bar (middle) */
+    .sg-header-search-trigger {
+      flex: 1 1 auto; max-width: 480px;
+      margin: 0 auto; min-width: 200px;
+      display: flex; align-items: center; gap: var(--uds-space-100);
+      height: 30px; padding: 0 var(--uds-space-150);
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: var(--uds-border-radius-container-sm);
+      color: var(--uds-color-text-inverse);
+      font-family: var(--uds-font-family); font-size: var(--uds-font-size-sm);
+      cursor: pointer;
+      transition: background 120ms ease, border-color 120ms ease;
+      -webkit-appearance: none; appearance: none;
+    }
+    .sg-header-search-trigger:hover {
+      background: rgba(255,255,255,0.22);
+      border-color: rgba(255,255,255,0.32);
+    }
+    .sg-header-search-trigger:focus-visible {
+      outline: 2px solid rgba(255,255,255,0.7);
+      outline-offset: 2px;
+    }
+    .sg-header-search-trigger__icon { font-size: 18px; line-height: 1; opacity: 0.8; flex-shrink: 0; }
+    .sg-header-search-trigger__placeholder {
+      flex: 1; text-align: left;
+      opacity: 0.75;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .sg-header-search-trigger__kbds {
+      display: inline-flex; align-items: center; gap: 4px;
+      flex-shrink: 0;
+    }
+    .sg-header-search-trigger__kbds kbd {
+      display: inline-flex; align-items: center; justify-content: center;
+      min-width: 18px; height: 18px; padding: 0 5px;
+      font-family: monospace; font-size: 10px; font-weight: var(--uds-font-weight-bold);
+      background: rgba(255,255,255,0.18);
+      border: 1px solid rgba(255,255,255,0.22);
+      border-radius: 3px;
+      color: var(--uds-color-text-inverse);
+      line-height: 1;
+    }
+    @media (max-width: 720px) {
+      .sg-header-search-trigger__kbds { display: none; }
+      .sg-header-search-trigger { min-width: 0; }
+      .sg-header-search-trigger__placeholder { display: none; }
+    }
+
     .sg-demo-dialog { max-width: 720px; width: calc(100vw - 48px); }
     .sg-demo-dialog .udc-dialog__body { font-family: var(--uds-font-family); }
 
@@ -885,7 +934,7 @@
        Version dropdown (header)
        ===================================================================== */
     .sg-version-select {
-      margin-left: auto; font-size: 12px; font-weight: 500;
+      font-size: 12px; font-weight: 500;
       font-family: var(--uds-font-family);
       background: rgba(255,255,255,0.12); color: var(--uds-color-text-inverse);
       border: 1px solid rgba(255,255,255,0.2); border-radius: 4px;
@@ -973,7 +1022,7 @@
   </style>
   <script>
     (function () {
-      var SITE_VERSION = '2026.04.28.6';
+      var SITE_VERSION = '2026.04.29.1';
       var base = window.location.pathname.replace(/\/index\.html$/, '').replace(/\/$/, '');
       fetch(base + '/version.txt?_=' + Date.now()).then(function (r) {
         if (!r.ok) return;
@@ -1010,8 +1059,23 @@
       </button>
       <span class="udc-tooltip" role="tooltip" data-position="bottom">Build Demo</span>
     </span>
+    <button
+      type="button"
+      class="sg-header-search-trigger"
+      id="sg-header-search-trigger"
+      aria-label="Search tokens"
+      aria-haspopup="dialog"
+      aria-controls="sg-token-search"
+    >
+      <span class="material-symbols-outlined sg-header-search-trigger__icon">search</span>
+      <span class="sg-header-search-trigger__placeholder">Search tokens...</span>
+      <span class="sg-header-search-trigger__kbds">
+        <kbd>/</kbd>
+        <kbd>&#8984;K</kbd>
+      </span>
+    </button>
     <select class="sg-version-select" id="sg-version-dropdown" aria-label="UDS version"></select>
-    <span class="sg-brand-bar-build">SITE 2026.04.28.6</span>
+    <span class="sg-brand-bar-build">SITE 2026.04.29.1</span>
   </div>
 
   <!-- Pre-flight checklist dialog -->
@@ -4295,7 +4359,7 @@ registerUdsComponents();</pre>
   <script src="https://cdn.jsdelivr.net/npm/jszip@3/dist/jszip.min.js"></script>
   <script src="./material-icons.js"></script>
   <script src="./uds/uds.js?v=29"></script>
-  <script src="./app.js?v=81"></script>
+  <script src="./app.js?v=82"></script>
   <script src="./demo-builder.js?v=9"></script>
 
 </body>

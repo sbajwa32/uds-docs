@@ -3616,6 +3616,14 @@
         { type: 'added', text: 'spec-audit subagent (.cursor/agents/spec-audit.md, read-only) — reports per-component spec completeness against the same 22-field scoring used by the "Spec X/22" pill, recommends top 3 highest-impact fields to fill in next.' },
         { type: 'changed', text: '.gitignore now tracks .cursor/rules/, .cursor/skills/, and .cursor/agents/ while keeping .cursor/settings.json and other ephemeral IDE state local. Side effect: the 6 existing project Cursor rules are now committed to the repo for the first time and ship with every clone.' }
       ]
+    },
+    {
+      version: 'SITE 2026.04.29.1',
+      date: '2026-04-29',
+      changes: [
+        { type: 'added', text: 'Visible token search trigger in the middle of the top header — click to open the search modal. Keyboard shortcuts (/ and Cmd/Ctrl+K) still work; the new trigger discloses them as kbd hints inside the box.' },
+        { type: 'changed', text: 'Removed margin-left:auto on .sg-version-select so the new header search trigger can occupy the middle of the brand bar via flex auto-margins.' }
+      ]
     }
   ];
 
@@ -4248,6 +4256,12 @@
       modal.addEventListener('click', function (e) {
         if (e.target === modal) closeTokenSearch();
       });
+    }
+
+    // Header search trigger (visible search box in the brand bar)
+    var headerTrigger = document.getElementById('sg-header-search-trigger');
+    if (headerTrigger) {
+      headerTrigger.addEventListener('click', function () { openTokenSearch(); });
     }
   }
 
