@@ -4,44 +4,224 @@
   "description": "A button triggers an action or event. Primary for main actions, secondary for alternatives, ghost for low-emphasis.",
   "whenToUse": "Use buttons to trigger an action (submit, save, cancel, delete). Primary for the main action; secondary for alternatives; ghost for low-emphasis.",
   "whenNotToUse": "Do not use buttons for navigation links — use an anchor (<a>) instead. Avoid more than 2–3 buttons in a row; consider a dropdown or action menu.",
-  "acceptanceCriteria": [],
+  "acceptanceCriteria": [
+    "Three variants render: primary (filled), secondary (outline), ghost (text-only)",
+    "Default and sm sizes render at the documented heights",
+    "Leading- and trailing-icon slots accept any Material Symbols Outlined name",
+    "Icon-only mode renders as a square; consumer must supply aria-label",
+    "Destructive variant (data-btn-color=\"danger\") tints all three variants with the error color tokens",
+    "All states render distinct visuals: default, hover, active, focus-visible, selected, disabled",
+    "Focus ring uses --uds-color-border-outline-focus-visible and meets WCAG 2.4.7",
+    "Disabled buttons have aria-disabled or the native disabled attribute and do not fire click",
+    "Click fires on Space release and Enter press, matching native <button> semantics"
+  ],
   "dependencies": {
     "css": [
       "uds/components/button.css"
     ],
     "js": []
   },
-  "props": [],
-  "events": [],
-  "slots": [],
-  "states": [],
-  "contentGuidelines": null,
-  "commonlyPairedWith": [],
+  "props": [
+    {
+      "name": "class",
+      "type": "enum",
+      "enum": [
+        "udc-button-primary",
+        "udc-button-secondary",
+        "udc-button-ghost"
+      ],
+      "default": "udc-button-primary",
+      "description": "Variant — primary for the main action, secondary for alternatives, ghost for low-emphasis"
+    },
+    {
+      "name": "data-size",
+      "type": "enum",
+      "enum": [
+        "default",
+        "sm"
+      ],
+      "default": "default",
+      "description": "Compact size for dense contexts like table cells or sidebars"
+    },
+    {
+      "name": "data-btn-color",
+      "type": "enum",
+      "enum": [
+        "default",
+        "danger"
+      ],
+      "default": "default",
+      "description": "Destructive variant. Pair with confirmation dialogs for irreversible actions."
+    },
+    {
+      "name": "data-icon-only",
+      "type": "boolean",
+      "default": false,
+      "description": "Renders the button as a square with only an icon. Requires aria-label on the <button>."
+    },
+    {
+      "name": "data-leading-icon",
+      "type": "string",
+      "default": null,
+      "description": "Material Symbols Outlined name to render before the label"
+    },
+    {
+      "name": "data-trailing-icon",
+      "type": "string",
+      "default": null,
+      "description": "Material Symbols Outlined name to render after the label"
+    },
+    {
+      "name": "disabled",
+      "type": "boolean",
+      "default": false,
+      "description": "Standard HTML disabled attribute. Disables interaction and applies the disabled visual state."
+    },
+    {
+      "name": "type",
+      "type": "enum",
+      "enum": [
+        "button",
+        "submit",
+        "reset"
+      ],
+      "default": "button",
+      "description": "Native button type. Use \"submit\" inside <form> only when this is the form's submit action."
+    }
+  ],
+  "events": [
+    {
+      "name": "click",
+      "description": "Fires when the button is activated by mouse, keyboard (Enter/Space), or touch",
+      "payload": "MouseEvent"
+    }
+  ],
+  "slots": [
+    {
+      "name": "default",
+      "description": "The button label. Use sentence case verbs (\"Save changes\")."
+    }
+  ],
+  "states": [
+    {
+      "name": "default",
+      "description": "Resting state",
+      "hasVisual": true
+    },
+    {
+      "name": "hover",
+      "description": "Pointer over the button",
+      "hasVisual": true
+    },
+    {
+      "name": "active",
+      "description": "Pressed (mouse down or Space held)",
+      "hasVisual": true
+    },
+    {
+      "name": "focus-visible",
+      "description": "Keyboard-focused — shows the focus ring (--uds-color-border-outline-focus-visible)",
+      "hasVisual": true
+    },
+    {
+      "name": "selected",
+      "description": "Toggled-on state for ghost-button toolbars (data-selected=\"true\")",
+      "hasVisual": true
+    },
+    {
+      "name": "disabled",
+      "description": "Non-interactive; reduced contrast",
+      "hasVisual": true
+    },
+    {
+      "name": "loading",
+      "description": "Not yet supported in 0.2 — track in component changelog"
+    }
+  ],
+  "contentGuidelines": "Sentence case verbs (\"Save changes\", \"Delete tenant\"). Avoid generic labels like \"OK\" or \"Submit\". Keep button text under 20 characters; if the action requires explanation, surface it in adjacent helper copy.",
+  "commonlyPairedWith": [
+    "dialog",
+    "text-input",
+    "dropdown",
+    "data-table",
+    "notification"
+  ],
   "dosDonts": {
-    "dos": [],
-    "donts": []
+    "dos": [
+      "Use sentence case verbs that describe the outcome",
+      "Pair Cancel + primary action in dialogs (Cancel on the left, primary on the right)",
+      "Reserve danger styling for genuinely destructive actions",
+      "Provide aria-label on icon-only buttons"
+    ],
+    "donts": [
+      "Don't use buttons for navigation — use anchor (<a>) tags",
+      "Don't put more than one primary button on a single surface",
+      "Don't gate the danger variant behind a single click without confirmation for irreversible actions",
+      "Don't rely on hover-only affordances; the focus state must be equally visible"
+    ]
   },
   "accessibility": {
     "keyboard": [
       {
-        "key": "Space / Enter",
-        "action": "Activate the button"
+        "key": "Tab / Shift+Tab",
+        "action": "Move focus to / from the button"
       },
       {
-        "key": "Tab",
-        "action": "Move focus to/from the button"
+        "key": "Space",
+        "action": "Activate the button on key release"
+      },
+      {
+        "key": "Enter",
+        "action": "Activate the button on key press"
       }
     ],
-    "screenReader": [],
-    "wcag": [],
-    "contrast": []
+    "screenReader": [
+      {
+        "trigger": "Button receives focus",
+        "announcement": "[Label], button — announces \"disabled\" when the disabled attribute is present"
+      },
+      {
+        "trigger": "data-icon-only button receives focus",
+        "announcement": "Reads the aria-label on the <button> element; the icon itself is aria-hidden"
+      }
+    ],
+    "wcag": [
+      {
+        "criterion": "2.1.1",
+        "level": "A",
+        "howMet": "Buttons are reachable and operable via keyboard (Tab/Shift+Tab, Space, Enter)"
+      },
+      {
+        "criterion": "2.4.7",
+        "level": "AA",
+        "howMet": "Visible focus ring on focus-visible using semantic outline tokens"
+      },
+      {
+        "criterion": "1.4.3",
+        "level": "AA",
+        "howMet": "All variants meet 4.5:1 text contrast in light, dark, and every brand"
+      },
+      {
+        "criterion": "1.4.11",
+        "level": "AA",
+        "howMet": "Border / focus ring meets 3:1 against adjacent surfaces"
+      }
+    ],
+    "contrast": [
+      {
+        "foreground": "var(--uds-color-text-inverse)",
+        "background": "var(--uds-color-surface-interactive-default)",
+        "ratio": 4.6,
+        "passes": "AA"
+      }
+    ]
   },
   "knownIssues": [],
   "performance": null,
   "motion": null,
   "responsive": null,
-  "visualHierarchy": null,
-  "densityBehavior": null,
+  "visualHierarchy": "Primary buttons are the page's main action — at most one per surface. Secondary buttons sit alongside primaries (Cancel + Save). Ghost buttons are for low-emphasis actions in toolbars or nested controls.",
+  "densityBehavior": "Default size is the standard target across forms and dialogs. Use data-size=\"sm\" inside table cells, dense toolbars, and the comfortable density when paired with sm inputs.",
   "owner": {
     "designer": "Unassigned",
     "developer": "Unassigned"
