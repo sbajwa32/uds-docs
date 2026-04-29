@@ -4,27 +4,94 @@
   "description": "A container for icons that standardizes sizing (16/20/24/32/48px) and applies the current text color.",
   "whenToUse": "When placing standalone Material Symbols icons that need sizing standardization. To apply a specific icon color via CSS variables.",
   "whenNotToUse": "For icons inside components that already handle sizing (e.g. buttons). Do not use for decorative shapes.",
-  "acceptanceCriteria": [],
+  "acceptanceCriteria": [
+    "Renders at all six documented sizes (16/20/24/32/48/64)",
+    "Inherits color from currentColor unless --_iw-color is overridden",
+    "When used decoratively, the inner icon has aria-hidden=\"true\"",
+    "Wrapper is not focusable"
+  ],
   "dependencies": {
     "css": [
       "uds/components/icon-wrapper.css"
     ],
     "js": []
   },
-  "props": [],
+  "props": [
+    {
+      "name": "data-size",
+      "type": "enum",
+      "enum": [
+        "16",
+        "20",
+        "24",
+        "32",
+        "48",
+        "64"
+      ],
+      "default": "24",
+      "description": "Icon wrapper size in pixels. Maps to internal --_iw-size token."
+    }
+  ],
   "events": [],
-  "slots": [],
-  "states": [],
-  "contentGuidelines": null,
-  "commonlyPairedWith": [],
+  "slots": [
+    {
+      "name": "default",
+      "description": "A single Material Symbols Outlined icon. The wrapper sets the icon's font-size and inherits color from the surrounding text."
+    }
+  ],
+  "states": [
+    {
+      "name": "default",
+      "description": "Static icon container; no interactive states",
+      "hasVisual": true
+    },
+    {
+      "name": "not-applicable",
+      "description": "The wrapper is not focusable or interactive — interactivity belongs to the parent element"
+    }
+  ],
+  "contentGuidelines": "Icons should reinforce, not replace, a text label. Reserve standalone icons for highly recognizable affordances (close, back, search).",
+  "commonlyPairedWith": [
+    "button",
+    "list",
+    "tile",
+    "nav-header",
+    "nav-vertical"
+  ],
   "dosDonts": {
-    "dos": [],
-    "donts": []
+    "dos": [
+      "Add aria-hidden=\"true\" on the inner Material Symbols span when the icon is decorative",
+      "Pick a size from the documented enum — don't introduce one-off sizes"
+    ],
+    "donts": [
+      "Don't use icon-wrapper for shapes or illustrations — only for Material Symbols icons",
+      "Don't put icon-wrapper inside a button when the host component already handles icon sizing (e.g. Button, Dropdown)"
+    ]
   },
   "accessibility": {
-    "keyboard": [],
-    "screenReader": [],
-    "wcag": [],
+    "keyboard": [
+      {
+        "key": "—",
+        "action": "Not focusable; place icon-wrapper inside an interactive element if needed"
+      }
+    ],
+    "screenReader": [
+      {
+        "trigger": "Decorative icon (default)",
+        "announcement": "Icon should carry aria-hidden=\"true\" so screen readers skip it; meaning lives in the visible label"
+      },
+      {
+        "trigger": "Meaningful icon (no adjacent label)",
+        "announcement": "Author must add an aria-label or visually-hidden text to the parent element"
+      }
+    ],
+    "wcag": [
+      {
+        "criterion": "1.1.1",
+        "level": "A",
+        "howMet": "Decorative icons are aria-hidden; meaningful icons require a text alternative on their host"
+      }
+    ],
     "contrast": []
   },
   "knownIssues": [],

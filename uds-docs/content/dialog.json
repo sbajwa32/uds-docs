@@ -4,7 +4,19 @@
   "description": "A modal dialog overlays the page to focus the user on a single task or decision.",
   "whenToUse": "For confirmations of destructive actions. For short forms that need focus. For critical information requiring acknowledgement.",
   "whenNotToUse": "For non-blocking notifications (use Notification). For multi-step flows (use a dedicated page or wizard).",
-  "acceptanceCriteria": [],
+  "acceptanceCriteria": [
+    "Uses role=\"dialog\" with aria-modal=\"true\" and aria-labelledby pointing at the title element",
+    "Backdrop renders behind the dialog and intercepts pointer events on the page below",
+    "On open, focus moves into the dialog; on close, focus returns to the element that triggered open",
+    "Tab and Shift+Tab cycle focus inside the dialog (focus trap) while open",
+    "Escape closes the dialog when dismissible=true and emits close with reason='escape'",
+    "Backdrop click closes the dialog when dismissible=true and emits close with reason='backdrop'",
+    "Close button is the first focusable element by default; consumer can override via slot",
+    "1- to 4-slot body layouts render with consistent spacing",
+    "Primary/secondary/tertiary footer actions render at the documented positions and emit close with the matching reason",
+    "Body of the dialog is scrollable when content overflows; the title bar and footer remain fixed",
+    "When loading=true on the primary action, Escape and backdrop close are disabled"
+  ],
   "dependencies": {
     "css": [
       "uds/components/dialog.css"
@@ -13,41 +25,194 @@
       "uds/components/dialog.js"
     ]
   },
-  "props": [],
-  "events": [],
-  "slots": [],
-  "states": [],
-  "contentGuidelines": null,
-  "commonlyPairedWith": [],
+  "props": [
+    {
+      "name": "open",
+      "type": "boolean",
+      "default": false,
+      "required": true,
+      "description": "Controls visibility. When true, the backdrop renders and focus moves into the dialog."
+    },
+    {
+      "name": "title",
+      "type": "string",
+      "required": true,
+      "description": "Dialog title — surfaced as the accessible name via aria-labelledby"
+    },
+    {
+      "name": "size",
+      "type": "enum",
+      "enum": [
+        "sm",
+        "md",
+        "lg"
+      ],
+      "default": "md",
+      "description": "Dialog width preset"
+    },
+    {
+      "name": "dismissible",
+      "type": "boolean",
+      "default": true,
+      "description": "Allows closing via the X button, Escape, and backdrop click"
+    },
+    {
+      "name": "primaryAction",
+      "type": "object",
+      "description": "{ label, onClick, variant: 'primary' | 'danger', disabled? }"
+    },
+    {
+      "name": "secondaryAction",
+      "type": "object",
+      "description": "{ label, onClick }"
+    },
+    {
+      "name": "tertiaryAction",
+      "type": "object",
+      "description": "Optional third footer action; aligned to the left"
+    }
+  ],
+  "events": [
+    {
+      "name": "open",
+      "description": "Fires after the dialog is rendered and focus has moved inside",
+      "payload": "void"
+    },
+    {
+      "name": "close",
+      "description": "Fires when the dialog is dismissed",
+      "payload": "{ reason: 'primary' | 'secondary' | 'tertiary' | 'escape' | 'backdrop' | 'close-button' | 'programmatic' }"
+    },
+    {
+      "name": "confirm",
+      "description": "Convenience event when the primary action fires",
+      "payload": "void"
+    },
+    {
+      "name": "cancel",
+      "description": "Convenience event when secondary or escape closes the dialog",
+      "payload": "void"
+    }
+  ],
+  "slots": [
+    {
+      "name": "header",
+      "description": "Override the title bar; replaces title prop when present"
+    },
+    {
+      "name": "body",
+      "description": "1 to 4 content slots stacked vertically; the dialog supports up to four for short forms"
+    },
+    {
+      "name": "footer",
+      "description": "Override the action footer (advanced; defaults to primary/secondary/tertiary props)"
+    }
+  ],
+  "states": [
+    {
+      "name": "closed",
+      "description": "open=false; backdrop and dialog are not rendered",
+      "hasVisual": true
+    },
+    {
+      "name": "open",
+      "description": "Backdrop visible, dialog rendered, focus trapped inside",
+      "hasVisual": true
+    },
+    {
+      "name": "loading",
+      "description": "Primary action shows a loading state; backdrop click and Escape are disabled until resolved"
+    }
+  ],
+  "contentGuidelines": "Title: short, action-oriented (\"Delete tenant?\" not \"Confirmation\"). Body: explain consequences, especially for destructive actions. Primary action label echoes the title's verb (\"Delete\"). Secondary action is always \"Cancel\" unless there's a specific alternative.",
+  "commonlyPairedWith": [
+    "button",
+    "text-input",
+    "dropdown",
+    "notification",
+    "checkbox"
+  ],
   "dosDonts": {
-    "dos": [],
-    "donts": []
+    "dos": [
+      "Trap focus inside the dialog while open and restore focus on close",
+      "Use a clear, action-verbs title (\"Delete tenant?\" not \"Are you sure?\")",
+      "Echo the destructive verb in the primary button (Delete, Remove, Discard)",
+      "Disable Escape/backdrop close while a destructive primary action is in-flight"
+    ],
+    "donts": [
+      "Don't open a dialog from another dialog — restructure the flow into a single surface",
+      "Don't use a dialog for non-blocking notifications — use the Notification component",
+      "Don't put primary actions on the left of the footer",
+      "Don't autofocus a destructive primary action — autofocus the safest option (Cancel) instead"
+    ]
   },
   "accessibility": {
     "keyboard": [
       {
         "key": "Tab / Shift+Tab",
-        "action": "Cycle focus within the dialog (focus trap)"
+        "action": "Cycle focus inside the dialog (focus trap)"
       },
       {
         "key": "Escape",
-        "action": "Close the dialog"
+        "action": "Closes the dialog when dismissible=true; emits close with reason='escape'"
       },
       {
-        "key": "Enter",
-        "action": "Activate primary action (when appropriate)"
+        "key": "Enter on primary action button",
+        "action": "Fires the primary action"
       }
     ],
-    "screenReader": [],
-    "wcag": [],
+    "screenReader": [
+      {
+        "trigger": "Dialog opens",
+        "announcement": "[Title], dialog — focus moves to the first focusable element inside; backdrop is announced as a modal interruption"
+      },
+      {
+        "trigger": "Dialog closes",
+        "announcement": "Focus returns to the element that opened the dialog; backgrounded content becomes interactive again"
+      }
+    ],
+    "wcag": [
+      {
+        "criterion": "1.3.1",
+        "level": "A",
+        "howMet": "Uses role=\"dialog\", aria-modal=\"true\", aria-labelledby points at the title"
+      },
+      {
+        "criterion": "2.1.1",
+        "level": "A",
+        "howMet": "Full keyboard support: Tab cycles within dialog, Escape closes, Enter activates primary"
+      },
+      {
+        "criterion": "2.1.2",
+        "level": "A",
+        "howMet": "Focus is trapped inside the dialog while open and restored to the trigger on close — no keyboard trap escape required"
+      },
+      {
+        "criterion": "2.4.3",
+        "level": "A",
+        "howMet": "On open, focus moves to the first focusable element (typically the close button or first form field); on close, focus returns to the opener"
+      },
+      {
+        "criterion": "2.4.7",
+        "level": "AA",
+        "howMet": "All interactive elements inside the dialog show a focus ring"
+      },
+      {
+        "criterion": "1.4.3",
+        "level": "AA",
+        "howMet": "Title, body, and action labels meet 4.5:1 contrast against the dialog surface"
+      }
+    ],
     "contrast": []
   },
-  "knownIssues": [],
+  "knownIssues": [
+    "Stacked dialog support is intentionally out of scope for 0.2"
+  ],
   "performance": null,
   "motion": null,
   "responsive": null,
-  "visualHierarchy": null,
-  "densityBehavior": null,
+  "visualHierarchy": "Dialogs interrupt the page — use sparingly. The primary action sits bottom-right, secondary to its left, tertiary aligned to the bottom-left.",
+  "densityBehavior": "Body padding adapts to density; default examples use comfortable density even when triggered from a compact toolbar.",
   "owner": {
     "designer": "Unassigned",
     "developer": "Unassigned"

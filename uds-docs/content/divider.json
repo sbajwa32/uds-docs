@@ -4,27 +4,83 @@
   "description": "A divider creates visual separation between related content.",
   "whenToUse": "To separate groups of related content. Between sections within a card or panel.",
   "whenNotToUse": "When whitespace alone provides sufficient separation. Do not use as decoration.",
-  "acceptanceCriteria": [],
+  "acceptanceCriteria": [
+    "Renders at all four padding sizes (sm/md/lg/xl)",
+    "Border color uses --uds-color-border-secondary so it adapts to light/dark/brand modes",
+    "When grouping is meaningful, markup includes role=\"separator\"",
+    "Divider does not receive focus"
+  ],
   "dependencies": {
     "css": [
       "uds/components/divider.css"
     ],
     "js": []
   },
-  "props": [],
+  "props": [
+    {
+      "name": "data-padding",
+      "type": "enum",
+      "enum": [
+        "sm",
+        "md",
+        "lg",
+        "xl"
+      ],
+      "default": "sm",
+      "description": "Vertical padding around the rule. Use larger paddings to add breathing room between major sections."
+    }
+  ],
   "events": [],
   "slots": [],
-  "states": [],
-  "contentGuidelines": null,
-  "commonlyPairedWith": [],
+  "states": [
+    {
+      "name": "default",
+      "description": "Static horizontal rule; no interactive states",
+      "hasVisual": true
+    },
+    {
+      "name": "not-applicable",
+      "description": "Divider is not focusable or interactive"
+    }
+  ],
+  "contentGuidelines": "Dividers carry no text. Communicate grouping through the divider's position and the surrounding heading hierarchy, not the divider itself.",
+  "commonlyPairedWith": [
+    "list",
+    "data-table",
+    "dialog",
+    "nav-vertical"
+  ],
   "dosDonts": {
-    "dos": [],
-    "donts": []
+    "dos": [
+      "Use role=\"separator\" (or a semantic <hr>) when the divider conveys content grouping",
+      "Pick a padding size proportional to the surrounding content density"
+    ],
+    "donts": [
+      "Don't use a divider when whitespace alone communicates separation",
+      "Don't use dividers as decoration; they should always indicate a content boundary",
+      "Don't stack multiple dividers — increase padding instead"
+    ]
   },
   "accessibility": {
-    "keyboard": [],
-    "screenReader": [],
-    "wcag": [],
+    "keyboard": [
+      {
+        "key": "—",
+        "action": "Not focusable; the divider is presentational"
+      }
+    ],
+    "screenReader": [
+      {
+        "trigger": "Encountered in reading order with role=\"separator\"",
+        "announcement": "Most screen readers ignore decorative dividers; when role=separator is set, they announce a structural break"
+      }
+    ],
+    "wcag": [
+      {
+        "criterion": "1.3.1",
+        "level": "A",
+        "howMet": "Use role=\"separator\" or a semantic <hr> when the divider conveys grouping; omit role for purely decorative spacing"
+      }
+    ],
     "contrast": []
   },
   "knownIssues": [],
