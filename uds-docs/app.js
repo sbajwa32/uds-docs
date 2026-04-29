@@ -3644,6 +3644,15 @@
         { type: 'changed', text: 'Audit fix #20 (partial): removed 12 trivial dead `var reactCode = X.join("\\n")` / `var vueCode = …` assignments from PLAYGROUNDS render functions. ~25 more references remain inside inline string-builder declarations with embedded JS function expressions; those need a JS-parser-aware tool to remove safely and are deferred.' },
         { type: 'changed', text: 'Audit fix #21: removed `cssFile` field from all 21 IMPL_DATA entries. The Implementation Reference styles tab now reads the CSS path from `content/<component>.json` `dependencies.css[0]` via `loadContent()`. Single source of truth for CSS dependencies — JSON wins.' }
       ]
+    },
+    {
+      version: 'SITE 2026.04.29.5',
+      date: '2026-04-29',
+      changes: [
+        { type: 'added', text: 'Cloud-readiness: project is now ready to run as a Cursor Cloud Agent. Added `.cursor/environment.json` (auto-starts a `python3 -m http.server` on port 4000 inside `uds-docs/` when a cloud VM spins up — no install step required since the site is pure HTML/CSS/JS).' },
+        { type: 'added', text: 'Top-level `AGENTS.md` at the repo root — orientation file that any Cursor Cloud Agent reads on first boot. Documents project layout, the standard preflight + commit flow, where rules / skills / subagents live, and what NOT to do (no framework code, no static guidelines HTML, no skipping bump-site.sh).' },
+        { type: 'changed', text: '`.gitignore`: added `!.cursor/environment.json` allow-list so the cloud env config is tracked alongside the existing rules / skills / agents. Local `settings.json` and other `.cursor/*` files remain ignored.' }
+      ]
     }
   ];
 

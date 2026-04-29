@@ -6,6 +6,7 @@
 !.cursor/skills/**
 !.cursor/agents/
 !.cursor/agents/**
+!.cursor/environment.json
 
 # macOS
 .DS_Store

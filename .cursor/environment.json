@@ -1,0 +1,9 @@
+{
+  "install": "echo 'No install step needed — UDS docs is a pure HTML/CSS/JS site'",
+  "terminals": [
+    {
+      "name": "UDS doc site (local server)",
+      "command": "cd uds-docs && python3 -m http.server 4000"
+    }
+  ]
+}
