@@ -1,0 +1,73 @@
+---
+description: Prevents accidental Figma mutations during UDS sync work. Read-only is the default; writes are explicitly scoped and summarized.
+alwaysApply: true
+---
+
+# UDS Figma Write Safety
+
+## Default posture
+
+Figma reads are allowed for UDS work. Figma writes are denied unless the
+user explicitly requested the write scope or a skill's instructions require
+it after confirmation.
+
+Do not mutate Figma while discovering, auditing, inspecting, or diffing.
+Discovery agents are read-only.
+
+## Allowed write scopes
+
+The only routine Figma write scopes are:
+
+1. **Release Notes frames**
+   - Remove and rebuild only the frame named `Release Notes`
+   - Target page must be the current `UDS Version: X.Y` page
+   - Both UDS Tokens and UDS Components release-note frames must contain
+     identical text if syncing release notes
+
+2. **Component status page-name prefixes**
+   - Allowed only when the user explicitly asks to sync status
+   - Must report old page name and new page name
+   - Do not infer status from spec completeness; status comes from Figma
+     stoplight prefix or explicit user direction
+
+3. **Cover-page version text**
+   - Allowed only during a confirmed release workflow
+   - Must report old text and new text
+
+All other Figma writes require a direct user instruction that names the
+target object or operation.
+
+## Required before/after report
+
+For every Figma write, return:
+
+```markdown
+## Figma write summary
+
+- File: UDS Tokens | UDS Components
+- File key: ...
+- Page: ...
+- Node/frame: ...
+- Operation: create | update | delete | rename
+- Old value: ...
+- New value: ...
+- Rollback note: ...
+```
+
+If a write fails halfway through, stop and report the exact last successful
+operation. Do not continue with more writes until the user reviews the state.
+
+## Destructive operations
+
+Never auto-delete components, variables, component sets, pages, or library
+assets in Figma.
+
+The only allowed deletion-like routine operation is deleting the existing
+`Release Notes` frame immediately before rebuilding it during release-note
+sync.
+
+## Related workflows
+
+- `.cursor/rules/uds-figma-preflight.mdc`
+- `.cursor/rules/uds-figma-change-classification.mdc`
+- `.cursor/skills/sync-figma-release-notes/SKILL.md`

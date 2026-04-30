@@ -15,14 +15,39 @@ The Urban Design System (UDS) spans two Figma files and a documentation site:
 
 Both Figma files contain a page named `UDS Version: X.Y` (e.g., `UDS Version: 0.1`).
 
+## Delegated Figma workflows
+
+This rule orchestrates releases. It does NOT contain the full operational
+details for Figma reads/imports/writes. Use the focused Figma workflow
+artifacts instead:
+
+| Task | Use |
+|---|---|
+| Prove Figma API/tool capability | `figma-capability-check` agent |
+| Read file versions/pages/statuses | `figma-inventory` agent |
+| Audit tokens | `figma-token-audit` agent |
+| Import tokens | `import-figma-tokens` skill |
+| Deep-inspect one component | `figma-component-inspector` agent |
+| Sync component status | `sync-figma-component-status` skill |
+| Sync component spec from Figma | `sync-figma-component-spec` skill |
+| Populate `figmaNodeId` fields | `link-figma-nodes` skill |
+| Rebuild Figma release notes | `sync-figma-release-notes` skill |
+| One-shot update from Figma | `uds-updated` skill |
+
+Figma token reads must follow `uds-token-architecture.mdc`.
+Figma component reads must follow `uds-figma-component-inspection.mdc`.
+Figma writes must follow `uds-figma-write-safety.mdc`.
+All findings must follow `uds-figma-change-classification.mdc`.
+
 ## Version Detection
 
 Whenever you interact with either UDS Figma file (reading components, inspecting tokens, importing assets), you MUST:
 
-1. List pages in the file via `use_figma` and find the page matching `UDS Version: *`
-2. Parse the version number from the page name
-3. Read `UDS_VERSION` from `uds-docs/app.js`
-4. If the Figma version is higher than the site version, alert the user and begin the Release Questionnaire below
+1. Run the `uds-figma-preflight.mdc` checks.
+2. List pages in the file via Figma tooling and find the page matching `UDS Version: *`.
+3. Parse the version number from the page name.
+4. Read `UDS_VERSION` from `uds-docs/app.js`.
+5. If the Figma version is higher than the site version, alert the user and begin the Release Questionnaire below.
 
 Do NOT silently skip this check. If you detect a mismatch, pause your current task and address it first.
 
@@ -38,27 +63,27 @@ When a version bump is detected, present questions in rounds using the AskQuesti
 
 ### Round 2 -- Tokens
 
-Always ask: "Please export the token ZIPs from UDS Tokens in Figma and attach them here so I can compare against the current CSS and import any changes."
+Run `figma-token-audit` first. Direct Figma Variables reads are the
+primary source; token ZIP exports are fallback only when direct variable
+access is unavailable, partial, or cannot produce the normalized token
+model required by `uds-token-architecture.mdc`.
 
-The expected ZIPs (matching the variable collections in Figma):
-- `_uds-primitive.zip` -- primitive tokens
-- `uds-color.zip` -- semantic color tokens (6 modes)
-- `uds-font.zip` -- font family tokens
-- `uds-font-scale.zip` -- font scale tokens
-- `uds-space.zip` -- space/density tokens
-- `uds-border.zip` -- border radius/width tokens
+The audit must report:
+- direct variable read status (success / partial / failed)
+- collection and mode structure diff
+- added tokens
+- removed / renamed / moved token candidates
+- value changes across modes
+- alias target changes
+- import recommendation
 
-Once received, unzip each into `/tmp/uds-tokens/`, parse the JSON files, and diff against the current `uds-docs/uds/tokens/primitives.css` and `uds-docs/uds/tokens/semantic.css`. Report:
-- New tokens added
-- Tokens renamed or removed
-- Value changes across modes
-- Any structural changes (new modes, new categories)
-
-If no token changes occurred, the user can say "no token changes" and skip providing ZIPs.
+Only request ZIPs if the token audit explicitly says fallback is required.
 
 ### Round 3 -- New Components
 
-- Auto-detect new components by comparing Figma component pages (those with stoplight prefixes) against the doc site sidebar entries in `index.html`. Report any that exist in Figma but not the site.
+- Run `figma-inventory` to compare Figma component pages (those with stoplight prefixes) against `COMPONENT_STATUS`, sidebar links, and `content/*.json`.
+- For changed/new components, run `figma-component-inspector`. Do not rely on screenshots alone.
+- Report any components that exist in Figma but not the site.
 - "Any components deprecated or removed?"
 
 ### Round 4 -- Release Prep
@@ -72,14 +97,14 @@ If no token changes occurred, the user can say "no token changes" and skip provi
 After the questionnaire, execute these steps in order. NEVER run `release.sh` without explicit user confirmation.
 
 1. **Snapshot**: Run `bash uds-docs/release.sh {new_version}` to archive the current site into `versions/{old}/`
-2. **Update statuses**: Read all component page names from UDS Components, update `COMPONENT_STATUS` in `app.js` to match
+2. **Update statuses**: Run `sync-figma-component-status` and update `COMPONENT_STATUS` only for high-confidence, non-breaking status changes
 3. **Update CHANGELOG**: Add a new release entry to the `CHANGELOG` array in `app.js`:
    - Use `category: 'tokens'` for token changes, `category: 'components'` for component changes, `category: null` for global summary
    - Use correct `type`: `added`, `changed`, `fixed`, `deprecated`, `removed`
    - Include `migration` field on the release if there are breaking changes
-4. **Regenerate tokens** (if user provides new ZIPs): Unzip exports, regenerate `primitives.css` and `semantic.css`
-5. **Add new components** (if any): Create `data-page` section in `index.html`, add sidebar link, add playground config in `app.js`
-6. **Update Figma release notes**: Populate the new version page in both UDS Tokens and UDS Components with the unified changelog (both Tokens and Components sections, matching the doc site)
+4. **Regenerate tokens**: Run `import-figma-tokens`; direct Figma Variables are primary, ZIPs fallback only
+5. **Add new components** (if any): Use `new-component` only after `figma-inventory` / `figma-component-inspector` identify high-confidence new components with enough required minimum content
+6. **Update Figma release notes**: Run `sync-figma-release-notes` to populate the new version page in both UDS Tokens and UDS Components with the unified changelog
 7. **Bump site**: Run `bash uds-docs/bump.sh` to set the initial SITE build counter
 8. **Verify**: Open the browser and confirm changelog, version dropdown, and status badges are correct
 
@@ -100,9 +125,11 @@ Release v{new} complete. Manual Figma steps remaining:
 
 Whenever the `CHANGELOG` array in `app.js` is modified — whether during a formal release or an ad-hoc update (e.g., adding a new component, fixing an entry, reordering) — you MUST also update the Release Notes pages in **both** Figma files (`UDS Tokens` and `UDS Components`) to match. The two Figma changelogs must always be identical to each other and to the site changelog. Use `use_figma` to:
 
-1. Navigate to the `UDS Version: X.Y` page in each file
-2. Remove the existing "Release Notes" frame
-3. Rebuild it programmatically with the full changelog content (all versions, newest first), using the established styled format (bold version numbers, gray dates, blue uppercase category headers, colored bullet items)
+1. Run `sync-figma-release-notes`.
+2. Navigate to the `UDS Version: X.Y` page in each file.
+3. Remove only the existing "Release Notes" frame.
+4. Rebuild it programmatically with the full changelog content (all versions, newest first), using the established styled format.
+5. Verify both files contain identical release-note text.
 
 Never leave Figma changelogs out of sync with the site. If you forget, fix it immediately once noticed.
 

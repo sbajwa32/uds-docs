@@ -1,0 +1,109 @@
+---
+description: Classifies Figma-derived token and component changes by confidence and breaking-change risk before anything is applied.
+alwaysApply: true
+---
+
+# UDS Figma Change Classification
+
+Any change derived from Figma MUST be classified before an agent edits the
+doc site or writes back to Figma.
+
+## Required finding shape
+
+Every Figma-derived finding must include:
+
+```markdown
+Confidence: high | medium | low
+Risk: non-breaking | potentially-breaking | destructive | unknown
+Reason: <why this confidence/risk was chosen>
+Default action: auto-apply | report-only | ask-user | stop
+```
+
+## Confidence levels
+
+### High confidence
+
+All of these are true:
+
+- Exact Figma file and version were preflighted.
+- The relevant collection/page/node was read directly, not inferred from a
+  screenshot.
+- Stable IDs or exact normalized names match the doc-site artifact.
+- No ambiguity exists between multiple possible nodes/tokens.
+- Current Figma data, current doc-site files, and the last sync snapshot agree
+  about identity.
+
+### Medium confidence
+
+One of these is true:
+
+- A single likely match exists, but names differ.
+- Stable IDs are unavailable, but normalized names and structure match.
+- Optional metadata is missing, but the core object is unambiguous.
+- A rename/move candidate exists with strong but not exact evidence.
+
+### Low confidence
+
+Any of these are true:
+
+- Multiple possible Figma nodes/tokens could match.
+- Evidence comes primarily from screenshots.
+- Required Figma structure is missing or partially unreadable.
+- Modes, aliases, or variant properties are incomplete.
+- A change conflicts with current CSS/spec behavior.
+
+## Risk classes
+
+### Non-breaking
+
+May auto-apply only when confidence is high:
+
+- Token value changed but token name and mode remain stable.
+- New token added.
+- New optional component prop/state/slot added.
+- `figmaNodeId` added for an unambiguous component.
+- Component status moves forward, e.g. `in-progress` -> `review`.
+
+### Potentially breaking
+
+Never auto-apply:
+
+- Token removed, renamed, or moved to a different generated CSS name.
+- Mode removed or renamed.
+- CSS custom property name would change.
+- Semantic alias target removed.
+- Required component prop renamed or removed.
+- Component variant/property removed.
+- Component status moves backward from `review` or `production`.
+
+### Destructive
+
+Always stop and ask:
+
+- Component removed from Figma.
+- Component split or merge.
+- Figma write outside an explicitly allowed write scope.
+- Doc-site page deletion, sidebar removal, or CSS token deletion.
+
+## Auto-apply policy
+
+| Finding | Default action |
+|---|---|
+| high confidence + non-breaking | auto-apply allowed |
+| medium confidence | ask user |
+| low confidence | stop and ask user |
+| potentially breaking | stop and ask user |
+| destructive | stop and ask user |
+| unknown risk | stop and ask user |
+
+## Dry-run behavior
+
+The `uds-updated` skill MUST support dry-run mode. In dry-run mode:
+
+- Read Figma and repo files.
+- Classify changes.
+- Report proposed actions.
+- Do not edit files.
+- Do not write Figma.
+- Do not update sync snapshots.
+- Do not commit or push.

@@ -1,0 +1,16 @@
+{
+  "schema": "../schemas/component-model.schema.json",
+  "source": {
+    "fileKey": "1XJoUJgtNpw4R0IIT3VjoK",
+    "fileName": "UDS Components",
+    "udsVersionPage": null,
+    "capturedAt": null,
+    "capturedBy": "not-yet-captured"
+  },
+  "summary": {
+    "componentCount": 0,
+    "statusCounts": {},
+    "changedSincePrevious": []
+  },
+  "components": []
+}

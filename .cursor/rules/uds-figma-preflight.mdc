@@ -1,0 +1,67 @@
+---
+description: Required preflight for any task that reads or writes UDS Figma files.
+globs: ["**/*"]
+alwaysApply: false
+---
+
+# UDS Figma Preflight
+
+Use this rule whenever a task interacts with either UDS Figma file, including
+reading variables, inspecting components, importing tokens, syncing statuses, or
+writing release notes.
+
+## Canonical Figma files
+
+| File | Key | Purpose |
+| --- | --- | --- |
+| UDS Tokens | `iqKgR73ubUHpQTIcF7XGMy` | Figma Variables source for primitive and semantic tokens |
+| UDS Components | `1XJoUJgtNpw4R0IIT3VjoK` | Visual component source: component pages, variant sets, examples, status prefixes |
+
+## Mandatory preflight output
+
+Before doing any Figma-derived analysis or write, report:
+
+```markdown
+Figma preflight:
+- Tokens file version: X.Y or unavailable
+- Components file version: X.Y or unavailable
+- Site UDS_VERSION: X.Y
+- Version mismatch: yes/no
+- Figma capability check: pass/partial/fail
+- Action: continue / dry-run only / pause for release flow
+```
+
+## Version detection
+
+1. List pages in each relevant Figma file.
+2. Find the page named `UDS Version: X.Y`.
+3. Parse `X.Y`.
+4. Read `UDS_VERSION` from `uds-docs/app.js`.
+5. If either Figma version is higher than the site version, pause normal work
+   and follow `uds-release-workflow.mdc`.
+
+Do not silently ignore a version mismatch.
+
+## Stoplight status mapping
+
+Figma component page prefixes map to `COMPONENT_STATUS` values:
+
+| Figma prefix | Status key | Badge label |
+| --- | --- | --- |
+| black / no started marker | `placeholder` | Not Started |
+| red | `blocked` | Blocked |
+| orange | `in-progress` | In Progress |
+| yellow | `review` | In Review |
+| green | `production` | Production Ready |
+
+When the Figma prefix is ambiguous or unavailable, report `confidence: low` and
+do not update `COMPONENT_STATUS`.
+
+## Direct-read first
+
+- Tokens: read Figma Variables directly first. Token ZIPs are fallback only.
+- Components: inspect nodes/layers/variants directly. Screenshots are supporting
+  evidence only.
+
+If the Figma tool cannot read the needed structure, stop or fall back according
+to the relevant rule. Do not guess from a screenshot.

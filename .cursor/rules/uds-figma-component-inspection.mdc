@@ -1,0 +1,136 @@
+---
+description: Requires deep Figma node inspection for UDS Components; screenshots are supporting evidence only.
+globs: ["uds-docs/**", ".cursor/**"]
+alwaysApply: false
+---
+
+# UDS Figma Component Inspection
+
+When reading or syncing the **UDS Components** Figma file, do not rely on
+screenshots as the source of truth.
+
+Screenshots are useful for visual confirmation only. They are insufficient for
+props, variants, states, anatomy, spacing, token usage, or CSS/spec updates.
+
+## Canonical file
+
+- UDS Components file key: `1XJoUJgtNpw4R0IIT3VjoK`
+
+## Required inspection before updating docs
+
+Before modifying a component spec, examples, code, CSS, or status based on
+Figma, inspect the actual Figma node data:
+
+1. Run the Figma preflight from `uds-figma-preflight.mdc`.
+2. Locate the component page by normalized name.
+3. Identify the canonical node(s):
+   - component set
+   - default variant
+   - example frame(s)
+   - anatomy/spec frame, if present
+   - state matrix, if present
+4. Traverse the node tree:
+   - node IDs
+   - node types
+   - layer names
+   - visible/hidden state
+   - child hierarchy
+   - component set / component / instance relationships
+   - nested component instances
+   - text nodes and labels
+   - icon layer names or Material Symbols names
+   - auto-layout direction, gap, padding, sizing modes
+   - constraints
+   - fills, strokes, radii, effects
+   - bound variables and text styles
+5. Extract the exact variant-property matrix from component sets.
+6. Extract token bindings and map them to CSS tokens using
+   `uds-token-architecture.mdc`.
+7. Compare findings against:
+   - `uds-docs/content/<component>.json`
+   - `uds-docs/uds/components/<component>.css`
+   - component examples/code in `uds-docs/index.html`
+   - `COMPONENT_STATUS` in `uds-docs/app.js`
+
+## Required report sections
+
+Any component inspection report must include:
+
+```markdown
+# Figma Component Inspection — <component>
+
+## Preflight
+- Components file version:
+- Site UDS_VERSION:
+- Mismatch:
+
+## Located nodes
+- Page:
+- Status prefix:
+- Component set:
+- Default variant:
+- Example frames:
+- Ambiguity:
+
+## Variant matrix
+- Properties:
+- Observed combinations:
+- Missing expected combinations:
+
+## Node tree summary
+- Root:
+- Key children:
+- Hidden layers:
+- Nested UDS components:
+
+## Anatomy
+- root:
+- label:
+- helper/error text:
+- icons:
+- action regions:
+
+## Token bindings
+| Layer | Property | Figma variable/style | CSS token/style |
+
+## Hardcoded Figma values
+| Layer | Property | Value | Token candidate |
+
+## Accessibility implications
+- Keyboard model:
+- Screen reader model:
+- Risks:
+
+## Doc-site comparison
+- Matches:
+- Mismatches:
+- Missing in JSON:
+- Missing in CSS/examples:
+
+## Confidence
+- Level: high | medium | low
+- Reason:
+
+## Recommended updates
+```
+
+## Ambiguity handling
+
+Stop and report instead of guessing when:
+
+- multiple component sets match one component name
+- no stable canonical component-set node exists
+- variant properties conflict with current CSS attributes
+- Figma has hardcoded values where tokens are expected
+- node traversal is incomplete
+- token bindings are unavailable and values cannot be mapped
+
+## Do not
+
+- Do not derive props from screenshots alone.
+- Do not derive state matrices from screenshots alone.
+- Do not write `content/*.json` until node tree + variant matrix + doc-site
+  comparison are complete.
+- Do not invent component anatomy when layer names or nested instances are
+  ambiguous.
+- Do not overwrite a non-null `figmaNodeId` without reporting old/new.

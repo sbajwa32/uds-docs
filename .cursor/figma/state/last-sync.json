@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "lastSuccessfulSync": null,
+  "tokens": {
+    "figmaFileKey": "iqKgR73ubUHpQTIcF7XGMy",
+    "figmaVersion": null,
+    "snapshotPath": ".cursor/figma/state/tokens.snapshot.json",
+    "snapshotChecksum": null
+  },
+  "components": {
+    "figmaFileKey": "1XJoUJgtNpw4R0IIT3VjoK",
+    "figmaVersion": null,
+    "snapshotPath": ".cursor/figma/state/components.snapshot.json",
+    "snapshotChecksum": null
+  },
+  "site": {
+    "udsVersion": null,
+    "siteVersion": null,
+    "commit": null
+  },
+  "notes": [
+    "Initial placeholder. The first successful `UDS updated` sync should populate this with current Figma/doc-site state."
+  ]
+}

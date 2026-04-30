@@ -1,0 +1,74 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "UDS Figma Token Snapshot",
+  "type": "object",
+  "required": ["schemaVersion", "source", "collections"],
+  "properties": {
+    "schemaVersion": { "type": "string" },
+    "source": {
+      "type": "object",
+      "required": ["fileKey", "fileName", "udsVersion"],
+      "properties": {
+        "fileKey": { "type": "string" },
+        "fileName": { "type": "string" },
+        "udsVersion": { "type": ["string", "null"] },
+        "capturedAt": { "type": ["string", "null"] },
+        "captureMethod": { "type": "string", "enum": ["figma-variables", "zip-fallback", "manual-seed"] }
+      }
+    },
+    "collections": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "importStatus", "modes", "tokens"],
+        "properties": {
+          "id": { "type": ["string", "null"] },
+          "name": { "type": "string" },
+          "importStatus": { "type": "string", "enum": ["imported", "known-non-imported", "deferred"] },
+          "modes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["name"],
+              "properties": {
+                "id": { "type": ["string", "null"] },
+                "name": { "type": "string" },
+                "cssSelector": { "type": ["string", "null"] }
+              }
+            }
+          },
+          "tokens": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["figmaPath", "cssName", "values"],
+              "properties": {
+                "id": { "type": ["string", "null"] },
+                "figmaPath": { "type": "array", "items": { "type": "string" } },
+                "cssName": { "type": "string" },
+                "type": { "type": ["string", "null"] },
+                "description": { "type": ["string", "null"] },
+                "scopes": { "type": "array", "items": { "type": "string" } },
+                "values": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": ["mode", "value"],
+                    "properties": {
+                      "mode": { "type": "string" },
+                      "value": { "type": ["string", "number", "boolean", "null"] },
+                      "aliasPath": { "type": ["array", "null"], "items": { "type": "string" } },
+                      "aliasCssName": { "type": ["string", "null"] },
+                      "resolvedValue": { "type": ["string", "number", "boolean", "null"] },
+                      "checksum": { "type": ["string", "null"] }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

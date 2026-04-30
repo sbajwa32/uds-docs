@@ -6,6 +6,8 @@
 !.cursor/skills/**
 !.cursor/agents/
 !.cursor/agents/**
+!.cursor/figma/
+!.cursor/figma/**
 !.cursor/environment.json
 !.cursor/desktop-preview.sh
 

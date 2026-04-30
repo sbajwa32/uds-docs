@@ -1,0 +1,103 @@
+---
+description: Defines tracked Figma sync snapshots and when agents may update them.
+globs: [".cursor/figma/**"]
+alwaysApply: false
+---
+
+# UDS Figma Sync State
+
+The prompt `UDS updated` depends on knowing what changed since the last
+successful Figma sync. The agent MUST compare current Figma data against both:
+
+1. The current doc-site files.
+2. The tracked sync snapshots under `.cursor/figma/state/`.
+
+Without the snapshots, an agent can detect mismatches, but it cannot reliably
+know whether a mismatch is new, intentionally divergent, or stale.
+
+## Tracked files
+
+| Path | Purpose |
+|---|---|
+| `.cursor/figma/state/last-sync.json` | Metadata for the last successful sync |
+| `.cursor/figma/state/tokens.snapshot.json` | Normalized token model from the last successful token sync |
+| `.cursor/figma/state/components.snapshot.json` | Normalized component/page/node inventory from the last successful component sync |
+| `.cursor/figma/schemas/token-model.schema.json` | Shape of normalized token models |
+| `.cursor/figma/schemas/component-model.schema.json` | Shape of normalized component models |
+
+Snapshots MUST NOT contain secrets, personal access tokens, or raw binary data.
+
+## Snapshot contents
+
+### Tokens snapshot
+
+Store:
+
+- Figma file key
+- Figma file version page name
+- exported/synced timestamp
+- collection names
+- mode names
+- variable IDs, when available
+- variable paths
+- generated CSS custom property names
+- aliases and resolved values
+- checksums per collection/mode
+
+### Components snapshot
+
+Store:
+
+- Figma file key
+- Figma file version page name
+- synced timestamp
+- component page names
+- stoplight status prefixes
+- page IDs
+- canonical component-set node IDs, when available
+- variant property names and option lists
+- changed-node fingerprints
+- doc-site component ID mapping
+
+## Update policy
+
+Update snapshots ONLY after:
+
+1. The relevant Figma audit/inspection completed successfully.
+2. Any doc-site changes were applied and verified.
+3. No unresolved breaking/ambiguous changes remain for that subsystem.
+4. The agent is about to commit/push the sync result.
+
+Do NOT update snapshots during dry-run mode.
+
+Do NOT update snapshots when the Figma read was partial or fell back to
+screenshot-only evidence.
+
+## First-run behavior
+
+If snapshots are missing:
+
+1. Treat the run as a baseline creation.
+2. Compare Figma to the current doc site anyway.
+3. Report that no prior snapshot exists.
+4. Do not auto-apply destructive changes.
+5. Create snapshots only after verification.
+
+## Checksums
+
+Use stable, deterministic checksums over normalized JSON, not raw Figma response
+payloads. Sort object keys and arrays by stable IDs/names before hashing.
+
+## Dry run
+
+`UDS updated -- dry run` MUST NOT modify snapshots.
+
+The dry-run report should include:
+
+```markdown
+Snapshot impact:
+- tokens.snapshot.json: would create/update/no-op
+- components.snapshot.json: would create/update/no-op
+- last-sync.json: would update/no-op
+```
+

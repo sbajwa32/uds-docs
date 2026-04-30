@@ -91,12 +91,57 @@ if needed.
 - **`spec-audit`** (read-only): Audits all `content/*.json` files and
   reports completeness gaps. Use when the user asks "what specs are
   incomplete?" or before a release.
+- **`figma-capability-check`** (read-only): Tests what the current Figma
+  tooling can read/write before any Figma sync depends on it.
+- **`figma-inventory`** (read-only): Broad UDS Components inventory. Use to
+  compare Figma pages/statuses against `COMPONENT_STATUS`, sidebar entries,
+  and tracked sync snapshots.
+- **`figma-token-audit`** (read-only): Direct Variables-first audit for the
+  UDS Tokens file. ZIP exports are fallback only when direct variable access
+  is unavailable or incomplete.
+- **`figma-component-inspector`** (read-only): Deep single-component
+  inspection. It must inspect node trees, variants, layers, nested instances,
+  and variable bindings — screenshots are supporting evidence only.
+- **`figma-spec-gap`** (read-only): Compares Figma components against
+  `content/*.json`, `figmaNodeId` fields, and doc-site page coverage.
 
 ## Common skills to use
 
 - **`new-component`**: Scaffolds a new component (JSON, CSS, sidebar entry,
   page section, COMPONENT_STATUS entry, SITE bump). Use when the user
   says "add a new X component".
+- **`uds-updated`**: Top-level Figma-to-docs orchestrator for prompts like
+  "UDS updated" or "sync UDS from Figma". Runs capability check, token audit,
+  inventory, deep inspections for changed components, safe applies, visual
+  verification, sync snapshot updates, commit, and push to `main`.
+- **`import-figma-tokens`**: Imports tokens after `figma-token-audit`. Direct
+  Figma Variables are primary; exported ZIPs are backup only.
+- **`sync-figma-component-status`**: Syncs unambiguous stoplight page-prefix
+  statuses to `COMPONENT_STATUS`.
+- **`sync-figma-component-spec`**: Updates a component spec from a
+  `figma-component-inspector` report. Never writes from screenshot-only
+  evidence.
+- **`sync-figma-release-notes`**: Rebuilds Release Notes frames in both UDS
+  Figma files from the site `CHANGELOG`.
+- **`link-figma-nodes`**: Populates `figmaNodeId` fields only for
+  high-confidence canonical Figma nodes.
+
+## Figma workflow principles
+
+- Direct Figma Variables are the token source of truth. Exported token ZIPs
+  are fallback only.
+- The current token CSS output (`primitives.css`, `semantic.css`,
+  `text-styles.css`) is canonical and protected by
+  `.cursor/rules/uds-token-architecture.mdc`.
+- Figma component work must inspect node trees and variant properties.
+  Screenshots alone are never enough to update specs or CSS.
+- Deletions are never automatic. Missing tokens/components are reported,
+  classified, and preserved/deprecated unless the user explicitly confirms
+  removal.
+- All Figma-derived findings include confidence (`high`, `medium`, `low`) and
+  change classification (`non-breaking`, `potentially-breaking`, `destructive`,
+  `informational`). Only high-confidence non-breaking docs changes may be
+  auto-applied.
 
 ## Don't do
 

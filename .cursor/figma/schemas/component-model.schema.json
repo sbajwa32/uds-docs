@@ -1,0 +1,84 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "UDS Figma Component Model",
+  "description": "Normalized read-only representation of UDS Components Figma pages/component sets for inventory, diffing, and node-link updates.",
+  "type": "object",
+  "required": ["source", "components"],
+  "properties": {
+    "source": {
+      "type": "object",
+      "required": ["fileKey", "fileName", "udsVersion", "capturedAt"],
+      "properties": {
+        "fileKey": { "type": "string" },
+        "fileName": { "type": "string" },
+        "udsVersion": { "type": "string" },
+        "capturedAt": { "type": "string" },
+        "tool": { "type": "string" }
+      }
+    },
+    "components": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "title", "pageNodeId", "status"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Doc-site component id in kebab-case when known, e.g. text-input"
+          },
+          "title": { "type": "string" },
+          "figmaPageName": { "type": "string" },
+          "pageNodeId": { "type": "string" },
+          "componentSetNodeId": { "type": ["string", "null"] },
+          "defaultVariantNodeId": { "type": ["string", "null"] },
+          "status": {
+            "type": "string",
+            "enum": ["placeholder", "blocked", "in-progress", "review", "production", "deprecated", "unknown"]
+          },
+          "since": { "type": ["string", "null"] },
+          "variantProperties": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": { "type": "string" }
+            }
+          },
+          "nestedInstances": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "nodeId": { "type": "string" },
+                "name": { "type": "string" },
+                "mainComponentName": { "type": ["string", "null"] },
+                "mainComponentNodeId": { "type": ["string", "null"] }
+              }
+            }
+          },
+          "tokenBindings": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "nodeId": { "type": "string" },
+                "layerName": { "type": "string" },
+                "property": { "type": "string" },
+                "variablePath": { "type": ["string", "null"] },
+                "cssName": { "type": ["string", "null"] },
+                "hardcodedValue": { "type": ["string", "number", "null"] }
+              }
+            }
+          },
+          "fingerprint": {
+            "type": "object",
+            "properties": {
+              "nodeTreeHash": { "type": "string" },
+              "variantHash": { "type": "string" },
+              "tokenBindingHash": { "type": "string" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

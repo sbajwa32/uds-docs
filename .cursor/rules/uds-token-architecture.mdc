@@ -1,0 +1,197 @@
+---
+description: Canonical UDS Tokens Figma variable architecture and CSS output contract. Direct Figma Variables reads are primary; ZIP exports are fallback only.
+globs: ["uds-docs/uds/tokens/**/*.css", "uds-docs/app.js", "uds-docs/index.html"]
+alwaysApply: false
+---
+
+# UDS Token Architecture
+
+This rule preserves the token structure that is already correct on the doc site. Agents must not rediscover or redesign token architecture during an import.
+
+## Primary source
+
+The primary token source is the **Variables tab** in the UDS Tokens Figma file:
+
+- Figma file key: `iqKgR73ubUHpQTIcF7XGMy`
+- Figma file: **UDS Tokens**
+
+Agents MUST attempt to read Figma Variables directly before requesting exported ZIPs.
+
+ZIP exports are fallback only when direct variable access is unavailable, incomplete, or cannot produce a deterministic normalized token model.
+
+## CSS outputs are final
+
+The current doc-site token output structure is canonical:
+
+- `_uds-primitive` -> `uds-docs/uds/tokens/primitives.css`
+- `uds-color` -> `uds-docs/uds/tokens/semantic.css`
+- `uds-font` -> `uds-docs/uds/tokens/semantic.css`
+- `uds-font-scale` -> `uds-docs/uds/tokens/semantic.css`
+- `uds-space` -> `uds-docs/uds/tokens/semantic.css`
+- `uds-border` -> `uds-docs/uds/tokens/semantic.css`
+- Figma text styles / text composites -> `uds-docs/uds/tokens/text-styles.css`
+
+Do not create extra token CSS files without explicit user instruction.
+
+## Figma collections
+
+### Imported collections
+
+These collections are expected and imported:
+
+| Collection | Expected role | CSS output |
+|---|---|---|
+| `_uds-primitive` | Raw palette / numeric / font primitives | `primitives.css` |
+| `uds-color` | Semantic color tokens across themes | `semantic.css` |
+| `uds-font` | Font family / font token modes | `semantic.css` |
+| `uds-font-scale` | Type scale modes | `semantic.css` |
+| `uds-space` | Spacing / density modes | `semantic.css` |
+| `uds-border` | Border radius and width tokens | `semantic.css` |
+
+### Known non-imported / deferred collections
+
+These collections may exist in Figma and MUST be reported, but are not generated into CSS today unless the user explicitly asks to add support:
+
+| Collection | Current treatment |
+|---|---|
+| `uds-elevation` | Deferred / currently not imported |
+| `uds-motion` | Deferred / currently not imported |
+| `uds-style-icon` | Known non-imported collection |
+| `uds-rules` | Known non-imported collection |
+
+Non-imported collections are not errors. They become errors only if the user asks to import them and no CSS contract exists.
+
+## Expected modes
+
+### `_uds-primitive`
+
+Expected single mode:
+
+- `primitive value`
+
+### `uds-color`
+
+Expected theme modes:
+
+- `base (light)`
+- `base (dark)`
+- `resman (light)`
+- `resman (dark)`
+- `anyonehome (light)`
+- `inhabit (light)`
+
+Mode-to-selector mapping:
+
+| Figma mode | CSS selector |
+|---|---|
+| `base (light)` | `:root` default |
+| `base (dark)` | `[data-color-scheme="dark"]` |
+| `resman (light)` | `[data-theme="resman"]` |
+| `resman (dark)` | `[data-theme="resman"][data-color-scheme="dark"]` |
+| `anyonehome (light)` | `[data-theme="anyonehome"]` |
+| `inhabit (light)` | `[data-theme="inhabit"]` |
+
+### `uds-font`
+
+Expected font modes should map to:
+
+- default Inter in `:root`
+- `[data-font="poppins"]`
+- `[data-font="roboto"]`
+- `[data-font="lexend"]`
+
+### `uds-font-scale`
+
+Expected scale modes should map to:
+
+- default in `:root`
+- `[data-font-scale="smaller"]`
+- `[data-font-scale="larger"]`
+
+### `uds-space`
+
+Expected density modes should map to:
+
+- default in `:root`
+- `[data-density="comfortable"]`
+
+### `uds-border`
+
+Border tokens are semantic tokens in `semantic.css`. If modes exist, they must be reported and mapped explicitly before generation.
+
+## Naming transforms
+
+### Primitive variables
+
+Figma:
+
+```text
+_uds-primitive / color / slate / 60-M
+```
+
+CSS:
+
+```css
+--uds-primitive-color-slate-60-M
+```
+
+Rule:
+
+```text
+_uds-primitive / <path...> -> --uds-primitive-<path-joined-with-hyphen>
+```
+
+### Semantic color variables
+
+Figma:
+
+```text
+uds / color / surface / interactive-default
+```
+
+CSS:
+
+```css
+--uds-color-surface-interactive-default
+```
+
+Rule:
+
+```text
+uds / color / <category> / <name> -> --uds-color-<category>-<name>
+```
+
+### Other semantic variables
+
+Use the same prefix pattern:
+
+- `uds / font / ...` -> `--uds-font-...`
+- `uds / font-scale / ...` -> `--uds-font-scale-...`
+- `uds / space / ...` -> `--uds-space-...`
+- `uds / border / ...` -> `--uds-border-...`
+
+## Layering rules
+
+- Primitive tokens store raw values.
+- Semantic tokens should preserve aliases to primitives where possible.
+- Component CSS consumes semantic tokens, not primitives.
+- Font tokens may alias font-scale tokens and primitive font family / weight tokens.
+- Text style classes in `text-styles.css` consume semantic font tokens.
+
+Do not flatten semantic aliases to raw hex/px values unless direct Figma data cannot expose aliases and the user approves fallback generation.
+
+## Architecture validation gate
+
+Before importing tokens, `figma-token-audit` MUST report:
+
+- Direct Figma Variables read: success / partial / failed
+- Imported collections present/missing
+- Non-imported collections present and counts
+- Mode names per imported collection
+- Token counts per imported collection
+- Alias graph validity
+- Generated CSS names that would differ from current CSS
+- Structure diff before value diff
+- Confidence and breaking-change classification
+
+If the Figma Variables structure cannot be read or does not match this contract, fail closed and report. Do not generate CSS.
