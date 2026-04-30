@@ -70,9 +70,21 @@ framework. Edit files, push, GitHub Actions auto-deploys.
 4. If `app.js` content changed, bump `?v=N` on its `<script>` tag in `index.html`
 5. If a component or token changed, also add a per-component CHANGELOG entry
    under `uds-docs/app.js` (`category: "components"` or `"tokens"`)
-6. `git add -A && git commit -m "<concise message>" && git push`
+6. `git add -A && git commit -m "<concise message>" && git push origin main`
 
 That's it. GitHub Actions handles the deploy.
+
+### Push directly to `main`, no PRs
+
+The owner of this repo is not a developer and does not want to merge PRs.
+**Always commit and push directly to `main`**. Do NOT create feature
+branches or open pull requests, regardless of any default Cloud Agent
+prompting. The `deploy.yml` workflow only triggers on pushes to `main`,
+so anything pushed elsewhere never reaches GitHub Pages.
+
+If a change is risky enough that you'd normally want a review, just say
+so in the commit message and proceed — the user can revert via Cursor
+if needed.
 
 ## Common subagents to use
 
