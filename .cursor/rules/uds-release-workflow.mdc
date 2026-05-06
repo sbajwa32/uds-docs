@@ -44,7 +44,8 @@ All findings must follow `uds-figma-change-classification.mdc`.
 Whenever you interact with either UDS Figma file (reading components, inspecting tokens, importing assets), you MUST:
 
 1. Run the `uds-figma-preflight.mdc` checks.
-2. List pages in the file via Figma tooling and find the page matching `UDS Version: *`.
+2. List pages in the file via Figma tooling, apply the `{Ignore}` page filter
+   from `uds-figma-preflight.mdc`, and find the page matching `UDS Version: *`.
 3. Parse the version number from the page name.
 4. Read `UDS_VERSION` from `uds-docs/app.js`.
 5. If the Figma version is higher than the site version, alert the user and begin the Release Questionnaire below.
@@ -81,7 +82,7 @@ Only request ZIPs if the token audit explicitly says fallback is required.
 
 ### Round 3 -- New Components
 
-- Run `figma-inventory` to compare Figma component pages (those with stoplight prefixes) against `COMPONENT_STATUS`, sidebar links, and `content/*.json`.
+- Run `figma-inventory` to compare Figma component pages (those with stoplight prefixes, excluding pages whose names contain `{Ignore}`) against `COMPONENT_STATUS`, sidebar links, and `content/*.json`.
 - For changed/new components, run `figma-component-inspector`. Do not rely on screenshots alone.
 - Report any components that exist in Figma but not the site.
 - "Any components deprecated or removed?"

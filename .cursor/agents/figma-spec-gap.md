@@ -19,7 +19,8 @@ You compare the UDS Components Figma file to the documentation site's component 
 ## Required reads
 
 1. Run the Figma preflight from `uds-figma-preflight.mdc`.
-2. Read UDS Components Figma pages/component-set names.
+2. Read UDS Components Figma pages/component-set names, excluding any page
+   whose name contains `{Ignore}`.
 3. Read `uds-docs/content/*.json`.
 4. Read sidebar and `data-page` sections in `uds-docs/index.html`.
 5. Read `COMPONENT_STATUS` and `FIGMA_LINKS`/link behavior in `uds-docs/app.js`.
@@ -33,6 +34,8 @@ For each component:
 - Prefer stable `figmaNodeId` matches when present.
 - Treat one exact Figma page + one doc page as high confidence.
 - Treat multiple potential Figma nodes as low confidence.
+- Treat ignored Figma pages as absent for doc-site coverage; do not report
+  ignored pages as missing docs, stale specs, or status mismatches.
 
 ## Required report
 

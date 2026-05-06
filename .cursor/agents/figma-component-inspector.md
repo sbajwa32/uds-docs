@@ -43,7 +43,10 @@ Read:
    - Site `UDS_VERSION`
    - mismatch yes/no
 2. Find the component page by normalized name.
-3. Identify:
+3. Exclude pages whose page name contains `{Ignore}`. If the only matching
+   component page contains `{Ignore}`, report "ignored by page-name marker" and
+   stop without inspecting its nodes.
+4. Identify:
    - page node
    - canonical component set
    - default variant

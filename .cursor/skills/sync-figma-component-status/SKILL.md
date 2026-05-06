@@ -27,12 +27,15 @@ prefixes. It does not edit component specs, examples, CSS, or Figma.
    - missing/deleted components;
    - split/merged components;
    - ambiguous page-name matches.
-4. Before editing `uds-docs/`, run `bash uds-docs/bump-site.sh`.
-5. Update only `COMPONENT_STATUS` in `uds-docs/app.js`.
-6. Add a concise `SITE_CHANGELOG` entry listing changed statuses.
-7. Cache-bust `app.js` in `uds-docs/index.html`.
-8. Visual-check the Roadmap and sidebar status badges.
-9. Commit and push directly to `main`.
+4. Exclude any Figma page whose name contains `{Ignore}`. These pages are
+   intentionally out of scope and must not create status updates, deletion
+   candidates, or missing-doc findings.
+5. Before editing `uds-docs/`, run `bash uds-docs/bump-site.sh`.
+6. Update only `COMPONENT_STATUS` in `uds-docs/app.js`.
+7. Add a concise `SITE_CHANGELOG` entry listing changed statuses.
+8. Cache-bust `app.js` in `uds-docs/index.html`.
+9. Visual-check the Roadmap and sidebar status badges.
+10. Commit and push directly to `main`.
 
 ## Output
 

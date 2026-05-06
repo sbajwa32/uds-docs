@@ -128,6 +128,10 @@ if needed.
 
 ## Figma workflow principles
 
+- Figma pages whose page name contains `{Ignore}` are intentionally excluded
+  from UDS sync. Do not read them for inventory, status sync, component
+  inspection, spec-gap analysis, token/release workflows, snapshots, or
+  deletion detection.
 - Direct Figma Variables are the token source of truth. Exported token ZIPs
   are fallback only.
 - The current token CSS output (`primitives.css`, `semantic.css`,

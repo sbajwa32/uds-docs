@@ -1310,7 +1310,7 @@
   </style>
   <script>
     (function () {
-      var SITE_VERSION = '2026.05.06.1';
+      var SITE_VERSION = '2026.05.06.2';
       var base = window.location.pathname.replace(/\/index\.html$/, '').replace(/\/$/, '');
       fetch(base + '/version.txt?_=' + Date.now()).then(function (r) {
         if (!r.ok) return;
@@ -1363,7 +1363,7 @@
       </span>
     </button>
     <select class="sg-version-select" id="sg-version-dropdown" aria-label="UDS version"></select>
-    <span class="sg-brand-bar-build">SITE 2026.05.06.1</span>
+    <span class="sg-brand-bar-build">SITE 2026.05.06.2</span>
   </div>
 
   <!-- Pre-flight checklist dialog -->
@@ -4513,7 +4513,7 @@ registerUdsComponents();</pre>
         </table>
 
         <h3 class="sg-subsection-title" style="margin-top:var(--uds-space-400);">Figma-to-docs workflow</h3>
-        <p class="sg-subsection-desc">The prompt <code>UDS updated</code> is the top-level Figma sync workflow. It reads UDS Tokens and UDS Components, compares against tracked sync snapshots and the doc site, classifies changes by confidence and breaking risk, then applies only safe high-confidence updates. Token ZIP exports are fallback only — direct Figma Variables reads are the primary source.</p>
+        <p class="sg-subsection-desc">The prompt <code>UDS updated</code> is the top-level Figma sync workflow. It reads UDS Tokens and UDS Components, compares against tracked sync snapshots and the doc site, classifies changes by confidence and breaking risk, then applies only safe high-confidence updates. Token ZIP exports are fallback only — direct Figma Variables reads are the primary source. Figma pages with <code>{Ignore}</code> anywhere in the page name are skipped for UDS sync, inventory, status, spec, and release workflows.</p>
         <table class="sg-gl-table" style="margin-bottom:var(--uds-space-400);">
           <thead><tr><th>Step</th><th>What happens</th><th>Safety rule</th></tr></thead>
           <tbody>
@@ -4770,7 +4770,7 @@ registerUdsComponents();</pre>
   <script src="https://cdn.jsdelivr.net/npm/jszip@3/dist/jszip.min.js"></script>
   <script src="./material-icons.js?v=1"></script>
   <script src="./uds/uds.js?v=29"></script>
-  <script src="./app.js?v=88"></script>
+  <script src="./app.js?v=89"></script>
   <script src="./demo-builder.js?v=9"></script>
 
 </body>

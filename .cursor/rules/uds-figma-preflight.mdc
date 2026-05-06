@@ -34,13 +34,34 @@ Figma preflight:
 ## Version detection
 
 1. List pages in each relevant Figma file.
-2. Find the page named `UDS Version: X.Y`.
-3. Parse `X.Y`.
-4. Read `UDS_VERSION` from `uds-docs/app.js`.
-5. If either Figma version is higher than the site version, pause normal work
+2. Filter out any page whose name contains `{Ignore}`. Ignored pages are not
+   part of UDS sync, inventory, release detection, component inspection,
+   status sync, deletion detection, or new-component detection.
+3. Find the page named `UDS Version: X.Y` among the non-ignored pages.
+4. Parse `X.Y`.
+5. Read `UDS_VERSION` from `uds-docs/app.js`.
+6. If either Figma version is higher than the site version, pause normal work
    and follow `uds-release-workflow.mdc`.
 
 Do not silently ignore a version mismatch.
+
+## Ignored pages
+
+Any Figma page with `{Ignore}` anywhere in the page name is outside the UDS
+source of truth for automation. Treat it as intentionally hidden scratch,
+archive, exploration, or non-system content.
+
+Rules:
+
+- Do not read ignored pages for token/component sync.
+- Do not include ignored pages in page counts, new component detection,
+  deletion detection, status sync, node-link matching, or release-note target
+  selection.
+- Do not flag ignored pages as "missing from docs" or "deleted from Figma".
+- Do not inspect components inside ignored pages unless the user explicitly
+  asks for that page by name and acknowledges it is ignored.
+- If an ignored page looks like a duplicate of a live component, mention only
+  that it was skipped; do not use it as evidence.
 
 ## Stoplight status mapping
 

@@ -32,8 +32,12 @@ not modify Figma or repository files.
 
 1. Run the Figma preflight from `.cursor/rules/uds-figma-preflight.mdc`.
 2. List pages in both Figma files.
-3. Parse `UDS Version: X.Y` pages.
-4. In UDS Components:
+3. Exclude any page whose name contains `{Ignore}` from all inventories,
+   counts, status comparisons, missing/new component checks, and fingerprints.
+   Report the skipped pages separately under "Ignored pages" so the omission is
+   visible.
+4. Parse `UDS Version: X.Y` pages.
+5. In UDS Components, using only non-ignored pages:
    - list component pages and page IDs
    - parse stoplight prefix/status
    - identify component sets on each page
@@ -45,14 +49,14 @@ not modify Figma or repository files.
      - component set IDs
      - top-level child names/types
      - updated timestamp if available
-5. Read doc-site state:
+6. Read doc-site state:
    - `UDS_VERSION`
    - `COMPONENT_STATUS`
    - sidebar links
    - `data-page` component sections
    - `content/*.json` component IDs and `figmaNodeId`
-6. Compare against `.cursor/figma/state/components.snapshot.json` if present.
-7. Classify every finding using `.cursor/rules/uds-figma-change-classification.mdc`.
+7. Compare against `.cursor/figma/state/components.snapshot.json` if present.
+8. Classify every finding using `.cursor/rules/uds-figma-change-classification.mdc`.
 
 ## Stoplight mapping
 
@@ -74,6 +78,10 @@ it as `unknown` and confidence low.
 ## Component status comparison
 | Component | Figma status | Site status | Match | Confidence | Notes |
 |---|---|---|---|---|---|
+
+## Ignored pages
+| File | Page name | Reason |
+|---|---|---|
 
 ## New or missing components
 ### In Figma, missing from docs

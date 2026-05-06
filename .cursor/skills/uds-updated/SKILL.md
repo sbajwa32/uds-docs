@@ -64,6 +64,7 @@ Follow `uds-figma-preflight.mdc`:
 - UDS Components file key: `1XJoUJgtNpw4R0IIT3VjoK`
 - detect both `UDS Version: X.Y` pages
 - compare to `UDS_VERSION` in `uds-docs/app.js`
+- skip any Figma page whose page name contains `{Ignore}`
 
 If Figma version is higher than site version, report it and continue into this
 sync workflow only if the user asked for a Figma sync/release. Otherwise pause.
@@ -101,6 +102,7 @@ The inventory must return:
 - missing/new/deleted component candidates
 - page/component-set fingerprints
 - components requiring deep inspection
+- ignored page count/list for any pages containing `{Ignore}`
 
 Never auto-apply:
 

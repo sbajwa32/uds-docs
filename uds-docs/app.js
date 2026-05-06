@@ -3675,6 +3675,13 @@
       changes: [
         { type: 'added', text: 'Cursor Workflows page now documents the Figma-to-docs workflow: the `UDS updated` orchestration skill, direct Variables-first token auditing, deep component inspection, sync snapshots, deletion guardrails, and the dedicated Figma rules / skills / read-only agents under `.cursor/`.' }
       ]
+    },
+    {
+      version: 'SITE 2026.05.06.2',
+      date: '2026-05-06',
+      changes: [
+        { type: 'changed', text: 'Figma workflows now treat any Figma page whose name contains `{Ignore}` as out of scope. The preflight rule, inventory/spec-gap/component-inspector agents, status-sync and `UDS updated` skills skip those pages for version detection, component inventory, status sync, new/deleted component detection, deep inspection, and snapshot fingerprints; the Cursor Workflows page documents the convention.' }
+      ]
     }
   ];
 
