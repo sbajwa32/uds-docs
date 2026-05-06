@@ -1310,7 +1310,7 @@
   </style>
   <script>
     (function () {
-      var SITE_VERSION = '2026.04.29.6';
+      var SITE_VERSION = '2026.05.06.1';
       var base = window.location.pathname.replace(/\/index\.html$/, '').replace(/\/$/, '');
       fetch(base + '/version.txt?_=' + Date.now()).then(function (r) {
         if (!r.ok) return;
@@ -1363,7 +1363,7 @@
       </span>
     </button>
     <select class="sg-version-select" id="sg-version-dropdown" aria-label="UDS version"></select>
-    <span class="sg-brand-bar-build">SITE 2026.04.29.6</span>
+    <span class="sg-brand-bar-build">SITE 2026.05.06.1</span>
   </div>
 
   <!-- Pre-flight checklist dialog -->
@@ -4512,8 +4512,21 @@ registerUdsComponents();</pre>
           </tbody>
         </table>
 
+        <h3 class="sg-subsection-title" style="margin-top:var(--uds-space-400);">Figma-to-docs workflow</h3>
+        <p class="sg-subsection-desc">The prompt <code>UDS updated</code> is the top-level Figma sync workflow. It reads UDS Tokens and UDS Components, compares against tracked sync snapshots and the doc site, classifies changes by confidence and breaking risk, then applies only safe high-confidence updates. Token ZIP exports are fallback only — direct Figma Variables reads are the primary source.</p>
+        <table class="sg-gl-table" style="margin-bottom:var(--uds-space-400);">
+          <thead><tr><th>Step</th><th>What happens</th><th>Safety rule</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Capability check</strong></td><td>Confirms the Figma tool can read pages, Variables collections, modes, node trees, bound variables, and release-note write targets.</td><td>Fail closed if required Figma data is unavailable.</td></tr>
+            <tr><td><strong>Token audit</strong></td><td>Reads the UDS Tokens Variables tab directly, validates the token architecture, normalizes tokens, and diffs against CSS + the last sync snapshot.</td><td>ZIPs are requested only when direct variable reads fail or are incomplete.</td></tr>
+            <tr><td><strong>Component inventory</strong></td><td>Reads UDS Components pages, stoplight prefixes, component sets, and page fingerprints to find new, moved, deleted, or status-changed components.</td><td>Broad inventory does not write specs; changed components require deep inspection.</td></tr>
+            <tr><td><strong>Component inspection</strong></td><td>For each changed component, reads node trees, layer names, variants, nested instances, token bindings, auto-layout, anatomy, and doc-site mismatches.</td><td>Screenshots are supporting evidence only; never enough to update specs.</td></tr>
+            <tr><td><strong>Safe apply</strong></td><td>Applies only high-confidence, non-breaking changes; reports medium/low confidence and breaking changes for review.</td><td>Never auto-delete tokens or components. Preserve/deprecate/report first.</td></tr>
+          </tbody>
+        </table>
+
         <h3 class="sg-subsection-title" style="margin-top:var(--uds-space-400);">Active Rules</h3>
-        <p class="sg-subsection-desc">Six always-on rules. The agent reads these on every task that touches the doc site.</p>
+        <p class="sg-subsection-desc">Twelve active rules. The first six protect the doc site; the Figma rules make token/component sync direct-read, deep-inspection, confidence-scored, and deletion-safe.</p>
         <table class="sg-gl-table">
           <thead><tr><th>Rule</th><th>What it does</th></tr></thead>
           <tbody>
@@ -4523,6 +4536,12 @@ registerUdsComponents();</pre>
             <tr><td><a class="sg-gl-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/rules/uds-component-checklist.mdc" target="_blank" rel="noopener noreferrer"><code>uds-component-checklist</code></a></td><td>Required checklist for new components: CSS, JS, content JSON, doc-site page, app.js entries.</td></tr>
             <tr><td><a class="sg-gl-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/rules/uds-content-schema.mdc" target="_blank" rel="noopener noreferrer"><code>uds-content-schema</code></a></td><td>All component spec content lives in <code>content/&lt;component&gt;.json</code>. Never re-introduce spec HTML into <code>index.html</code>.</td></tr>
             <tr><td><a class="sg-gl-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/rules/uds-release-workflow.mdc" target="_blank" rel="noopener noreferrer"><code>uds-release-workflow</code></a></td><td>UDS release workflow — Figma version detection, token import, Figma release-notes sync.</td></tr>
+            <tr><td><a class="sg-gl-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/rules/uds-figma-preflight.mdc" target="_blank" rel="noopener noreferrer"><code>uds-figma-preflight</code></a></td><td>Required Figma file/version check before reading or writing UDS Tokens or UDS Components.</td></tr>
+            <tr><td><a class="sg-gl-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/rules/uds-figma-write-safety.mdc" target="_blank" rel="noopener noreferrer"><code>uds-figma-write-safety</code></a></td><td>Figma writes are denied by default. Only release notes, status prefixes, and release cover text are allowed with explicit scope.</td></tr>
+            <tr><td><a class="sg-gl-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/rules/uds-token-architecture.mdc" target="_blank" rel="noopener noreferrer"><code>uds-token-architecture</code></a></td><td>Codifies the final token CSS architecture: direct Figma Variables first, primitive/semantic layering, mode mapping, ZIP fallback only.</td></tr>
+            <tr><td><a class="sg-gl-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/rules/uds-figma-component-inspection.mdc" target="_blank" rel="noopener noreferrer"><code>uds-figma-component-inspection</code></a></td><td>Prevents screenshot-based guessing. Requires node tree, variant, layer, nested instance, and variable-binding inspection.</td></tr>
+            <tr><td><a class="sg-gl-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/rules/uds-figma-sync-state.mdc" target="_blank" rel="noopener noreferrer"><code>uds-figma-sync-state</code></a></td><td>Defines tracked sync snapshots so agents can compare Figma against the last known-good sync.</td></tr>
+            <tr><td><a class="sg-gl-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/rules/uds-figma-change-classification.mdc" target="_blank" rel="noopener noreferrer"><code>uds-figma-change-classification</code></a></td><td>Requires confidence scores, dry-run support, breaking-change classification, and deletion-safe defaults.</td></tr>
           </tbody>
         </table>
 
@@ -4536,6 +4555,18 @@ registerUdsComponents();</pre>
           <p style="font-family:var(--uds-font-family);font-size:var(--uds-font-size-sm);color:var(--uds-color-text-secondary);margin:0;"><strong>File:</strong> <a class="sg-gl-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/skills/new-component/SKILL.md" target="_blank" rel="noopener noreferrer"><code>.cursor/skills/new-component/SKILL.md</code></a></p>
         </div>
 
+        <table class="sg-gl-table" style="margin-top:var(--uds-space-300);">
+          <thead><tr><th>Figma skill</th><th>When to use it</th><th>Safety behavior</th></tr></thead>
+          <tbody>
+            <tr><td><a class="sg-gl-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/skills/uds-updated/SKILL.md" target="_blank" rel="noopener noreferrer"><code>uds-updated</code></a></td><td>Top-level orchestrator for prompts like <code>UDS updated</code> or <code>sync UDS from Figma</code>.</td><td>Runs dry-run capable capability checks, token audit, inventory, deep inspections, safe applies, snapshots, verification, commit, and push.</td></tr>
+            <tr><td><a class="sg-gl-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/skills/import-figma-tokens/SKILL.md" target="_blank" rel="noopener noreferrer"><code>import-figma-tokens</code></a></td><td>Imports token changes after a token audit.</td><td>Direct Figma Variables are primary; exported ZIPs are fallback only. Token deletions/renames require confirmation.</td></tr>
+            <tr><td><a class="sg-gl-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/skills/sync-figma-component-status/SKILL.md" target="_blank" rel="noopener noreferrer"><code>sync-figma-component-status</code></a></td><td>Syncs unambiguous stoplight page-prefix statuses to <code>COMPONENT_STATUS</code>.</td><td>Does not infer status from spec completeness. Backward moves from review/production require confirmation.</td></tr>
+            <tr><td><a class="sg-gl-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/skills/sync-figma-component-spec/SKILL.md" target="_blank" rel="noopener noreferrer"><code>sync-figma-component-spec</code></a></td><td>Updates a component spec from a deep inspector report.</td><td>Never writes from screenshot-only evidence; ambiguous nodes stop for review.</td></tr>
+            <tr><td><a class="sg-gl-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/skills/sync-figma-release-notes/SKILL.md" target="_blank" rel="noopener noreferrer"><code>sync-figma-release-notes</code></a></td><td>Rebuilds Release Notes frames in both Figma files from the site <code>CHANGELOG</code>.</td><td>Only deletes/rebuilds the Release Notes frame, not arbitrary Figma content.</td></tr>
+            <tr><td><a class="sg-gl-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/skills/link-figma-nodes/SKILL.md" target="_blank" rel="noopener noreferrer"><code>link-figma-nodes</code></a></td><td>Populates <code>figmaNodeId</code> fields from unambiguous canonical Figma nodes.</td><td>Does not overwrite existing node links without reporting old/new and asking when ambiguous.</td></tr>
+          </tbody>
+        </table>
+
         <h3 class="sg-subsection-title" style="margin-top:var(--uds-space-400);">Active Subagents</h3>
         <p class="sg-subsection-desc">Subagents spawn in an isolated context window and return a single result. They keep noisy intermediate work (file reads, parallel scans) out of the main conversation.</p>
 
@@ -4546,6 +4577,17 @@ registerUdsComponents();</pre>
           <p style="font-family:var(--uds-font-family);font-size:var(--uds-font-size-sm);color:var(--uds-color-text-secondary);margin:0 0 var(--uds-space-150);"><strong>Returns:</strong> Markdown report with aggregate stats (average completeness, list below 50%, list missing required fields) and per-component findings (score, missing required, top 3 recommended next fields).</p>
           <p style="font-family:var(--uds-font-family);font-size:var(--uds-font-size-sm);color:var(--uds-color-text-secondary);margin:0;"><strong>File:</strong> <a class="sg-gl-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/agents/spec-audit.md" target="_blank" rel="noopener noreferrer"><code>.cursor/agents/spec-audit.md</code></a></p>
         </div>
+
+        <table class="sg-gl-table" style="margin-top:var(--uds-space-300);">
+          <thead><tr><th>Figma subagent</th><th>What it reads</th><th>Returns</th></tr></thead>
+          <tbody>
+            <tr><td><a class="sg-gl-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/agents/figma-capability-check.md" target="_blank" rel="noopener noreferrer"><code>figma-capability-check</code></a></td><td>Both UDS Figma files and the available Figma tooling surface.</td><td>Read/write capability report: pages, Variables collections, aliases, node trees, bound variables, hidden layers, release-note write support.</td></tr>
+            <tr><td><a class="sg-gl-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/agents/figma-token-audit.md" target="_blank" rel="noopener noreferrer"><code>figma-token-audit</code></a></td><td>UDS Tokens Variables tab, token snapshots, and generated token CSS.</td><td>Architecture check, structure diff, value diff, missing/deleted token classification, confidence, ZIP fallback status.</td></tr>
+            <tr><td><a class="sg-gl-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/agents/figma-inventory.md" target="_blank" rel="noopener noreferrer"><code>figma-inventory</code></a></td><td>UDS Components pages, status prefixes, component sets, snapshots, sidebar, and <code>COMPONENT_STATUS</code>.</td><td>Version/status comparison, new/missing/moved component candidates, changed fingerprints, deep-inspection queue.</td></tr>
+            <tr><td><a class="sg-gl-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/agents/figma-component-inspector.md" target="_blank" rel="noopener noreferrer"><code>figma-component-inspector</code></a></td><td>One component's page, node tree, component sets, variants, layers, nested instances, auto-layout, and token bindings.</td><td>Deep component report: variant matrix, anatomy, token bindings, hardcoded values, a11y implications, doc-site mismatches.</td></tr>
+            <tr><td><a class="sg-gl-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/agents/figma-spec-gap.md" target="_blank" rel="noopener noreferrer"><code>figma-spec-gap</code></a></td><td>Figma component coverage, <code>content/*.json</code>, sidebar/page sections, and <code>figmaNodeId</code> fields.</td><td>Missing docs/components, missing node links, stale titles, status mismatches, and new-component candidates.</td></tr>
+          </tbody>
+        </table>
 
         <h3 class="sg-subsection-title" style="margin-top:var(--uds-space-400);">How to invoke</h3>
         <table class="sg-gl-table">
@@ -4728,7 +4770,7 @@ registerUdsComponents();</pre>
   <script src="https://cdn.jsdelivr.net/npm/jszip@3/dist/jszip.min.js"></script>
   <script src="./material-icons.js?v=1"></script>
   <script src="./uds/uds.js?v=29"></script>
-  <script src="./app.js?v=87"></script>
+  <script src="./app.js?v=88"></script>
   <script src="./demo-builder.js?v=9"></script>
 
 </body>
