@@ -1310,7 +1310,7 @@
   </style>
   <script>
     (function () {
-      var SITE_VERSION = '2026.05.07.3';
+      var SITE_VERSION = '2026.05.07.4';
       var base = window.location.pathname.replace(/\/index\.html$/, '').replace(/\/$/, '');
       fetch(base + '/version.txt?_=' + Date.now()).then(function (r) {
         if (!r.ok) return;
@@ -1363,7 +1363,7 @@
       </span>
     </button>
     <select class="sg-version-select" id="sg-version-dropdown" aria-label="UDS version"></select>
-    <span class="sg-brand-bar-build">SITE 2026.05.07.3</span>
+    <span class="sg-brand-bar-build">SITE 2026.05.07.4</span>
   </div>
 
   <!-- Pre-flight checklist dialog -->
@@ -4608,13 +4608,13 @@ registerUdsComponents();</pre>
         </table>
 
         <h3 class="sg-subsection-title" style="margin-top:var(--uds-space-400);">Figma-to-docs workflow</h3>
-        <p class="sg-subsection-desc">The prompt <code>UDS updated</code> is the top-level Figma sync workflow. It reads UDS Tokens and UDS Components, compares against tracked sync snapshots and the doc site, classifies changes by confidence and breaking risk, then applies only safe high-confidence updates. Token ZIP exports are fallback only — direct Figma Variables reads are the primary source. Figma pages with <code>{Ignore}</code> anywhere in the page name are skipped for UDS sync, inventory, status, spec, and release workflows. Figma checks are read-only in behavior, but must run with MCP-enabled tool access — do not run them in an execution mode that blocks MCP reads.</p>
+        <p class="sg-subsection-desc">The prompt <code>UDS updated</code> is the top-level Figma sync workflow. It reads UDS Tokens and UDS Components, compares against tracked sync snapshots and the doc site, classifies changes by confidence and breaking risk, then applies only safe high-confidence updates. Token ZIP exports are fallback only — direct Figma Variables reads are the primary source. Figma pages with <code>{Ignore}</code> anywhere in the page name are skipped for UDS sync, inventory, status, spec, and release workflows. Figma checks are read-only in behavior, but must run with MCP-enabled tool access — do not run them in an execution mode that blocks MCP reads. Release changelogs must include a component-set variant coverage pass for every non-ignored status-prefixed Figma component page; page names alone are not enough.</p>
         <table class="sg-gl-table" style="margin-bottom:var(--uds-space-400);">
           <thead><tr><th>Step</th><th>What happens</th><th>Safety rule</th></tr></thead>
           <tbody>
             <tr><td><strong>Capability check</strong></td><td>Confirms the Figma tool can read pages, Variables collections, modes, node trees, bound variables, and release-note write targets.</td><td>Fail closed if required Figma data is unavailable.</td></tr>
             <tr><td><strong>Token audit</strong></td><td>Reads the UDS Tokens Variables tab directly, validates the token architecture, normalizes tokens, and diffs against CSS + the last sync snapshot.</td><td>ZIPs are requested only when direct variable reads fail or are incomplete.</td></tr>
-            <tr><td><strong>Component inventory</strong></td><td>Reads UDS Components pages, stoplight prefixes, component sets, and page fingerprints to find new, moved, deleted, or status-changed components.</td><td>Broad inventory does not write specs; changed components require deep inspection.</td></tr>
+            <tr><td><strong>Component inventory</strong></td><td>Reads UDS Components pages, stoplight prefixes, component sets, variant-property matrices, and page fingerprints to find new, moved, deleted, status-changed, or variant-changed components.</td><td>Release notes cannot be written until every non-ignored component set has variant coverage captured.</td></tr>
             <tr><td><strong>Component inspection</strong></td><td>For each changed component, reads node trees, layer names, variants, nested instances, token bindings, auto-layout, anatomy, and doc-site mismatches.</td><td>Screenshots are supporting evidence only; never enough to update specs.</td></tr>
             <tr><td><strong>Safe apply</strong></td><td>Applies only high-confidence, non-breaking changes; reports medium/low confidence and breaking changes for review.</td><td>Never auto-delete tokens or components. Preserve/deprecate/report first.</td></tr>
           </tbody>
@@ -4865,7 +4865,7 @@ registerUdsComponents();</pre>
   <script src="https://cdn.jsdelivr.net/npm/jszip@3/dist/jszip.min.js"></script>
   <script src="./material-icons.js?v=1"></script>
   <script src="./uds/uds.js?v=30"></script>
-  <script src="./app.js?v=91"></script>
+  <script src="./app.js?v=92"></script>
   <script src="./demo-builder.js?v=9"></script>
 
 </body>

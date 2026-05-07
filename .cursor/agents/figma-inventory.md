@@ -47,12 +47,18 @@ write to Figma or repository files.
    - list component pages and page IDs
    - parse stoplight prefix/status
    - identify component sets on each page
+   - extract a compact component-set variant summary for every component set:
+     - component set name
+     - variant property names
+     - enum values for each variant property
+     - child/variant count
    - collect stable node IDs where available
    - compute a lightweight fingerprint for each component page:
      - page ID
      - page name
      - status key
      - component set IDs
+     - component set variant-property keys/values
      - top-level child names/types
      - updated timestamp if available
 6. Read doc-site state:
@@ -100,6 +106,10 @@ it as `unknown` and confidence low.
 | Component | Previous fingerprint | Current fingerprint | Classification | Confidence |
 |---|---|---|---|---|
 
+## Component-set variant coverage
+| Component | Component sets | Variant properties / values | Public docs impact | Confidence |
+|---|---|---|---|---|
+
 ## Components requiring deep inspection
 1. ...
 
@@ -115,6 +125,9 @@ it as `unknown` and confidence low.
 ## Output rules
 
 - Be explicit about confidence for every mismatch.
+- A release inventory is incomplete unless it includes the
+  `Component-set variant coverage` section for every non-ignored component
+  page with at least one component set.
 - Use "suspected" language for deletions unless stable node IDs prove a true
   deletion.
 - Do not infer status from spec completeness.

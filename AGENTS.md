@@ -145,6 +145,10 @@ if needed.
   `.cursor/rules/uds-token-architecture.mdc`.
 - Figma component work must inspect node trees and variant properties.
   Screenshots alone are never enough to update specs or CSS.
+- UDS release changelogs must be based on a component-set variant coverage
+  pass across every non-ignored status-prefixed Figma component page. Do not
+  write release notes from page names alone; include meaningful variant/state
+  coverage on existing components plus new pages and token changes.
 - Deletions are never automatic. Missing tokens/components are reported,
   classified, and preserved/deprecated unless the user explicitly confirms
   removal.

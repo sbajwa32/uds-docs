@@ -52,6 +52,24 @@ Figma, inspect the actual Figma node data:
    - component examples/code in `uds-docs/index.html`
    - `COMPONENT_STATUS` in `uds-docs/app.js`
 
+## Release changelog coverage
+
+For a UDS release, component inspection is not limited to newly added pages.
+Before writing the `CHANGELOG` release entry, the agent must inspect all
+non-ignored status-prefixed component pages at a compact component-set level.
+
+The release pass must capture, per component:
+
+- component-set names
+- variant-property names
+- enum values for each variant property
+- variant/component counts
+- whether the matrix is new, changed, confirmed, or intentionally unchanged
+
+The release changelog must reflect meaningful variant/state coverage across
+existing components, not only new component pages. If this pass has not been
+performed, the release is incomplete.
+
 ## Required report sections
 
 Any component inspection report must include:

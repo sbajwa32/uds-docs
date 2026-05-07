@@ -110,8 +110,14 @@ The inventory must return:
 - component status comparison
 - missing/new/deleted component candidates
 - page/component-set fingerprints
+- component-set variant coverage for **every** non-ignored component page with
+  a component set, including property names, enum values, and variant counts
 - components requiring deep inspection
 - ignored page count/list for any pages containing `{Ignore}`
+
+For release/changelog work, broad inventory is not optional. The release is
+incomplete if the changelog was written before this component-set variant
+coverage is reviewed.
 
 Never auto-apply:
 
@@ -120,7 +126,30 @@ Never auto-apply:
 - ambiguous node matches
 - status moves backward from `review` or `production`
 
-### 5. Deep inspect changed/new components
+### 5. Release coverage pass
+
+Before writing a UDS `CHANGELOG` entry or saying the release is complete,
+perform a release coverage pass over the full non-ignored UDS Components
+inventory:
+
+1. Read every non-ignored status-prefixed component page.
+2. For every component set on each page, extract:
+   - component-set name
+   - variant-property names
+   - values for each variant property
+   - variant/component count
+3. Compare this matrix against the existing `CHANGELOG` entry being drafted.
+4. The release changelog must include:
+   - new public component pages
+   - token additions/changes
+   - status changes
+   - meaningful new or confirmed variant/state coverage on existing components
+   - internal/support pages intentionally excluded from public docs
+
+Do not rely only on new/missing page detection. A release with no new pages can
+still contain important variant/state coverage changes.
+
+### 6. Deep inspect changed/new components
 
 For every component that inventory flags as changed or new, run
 `figma-component-inspector`.
@@ -137,7 +166,7 @@ Do not use screenshots as source of truth. The inspector must read:
 - hidden/off-canvas state matrices
 - doc-site JSON/CSS/example comparison
 
-### 6. Classify and decide
+### 7. Classify and decide
 
 Use `uds-figma-change-classification.mdc`.
 
@@ -159,7 +188,7 @@ Ask before applying:
 - any Figma write
 - any change that conflicts with current CSS implementation
 
-### 7. Apply safe updates
+### 8. Apply safe updates
 
 If there are safe updates and the run is not dry-run:
 
@@ -174,7 +203,7 @@ If there are safe updates and the run is not dry-run:
 3. Add/update a SITE_CHANGELOG entry for the SITE version from the bump script.
 4. Cache-bust changed assets in `index.html`.
 
-### 8. Verify
+### 9. Verify
 
 Required verification:
 
@@ -183,8 +212,13 @@ Required verification:
 - visually inspect affected pages in the desktop preview when available
 - confirm `version.txt` matches the SITE version displayed in `index.html`
 - confirm no generated docs render literal HTML as elements
+- confirm the UDS `CHANGELOG`  entry includes the release coverage pass:
+  tokens, new component pages, existing-component variant/state coverage, and
+  internal/support exclusions
+- confirm Figma Release Notes frames in both UDS files contain the same
+  expanded release text as the site changelog
 
-### 9. Update sync snapshots
+### 10. Update sync snapshots
 
 After verification, update:
 
@@ -194,7 +228,7 @@ After verification, update:
 
 Do not update snapshots for failed, partial, dry-run, or unverified runs.
 
-### 10. Commit and push
+### 11. Commit and push
 
 Per `AGENTS.md`, commit and push directly to `main`:
 
@@ -237,6 +271,8 @@ Docs deployed: yes/no
 
 - Do not ask for token ZIPs before trying direct Figma Variables.
 - Do not derive component specs from screenshots.
+- Do not write a release changelog from page names alone.
+- Do not skip the component-set variant coverage pass for a UDS release.
 - Do not auto-delete tokens/components.
 - Do not update snapshots before verification.
 - Do not create PRs; push directly to `main` after confirmed writes.

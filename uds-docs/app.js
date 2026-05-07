@@ -3738,6 +3738,13 @@
         { type: 'added', text: 'UDS 0.3 release sync from Figma — archived UDS 0.2 under `versions/0.2/`, bumped root `UDS_VERSION` to 0.3, added semantic token `--uds-color-icon-destructive`, scaffolded 8 public Figma component pages (`combobox`, `date-picker`, `data-view`, `label`, `link`, `pagination`, `text-area`, `toggle`), linked Spacer to its `_support` Figma component node, and left internal support pages (`checkbox-control`, `input`, `slot`) out of public docs.' },
         { type: 'fixed', text: '`release.sh` and `bump.sh` now use portable `sed -i.bak` on Linux and macOS. `bump.sh` also updates `version.txt` and inline `SITE_VERSION` so release bumps do not leave auto-reload metadata stale.' }
       ]
+    },
+    {
+      version: 'SITE 2026.05.07.4',
+      date: '2026-05-07',
+      changes: [
+        { type: 'changed', text: 'Figma-to-docs workflow tightened after UDS 0.3: `UDS updated` and `figma-inventory` now require a component-set variant coverage pass for every non-ignored status-prefixed Figma component page before a release changelog can be considered complete. The Cursor Workflows page documents that page names alone are not enough.' }
+      ]
     }
   ];
 
