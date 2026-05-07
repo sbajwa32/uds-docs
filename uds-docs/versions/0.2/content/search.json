@@ -1,0 +1,59 @@
+{
+  "component": "search",
+  "title": "Search",
+  "description": "A search input with leading search icon, value clearing, and optional filter state.",
+  "whenToUse": "For searching across a dataset or page. Place prominently when search is the primary action.",
+  "whenNotToUse": "For generic text entry — use Text Input. For dropdown-with-typeahead — use a combobox pattern.",
+  "acceptanceCriteria": [],
+  "dependencies": {
+    "css": [
+      "uds/components/search.css"
+    ],
+    "js": [
+      "uds/components/search.js"
+    ]
+  },
+  "props": [],
+  "events": [],
+  "slots": [],
+  "states": [],
+  "contentGuidelines": null,
+  "commonlyPairedWith": [],
+  "dosDonts": {
+    "dos": [],
+    "donts": []
+  },
+  "accessibility": {
+    "keyboard": [
+      {
+        "key": "Tab",
+        "action": "Move focus to the input"
+      },
+      {
+        "key": "Enter",
+        "action": "Submit the search query"
+      },
+      {
+        "key": "Escape",
+        "action": "Clear the current value"
+      }
+    ],
+    "screenReader": [],
+    "wcag": [],
+    "contrast": []
+  },
+  "knownIssues": [],
+  "performance": null,
+  "motion": null,
+  "responsive": null,
+  "visualHierarchy": null,
+  "densityBehavior": null,
+  "owner": {
+    "designer": "Unassigned",
+    "developer": "Unassigned"
+  },
+  "draft": false,
+  "figmaNodeId": null,
+  "storybookSlug": null,
+  "_legacyAccessibilityNotes": "Use type=\"search\" for semantic meaning. Provide an accessible label (aria-label or visible label)."
+}

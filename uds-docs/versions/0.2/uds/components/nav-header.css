@@ -1,0 +1,308 @@
+/* ==========================================================================
+   UDS Component: udc-nav-header
+   Source of truth: UDS Components Figma — nav-header page
+
+   Sub-components:
+     udc-nav-header       — Top header bar (3-column grid)
+     udc-nav-logo         — Brand mark container
+     udc-nav-bento-button — Pill trigger for the bento dropdown
+     udc-nav-bento        — Dropdown panel (popover)
+     udc-nav-search       — Search bar
+     udc-nav-mywork       — "My Work" action button
+     udc-nav-account      — Account actions group
+     udc-nav-tile         — Compact shortcut tile (inside bento)
+
+   Note: The bento list reuses .udc-nav-button from nav-vertical.css.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   NAV HEADER — full-width top bar
+   Figma: 3-column grid, vertical center, space/300 horizontal padding
+   -------------------------------------------------------------------------- */
+.udc-nav-header {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  align-items: center;
+  gap: var(--uds-space-300);
+  padding: var(--uds-space-150) var(--uds-space-300);
+  min-height: 76px;
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.udc-nav-header__left {
+  display: flex;
+  align-items: center;
+  gap: var(--uds-space-200);
+}
+
+.udc-nav-header__center {
+  max-width: 500px;
+  width: 100%;
+  justify-self: center;
+}
+
+.udc-nav-header__right {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--uds-space-100);
+}
+
+/* --------------------------------------------------------------------------
+   NAV LOGO — simple container for brand mark
+   -------------------------------------------------------------------------- */
+.udc-nav-logo {
+  width: 24px;
+  height: 44px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.udc-nav-logo img,
+.udc-nav-logo svg {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+/* --------------------------------------------------------------------------
+   BENTO BUTTON — pill trigger for the bento dropdown
+   Figma: surface-main bg, border-secondary, container-full radius, depth-100
+   -------------------------------------------------------------------------- */
+.udc-nav-bento-button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--uds-space-150);
+  padding: var(--uds-space-100) var(--uds-space-150) var(--uds-space-100) var(--uds-space-200);
+  height: 48px;
+  background: var(--uds-color-surface-main);
+  border: 1px solid var(--uds-color-border-secondary);
+  border-radius: var(--uds-border-radius-container-full);
+  box-shadow: var(--uds-shadow-depth-100);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 120ms ease, border-color 120ms ease;
+
+  font-family: var(--uds-font-family);
+  font-size: var(--uds-font-size-base);
+  font-weight: var(--uds-font-weight-bold);
+  line-height: var(--uds-font-line-height-base);
+  color: var(--uds-color-text-primary);
+}
+
+.udc-nav-bento-button:hover {
+  background: var(--uds-color-surface-interactive-subtle-hover);
+}
+
+.udc-nav-bento-button:focus-visible {
+  outline: 2px solid var(--uds-color-border-outline-focus-visible);
+  outline-offset: -2px;
+}
+
+.udc-nav-bento-button .material-symbols-outlined {
+  font-size: 20px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.udc-nav-bento-button__chevron {
+  font-size: 20px;
+  line-height: 1;
+  color: var(--uds-color-icon-secondary);
+  transition: transform 200ms ease;
+}
+
+.udc-nav-bento-button[aria-expanded="true"] .udc-nav-bento-button__chevron {
+  transform: rotate(180deg);
+}
+
+/* --------------------------------------------------------------------------
+   SEARCH BOX — center column search field
+   Figma: surface-main bg, border-secondary, container-xl radius, depth-100
+   -------------------------------------------------------------------------- */
+.udc-nav-search {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  height: 48px;
+  padding: var(--uds-space-075) var(--uds-space-075) var(--uds-space-075) var(--uds-space-100);
+  background: var(--uds-color-surface-main);
+  border: 1px solid var(--uds-color-border-secondary);
+  border-radius: var(--uds-border-radius-container-xl);
+  box-shadow: var(--uds-shadow-depth-100);
+  box-sizing: border-box;
+}
+
+.udc-nav-search .material-symbols-outlined {
+  font-size: 20px;
+  color: var(--uds-color-icon-secondary);
+  flex-shrink: 0;
+  padding: 0 var(--uds-space-025);
+}
+
+.udc-nav-search__input {
+  flex: 1;
+  border: none;
+  background: none;
+  outline: none;
+  padding: 0 var(--uds-space-050);
+  font-family: var(--uds-font-family);
+  font-size: var(--uds-font-size-base);
+  font-weight: var(--uds-font-weight-medium);
+  line-height: var(--uds-font-line-height-base);
+  color: var(--uds-color-text-primary);
+}
+
+.udc-nav-search__input::placeholder {
+  color: var(--uds-color-text-secondary);
+}
+
+/* --------------------------------------------------------------------------
+   MY WORK BUTTON — pill with icon, label, badge
+   Figma: surface-main bg, border-secondary, container-full radius, depth-100
+   -------------------------------------------------------------------------- */
+.udc-nav-mywork {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--uds-space-150);
+  padding: var(--uds-space-100) var(--uds-space-250) var(--uds-space-100) var(--uds-space-200);
+  height: 52px;
+  background: var(--uds-color-surface-main);
+  border: 1px solid var(--uds-color-border-secondary);
+  border-radius: var(--uds-border-radius-container-full);
+  box-shadow: var(--uds-shadow-depth-100);
+  cursor: pointer;
+  white-space: nowrap;
+
+  font-family: var(--uds-font-family);
+  font-size: var(--uds-font-size-base);
+  font-weight: var(--uds-font-weight-bold);
+  line-height: var(--uds-font-line-height-base);
+  color: var(--uds-color-text-primary);
+}
+
+.udc-nav-mywork .material-symbols-outlined {
+  font-size: 20px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.udc-nav-mywork .udc-badge {
+  flex-shrink: 0;
+}
+
+/* --------------------------------------------------------------------------
+   ACCOUNT BUTTON GROUP — pill housing icon-only ghost buttons
+   -------------------------------------------------------------------------- */
+.udc-nav-account {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--uds-space-100);
+  padding: var(--uds-space-100) var(--uds-space-150);
+  background: var(--uds-color-surface-main);
+  border: 1px solid var(--uds-color-border-secondary);
+  border-radius: var(--uds-border-radius-container-full);
+  box-shadow: var(--uds-shadow-depth-100);
+}
+
+.udc-nav-account .udc-button-ghost {
+  padding: var(--uds-space-075);
+}
+
+/* --------------------------------------------------------------------------
+   NAV BENTO — dropdown panel (popover)
+   Figma: surface-main bg, border-secondary, container-lg radius, depth-300
+   -------------------------------------------------------------------------- */
+.udc-nav-bento {
+  display: none;
+  flex-direction: column;
+  gap: 0;
+  padding: var(--uds-space-150);
+  width: 312px;
+  background: var(--uds-color-surface-main);
+  border: 1px solid var(--uds-color-border-secondary);
+  border-radius: var(--uds-border-radius-container-lg);
+  box-shadow: var(--uds-shadow-bento);
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 100;
+  box-sizing: border-box;
+}
+
+.udc-nav-bento[data-open="true"],
+.udc-nav-bento.open {
+  display: flex;
+}
+
+.udc-nav-bento__tiles {
+  display: flex;
+  gap: var(--uds-space-100);
+  padding: var(--uds-space-100) 0;
+  margin-bottom: var(--uds-space-100);
+}
+
+.udc-nav-bento__list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.udc-nav-bento__footer {
+  padding: var(--uds-space-100) var(--uds-space-150);
+  font-family: var(--uds-font-family);
+  font-size: var(--uds-font-size-base);
+  font-weight: var(--uds-font-weight-medium);
+  color: var(--uds-color-text-interactive);
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.udc-nav-bento__footer:hover {
+  text-decoration: underline;
+}
+
+/* --------------------------------------------------------------------------
+   NAV TILE — compact icon + label tile (used in bento tiles row)
+   -------------------------------------------------------------------------- */
+.udc-nav-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--uds-space-050);
+  padding: var(--uds-space-100);
+  border-radius: var(--uds-border-radius-input);
+  background: var(--uds-color-surface-interactive-active);
+  cursor: pointer;
+  min-width: 64px;
+  text-decoration: none;
+  transition: background-color 120ms ease;
+
+  font-family: var(--uds-font-family);
+  font-size: 10px;
+  font-weight: var(--uds-font-weight-medium);
+  line-height: 1;
+  color: var(--uds-color-text-inverse);
+  text-align: center;
+}
+
+.udc-nav-tile .material-symbols-outlined {
+  font-size: var(--uds-font-size-2xl);
+  line-height: 1;
+}
+
+.udc-nav-tile:hover {
+  background: var(--uds-color-surface-interactive-hover);
+}
+
+/* --------------------------------------------------------------------------
+   WRAPPER — relative positioning context for bento dropdown
+   -------------------------------------------------------------------------- */
+.udc-nav-bento-wrapper {
+  position: relative;
+}

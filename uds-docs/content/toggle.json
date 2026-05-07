@@ -1,0 +1,48 @@
+{
+  "component": "toggle",
+  "title": "Toggle",
+  "description": "A toggle switches a setting on or off and reflects the current state immediately.",
+  "whenToUse": "Use for binary settings that take effect immediately, such as enabling a preference.",
+  "whenNotToUse": "For selecting one option from a group, use Radio. For submitting a form decision, use Checkbox or Button.",
+  "acceptanceCriteria": [],
+  "dependencies": {
+    "css": [
+      "uds/components/toggle.css"
+    ],
+    "js": []
+  },
+  "props": [],
+  "events": [],
+  "slots": [],
+  "states": [],
+  "contentGuidelines": null,
+  "commonlyPairedWith": [],
+  "dosDonts": {
+    "dos": [],
+    "donts": []
+  },
+  "accessibility": {
+    "keyboard": [
+      {
+        "key": "Tab",
+        "action": "Move focus to/from the component"
+      }
+    ],
+    "screenReader": [],
+    "wcag": [],
+    "contrast": []
+  },
+  "knownIssues": [],
+  "performance": null,
+  "motion": null,
+  "responsive": null,
+  "visualHierarchy": null,
+  "densityBehavior": null,
+  "owner": {
+    "designer": "Unassigned",
+    "developer": "Unassigned"
+  },
+  "draft": false,
+  "figmaNodeId": null,
+  "storybookSlug": null
+}

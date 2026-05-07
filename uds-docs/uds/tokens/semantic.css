@@ -2,7 +2,7 @@
    UDS Semantic Tokens  —  semantic.css
    Source: Figma variable collections exported as JSON
 
-   Collections: uds-color (93), uds-font (37), uds-font-scale (33),
+   Collections: uds-color (94), uds-font (37), uds-font-scale (33),
                 uds-space (30), uds-border (11)
 
    Theming data attributes:
@@ -214,6 +214,7 @@
   --uds-color-icon-interactive:                           var(--uds-primitive-color-blue-70); /* experimental */
   --uds-color-icon-interactive-hover:                     var(--uds-primitive-color-blue-60-M); /* experimental */
   --uds-color-icon-interactive-active:                    var(--uds-primitive-color-blue-80); /* experimental */
+  --uds-color-icon-destructive:                           var(--uds-primitive-color-red-70);
   --uds-color-icon-info:                                  var(--uds-primitive-color-blue-70);
   --uds-color-icon-success:                               var(--uds-primitive-color-green-70);
   --uds-color-icon-error:                                 var(--uds-primitive-color-red-70);
@@ -389,6 +390,7 @@
   --uds-color-icon-interactive:                           var(--uds-primitive-color-blue-50);
   --uds-color-icon-interactive-hover:                     var(--uds-primitive-color-blue-40);
   --uds-color-icon-interactive-active:                    var(--uds-primitive-color-blue-60-M);
+  --uds-color-icon-destructive:                           var(--uds-primitive-color-red-50);
   --uds-color-icon-info:                                  var(--uds-primitive-color-blue-50);
   --uds-color-icon-success:                               var(--uds-primitive-color-green-50);
   --uds-color-icon-error:                                 var(--uds-primitive-color-red-50);

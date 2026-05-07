@@ -3,14 +3,523 @@
   "source": {
     "fileKey": "1XJoUJgtNpw4R0IIT3VjoK",
     "fileName": "UDS Components",
-    "udsVersionPage": null,
-    "capturedAt": null,
-    "capturedBy": "not-yet-captured"
+    "udsVersion": "0.3",
+    "capturedAt": "2026-05-07T17:16:25Z",
+    "tool": "Figma MCP use_figma"
   },
   "summary": {
-    "componentCount": 0,
-    "statusCounts": {},
+    "componentCount": 28,
+    "statusCounts": {
+      "in-progress": 8,
+      "blocked": 15,
+      "placeholder": 5
+    },
     "changedSincePrevious": []
   },
-  "components": []
+  "components": [
+    {
+      "id": "badge",
+      "title": "Badge",
+      "figmaPageName": "\ud83d\udfe0 badge",
+      "pageNodeId": "5440:5049",
+      "componentSetNodeId": "5794:7948",
+      "defaultVariantNodeId": null,
+      "status": "in-progress",
+      "since": "0.3",
+      "variantProperties": {},
+      "nestedInstances": [],
+      "tokenBindings": [],
+      "fingerprint": {
+        "nodeTreeHash": "seed:5440:5049",
+        "variantHash": "seed:5794:7948",
+        "tokenBindingHash": "not-captured"
+      }
+    },
+    {
+      "id": "breadcrumb",
+      "title": "Breadcrumb",
+      "figmaPageName": "\ud83d\udd34 breadcrumb",
+      "pageNodeId": "5574:5423",
+      "componentSetNodeId": "5722:12401",
+      "defaultVariantNodeId": null,
+      "status": "blocked",
+      "since": "0.3",
+      "variantProperties": {},
+      "nestedInstances": [],
+      "tokenBindings": [],
+      "fingerprint": {
+        "nodeTreeHash": "seed:5574:5423",
+        "variantHash": "seed:5722:12401",
+        "tokenBindingHash": "not-captured"
+      }
+    },
+    {
+      "id": "button",
+      "title": "Button",
+      "figmaPageName": "\ud83d\udfe0 button",
+      "pageNodeId": "5055:139",
+      "componentSetNodeId": "5055:148",
+      "defaultVariantNodeId": null,
+      "status": "in-progress",
+      "since": "0.3",
+      "variantProperties": {},
+      "nestedInstances": [],
+      "tokenBindings": [],
+      "fingerprint": {
+        "nodeTreeHash": "seed:5055:139",
+        "variantHash": "seed:5055:148",
+        "tokenBindingHash": "not-captured"
+      }
+    },
+    {
+      "id": "checkbox",
+      "title": "Checkbox",
+      "figmaPageName": "\ud83d\udfe0 checkbox",
+      "pageNodeId": "5445:5056",
+      "componentSetNodeId": "6010:28999",
+      "defaultVariantNodeId": null,
+      "status": "in-progress",
+      "since": "0.3",
+      "variantProperties": {},
+      "nestedInstances": [],
+      "tokenBindings": [],
+      "fingerprint": {
+        "nodeTreeHash": "seed:5445:5056",
+        "variantHash": "seed:6010:28999",
+        "tokenBindingHash": "not-captured"
+      }
+    },
+    {
+      "id": "chip",
+      "title": "Chip",
+      "figmaPageName": "\ud83d\udd34 chip",
+      "pageNodeId": "5502:7753",
+      "componentSetNodeId": "6182:27972",
+      "defaultVariantNodeId": null,
+      "status": "blocked",
+      "since": "0.3",
+      "variantProperties": {},
+      "nestedInstances": [],
+      "tokenBindings": [],
+      "fingerprint": {
+        "nodeTreeHash": "seed:5502:7753",
+        "variantHash": "seed:6182:27972",
+        "tokenBindingHash": "not-captured"
+      }
+    },
+    {
+      "id": "combobox",
+      "title": "Combobox",
+      "figmaPageName": "\u26ab combobox",
+      "pageNodeId": "6143:19347",
+      "componentSetNodeId": null,
+      "defaultVariantNodeId": null,
+      "status": "placeholder",
+      "since": "0.3",
+      "variantProperties": {},
+      "nestedInstances": [],
+      "tokenBindings": [],
+      "fingerprint": {
+        "nodeTreeHash": "seed:6143:19347",
+        "variantHash": "seed:6143:19347",
+        "tokenBindingHash": "not-captured"
+      }
+    },
+    {
+      "id": "data-table",
+      "title": "Data Table",
+      "figmaPageName": "\ud83d\udfe0 data-table",
+      "pageNodeId": "5122:870",
+      "componentSetNodeId": "5308:1331",
+      "defaultVariantNodeId": null,
+      "status": "in-progress",
+      "since": "0.3",
+      "variantProperties": {},
+      "nestedInstances": [],
+      "tokenBindings": [],
+      "fingerprint": {
+        "nodeTreeHash": "seed:5122:870",
+        "variantHash": "seed:5308:1331",
+        "tokenBindingHash": "not-captured"
+      }
+    },
+    {
+      "id": "date-picker",
+      "title": "Date Picker",
+      "figmaPageName": "\u26ab\ufe0f date-picker",
+      "pageNodeId": "6094:27859",
+      "componentSetNodeId": null,
+      "defaultVariantNodeId": null,
+      "status": "placeholder",
+      "since": "0.3",
+      "variantProperties": {},
+      "nestedInstances": [],
+      "tokenBindings": [],
+      "fingerprint": {
+        "nodeTreeHash": "seed:6094:27859",
+        "variantHash": "seed:6094:27859",
+        "tokenBindingHash": "not-captured"
+      }
+    },
+    {
+      "id": "data-view",
+      "title": "Data View",
+      "figmaPageName": "\u26ab\ufe0f data-view",
+      "pageNodeId": "5802:33467",
+      "componentSetNodeId": null,
+      "defaultVariantNodeId": null,
+      "status": "placeholder",
+      "since": "0.3",
+      "variantProperties": {},
+      "nestedInstances": [],
+      "tokenBindings": [],
+      "fingerprint": {
+        "nodeTreeHash": "seed:5802:33467",
+        "variantHash": "seed:5802:33467",
+        "tokenBindingHash": "not-captured"
+      }
+    },
+    {
+      "id": "dialog",
+      "title": "Dialog",
+      "figmaPageName": "\ud83d\udd34 dialog",
+      "pageNodeId": "5264:298",
+      "componentSetNodeId": "5289:70",
+      "defaultVariantNodeId": null,
+      "status": "blocked",
+      "since": "0.3",
+      "variantProperties": {},
+      "nestedInstances": [],
+      "tokenBindings": [],
+      "fingerprint": {
+        "nodeTreeHash": "seed:5264:298",
+        "variantHash": "seed:5289:70",
+        "tokenBindingHash": "not-captured"
+      }
+    },
+    {
+      "id": "divider",
+      "title": "Divider",
+      "figmaPageName": "\ud83d\udd34 divider",
+      "pageNodeId": "5621:7292",
+      "componentSetNodeId": "5749:10953",
+      "defaultVariantNodeId": null,
+      "status": "blocked",
+      "since": "0.3",
+      "variantProperties": {},
+      "nestedInstances": [],
+      "tokenBindings": [],
+      "fingerprint": {
+        "nodeTreeHash": "seed:5621:7292",
+        "variantHash": "seed:5749:10953",
+        "tokenBindingHash": "not-captured"
+      }
+    },
+    {
+      "id": "dropdown",
+      "title": "Dropdown",
+      "figmaPageName": "\ud83d\udfe0 dropdown",
+      "pageNodeId": "5122:68",
+      "componentSetNodeId": "5173:316",
+      "defaultVariantNodeId": null,
+      "status": "in-progress",
+      "since": "0.3",
+      "variantProperties": {},
+      "nestedInstances": [],
+      "tokenBindings": [],
+      "fingerprint": {
+        "nodeTreeHash": "seed:5122:68",
+        "variantHash": "seed:5173:316",
+        "tokenBindingHash": "not-captured"
+      }
+    },
+    {
+      "id": "label",
+      "title": "Label",
+      "figmaPageName": "\ud83d\udd34 label",
+      "pageNodeId": "5794:4372",
+      "componentSetNodeId": "5794:4394",
+      "defaultVariantNodeId": null,
+      "status": "blocked",
+      "since": "0.3",
+      "variantProperties": {},
+      "nestedInstances": [],
+      "tokenBindings": [],
+      "fingerprint": {
+        "nodeTreeHash": "seed:5794:4372",
+        "variantHash": "seed:5794:4394",
+        "tokenBindingHash": "not-captured"
+      }
+    },
+    {
+      "id": "link",
+      "title": "Link",
+      "figmaPageName": "\ud83d\udfe0 link",
+      "pageNodeId": "5621:7276",
+      "componentSetNodeId": "6506:38890",
+      "defaultVariantNodeId": null,
+      "status": "in-progress",
+      "since": "0.3",
+      "variantProperties": {},
+      "nestedInstances": [],
+      "tokenBindings": [],
+      "fingerprint": {
+        "nodeTreeHash": "seed:5621:7276",
+        "variantHash": "seed:6506:38890",
+        "tokenBindingHash": "not-captured"
+      }
+    },
+    {
+      "id": "list",
+      "title": "List",
+      "figmaPageName": "\ud83d\udd34 list",
+      "pageNodeId": "5510:5779",
+      "componentSetNodeId": "5195:850",
+      "defaultVariantNodeId": null,
+      "status": "blocked",
+      "since": "0.3",
+      "variantProperties": {},
+      "nestedInstances": [],
+      "tokenBindings": [],
+      "fingerprint": {
+        "nodeTreeHash": "seed:5510:5779",
+        "variantHash": "seed:5195:850",
+        "tokenBindingHash": "not-captured"
+      }
+    },
+    {
+      "id": "nav-header",
+      "title": "Nav Header",
+      "figmaPageName": "\ud83d\udd34 nav-header",
+      "pageNodeId": "5373:972",
+      "componentSetNodeId": "5684:11340",
+      "defaultVariantNodeId": null,
+      "status": "blocked",
+      "since": "0.3",
+      "variantProperties": {},
+      "nestedInstances": [],
+      "tokenBindings": [],
+      "fingerprint": {
+        "nodeTreeHash": "seed:5373:972",
+        "variantHash": "seed:5684:11340",
+        "tokenBindingHash": "not-captured"
+      }
+    },
+    {
+      "id": "nav-vertical",
+      "title": "Nav Vertical",
+      "figmaPageName": "\ud83d\udd34 nav-vertical",
+      "pageNodeId": "6598:8553",
+      "componentSetNodeId": "6598:8555",
+      "defaultVariantNodeId": null,
+      "status": "blocked",
+      "since": "0.3",
+      "variantProperties": {},
+      "nestedInstances": [],
+      "tokenBindings": [],
+      "fingerprint": {
+        "nodeTreeHash": "seed:6598:8553",
+        "variantHash": "seed:6598:8555",
+        "tokenBindingHash": "not-captured"
+      }
+    },
+    {
+      "id": "notification",
+      "title": "Notification",
+      "figmaPageName": "\ud83d\udd34 notification",
+      "pageNodeId": "5452:5855",
+      "componentSetNodeId": "5657:6576",
+      "defaultVariantNodeId": null,
+      "status": "blocked",
+      "since": "0.3",
+      "variantProperties": {},
+      "nestedInstances": [],
+      "tokenBindings": [],
+      "fingerprint": {
+        "nodeTreeHash": "seed:5452:5855",
+        "variantHash": "seed:5657:6576",
+        "tokenBindingHash": "not-captured"
+      }
+    },
+    {
+      "id": "pagination",
+      "title": "Pagination",
+      "figmaPageName": "\ud83d\udd34 pagination",
+      "pageNodeId": "6672:1706",
+      "componentSetNodeId": "6673:3167",
+      "defaultVariantNodeId": null,
+      "status": "blocked",
+      "since": "0.3",
+      "variantProperties": {},
+      "nestedInstances": [],
+      "tokenBindings": [],
+      "fingerprint": {
+        "nodeTreeHash": "seed:6672:1706",
+        "variantHash": "seed:6673:3167",
+        "tokenBindingHash": "not-captured"
+      }
+    },
+    {
+      "id": "radio",
+      "title": "Radio",
+      "figmaPageName": "\ud83d\udfe0 radio",
+      "pageNodeId": "5445:5057",
+      "componentSetNodeId": "5621:6582",
+      "defaultVariantNodeId": null,
+      "status": "in-progress",
+      "since": "0.3",
+      "variantProperties": {},
+      "nestedInstances": [],
+      "tokenBindings": [],
+      "fingerprint": {
+        "nodeTreeHash": "seed:5445:5057",
+        "variantHash": "seed:5621:6582",
+        "tokenBindingHash": "not-captured"
+      }
+    },
+    {
+      "id": "search",
+      "title": "Search",
+      "figmaPageName": "\ud83d\udd34 search",
+      "pageNodeId": "5603:3307",
+      "componentSetNodeId": "6308:32332",
+      "defaultVariantNodeId": null,
+      "status": "blocked",
+      "since": "0.3",
+      "variantProperties": {},
+      "nestedInstances": [],
+      "tokenBindings": [],
+      "fingerprint": {
+        "nodeTreeHash": "seed:5603:3307",
+        "variantHash": "seed:6308:32332",
+        "tokenBindingHash": "not-captured"
+      }
+    },
+    {
+      "id": "tabs",
+      "title": "Tabs",
+      "figmaPageName": "\ud83d\udd34 tab",
+      "pageNodeId": "5264:299",
+      "componentSetNodeId": "5350:1996",
+      "defaultVariantNodeId": null,
+      "status": "blocked",
+      "since": "0.3",
+      "variantProperties": {},
+      "nestedInstances": [],
+      "tokenBindings": [],
+      "fingerprint": {
+        "nodeTreeHash": "seed:5264:299",
+        "variantHash": "seed:5350:1996",
+        "tokenBindingHash": "not-captured"
+      }
+    },
+    {
+      "id": "text-input",
+      "title": "Text Input",
+      "figmaPageName": "\ud83d\udd34 text-input",
+      "pageNodeId": "5002:1178",
+      "componentSetNodeId": "5594:7264",
+      "defaultVariantNodeId": null,
+      "status": "blocked",
+      "since": "0.3",
+      "variantProperties": {},
+      "nestedInstances": [],
+      "tokenBindings": [],
+      "fingerprint": {
+        "nodeTreeHash": "seed:5002:1178",
+        "variantHash": "seed:5594:7264",
+        "tokenBindingHash": "not-captured"
+      }
+    },
+    {
+      "id": "text-area",
+      "title": "Text Area",
+      "figmaPageName": "\u26ab\ufe0f text-area",
+      "pageNodeId": "6166:25791",
+      "componentSetNodeId": "6375:726",
+      "defaultVariantNodeId": null,
+      "status": "placeholder",
+      "since": "0.3",
+      "variantProperties": {},
+      "nestedInstances": [],
+      "tokenBindings": [],
+      "fingerprint": {
+        "nodeTreeHash": "seed:6166:25791",
+        "variantHash": "seed:6375:726",
+        "tokenBindingHash": "not-captured"
+      }
+    },
+    {
+      "id": "tile",
+      "title": "Tile",
+      "figmaPageName": "\ud83d\udd34 tile",
+      "pageNodeId": "5264:297",
+      "componentSetNodeId": "5795:4252",
+      "defaultVariantNodeId": null,
+      "status": "blocked",
+      "since": "0.3",
+      "variantProperties": {},
+      "nestedInstances": [],
+      "tokenBindings": [],
+      "fingerprint": {
+        "nodeTreeHash": "seed:5264:297",
+        "variantHash": "seed:5795:4252",
+        "tokenBindingHash": "not-captured"
+      }
+    },
+    {
+      "id": "toggle",
+      "title": "Toggle",
+      "figmaPageName": "\u26ab\ufe0f toggle",
+      "pageNodeId": "5557:1808",
+      "componentSetNodeId": "6322:4941",
+      "defaultVariantNodeId": null,
+      "status": "placeholder",
+      "since": "0.3",
+      "variantProperties": {},
+      "nestedInstances": [],
+      "tokenBindings": [],
+      "fingerprint": {
+        "nodeTreeHash": "seed:5557:1808",
+        "variantHash": "seed:6322:4941",
+        "tokenBindingHash": "not-captured"
+      }
+    },
+    {
+      "id": "tooltip",
+      "title": "Tooltip",
+      "figmaPageName": "\ud83d\udd34 tooltip",
+      "pageNodeId": "5476:2091",
+      "componentSetNodeId": null,
+      "defaultVariantNodeId": null,
+      "status": "blocked",
+      "since": "0.3",
+      "variantProperties": {},
+      "nestedInstances": [],
+      "tokenBindings": [],
+      "fingerprint": {
+        "nodeTreeHash": "seed:5476:2091",
+        "variantHash": "seed:5476:2091",
+        "tokenBindingHash": "not-captured"
+      }
+    },
+    {
+      "id": "icon-wrapper",
+      "title": "Icon Wrapper",
+      "figmaPageName": "\ud83d\udfe0 icon-wrapper",
+      "pageNodeId": "5657:6776",
+      "componentSetNodeId": "5745:4541",
+      "defaultVariantNodeId": null,
+      "status": "in-progress",
+      "since": "0.3",
+      "variantProperties": {},
+      "nestedInstances": [],
+      "tokenBindings": [],
+      "fingerprint": {
+        "nodeTreeHash": "seed:5657:6776",
+        "variantHash": "seed:5745:4541",
+        "tokenBindingHash": "not-captured"
+      }
+    }
+  ]
 }

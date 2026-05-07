@@ -1,0 +1,59 @@
+{
+  "component": "list",
+  "title": "List",
+  "description": "A vertical list of items, optionally selectable and with leading/trailing icons.",
+  "whenToUse": "For secondary navigation, menu items, or selectable lists. When items have labels plus optional icons.",
+  "whenNotToUse": "For tabular data — use Data Table. For primary navigation — use Nav Vertical.",
+  "acceptanceCriteria": [],
+  "dependencies": {
+    "css": [
+      "uds/components/list.css"
+    ],
+    "js": [
+      "uds/components/list.js"
+    ]
+  },
+  "props": [],
+  "events": [],
+  "slots": [],
+  "states": [],
+  "contentGuidelines": null,
+  "commonlyPairedWith": [],
+  "dosDonts": {
+    "dos": [],
+    "donts": []
+  },
+  "accessibility": {
+    "keyboard": [
+      {
+        "key": "Tab",
+        "action": "Move focus to the list"
+      },
+      {
+        "key": "Arrow keys",
+        "action": "Move focus between items"
+      },
+      {
+        "key": "Enter / Space",
+        "action": "Activate or select the focused item"
+      }
+    ],
+    "screenReader": [],
+    "wcag": [],
+    "contrast": []
+  },
+  "knownIssues": [],
+  "performance": null,
+  "motion": null,
+  "responsive": null,
+  "visualHierarchy": null,
+  "densityBehavior": null,
+  "owner": {
+    "designer": "Unassigned",
+    "developer": "Unassigned"
+  },
+  "draft": false,
+  "figmaNodeId": null,
+  "storybookSlug": null,
+  "_legacyAccessibilityNotes": "Use role=\"list\" and role=\"listitem\" appropriately. aria-selected indicates selection."
+}

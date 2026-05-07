@@ -75,7 +75,8 @@ echo "  Snapshot created: versions/$CURRENT_VERSION/"
 
 echo ""
 echo "Bumping UDS version: $CURRENT_VERSION -> $NEW_VERSION ..."
-sed -i '' "s/var UDS_VERSION = '$CURRENT_VERSION'/var UDS_VERSION = '$NEW_VERSION'/" "$APP_JS"
+sed -i.bak "s/var UDS_VERSION = '$CURRENT_VERSION'/var UDS_VERSION = '$NEW_VERSION'/" "$APP_JS"
+rm -f "$APP_JS.bak"
 echo "  Updated app.js"
 
 echo ""

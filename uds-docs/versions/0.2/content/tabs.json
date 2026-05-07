@@ -1,0 +1,63 @@
+{
+  "component": "tabs",
+  "title": "Tabs",
+  "description": "Tabs organize content into multiple panels where only one panel is visible at a time.",
+  "whenToUse": "To switch between related views of the same content. When all tabs belong to the same context.",
+  "whenNotToUse": "For step-by-step flows, use a wizard instead. For navigation between pages, use nav.",
+  "acceptanceCriteria": [],
+  "dependencies": {
+    "css": [
+      "uds/components/tab-horizontal.css"
+    ],
+    "js": [
+      "uds/components/tabs.js"
+    ]
+  },
+  "props": [],
+  "events": [],
+  "slots": [],
+  "states": [],
+  "contentGuidelines": null,
+  "commonlyPairedWith": [],
+  "dosDonts": {
+    "dos": [],
+    "donts": []
+  },
+  "accessibility": {
+    "keyboard": [
+      {
+        "key": "Tab",
+        "action": "Move focus into/out of the tab list"
+      },
+      {
+        "key": "Arrow keys",
+        "action": "Move between tabs"
+      },
+      {
+        "key": "Home / End",
+        "action": "Jump to first/last tab"
+      },
+      {
+        "key": "Enter / Space",
+        "action": "Activate the focused tab"
+      }
+    ],
+    "screenReader": [],
+    "wcag": [],
+    "contrast": []
+  },
+  "knownIssues": [],
+  "performance": null,
+  "motion": null,
+  "responsive": null,
+  "visualHierarchy": null,
+  "densityBehavior": null,
+  "owner": {
+    "designer": "Unassigned",
+    "developer": "Unassigned"
+  },
+  "draft": false,
+  "figmaNodeId": null,
+  "storybookSlug": null,
+  "_legacyAccessibilityNotes": "Use role=\"tablist\" on the container and role=\"tab\" on each tab button. aria-selected indicates the active tab."
+}

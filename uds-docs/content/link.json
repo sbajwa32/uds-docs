@@ -1,0 +1,48 @@
+{
+  "component": "link",
+  "title": "Link",
+  "description": "A link navigates users to another page, route, resource, or external destination.",
+  "whenToUse": "Use links for navigation or opening resources. Use them when the result is a change of location rather than an immediate action.",
+  "whenNotToUse": "Do not use links to submit forms or trigger in-place actions; use Button for actions.",
+  "acceptanceCriteria": [],
+  "dependencies": {
+    "css": [
+      "uds/components/link.css"
+    ],
+    "js": []
+  },
+  "props": [],
+  "events": [],
+  "slots": [],
+  "states": [],
+  "contentGuidelines": null,
+  "commonlyPairedWith": [],
+  "dosDonts": {
+    "dos": [],
+    "donts": []
+  },
+  "accessibility": {
+    "keyboard": [
+      {
+        "key": "Tab",
+        "action": "Move focus to/from the component"
+      }
+    ],
+    "screenReader": [],
+    "wcag": [],
+    "contrast": []
+  },
+  "knownIssues": [],
+  "performance": null,
+  "motion": null,
+  "responsive": null,
+  "visualHierarchy": null,
+  "densityBehavior": null,
+  "owner": {
+    "designer": "Unassigned",
+    "developer": "Unassigned"
+  },
+  "draft": false,
+  "figmaNodeId": null,
+  "storybookSlug": null
+}

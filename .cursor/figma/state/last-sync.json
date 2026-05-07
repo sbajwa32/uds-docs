@@ -1,24 +1,24 @@
 {
   "schemaVersion": 1,
-  "lastSuccessfulSync": null,
+  "lastSuccessfulSync": "2026-05-07T17:16:25Z",
   "tokens": {
     "figmaFileKey": "iqKgR73ubUHpQTIcF7XGMy",
-    "figmaVersion": null,
+    "figmaVersion": "0.3",
     "snapshotPath": ".cursor/figma/state/tokens.snapshot.json",
-    "snapshotChecksum": null
+    "snapshotChecksum": "b30a64bacef4dcdc68b5acb8cb04856aada30543833e53a5ae2c4b481bce8bd5"
   },
   "components": {
     "figmaFileKey": "1XJoUJgtNpw4R0IIT3VjoK",
-    "figmaVersion": null,
+    "figmaVersion": "0.3",
     "snapshotPath": ".cursor/figma/state/components.snapshot.json",
-    "snapshotChecksum": null
+    "snapshotChecksum": "bc81b85df2cdbdb5aa51e826d5978c758154c1a1e1995d583f9c543c3c3e8637"
   },
   "site": {
-    "udsVersion": null,
-    "siteVersion": null,
+    "udsVersion": "0.3",
+    "siteVersion": "2026.05.07.3",
     "commit": null
   },
   "notes": [
-    "Initial placeholder. The first successful `UDS updated` sync should populate this with current Figma/doc-site state."
+    "0.3 baseline captured after direct Figma read. Ignored pages with {Ignore} were excluded. Internal support pages checkbox-control, input, and slot were not added to public docs."
   ]
 }

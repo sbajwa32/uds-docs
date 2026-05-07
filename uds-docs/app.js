@@ -3100,16 +3100,23 @@
         'tokens/semantic.css',
         'tokens/text-styles.css',
         'components/button.css',
+        'components/link.css',
+        'components/label.css',
         'components/text-input.css',
         'components/text-input.js',
+        'components/text-area.css',
         'components/checkbox.css',
         'components/checkbox.js',
         'components/radio.css',
+        'components/combobox.css',
+        'components/date-picker.css',
+        'components/toggle.css',
         'components/badge.css',
         'components/divider.css',
         'components/icon-wrapper.css',
         'components/spacer.css',
         'components/breadcrumb.css',
+        'components/pagination.css',
         'components/tab-horizontal.css',
         'components/tabs.js',
         'components/dropdown.css',
@@ -3128,6 +3135,7 @@
         'components/list.js',
         'components/data-table.css',
         'components/data-table.js',
+        'components/data-view.css',
         'components/chip.css',
         'components/chip.js',
         'components/search.css',
@@ -3214,6 +3222,21 @@
         { type: 'added', category: 'components', component: 'Chip', text: 'Compact filter/input/dropdown chips with selected state, leading/trailing icons, removable input tags' },
         { type: 'added', category: 'components', component: 'Search', text: 'Search input with leading icon, auto-show clear button, hover/focused/error states' },
         { type: 'added', category: 'components', component: 'Tooltip', text: 'CSS-only text popover on hover/focus with top/bottom/left/right positioning' }
+      ]
+    },
+    {
+      version: '0.3',
+      date: '2026-05-07',
+      changes: [
+        { type: 'added', category: 'tokens', component: null, text: 'Semantic icon destructive token (`--uds-color-icon-destructive`) with light-mode red/70 and dark-mode red/50 aliases' },
+        { type: 'added', category: 'components', component: 'Combobox', text: 'Placeholder page for searchable text-entry selection component from Figma 0.3' },
+        { type: 'added', category: 'components', component: 'Date Picker', text: 'Placeholder page for calendar date-entry component from Figma 0.3' },
+        { type: 'added', category: 'components', component: 'Data View', text: 'Placeholder page for non-table record collection layouts from Figma 0.3' },
+        { type: 'added', category: 'components', component: 'Label', text: 'Blocked page for form-control label component from Figma 0.3' },
+        { type: 'added', category: 'components', component: 'Link', text: 'In-progress page for navigational link component from Figma 0.3' },
+        { type: 'added', category: 'components', component: 'Pagination', text: 'Blocked page for paginated navigation component from Figma 0.3' },
+        { type: 'added', category: 'components', component: 'Text Area', text: 'Placeholder page for multi-line text-entry component from Figma 0.3' },
+        { type: 'added', category: 'components', component: 'Toggle', text: 'Placeholder page for immediate on/off setting control from Figma 0.3' }
       ]
     }
   ];
@@ -3689,6 +3712,14 @@
       changes: [
         { type: 'changed', text: 'Figma workflow docs now distinguish read-only behavior from execution-level readonly mode. Figma capability, inventory, token audit, component inspector, and spec-gap agents no longer set `readonly: true` in frontmatter; they remain read-only by instruction but must run with MCP-enabled tool access so Cloud Agents can actually read Figma files.' }
       ]
+    },
+    {
+      version: 'SITE 2026.05.07.2',
+      date: '2026-05-07',
+      changes: [
+        { type: 'added', text: 'UDS 0.3 release sync from Figma — archived UDS 0.2 under `versions/0.2/`, bumped root `UDS_VERSION` to 0.3, added semantic token `--uds-color-icon-destructive`, scaffolded 8 public Figma component pages (`combobox`, `date-picker`, `data-view`, `label`, `link`, `pagination`, `text-area`, `toggle`), linked Spacer to its `_support` Figma component node, and left internal support pages (`checkbox-control`, `input`, `slot`) out of public docs.' },
+        { type: 'fixed', text: '`release.sh` and `bump.sh` now use portable `sed -i.bak` on Linux and macOS. `bump.sh` also updates `version.txt` and inline `SITE_VERSION` so release bumps do not leave auto-reload metadata stale.' }
+      ]
     }
   ];
 
@@ -3722,10 +3753,18 @@
     'data-table':   { status: 'in-progress', since: '0.2' },
     chip:           { status: 'blocked',     since: '0.2' },
     search:         { status: 'blocked',     since: '0.2' },
-    tooltip:        { status: 'blocked',     since: '0.2' }
+    tooltip:        { status: 'blocked',     since: '0.2' },
+    'link': { status: 'in-progress', since: '0.3' },
+    'label': { status: 'blocked', since: '0.3' },
+    'text-area': { status: 'placeholder', since: '0.3' },
+    'combobox': { status: 'placeholder', since: '0.3' },
+    'date-picker': { status: 'placeholder', since: '0.3' },
+    'toggle': { status: 'placeholder', since: '0.3' },
+    'pagination': { status: 'blocked', since: '0.3' },
+    'data-view': { status: 'placeholder', since: '0.3' },
   };
 
-  var UDS_VERSION = '0.2';
+  var UDS_VERSION = '0.3';
 
   window.COMPONENT_STATUS_MAP = {};
   Object.keys(COMPONENT_STATUS).forEach(function (id) {
@@ -3925,7 +3964,7 @@
     tabs:           '5264-299',
     divider:        '5621-7292',
     'icon-wrapper': '5657-6776',
-    spacer:         null,
+    spacer:         '5594-5633',
     'nav-header':   '5373-972',
     'nav-vertical': '6598-8553',
     notification:   '5452-5855',
@@ -3935,7 +3974,15 @@
     'data-table':   '5122-870',
     chip:           '5502-7753',
     search:         '5603-3307',
-    tooltip:        '5476-2091'
+    tooltip:        '5476-2091',
+    'link': '5621-7276',
+    'label': '5794-4372',
+    'text-area': '6166-25791',
+    'combobox': '6143-19347',
+    'date-picker': '6094-27859',
+    'toggle': '5557-1808',
+    'pagination': '6672-1706',
+    'data-view': '5802-33467',
   };
 
   function renderStatusBadges() {

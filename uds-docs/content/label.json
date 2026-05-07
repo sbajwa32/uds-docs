@@ -1,0 +1,48 @@
+{
+  "component": "label",
+  "title": "Label",
+  "description": "A label identifies an input, selection control, or form field and can include required-state affordances.",
+  "whenToUse": "Use labels above or beside form controls so users understand what information is required.",
+  "whenNotToUse": "Do not use placeholder text as a label replacement; pair form controls with visible labels.",
+  "acceptanceCriteria": [],
+  "dependencies": {
+    "css": [
+      "uds/components/label.css"
+    ],
+    "js": []
+  },
+  "props": [],
+  "events": [],
+  "slots": [],
+  "states": [],
+  "contentGuidelines": null,
+  "commonlyPairedWith": [],
+  "dosDonts": {
+    "dos": [],
+    "donts": []
+  },
+  "accessibility": {
+    "keyboard": [
+      {
+        "key": "Tab",
+        "action": "Move focus to/from the component"
+      }
+    ],
+    "screenReader": [],
+    "wcag": [],
+    "contrast": []
+  },
+  "knownIssues": [],
+  "performance": null,
+  "motion": null,
+  "responsive": null,
+  "visualHierarchy": null,
+  "densityBehavior": null,
+  "owner": {
+    "designer": "Unassigned",
+    "developer": "Unassigned"
+  },
+  "draft": false,
+  "figmaNodeId": null,
+  "storybookSlug": null
+}

@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Poppins:wght@400;500;700&family=Roboto:wght@400;500;700&family=Lexend:wght@400;500;700&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
-  <link rel="stylesheet" href="./uds/uds.css?v=44" />
+  <link rel="stylesheet" href="./uds/uds.css?v=45" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -1310,7 +1310,7 @@
   </style>
   <script>
     (function () {
-      var SITE_VERSION = '2026.05.07.1';
+      var SITE_VERSION = '2026.05.07.3';
       var base = window.location.pathname.replace(/\/index\.html$/, '').replace(/\/$/, '');
       fetch(base + '/version.txt?_=' + Date.now()).then(function (r) {
         if (!r.ok) return;
@@ -1363,7 +1363,7 @@
       </span>
     </button>
     <select class="sg-version-select" id="sg-version-dropdown" aria-label="UDS version"></select>
-    <span class="sg-brand-bar-build">SITE 2026.05.07.1</span>
+    <span class="sg-brand-bar-build">SITE 2026.05.07.3</span>
   </div>
 
   <!-- Pre-flight checklist dialog -->
@@ -1541,11 +1541,16 @@
 
       <span class="sg-sidebar-heading">Forms &amp; Actions</span>
       <a class="sg-sidebar-link" href="#/button">Button</a>
+      <a class="sg-sidebar-link" href="#/link">Link</a>
+      <a class="sg-sidebar-link" href="#/label">Label</a>
       <a class="sg-sidebar-link" href="#/text-input">Text Input</a>
-      <a class="sg-sidebar-link disabled">Text Area</a>
+      <a class="sg-sidebar-link" href="#/text-area">Text Area</a>
       <a class="sg-sidebar-link" href="#/checkbox">Checkbox</a>
       <a class="sg-sidebar-link" href="#/radio">Radio</a>
       <a class="sg-sidebar-link" href="#/dropdown">Dropdown</a>
+      <a class="sg-sidebar-link" href="#/combobox">Combobox</a>
+      <a class="sg-sidebar-link" href="#/date-picker">Date Picker</a>
+      <a class="sg-sidebar-link" href="#/toggle">Toggle</a>
       <a class="sg-sidebar-link" href="#/search">Search</a>
 
       <span class="sg-sidebar-heading">Status &amp; Indicators</span>
@@ -1562,11 +1567,13 @@
       <a class="sg-sidebar-link" href="#/tabs">Tabs</a>
       <a class="sg-sidebar-link" href="#/nav-header">Nav Header</a>
       <a class="sg-sidebar-link" href="#/nav-vertical">Nav Vertical</a>
+      <a class="sg-sidebar-link" href="#/pagination">Pagination</a>
 
       <span class="sg-sidebar-heading">Content</span>
       <a class="sg-sidebar-link" href="#/tile">Tile</a>
       <a class="sg-sidebar-link" href="#/list">List</a>
       <a class="sg-sidebar-link" href="#/data-table">Data Table</a>
+      <a class="sg-sidebar-link" href="#/data-view">Data View</a>
 
       <span class="sg-sidebar-heading">Feedback</span>
       <a class="sg-sidebar-link" href="#/notification">Notification</a>
@@ -4047,6 +4054,94 @@ registerUdsComponents();</pre>
       <!-- =================================================================
            PATTERNS — Composition Recipes
            ================================================================= -->
+      <div data-page="link">
+        <h1 class="sg-page-title">Link</h1>
+        <p class="sg-page-desc">A link navigates users to another page, route, resource, or external destination.</p>
+        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="guidelines">Guidelines</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
+        <div data-tab-panel="examples" class="active"><p class="sg-subsection-desc">Examples will be added after the Figma component spec is inspected.</p></div>
+        <div data-tab-panel="code"><p class="sg-subsection-desc">Code examples will be added after the Storybook implementation contract is defined.</p></div>
+        <div data-tab-panel="guidelines"></div>
+        <div data-tab-panel="changelog"><p class="sg-changelog-empty">No changes recorded yet.</p></div>
+        <div data-tab-panel="playground"></div>
+      </div>
+
+      <div data-page="label">
+        <h1 class="sg-page-title">Label</h1>
+        <p class="sg-page-desc">A label identifies an input, selection control, or form field and can include required-state affordances.</p>
+        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="guidelines">Guidelines</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
+        <div data-tab-panel="examples" class="active"><p class="sg-subsection-desc">Examples will be added after the Figma component spec is inspected.</p></div>
+        <div data-tab-panel="code"><p class="sg-subsection-desc">Code examples will be added after the Storybook implementation contract is defined.</p></div>
+        <div data-tab-panel="guidelines"></div>
+        <div data-tab-panel="changelog"><p class="sg-changelog-empty">No changes recorded yet.</p></div>
+        <div data-tab-panel="playground"></div>
+      </div>
+
+      <div data-page="text-area">
+        <h1 class="sg-page-title">Text Area</h1>
+        <p class="sg-page-desc">A text area lets users enter multi-line freeform text.</p>
+        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="guidelines">Guidelines</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
+        <div data-tab-panel="examples" class="active"><p class="sg-subsection-desc">Examples will be added after the Figma component spec is inspected.</p></div>
+        <div data-tab-panel="code"><p class="sg-subsection-desc">Code examples will be added after the Storybook implementation contract is defined.</p></div>
+        <div data-tab-panel="guidelines"></div>
+        <div data-tab-panel="changelog"><p class="sg-changelog-empty">No changes recorded yet.</p></div>
+        <div data-tab-panel="playground"></div>
+      </div>
+
+      <div data-page="combobox">
+        <h1 class="sg-page-title">Combobox</h1>
+        <p class="sg-page-desc">A combobox combines text entry with a selectable list of suggestions.</p>
+        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="guidelines">Guidelines</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
+        <div data-tab-panel="examples" class="active"><p class="sg-subsection-desc">Examples will be added after the Figma component spec is inspected.</p></div>
+        <div data-tab-panel="code"><p class="sg-subsection-desc">Code examples will be added after the Storybook implementation contract is defined.</p></div>
+        <div data-tab-panel="guidelines"></div>
+        <div data-tab-panel="changelog"><p class="sg-changelog-empty">No changes recorded yet.</p></div>
+        <div data-tab-panel="playground"></div>
+      </div>
+
+      <div data-page="date-picker">
+        <h1 class="sg-page-title">Date Picker</h1>
+        <p class="sg-page-desc">A date picker helps users enter or select a calendar date.</p>
+        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="guidelines">Guidelines</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
+        <div data-tab-panel="examples" class="active"><p class="sg-subsection-desc">Examples will be added after the Figma component spec is inspected.</p></div>
+        <div data-tab-panel="code"><p class="sg-subsection-desc">Code examples will be added after the Storybook implementation contract is defined.</p></div>
+        <div data-tab-panel="guidelines"></div>
+        <div data-tab-panel="changelog"><p class="sg-changelog-empty">No changes recorded yet.</p></div>
+        <div data-tab-panel="playground"></div>
+      </div>
+
+      <div data-page="toggle">
+        <h1 class="sg-page-title">Toggle</h1>
+        <p class="sg-page-desc">A toggle switches a setting on or off and reflects the current state immediately.</p>
+        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="guidelines">Guidelines</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
+        <div data-tab-panel="examples" class="active"><p class="sg-subsection-desc">Examples will be added after the Figma component spec is inspected.</p></div>
+        <div data-tab-panel="code"><p class="sg-subsection-desc">Code examples will be added after the Storybook implementation contract is defined.</p></div>
+        <div data-tab-panel="guidelines"></div>
+        <div data-tab-panel="changelog"><p class="sg-changelog-empty">No changes recorded yet.</p></div>
+        <div data-tab-panel="playground"></div>
+      </div>
+
+      <div data-page="pagination">
+        <h1 class="sg-page-title">Pagination</h1>
+        <p class="sg-page-desc">Pagination lets users move through pages of results or records.</p>
+        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="guidelines">Guidelines</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
+        <div data-tab-panel="examples" class="active"><p class="sg-subsection-desc">Examples will be added after the Figma component spec is inspected.</p></div>
+        <div data-tab-panel="code"><p class="sg-subsection-desc">Code examples will be added after the Storybook implementation contract is defined.</p></div>
+        <div data-tab-panel="guidelines"></div>
+        <div data-tab-panel="changelog"><p class="sg-changelog-empty">No changes recorded yet.</p></div>
+        <div data-tab-panel="playground"></div>
+      </div>
+
+      <div data-page="data-view">
+        <h1 class="sg-page-title">Data View</h1>
+        <p class="sg-page-desc">A data view presents collections of records in non-table layouts such as cards or compact summaries.</p>
+        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="guidelines">Guidelines</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
+        <div data-tab-panel="examples" class="active"><p class="sg-subsection-desc">Examples will be added after the Figma component spec is inspected.</p></div>
+        <div data-tab-panel="code"><p class="sg-subsection-desc">Code examples will be added after the Storybook implementation contract is defined.</p></div>
+        <div data-tab-panel="guidelines"></div>
+        <div data-tab-panel="changelog"><p class="sg-changelog-empty">No changes recorded yet.</p></div>
+        <div data-tab-panel="playground"></div>
+      </div>
+
       <div data-page="recipes">
         <h1 class="sg-page-title">Composition Recipes</h1>
         <p class="sg-page-desc">Curated multi-component patterns. Each recipe is a working example of how UDS components compose into common UI patterns. Use them as starting points — copy the structure into Storybook and customize.</p>
@@ -4769,8 +4864,8 @@ registerUdsComponents();</pre>
   </script>
   <script src="https://cdn.jsdelivr.net/npm/jszip@3/dist/jszip.min.js"></script>
   <script src="./material-icons.js?v=1"></script>
-  <script src="./uds/uds.js?v=29"></script>
-  <script src="./app.js?v=90"></script>
+  <script src="./uds/uds.js?v=30"></script>
+  <script src="./app.js?v=91"></script>
   <script src="./demo-builder.js?v=9"></script>
 
 </body>

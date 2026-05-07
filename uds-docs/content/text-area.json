@@ -1,0 +1,48 @@
+{
+  "component": "text-area",
+  "title": "Text Area",
+  "description": "A text area lets users enter multi-line freeform text.",
+  "whenToUse": "Use for comments, descriptions, notes, and other text that can span multiple lines.",
+  "whenNotToUse": "For single-line values such as names, emails, or short search queries, use Text Input.",
+  "acceptanceCriteria": [],
+  "dependencies": {
+    "css": [
+      "uds/components/text-area.css"
+    ],
+    "js": []
+  },
+  "props": [],
+  "events": [],
+  "slots": [],
+  "states": [],
+  "contentGuidelines": null,
+  "commonlyPairedWith": [],
+  "dosDonts": {
+    "dos": [],
+    "donts": []
+  },
+  "accessibility": {
+    "keyboard": [
+      {
+        "key": "Tab",
+        "action": "Move focus to/from the component"
+      }
+    ],
+    "screenReader": [],
+    "wcag": [],
+    "contrast": []
+  },
+  "knownIssues": [],
+  "performance": null,
+  "motion": null,
+  "responsive": null,
+  "visualHierarchy": null,
+  "densityBehavior": null,
+  "owner": {
+    "designer": "Unassigned",
+    "developer": "Unassigned"
+  },
+  "draft": false,
+  "figmaNodeId": null,
+  "storybookSlug": null
+}

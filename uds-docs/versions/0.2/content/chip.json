@@ -1,0 +1,59 @@
+{
+  "component": "chip",
+  "title": "Chip",
+  "description": "A chip is a compact, interactive element for filters, input tokens, or selection.",
+  "whenToUse": "For filter selection (multi-select filters). For input tokens (tags, emails, assignees). For dropdown triggers in dense UIs.",
+  "whenNotToUse": "For status or category labels — use Badge. For primary actions — use Button.",
+  "acceptanceCriteria": [],
+  "dependencies": {
+    "css": [
+      "uds/components/chip.css"
+    ],
+    "js": [
+      "uds/components/chip.js"
+    ]
+  },
+  "props": [],
+  "events": [],
+  "slots": [],
+  "states": [],
+  "contentGuidelines": null,
+  "commonlyPairedWith": [],
+  "dosDonts": {
+    "dos": [],
+    "donts": []
+  },
+  "accessibility": {
+    "keyboard": [
+      {
+        "key": "Tab",
+        "action": "Move focus to the chip"
+      },
+      {
+        "key": "Enter / Space",
+        "action": "Toggle selection (filter) or open dropdown"
+      },
+      {
+        "key": "Delete / Backspace",
+        "action": "Dismiss input-variant chips"
+      }
+    ],
+    "screenReader": [],
+    "wcag": [],
+    "contrast": []
+  },
+  "knownIssues": [],
+  "performance": null,
+  "motion": null,
+  "responsive": null,
+  "visualHierarchy": null,
+  "densityBehavior": null,
+  "owner": {
+    "designer": "Unassigned",
+    "developer": "Unassigned"
+  },
+  "draft": false,
+  "figmaNodeId": null,
+  "storybookSlug": null,
+  "_legacyAccessibilityNotes": "aria-selected for filter chips. Dismiss buttons within chips need aria-label."
+}

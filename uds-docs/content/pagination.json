@@ -1,0 +1,48 @@
+{
+  "component": "pagination",
+  "title": "Pagination",
+  "description": "Pagination lets users move through pages of results or records.",
+  "whenToUse": "Use when content is split into discrete pages and users need positional awareness within the set.",
+  "whenNotToUse": "For small lists, show all items. For continuous feeds, consider load more or infinite scrolling patterns outside UDS.",
+  "acceptanceCriteria": [],
+  "dependencies": {
+    "css": [
+      "uds/components/pagination.css"
+    ],
+    "js": []
+  },
+  "props": [],
+  "events": [],
+  "slots": [],
+  "states": [],
+  "contentGuidelines": null,
+  "commonlyPairedWith": [],
+  "dosDonts": {
+    "dos": [],
+    "donts": []
+  },
+  "accessibility": {
+    "keyboard": [
+      {
+        "key": "Tab",
+        "action": "Move focus to/from the component"
+      }
+    ],
+    "screenReader": [],
+    "wcag": [],
+    "contrast": []
+  },
+  "knownIssues": [],
+  "performance": null,
+  "motion": null,
+  "responsive": null,
+  "visualHierarchy": null,
+  "densityBehavior": null,
+  "owner": {
+    "designer": "Unassigned",
+    "developer": "Unassigned"
+  },
+  "draft": false,
+  "figmaNodeId": null,
+  "storybookSlug": null
+}

@@ -1,0 +1,136 @@
+/* ==========================================================================
+   UDS Component: udc-dialog
+   Source of truth: UDS Components Figma — udc-dialog
+
+   HTML structure:
+     <!-- Backdrop overlay -->
+     <div class="udc-dialog-backdrop" data-open="false">
+       <div class="udc-dialog" role="dialog" aria-modal="true" aria-labelledby="dlg-title">
+         <div class="udc-dialog__header">
+           <h2 class="udc-dialog__title" id="dlg-title">Title</h2>
+           <button class="udc-dialog__close" aria-label="Close">
+             <span class="material-symbols-outlined">close</span>
+           </button>
+         </div>
+         <div class="udc-dialog__body">
+           <!-- Content slots go here -->
+         </div>
+         <div class="udc-dialog__footer">
+           <button class="udc-button-secondary">Cancel</button>
+           <button class="udc-button-primary">Confirm</button>
+         </div>
+       </div>
+     </div>
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Backdrop — fullscreen overlay
+   -------------------------------------------------------------------------- */
+.udc-dialog-backdrop {
+  display:          none;
+  position:         fixed;
+  inset:            0;
+  z-index:          1000;
+  background-color: var(--uds-overlay-backdrop);
+  align-items:      center;
+  justify-content:  center;
+}
+
+.udc-dialog-backdrop[data-open="true"] {
+  display: flex;
+}
+
+/* --------------------------------------------------------------------------
+   Dialog container
+   -------------------------------------------------------------------------- */
+.udc-dialog {
+  display:          flex;
+  flex-direction:   column;
+  min-width:        300px;
+  width:            480px;
+  max-width:        calc(100vw - 48px);
+  max-height:       calc(100vh - 48px);
+  background-color: var(--uds-color-surface-main);
+  border-radius:    var(--uds-border-radius-container-xl, 24px);
+  box-shadow:       var(--uds-shadow-depth-500);
+  overflow:         hidden;
+}
+
+/* --------------------------------------------------------------------------
+   Header — title + close button
+   -------------------------------------------------------------------------- */
+.udc-dialog__header {
+  display:          flex;
+  align-items:      center;
+  gap:              var(--uds-space-150);
+  padding:          var(--uds-space-300) var(--uds-space-300) var(--uds-space-200);
+  background-color: var(--uds-color-surface-subtle);
+  border-bottom:    1px solid var(--uds-color-border-interactive);
+}
+
+.udc-dialog__title {
+  flex:             1 1 0%;
+  min-width:        0;
+  margin:           0;
+  font-family:      var(--uds-font-family);
+  font-size:        var(--uds-font-size-xl, 20px);
+  font-weight:      var(--uds-font-weight-bold);
+  line-height:      var(--uds-font-line-height-400, 28px);
+  color:            var(--uds-color-text-primary);
+  letter-spacing:   0;
+}
+
+.udc-dialog__close {
+  display:          flex;
+  align-items:      center;
+  justify-content:  center;
+  width:            36px;
+  height:           36px;
+  padding:          var(--uds-space-075);
+  background:       var(--uds-color-surface-interactive-none);
+  border:           none;
+  border-radius:    var(--uds-border-radius-input);
+  color:            var(--uds-color-icon-secondary);
+  cursor:           pointer;
+  flex-shrink:      0;
+  transition:       background-color 120ms ease;
+  -webkit-appearance: none;
+  appearance:       none;
+}
+
+.udc-dialog__close:hover {
+  background: var(--uds-color-surface-interactive-subtle-hover);
+}
+
+.udc-dialog__close:focus-visible {
+  outline: 2px solid var(--uds-color-border-outline-focus-visible);
+  outline-offset: -2px;
+}
+
+.udc-dialog__close .material-symbols-outlined {
+  font-size:   var(--uds-font-size-2xl);
+  line-height: 1;
+}
+
+/* --------------------------------------------------------------------------
+   Body — scrollable content area
+   -------------------------------------------------------------------------- */
+.udc-dialog__body {
+  display:          flex;
+  flex-direction:   column;
+  gap:              var(--uds-space-300);
+  padding:          var(--uds-space-200) var(--uds-space-300);
+  overflow-y:       auto;
+  flex:             1 1 auto;
+}
+
+/* --------------------------------------------------------------------------
+   Footer — action buttons, right-aligned
+   -------------------------------------------------------------------------- */
+.udc-dialog__footer {
+  display:          flex;
+  align-items:      center;
+  justify-content:  flex-end;
+  gap:              var(--uds-space-100);
+  padding:          var(--uds-space-200) var(--uds-space-300) var(--uds-space-300);
+}

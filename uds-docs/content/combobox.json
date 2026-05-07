@@ -1,0 +1,48 @@
+{
+  "component": "combobox",
+  "title": "Combobox",
+  "description": "A combobox combines text entry with a selectable list of suggestions.",
+  "whenToUse": "Use when users can search or type to narrow a large option set, especially when free text and selection share the same field.",
+  "whenNotToUse": "For a closed set of simple options, use Dropdown. For 2-4 visible options, use Radio.",
+  "acceptanceCriteria": [],
+  "dependencies": {
+    "css": [
+      "uds/components/combobox.css"
+    ],
+    "js": []
+  },
+  "props": [],
+  "events": [],
+  "slots": [],
+  "states": [],
+  "contentGuidelines": null,
+  "commonlyPairedWith": [],
+  "dosDonts": {
+    "dos": [],
+    "donts": []
+  },
+  "accessibility": {
+    "keyboard": [
+      {
+        "key": "Tab",
+        "action": "Move focus to/from the component"
+      }
+    ],
+    "screenReader": [],
+    "wcag": [],
+    "contrast": []
+  },
+  "knownIssues": [],
+  "performance": null,
+  "motion": null,
+  "responsive": null,
+  "visualHierarchy": null,
+  "densityBehavior": null,
+  "owner": {
+    "designer": "Unassigned",
+    "developer": "Unassigned"
+  },
+  "draft": false,
+  "figmaNodeId": null,
+  "storybookSlug": null
+}

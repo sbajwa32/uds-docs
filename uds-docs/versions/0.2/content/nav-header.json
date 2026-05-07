@@ -1,0 +1,59 @@
+{
+  "component": "nav-header",
+  "title": "Nav Header",
+  "description": "A horizontal navigation header that spans the top of the application. Contains the logo, app switcher (bento), primary navigation, and user actions.",
+  "whenToUse": "At the top of every authenticated page in the app shell. To house the brand mark, app switcher, and primary global actions.",
+  "whenNotToUse": "On marketing or landing pages (use a simpler header). On mobile-only views, consider a collapsible pattern.",
+  "acceptanceCriteria": [],
+  "dependencies": {
+    "css": [
+      "uds/components/nav-header.css"
+    ],
+    "js": [
+      "uds/components/nav-header.js"
+    ]
+  },
+  "props": [],
+  "events": [],
+  "slots": [],
+  "states": [],
+  "contentGuidelines": null,
+  "commonlyPairedWith": [],
+  "dosDonts": {
+    "dos": [],
+    "donts": []
+  },
+  "accessibility": {
+    "keyboard": [
+      {
+        "key": "Tab",
+        "action": "Move focus through nav header items"
+      },
+      {
+        "key": "Enter / Space",
+        "action": "Activate focused button or link"
+      },
+      {
+        "key": "Escape",
+        "action": "Close the bento dropdown when open"
+      }
+    ],
+    "screenReader": [],
+    "wcag": [],
+    "contrast": []
+  },
+  "knownIssues": [],
+  "performance": null,
+  "motion": null,
+  "responsive": null,
+  "visualHierarchy": null,
+  "densityBehavior": null,
+  "owner": {
+    "designer": "Unassigned",
+    "developer": "Unassigned"
+  },
+  "draft": false,
+  "figmaNodeId": null,
+  "storybookSlug": null,
+  "_legacyAccessibilityNotes": "Use <header role=\"banner\"> as the outer element. The bento button should have aria-expanded and aria-haspopup."
+}

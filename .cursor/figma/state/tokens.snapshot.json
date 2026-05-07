@@ -1,13 +1,215 @@
 {
-  "schemaVersion": 1,
-  "source": "UDS Tokens",
-  "figmaFileKey": "iqKgR73ubUHpQTIcF7XGMy",
-  "version": null,
-  "capturedAt": null,
-  "status": "empty-baseline",
-  "collections": [],
-  "checksum": null,
+  "schemaVersion": "1",
+  "source": {
+    "fileKey": "iqKgR73ubUHpQTIcF7XGMy",
+    "fileName": "UDS Tokens",
+    "udsVersion": "0.3",
+    "capturedAt": "2026-05-07T17:16:25Z",
+    "captureMethod": "figma-variables"
+  },
+  "collections": [
+    {
+      "id": "VariableCollectionId:5003:613",
+      "name": "_uds-primitive",
+      "importStatus": "imported",
+      "modes": [
+        {
+          "id": "5003:0",
+          "name": "primitive value",
+          "cssSelector": ":root"
+        }
+      ],
+      "tokens": [],
+      "tokenCount": 249
+    },
+    {
+      "id": "VariableCollectionId:5003:823",
+      "name": "uds-color",
+      "importStatus": "imported",
+      "modes": [
+        {
+          "id": "5003:2",
+          "name": "base (light)",
+          "cssSelector": ":root"
+        },
+        {
+          "id": "5003:1",
+          "name": "base (dark)",
+          "cssSelector": "[data-color-scheme=\"dark\"]"
+        },
+        {
+          "id": "7183:0",
+          "name": "resman (light)",
+          "cssSelector": "[data-theme=\"resman\"]"
+        },
+        {
+          "id": "7183:1",
+          "name": "resman (dark)",
+          "cssSelector": "[data-theme=\"resman\"][data-color-scheme=\"dark\"]"
+        },
+        {
+          "id": "7043:0",
+          "name": "anyonehome (light)",
+          "cssSelector": "[data-theme=\"anyonehome\"]"
+        },
+        {
+          "id": "7043:1",
+          "name": "inhabit (light)",
+          "cssSelector": "[data-theme=\"inhabit\"]"
+        }
+      ],
+      "tokens": [],
+      "tokenCount": 94
+    },
+    {
+      "id": "VariableCollectionId:5003:840",
+      "name": "uds-font",
+      "importStatus": "imported",
+      "modes": [
+        {
+          "id": "7136:2",
+          "name": "Inter",
+          "cssSelector": ":root"
+        },
+        {
+          "id": "5003:3",
+          "name": "Poppins",
+          "cssSelector": "[data-font=\"poppins\"]"
+        },
+        {
+          "id": "5003:4",
+          "name": "Roboto",
+          "cssSelector": "[data-font=\"roboto\"]"
+        },
+        {
+          "id": "7139:0",
+          "name": "Lexend",
+          "cssSelector": "[data-font=\"lexend\"]"
+        }
+      ],
+      "tokens": [],
+      "tokenCount": 37
+    },
+    {
+      "id": "VariableCollectionId:7187:8",
+      "name": "uds-font-scale",
+      "importStatus": "imported",
+      "modes": [
+        {
+          "id": "7187:1",
+          "name": "default",
+          "cssSelector": ":root"
+        },
+        {
+          "id": "7251:0",
+          "name": "smaller",
+          "cssSelector": "[data-font-scale=\"smaller\"]"
+        },
+        {
+          "id": "7187:0",
+          "name": "larger",
+          "cssSelector": "[data-font-scale=\"larger\"]"
+        }
+      ],
+      "tokens": [],
+      "tokenCount": 33
+    },
+    {
+      "id": "VariableCollectionId:5003:845",
+      "name": "uds-space",
+      "importStatus": "imported",
+      "modes": [
+        {
+          "id": "5003:5",
+          "name": "default",
+          "cssSelector": ":root"
+        },
+        {
+          "id": "7155:0",
+          "name": "comfortable",
+          "cssSelector": "[data-density=\"comfortable\"]"
+        }
+      ],
+      "tokens": [],
+      "tokenCount": 30
+    },
+    {
+      "id": "VariableCollectionId:5003:846",
+      "name": "uds-border",
+      "importStatus": "imported",
+      "modes": [
+        {
+          "id": "5003:6",
+          "name": "Mode 1",
+          "cssSelector": ":root"
+        }
+      ],
+      "tokens": [],
+      "tokenCount": 11
+    },
+    {
+      "id": "VariableCollectionId:5010:34",
+      "name": "uds-motion",
+      "importStatus": "deferred",
+      "modes": [
+        {
+          "id": "5010:0",
+          "name": "Mode 1",
+          "cssSelector": null
+        }
+      ],
+      "tokens": [],
+      "tokenCount": 0
+    },
+    {
+      "id": "VariableCollectionId:5016:43",
+      "name": "uds-elevation",
+      "importStatus": "deferred",
+      "modes": [
+        {
+          "id": "5016:1",
+          "name": "Mode 1",
+          "cssSelector": null
+        }
+      ],
+      "tokens": [],
+      "tokenCount": 0
+    },
+    {
+      "id": "VariableCollectionId:7134:16",
+      "name": "uds-style-icon",
+      "importStatus": "known-non-imported",
+      "modes": [
+        {
+          "id": "7134:1",
+          "name": "round",
+          "cssSelector": null
+        },
+        {
+          "id": "7134:0",
+          "name": "outlined",
+          "cssSelector": null
+        }
+      ],
+      "tokens": [],
+      "tokenCount": 1
+    },
+    {
+      "id": "VariableCollectionId:7301:14",
+      "name": "uds-rules",
+      "importStatus": "known-non-imported",
+      "modes": [
+        {
+          "id": "7301:0",
+          "name": "Mode 1",
+          "cssSelector": null
+        }
+      ],
+      "tokens": [],
+      "tokenCount": 2
+    }
+  ],
   "notes": [
-    "Initial placeholder. Populate after the first successful direct Figma Variables audit."
+    "Compact 0.3 baseline captured during first successful direct Figma Variables sync. Token arrays are intentionally empty in this seed; collection counts/modes are authoritative for change detection until full token serialization is added."
   ]
 }

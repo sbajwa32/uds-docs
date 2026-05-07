@@ -1,0 +1,265 @@
+/* ==========================================================================
+   UDS Component: udc-data-table
+   Source of truth: UDS Components Figma — udc-data-table
+
+   Sub-components (Figma):
+     _udc-data-table_header        – header cell
+     _udc-data-table_cell          – body cell (highlight, dividers)
+     udc-data-table_cell-type-text – text cell (icons, alignment, prominent)
+     udc-data-table_cell-type-badge     – badge inside cell
+     udc-data-table_cell-type-checkbox  – checkbox inside cell
+     udc-data-table_cell-type-dropdown  – dropdown inside cell
+     udc-data-table_cell-type-ghost-button – action button inside cell
+
+   HTML structure:
+     <div class="udc-data-table">
+       <table>
+         <thead>
+           <tr>
+             <th class="udc-dt-check"><input type="checkbox" /></th>
+             <th>Name <span class="udc-dt-sort" data-dir="asc"></span></th>
+             <th>Status</th>
+             <th class="udc-dt-align-right">Amount</th>
+             <th class="udc-dt-action"></th>
+           </tr>
+         </thead>
+         <tbody>
+           <tr>
+             <td class="udc-dt-check"><input type="checkbox" /></td>
+             <td>Brian Smith</td>
+             <td><span class="udc-badge" data-variant="success">Delivered</span></td>
+             <td class="udc-dt-align-right">$75</td>
+             <td class="udc-dt-action">
+               <button class="udc-button-ghost" data-icon-only>
+                 <span class="material-symbols-outlined">more_vert</span>
+               </button>
+             </td>
+           </tr>
+         </tbody>
+       </table>
+     </div>
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Wrapper — horizontal scroll for wide tables
+   -------------------------------------------------------------------------- */
+.udc-data-table {
+  width:            100%;
+  overflow-x:       auto;
+  font-family:      var(--uds-font-family);
+  font-size:        var(--uds-font-size-base, 14px);
+  line-height:      var(--uds-font-line-height-base, 20px);
+  color:            var(--uds-color-text-primary);
+  border:           1px solid var(--uds-color-border-secondary, #d4d4d4);
+  border-radius:    var(--uds-border-radius-container-sm, 4px);
+}
+
+.udc-data-table table {
+  width:            100%;
+  border-collapse:  collapse;
+  border-spacing:   0;
+}
+
+/* --------------------------------------------------------------------------
+   Header  (Figma: surface-alt, 56px height, font-weight-bold, font-size-base)
+   -------------------------------------------------------------------------- */
+.udc-data-table thead th {
+  height:             56px;
+  padding:            var(--uds-space-100) var(--uds-space-200);
+  background-color:   var(--uds-color-surface-alt);
+  font-weight:        var(--uds-font-weight-bold);
+  font-size:          var(--uds-font-size-base, 14px);
+  color:              var(--uds-color-text-primary);
+  text-align:         left;
+  white-space:        nowrap;
+  border-bottom:      1px solid var(--uds-color-border-secondary, #d4d4d4);
+  position:           sticky;
+  top:                0;
+  z-index:            1;
+  user-select:        none;
+  vertical-align:     middle;
+}
+
+.udc-data-table thead th:not(:last-child) {
+  border-right: 1px solid var(--uds-color-border-secondary, #d4d4d4);
+}
+
+/* --------------------------------------------------------------------------
+   Body cells  (Figma: 44px height, font-weight-regular, font-size-base)
+   -------------------------------------------------------------------------- */
+.udc-data-table tbody td {
+  height:             44px;
+  padding:            var(--uds-space-100) var(--uds-space-200);
+  background-color:   var(--uds-color-surface-interactive-none, transparent);
+  font-weight:        var(--uds-font-weight-regular, 400);
+  vertical-align:     middle;
+  border-bottom:      1px solid var(--uds-color-border-secondary, #d4d4d4);
+}
+
+.udc-data-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Striped rows (optional) */
+.udc-data-table[data-striped="true"] tbody tr:nth-child(even) td {
+  background-color: var(--uds-color-surface-alt);
+}
+
+/* Row hover */
+.udc-data-table tbody tr:hover td {
+  background-color: var(--uds-color-surface-interactive-subtle-hover);
+}
+
+/* Selected row */
+.udc-data-table tbody tr[aria-selected="true"] td,
+.udc-data-table tbody tr[data-selected="true"] td {
+  background-color: var(--uds-color-surface-info-subtle);
+}
+
+/* --------------------------------------------------------------------------
+   Error highlight  (Figma: interactive-red-subtle #fef2f2)
+   -------------------------------------------------------------------------- */
+.udc-data-table td[data-highlight="error"],
+.udc-data-table tr[data-highlight="error"] td {
+  background-color: var(--uds-color-surface-interactive-red-subtle, #fef2f2);
+}
+
+/* --------------------------------------------------------------------------
+   Left / Right dividers on individual cells
+   -------------------------------------------------------------------------- */
+.udc-data-table [data-left-divider="true"] {
+  border-left: 1px solid var(--uds-color-border-secondary, #d4d4d4);
+}
+
+.udc-data-table [data-right-divider="true"] {
+  border-right: 1px solid var(--uds-color-border-secondary, #d4d4d4);
+}
+
+/* --------------------------------------------------------------------------
+   Alignment helpers
+   -------------------------------------------------------------------------- */
+.udc-dt-align-center,
+.udc-data-table th.udc-dt-align-center,
+.udc-data-table td.udc-dt-align-center { text-align: center; }
+
+.udc-dt-align-right,
+.udc-data-table th.udc-dt-align-right,
+.udc-data-table td.udc-dt-align-right  { text-align: right; }
+
+/* --------------------------------------------------------------------------
+   Prominent text  (Figma: font-weight-bold, not medium)
+   -------------------------------------------------------------------------- */
+.udc-dt-prominent {
+  font-weight: var(--uds-font-weight-bold);
+}
+
+/* --------------------------------------------------------------------------
+   Checkbox column
+   -------------------------------------------------------------------------- */
+.udc-dt-check {
+  width:        40px;
+  text-align:   center;
+  padding-left:   var(--uds-space-100) !important;
+  padding-right:  var(--uds-space-100) !important;
+}
+
+.udc-dt-check input[type="checkbox"] {
+  width:    16px;
+  height:   16px;
+  margin:   0;
+  cursor:   pointer;
+  accent-color: var(--uds-color-surface-interactive-default, #005ff0);
+}
+
+/* --------------------------------------------------------------------------
+   Sort indicator (inside header cells)
+   -------------------------------------------------------------------------- */
+.udc-dt-sort {
+  display:      inline-flex;
+  align-items:  center;
+  margin-left:  4px;
+  vertical-align: middle;
+}
+
+.udc-dt-sort::after {
+  content:      'unfold_more';
+  font-family:  'Material Symbols Outlined';
+  font-size:    16px;
+  line-height:  1;
+  color:        var(--uds-color-icon-secondary);
+}
+
+.udc-dt-sort[data-dir="asc"]::after  { content: 'arrow_upward'; color: var(--uds-color-icon-interactive); }
+.udc-dt-sort[data-dir="desc"]::after { content: 'arrow_downward'; color: var(--uds-color-icon-interactive); }
+
+/* Sortable header cursor + focus */
+.udc-data-table thead th:has(.udc-dt-sort) {
+  cursor: pointer;
+}
+
+.udc-data-table thead th:has(.udc-dt-sort):focus-visible {
+  outline: 2px solid var(--uds-color-border-outline-focus-visible);
+  outline-offset: -2px;
+}
+
+/* --------------------------------------------------------------------------
+   Filter icon (inside header cells)
+   -------------------------------------------------------------------------- */
+.udc-dt-filter {
+  display:      inline-flex;
+  align-items:  center;
+  margin-left:  4px;
+  vertical-align: middle;
+  cursor:       pointer;
+}
+
+.udc-dt-filter::after {
+  content:      'filter_list';
+  font-family:  'Material Symbols Outlined';
+  font-size:    16px;
+  line-height:  1;
+  color:        var(--uds-color-icon-secondary);
+}
+
+/* --------------------------------------------------------------------------
+   Action column (ghost button / more_vert)
+   -------------------------------------------------------------------------- */
+.udc-dt-action {
+  width:        48px;
+  text-align:   center;
+  padding:      var(--uds-space-075) !important;
+}
+
+.udc-dt-action .udc-button-ghost {
+  min-width: auto;
+  height:    32px;
+  padding:   4px;
+}
+
+/* --------------------------------------------------------------------------
+   Cell with leading/trailing icons  (Figma: 16×16 icon size)
+   -------------------------------------------------------------------------- */
+.udc-dt-cell-icon {
+  display:      inline-flex;
+  align-items:  center;
+  gap:          var(--uds-space-100);
+}
+
+.udc-dt-cell-icon .material-symbols-outlined {
+  font-size:    16px;
+  line-height:  1;
+}
+
+/* --------------------------------------------------------------------------
+   Responsive: compact on small viewports
+   -------------------------------------------------------------------------- */
+@media (max-width: 640px) {
+  .udc-data-table thead th,
+  .udc-data-table tbody td {
+    padding: var(--uds-space-075) var(--uds-space-150);
+    font-size: var(--uds-font-size-sm, 12px);
+  }
+
+  .udc-data-table thead th { height: 44px; }
+  .udc-data-table tbody td { height: 36px; }
+}

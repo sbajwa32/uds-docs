@@ -1,0 +1,53 @@
+{
+  "component": "breadcrumb",
+  "title": "Breadcrumb",
+  "description": "A breadcrumb shows the user's location within a hierarchical structure and provides links back to each level.",
+  "whenToUse": "On pages deep within a hierarchy (3+ levels deep). To help users understand where they are and navigate back.",
+  "whenNotToUse": "On top-level pages. When there is no meaningful hierarchy.",
+  "acceptanceCriteria": [],
+  "dependencies": {
+    "css": [
+      "uds/components/breadcrumb.css"
+    ],
+    "js": []
+  },
+  "props": [],
+  "events": [],
+  "slots": [],
+  "states": [],
+  "contentGuidelines": null,
+  "commonlyPairedWith": [],
+  "dosDonts": {
+    "dos": [],
+    "donts": []
+  },
+  "accessibility": {
+    "keyboard": [
+      {
+        "key": "Tab",
+        "action": "Move focus through links"
+      },
+      {
+        "key": "Enter",
+        "action": "Follow the link"
+      }
+    ],
+    "screenReader": [],
+    "wcag": [],
+    "contrast": []
+  },
+  "knownIssues": [],
+  "performance": null,
+  "motion": null,
+  "responsive": null,
+  "visualHierarchy": null,
+  "densityBehavior": null,
+  "owner": {
+    "designer": "Unassigned",
+    "developer": "Unassigned"
+  },
+  "draft": false,
+  "figmaNodeId": null,
+  "storybookSlug": null,
+  "_legacyAccessibilityNotes": "Wrap in <nav aria-label=\"Breadcrumb\">. The current page uses aria-current=\"page\" and is not a link."
+}

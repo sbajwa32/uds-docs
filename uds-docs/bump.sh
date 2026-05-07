@@ -8,7 +8,9 @@
 
 set -euo pipefail
 
-FILE="$(dirname "$0")/index.html"
+DIR="$(dirname "$0")"
+FILE="$DIR/index.html"
+VERSION_FILE="$DIR/version.txt"
 
 if [[ ! -f "$FILE" ]]; then
   echo "Error: $FILE not found" >&2
@@ -21,7 +23,7 @@ CURRENT=$(sed -n 's/.*SITE \([0-9]*\.[0-9]*\.[0-9]*\.[0-9]*\).*/\1/p' "$FILE" | 
 
 if [[ -z "$CURRENT" ]]; then
   NEW_VERSION="${TODAY}.1"
-  sed -i '' "s/SITE [^<]*/SITE ${NEW_VERSION}/" "$FILE"
+  sed -i.bak "s/SITE [^<]*/SITE ${NEW_VERSION}/" "$FILE"
 else
   CURRENT_DATE="${CURRENT%.*}"
   CURRENT_N="${CURRENT##*.}"
@@ -32,25 +34,32 @@ else
     NEW_N=1
   fi
   NEW_VERSION="${TODAY}.${NEW_N}"
-  sed -i '' "s/SITE ${CURRENT}/SITE ${NEW_VERSION}/" "$FILE"
+  sed -i.bak "s/SITE ${CURRENT}/SITE ${NEW_VERSION}/" "$FILE"
 fi
+
+sed -i.bak "s/var SITE_VERSION = '[0-9]\{4\}\.[0-9]\{2\}\.[0-9]\{2\}\.[0-9]*'/var SITE_VERSION = '${NEW_VERSION}'/" "$FILE"
+rm -f "$FILE.bak"
+echo "${NEW_VERSION}" > "$VERSION_FILE"
 
 CSS_V=$(sed -n 's/.*uds\.css?v=\([0-9]*\).*/\1/p' "$FILE" | head -1)
 if [[ -n "$CSS_V" ]]; then
   NEW_CSS_V=$((CSS_V + 1))
-  sed -i '' "s/uds\.css?v=${CSS_V}/uds.css?v=${NEW_CSS_V}/" "$FILE"
+  sed -i.bak "s/uds\.css?v=${CSS_V}/uds.css?v=${NEW_CSS_V}/" "$FILE"
+  rm -f "$FILE.bak"
 fi
 
 JS_V=$(sed -n 's/.*app\.js?v=\([0-9]*\).*/\1/p' "$FILE" | head -1)
 if [[ -n "$JS_V" ]]; then
   NEW_JS_V=$((JS_V + 1))
-  sed -i '' "s/app\.js?v=${JS_V}/app.js?v=${NEW_JS_V}/" "$FILE"
+  sed -i.bak "s/app\.js?v=${JS_V}/app.js?v=${NEW_JS_V}/" "$FILE"
+  rm -f "$FILE.bak"
 fi
 
 UDS_JS_V=$(sed -n 's/.*uds\.js?v=\([0-9]*\).*/\1/p' "$FILE" | head -1)
 if [[ -n "$UDS_JS_V" ]]; then
   NEW_UDS_JS_V=$((UDS_JS_V + 1))
-  sed -i '' "s/uds\.js?v=${UDS_JS_V}/uds.js?v=${NEW_UDS_JS_V}/" "$FILE"
+  sed -i.bak "s/uds\.js?v=${UDS_JS_V}/uds.js?v=${NEW_UDS_JS_V}/" "$FILE"
+  rm -f "$FILE.bak"
 fi
 
 echo "✓ SITE ${NEW_VERSION}"

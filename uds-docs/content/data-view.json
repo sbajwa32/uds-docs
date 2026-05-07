@@ -1,0 +1,48 @@
+{
+  "component": "data-view",
+  "title": "Data View",
+  "description": "A data view presents collections of records in non-table layouts such as cards or compact summaries.",
+  "whenToUse": "Use when users need to browse structured records but a tabular grid is not the best representation.",
+  "whenNotToUse": "For dense row-and-column comparison, sorting, and bulk actions, use Data Table.",
+  "acceptanceCriteria": [],
+  "dependencies": {
+    "css": [
+      "uds/components/data-view.css"
+    ],
+    "js": []
+  },
+  "props": [],
+  "events": [],
+  "slots": [],
+  "states": [],
+  "contentGuidelines": null,
+  "commonlyPairedWith": [],
+  "dosDonts": {
+    "dos": [],
+    "donts": []
+  },
+  "accessibility": {
+    "keyboard": [
+      {
+        "key": "Tab",
+        "action": "Move focus to/from the component"
+      }
+    ],
+    "screenReader": [],
+    "wcag": [],
+    "contrast": []
+  },
+  "knownIssues": [],
+  "performance": null,
+  "motion": null,
+  "responsive": null,
+  "visualHierarchy": null,
+  "densityBehavior": null,
+  "owner": {
+    "designer": "Unassigned",
+    "developer": "Unassigned"
+  },
+  "draft": false,
+  "figmaNodeId": null,
+  "storybookSlug": null
+}

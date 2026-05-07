@@ -1,0 +1,55 @@
+{
+  "component": "notification",
+  "title": "Notification",
+  "description": "An inline or prominent banner that communicates status, warnings, or important information.",
+  "whenToUse": "To communicate system status, warnings, or important context. Info (neutral info), success (confirmation), warning (caution), error (critical).",
+  "whenNotToUse": "For transient feedback — use a toast instead. For blocking confirmations — use a dialog.",
+  "acceptanceCriteria": [],
+  "dependencies": {
+    "css": [
+      "uds/components/notification.css"
+    ],
+    "js": [
+      "uds/components/notification.js"
+    ]
+  },
+  "props": [],
+  "events": [],
+  "slots": [],
+  "states": [],
+  "contentGuidelines": null,
+  "commonlyPairedWith": [],
+  "dosDonts": {
+    "dos": [],
+    "donts": []
+  },
+  "accessibility": {
+    "keyboard": [
+      {
+        "key": "Tab",
+        "action": "Move focus to the dismiss button (if dismissible)"
+      },
+      {
+        "key": "Enter / Space",
+        "action": "Activate dismiss"
+      }
+    ],
+    "screenReader": [],
+    "wcag": [],
+    "contrast": []
+  },
+  "knownIssues": [],
+  "performance": null,
+  "motion": null,
+  "responsive": null,
+  "visualHierarchy": null,
+  "densityBehavior": null,
+  "owner": {
+    "designer": "Unassigned",
+    "developer": "Unassigned"
+  },
+  "draft": false,
+  "figmaNodeId": null,
+  "storybookSlug": null,
+  "_legacyAccessibilityNotes": "Use role=\"alert\" for critical/error messages. Dismiss buttons need aria-label=\"Dismiss\"."
+}
