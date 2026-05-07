@@ -746,43 +746,64 @@
     var links = page.querySelector('.sg-page-links');
     if (!desc) return;
 
-    // Remove old inline pills if the page had already rendered them.
-    page.querySelectorAll('.sg-status-badge, .sg-spec-completeness').forEach(function (el) { el.remove(); });
+    // Remove any legacy pills/badges/cards from previous designs.
+    page.querySelectorAll('.sg-status-badge, .sg-spec-completeness, .sg-component-progress').forEach(function (el) { el.remove(); });
 
-    var wrap = page.querySelector('.sg-component-progress');
+    var wrap = page.querySelector('.sg-readiness');
     if (!wrap) {
-      wrap = document.createElement('div');
-      wrap.className = 'sg-component-progress';
+      wrap = document.createElement('section');
+      wrap.className = 'sg-readiness';
+      wrap.setAttribute('aria-label', 'Component readiness');
       if (links) links.insertAdjacentElement('afterend', wrap);
       else desc.insertAdjacentElement('afterend', wrap);
     } else if (links && links.nextElementSibling !== wrap) {
       links.insertAdjacentElement('afterend', wrap);
     }
 
+    // Status row — 5 labeled segments
     var currentIndex = STATUS_STEPS.findIndex(function (s) { return s.key === info.status; });
     var statusSegments = STATUS_STEPS.map(function (step, idx) {
       var state = idx < currentIndex ? 'complete' : (idx === currentIndex ? 'current' : 'future');
       if (currentIndex < 0) state = 'future';
-      return '<span class="sg-step-segment" data-state="' + state + '" data-status="' + step.key + '">' + step.label + '</span>';
+      return '<span class="sg-status-bar__segment" data-state="' + state + '">' + step.label + '</span>';
     }).join('');
 
+    // Spec row — 22 flat segments (total). Each segment maps to a COMPLETENESS_FIELDS entry.
     var score = completenessScores[pageId];
     var specSegments = '';
+    var specValueText = score ? (score.filled + ' of ' + score.total + ' fields filled') : 'Loading spec';
     if (score) {
+      var filledLookup = {};
+      (score.filledFields || []).forEach(function (f) { filledLookup[f] = true; });
       for (var i = 0; i < score.total; i++) {
-        specSegments += '<span class="sg-spec-segment" data-filled="' + (i < score.filled ? 'true' : 'false') + '"></span>';
+        var fieldKey = COMPLETENESS_FIELDS[i] || '';
+        var isFilled = filledLookup[fieldKey] === true;
+        specSegments += '<span class="sg-spec-bar__segment" data-filled="' + (isFilled ? 'true' : 'false') + '" data-field="' + fieldKey + '"></span>';
       }
     }
 
+    var ctaSpan = score
+      ? ' <span class="sg-readiness__cta">View checklist <span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span></span>'
+      : '';
+
     wrap.innerHTML =
-      '<div class="sg-progress-row">' +
-        '<div class="sg-progress-copy"><span class="sg-progress-kicker">Figma status</span><strong>' + meta.label + '</strong><span>since ' + info.since + '</span></div>' +
-        '<div class="sg-step-bar" aria-label="Figma status: ' + meta.label + '">' + statusSegments + '</div>' +
+      '<div class="sg-readiness__row">' +
+        '<div class="sg-readiness__label">' +
+          '<span>Status</span>' +
+          '<span class="sg-readiness__value">' + meta.label +
+          ' <span class="sg-readiness__value--muted">· since ' + info.since + '</span></span>' +
+        '</div>' +
+        '<div class="sg-status-bar" role="group" aria-label="Component status: ' + meta.label + '">' + statusSegments + '</div>' +
       '</div>' +
-      '<button type="button" class="sg-progress-row sg-progress-row--button sg-spec-progress-trigger" aria-haspopup="dialog" aria-expanded="false">' +
-        '<div class="sg-progress-copy"><span class="sg-progress-kicker">Spec status</span><strong>' + (score ? score.filled + ' of ' + score.total + ' fields' : 'Loading spec') + '</strong><span>click for checklist</span></div>' +
-        '<div class="sg-spec-step-bar" aria-label="' + (score ? 'Spec status: ' + score.filled + ' of ' + score.total + ' fields complete' : 'Spec status loading') + '">' + specSegments + '</div>' +
-      '</button>';
+      '<div class="sg-readiness__row">' +
+        '<div class="sg-readiness__label">' +
+          '<span>Spec</span>' +
+          '<span class="sg-readiness__value">' + specValueText + ctaSpan + '</span>' +
+        '</div>' +
+        '<button type="button" class="sg-spec-bar sg-spec-progress-trigger" aria-haspopup="dialog" aria-expanded="false" aria-label="' + (score ? 'Spec progress: ' + score.filled + ' of ' + score.total + ' fields filled. Click to view checklist.' : 'Spec progress loading') + '">' +
+          specSegments +
+        '</button>' +
+      '</div>';
 
     var trigger = wrap.querySelector('.sg-spec-progress-trigger');
     if (trigger && score) {
@@ -793,74 +814,59 @@
     }
   }
 
+  // Sidebar metadata tooltip — uses the real UDS udc-tooltip CSS pattern.
+  // We inject a <span class="udc-tooltip" data-position="right"> inside each
+  // component sidebar link; CSS handles show/hide on :hover / :focus-within.
   function updateSidebarMetadataTooltip(pageId) {
     var link = document.querySelector('.sg-sidebar-link[href="#/' + pageId + '"]');
     if (!link || typeof COMPONENT_STATUS === 'undefined') return;
     var info = COMPONENT_STATUS[pageId];
     var meta = info ? (STATUS_LABELS[info.status] || { label: info.status }) : null;
     var score = completenessScores[pageId];
-    var name = link.textContent.trim();
-    var figmaLine = meta ? (meta.label + ' since ' + info.since) : 'Unavailable';
-    var specLine = 'Loading';
-    var missingLine = '';
-    if (score) {
-      specLine = score.filled + ' of ' + score.total + ' fields complete';
-      if (score.missingFields && score.missingFields.length) {
-        missingLine = score.missingFields.slice(0, 4).map(function (p) { return SPEC_FIELD_LABELS[p] || p; }).join(', ');
-      }
-    }
+    var name = (link.dataset.label || link.textContent || '').trim();
+    if (!link.dataset.label) link.dataset.label = name;
+
+    // Strip legacy native title / dot indicators.
     link.removeAttribute('title');
-    link.setAttribute('aria-describedby', 'sg-sidebar-tooltip');
-    link.dataset.tooltipTitle = name;
-    link.dataset.tooltipFigma = figmaLine;
-    link.dataset.tooltipSpec = specLine;
-    link.dataset.tooltipMissing = missingLine;
     link.querySelectorAll('.sg-sidebar-dot').forEach(function (dot) { dot.remove(); });
-  }
 
-  function ensureSidebarTooltip() {
-    var tip = document.getElementById('sg-sidebar-tooltip');
-    if (tip) return tip;
-    tip = document.createElement('div');
-    tip.id = 'sg-sidebar-tooltip';
-    tip.className = 'udc-tooltip sg-sidebar-tooltip';
-    tip.setAttribute('role', 'tooltip');
-    tip.setAttribute('aria-hidden', 'true');
-    document.body.appendChild(tip);
-    return tip;
-  }
+    var tip = link.querySelector(':scope > .udc-tooltip');
+    if (!tip) {
+      tip = document.createElement('span');
+      tip.className = 'udc-tooltip';
+      tip.setAttribute('role', 'tooltip');
+      tip.setAttribute('data-position', 'right');
+      link.appendChild(tip);
 
-  function showSidebarTooltip(link) {
-    if (!link || !link.dataset.tooltipTitle) return;
-    var tip = ensureSidebarTooltip();
-    var missing = link.dataset.tooltipMissing ? '<div class="sg-sidebar-tooltip__muted">Missing next: ' + link.dataset.tooltipMissing + '</div>' : '';
+      // Position the tooltip vertically to match the link on hover/focus.
+      // We use position:fixed (set in CSS) so the sidebar's overflow:auto
+      // doesn't clip the tooltip; JS only needs to set `top`.
+      var positionTip = function () {
+        var r = link.getBoundingClientRect();
+        tip.style.top = (r.top + r.height / 2) + 'px';
+      };
+      link.addEventListener('mouseenter', positionTip);
+      link.addEventListener('focus', positionTip);
+    }
+
+    var statusLine = meta
+      ? '<span class="sg-sidebar-tooltip__row"><strong>Status</strong><span>' + meta.label + ' · since ' + info.since + '</span></span>'
+      : '';
+    var specLine = score
+      ? '<span class="sg-sidebar-tooltip__row"><strong>Spec</strong><span>' + score.filled + ' of ' + score.total + ' fields filled</span></span>'
+      : '<span class="sg-sidebar-tooltip__row"><strong>Spec</strong><span>Loading</span></span>';
+    var missingHtml = '';
+    if (score && score.missingFields && score.missingFields.length) {
+      var preview = score.missingFields.slice(0, 4).map(function (p) { return SPEC_FIELD_LABELS[p] || p; }).join(', ');
+      missingHtml =
+        '<span class="sg-sidebar-tooltip__missing">' +
+          '<span class="sg-sidebar-tooltip__missing-label">Next to fill</span>' + preview +
+        '</span>';
+    }
+
     tip.innerHTML =
-      '<strong>' + link.dataset.tooltipTitle + '</strong>' +
-      '<div>Figma status: ' + link.dataset.tooltipFigma + '</div>' +
-      '<div>Spec status: ' + link.dataset.tooltipSpec + '</div>' +
-      missing;
-    var rect = link.getBoundingClientRect();
-    tip.style.left = (rect.right + window.scrollX + 10) + 'px';
-    tip.style.top = (rect.top + window.scrollY + Math.max(0, (rect.height - tip.offsetHeight) / 2)) + 'px';
-    tip.setAttribute('aria-hidden', 'false');
-    tip.setAttribute('data-open', 'true');
-  }
-
-  function hideSidebarTooltip() {
-    var tip = document.getElementById('sg-sidebar-tooltip');
-    if (!tip) return;
-    tip.removeAttribute('data-open');
-    tip.setAttribute('aria-hidden', 'true');
-  }
-
-  function initSidebarMetadataTooltips() {
-    document.querySelectorAll('.sg-sidebar-link[href^="#/"]').forEach(function (link) {
-      link.addEventListener('mouseenter', function () { showSidebarTooltip(link); });
-      link.addEventListener('focus', function () { showSidebarTooltip(link); });
-      link.addEventListener('mouseleave', hideSidebarTooltip);
-      link.addEventListener('blur', hideSidebarTooltip);
-    });
-    document.addEventListener('scroll', hideSidebarTooltip, true);
+      '<span class="sg-sidebar-tooltip__title">' + name + '</span>' +
+      statusLine + specLine + missingHtml;
   }
 
   // Human-readable label for each COMPLETENESS_FIELDS path
@@ -3967,6 +3973,14 @@
         { type: 'changed', text: 'Component headers now separate Figma lifecycle status and spec completeness into two clean segmented bars instead of competing inline pills. The spec bar remains clickable and opens the existing checklist breakdown.' },
         { type: 'changed', text: 'Sidebar component metadata moved into UDS-styled hover/focus tooltips that open to the right of the sidebar item. Visible colored spec dots and native browser title tooltips were removed to keep the sidebar uncluttered.' }
       ]
+    },
+    {
+      version: 'SITE 2026.05.07.8',
+      date: '2026-05-07',
+      changes: [
+        { type: 'changed', text: 'Reworked the component readiness section: replaced two boxed progress rows with a single clean card that holds a Status segmented bar (5 lifecycle steps) and a Spec segmented bar (22 flat segments mapped 1:1 to schema fields). The Spec bar is the click target for the existing checklist popover.' },
+        { type: 'fixed', text: 'Sidebar component tooltip now uses the actual `udc-tooltip` UDS component CSS — `:hover` and `:focus-within` reveal a tooltip rendered to the right of the sidebar link with the surface, border, shadow, and font tokens from `uds/components/tooltip.css`. Removed the previous JS-positioned floating div that bypassed the UDS tooltip pattern.' }
+      ]
     }
   ];
 
@@ -4963,7 +4977,6 @@
   renderRealisticData();
   renderExampleOnlyBanners();
   preloadAllContent();
-  initSidebarMetadataTooltips();
   renderRoadmapComponents();
   initTokenSearch();
   applyDraftMode();

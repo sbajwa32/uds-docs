@@ -932,70 +932,104 @@
 
     .sg-guidelines-empty { padding: var(--uds-space-500) 0; color: var(--uds-color-text-tertiary); font-family: var(--uds-font-family); font-size: var(--uds-font-size-base); text-align: center; }
 
-    /* Component metadata progress bars */
-    .sg-component-progress {
-      display: grid; gap: var(--uds-space-075);
-      margin: var(--uds-space-150) 0 var(--uds-space-200);
-      max-width: 680px;
-    }
-    .sg-progress-row {
-      display: grid; grid-template-columns: minmax(170px, 220px) 1fr;
-      align-items: center; gap: var(--uds-space-150);
-      width: 100%;
-      padding: var(--uds-space-100) var(--uds-space-125);
+    /* Component readiness — single card with two segmented bars */
+    .sg-readiness {
+      display: flex; flex-direction: column; gap: var(--uds-space-200);
+      margin: var(--uds-space-200) 0 var(--uds-space-250);
+      padding: var(--uds-space-200) var(--uds-space-250);
+      max-width: 760px;
+      background: var(--uds-color-surface-main);
       border: 1px solid var(--uds-color-border-secondary);
-      border-radius: var(--uds-border-radius-container-sm);
-      background: var(--uds-color-surface-subtle);
+      border-radius: var(--uds-border-radius-container-md);
       font-family: var(--uds-font-family);
-      text-align: left;
     }
-    .sg-progress-row--button { cursor: pointer; }
-    .sg-progress-row--button:hover { background: var(--uds-color-surface-subtle); }
-    .sg-progress-row--button:focus-visible { outline: 2px solid var(--uds-color-border-outline-focus-visible); outline-offset: 2px; }
-    .sg-progress-copy { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
-    .sg-progress-kicker {
+    .sg-readiness__row { display: flex; flex-direction: column; gap: var(--uds-space-100); }
+    .sg-readiness__row + .sg-readiness__row {
+      padding-top: var(--uds-space-200);
+      border-top: 1px solid var(--uds-color-border-tertiary);
+    }
+    .sg-readiness__label {
+      display: flex; align-items: baseline; justify-content: space-between; gap: var(--uds-space-100);
       font-size: var(--uds-font-size-xs); line-height: var(--uds-font-line-height-xs);
-      color: var(--uds-color-text-tertiary); text-transform: uppercase; letter-spacing: 0.06em; font-weight: var(--uds-font-weight-bold);
+      color: var(--uds-color-text-tertiary);
+      text-transform: uppercase; letter-spacing: 0.06em; font-weight: var(--uds-font-weight-bold);
     }
-    .sg-progress-copy strong { font-size: var(--uds-font-size-sm); line-height: var(--uds-font-line-height-sm); color: var(--uds-color-text-primary); }
-    .sg-progress-copy span:last-child { font-size: var(--uds-font-size-xs); line-height: var(--uds-font-line-height-xs); color: var(--uds-color-text-secondary); }
-    .sg-step-bar, .sg-spec-step-bar { display: flex; gap: 3px; min-width: 0; }
-    .sg-step-segment {
-      flex: 1 1 0; min-width: 58px;
-      padding: 3px var(--uds-space-050);
+    .sg-readiness__value {
+      font-family: var(--uds-font-family);
+      font-size: var(--uds-font-size-sm); line-height: var(--uds-font-line-height-sm);
+      color: var(--uds-color-text-primary); font-weight: var(--uds-font-weight-medium);
+      text-transform: none; letter-spacing: 0;
+    }
+    .sg-readiness__value--muted { color: var(--uds-color-text-secondary); font-weight: var(--uds-font-weight-regular); }
+    .sg-readiness__cta {
+      display: inline-flex; align-items: center; gap: var(--uds-space-050);
+      font-size: var(--uds-font-size-xs); line-height: var(--uds-font-line-height-xs);
+      color: var(--uds-color-text-interactive); text-transform: none; letter-spacing: 0;
+      font-weight: var(--uds-font-weight-medium);
+    }
+    .sg-readiness__cta .material-symbols-outlined { font-size: 14px; }
+
+    /* Status: 5 labeled segments side by side (Not Started → Production) */
+    .sg-status-bar {
+      display: grid; grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: var(--uds-space-075);
+      width: 100%;
+    }
+    .sg-status-bar__segment {
+      display: flex; align-items: center; justify-content: center;
+      min-height: 28px;
+      padding: var(--uds-space-050) var(--uds-space-100);
       border-radius: var(--uds-border-radius-container-sm);
-      border: 1px solid var(--uds-color-border-secondary);
       background: var(--uds-color-surface-subtle);
       color: var(--uds-color-text-secondary);
       font-size: var(--uds-font-size-xs); line-height: var(--uds-font-line-height-xs);
-      text-align: center; white-space: nowrap;
+      font-weight: var(--uds-font-weight-medium);
+      white-space: nowrap;
+      transition: background 120ms ease, color 120ms ease;
     }
-    .sg-step-segment[data-state="complete"] {
+    .sg-status-bar__segment[data-state="complete"] {
       background: var(--uds-color-surface-interactive-subtle);
-      border-color: var(--uds-color-border-subtle-interactive);
       color: var(--uds-color-text-interactive);
     }
-    .sg-step-segment[data-state="current"] {
+    .sg-status-bar__segment[data-state="current"] {
       background: var(--uds-color-surface-interactive-default);
-      border-color: var(--uds-color-border-interactive);
       color: var(--uds-color-text-inverse);
       font-weight: var(--uds-font-weight-bold);
     }
-    .sg-spec-step-bar { gap: 4px; align-items: center; }
-    .sg-spec-segment {
-      height: 10px; flex: 1 1 0; min-width: 6px;
-      border-radius: var(--uds-border-radius-container-full);
-      background: var(--uds-color-surface-alt);
-      border: 1px solid var(--uds-color-border-secondary);
+
+    /* Spec: 22 flat segments — clickable to open the checklist popover */
+    .sg-spec-bar {
+      display: grid; grid-template-columns: repeat(22, minmax(0, 1fr));
+      gap: 3px;
+      width: 100%;
+      padding: 0; margin: 0; border: none;
+      background: transparent; cursor: pointer; text-align: left;
+      border-radius: var(--uds-border-radius-container-sm);
     }
-    .sg-spec-segment[data-filled="true"] {
-      background: var(--uds-color-surface-interactive-default);
-      border-color: var(--uds-color-border-interactive);
+    .sg-spec-bar:hover .sg-spec-bar__segment[data-filled="false"] { background: var(--uds-color-surface-alt); }
+    .sg-spec-bar:focus-visible { outline: 2px solid var(--uds-color-border-outline-focus-visible); outline-offset: 4px; }
+    .sg-spec-bar__segment {
+      height: 10px;
+      border-radius: 2px;
+      background: var(--uds-color-surface-subtle);
+      transition: background 120ms ease;
     }
+    .sg-spec-bar__segment[data-filled="true"] { background: var(--uds-color-surface-interactive-default); }
+    .sg-spec-bar__segment[data-deferred="true"] {
+      background: repeating-linear-gradient(
+        45deg,
+        var(--uds-color-surface-subtle),
+        var(--uds-color-surface-subtle) 3px,
+        var(--uds-color-surface-alt) 3px,
+        var(--uds-color-surface-alt) 6px
+      );
+    }
+
     @media (max-width: 760px) {
-      .sg-progress-row { grid-template-columns: 1fr; }
-      .sg-step-bar { flex-wrap: wrap; }
-      .sg-step-segment { min-width: 96px; }
+      .sg-readiness { padding: var(--uds-space-150) var(--uds-space-200); }
+      .sg-status-bar { grid-template-columns: 1fr 1fr; }
+      .sg-status-bar__segment { min-height: 32px; }
+      .sg-spec-bar { grid-template-columns: repeat(11, minmax(0, 1fr)); }
     }
 
     /* Spec completeness popover (opens from the X/22 pill) */
@@ -1056,34 +1090,66 @@
     }
 
     .sg-sidebar-dot { display: none; }
-    .sg-sidebar-tooltip {
-      position: absolute;
-      z-index: 300;
-      display: none;
-      width: 280px;
-      max-width: calc(100vw - 32px);
-      padding: var(--uds-space-150);
-      font-family: var(--uds-font-family);
+
+    /* Sidebar component tooltip — uses the actual UDS udc-tooltip styling
+       (background, border, font, shadow) positioned to the right of the
+       hovered/focused sidebar link. Uses position:fixed so it isn't clipped
+       by the sidebar's overflow-y:auto scroll container. Vertical position
+       is set by JS based on the link's bounding rect on hover/focus. */
+    .sg-sidebar-link { position: relative; }
+    .sg-sidebar-link > .udc-tooltip {
+      position: fixed;
+      top: 0;
+      bottom: auto;
+      left: 268px;
+      right: auto;
+      transform: translateY(-50%);
+      max-width: 280px; min-width: 220px;
+      padding: var(--uds-space-150) var(--uds-space-200);
+      text-align: left; white-space: normal;
       font-size: var(--uds-font-size-sm);
-      line-height: 1.45;
-      color: var(--uds-color-text-primary);
-      background: var(--uds-color-surface-main);
-      border: 1px solid var(--uds-color-border-secondary);
-      border-radius: var(--uds-border-radius-container-md);
-      box-shadow: var(--uds-shadow-depth-300);
-      pointer-events: none;
+      line-height: var(--uds-font-line-height-sm);
     }
-    .sg-sidebar-tooltip[data-open="true"] { display: block; }
-    .sg-sidebar-tooltip strong {
+    .sg-sidebar-link:hover > .udc-tooltip,
+    .sg-sidebar-link:focus > .udc-tooltip,
+    .sg-sidebar-link:focus-visible > .udc-tooltip {
+      opacity: 1;
+      visibility: visible;
+    }
+    .sg-sidebar-tooltip__title {
       display: block;
-      margin-bottom: var(--uds-space-075);
-      font-size: var(--uds-font-size-base);
+      font-weight: var(--uds-font-weight-bold);
       color: var(--uds-color-text-primary);
+      margin-bottom: var(--uds-space-100);
     }
-    .sg-sidebar-tooltip__muted {
-      margin-top: var(--uds-space-075);
-      color: var(--uds-color-text-secondary);
+    .sg-sidebar-tooltip__row {
+      display: flex; gap: var(--uds-space-100);
       font-size: var(--uds-font-size-xs);
+      line-height: var(--uds-font-line-height-xs);
+      color: var(--uds-color-text-secondary);
+      margin-top: var(--uds-space-050);
+    }
+    .sg-sidebar-tooltip__row strong {
+      color: var(--uds-color-text-tertiary);
+      font-weight: var(--uds-font-weight-medium);
+      text-transform: uppercase; letter-spacing: 0.04em;
+      min-width: 56px; flex-shrink: 0;
+    }
+    .sg-sidebar-tooltip__row span { color: var(--uds-color-text-primary); }
+    .sg-sidebar-tooltip__missing {
+      margin-top: var(--uds-space-100);
+      padding-top: var(--uds-space-100);
+      border-top: 1px solid var(--uds-color-border-tertiary);
+      font-size: var(--uds-font-size-xs);
+      line-height: var(--uds-font-line-height-xs);
+      color: var(--uds-color-text-secondary);
+    }
+    .sg-sidebar-tooltip__missing-label {
+      display: block;
+      color: var(--uds-color-text-tertiary);
+      text-transform: uppercase; letter-spacing: 0.04em;
+      font-weight: var(--uds-font-weight-medium);
+      margin-bottom: var(--uds-space-050);
     }
 
     /* =====================================================================
@@ -1379,7 +1445,7 @@
   </style>
   <script>
     (function () {
-      var SITE_VERSION = '2026.05.07.7';
+      var SITE_VERSION = '2026.05.07.8';
       var base = window.location.pathname.replace(/\/index\.html$/, '').replace(/\/$/, '');
       fetch(base + '/version.txt?_=' + Date.now()).then(function (r) {
         if (!r.ok) return;
@@ -1432,7 +1498,7 @@
       </span>
     </button>
     <select class="sg-version-select" id="sg-version-dropdown" aria-label="UDS version"></select>
-    <span class="sg-brand-bar-build">SITE 2026.05.07.7</span>
+    <span class="sg-brand-bar-build">SITE 2026.05.07.8</span>
   </div>
 
   <!-- Pre-flight checklist dialog -->
@@ -4997,7 +5063,7 @@ registerUdsComponents();</pre>
   <script src="https://cdn.jsdelivr.net/npm/jszip@3/dist/jszip.min.js"></script>
   <script src="./material-icons.js?v=1"></script>
   <script src="./uds/uds.js?v=30"></script>
-  <script src="./app.js?v=95"></script>
+  <script src="./app.js?v=96"></script>
   <script src="./demo-builder.js?v=10"></script>
 
 </body>
