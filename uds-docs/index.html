@@ -932,13 +932,71 @@
 
     .sg-guidelines-empty { padding: var(--uds-space-500) 0; color: var(--uds-color-text-tertiary); font-family: var(--uds-font-family); font-size: var(--uds-font-size-base); text-align: center; }
 
-    /* Spec completeness indicator (pill in component header, dot in sidebar) */
-    .sg-spec-completeness { display: inline-flex; align-items: center; gap: 4px; padding: 2px 10px; border-radius: var(--uds-border-radius-container-full); font-family: var(--uds-font-family); font-size: var(--uds-font-size-xs); font-weight: var(--uds-font-weight-bold); margin-left: var(--uds-space-100); vertical-align: middle; cursor: pointer; transition: filter 120ms ease; }
-    .sg-spec-completeness:hover { filter: brightness(0.96); }
-    .sg-spec-completeness:focus-visible { outline: 2px solid var(--uds-color-border-outline-focus-visible); outline-offset: 2px; }
-    .sg-spec-completeness[data-level="high"] { background: var(--uds-color-surface-success-subtle); color: var(--uds-color-text-success); border: 1px solid var(--uds-color-border-success); }
-    .sg-spec-completeness[data-level="med"]  { background: var(--uds-color-surface-warning-subtle); color: var(--uds-color-text-warning); border: 1px solid var(--uds-color-border-warning); }
-    .sg-spec-completeness[data-level="low"]  { background: var(--uds-color-surface-error-subtle); color: var(--uds-color-text-error); border: 1px solid var(--uds-color-border-error); }
+    /* Component metadata progress bars */
+    .sg-component-progress {
+      display: grid; gap: var(--uds-space-100);
+      margin: var(--uds-space-200) 0 var(--uds-space-200);
+      max-width: 760px;
+    }
+    .sg-progress-row {
+      display: grid; grid-template-columns: minmax(170px, 220px) 1fr;
+      align-items: center; gap: var(--uds-space-200);
+      width: 100%;
+      padding: var(--uds-space-125) var(--uds-space-150);
+      border: 1px solid var(--uds-color-border-secondary);
+      border-radius: var(--uds-border-radius-container-md);
+      background: var(--uds-color-surface-main);
+      font-family: var(--uds-font-family);
+      text-align: left;
+    }
+    .sg-progress-row--button { cursor: pointer; }
+    .sg-progress-row--button:hover { background: var(--uds-color-surface-subtle); }
+    .sg-progress-row--button:focus-visible { outline: 2px solid var(--uds-color-border-outline-focus-visible); outline-offset: 2px; }
+    .sg-progress-copy { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+    .sg-progress-kicker {
+      font-size: var(--uds-font-size-xs); line-height: var(--uds-font-line-height-xs);
+      color: var(--uds-color-text-tertiary); text-transform: uppercase; letter-spacing: 0.06em; font-weight: var(--uds-font-weight-bold);
+    }
+    .sg-progress-copy strong { font-size: var(--uds-font-size-sm); line-height: var(--uds-font-line-height-sm); color: var(--uds-color-text-primary); }
+    .sg-progress-copy span:last-child { font-size: var(--uds-font-size-xs); line-height: var(--uds-font-line-height-xs); color: var(--uds-color-text-secondary); }
+    .sg-step-bar, .sg-spec-step-bar { display: flex; gap: 3px; min-width: 0; }
+    .sg-step-segment {
+      flex: 1 1 0; min-width: 58px;
+      padding: var(--uds-space-050) var(--uds-space-075);
+      border-radius: var(--uds-border-radius-container-sm);
+      border: 1px solid var(--uds-color-border-secondary);
+      background: var(--uds-color-surface-subtle);
+      color: var(--uds-color-text-secondary);
+      font-size: var(--uds-font-size-xs); line-height: var(--uds-font-line-height-xs);
+      text-align: center; white-space: nowrap;
+    }
+    .sg-step-segment[data-state="complete"] {
+      background: var(--uds-color-surface-interactive-subtle);
+      border-color: var(--uds-color-border-subtle-interactive);
+      color: var(--uds-color-text-interactive);
+    }
+    .sg-step-segment[data-state="current"] {
+      background: var(--uds-color-surface-interactive-default);
+      border-color: var(--uds-color-border-interactive);
+      color: var(--uds-color-text-inverse);
+      font-weight: var(--uds-font-weight-bold);
+    }
+    .sg-spec-step-bar { gap: 4px; align-items: center; }
+    .sg-spec-segment {
+      height: 12px; flex: 1 1 0; min-width: 6px;
+      border-radius: var(--uds-border-radius-container-full);
+      background: var(--uds-color-surface-alt);
+      border: 1px solid var(--uds-color-border-secondary);
+    }
+    .sg-spec-segment[data-filled="true"] {
+      background: var(--uds-color-surface-interactive-default);
+      border-color: var(--uds-color-border-interactive);
+    }
+    @media (max-width: 760px) {
+      .sg-progress-row { grid-template-columns: 1fr; }
+      .sg-step-bar { flex-wrap: wrap; }
+      .sg-step-segment { min-width: 96px; }
+    }
 
     /* Spec completeness popover (opens from the X/22 pill) */
     .sg-spec-popover {
@@ -997,10 +1055,7 @@
       margin-left: 3px; flex-shrink: 0;
     }
 
-    .sg-sidebar-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: transparent; margin-left: 6px; vertical-align: middle; flex-shrink: 0; }
-    .sg-sidebar-dot[data-level="high"] { background: var(--uds-color-icon-success); }
-    .sg-sidebar-dot[data-level="med"]  { background: var(--uds-color-icon-warning); }
-    .sg-sidebar-dot[data-level="low"]  { background: var(--uds-color-icon-error); }
+    .sg-sidebar-dot { display: none; }
 
     /* =====================================================================
        Playground
@@ -1234,22 +1289,7 @@
     .sg-version-select:hover { background: rgba(255,255,255,0.2); }
     .sg-version-select option { background: var(--uds-color-surface-page-inverse, #1a1a2e); color: var(--uds-color-text-inverse); }
 
-    /* =====================================================================
-       Component status badges
-       ===================================================================== */
-    .sg-status-badge {
-      display: inline-flex; align-items: center; gap: var(--uds-space-050);
-      font-size: var(--uds-font-size-xs); font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em;
-      padding: 2px var(--uds-space-100); border-radius: 10px; vertical-align: middle; margin-left: var(--uds-space-125);
-      font-family: var(--uds-font-family);
-    }
-    .sg-status-badge--placeholder  { background: var(--uds-color-text-secondary); color: var(--uds-color-text-inverse); }
-    .sg-status-badge--blocked      { background: var(--uds-color-surface-error); color: var(--uds-color-text-inverse); }
-    .sg-status-badge--in-progress  { background: var(--uds-color-surface-warning); color: var(--uds-color-text-inverse); }
-    .sg-status-badge--review       { background: var(--uds-color-surface-warning-subtle); color: var(--uds-color-text-primary); }
-    .sg-status-badge--production   { background: var(--uds-color-surface-success); color: var(--uds-color-text-inverse); }
-    .sg-status-badge--deprecated   { background: var(--uds-color-surface-error); color: var(--uds-color-text-inverse); text-decoration: line-through; }
-    .sg-status-since { font-size: var(--uds-font-size-xs); font-weight: var(--uds-font-weight-regular); opacity: 0.7; margin-left: var(--uds-space-050); text-transform: none; letter-spacing: 0; }
+    /* Component status is rendered in .sg-component-progress above. */
 
     /* =====================================================================
        Global changelog page
@@ -1310,7 +1350,7 @@
   </style>
   <script>
     (function () {
-      var SITE_VERSION = '2026.05.07.5';
+      var SITE_VERSION = '2026.05.07.6';
       var base = window.location.pathname.replace(/\/index\.html$/, '').replace(/\/$/, '');
       fetch(base + '/version.txt?_=' + Date.now()).then(function (r) {
         if (!r.ok) return;
@@ -1363,7 +1403,7 @@
       </span>
     </button>
     <select class="sg-version-select" id="sg-version-dropdown" aria-label="UDS version"></select>
-    <span class="sg-brand-bar-build">SITE 2026.05.07.5</span>
+    <span class="sg-brand-bar-build">SITE 2026.05.07.6</span>
   </div>
 
   <!-- Pre-flight checklist dialog -->
@@ -4928,7 +4968,7 @@ registerUdsComponents();</pre>
   <script src="https://cdn.jsdelivr.net/npm/jszip@3/dist/jszip.min.js"></script>
   <script src="./material-icons.js?v=1"></script>
   <script src="./uds/uds.js?v=30"></script>
-  <script src="./app.js?v=93"></script>
+  <script src="./app.js?v=94"></script>
   <script src="./demo-builder.js?v=10"></script>
 
 </body>

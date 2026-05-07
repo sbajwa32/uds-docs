@@ -724,41 +724,87 @@
   function updateCompletenessIndicator(pageId) {
     var score = completenessScores[pageId];
     if (!score) return;
-    var level = score.pct >= 80 ? 'high' : (score.pct >= 50 ? 'med' : 'low');
+    renderComponentProgress(pageId);
+    updateSidebarMetadataTooltip(pageId);
+  }
 
-    // Update / create pill next to component page title
-    var title = document.querySelector('[data-page="' + pageId + '"] .sg-page-title');
-    if (title) {
-      var pill = title.parentNode.querySelector('.sg-spec-completeness');
-      if (!pill) {
-        pill = document.createElement('button');
-        pill.type = 'button';
-        pill.className = 'sg-spec-completeness';
-        pill.setAttribute('aria-haspopup', 'dialog');
-        pill.setAttribute('aria-expanded', 'false');
-        pill.addEventListener('click', function (e) {
-          e.preventDefault();
-          toggleSpecPopover(pill, pageId);
-        });
-        title.appendChild(pill);
-      }
-      pill.textContent = 'Spec ' + score.filled + '/' + score.total;
-      pill.setAttribute('data-level', level);
-      pill.setAttribute('title', score.pct + '% complete — click for breakdown');
+  var STATUS_STEPS = [
+    { key: 'placeholder', label: 'Not Started' },
+    { key: 'blocked', label: 'Blocked' },
+    { key: 'in-progress', label: 'In Progress' },
+    { key: 'review', label: 'In Review' },
+    { key: 'production', label: 'Production' }
+  ];
+
+  function renderComponentProgress(pageId) {
+    var page = document.querySelector('[data-page="' + pageId + '"]');
+    if (!page || typeof COMPONENT_STATUS === 'undefined') return;
+    var info = COMPONENT_STATUS[pageId];
+    if (!info) return;
+    var meta = STATUS_LABELS[info.status] || { label: info.status, css: info.status };
+    var desc = page.querySelector('.sg-page-desc');
+    if (!desc) return;
+
+    // Remove old inline pills if the page had already rendered them.
+    page.querySelectorAll('.sg-status-badge, .sg-spec-completeness').forEach(function (el) { el.remove(); });
+
+    var wrap = page.querySelector('.sg-component-progress');
+    if (!wrap) {
+      wrap = document.createElement('div');
+      wrap.className = 'sg-component-progress';
+      desc.insertAdjacentElement('afterend', wrap);
     }
 
-    // Update / create sidebar dot
+    var currentIndex = STATUS_STEPS.findIndex(function (s) { return s.key === info.status; });
+    var statusSegments = STATUS_STEPS.map(function (step, idx) {
+      var state = idx < currentIndex ? 'complete' : (idx === currentIndex ? 'current' : 'future');
+      if (currentIndex < 0) state = 'future';
+      return '<span class="sg-step-segment" data-state="' + state + '" data-status="' + step.key + '">' + step.label + '</span>';
+    }).join('');
+
+    var score = completenessScores[pageId];
+    var specSegments = '';
+    if (score) {
+      for (var i = 0; i < score.total; i++) {
+        specSegments += '<span class="sg-spec-segment" data-filled="' + (i < score.filled ? 'true' : 'false') + '"></span>';
+      }
+    }
+
+    wrap.innerHTML =
+      '<div class="sg-progress-row">' +
+        '<div class="sg-progress-copy"><span class="sg-progress-kicker">Figma status</span><strong>' + meta.label + '</strong><span>since ' + info.since + '</span></div>' +
+        '<div class="sg-step-bar" aria-label="Figma status: ' + meta.label + '">' + statusSegments + '</div>' +
+      '</div>' +
+      '<button type="button" class="sg-progress-row sg-progress-row--button sg-spec-progress-trigger" aria-haspopup="dialog" aria-expanded="false">' +
+        '<div class="sg-progress-copy"><span class="sg-progress-kicker">Spec status</span><strong>' + (score ? score.filled + ' of ' + score.total + ' fields' : 'Loading spec') + '</strong><span>click for checklist</span></div>' +
+        '<div class="sg-spec-step-bar" aria-label="' + (score ? 'Spec status: ' + score.filled + ' of ' + score.total + ' fields complete' : 'Spec status loading') + '">' + specSegments + '</div>' +
+      '</button>';
+
+    var trigger = wrap.querySelector('.sg-spec-progress-trigger');
+    if (trigger && score) {
+      trigger.addEventListener('click', function (e) {
+        e.preventDefault();
+        toggleSpecPopover(trigger, pageId);
+      });
+    }
+  }
+
+  function updateSidebarMetadataTooltip(pageId) {
     var link = document.querySelector('.sg-sidebar-link[href="#/' + pageId + '"]');
-    if (link) {
-      var dot = link.querySelector('.sg-sidebar-dot');
-      if (!dot) {
-        dot = document.createElement('span');
-        dot.className = 'sg-sidebar-dot';
-        link.appendChild(dot);
+    if (!link || typeof COMPONENT_STATUS === 'undefined') return;
+    var info = COMPONENT_STATUS[pageId];
+    var meta = info ? (STATUS_LABELS[info.status] || { label: info.status }) : null;
+    var score = completenessScores[pageId];
+    var parts = [link.textContent.trim()];
+    if (meta) parts.push('Figma status: ' + meta.label + ' since ' + info.since);
+    if (score) {
+      parts.push('Spec status: ' + score.filled + ' of ' + score.total + ' fields complete');
+      if (score.missingFields && score.missingFields.length) {
+        parts.push('Missing next: ' + score.missingFields.slice(0, 4).map(function (p) { return SPEC_FIELD_LABELS[p] || p; }).join(', '));
       }
-      dot.setAttribute('data-level', level);
-      dot.setAttribute('title', score.pct + '% spec complete');
     }
+    link.setAttribute('title', parts.join('\n'));
+    link.querySelectorAll('.sg-sidebar-dot').forEach(function (dot) { dot.remove(); });
   }
 
   // Human-readable label for each COMPLETENESS_FIELDS path
@@ -815,7 +861,6 @@
     pop.innerHTML =
       '<div class="sg-spec-popover__header">' +
         '<strong>Spec ' + score.filled + '/' + score.total + '</strong>' +
-        ' <span class="sg-spec-popover__pct">(' + score.pct + '%)</span>' +
         '<button type="button" class="sg-spec-popover__close" aria-label="Close"><span class="material-symbols-outlined">close</span></button>' +
       '</div>' +
       '<p class="sg-spec-popover__intro">22 spec fields are tracked per component. Filled fields appear in the Guidelines tab; empty ones are hidden until a designer fills them in via <code>content/' + pageId + '.json</code>.</p>' +
@@ -841,7 +886,7 @@
     var pop = document.getElementById('sg-spec-popover');
     if (pop) {
       var pageId = pop.dataset.for;
-      var trigger = document.querySelector('[data-page="' + pageId + '"] .sg-spec-completeness');
+      var trigger = document.querySelector('[data-page="' + pageId + '"] .sg-spec-progress-trigger');
       if (trigger) trigger.setAttribute('aria-expanded', 'false');
       pop.remove();
     }
@@ -853,7 +898,7 @@
     var pop = document.getElementById('sg-spec-popover');
     if (!pop) return;
     if (pop.contains(e.target)) return;
-    if (e.target.closest('.sg-spec-completeness')) return;
+    if (e.target.closest('.sg-spec-progress-trigger')) return;
     closeSpecPopover();
   }
 
@@ -3858,6 +3903,14 @@
         { type: 'changed', text: '`combobox`, `date-picker`, and `data-view` remain public placeholder pages but now explicitly document that their Figma pages have no inspectable component sets yet; implementation, examples, playgrounds, and Demo Builder entries are intentionally deferred.' },
         { type: 'changed', text: 'Figma workflow docs hardened again: public component pages imported from Figma must be classified as implementation-ready or placeholder-only; implementation-ready pages cannot remain scaffold-only when Figma provides a component set.' }
       ]
+    },
+    {
+      version: 'SITE 2026.05.07.6',
+      date: '2026-05-07',
+      changes: [
+        { type: 'changed', text: 'Component headers now separate Figma lifecycle status and spec completeness into two clean segmented bars instead of competing inline pills. The spec bar remains clickable and opens the existing checklist breakdown.' },
+        { type: 'changed', text: 'Sidebar component metadata moved into hover tooltips. Visible colored spec dots were removed to keep the sidebar uncluttered.' }
+      ]
     }
   ];
 
@@ -4125,16 +4178,8 @@
 
   function renderStatusBadges() {
     Object.keys(COMPONENT_STATUS).forEach(function (id) {
-      var info = COMPONENT_STATUS[id];
-      var meta = STATUS_LABELS[info.status];
-      if (!meta) return;
-      var titleEl = document.querySelector('[data-page="' + id + '"] .sg-page-title');
-      if (!titleEl) return;
-      if (titleEl.querySelector('.sg-status-badge')) return;
-      var badge = document.createElement('span');
-      badge.className = 'sg-status-badge sg-status-badge--' + meta.css;
-      badge.innerHTML = meta.label + '<span class="sg-status-since">since ' + info.since + '</span>';
-      titleEl.appendChild(badge);
+      renderComponentProgress(id);
+      updateSidebarMetadataTooltip(id);
     });
   }
 
