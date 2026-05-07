@@ -743,6 +743,7 @@
     if (!info) return;
     var meta = STATUS_LABELS[info.status] || { label: info.status, css: info.status };
     var desc = page.querySelector('.sg-page-desc');
+    var links = page.querySelector('.sg-page-links');
     if (!desc) return;
 
     // Remove old inline pills if the page had already rendered them.
@@ -752,7 +753,10 @@
     if (!wrap) {
       wrap = document.createElement('div');
       wrap.className = 'sg-component-progress';
-      desc.insertAdjacentElement('afterend', wrap);
+      if (links) links.insertAdjacentElement('afterend', wrap);
+      else desc.insertAdjacentElement('afterend', wrap);
+    } else if (links && links.nextElementSibling !== wrap) {
+      links.insertAdjacentElement('afterend', wrap);
     }
 
     var currentIndex = STATUS_STEPS.findIndex(function (s) { return s.key === info.status; });
@@ -795,16 +799,68 @@
     var info = COMPONENT_STATUS[pageId];
     var meta = info ? (STATUS_LABELS[info.status] || { label: info.status }) : null;
     var score = completenessScores[pageId];
-    var parts = [link.textContent.trim()];
-    if (meta) parts.push('Figma status: ' + meta.label + ' since ' + info.since);
+    var name = link.textContent.trim();
+    var figmaLine = meta ? (meta.label + ' since ' + info.since) : 'Unavailable';
+    var specLine = 'Loading';
+    var missingLine = '';
     if (score) {
-      parts.push('Spec status: ' + score.filled + ' of ' + score.total + ' fields complete');
+      specLine = score.filled + ' of ' + score.total + ' fields complete';
       if (score.missingFields && score.missingFields.length) {
-        parts.push('Missing next: ' + score.missingFields.slice(0, 4).map(function (p) { return SPEC_FIELD_LABELS[p] || p; }).join(', '));
+        missingLine = score.missingFields.slice(0, 4).map(function (p) { return SPEC_FIELD_LABELS[p] || p; }).join(', ');
       }
     }
-    link.setAttribute('title', parts.join('\n'));
+    link.removeAttribute('title');
+    link.setAttribute('aria-describedby', 'sg-sidebar-tooltip');
+    link.dataset.tooltipTitle = name;
+    link.dataset.tooltipFigma = figmaLine;
+    link.dataset.tooltipSpec = specLine;
+    link.dataset.tooltipMissing = missingLine;
     link.querySelectorAll('.sg-sidebar-dot').forEach(function (dot) { dot.remove(); });
+  }
+
+  function ensureSidebarTooltip() {
+    var tip = document.getElementById('sg-sidebar-tooltip');
+    if (tip) return tip;
+    tip = document.createElement('div');
+    tip.id = 'sg-sidebar-tooltip';
+    tip.className = 'udc-tooltip sg-sidebar-tooltip';
+    tip.setAttribute('role', 'tooltip');
+    tip.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(tip);
+    return tip;
+  }
+
+  function showSidebarTooltip(link) {
+    if (!link || !link.dataset.tooltipTitle) return;
+    var tip = ensureSidebarTooltip();
+    var missing = link.dataset.tooltipMissing ? '<div class="sg-sidebar-tooltip__muted">Missing next: ' + link.dataset.tooltipMissing + '</div>' : '';
+    tip.innerHTML =
+      '<strong>' + link.dataset.tooltipTitle + '</strong>' +
+      '<div>Figma status: ' + link.dataset.tooltipFigma + '</div>' +
+      '<div>Spec status: ' + link.dataset.tooltipSpec + '</div>' +
+      missing;
+    var rect = link.getBoundingClientRect();
+    tip.style.left = (rect.right + window.scrollX + 10) + 'px';
+    tip.style.top = (rect.top + window.scrollY + Math.max(0, (rect.height - tip.offsetHeight) / 2)) + 'px';
+    tip.setAttribute('aria-hidden', 'false');
+    tip.setAttribute('data-open', 'true');
+  }
+
+  function hideSidebarTooltip() {
+    var tip = document.getElementById('sg-sidebar-tooltip');
+    if (!tip) return;
+    tip.removeAttribute('data-open');
+    tip.setAttribute('aria-hidden', 'true');
+  }
+
+  function initSidebarMetadataTooltips() {
+    document.querySelectorAll('.sg-sidebar-link[href^="#/"]').forEach(function (link) {
+      link.addEventListener('mouseenter', function () { showSidebarTooltip(link); });
+      link.addEventListener('focus', function () { showSidebarTooltip(link); });
+      link.addEventListener('mouseleave', hideSidebarTooltip);
+      link.addEventListener('blur', hideSidebarTooltip);
+    });
+    document.addEventListener('scroll', hideSidebarTooltip, true);
   }
 
   // Human-readable label for each COMPLETENESS_FIELDS path
@@ -3905,11 +3961,11 @@
       ]
     },
     {
-      version: 'SITE 2026.05.07.6',
+      version: 'SITE 2026.05.07.7',
       date: '2026-05-07',
       changes: [
         { type: 'changed', text: 'Component headers now separate Figma lifecycle status and spec completeness into two clean segmented bars instead of competing inline pills. The spec bar remains clickable and opens the existing checklist breakdown.' },
-        { type: 'changed', text: 'Sidebar component metadata moved into hover tooltips. Visible colored spec dots were removed to keep the sidebar uncluttered.' }
+        { type: 'changed', text: 'Sidebar component metadata moved into UDS-styled hover/focus tooltips that open to the right of the sidebar item. Visible colored spec dots and native browser title tooltips were removed to keep the sidebar uncluttered.' }
       ]
     }
   ];
@@ -4907,6 +4963,7 @@
   renderRealisticData();
   renderExampleOnlyBanners();
   preloadAllContent();
+  initSidebarMetadataTooltips();
   renderRoadmapComponents();
   initTokenSearch();
   applyDraftMode();

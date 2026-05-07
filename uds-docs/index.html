@@ -934,18 +934,18 @@
 
     /* Component metadata progress bars */
     .sg-component-progress {
-      display: grid; gap: var(--uds-space-100);
-      margin: var(--uds-space-200) 0 var(--uds-space-200);
-      max-width: 760px;
+      display: grid; gap: var(--uds-space-075);
+      margin: var(--uds-space-150) 0 var(--uds-space-200);
+      max-width: 680px;
     }
     .sg-progress-row {
       display: grid; grid-template-columns: minmax(170px, 220px) 1fr;
-      align-items: center; gap: var(--uds-space-200);
+      align-items: center; gap: var(--uds-space-150);
       width: 100%;
-      padding: var(--uds-space-125) var(--uds-space-150);
+      padding: var(--uds-space-100) var(--uds-space-125);
       border: 1px solid var(--uds-color-border-secondary);
-      border-radius: var(--uds-border-radius-container-md);
-      background: var(--uds-color-surface-main);
+      border-radius: var(--uds-border-radius-container-sm);
+      background: var(--uds-color-surface-subtle);
       font-family: var(--uds-font-family);
       text-align: left;
     }
@@ -962,7 +962,7 @@
     .sg-step-bar, .sg-spec-step-bar { display: flex; gap: 3px; min-width: 0; }
     .sg-step-segment {
       flex: 1 1 0; min-width: 58px;
-      padding: var(--uds-space-050) var(--uds-space-075);
+      padding: 3px var(--uds-space-050);
       border-radius: var(--uds-border-radius-container-sm);
       border: 1px solid var(--uds-color-border-secondary);
       background: var(--uds-color-surface-subtle);
@@ -983,7 +983,7 @@
     }
     .sg-spec-step-bar { gap: 4px; align-items: center; }
     .sg-spec-segment {
-      height: 12px; flex: 1 1 0; min-width: 6px;
+      height: 10px; flex: 1 1 0; min-width: 6px;
       border-radius: var(--uds-border-radius-container-full);
       background: var(--uds-color-surface-alt);
       border: 1px solid var(--uds-color-border-secondary);
@@ -1056,6 +1056,35 @@
     }
 
     .sg-sidebar-dot { display: none; }
+    .sg-sidebar-tooltip {
+      position: absolute;
+      z-index: 300;
+      display: none;
+      width: 280px;
+      max-width: calc(100vw - 32px);
+      padding: var(--uds-space-150);
+      font-family: var(--uds-font-family);
+      font-size: var(--uds-font-size-sm);
+      line-height: 1.45;
+      color: var(--uds-color-text-primary);
+      background: var(--uds-color-surface-main);
+      border: 1px solid var(--uds-color-border-secondary);
+      border-radius: var(--uds-border-radius-container-md);
+      box-shadow: var(--uds-shadow-depth-300);
+      pointer-events: none;
+    }
+    .sg-sidebar-tooltip[data-open="true"] { display: block; }
+    .sg-sidebar-tooltip strong {
+      display: block;
+      margin-bottom: var(--uds-space-075);
+      font-size: var(--uds-font-size-base);
+      color: var(--uds-color-text-primary);
+    }
+    .sg-sidebar-tooltip__muted {
+      margin-top: var(--uds-space-075);
+      color: var(--uds-color-text-secondary);
+      font-size: var(--uds-font-size-xs);
+    }
 
     /* =====================================================================
        Playground
@@ -1350,7 +1379,7 @@
   </style>
   <script>
     (function () {
-      var SITE_VERSION = '2026.05.07.6';
+      var SITE_VERSION = '2026.05.07.7';
       var base = window.location.pathname.replace(/\/index\.html$/, '').replace(/\/$/, '');
       fetch(base + '/version.txt?_=' + Date.now()).then(function (r) {
         if (!r.ok) return;
@@ -1403,7 +1432,7 @@
       </span>
     </button>
     <select class="sg-version-select" id="sg-version-dropdown" aria-label="UDS version"></select>
-    <span class="sg-brand-bar-build">SITE 2026.05.07.6</span>
+    <span class="sg-brand-bar-build">SITE 2026.05.07.7</span>
   </div>
 
   <!-- Pre-flight checklist dialog -->
@@ -4968,7 +4997,7 @@ registerUdsComponents();</pre>
   <script src="https://cdn.jsdelivr.net/npm/jszip@3/dist/jszip.min.js"></script>
   <script src="./material-icons.js?v=1"></script>
   <script src="./uds/uds.js?v=30"></script>
-  <script src="./app.js?v=94"></script>
+  <script src="./app.js?v=95"></script>
   <script src="./demo-builder.js?v=10"></script>
 
 </body>
