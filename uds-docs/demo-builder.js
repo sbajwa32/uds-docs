@@ -19,10 +19,14 @@
 
   var DEMO_COMPONENTS = [
     { id: 'button',       label: 'Button' },
+    { id: 'link',         label: 'Link' },
+    { id: 'label',        label: 'Label' },
     { id: 'text-input',   label: 'Text Input' },
+    { id: 'text-area',    label: 'Text Area' },
     { id: 'checkbox',     label: 'Checkbox' },
     { id: 'radio',        label: 'Radio' },
     { id: 'dropdown',     label: 'Dropdown' },
+    { id: 'toggle',       label: 'Toggle' },
     { id: 'search',       label: 'Search' },
     { id: 'badge',        label: 'Badge' },
     { id: 'chip',         label: 'Chip' },
@@ -30,6 +34,7 @@
     { id: 'icon-wrapper', label: 'Icon Wrapper' },
     { id: 'spacer',       label: 'Spacer' },
     { id: 'breadcrumb',   label: 'Breadcrumb' },
+    { id: 'pagination',   label: 'Pagination' },
     { id: 'tabs',         label: 'Tabs' },
     { id: 'nav-header',   label: 'Nav Header' },
     { id: 'nav-vertical', label: 'Nav Vertical' },
@@ -47,6 +52,22 @@
      1. TEMPLATES — Realistic HTML snippets per component
      ======================================================================== */
   var DEMO_TEMPLATES = {
+
+    'link': function () {
+      return '<a class="udc-link" href="#">View property</a>';
+    },
+    'label': function () {
+      return '<label class="udc-label" data-required="true">Full name <span class="udc-label__required" aria-hidden="true"></span></label>';
+    },
+    'text-area': function () {
+      return '<div class="udc-text-area"><label class="udc-label" for="demo-notes">Notes</label><div class="udc-text-area__field"><textarea id="demo-notes" placeholder="Add notes..."></textarea></div><div class="udc-text-area__helper"><span>Optional internal note</span><span>0/250</span></div></div>';
+    },
+    'toggle': function () {
+      return '<button class="udc-toggle" role="switch" aria-checked="true"><span class="udc-toggle__control"><span class="udc-toggle__thumb"></span></span><span class="udc-toggle__label">Email notifications</span></button>';
+    },
+    'pagination': function () {
+      return '<nav class="udc-pagination" aria-label="Pagination"><div class="udc-pagination__pages"><button class="udc-pagination__button" aria-current="page">1</button><button class="udc-pagination__button">2</button><button class="udc-pagination__button">3</button></div><div class="udc-pagination__meta"><span>Rows per page</span><span>50</span><span>1-50 / 100</span></div></nav>';
+    },
     'nav-header': function () {
       return '<div class="udc-nav-header"><div class="udc-nav-header__left"><div class="udc-nav-logo"><span class="material-symbols-outlined" style="font-size:24px;color:var(--uds-color-icon-interactive);">apartment</span><span class="udc-nav-logo__text">Boardroom</span></div></div><div class="udc-nav-header__right"><button class="udc-button-ghost" data-icon-only data-size="sm"><span class="material-symbols-outlined">notifications</span></button><button class="udc-button-ghost" data-icon-only data-size="sm"><span class="material-symbols-outlined">account_circle</span></button></div></div>';
     },
@@ -126,6 +147,7 @@
     var mainContent = [];
 
     if (has(components, 'breadcrumb')) mainContent.push('<div style="margin-bottom:16px;">' + DEMO_TEMPLATES['breadcrumb']() + '</div>');
+    if (has(components, 'link')) mainContent.push('<div style="margin-bottom:16px;">' + DEMO_TEMPLATES['link']() + '</div>');
     if (has(components, 'notification')) mainContent.push('<div style="margin-bottom:16px;">' + DEMO_TEMPLATES['notification']() + '</div>');
 
     if (has(components, 'tabs')) mainContent.push('<div style="margin-bottom:24px;">' + DEMO_TEMPLATES['tabs']() + '</div>');
@@ -145,16 +167,20 @@
     }
 
     if (has(components, 'data-table')) mainContent.push('<div style="margin-bottom:24px;">' + DEMO_TEMPLATES['data-table']() + '</div>');
+    if (has(components, 'pagination')) mainContent.push('<div style="margin-bottom:24px;">' + DEMO_TEMPLATES['pagination']() + '</div>');
 
     if (has(components, 'tile')) mainContent.push('<div style="margin-bottom:24px;"><h3 style="font-family:var(--uds-font-family);font-size:var(--uds-font-size-lg);font-weight:var(--uds-font-weight-bold);color:var(--uds-color-text-primary);margin:0 0 12px;">Quick Actions</h3>' + DEMO_TEMPLATES['tile']() + '</div>');
 
     if (has(components, 'divider') && mainContent.length > 0) mainContent.push(DEMO_TEMPLATES['divider']());
 
     var formFields = [];
+    if (has(components, 'label') && !has(components, 'text-input') && !has(components, 'text-area')) formFields.push(DEMO_TEMPLATES['label']());
     if (has(components, 'text-input')) formFields.push(DEMO_TEMPLATES['text-input']());
+    if (has(components, 'text-area')) formFields.push(DEMO_TEMPLATES['text-area']());
     if (has(components, 'dropdown')) formFields.push(DEMO_TEMPLATES['dropdown']());
     if (has(components, 'checkbox')) formFields.push(DEMO_TEMPLATES['checkbox']());
     if (has(components, 'radio')) formFields.push(DEMO_TEMPLATES['radio']());
+    if (has(components, 'toggle')) formFields.push(DEMO_TEMPLATES['toggle']());
 
     if (formFields.length > 0) {
       mainContent.push('<div style="margin-top:24px;padding:24px;background:var(--uds-color-surface-subtle);border-radius:var(--uds-border-radius-container-md);"><h3 style="font-family:var(--uds-font-family);font-size:var(--uds-font-size-lg);font-weight:var(--uds-font-weight-bold);color:var(--uds-color-text-primary);margin:0 0 16px;">Add Tenant</h3><div style="display:flex;flex-direction:column;gap:16px;">' + formFields.join('') + '</div></div>');

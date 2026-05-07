@@ -5,7 +5,9 @@ description: Update a UDS component spec from a deep Figma component inspection.
 
 # Sync Figma Component Spec
 
-This skill updates `uds-docs/content/<component>.json` from the UDS Components Figma file, but only after a deep node-tree inspection. It is the write step that consumes `figma-component-inspector`.
+This skill updates a component's doc-site surface from the UDS Components Figma
+file, but only after a deep node-tree inspection. It is the write step that
+consumes `figma-component-inspector`.
 
 ## Non-negotiable rule
 
@@ -65,7 +67,23 @@ Never auto-apply:
 - ambiguous canonical node
 - hardcoded Figma value changes without token binding
 
-### 4. Build proposed JSON patch
+### 4. Classify implementation readiness
+
+Before proposing writes, classify the component:
+
+- `implementation-ready`: Figma exposes a component set, variant matrix, node
+  tree, anatomy, and enough token/layer information to generate reference docs.
+- `placeholder-only`: Figma has a public page but no inspectable component set
+  or not enough structure to generate reference docs.
+- `internal-support`: Figma node is a low-level support component and should not
+  become a public docs page unless explicitly requested.
+
+For UDS release sync, `implementation-ready` components must update more than
+JSON. They should receive Examples, Code, token-first CSS, Implementation
+Reference, Playground when useful, ZIP file-list coverage, and Demo Builder
+templates where applicable.
+
+### 5. Build proposed JSON patch
 
 Map inspector output to schema fields:
 
@@ -85,7 +103,24 @@ Map inspector output to schema fields:
 
 Do not overwrite non-empty fields with lower-confidence text.
 
-### 5. Dry-run output
+### 6. Build proposed docs/code patch
+
+For `implementation-ready` components, also propose:
+
+| Inspector finding | Doc-site output |
+|---|---|
+| primary/default variants | Examples tab |
+| HTML anatomy | Code tab |
+| component classes and states | `uds/components/<component>.css` |
+| controls that can vary safely | `PLAYGROUNDS` entry |
+| implementation reference | `IMPL_DATA` entry |
+| demo suitability | `demo-builder.js` template and component picker entry |
+| distributable CSS | ZIP file list in `app.js` |
+
+Do not generate production framework code. The docs site remains vanilla
+HTML/CSS/JS reference only.
+
+### 7. Dry-run output
 
 If dry-run mode, output:
 
@@ -107,16 +142,20 @@ If dry-run mode, output:
 
 Stop without editing.
 
-### 6. Apply mode
+### 8. Apply mode
 
 If applying:
 
 1. Run `bash uds-docs/bump-site.sh` before edits.
-2. Edit only `uds-docs/content/<component>.json` unless the user explicitly asked for examples/code/CSS updates too.
-3. Add or update the `SITE_CHANGELOG` entry.
-4. Cache-bust `app.js` if it changed.
-5. Visual-check the component Guidelines tab.
-6. Commit and push directly to `main`.
+2. For `implementation-ready` components, update JSON, Examples, Code, CSS,
+   Implementation Reference, Playground/Demo Builder, and ZIP file list as
+   applicable.
+3. For `placeholder-only` components, update `knownIssues` and visible docs so
+   the reason is explicit; do not add Demo Builder entries.
+4. Add or update the `SITE_CHANGELOG` entry.
+5. Cache-bust changed assets.
+6. Visual-check Examples, Code, Guidelines, and Demo Builder if affected.
+7. Commit and push directly to `main`.
 
 ## Output
 

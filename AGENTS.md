@@ -149,6 +149,11 @@ if needed.
   pass across every non-ignored status-prefixed Figma component page. Do not
   write release notes from page names alone; include meaningful variant/state
   coverage on existing components plus new pages and token changes.
+- Public component pages imported from Figma must be classified as
+  `implementation-ready`, `placeholder-only`, or `internal-support`.
+  Implementation-ready components must not remain scaffold-only; add Examples,
+  Code, token-first CSS, richer JSON specs, and Demo Builder coverage where
+  applicable.
 - Deletions are never automatic. Missing tokens/components are reported,
   classified, and preserved/deprecated unless the user explicitly confirms
   removal.

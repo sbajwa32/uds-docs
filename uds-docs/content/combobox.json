@@ -4,7 +4,12 @@
   "description": "A combobox combines text entry with a selectable list of suggestions.",
   "whenToUse": "Use when users can search or type to narrow a large option set, especially when free text and selection share the same field.",
   "whenNotToUse": "For a closed set of simple options, use Dropdown. For 2-4 visible options, use Radio.",
-  "acceptanceCriteria": [],
+  "acceptanceCriteria": [
+    "Figma component set exists and exposes variant properties",
+    "Examples and Code tabs are generated from inspected Figma structure",
+    "Component CSS uses UDS tokens only",
+    "Spec JSON reaches required minimum plus props/states/accessibility"
+  ],
   "dependencies": {
     "css": [
       "uds/components/combobox.css"
@@ -32,7 +37,9 @@
     "wcag": [],
     "contrast": []
   },
-  "knownIssues": [],
+  "knownIssues": [
+    "Figma 0.3 has a public placeholder page but no inspectable component set yet; examples, CSS implementation, playground, and Demo Builder entry are intentionally deferred until the Figma component set exists."
+  ],
   "performance": null,
   "motion": null,
   "responsive": null,

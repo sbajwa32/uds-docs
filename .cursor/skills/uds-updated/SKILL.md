@@ -149,6 +149,21 @@ inventory:
 Do not rely only on new/missing page detection. A release with no new pages can
 still contain important variant/state coverage changes.
 
+### 5a. Implementation-readiness classification
+
+Every public Figma component page found during release sync must be classified
+before it is added to the docs site:
+
+| Classification | Requirements | Required docs treatment |
+|---|---|---|
+| `implementation-ready` | Has at least one inspectable component set, variant matrix, layer tree, and enough anatomy/token information to produce reference markup | Add or update JSON spec, Examples tab, Code tab, token-first CSS, Implementation Reference, Playground when useful, ZIP file list, and Demo Builder template when the component can appear in demos |
+| `placeholder-only` | Public Figma page exists but has no component set or insufficient structure | Keep page only if useful, document `knownIssues`, keep examples/code/playground/demo-builder out, and say exactly what Figma data is missing |
+| `internal-support` | Component exists only to support other components, such as low-level input/slot/control parts | Do not add as public docs unless the user explicitly asks |
+
+Do not leave a public page with generic scaffold text like
+`Examples will be added after the Figma component spec is inspected` when the
+Figma page already has an inspectable component set. That is a failed sync.
+
 ### 6. Deep inspect changed/new components
 
 For every component that inventory flags as changed or new, run

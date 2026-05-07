@@ -70,6 +70,29 @@ The release changelog must reflect meaningful variant/state coverage across
 existing components, not only new component pages. If this pass has not been
 performed, the release is incomplete.
 
+## Public page import depth
+
+When a Figma component page is added to the public docs site:
+
+- If the page has an inspectable component set, it is
+  `implementation-ready`.
+  - It must not remain scaffold-only.
+  - Add Examples and Code tabs from inspected anatomy.
+  - Add token-first CSS or update existing CSS.
+  - Fill JSON spec fields beyond the required minimum.
+  - Add Playground and Demo Builder coverage when the component can safely be
+    represented in demos.
+- If the page has no inspectable component set, it is `placeholder-only`.
+  - Do not invent examples, CSS, or playgrounds.
+  - Add explicit `knownIssues` and visible guidance saying what Figma data is
+    missing.
+- If the page is a support/internal primitive, it is `internal-support`.
+  - Keep it out of public docs unless the user explicitly asks.
+
+Generic placeholder text such as "Examples will be added after the Figma
+component spec is inspected" is only acceptable for `placeholder-only`
+components. It is a workflow failure for `implementation-ready` components.
+
 ## Required report sections
 
 Any component inspection report must include:

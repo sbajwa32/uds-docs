@@ -214,6 +214,29 @@ Assign confidence to each finding.
 ### Do not apply
 ```
 
+## Implementation readiness
+
+Every inspection must include:
+
+```markdown
+## Implementation readiness
+- Classification: implementation-ready | placeholder-only | internal-support
+- Reason:
+- CSS selectors/classes to create:
+- Example variants to render:
+- Code/anatomy snippet available: yes/no
+- Playground suitability: yes/no
+- Demo Builder suitability: yes/no
+- Missing data before implementation:
+```
+
+Use `implementation-ready` only when the component has an inspectable component
+set, variant matrix, node tree, and enough anatomy/token information to produce
+reference HTML/CSS without guessing. Use `placeholder-only` when a public page
+exists but no component set is available yet. Use `internal-support` for pieces
+such as low-level input/control/slot components that should not become public
+docs pages by default.
+
 ## Rules
 
 - Read-only. Never edit Figma or files.
@@ -221,4 +244,6 @@ Assign confidence to each finding.
 - If node-tree or variant data is unavailable, report low confidence.
 - If multiple canonical nodes match, stop and ask.
 - Do not invent props, slots, states, or token bindings.
+- Do not recommend leaving a public implementation-ready component as
+  scaffold-only. It needs Examples, Code, CSS, and spec coverage.
 *** End Patch

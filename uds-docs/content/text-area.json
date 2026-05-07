@@ -4,32 +4,163 @@
   "description": "A text area lets users enter multi-line freeform text.",
   "whenToUse": "Use for comments, descriptions, notes, and other text that can span multiple lines.",
   "whenNotToUse": "For single-line values such as names, emails, or short search queries, use Text Input.",
-  "acceptanceCriteria": [],
+  "acceptanceCriteria": [
+    "Default/hover/focused/active/error-focused states render",
+    "Visible label is always present",
+    "Helper text and counter render below the field",
+    "Error state sets aria-invalid and announces helper text",
+    "Textarea resizes vertically without breaking layout"
+  ],
   "dependencies": {
     "css": [
       "uds/components/text-area.css"
     ],
     "js": []
   },
-  "props": [],
-  "events": [],
+  "props": [
+    {
+      "name": "value",
+      "type": "string",
+      "description": "Current text value."
+    },
+    {
+      "name": "placeholder",
+      "type": "string",
+      "description": "Hint text when empty."
+    },
+    {
+      "name": "label",
+      "type": "string",
+      "required": true,
+      "description": "Visible label."
+    },
+    {
+      "name": "helperText",
+      "type": "string",
+      "description": "Supporting or error text."
+    },
+    {
+      "name": "maxLength",
+      "type": "number",
+      "description": "Character counter limit."
+    },
+    {
+      "name": "data-state",
+      "type": "enum",
+      "enum": [
+        "default",
+        "hover",
+        "focused",
+        "active",
+        "error-focused"
+      ],
+      "default": "default",
+      "description": "Visual state from Figma matrix."
+    },
+    {
+      "name": "disabled",
+      "type": "boolean",
+      "default": false,
+      "description": "Disables text entry."
+    }
+  ],
+  "events": [
+    {
+      "name": "input",
+      "description": "Fires as text changes",
+      "payload": "{ value: string }"
+    },
+    {
+      "name": "change",
+      "description": "Fires after committed value changes",
+      "payload": "{ value: string }"
+    },
+    {
+      "name": "focus",
+      "description": "Fires on focus",
+      "payload": "FocusEvent"
+    },
+    {
+      "name": "blur",
+      "description": "Fires on blur",
+      "payload": "FocusEvent"
+    }
+  ],
   "slots": [],
-  "states": [],
-  "contentGuidelines": null,
-  "commonlyPairedWith": [],
+  "states": [
+    {
+      "name": "default",
+      "description": "Resting state",
+      "hasVisual": true
+    },
+    {
+      "name": "hover",
+      "description": "Pointer hover",
+      "hasVisual": true
+    },
+    {
+      "name": "focus-visible",
+      "description": "Focused text area",
+      "hasVisual": true
+    },
+    {
+      "name": "active",
+      "description": "Active editing state",
+      "hasVisual": true
+    },
+    {
+      "name": "error",
+      "description": "Error-focused state",
+      "hasVisual": true
+    }
+  ],
+  "contentGuidelines": "Use for multi-line entries such as notes or descriptions. Helper text should explain expected content or limits.",
+  "commonlyPairedWith": [
+    "label",
+    "button",
+    "dialog"
+  ],
   "dosDonts": {
-    "dos": [],
-    "donts": []
+    "dos": [
+      "Use visible labels",
+      "Provide character limits when applicable",
+      "Use error helper text to explain the fix"
+    ],
+    "donts": [
+      "Do not use for single-line values",
+      "Do not rely on placeholder as label",
+      "Do not validate on every keystroke"
+    ]
   },
   "accessibility": {
     "keyboard": [
       {
         "key": "Tab",
-        "action": "Move focus to/from the component"
+        "action": "Move focus to/from the text area"
+      },
+      {
+        "key": "Standard text-edit keys",
+        "action": "Native multiline text editing"
       }
     ],
-    "screenReader": [],
-    "wcag": [],
+    "screenReader": [
+      {
+        "trigger": "Text area receives focus",
+        "announcement": "Label, edit multi-line, helper text; required/error states when present"
+      }
+    ],
+    "wcag": [
+      {
+        "criterion": "1.3.1",
+        "level": "A",
+        "howMet": "Visible label is associated with textarea"
+      },
+      {
+        "criterion": "3.3.1",
+        "level": "A",
+        "howMet": "Error text is visible and described"
+      }
+    ],
     "contrast": []
   },
   "knownIssues": [],
@@ -43,6 +174,6 @@
     "developer": "Unassigned"
   },
   "draft": false,
-  "figmaNodeId": null,
+  "figmaNodeId": "6375:726",
   "storybookSlug": null
 }

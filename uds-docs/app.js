@@ -2319,6 +2319,84 @@
       }
     },
 
+
+    link: {
+      controls: [
+        { key: 'label', label: 'Label', type: 'text', default: 'View property' },
+        { key: 'current', label: 'Current page', type: 'checkbox', default: false },
+        { key: 'disabled', label: 'Disabled', type: 'checkbox', default: false },
+        { key: 'newWindow', label: 'Open in new window', type: 'checkbox', default: false }
+      ],
+      render(s) {
+        var attrs = ['class="udc-link"'];
+        if (!s.disabled) attrs.push('href="#"');
+        if (s.current) attrs.push('aria-current="page"');
+        if (s.disabled) attrs.push('aria-disabled="true"');
+        if (s.newWindow) attrs.push('target="_blank" rel="noopener noreferrer" data-new-window');
+        var icon = s.newWindow ? ' <span class="material-symbols-outlined" aria-hidden="true">open_in_new</span>' : '';
+        var code = '<a ' + attrs.join(' ') + '>' + esc(s.label) + icon + '</a>';
+        return { html: code, code: code };
+      }
+    },
+    label: {
+      controls: [
+        { key: 'text', label: 'Text', type: 'text', default: 'Full name' },
+        { key: 'variant', label: 'Variant', type: 'select', default: 'default', options: [
+          { value: 'default', label: 'Default' }, { value: 'disabled', label: 'Disabled' }, { value: 'error', label: 'Error' }, { value: 'interactive', label: 'Interactive' }, { value: 'success', label: 'Success' }
+        ]},
+        { key: 'required', label: 'Required', type: 'checkbox', default: true },
+        { key: 'small', label: 'Small', type: 'checkbox', default: false },
+        { key: 'prominent', label: 'Prominent', type: 'checkbox', default: false }
+      ],
+      render(s) {
+        var attrs = ['class="udc-label"'];
+        if (s.variant !== 'default') attrs.push('data-variant="' + s.variant + '"');
+        if (s.small) attrs.push('data-size="sm"');
+        if (s.prominent) attrs.push('data-prominent="true"');
+        var dot = s.required ? ' <span class="udc-label__required" aria-hidden="true"></span>' : '';
+        var code = '<label ' + attrs.join(' ') + '>' + esc(s.text) + dot + '</label>';
+        return { html: code, code: code };
+      }
+    },
+    'text-area': {
+      controls: [
+        { key: 'label', label: 'Label', type: 'text', default: 'Notes' },
+        { key: 'placeholder', label: 'Placeholder', type: 'text', default: 'Add notes...' },
+        { key: 'state', label: 'State', type: 'select', default: 'default', options: [
+          { value: 'default', label: 'Default' }, { value: 'focused', label: 'Focused' }, { value: 'error-focused', label: 'Error focused' }
+        ]}
+      ],
+      render(s) {
+        var state = s.state !== 'default' ? ' data-state="' + s.state + '"' : '';
+        var invalid = s.state === 'error-focused' ? ' aria-invalid="true"' : '';
+        var code = '<div class="udc-text-area"' + state + '>\n  <label class="udc-label" for="pg-textarea">' + esc(s.label) + '</label>\n  <div class="udc-text-area__field"><textarea id="pg-textarea" placeholder="' + esc(s.placeholder) + '"' + invalid + '></textarea></div>\n  <div class="udc-text-area__helper"><span>' + (s.state === 'error-focused' ? 'Enter at least 10 characters' : 'Optional internal note') + '</span><span>0/250</span></div>\n</div>';
+        return { html: code, code: code };
+      }
+    },
+    toggle: {
+      controls: [
+        { key: 'label', label: 'Label', type: 'text', default: 'Email notifications' },
+        { key: 'checked', label: 'Checked', type: 'checkbox', default: true },
+        { key: 'disabled', label: 'Disabled', type: 'checkbox', default: false }
+      ],
+      render(s) {
+        var dis = s.disabled ? ' aria-disabled="true"' : '';
+        var code = '<button class="udc-toggle" role="switch" aria-checked="' + (s.checked ? 'true' : 'false') + '"' + dis + '>\n  <span class="udc-toggle__control"><span class="udc-toggle__thumb"></span></span>\n  <span class="udc-toggle__label">' + esc(s.label) + '</span>\n</button>';
+        return { html: code, code: code };
+      }
+    },
+    pagination: {
+      controls: [
+        { key: 'page', label: 'Current page', type: 'select', default: '1', options: [
+          { value: '1', label: '1' }, { value: '2', label: '2' }, { value: '3', label: '3' }
+        ]}
+      ],
+      render(s) {
+        function btn(n){ return '<button class="udc-pagination__button"' + (s.page === String(n) ? ' aria-current="page"' : '') + '>' + n + '</button>'; }
+        var code = '<nav class="udc-pagination" aria-label="Pagination">\n  <div class="udc-pagination__pages">\n    <button class="udc-pagination__button" aria-label="Previous page"><span class="material-symbols-outlined">chevron_left</span></button>\n    ' + btn(1) + '\n    ' + btn(2) + '\n    ' + btn(3) + '\n    <button class="udc-pagination__button" aria-label="Next page"><span class="material-symbols-outlined">chevron_right</span></button>\n  </div>\n  <div class="udc-pagination__meta"><span>Rows per page</span><span>50</span><span>1-50 / 100</span></div>\n</nav>';
+        return { html: code, code: code };
+      }
+    },
     'tooltip': {
       controls: [
         { key: 'text', label: 'Tooltip text', type: 'text', default: 'Helpful tooltip information' },
@@ -2747,6 +2825,32 @@
         'Font': ['--uds-font-family','--uds-font-size-base','--uds-font-size-2xl','--uds-font-weight-regular','--uds-font-line-height-base']
       },
       html: function () { return '<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8" />\n  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />\n  <link rel="stylesheet" href="uds/uds.css" />\n</head>\n<body>\n\n  <div class="udc-search">\n    <div class="udc-search__field">\n      <span class="udc-search__icon"><span class="material-symbols-outlined">search</span></span>\n      <input type="search" placeholder="Search..." />\n      <button class="udc-search__clear" aria-label="Clear"><span class="material-symbols-outlined">clear</span></button>\n    </div>\n  </div>\n\n  <script src="uds/uds.js"><\/script>\n</body>\n</html>'; },
+    },
+
+    link: {
+      jsFunc: null,
+      tokens: { 'Color': ['--uds-color-text-interactive','--uds-color-text-interactive-hover','--uds-color-text-interactive-active','--uds-color-text-disabled','--uds-color-border-outline-focus-visible'], 'Font': ['--uds-font-family','--uds-font-size-base','--uds-font-weight-medium'], 'Space': ['--uds-space-050'], 'Border': ['--uds-border-radius-container-sm'] },
+      html: function () { return '<!DOCTYPE html>\n<html lang="en">\n<head><meta charset="UTF-8" /><link rel="stylesheet" href="uds/uds.css" /></head>\n<body>\n  <a class="udc-link" href="#">View property</a>\n</body>\n</html>'; }
+    },
+    label: {
+      jsFunc: null,
+      tokens: { 'Color': ['--uds-color-text-primary','--uds-color-text-disabled','--uds-color-text-error','--uds-color-text-interactive','--uds-color-text-success','--uds-color-surface-error'], 'Font': ['--uds-font-family','--uds-font-size-xs','--uds-font-size-sm','--uds-font-weight-medium','--uds-font-weight-bold'], 'Space': ['--uds-space-050'] },
+      html: function () { return '<!DOCTYPE html>\n<html lang="en">\n<head><meta charset="UTF-8" /><link rel="stylesheet" href="uds/uds.css" /></head>\n<body>\n  <label class="udc-label" for="name">Full name <span class="udc-label__required" aria-hidden="true"></span></label>\n</body>\n</html>'; }
+    },
+    'text-area': {
+      jsFunc: null,
+      tokens: { 'Color': ['--uds-color-surface-main','--uds-color-text-primary','--uds-color-text-secondary','--uds-color-text-error','--uds-color-border-primary','--uds-color-border-error','--uds-color-border-outline-focus-visible'], 'Font': ['--uds-font-family','--uds-font-size-xs','--uds-font-size-base'], 'Space': ['--uds-space-075','--uds-space-100'], 'Border': ['--uds-border-radius-input'] },
+      html: function () { return '<!DOCTYPE html>\n<html lang="en">\n<head><meta charset="UTF-8" /><link rel="stylesheet" href="uds/uds.css" /></head>\n<body>\n  <div class="udc-text-area"><label class="udc-label" for="notes">Notes</label><div class="udc-text-area__field"><textarea id="notes"></textarea></div></div>\n</body>\n</html>'; }
+    },
+    toggle: {
+      jsFunc: null,
+      tokens: { 'Color': ['--uds-color-surface-interactive-default','--uds-color-surface-interactive-disabled','--uds-color-surface-white','--uds-color-text-primary','--uds-color-text-disabled','--uds-color-border-primary','--uds-color-border-interactive','--uds-color-border-disabled'], 'Space': ['--uds-space-075','--uds-space-100'], 'Border': ['--uds-border-radius-container-full'], 'Shadow': ['--uds-shadow-depth-100'] },
+      html: function () { return '<!DOCTYPE html>\n<html lang="en">\n<head><meta charset="UTF-8" /><link rel="stylesheet" href="uds/uds.css" /></head>\n<body>\n  <button class="udc-toggle" role="switch" aria-checked="true"><span class="udc-toggle__control"><span class="udc-toggle__thumb"></span></span><span class="udc-toggle__label">Email notifications</span></button>\n</body>\n</html>'; }
+    },
+    pagination: {
+      jsFunc: null,
+      tokens: { 'Color': ['--uds-color-surface-main','--uds-color-surface-interactive-default','--uds-color-surface-interactive-subtle-hover','--uds-color-text-primary','--uds-color-text-inverse','--uds-color-text-secondary','--uds-color-border-primary','--uds-color-border-interactive'], 'Font': ['--uds-font-family','--uds-font-size-sm','--uds-font-weight-medium'], 'Space': ['--uds-space-050','--uds-space-100','--uds-space-200'], 'Border': ['--uds-border-radius-input'] },
+      html: function () { return '<!DOCTYPE html>\n<html lang="en">\n<head><meta charset="UTF-8" /><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" /><link rel="stylesheet" href="uds/uds.css" /></head>\n<body>\n  <nav class="udc-pagination" aria-label="Pagination"><div class="udc-pagination__pages"><button class="udc-pagination__button" aria-current="page">1</button><button class="udc-pagination__button">2</button></div></nav>\n</body>\n</html>'; }
     },
     'tooltip': {
       jsFunc: null,
@@ -3232,11 +3336,11 @@
         { type: 'added', category: 'components', component: 'Combobox', text: 'Placeholder page for searchable text-entry selection component from Figma 0.3' },
         { type: 'added', category: 'components', component: 'Date Picker', text: 'Placeholder page for calendar date-entry component from Figma 0.3' },
         { type: 'added', category: 'components', component: 'Data View', text: 'Placeholder page for non-table record collection layouts from Figma 0.3' },
-        { type: 'added', category: 'components', component: 'Label', text: 'Blocked form-control label component; Figma defines multiline/basic/extended features plus default/disabled/error/interactive/success variants' },
-        { type: 'added', category: 'components', component: 'Link', text: 'In-progress navigational link component with default/current page/disabled states and optional open-in-new-window affordance' },
-        { type: 'added', category: 'components', component: 'Pagination', text: 'Blocked paginated navigation component with default and active states' },
-        { type: 'added', category: 'components', component: 'Text Area', text: 'Placeholder multi-line text-entry component with default/hover/focused/active/error-focused states' },
-        { type: 'added', category: 'components', component: 'Toggle', text: 'Placeholder immediate on/off setting control with active true/false and disabled state variants' },
+        { type: 'added', category: 'components', component: 'Label', text: 'Blocked form-control label component with multiline/basic/extended features, default/disabled/error/interactive/success variants, token-first CSS, examples, code, playground, and Demo Builder coverage' },
+        { type: 'added', category: 'components', component: 'Link', text: 'In-progress navigational link component with default/current page/disabled states, optional open-in-new-window affordance, token-first CSS, examples, code, playground, and Demo Builder coverage' },
+        { type: 'added', category: 'components', component: 'Pagination', text: 'Blocked paginated navigation component with default/active states, rows-per-page context, token-first CSS, examples, code, playground, and Demo Builder coverage' },
+        { type: 'added', category: 'components', component: 'Text Area', text: 'Multi-line text-entry component with default/hover/focused/active/error-focused states, token-first CSS, examples, code, playground, and Demo Builder coverage' },
+        { type: 'added', category: 'components', component: 'Toggle', text: 'Immediate on/off setting control with active true/false and disabled variants, token-first CSS, examples, code, playground, and Demo Builder coverage' },
         { type: 'changed', category: 'components', component: 'Badge', text: 'Figma variant matrix confirmed: 2 sizes (Default/Small), 5 variants (Info/Secondary/Success/Error/Warning), and Prominent true/false' },
         { type: 'changed', category: 'components', component: 'Breadcrumb', text: 'Figma variant matrix confirmed: framed/frameless, depth on/off, 2-6 link groups, current/default/disabled link states, and open-in-new-window affordance' },
         { type: 'changed', category: 'components', component: 'Button', text: 'Figma variant matrix confirmed for primary/secondary/ghost buttons: destructive true/false, default/small sizes, default/hover/active/selected/disabled states, leading/trailing icons, icon-only, and horizontal/vertical button groups' },
@@ -3744,6 +3848,15 @@
       date: '2026-05-07',
       changes: [
         { type: 'changed', text: 'Figma-to-docs workflow tightened after UDS 0.3: `UDS updated` and `figma-inventory` now require a component-set variant coverage pass for every non-ignored status-prefixed Figma component page before a release changelog can be considered complete. The Cursor Workflows page documents that page names alone are not enough.' }
+      ]
+    },
+    {
+      version: 'SITE 2026.05.07.5',
+      date: '2026-05-07',
+      changes: [
+        { type: 'added', text: 'Deep component sync follow-up for UDS 0.3 — `link`, `label`, `text-area`, `toggle`, and `pagination` now have token-first CSS, real Examples and Code tabs, richer JSON specs, Playgrounds, Implementation Reference entries, Demo Builder templates, and ZIP download coverage based on Figma component-set inspection.' },
+        { type: 'changed', text: '`combobox`, `date-picker`, and `data-view` remain public placeholder pages but now explicitly document that their Figma pages have no inspectable component sets yet; implementation, examples, playgrounds, and Demo Builder entries are intentionally deferred.' },
+        { type: 'changed', text: 'Figma workflow docs hardened again: public component pages imported from Figma must be classified as implementation-ready or placeholder-only; implementation-ready pages cannot remain scaffold-only when Figma provides a component set.' }
       ]
     }
   ];

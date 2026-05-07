@@ -4,32 +4,134 @@
   "description": "A link navigates users to another page, route, resource, or external destination.",
   "whenToUse": "Use links for navigation or opening resources. Use them when the result is a change of location rather than an immediate action.",
   "whenNotToUse": "Do not use links to submit forms or trigger in-place actions; use Button for actions.",
-  "acceptanceCriteria": [],
+  "acceptanceCriteria": [
+    "Default, current-page, disabled, and open-in-new-window variants render from Figma matrix",
+    "Focus ring is visible when tabbed to",
+    "Disabled links do not navigate",
+    "External links include target=\"_blank\" and rel=\"noopener noreferrer\"",
+    "Link is used only for navigation, not actions"
+  ],
   "dependencies": {
     "css": [
       "uds/components/link.css"
     ],
     "js": []
   },
-  "props": [],
+  "props": [
+    {
+      "name": "href",
+      "type": "string",
+      "required": true,
+      "description": "Destination URL or route."
+    },
+    {
+      "name": "target",
+      "type": "enum",
+      "enum": [
+        "_self",
+        "_blank"
+      ],
+      "default": "_self",
+      "description": "Use _blank only when opening a new window or external resource."
+    },
+    {
+      "name": "aria-current",
+      "type": "enum",
+      "enum": [
+        "page"
+      ],
+      "default": null,
+      "description": "Marks the link as the current page."
+    },
+    {
+      "name": "aria-disabled",
+      "type": "boolean",
+      "default": false,
+      "description": "Marks link as disabled when navigation is unavailable."
+    },
+    {
+      "name": "data-new-window",
+      "type": "boolean",
+      "default": false,
+      "description": "Displays the open-in-new-window affordance."
+    }
+  ],
   "events": [],
   "slots": [],
-  "states": [],
-  "contentGuidelines": null,
-  "commonlyPairedWith": [],
+  "states": [
+    {
+      "name": "default",
+      "description": "Navigable link",
+      "hasVisual": true
+    },
+    {
+      "name": "hover",
+      "description": "Interactive hover color",
+      "hasVisual": true
+    },
+    {
+      "name": "focus-visible",
+      "description": "Keyboard focus outline",
+      "hasVisual": true
+    },
+    {
+      "name": "selected",
+      "description": "aria-current page state",
+      "hasVisual": true
+    },
+    {
+      "name": "disabled",
+      "description": "Disabled navigation",
+      "hasVisual": true
+    }
+  ],
+  "contentGuidelines": "Use concise destination-oriented text. Avoid vague labels like \"click here\".",
+  "commonlyPairedWith": [
+    "breadcrumb",
+    "nav-header",
+    "nav-vertical"
+  ],
   "dosDonts": {
-    "dos": [],
-    "donts": []
+    "dos": [
+      "Use links for navigation",
+      "Use aria-current for the current page",
+      "Indicate new-window behavior visually and programmatically"
+    ],
+    "donts": [
+      "Do not use links for form submission",
+      "Do not disable links without explaining why",
+      "Do not open a new window unexpectedly"
+    ]
   },
   "accessibility": {
     "keyboard": [
       {
         "key": "Tab",
-        "action": "Move focus to/from the component"
+        "action": "Move focus to/from the link"
+      },
+      {
+        "key": "Enter",
+        "action": "Activate the link"
       }
     ],
-    "screenReader": [],
-    "wcag": [],
+    "screenReader": [
+      {
+        "trigger": "Link receives focus",
+        "announcement": "Reads link text, current page when aria-current is set, and disabled when aria-disabled is true"
+      }
+    ],
+    "wcag": [
+      {
+        "criterion": "2.4.4",
+        "level": "A",
+        "howMet": "Link purpose is clear from visible text"
+      },
+      {
+        "criterion": "2.4.7",
+        "level": "AA",
+        "howMet": "Focus ring is visible"
+      }
+    ],
     "contrast": []
   },
   "knownIssues": [],
@@ -43,6 +145,6 @@
     "developer": "Unassigned"
   },
   "draft": false,
-  "figmaNodeId": null,
+  "figmaNodeId": "6506:38890",
   "storybookSlug": null
 }
