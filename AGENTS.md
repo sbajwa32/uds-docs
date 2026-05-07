@@ -128,6 +128,12 @@ if needed.
 
 ## Figma workflow principles
 
+- Figma Cloud MCP is available as a user cloud server. Figma workflow agents are
+  **read-only in behavior**, but they must run with MCP-enabled tool access.
+  Do not invoke Figma checks with a subagent `readonly: true` flag or Ask-mode
+  restriction that blocks MCP calls. If a subagent says "Figma server ready but
+  file access blocked", rerun the Figma read from the main MCP-enabled agent
+  context before falling back.
 - Figma pages whose page name contains `{Ignore}` are intentionally excluded
   from UDS sync. Do not read them for inventory, status sync, component
   inspection, spec-gap analysis, token/release workflows, snapshots, or

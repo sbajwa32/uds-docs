@@ -41,6 +41,15 @@ Dry run means:
 - no commits
 - produce a structured "would change" report only
 
+## MCP-enabled read requirement
+
+The Figma agents used by this skill are **read-only in behavior**, but they
+must run with MCP-enabled tool access. Do not invoke them with a subagent
+`readonly: true` flag, Ask-mode restriction, or any execution mode that blocks
+Figma MCP calls. If a read-only subagent reports that the Figma server is ready
+but file access is blocked, rerun the Figma read from the main MCP-enabled
+agent context before falling back to ZIPs or stopping.
+
 ## Required order
 
 ### 1. Capability check

@@ -2,13 +2,19 @@
 name: figma-inventory
 description: Read-only inventory of UDS Figma files. Lists versions, component pages, statuses, new/missing components, node fingerprints, and doc-site coverage. Use for "what changed in Figma?", "status sync", "new components", or the first phase of "UDS updated".
 model: inherit
-readonly: true
 ---
 
 # Figma Inventory
 
 You inventory the UDS Figma files and compare them with the doc site. You do
 not modify Figma or repository files.
+
+## Execution mode note
+
+This agent is **read-only in behavior**, but it must run with MCP-enabled tool
+access. Do not invoke it in Cursor/Cloud Agent `readonly` or Ask-mode execution
+if that mode blocks MCP calls. It may call Figma MCP read APIs, but it must not
+write to Figma or repository files.
 
 ## Inputs
 

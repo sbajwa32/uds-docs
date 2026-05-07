@@ -3682,6 +3682,13 @@
       changes: [
         { type: 'changed', text: 'Figma workflows now treat any Figma page whose name contains `{Ignore}` as out of scope. The preflight rule, inventory/spec-gap/component-inspector agents, status-sync and `UDS updated` skills skip those pages for version detection, component inventory, status sync, new/deleted component detection, deep inspection, and snapshot fingerprints; the Cursor Workflows page documents the convention.' }
       ]
+    },
+    {
+      version: 'SITE 2026.05.07.1',
+      date: '2026-05-07',
+      changes: [
+        { type: 'changed', text: 'Figma workflow docs now distinguish read-only behavior from execution-level readonly mode. Figma capability, inventory, token audit, component inspector, and spec-gap agents no longer set `readonly: true` in frontmatter; they remain read-only by instruction but must run with MCP-enabled tool access so Cloud Agents can actually read Figma files.' }
+      ]
     }
   ];
 
