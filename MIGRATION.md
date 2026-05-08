@@ -1,8 +1,12 @@
-# UDS Repo Restructure — Migration Tracking
+# UDS Repo Restructure — Migration Record
 
-Live tracker for the UDS repo restructure currently in progress on the
-`cursor/uds-restructure-afda` branch. The migration runs strictly phased; the
-site on `main` is untouched until the final atomic merge in Phase 12.
+Historical record of the UDS repo restructure that ran on the
+`cursor/uds-restructure-afda` branch and merged to `main`. The migration ran
+strictly phased; the site on `main` was untouched until the final atomic
+merge.
+
+This file stays in the repo as a permanent record. Anyone reading the
+repo later can see what was done and why.
 
 ## Why we're doing this
 
@@ -49,7 +53,7 @@ The baseline tag stays on `main` permanently as a recovery anchor.
 | 9 | Snapshot strategy + retroactive archive conversion | partial — udsPath() helper, prune-version.sh, new release.sh done; 0.2 conversion + dropdown rewrite deferred (see notes below) |
 | 10 | Rules, audits, AGENTS.md, README, skills + drift fixes | done |
 | 11 | Performance + accessibility verification | partial — measured + small fixes done, pre-existing systemic a11y debt deferred (see notes below) |
-| 12 | Final verification + PR + CI workflow | pending |
+| 12 | Final verification + PR + CI workflow | done |
 
 ## Per-component migration status (Phase 6)
 

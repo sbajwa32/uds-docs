@@ -93,18 +93,41 @@ def check_changelogs() -> list[str]:
     """Re-aggregate per-component changelogs and verify every (version, type, text)
     triple from the baseline global CHANGELOG appears somewhere in a per-component
     changelog.json (or in CHANGELOG.globalNotes.json once that file exists).
+
+    Recognizes component splits — the pre-split 'Nav' component became
+    nav-header + nav-vertical in UDS 0.2, so its history is searched in
+    BOTH successor changelogs.
     """
     errors: list[str] = []
     parsed = rl.parse_changelog_per_component(open(BASELINE_DIR / "app.js").read())
     baseline_per = parsed["perComponent"]
 
+    # When a baseline component id splits into successors, search its history
+    # across all successors. Each historical entry is "accounted for" if it
+    # appears in at least one successor's changelog.
+    SPLITS = {
+        "nav": ["nav-header", "nav-vertical"],
+    }
+
     for comp_id, expected_entries in baseline_per.items():
-        cl = rl.NEW_COMPONENTS_DIR / comp_id / "changelog.json"
-        if not cl.exists():
-            errors.append(f"{comp_id}: per-component changelog missing; {len(expected_entries)} entries unaccounted for")
+        successor_ids = SPLITS.get(comp_id, [comp_id])
+        actual_triples: set = set()
+        any_exists = False
+        for sid in successor_ids:
+            cl = rl.NEW_COMPONENTS_DIR / sid / "changelog.json"
+            if not cl.exists():
+                continue
+            any_exists = True
+            actual = json.loads(cl.read_text())
+            actual_triples.update(
+                (e["version"], e["type"], e["text"]) for e in actual.get("entries", [])
+            )
+        if not any_exists:
+            errors.append(
+                f"{comp_id}: per-component changelog missing in any successor "
+                f"({', '.join(successor_ids)}); {len(expected_entries)} entries unaccounted for"
+            )
             continue
-        actual = json.loads(cl.read_text())
-        actual_triples = {(e["version"], e["type"], e["text"]) for e in actual.get("entries", [])}
         for e in expected_entries:
             triple = (e["version"], e["type"], e["text"])
             if triple not in actual_triples:
