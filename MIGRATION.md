@@ -44,7 +44,7 @@ The baseline tag stays on `main` permanently as a recovery anchor.
 | 4 | Extract site modules (Demo Builder, Token Search, Playground) | partial — Demo Builder done in 4a; 4b (Token Search) and 4c (Playground) deferred to Phase 6 |
 | 5 | Extract non-component pages with data wiring | done |
 | 6 | Per-component migration (26 components) | done — all 29 components migrated to per-component folders |
-| 7 | Demo Builder reads source-of-truth examples | pending |
+| 7 | Demo Builder reads source-of-truth examples | done — examples live in one place, Demo Builder + docs page both fetch them |
 | 8 | Versioning model + per-component changelog aggregation | pending |
 | 9 | Snapshot strategy + retroactive archive conversion | pending |
 | 10 | Rules, audits, AGENTS.md, README, skills + drift fixes | pending |
