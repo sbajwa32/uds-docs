@@ -43,7 +43,7 @@ The baseline tag stays on `main` permanently as a recovery anchor.
 | 3 | Extract docs site shell (CSS, ES modules, global tables) | pending |
 | 4 | Extract site modules (Demo Builder, Token Search, Playground) | partial — Demo Builder done in 4a; 4b (Token Search) and 4c (Playground) deferred to Phase 6 |
 | 5 | Extract non-component pages with data wiring | done |
-| 6 | Per-component migration (26 components) | pending |
+| 6 | Per-component migration (26 components) | done — all 29 components migrated to per-component folders |
 | 7 | Demo Builder reads source-of-truth examples | pending |
 | 8 | Versioning model + per-component changelog aggregation | pending |
 | 9 | Snapshot strategy + retroactive archive conversion | pending |
@@ -53,11 +53,20 @@ The baseline tag stays on `main` permanently as a recovery anchor.
 
 ## Per-component migration status (Phase 6)
 
-Updated as each component lands.
+All 29 components migrated to `uds/components/<id>/`.
 
-| ID | Status | Notes |
-|----|--------|-------|
-| (none yet) | — | Phase 6 not started |
+Tier rollout (lowest-risk → highest-risk):
+
+| Tier | Components | Commit |
+|------|-----------|--------|
+| 1 | divider, spacer, icon-wrapper, label, link | 2d20ed9 |
+| 2 | badge, chip, breadcrumb, tabs, pagination, toggle | 57f6454 |
+| 3 | radio, checkbox, text-input, text-area, dropdown, search | ce6f147 |
+| 4 | tile, list, notification, tooltip | e7bb88f |
+| 5 | dialog, data-table | cc5f169 |
+| 6 | nav-header, nav-vertical (most complex; status.since corrected from 0.1 → 0.2 to reflect post-split id semantics) | 3f16142 |
+| 7 + button | combobox, date-picker, data-view (placeholder-only) + button | 4eedf96 |
+| 6c cleanup | content/ removed, uds.js orchestrator paths updated, loader fallback removed | 331545c |
 
 ## Deferral notes
 
