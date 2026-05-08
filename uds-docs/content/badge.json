@@ -57,7 +57,9 @@
     ],
     "contrast": []
   },
-  "knownIssues": [],
+  "knownIssues": [
+    "Fixed in SITE 2026.05.08.5: the `secondary` `prominent=true` variant previously paired `surface-bold` (light gray in light mode) with `text-inverse` (near-white in light mode), giving a contrast ratio of ~1.07:1 and rendering text as invisible. The CSS now uses `text-primary` for this variant, which gives ~9.7:1 in light mode and ~10:1 in dark mode. If Figma later defines a different foreground binding for this variant, sync this back."
+  ],
   "performance": null,
   "motion": null,
   "responsive": null,

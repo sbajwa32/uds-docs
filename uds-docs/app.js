@@ -3555,6 +3555,7 @@
         { type: 'changed', category: 'components', component: 'Tile', text: 'Figma tile coverage confirmed: default/hover/focused/selected/disabled states' },
         { type: 'changed', category: 'components', component: 'Icon Wrapper', text: 'Figma icon wrapper coverage confirmed for 16, 20, 24, 32, 48, and 64px sizes' },
         { type: 'changed', category: 'components', component: 'Divider', text: 'Figma divider coverage confirmed for sm, md, lg, and xl padding variants' },
+        { type: 'fixed', category: 'components', component: 'Badge', text: 'Fixed invisible text on the secondary prominent variant. The CSS paired `surface-bold` (light gray in light mode) with `text-inverse` (near-white in light mode) — contrast was ~1.07:1, basically invisible. Switched to `text-primary` for a contrast of ~9.7:1 in light mode and ~10:1 in dark mode. Affected the changelog component-name pills and per-component changelog type labels.' },
         { type: 'changed', category: null, component: null, text: 'Internal support pages checkbox-control, input, and slot were inspected but intentionally kept out of public docs for 0.3' }
       ]
     }
@@ -4087,10 +4088,14 @@
       ]
     },
     {
-      version: 'SITE 2026.05.08.4',
+      version: 'SITE 2026.05.08.2',
       date: '2026-05-08',
       changes: [
-        { type: 'fixed', text: 'Sidebar tooltip was rendering off-screen after the portal-to-body refactor. The portal element had `data-position="right"`, and `.udc-tooltip[data-position="right"]` has CSS specificity (0,2,0) while `.sg-sidebar-portal-tooltip` is only (0,1,0) — so the variant\'s `left: calc(100% + 8px)` won and positioned the tooltip past the viewport edge instead of at `left: 268px`. Removed `data-position` from the portal element.' }
+        { type: 'fixed', text: 'Sidebar component tooltip — initial attempt at fix using `z-index: 9999` (superseded by the proper portal-to-body fix in 2026.05.08.3, since `.sg-sidebar`\'s sticky stacking context bound the tooltip\'s z-index regardless of value).' },
+        { type: 'changed', text: 'Status segmented bar now uses stoplight-mapped semantic surface tokens for the current step instead of a single interactive blue: ⚫ Not Started → `surface-bold`, 🔴 Blocked → `surface-error`, 🟠 In Progress → `surface-warning`, 🟡 In Review → `surface-warning-subtle`, 🟢 Production → `surface-success`. Completed steps show a subtle "passed-through" treatment.' },
+        { type: 'changed', text: 'Spec segmented bar now uses success/warning semantic colors: filled segments are `surface-success` (the field is done), unfilled segments are `surface-warning-subtle` (still needs work). Same colors apply to the mini bars in the sidebar tooltip.' },
+        { type: 'fixed', text: 'Demo Builder: removed orphan `udc-nav-logo__text` class reference left behind from when nav-header was refactored to icon-only logo.' },
+        { type: 'added', text: '`uds-docs/scripts/audit-demo-builder.sh` polices Demo Builder drift. It checks (a) every implementable component (one whose `content/<id>.json` `knownIssues` does not contain "no inspectable component set yet") is in both `DEMO_COMPONENTS` and `DEMO_TEMPLATES`, and (b) every `udc-*` class used in `demo-builder.js` is defined in some `uds/components/*.css` file. Wired into the `uds-updated` skill verification step and AGENTS.md.' }
       ]
     },
     {
@@ -4103,14 +4108,18 @@
       ]
     },
     {
-      version: 'SITE 2026.05.08.2',
+      version: 'SITE 2026.05.08.4',
       date: '2026-05-08',
       changes: [
-        { type: 'fixed', text: 'Sidebar component tooltip — initial attempt at fix using `z-index: 9999` (superseded by the proper portal-to-body fix in 2026.05.08.3, since `.sg-sidebar`\'s sticky stacking context bound the tooltip\'s z-index regardless of value).' },
-        { type: 'changed', text: 'Status segmented bar now uses stoplight-mapped semantic surface tokens for the current step instead of a single interactive blue: ⚫ Not Started → `surface-bold`, 🔴 Blocked → `surface-error`, 🟠 In Progress → `surface-warning`, 🟡 In Review → `surface-warning-subtle`, 🟢 Production → `surface-success`. Completed steps show a subtle "passed-through" treatment.' },
-        { type: 'changed', text: 'Spec segmented bar now uses success/warning semantic colors: filled segments are `surface-success` (the field is done), unfilled segments are `surface-warning-subtle` (still needs work). Same colors apply to the mini bars in the sidebar tooltip.' },
-        { type: 'fixed', text: 'Demo Builder: removed orphan `udc-nav-logo__text` class reference left behind from when nav-header was refactored to icon-only logo.' },
-        { type: 'added', text: '`uds-docs/scripts/audit-demo-builder.sh` polices Demo Builder drift. It checks (a) every implementable component (one whose `content/<id>.json` `knownIssues` does not contain "no inspectable component set yet") is in both `DEMO_COMPONENTS` and `DEMO_TEMPLATES`, and (b) every `udc-*` class used in `demo-builder.js` is defined in some `uds/components/*.css` file. Wired into the `uds-updated` skill verification step and AGENTS.md.' }
+        { type: 'fixed', text: 'Sidebar tooltip was rendering off-screen after the portal-to-body refactor. The portal element had `data-position="right"`, and `.udc-tooltip[data-position="right"]` has CSS specificity (0,2,0) while `.sg-sidebar-portal-tooltip` is only (0,1,0) — so the variant\'s `left: calc(100% + 8px)` won and positioned the tooltip past the viewport edge instead of at `left: 268px`. Removed `data-position` from the portal element.' }
+      ]
+    },
+    {
+      version: 'SITE 2026.05.08.5',
+      date: '2026-05-08',
+      changes: [
+        { type: 'fixed', text: 'Component-name pills on the changelog page were rendering as empty rectangles. The `udc-badge[data-variant="secondary"]` rule paired `surface-bold` (`#d4d4d4` light gray in light mode) with `text-inverse` (`#f5f5f5` near-white in light mode) — contrast ~1.07:1, basically invisible. Switched the rule to use `text-primary` instead of `text-inverse` (contrast jumps to ~9.7:1 in light mode and ~10:1 in dark mode). The `secondary` variant is a NEUTRAL prominent badge, not a high-saturation one — its surface stays light/medium gray and needs dark text, not white. The colored variants (info/success/error/warning) still use `text-inverse` because their surfaces are saturated dark enough for white text.' },
+        { type: 'fixed', text: 'SITE_CHANGELOG entries were appearing in the wrong order on the Changelog page. AGENTS.md incorrectly told agents "newest entries go FIRST in the array (the renderer reverses for display)" — but the renderer does `slice().reverse()` and iterates from index 0, so the LAST entry in the array becomes the TOP of the displayed list. AGENTS.md now correctly says "append new entries to the END (newest go LAST)", and the four 2026.05.08.* entries have been reordered to be strictly chronological.' }
       ]
     }
   ];

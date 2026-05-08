@@ -51,8 +51,10 @@ framework. Edit files, push, GitHub Actions auto-deploys.
   `.cursor/rules/uds-master-preflight.mdc`.
 - **Always add a SITE_CHANGELOG entry.** The `SITE_CHANGELOG` array in
   `uds-docs/app.js` MUST get a new entry that matches the version
-  `bump-site.sh` just produced. Newest entries go FIRST in the array (the
-  renderer reverses for display).
+  `bump-site.sh` just produced. **Append new entries to the END of the
+  array** (newest go LAST). The renderer does `slice().reverse()` so the
+  bottom-of-array entry becomes the top of the visible list. The same rule
+  applies to the `CHANGELOG` (UDS) array.
 - **Cache-bust `app.js` if its contents changed.** In `index.html` find the
   `<script src="app.js?v=...">` tag and bump the version number. This
   prevents stale browser caches.
