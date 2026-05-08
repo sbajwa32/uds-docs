@@ -46,7 +46,7 @@ The baseline tag stays on `main` permanently as a recovery anchor.
 | 6 | Per-component migration (26 components) | done — all 29 components migrated to per-component folders |
 | 7 | Demo Builder reads source-of-truth examples | done — examples live in one place, Demo Builder + docs page both fetch them |
 | 8 | Versioning model + per-component changelog aggregation | done — uds/CHANGELOG.json + uds/version.json are source of truth |
-| 9 | Snapshot strategy + retroactive archive conversion | pending |
+| 9 | Snapshot strategy + retroactive archive conversion | partial — udsPath() helper, prune-version.sh, new release.sh done; 0.2 conversion + dropdown rewrite deferred (see notes below) |
 | 10 | Rules, audits, AGENTS.md, README, skills + drift fixes | pending |
 | 11 | Performance + accessibility verification | pending |
 | 12 | Final verification + PR + CI workflow | pending |
@@ -82,6 +82,17 @@ Tier rollout (lowest-risk → highest-risk):
   those move during Phase 6 anyway, at which point a clean
   `docs/modules/playground/index.js` falls out naturally. Empty
   `docs/modules/playground/` directory exists as a placeholder.
+- **9c (versions/0.2/ retroactive conversion + version-aware dropdown rewrite)** —
+  deferred. Phase 9 delivers the foundation (`udsPath()` helper,
+  `prune-version.sh`, new `release.sh` for UDS-only snapshots going forward),
+  but conversion of the existing `versions/0.2/` archive to the new shape AND
+  the dropdown/router rewrite to use `udsPath()` for fetches is a substantial
+  follow-up. Current behavior is preserved: the dropdown still navigates to
+  `versions/0.2/index.html` and serves the frozen full-site archive as
+  before. Future releases (`release.sh` v2) will use the UDS-only snapshot
+  model. The 0.2 conversion + dropdown rewrite can be a small standalone
+  PR after this restructure merges, OR get bundled in if Phase 11 quality
+  verification surfaces issues with the frozen archive.
 
 ## Things that will become true at the end of the migration
 
