@@ -52,10 +52,14 @@ def read_index_html() -> str:
 
 
 def parse_component_status(src: str = None) -> dict:
-    """Returns {id: {status, since}} from COMPONENT_STATUS in app.js."""
+    """Returns {id: {status, since}} from COMPONENT_STATUS in app.js.
+
+    Tolerant of indent — works whether COMPONENT_STATUS is at indent 2
+    (pre-Phase-3 IIFE-wrapped) or indent 0 (post-Phase-3 ES module).
+    """
     if src is None:
         src = read_app_js()
-    m = re.search(r"var COMPONENT_STATUS = \{(.*?)\n  \};", src, re.S)
+    m = re.search(r"var COMPONENT_STATUS = \{(.*?)\n[ ]{0,2}\};", src, re.S)
     if not m:
         return {}
     out = {}
@@ -71,7 +75,7 @@ def parse_component_status(src: str = None) -> dict:
 def parse_figma_links(src: str = None) -> dict:
     if src is None:
         src = read_app_js()
-    m = re.search(r"var\s+FIGMA_LINKS\s*=\s*\{(.*?)\n  \};", src, re.S)
+    m = re.search(r"var\s+FIGMA_LINKS\s*=\s*\{(.*?)\n[ ]{0,2}\};", src, re.S)
     if not m:
         return {}
     out = {}
@@ -92,17 +96,16 @@ def parse_changelog_per_component(src: str = None) -> dict:
     """
     if src is None:
         src = read_app_js()
-    m = re.search(r"var CHANGELOG = \[(.*?)\n  \];", src, re.S)
+    m = re.search(r"var CHANGELOG = \[(.*?)\n[ ]{0,2}\];", src, re.S)
     if not m:
-        return {"_globalNotes": {}}
+        return {"perComponent": {}, "globalNotes": {}}
 
     block = m.group(0)
 
     per_component: dict = {}
     global_notes: dict = {}
 
-    # Split into top-level release objects. Each starts with a line that
-    # has `version: '...'` at indent 6.
+    # Split into top-level release objects.
     release_re = re.compile(
         r"\{\s*\n\s*version:\s*'([^']+)',\s*\n\s*date:\s*'([^']+)',\s*\n\s*changes:\s*\[(.*?)\n\s*\]\s*\n\s*\}",
         re.S,

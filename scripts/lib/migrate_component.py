@@ -154,7 +154,7 @@ def step_extract_playground(comp_id: str, dry_run: bool) -> str:
         return f"  ~  playground.js already at {out_path}"
     src = rl.read_app_js()
 
-    m = re.search(r"const\s+PLAYGROUNDS\s*=\s*\{(.*?)\n  \};", src, re.S)
+    m = re.search(r"const\s+PLAYGROUNDS\s*=\s*\{(.*?)\n[ ]{0,2}\};", src, re.S)
     if not m:
         return f"  !  PLAYGROUNDS table not found in app.js — skipped"
     block = m.group(1)
