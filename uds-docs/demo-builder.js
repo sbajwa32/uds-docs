@@ -249,11 +249,68 @@
       return '<nav class="udc-pagination" aria-label="Pagination"><div class="udc-pagination__pages">' + pagesHtml + '</div><div class="udc-pagination__meta"><span>Rows per page</span><span>' + perPage + '</span><span>' + start + '-' + end + ' / ' + total + '</span></div></nav>';
     },
     'nav-header': function () {
-      var unread = randInt(0, 12);
-      var notifBadge = unread > 0
-        ? '<span class="udc-badge" data-variant="error" data-size="sm" style="position:absolute;top:-2px;right:-2px;min-width:16px;height:16px;padding:0 4px;font-size:10px;">' + unread + '</span>'
+      // Match the canonical Default example on the Nav Header page:
+      // __left  = logo + bento-wrapper (brand button + bento dropdown list)
+      // __center = udc-nav-search (AI search input)
+      // __right = udc-nav-mywork button (with count badge) + udc-nav-account
+      //          wrapper around icon-only ghost buttons
+      var brand = pick(['Boardroom', 'Tenant360', 'PropertyOS', 'LeasePro', 'Holdings']);
+      var bentoItems = pickN(DATA.navItems, randInt(4, 6));
+      var bentoSelectedIdx = randInt(0, bentoItems.length - 1);
+      var bentoListHtml = bentoItems.map(function (it, i) {
+        var sel = i === bentoSelectedIdx ? ' aria-selected="true"' : '';
+        return '<button class="udc-nav-button"' + sel + '><span class="material-symbols-outlined">' + it.icon + '</span><span class="udc-nav-button__label">' + it.label + '</span></button>';
+      }).join('');
+
+      var searchPlaceholders = [
+        'Search or ask a question',
+        'Search tenants, properties, invoices...',
+        'Find a lease, work order, or unit...',
+        'Ask anything about your portfolio',
+        'Search records or run a report'
+      ];
+
+      var myWorkCount = randInt(0, 15);
+      var myWorkBadge = myWorkCount > 0
+        ? ' <span class="udc-badge" data-variant="warning" style="width:24px;height:24px;padding:0;display:inline-flex;align-items:center;justify-content:center;">' + myWorkCount + '</span>'
         : '';
-      return '<div class="udc-nav-header"><div class="udc-nav-header__left"><div class="udc-nav-logo"><span class="material-symbols-outlined" style="font-size:32px;color:var(--uds-color-icon-interactive);">apartment</span></div></div><div class="udc-nav-header__right"><span style="position:relative;display:inline-flex;"><button class="udc-button-ghost" data-icon-only data-size="sm" aria-label="Notifications"><span class="material-symbols-outlined">notifications</span></button>' + notifBadge + '</span><button class="udc-button-ghost" data-icon-only data-size="sm" aria-label="Account"><span class="material-symbols-outlined">account_circle</span></button></div></div>';
+
+      // Account cluster sometimes includes a settings button, always has
+      // notifications + account_circle. Keeps the cluster recognisable but
+      // varies a bit.
+      var accountCluster = '<button class="udc-button-ghost" data-icon-only aria-label="Notifications"><span class="material-symbols-outlined">notifications</span></button>'
+        + (chance(0.6) ? '<button class="udc-button-ghost" data-icon-only aria-label="Settings"><span class="material-symbols-outlined">settings</span></button>' : '')
+        + '<button class="udc-button-ghost" data-icon-only aria-label="Account"><span class="material-symbols-outlined">account_circle</span></button>';
+
+      return '<div class="udc-nav-header">'
+        + '<div class="udc-nav-header__left">'
+          + '<div class="udc-nav-logo"><span class="material-symbols-outlined" style="font-size:32px;color:var(--uds-color-icon-interactive);">apartment</span></div>'
+          + '<div class="udc-nav-bento-wrapper">'
+            + '<button class="udc-nav-bento-button" aria-expanded="false" aria-haspopup="true">'
+              + '<span class="material-symbols-outlined" style="color:var(--uds-color-icon-interactive);">dashboard</span>'
+              + brand
+              + '<span class="material-symbols-outlined udc-nav-bento-button__chevron">keyboard_arrow_down</span>'
+            + '</button>'
+            + '<div class="udc-nav-bento" data-open="false">'
+              + '<div class="udc-nav-bento__list">' + bentoListHtml + '</div>'
+            + '</div>'
+          + '</div>'
+        + '</div>'
+        + '<div class="udc-nav-header__center">'
+          + '<div class="udc-nav-search">'
+            + '<span class="material-symbols-outlined">auto_awesome</span>'
+            + '<input class="udc-nav-search__input" type="text" placeholder="' + pick(searchPlaceholders) + '" />'
+          + '</div>'
+        + '</div>'
+        + '<div class="udc-nav-header__right">'
+          + '<button class="udc-nav-mywork">'
+            + '<span class="material-symbols-outlined">notifications_active</span>'
+            + 'My Work'
+            + myWorkBadge
+          + '</button>'
+          + '<div class="udc-nav-account">' + accountCluster + '</div>'
+        + '</div>'
+      + '</div>';
     },
     'nav-vertical': function () {
       var items = pickN(DATA.navItems, randInt(4, 6));
