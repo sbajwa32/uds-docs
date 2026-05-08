@@ -1,19 +1,20 @@
 {
+  "$schema": "../../schemas/spec.schema.json",
   "component": "data-table",
   "title": "Data Table",
   "description": "A sortable, selectable table for displaying tabular data with headers, checkboxes, and action columns.",
   "whenToUse": "For displaying structured tabular data. When users need to sort, filter, or select rows. For data review and bulk actions.",
-  "whenNotToUse": "For simple key/value pairs — use a definition list. For highly complex data — consider a specialized grid component outside UDS.",
+  "whenNotToUse": "For simple key/value pairs \u2014 use a definition list. For highly complex data \u2014 consider a specialized grid component outside UDS.",
   "acceptanceCriteria": [
     "Renders semantic <table>, <thead>, <tbody>, with scope=\"col\" on headers",
-    "Sortable headers expose aria-sort and cycle none → asc → desc on activation",
+    "Sortable headers expose aria-sort and cycle none \u2192 asc \u2192 desc on activation",
     "Selectable mode adds a leading checkbox column and a header \"select all\" checkbox using aria-checked=\"mixed\" for partial selection",
     "Row click fires row-click only when the click did not originate from a checkbox or action cell",
     "Striped rows, default density, and compact density all render correctly",
     "Empty state, error state, and loading state are visually distinct and reachable via the documented props/slots",
     "Action cells render UDS buttons with consistent sizing across densities",
     "Badge and action cell types compose with the existing Badge and Button components without re-implementing styling",
-    "At ≥ 200 rows, performance notes recommend virtualization (see Performance section)"
+    "At \u2265 200 rows, performance notes recommend virtualization (see Performance section)"
   ],
   "dependencies": {
     "css": [
@@ -28,7 +29,7 @@
       "name": "columns",
       "type": "object",
       "required": true,
-      "description": "Array of { id, header, sortable?, align?, type? } where type ∈ text|badge|action|number"
+      "description": "Array of { id, header, sortable?, align?, type? } where type \u2208 text|badge|action|number"
     },
     {
       "name": "rows",
@@ -154,7 +155,7 @@
     },
     {
       "name": "row-selected",
-      "description": "Row checkbox checked — data-selected=\"true\" on the <tr>",
+      "description": "Row checkbox checked \u2014 data-selected=\"true\" on the <tr>",
       "hasVisual": true
     },
     {
@@ -163,7 +164,7 @@
       "hasVisual": true
     }
   ],
-  "contentGuidelines": "Column headers: noun phrase, sentence case. Numeric columns right-aligned with monospace tabular numerals. Empty state: explain why and offer the next action (\"No tenants yet — Add tenant\"). Error state: describe what failed and how to retry.",
+  "contentGuidelines": "Column headers: noun phrase, sentence case. Numeric columns right-aligned with monospace tabular numerals. Empty state: explain why and offer the next action (\"No tenants yet \u2014 Add tenant\"). Error state: describe what failed and how to retry.",
   "commonlyPairedWith": [
     "badge",
     "button",
@@ -176,14 +177,14 @@
     "dos": [
       "Use semantic table markup; the assistive-tech model depends on <table> structure",
       "Right-align numeric columns and use tabular numerals",
-      "Preserve sort and selection across pagination — don't silently drop them",
+      "Preserve sort and selection across pagination \u2014 don't silently drop them",
       "Pair selection with a bulk-action toolbar above the table when count > 0"
     ],
     "donts": [
-      "Don't use a data table for layout — that's what grid is for",
+      "Don't use a data table for layout \u2014 that's what grid is for",
       "Don't make the entire row clickable AND have an action button in the same row without explicit role distinction",
       "Don't render 1,000+ rows without virtualization",
-      "Don't hide the column count from the empty state — explain why nothing is shown"
+      "Don't hide the column count from the empty state \u2014 explain why nothing is shown"
     ]
   },
   "accessibility": {
@@ -194,7 +195,7 @@
       },
       {
         "key": "Enter / Space on sort header",
-        "action": "Cycle sort direction (none → asc → desc → none)"
+        "action": "Cycle sort direction (none \u2192 asc \u2192 desc \u2192 none)"
       },
       {
         "key": "Space on row checkbox",
@@ -208,7 +209,7 @@
     "screenReader": [
       {
         "trigger": "Sort header receives focus and is sorted",
-        "announcement": "Column header [name], sortable, currently sorted [ascending|descending] — announced via aria-sort"
+        "announcement": "Column header [name], sortable, currently sorted [ascending|descending] \u2014 announced via aria-sort"
       },
       {
         "trigger": "Row checkbox receives focus",
@@ -216,7 +217,7 @@
       },
       {
         "trigger": "Header checkbox toggled",
-        "announcement": "All rows selected (or deselected) — uses aria-checked=\"mixed\" for partial selection"
+        "announcement": "All rows selected (or deselected) \u2014 uses aria-checked=\"mixed\" for partial selection"
       }
     ],
     "wcag": [
@@ -254,13 +255,13 @@
     "contrast": []
   },
   "knownIssues": [
-    "Keyboard grid navigation (cell-by-cell with arrow keys) is not yet specified — tab through interactive cells is the only supported model in 0.2"
+    "Keyboard grid navigation (cell-by-cell with arrow keys) is not yet specified \u2014 tab through interactive cells is the only supported model in 0.2"
   ],
-  "performance": "Virtualize rows at ≥ 200 visible rows. Avoid rendering all rows when total > 1,000. Sort and filter should run synchronously up to ~5,000 rows; defer to a worker beyond that.",
+  "performance": "Virtualize rows at \u2265 200 visible rows. Avoid rendering all rows when total > 1,000. Sort and filter should run synchronously up to ~5,000 rows; defer to a worker beyond that.",
   "motion": null,
   "responsive": null,
   "visualHierarchy": "The table is the primary content of its surface. Filters, search, and bulk-action buttons sit in a toolbar above; pagination or load-more sits below.",
-  "densityBehavior": "Default density matches form spacing (comfortable). Compact density reduces row height by ~25% for high-volume admin tables. Don't switch density per-row — it's a table-level decision.",
+  "densityBehavior": "Default density matches form spacing (comfortable). Compact density reduces row height by ~25% for high-volume admin tables. Don't switch density per-row \u2014 it's a table-level decision.",
   "owner": {
     "designer": "Unassigned",
     "developer": "Unassigned"

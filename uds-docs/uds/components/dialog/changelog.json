@@ -1,0 +1,16 @@
+{
+  "$schema": "../../schemas/changelog.schema.json",
+  "addedIn": "0.2",
+  "entries": [
+    {
+      "version": "0.2",
+      "type": "added",
+      "text": "Modal overlay with title, scrollable body, action footer; backdrop click and Escape to close; 1-4 content slots"
+    },
+    {
+      "version": "0.3",
+      "type": "changed",
+      "text": "Figma dialog component supports 1-4 slot configurations plus header and footer subcomponents"
+    }
+  ]
+}

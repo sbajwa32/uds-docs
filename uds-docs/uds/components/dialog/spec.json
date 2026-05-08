@@ -1,4 +1,5 @@
 {
+  "$schema": "../../schemas/spec.schema.json",
   "component": "dialog",
   "title": "Dialog",
   "description": "A modal dialog overlays the page to focus the user on a single task or decision.",
@@ -37,7 +38,7 @@
       "name": "title",
       "type": "string",
       "required": true,
-      "description": "Dialog title — surfaced as the accessible name via aria-labelledby"
+      "description": "Dialog title \u2014 surfaced as the accessible name via aria-labelledby"
     },
     {
       "name": "size",
@@ -140,10 +141,10 @@
       "Disable Escape/backdrop close while a destructive primary action is in-flight"
     ],
     "donts": [
-      "Don't open a dialog from another dialog — restructure the flow into a single surface",
-      "Don't use a dialog for non-blocking notifications — use the Notification component",
+      "Don't open a dialog from another dialog \u2014 restructure the flow into a single surface",
+      "Don't use a dialog for non-blocking notifications \u2014 use the Notification component",
       "Don't put primary actions on the left of the footer",
-      "Don't autofocus a destructive primary action — autofocus the safest option (Cancel) instead"
+      "Don't autofocus a destructive primary action \u2014 autofocus the safest option (Cancel) instead"
     ]
   },
   "accessibility": {
@@ -164,7 +165,7 @@
     "screenReader": [
       {
         "trigger": "Dialog opens",
-        "announcement": "[Title], dialog — focus moves to the first focusable element inside; backdrop is announced as a modal interruption"
+        "announcement": "[Title], dialog \u2014 focus moves to the first focusable element inside; backdrop is announced as a modal interruption"
       },
       {
         "trigger": "Dialog closes",
@@ -185,7 +186,7 @@
       {
         "criterion": "2.1.2",
         "level": "A",
-        "howMet": "Focus is trapped inside the dialog while open and restored to the trigger on close — no keyboard trap escape required"
+        "howMet": "Focus is trapped inside the dialog while open and restored to the trigger on close \u2014 no keyboard trap escape required"
       },
       {
         "criterion": "2.4.3",
@@ -211,7 +212,7 @@
   "performance": null,
   "motion": null,
   "responsive": null,
-  "visualHierarchy": "Dialogs interrupt the page — use sparingly. The primary action sits bottom-right, secondary to its left, tertiary aligned to the bottom-left.",
+  "visualHierarchy": "Dialogs interrupt the page \u2014 use sparingly. The primary action sits bottom-right, secondary to its left, tertiary aligned to the bottom-left.",
   "densityBehavior": "Body padding adapts to density; default examples use comfortable density even when triggered from a compact toolbar.",
   "owner": {
     "designer": "Unassigned",

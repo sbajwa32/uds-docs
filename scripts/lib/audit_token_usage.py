@@ -74,8 +74,15 @@ def audit() -> list[str]:
                 line_text = text.splitlines()[ln - 1] if ln - 1 < len(text.splitlines()) else ""
                 if ALLOW_RE.search(line_text):
                     continue
-                # Also skip if the hex is in a // single-line comment
-                # (we don't have those in CSS, but be safe)
+                # Allow hex codes that appear as fallback values inside a
+                # `var(--uds-..., #fallback)` call. The token IS being used;
+                # the hex is defensive in case the token isn't defined.
+                # Heuristic: line contains `var(--uds-` BEFORE the hex.
+                line_offset = line_starts[ln - 1]
+                col = m.start() - line_offset
+                preceding = line_text[:col]
+                if "var(--uds-" in preceding and "(" in preceding and ")" not in preceding[preceding.rfind("var("):]:
+                    continue
                 errors.append(
                     f"{css_file.relative_to(rl.REPO_ROOT)}:{ln}: hex color — use a `--uds-color-*` token instead"
                 )
