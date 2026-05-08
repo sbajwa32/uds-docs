@@ -154,6 +154,13 @@ if needed.
   Implementation-ready components must not remain scaffold-only; add Examples,
   Code, token-first CSS, richer JSON specs, and Demo Builder coverage where
   applicable.
+- Demo Builder coverage is policed by `bash uds-docs/scripts/audit-demo-builder.sh`.
+  Every UDS sync run must finish with this audit exiting 0. The audit checks
+  that (a) every implementable component (no `knownIssues` "no inspectable
+  component set yet" marker) is in both `DEMO_COMPONENTS` and `DEMO_TEMPLATES`,
+  and (b) every `udc-*` class referenced in `demo-builder.js` is defined in
+  some `uds/components/*.css` file. If this fails, fix Demo Builder before
+  shipping.
 - Deletions are never automatic. Missing tokens/components are reported,
   classified, and preserved/deprecated unless the user explicitly confirms
   removal.

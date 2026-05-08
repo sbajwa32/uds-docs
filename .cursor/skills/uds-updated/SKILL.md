@@ -227,6 +227,13 @@ Required verification:
 - visually inspect affected pages in the desktop preview when available
 - confirm `version.txt` matches the SITE version displayed in `index.html`
 - confirm no generated docs render literal HTML as elements
+- **run `bash uds-docs/scripts/audit-demo-builder.sh`** — must exit 0.
+  This catches Demo Builder drift: any implementable component (one whose
+  `content/<id>.json` `knownIssues` does NOT contain "no inspectable
+  component set yet") MUST be in both `DEMO_COMPONENTS` and `DEMO_TEMPLATES`,
+  and every `udc-*` class used in `demo-builder.js` MUST be defined in some
+  `uds/components/*.css` file. If this fails, fix Demo Builder before
+  declaring the sync complete.
 - confirm the UDS `CHANGELOG`  entry includes the release coverage pass:
   tokens, new component pages, existing-component variant/state coverage, and
   internal/support exclusions

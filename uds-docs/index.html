@@ -987,17 +987,46 @@
       white-space: nowrap;
       transition: background 120ms ease, color 120ms ease;
     }
+    /* Completed steps: subtle "passed through" treatment */
     .sg-status-bar__segment[data-state="complete"] {
-      background: var(--uds-color-surface-interactive-subtle);
-      color: var(--uds-color-text-interactive);
+      background: var(--uds-color-surface-alt);
+      color: var(--uds-color-text-secondary);
     }
-    .sg-status-bar__segment[data-state="current"] {
-      background: var(--uds-color-surface-interactive-default);
+    /* Current step: stoplight-mapped semantic surface tokens.
+       placeholder ⚫ -> inverse (near-black neutral; closest match to the black stoplight dot)
+       blocked     🔴 -> error
+       in-progress 🟠 -> warning
+       review      🟡 -> warning-subtle (lighter caution; UDS has no separate yellow/caution surface)
+       production  🟢 -> success */
+    .sg-status-bar__segment[data-state="current"] { font-weight: var(--uds-font-weight-bold); }
+    .sg-status-bar__segment[data-state="current"][data-status="placeholder"] {
+      background: var(--uds-color-surface-inverse);
       color: var(--uds-color-text-inverse);
-      font-weight: var(--uds-font-weight-bold);
+    }
+    .sg-status-bar__segment[data-state="current"][data-status="blocked"] {
+      background: var(--uds-color-surface-error);
+      color: var(--uds-color-text-inverse);
+    }
+    .sg-status-bar__segment[data-state="current"][data-status="in-progress"] {
+      background: var(--uds-color-surface-warning);
+      color: var(--uds-color-text-inverse);
+    }
+    .sg-status-bar__segment[data-state="current"][data-status="review"] {
+      background: var(--uds-color-surface-warning-subtle);
+      color: var(--uds-color-text-warning);
+    }
+    .sg-status-bar__segment[data-state="current"][data-status="production"] {
+      background: var(--uds-color-surface-success);
+      color: var(--uds-color-text-inverse);
+    }
+    .sg-status-bar__segment[data-state="current"][data-status="deprecated"] {
+      background: var(--uds-color-surface-error);
+      color: var(--uds-color-text-inverse);
+      text-decoration: line-through;
     }
 
-    /* Spec: 22 flat segments — clickable to open the checklist popover */
+    /* Spec: 22 flat segments — clickable to open the checklist popover.
+       Filled = success (the field IS done), unfilled = warning (still needs work). */
     .sg-spec-bar {
       display: grid; grid-template-columns: repeat(22, minmax(0, 1fr));
       gap: 3px;
@@ -1006,15 +1035,15 @@
       background: transparent; cursor: pointer; text-align: left;
       border-radius: var(--uds-border-radius-container-sm);
     }
-    .sg-spec-bar:hover .sg-spec-bar__segment[data-filled="false"] { background: var(--uds-color-surface-alt); }
+    .sg-spec-bar:hover .sg-spec-bar__segment[data-filled="false"] { background: var(--uds-color-surface-warning); }
     .sg-spec-bar:focus-visible { outline: 2px solid var(--uds-color-border-outline-focus-visible); outline-offset: 4px; }
     .sg-spec-bar__segment {
       height: 10px;
       border-radius: 2px;
-      background: var(--uds-color-surface-subtle);
+      background: var(--uds-color-surface-warning-subtle);
       transition: background 120ms ease;
     }
-    .sg-spec-bar__segment[data-filled="true"] { background: var(--uds-color-surface-interactive-default); }
+    .sg-spec-bar__segment[data-filled="true"] { background: var(--uds-color-surface-success); }
     .sg-spec-bar__segment[data-deferred="true"] {
       background: repeating-linear-gradient(
         45deg,
@@ -1109,6 +1138,10 @@
       text-align: left; white-space: normal;
       font-size: var(--uds-font-size-sm);
       line-height: var(--uds-font-line-height-sm);
+      /* Sidebar tooltip is a transient hover element — must sit above page
+         content like dialogs, dropdowns, sticky table headers, and code
+         blocks that create their own stacking contexts. */
+      z-index: 9999;
     }
     .sg-sidebar-link:hover > .udc-tooltip,
     .sg-sidebar-link:focus > .udc-tooltip,
@@ -1165,15 +1198,23 @@
       border-radius: 2px;
       background: var(--uds-color-surface-subtle);
     }
+    /* Status mini-bar: same stoplight semantic colors as the page bar */
     .sg-sidebar-tooltip__mini-segment[data-state="complete"] {
-      background: var(--uds-color-surface-interactive-subtle);
+      background: var(--uds-color-surface-alt);
     }
-    .sg-sidebar-tooltip__mini-segment[data-state="current"] {
-      background: var(--uds-color-surface-interactive-default);
+    .sg-sidebar-tooltip__mini-segment[data-state="current"][data-status="placeholder"]  { background: var(--uds-color-surface-inverse); }
+    .sg-sidebar-tooltip__mini-segment[data-state="current"][data-status="blocked"]      { background: var(--uds-color-surface-error); }
+    .sg-sidebar-tooltip__mini-segment[data-state="current"][data-status="in-progress"]  { background: var(--uds-color-surface-warning); }
+    .sg-sidebar-tooltip__mini-segment[data-state="current"][data-status="review"]       { background: var(--uds-color-surface-warning-subtle); }
+    .sg-sidebar-tooltip__mini-segment[data-state="current"][data-status="production"]   { background: var(--uds-color-surface-success); }
+    .sg-sidebar-tooltip__mini-segment[data-state="current"][data-status="deprecated"]   { background: var(--uds-color-surface-error); }
+    /* Spec mini-bar: filled = success, unfilled = warning-subtle */
+    .sg-sidebar-tooltip__mini-segment--spec {
+      height: 6px;
+      background: var(--uds-color-surface-warning-subtle);
     }
-    .sg-sidebar-tooltip__mini-segment--spec { height: 6px; }
     .sg-sidebar-tooltip__mini-segment--spec[data-filled="true"] {
-      background: var(--uds-color-surface-interactive-default);
+      background: var(--uds-color-surface-success);
     }
 
     .sg-sidebar-tooltip__missing {
@@ -1479,7 +1520,7 @@
   </style>
   <script>
     (function () {
-      var SITE_VERSION = '2026.05.08.1';
+      var SITE_VERSION = '2026.05.08.2';
       var base = window.location.pathname.replace(/\/index\.html$/, '').replace(/\/$/, '');
       fetch(base + '/version.txt?_=' + Date.now()).then(function (r) {
         if (!r.ok) return;
@@ -1532,7 +1573,7 @@
       </span>
     </button>
     <select class="sg-version-select" id="sg-version-dropdown" aria-label="UDS version"></select>
-    <span class="sg-brand-bar-build">SITE 2026.05.08.1</span>
+    <span class="sg-brand-bar-build">SITE 2026.05.08.2</span>
   </div>
 
   <!-- Pre-flight checklist dialog -->
@@ -5097,8 +5138,8 @@ registerUdsComponents();</pre>
   <script src="https://cdn.jsdelivr.net/npm/jszip@3/dist/jszip.min.js"></script>
   <script src="./material-icons.js?v=1"></script>
   <script src="./uds/uds.js?v=30"></script>
-  <script src="./app.js?v=98"></script>
-  <script src="./demo-builder.js?v=10"></script>
+  <script src="./app.js?v=99"></script>
+  <script src="./demo-builder.js?v=11"></script>
 
 </body>
 </html>

@@ -765,7 +765,7 @@
     var statusSegments = STATUS_STEPS.map(function (step, idx) {
       var state = idx < currentIndex ? 'complete' : (idx === currentIndex ? 'current' : 'future');
       if (currentIndex < 0) state = 'future';
-      return '<span class="sg-status-bar__segment" data-state="' + state + '">' + step.label + '</span>';
+      return '<span class="sg-status-bar__segment" data-state="' + state + '" data-status="' + step.key + '">' + step.label + '</span>';
     }).join('');
 
     // Spec row — 22 flat segments (total). Each segment maps to a COMPLETENESS_FIELDS entry.
@@ -856,7 +856,7 @@
       var statusMini = STATUS_STEPS.map(function (step, idx) {
         var st = idx < currentIdx ? 'complete' : (idx === currentIdx ? 'current' : 'future');
         if (currentIdx < 0) st = 'future';
-        return '<span class="sg-sidebar-tooltip__mini-segment" data-state="' + st + '"></span>';
+        return '<span class="sg-sidebar-tooltip__mini-segment" data-state="' + st + '" data-status="' + step.key + '"></span>';
       }).join('');
       statusBlock =
         '<span class="sg-sidebar-tooltip__section">' +
@@ -4031,6 +4031,17 @@
       date: '2026-05-08',
       changes: [
         { type: 'fixed', text: 'UDS 0.3 verification audit (re-read Figma directly): filled in 16 missing `figmaNodeId` values on `content/*.json` for components with canonical component-set nodes in Figma (`badge`, `breadcrumb`, `checkbox`, `chip`, `dialog`, `divider`, `dropdown`, `list`, `nav-header`, `nav-vertical`, `notification`, `radio`, `search`, `tabs`, `tile`, `icon-wrapper`). The "View in Figma" button on these component pages now deep-links to the actual component-set instead of falling back to the page-level node. `button` left null because Figma has 5 sibling component-sets with no single canonical one; `data-table`, `text-input`, and `tooltip` left null because their Figma pages have no top-level component-set. Updated `.cursor/figma/state/last-sync.json` with audit notes and current `siteVersion`.' }
+      ]
+    },
+    {
+      version: 'SITE 2026.05.08.2',
+      date: '2026-05-08',
+      changes: [
+        { type: 'fixed', text: 'Sidebar component tooltip now uses `z-index: 9999` so it sits above all page content (sticky table headers, dropdowns, code blocks, dialogs) instead of getting clipped behind them.' },
+        { type: 'changed', text: 'Status segmented bar now uses stoplight-mapped semantic surface tokens for the current step instead of a single interactive blue: ⚫ Not Started → `surface-bold`, 🔴 Blocked → `surface-error`, 🟠 In Progress → `surface-warning`, 🟡 In Review → `surface-warning-subtle`, 🟢 Production → `surface-success`. Completed steps show a subtle "passed-through" treatment.' },
+        { type: 'changed', text: 'Spec segmented bar now uses success/warning semantic colors: filled segments are `surface-success` (the field is done), unfilled segments are `surface-warning-subtle` (still needs work). Same colors apply to the mini bars in the sidebar tooltip.' },
+        { type: 'fixed', text: 'Demo Builder: removed orphan `udc-nav-logo__text` class reference left behind from when nav-header was refactored to icon-only logo.' },
+        { type: 'added', text: '`uds-docs/scripts/audit-demo-builder.sh` polices Demo Builder drift. It checks (a) every implementable component (one whose `content/<id>.json` `knownIssues` does not contain "no inspectable component set yet") is in both `DEMO_COMPONENTS` and `DEMO_TEMPLATES`, and (b) every `udc-*` class used in `demo-builder.js` is defined in some `uds/components/*.css` file. Wired into the `uds-updated` skill verification step and AGENTS.md.' }
       ]
     }
   ];
