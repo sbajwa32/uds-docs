@@ -1,0 +1,16 @@
+{
+  "$schema": "../../schemas/changelog.schema.json",
+  "addedIn": "0.2",
+  "entries": [
+    {
+      "version": "0.2",
+      "type": "added",
+      "text": "Vertical list with single-select, optional leading/trailing icons, keyboard navigation; 5 interaction states"
+    },
+    {
+      "version": "0.3",
+      "type": "changed",
+      "text": "Figma list coverage confirmed: 1-10 item lists, draggable and non-draggable item variants, leading/trailing icons, and default/hover/active/focused/selected states"
+    }
+  ]
+}

@@ -1,9 +1,10 @@
 {
+  "$schema": "../../schemas/spec.schema.json",
   "component": "tile",
   "title": "Tile",
   "description": "A selectable tile presents a choice with a label and optional description. Commonly used for mutually exclusive options in a card-like layout.",
   "whenToUse": "For visual, card-like option selection (e.g. \"Upload CSV / Manual Entry / API Sync\"). When you want more prominence than radio buttons.",
-  "whenNotToUse": "For simple text-only choices — use radio buttons. For navigation — use nav.",
+  "whenNotToUse": "For simple text-only choices \u2014 use radio buttons. For navigation \u2014 use nav.",
   "acceptanceCriteria": [],
   "dependencies": {
     "css": [

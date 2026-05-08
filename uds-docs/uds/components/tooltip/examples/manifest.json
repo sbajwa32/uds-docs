@@ -1,0 +1,19 @@
+{
+  "$schema": "../../../schemas/manifest.schema.json",
+  "examples": [
+    {
+      "id": "top-default",
+      "file": "top-default.html",
+      "label": "Top (default)",
+      "showInDocs": true,
+      "demoWeight": 3
+    },
+    {
+      "id": "positions",
+      "file": "positions.html",
+      "label": "Positions",
+      "showInDocs": true,
+      "demoWeight": 1
+    }
+  ]
+}

@@ -1,9 +1,10 @@
 {
+  "$schema": "../../schemas/spec.schema.json",
   "component": "list",
   "title": "List",
   "description": "A vertical list of items, optionally selectable and with leading/trailing icons.",
   "whenToUse": "For secondary navigation, menu items, or selectable lists. When items have labels plus optional icons.",
-  "whenNotToUse": "For tabular data — use Data Table. For primary navigation — use Nav Vertical.",
+  "whenNotToUse": "For tabular data \u2014 use Data Table. For primary navigation \u2014 use Nav Vertical.",
   "acceptanceCriteria": [],
   "dependencies": {
     "css": [

@@ -1,9 +1,10 @@
 {
+  "$schema": "../../schemas/spec.schema.json",
   "component": "notification",
   "title": "Notification",
   "description": "An inline or prominent banner that communicates status, warnings, or important information.",
   "whenToUse": "To communicate system status, warnings, or important context. Info (neutral info), success (confirmation), warning (caution), error (critical).",
-  "whenNotToUse": "For transient feedback — use a toast instead. For blocking confirmations — use a dialog.",
+  "whenNotToUse": "For transient feedback \u2014 use a toast instead. For blocking confirmations \u2014 use a dialog.",
   "acceptanceCriteria": [],
   "dependencies": {
     "css": [
