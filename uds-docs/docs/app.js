@@ -1,21 +1,22 @@
 /* ==========================================================================
    UDS Design System — SPA Application Logic
    Router, tab system, playground engine, theme switcher
+
+   ES module. Loaded by index.html via <script type="module">.
    ========================================================================== */
 
-(function () {
-  'use strict';
+'use strict';
 
-  const html = document.documentElement;
+const html = document.documentElement;
 
-  /* ========================================================================
+/* ========================================================================
      1. THEME SWITCHER
      ======================================================================== */
-  function dataKey(attr) {
+function dataKey(attr) {
     return attr.replace(/^data-/, '').replace(/-([a-z])/g, (_, c) => c.toUpperCase());
-  }
+}
 
-  function setupGroup(htmlAttr, btnSelector) {
+function setupGroup(htmlAttr, btnSelector) {
     const btnAttr = 'data-set-' + htmlAttr.replace(/^data-/, '');
     const key = dataKey(btnAttr);
     document.querySelectorAll(btnSelector).forEach(btn => {
@@ -32,18 +33,18 @@
         refreshPlaygrounds();
       });
     });
-  }
+}
 
-  setupGroup('data-color-scheme', '[data-set-color-scheme]');
-  setupGroup('data-theme', '[data-set-theme]');
-  setupGroup('data-font', '[data-set-font]');
-  setupGroup('data-font-scale', '[data-set-font-scale]');
-  setupGroup('data-density', '[data-set-density]');
+setupGroup('data-color-scheme', '[data-set-color-scheme]');
+setupGroup('data-theme', '[data-set-theme]');
+setupGroup('data-font', '[data-set-font]');
+setupGroup('data-font-scale', '[data-set-font-scale]');
+setupGroup('data-density', '[data-set-density]');
 
-  /* ========================================================================
+/* ========================================================================
      2. COPY BUTTON UTILITY
      ======================================================================== */
-  function buildCopyButton(getText) {
+function buildCopyButton(getText) {
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'sg-code-copy';
@@ -61,12 +62,12 @@
       });
     });
     return btn;
-  }
+}
 
-  /* ========================================================================
+/* ========================================================================
      3. SPA ROUTER
      ======================================================================== */
-  function parseHash() {
+function parseHash() {
     const raw = location.hash.replace(/^#\/?/, '');
     const [pageId, qs] = raw.split('?');
     const params = {};
@@ -75,9 +76,9 @@
       params[k] = decodeURIComponent(v || '');
     });
     return { pageId: pageId || 'changelog', tab: params.tab || null };
-  }
+}
 
-  function navigate(pageId, tab) {
+function navigate(pageId, tab) {
     document.querySelectorAll('[data-page]').forEach(p => p.classList.remove('active'));
     const page = document.querySelector('[data-page="' + pageId + '"]');
     if (page) {
@@ -98,9 +99,9 @@
 
     var stalePortal = document.getElementById('sg-sidebar-portal-tooltip');
     if (stalePortal) stalePortal.setAttribute('data-visible', 'false');
-  }
+}
 
-  document.querySelectorAll('.sg-sidebar-link[href^="#/"]').forEach(link => {
+document.querySelectorAll('.sg-sidebar-link[href^="#/"]').forEach(link => {
     link.addEventListener('click', e => {
       e.preventDefault();
       const pageId = link.getAttribute('href').replace('#/', '');
@@ -109,17 +110,17 @@
       var defaultTab = targetPage ? (targetPage.getAttribute('data-default-tab') || 'examples') : 'examples';
       navigate(pageId, defaultTab);
     });
-  });
+});
 
-  window.addEventListener('hashchange', () => {
+window.addEventListener('hashchange', () => {
     const { pageId, tab } = parseHash();
     navigate(pageId, tab);
-  });
+});
 
-  /* ========================================================================
+/* ========================================================================
      3. TAB SYSTEM
      ======================================================================== */
-  function switchTab(pageId, tabId) {
+function switchTab(pageId, tabId) {
     const page = document.querySelector('[data-page="' + pageId + '"]');
     if (!page) return;
     const tabs = page.querySelectorAll('.sg-page-tab');
@@ -135,9 +136,9 @@
 
     if (tabId === 'playground') initPlayground(pageId);
     if (tabId === 'guidelines' || tabId === 'usage') initGuidelines(pageId);
-  }
+}
 
-  document.querySelectorAll('.sg-page-tabs').forEach(function (tablist) {
+document.querySelectorAll('.sg-page-tabs').forEach(function (tablist) {
     var page = tablist.closest('[data-page]');
     if (!page) return;
     var pageId = page.dataset.page;
@@ -158,9 +159,9 @@
         panel.setAttribute('aria-labelledby', tab.id);
       }
     });
-  });
+});
 
-  document.addEventListener('click', function (e) {
+document.addEventListener('click', function (e) {
     var tab = e.target.closest('.sg-page-tab');
     if (!tab) return;
     e.preventDefault();
@@ -176,9 +177,9 @@
     var tabs = page.querySelectorAll('.sg-page-tab');
     tabs.forEach(function (t) { t.setAttribute('tabindex', t === tab ? '0' : '-1'); });
     tab.focus();
-  });
+});
 
-  document.addEventListener('keydown', function (e) {
+document.addEventListener('keydown', function (e) {
     var tab = e.target.closest('.sg-page-tab');
     if (!tab) return;
     var tablist = tab.closest('.sg-page-tabs');
@@ -206,15 +207,15 @@
       next.focus();
       next.click();
     }
-  });
+});
 
-  /* ========================================================================
+/* ========================================================================
      4. ICON PICKER (searchable dropdown for Material Symbols)
      ======================================================================== */
-  const iconList = window.MATERIAL_ICONS || [];
-  const MAX_RESULTS = 60;
+const iconList = window.MATERIAL_ICONS || [];
+const MAX_RESULTS = 60;
 
-  function buildIconPicker(defaultVal, onChange) {
+function buildIconPicker(defaultVal, onChange) {
     const wrap = document.createElement('div');
     wrap.className = 'sg-icon-picker';
 
@@ -297,20 +298,20 @@
     });
 
     return wrap;
-  }
+}
 
-  /* ========================================================================
+/* ========================================================================
      4b. GUIDELINES RENDERER (JSON-driven)
      Renders the Guidelines tab from content/<component>.json.
      Empty/null fields are hidden. Computes spec completeness score.
      ======================================================================== */
-  const contentCache = {};           // componentId -> JSON data (once loaded)
-  const guidelinesInited = {};       // componentId -> true
-  const completenessScores = {};     // componentId -> { filled, total, pct }
+const contentCache = {};           // componentId -> JSON data (once loaded)
+const guidelinesInited = {};       // componentId -> true
+const completenessScores = {};     // componentId -> { filled, total, pct }
 
-  // Which schema fields count toward completeness. Motion/responsive are
-  // excluded (deferred until UDS has the foundation tokens).
-  const COMPLETENESS_FIELDS = [
+// Which schema fields count toward completeness. Motion/responsive are
+// excluded (deferred until UDS has the foundation tokens).
+const COMPLETENESS_FIELDS = [
     'description', 'whenToUse', 'whenNotToUse',
     'acceptanceCriteria', 'dependencies.css',
     'props', 'events', 'slots', 'states',
@@ -320,13 +321,13 @@
     'knownIssues',
     'visualHierarchy', 'densityBehavior',
     'owner', 'figmaNodeId', 'storybookSlug'
-  ];
+];
 
-  function getField(obj, path) {
+function getField(obj, path) {
     return path.split('.').reduce(function (o, k) { return o == null ? undefined : o[k]; }, obj);
-  }
+}
 
-  function isFilled(v) {
+function isFilled(v) {
     if (v == null) return false;
     if (typeof v === 'string') return v.trim().length > 0;
     if (Array.isArray(v)) return v.length > 0;
@@ -338,9 +339,9 @@
       return Object.keys(v).length > 0;
     }
     return !!v;
-  }
+}
 
-  function computeCompleteness(data) {
+function computeCompleteness(data) {
     var filled = 0;
     var filledFields = [];
     var missingFields = [];
@@ -360,9 +361,9 @@
       filledFields: filledFields,
       missingFields: missingFields
     };
-  }
+}
 
-  function loadContent(componentId) {
+function loadContent(componentId) {
     if (contentCache[componentId]) return Promise.resolve(contentCache[componentId]);
     return fetch('./content/' + componentId + '.json').then(function (r) {
       if (!r.ok) throw new Error('Content not found: ' + componentId);
@@ -372,9 +373,9 @@
       completenessScores[componentId] = computeCompleteness(data);
       return data;
     }).catch(function () { return null; });
-  }
+}
 
-  function initGuidelines(pageId) {
+function initGuidelines(pageId) {
     if (guidelinesInited[pageId]) return;
     var page = document.querySelector('[data-page="' + pageId + '"]');
     if (!page) return;
@@ -388,9 +389,9 @@
       guidelinesInited[pageId] = true;
       updateCompletenessIndicator(pageId);
     });
-  }
+}
 
-  function renderGuidelines(panel, d) {
+function renderGuidelines(panel, d) {
     // 1. Overview: description, whenToUse, whenNotToUse
     var overview = [];
     if (d.description) overview.push(sectionProse('Description', d.description));
@@ -452,10 +453,10 @@
       empty.innerHTML = '<p>No guidelines captured yet. This spec is in progress.</p>';
       panel.appendChild(empty);
     }
-  }
+}
 
-  // ----- Section builders -----
-  function groupSection(title, children) {
+// ----- Section builders -----
+function groupSection(title, children) {
     var el = document.createElement('section');
     el.className = 'sg-gl-group';
     var h = document.createElement('h3');
@@ -464,17 +465,17 @@
     el.appendChild(h);
     children.forEach(function (c) { el.appendChild(c); });
     return el;
-  }
+}
 
-  function subhead(title) {
+function subhead(title) {
     if (!title) return null;
     var h = document.createElement('h4');
     h.className = 'sg-gl-subhead';
     h.textContent = title;
     return h;
-  }
+}
 
-  function sectionProse(title, text) {
+function sectionProse(title, text) {
     var wrap = document.createElement('div');
     wrap.className = 'sg-gl-section';
     var sh = subhead(title); if (sh) wrap.appendChild(sh);
@@ -483,9 +484,9 @@
     p.textContent = text;
     wrap.appendChild(p);
     return wrap;
-  }
+}
 
-  function sectionList(title, items, checklist) {
+function sectionList(title, items, checklist) {
     var wrap = document.createElement('div');
     wrap.className = 'sg-gl-section';
     var sh = subhead(title); if (sh) wrap.appendChild(sh);
@@ -508,9 +509,9 @@
     });
     wrap.appendChild(ul);
     return wrap;
-  }
+}
 
-  function sectionDependencies(deps) {
+function sectionDependencies(deps) {
     var wrap = document.createElement('div');
     wrap.className = 'sg-gl-section';
     wrap.appendChild(subhead('Dependencies'));
@@ -526,9 +527,9 @@
     });
     wrap.appendChild(ul);
     return wrap;
-  }
+}
 
-  function sectionPropsTable(props) {
+function sectionPropsTable(props) {
     var wrap = document.createElement('div');
     wrap.className = 'sg-gl-section';
     wrap.appendChild(subhead('Props / Attributes'));
@@ -547,9 +548,9 @@
     tbl.appendChild(body);
     wrap.appendChild(tbl);
     return wrap;
-  }
+}
 
-  function sectionEventsTable(events) {
+function sectionEventsTable(events) {
     var wrap = document.createElement('div');
     wrap.className = 'sg-gl-section';
     wrap.appendChild(subhead('Events Emitted'));
@@ -565,9 +566,9 @@
     tbl.appendChild(body);
     wrap.appendChild(tbl);
     return wrap;
-  }
+}
 
-  function sectionSlotsTable(slots) {
+function sectionSlotsTable(slots) {
     var wrap = document.createElement('div');
     wrap.className = 'sg-gl-section';
     wrap.appendChild(subhead('Slots / Content Model'));
@@ -583,9 +584,9 @@
     tbl.appendChild(body);
     wrap.appendChild(tbl);
     return wrap;
-  }
+}
 
-  function sectionStatesTable(states) {
+function sectionStatesTable(states) {
     var wrap = document.createElement('div');
     wrap.className = 'sg-gl-section';
     wrap.appendChild(subhead('States Coverage'));
@@ -601,9 +602,9 @@
     tbl.appendChild(body);
     wrap.appendChild(tbl);
     return wrap;
-  }
+}
 
-  function sectionDosDonts(dd) {
+function sectionDosDonts(dd) {
     var wrap = document.createElement('div');
     wrap.className = 'sg-gl-section sg-gl-dodont';
     var cols = document.createElement('div');
@@ -625,9 +626,9 @@
     cols.appendChild(dos); cols.appendChild(donts);
     wrap.appendChild(cols);
     return wrap;
-  }
+}
 
-  function sectionPairedWith(ids) {
+function sectionPairedWith(ids) {
     var wrap = document.createElement('div');
     wrap.className = 'sg-gl-section';
     wrap.appendChild(subhead('Commonly Paired With'));
@@ -643,9 +644,9 @@
     });
     wrap.appendChild(p);
     return wrap;
-  }
+}
 
-  function sectionKeyboardTable(rows) {
+function sectionKeyboardTable(rows) {
     var wrap = document.createElement('div');
     wrap.className = 'sg-gl-section';
     wrap.appendChild(subhead('Keyboard'));
@@ -661,9 +662,9 @@
     tbl.appendChild(body);
     wrap.appendChild(tbl);
     return wrap;
-  }
+}
 
-  function sectionScreenReaderTable(rows) {
+function sectionScreenReaderTable(rows) {
     var wrap = document.createElement('div');
     wrap.className = 'sg-gl-section';
     wrap.appendChild(subhead('Screen Reader'));
@@ -679,9 +680,9 @@
     tbl.appendChild(body);
     wrap.appendChild(tbl);
     return wrap;
-  }
+}
 
-  function sectionWcagTable(rows) {
+function sectionWcagTable(rows) {
     var wrap = document.createElement('div');
     wrap.className = 'sg-gl-section';
     wrap.appendChild(subhead('WCAG 2.2 Criteria'));
@@ -697,9 +698,9 @@
     tbl.appendChild(body);
     wrap.appendChild(tbl);
     return wrap;
-  }
+}
 
-  function sectionContrastTable(rows) {
+function sectionContrastTable(rows) {
     var wrap = document.createElement('div');
     wrap.className = 'sg-gl-section';
     wrap.appendChild(subhead('Color Contrast'));
@@ -715,31 +716,31 @@
     tbl.appendChild(body);
     wrap.appendChild(tbl);
     return wrap;
-  }
+}
 
-  function sectionOwnership(owner) {
+function sectionOwnership(owner) {
     var wrap = document.createElement('div');
     wrap.className = 'sg-gl-section sg-gl-owner';
     wrap.innerHTML = '<p><strong>Designer:</strong> ' + esc(owner.designer || 'Unassigned') + '</p><p><strong>Developer:</strong> ' + esc(owner.developer || 'Unassigned') + '</p>';
     return wrap;
-  }
+}
 
-  function updateCompletenessIndicator(pageId) {
+function updateCompletenessIndicator(pageId) {
     var score = completenessScores[pageId];
     if (!score) return;
     renderComponentProgress(pageId);
     updateSidebarMetadataTooltip(pageId);
-  }
+}
 
-  var STATUS_STEPS = [
+var STATUS_STEPS = [
     { key: 'placeholder', label: 'Not Started' },
     { key: 'blocked', label: 'Blocked' },
     { key: 'in-progress', label: 'In Progress' },
     { key: 'review', label: 'In Review' },
     { key: 'production', label: 'Production' }
-  ];
+];
 
-  function renderComponentProgress(pageId) {
+function renderComponentProgress(pageId) {
     var page = document.querySelector('[data-page="' + pageId + '"]');
     if (!page || typeof COMPONENT_STATUS === 'undefined') return;
     var info = COMPONENT_STATUS[pageId];
@@ -815,19 +816,19 @@
         toggleSpecPopover(trigger, pageId);
       });
     }
-  }
+}
 
-  // Sidebar metadata tooltip — uses the real UDS udc-tooltip CSS pattern.
-  // We inject a <span class="udc-tooltip" data-position="right"> inside each
-  // component sidebar link; CSS handles show/hide on :hover / :focus-within.
-  // The sidebar tooltip is portaled to <body> rather than nested inside the
-  // sidebar link. `.sg-sidebar` has `position: sticky` which creates a
-  // stacking context (per CSS spec) — anything inside it, even with
-  // `position: fixed; z-index: 9999`, gets stacked relative to the
-  // sidebar's stacking context and ends up painted under `.sg-main`.
-  // Portaling sidesteps both the stacking context and the `overflow:auto`
-  // clipping issue.
-  function getSidebarPortalTooltip() {
+// Sidebar metadata tooltip — uses the real UDS udc-tooltip CSS pattern.
+// We inject a <span class="udc-tooltip" data-position="right"> inside each
+// component sidebar link; CSS handles show/hide on :hover / :focus-within.
+// The sidebar tooltip is portaled to <body> rather than nested inside the
+// sidebar link. `.sg-sidebar` has `position: sticky` which creates a
+// stacking context (per CSS spec) — anything inside it, even with
+// `position: fixed; z-index: 9999`, gets stacked relative to the
+// sidebar's stacking context and ends up painted under `.sg-main`.
+// Portaling sidesteps both the stacking context and the `overflow:auto`
+// clipping issue.
+function getSidebarPortalTooltip() {
     var portal = document.getElementById('sg-sidebar-portal-tooltip');
     if (!portal) {
       portal = document.createElement('span');
@@ -850,22 +851,22 @@
       }
     }
     return portal;
-  }
+}
 
-  function showSidebarPortalTooltip(link, html) {
+function showSidebarPortalTooltip(link, html) {
     var portal = getSidebarPortalTooltip();
     portal.innerHTML = html;
     var r = link.getBoundingClientRect();
     portal.style.top = (r.top + r.height / 2) + 'px';
     portal.setAttribute('data-visible', 'true');
-  }
+}
 
-  function hideSidebarPortalTooltip() {
+function hideSidebarPortalTooltip() {
     var portal = document.getElementById('sg-sidebar-portal-tooltip');
     if (portal) portal.setAttribute('data-visible', 'false');
-  }
+}
 
-  function updateSidebarMetadataTooltip(pageId) {
+function updateSidebarMetadataTooltip(pageId) {
     var link = document.querySelector('.sg-sidebar-link[href="#/' + pageId + '"]');
     if (!link || typeof COMPONENT_STATUS === 'undefined') return;
     var info = COMPONENT_STATUS[pageId];
@@ -957,10 +958,10 @@
         (link.matches(':hover') || link.matches(':focus'))) {
       showSidebarPortalTooltip(link, html);
     }
-  }
+}
 
-  // Human-readable label for each COMPLETENESS_FIELDS path
-  var SPEC_FIELD_LABELS = {
+// Human-readable label for each COMPLETENESS_FIELDS path
+var SPEC_FIELD_LABELS = {
     'description': 'Description',
     'whenToUse': 'When to use',
     'whenNotToUse': 'When not to use',
@@ -983,9 +984,9 @@
     'owner': 'Owner (designer + developer)',
     'figmaNodeId': 'Figma node link',
     'storybookSlug': 'Storybook story slug'
-  };
+};
 
-  function toggleSpecPopover(triggerEl, pageId) {
+function toggleSpecPopover(triggerEl, pageId) {
     var existing = document.getElementById('sg-spec-popover');
     if (existing && existing.dataset.for === pageId) {
       closeSpecPopover();
@@ -1032,9 +1033,9 @@
     pop.querySelector('.sg-spec-popover__close').addEventListener('click', closeSpecPopover);
     setTimeout(function () { document.addEventListener('click', specPopoverOutsideHandler); }, 0);
     document.addEventListener('keydown', specPopoverEscHandler);
-  }
+}
 
-  function closeSpecPopover() {
+function closeSpecPopover() {
     var pop = document.getElementById('sg-spec-popover');
     if (pop) {
       var pageId = pop.dataset.for;
@@ -1044,47 +1045,47 @@
     }
     document.removeEventListener('click', specPopoverOutsideHandler);
     document.removeEventListener('keydown', specPopoverEscHandler);
-  }
+}
 
-  function specPopoverOutsideHandler(e) {
+function specPopoverOutsideHandler(e) {
     var pop = document.getElementById('sg-spec-popover');
     if (!pop) return;
     if (pop.contains(e.target)) return;
     if (e.target.closest('.sg-spec-progress-trigger')) return;
     closeSpecPopover();
-  }
+}
 
-  function specPopoverEscHandler(e) {
+function specPopoverEscHandler(e) {
     if (e.key === 'Escape') closeSpecPopover();
-  }
+}
 
-  // Preload content and completeness for all component JSONs so sidebar dots
-  // and header pills can render immediately without waiting for tab open.
-  // Only attempts to load for known component IDs (skips Foundations, Reference,
-  // and Patterns pages which have no content JSON).
-  function preloadAllContent() {
+// Preload content and completeness for all component JSONs so sidebar dots
+// and header pills can render immediately without waiting for tab open.
+// Only attempts to load for known component IDs (skips Foundations, Reference,
+// and Patterns pages which have no content JSON).
+function preloadAllContent() {
     if (typeof COMPONENT_STATUS === 'undefined') return;
     Object.keys(COMPONENT_STATUS).forEach(function (id) {
       loadContent(id).then(function (data) {
         if (data) updateCompletenessIndicator(id);
       });
     });
-  }
+}
 
-  /* ========================================================================
+/* ========================================================================
      5. PLAYGROUND ENGINE
      ======================================================================== */
-  const playgroundInited = {};
+const playgroundInited = {};
 
-  function refreshPlaygrounds() {
+function refreshPlaygrounds() {
     Object.keys(playgroundInited).forEach(id => {
       const cfg = PLAYGROUNDS[id];
       if (cfg && cfg._update) cfg._update();
     });
     refreshImplSections();
-  }
+}
 
-  function initPlayground(pageId) {
+function initPlayground(pageId) {
     if (playgroundInited[pageId]) return;
     const cfg = PLAYGROUNDS[pageId];
     if (!cfg) return;
@@ -1191,21 +1192,21 @@
     if (implSection) right.appendChild(implSection);
 
     playgroundInited[pageId] = true;
-  }
+}
 
-  function esc(s) {
+function esc(s) {
     return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-  }
+}
 
-  /* ========================================================================
+/* ========================================================================
      6. PLAYGROUND CONFIGS
      ======================================================================== */
-  /* -------------------------------------------------------------------------
+/* -------------------------------------------------------------------------
      Shared indenter — wraps code lines inside a Vue <template>
      ------------------------------------------------------------------------- */
-  // vueWrap removed — all Vue code must be proper SFCs
+// vueWrap removed — all Vue code must be proper SFCs
 
-  const PLAYGROUNDS = {
+const PLAYGROUNDS = {
     button: {
       controls: [
         { key: 'variant', label: 'Variant', type: 'select', default: 'primary', options: [
@@ -2615,12 +2616,12 @@
         return { html: html, code: code };
       }
     }
-  };
+};
 
-  /* ========================================================================
+/* ========================================================================
      6b. IMPLEMENTATION REFERENCE DATA
      ======================================================================== */
-  var IMPL_DATA = {
+var IMPL_DATA = {
     button: {
       jsFunc: null,
       tokens: {
@@ -3061,14 +3062,14 @@
       },
       html: function () { return '<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8" />\n  <link rel="stylesheet" href="uds/uds.css" />\n</head>\n<body style="padding:80px;">\n\n  <span class="udc-tooltip-wrapper">\n    <button class="udc-button-secondary">Hover me</button>\n    <span class="udc-tooltip" role="tooltip">This is a tooltip</span>\n  </span>\n\n</body>\n</html>'; },
     }
-  };
+};
 
-  /* ========================================================================
+/* ========================================================================
      6c. BUILD IMPLEMENTATION REFERENCE SECTION
      ======================================================================== */
-  var jsBehaviorCache = {};
+var jsBehaviorCache = {};
 
-  var JS_FUNC_TO_FILE = {
+var JS_FUNC_TO_FILE = {
     initTextInput:    'uds/components/text-input.js',
     initTabs:         'uds/components/tabs.js',
     initCheckbox:     'uds/components/checkbox.js',
@@ -3082,9 +3083,9 @@
     initDataTable:    'uds/components/data-table.js',
     initChip:         'uds/components/chip.js',
     initSearch:       'uds/components/search.js'
-  };
+};
 
-  function fetchJsBehavior(funcName, callback) {
+function fetchJsBehavior(funcName, callback) {
     if (jsBehaviorCache[funcName] !== undefined) {
       callback(jsBehaviorCache[funcName]);
       return;
@@ -3096,11 +3097,11 @@
       jsBehaviorCache[funcName] = match ? match[1] : text;
       callback(jsBehaviorCache[funcName]);
     });
-  }
+}
 
-  var cssFileCache = {};
+var cssFileCache = {};
 
-  function fetchCssFile(path, callback) {
+function fetchCssFile(path, callback) {
     if (cssFileCache[path] !== undefined) {
       callback(cssFileCache[path]);
       return;
@@ -3109,9 +3110,9 @@
       cssFileCache[path] = text;
       callback(text);
     });
-  }
+}
 
-  function buildImplSection(pageId) {
+function buildImplSection(pageId) {
     var data = IMPL_DATA[pageId];
     if (!data) return null;
 
@@ -3215,23 +3216,23 @@
     details._data = data;
 
     return details;
-  }
+}
 
-  function updateComponentTab(panel, data) {
+function updateComponentTab(panel, data) {
     var pre = panel._pre;
     if (!pre) return;
     pre.textContent = data.html();
-  }
+}
 
-  function updateBehaviorTab(panel, data) {
+function updateBehaviorTab(panel, data) {
     var pre = panel._pre;
     if (!pre) return;
     if (data.jsFunc) {
       fetchJsBehavior(data.jsFunc, function (code) { pre.textContent = code; });
     }
-  }
+}
 
-  function buildTokensPanel(panel, tokenGroups) {
+function buildTokensPanel(panel, tokenGroups) {
     var container = document.createElement('div');
     container.className = 'sg-impl-tokens';
 
@@ -3272,9 +3273,9 @@
     });
 
     panel.appendChild(container);
-  }
+}
 
-  function refreshImplSections() {
+function refreshImplSections() {
     document.querySelectorAll('.sg-impl-details').forEach(function (details) {
       var data = details._data;
       if (!data) return;
@@ -3285,15 +3286,15 @@
       var behavPanel = details.querySelector('[data-impl-panel="behavior"]');
       if (behavPanel && data.jsFunc) updateBehaviorTab(behavPanel, data);
     });
-  }
+}
 
-  /* ========================================================================
+/* ========================================================================
      7. TOKEN COPY BUTTONS
      ======================================================================== */
-  const copyIcon = '<span class="material-symbols-outlined">content_copy</span>';
-  const checkIcon = '<span class="material-symbols-outlined">check</span>';
+const copyIcon = '<span class="material-symbols-outlined">content_copy</span>';
+const checkIcon = '<span class="material-symbols-outlined">check</span>';
 
-  document.querySelectorAll('.sg-token-row').forEach(row => {
+document.querySelectorAll('.sg-token-row').forEach(row => {
     const nameEl = row.querySelector('.sg-token-name');
     if (!nameEl) return;
     const btn = document.createElement('button');
@@ -3309,12 +3310,12 @@
       });
     });
     row.appendChild(btn);
-  });
+});
 
-  /* ========================================================================
+/* ========================================================================
      8. CODE BLOCK COPY BUTTONS — add to all "Show code" example blocks
      ======================================================================== */
-  document.querySelectorAll('.sg-example-code').forEach(function (details) {
+document.querySelectorAll('.sg-example-code').forEach(function (details) {
     var pre = details.querySelector('pre');
     if (!pre) return;
     var wrap = document.createElement('div');
@@ -3322,32 +3323,32 @@
     pre.parentNode.insertBefore(wrap, pre);
     wrap.appendChild(pre);
     wrap.appendChild(buildCopyButton(function () { return pre.textContent; }));
-  });
+});
 
-  document.querySelectorAll('[data-tab-panel="code"] pre.sg-playground-code').forEach(function (pre) {
+document.querySelectorAll('[data-tab-panel="code"] pre.sg-playground-code').forEach(function (pre) {
     if (pre.parentNode.classList.contains('sg-code-wrap')) return;
     var wrap = document.createElement('div');
     wrap.className = 'sg-code-wrap';
     pre.parentNode.insertBefore(wrap, pre);
     wrap.appendChild(pre);
     wrap.appendChild(buildCopyButton(function () { return pre.textContent; }));
-  });
+});
 
-  /* ========================================================================
+/* ========================================================================
      9. POPULATE PRIMITIVE COLOR SWATCHES
      ======================================================================== */
-  var PRIM_FAMILIES = [
+var PRIM_FAMILIES = [
     'slate','neutral','stone','blue','cyan','purple',
     'red','orange','amber','yellow','lime','green','emerald'
-  ];
-  var PRIM_STEPS = [10,20,30,40,50,'60-M',70,80,90,100,110];
+];
+var PRIM_STEPS = [10,20,30,40,50,'60-M',70,80,90,100,110];
 
-  document.querySelectorAll('#prim-special .sg-token-row').forEach(function (row) {
+document.querySelectorAll('#prim-special .sg-token-row').forEach(function (row) {
     var name = row.querySelector('.sg-token-name');
     if (name) row.appendChild(buildCopyButton(name.textContent));
-  });
+});
 
-  PRIM_FAMILIES.forEach(function (family) {
+PRIM_FAMILIES.forEach(function (family) {
     var container = document.querySelector('#prim-' + family + ' .sg-token-list');
     if (!container) return;
     PRIM_STEPS.forEach(function (step) {
@@ -3362,13 +3363,13 @@
       row.appendChild(copyBtn);
       container.appendChild(row);
     });
-  });
+});
 
 
-  /* ========================================================================
+/* ========================================================================
      11. DOWNLOAD UDS ZIP
      ======================================================================== */
-  function triggerDownload(blob, filename) {
+function triggerDownload(blob, filename) {
     var url = URL.createObjectURL(blob);
     var a = document.createElement('a');
     a.href = url;
@@ -3377,10 +3378,10 @@
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-  }
+}
 
-  var dlBtn = document.getElementById('gs-download-btn');
-  if (dlBtn) {
+var dlBtn = document.getElementById('gs-download-btn');
+if (dlBtn) {
     dlBtn.addEventListener('click', function (e) {
       e.preventDefault();
       e.stopPropagation();
@@ -3474,13 +3475,13 @@
         }, 3000);
       });
     });
-  }
+}
 
-  /* ========================================================================
+/* ========================================================================
      12. CHANGELOG + COMPONENT STATUS + VERSION DROPDOWN
      ======================================================================== */
 
-  var CHANGELOG = [
+var CHANGELOG = [
     {
       version: '0.1',
       date: '2026-04-01',
@@ -3559,9 +3560,9 @@
         { type: 'changed', category: null, component: null, text: 'Internal support pages checkbox-control, input, and slot were inspected but intentionally kept out of public docs for 0.3' }
       ]
     }
-  ];
+];
 
-  var SITE_CHANGELOG = [
+var SITE_CHANGELOG = [
     {
       version: 'SITE 2026.04.01.1',
       date: '2026-04-01',
@@ -4138,18 +4139,18 @@
         { type: 'fixed', text: 'Demo Builder `nav-header` template was a stripped-down version of the canonical example shown on the Nav Header component page — just a logo and two icon-only ghost buttons floating in a mostly-empty bar, missing the bento brand dropdown, the center search slot, and the My Work / account cluster, so the header looked unbalanced compared to its own component spec. Rewrote the template to match the canonical pattern: `__left` now has logo + `udc-nav-bento-wrapper` (brand button + bento dropdown list, brand picked from `Boardroom`/`Tenant360`/`PropertyOS`/`LeasePro`/`Holdings`); `__center` has `udc-nav-search` with the AI sparkle icon and rotating placeholder; `__right` has `udc-nav-mywork` with a randomized count badge plus a `udc-nav-account` cluster (notifications, sometimes settings, account_circle).' }
       ]
     }
-  ];
+];
 
-  var STATUS_LABELS = {
+var STATUS_LABELS = {
     'placeholder':  { label: 'Not Started',       css: 'placeholder'  },
     'blocked':      { label: 'Blocked',            css: 'blocked'      },
     'in-progress':  { label: 'In Progress',        css: 'in-progress'  },
     'review':       { label: 'In Review',          css: 'review'       },
     'production':   { label: 'Production Ready',   css: 'production'   },
     'deprecated':   { label: 'Deprecated',         css: 'deprecated'   }
-  };
+};
 
-  var COMPONENT_STATUS = {
+var COMPONENT_STATUS = {
     button:         { status: 'in-progress', since: '0.1' },
     'text-input':   { status: 'blocked',     since: '0.1' },
     dropdown:       { status: 'in-progress', since: '0.2' },
@@ -4179,21 +4180,21 @@
     'toggle': { status: 'placeholder', since: '0.3' },
     'pagination': { status: 'blocked', since: '0.3' },
     'data-view': { status: 'placeholder', since: '0.3' },
-  };
+};
 
-  var UDS_VERSION = '0.3';
+var UDS_VERSION = '0.3';
 
-  window.COMPONENT_STATUS_MAP = {};
-  Object.keys(COMPONENT_STATUS).forEach(function (id) {
+window.COMPONENT_STATUS_MAP = {};
+Object.keys(COMPONENT_STATUS).forEach(function (id) {
     window.COMPONENT_STATUS_MAP[id] = COMPONENT_STATUS[id].status;
-  });
+});
 
-  var TYPE_LABELS = {
+var TYPE_LABELS = {
     added: 'Added', changed: 'Changed', fixed: 'Fixed',
     deprecated: 'Deprecated', removed: 'Removed'
-  };
+};
 
-  function renderChangeItems(parent, entries, type) {
+function renderChangeItems(parent, entries, type) {
     entries.forEach(function (entry) {
       var item = document.createElement('div');
       item.className = 'sg-cl-item sg-cl-item--' + type;
@@ -4208,9 +4209,9 @@
       item.innerHTML = prefix + compLabels + entry.text;
       parent.appendChild(item);
     });
-  }
+}
 
-  function renderCategorySection(parent, categoryTitle, changes, typeOrder) {
+function renderCategorySection(parent, categoryTitle, changes, typeOrder) {
     var grouped = {};
     changes.forEach(function (c) {
       if (!grouped[c.type]) grouped[c.type] = [];
@@ -4236,9 +4237,9 @@
     });
 
     parent.appendChild(catGroup);
-  }
+}
 
-  function renderGlobalChangelog() {
+function renderGlobalChangelog() {
     var container = document.getElementById('sg-global-changelog');
     if (!container) return;
     container.innerHTML = '';
@@ -4287,9 +4288,9 @@
 
       container.appendChild(section);
     });
-  }
+}
 
-  function renderSiteChangelog() {
+function renderSiteChangelog() {
     var container = document.getElementById('sg-site-changelog');
     if (!container) return;
     container.innerHTML = '';
@@ -4318,9 +4319,9 @@
 
       container.appendChild(section);
     });
-  }
+}
 
-  function renderComponentChangelog(pageId) {
+function renderComponentChangelog(pageId) {
     var panel = document.querySelector('[data-page="' + pageId + '"] [data-tab-panel="changelog"]');
     if (!panel) return;
 
@@ -4368,9 +4369,9 @@
 
       panel.appendChild(section);
     });
-  }
+}
 
-  var FIGMA_LINKS = {
+var FIGMA_LINKS = {
     button:         '5055-139',
     'text-input':   '5002-1178',
     dropdown:       '5122-68',
@@ -4400,21 +4401,21 @@
     'toggle': '5557-1808',
     'pagination': '6672-1706',
     'data-view': '5802-33467',
-  };
+};
 
-  function renderStatusBadges() {
+function renderStatusBadges() {
     Object.keys(COMPONENT_STATUS).forEach(function (id) {
       renderComponentProgress(id);
       updateSidebarMetadataTooltip(id);
     });
-  }
+}
 
-  // Placeholder Storybook base URL — update when Storybook is live
-  var STORYBOOK_BASE_URL = 'https://storybook.example.com';
-  // Placeholder GitHub repo for issue reports
-  var GITHUB_REPO = 'sbajwa32/uds-docs';
+// Placeholder Storybook base URL — update when Storybook is live
+var STORYBOOK_BASE_URL = 'https://storybook.example.com';
+// Placeholder GitHub repo for issue reports
+var GITHUB_REPO = 'sbajwa32/uds-docs';
 
-  function renderComponentLinks() {
+function renderComponentLinks() {
     Object.keys(COMPONENT_STATUS).forEach(function (id) {
       var page = document.querySelector('[data-page="' + id + '"]');
       if (!page) return;
@@ -4472,10 +4473,10 @@
 
       desc.insertAdjacentElement('afterend', bar);
     });
-  }
+}
 
-  // "Not for production" banner + Last updated timestamp + Recent changes highlight
-  function renderComponentHeaderExtras() {
+// "Not for production" banner + Last updated timestamp + Recent changes highlight
+function renderComponentHeaderExtras() {
     Object.keys(COMPONENT_STATUS).forEach(function (id) {
       var info = COMPONENT_STATUS[id];
       var page = document.querySelector('[data-page="' + id + '"]');
@@ -4530,16 +4531,16 @@
         }
       }
     });
-  }
+}
 
-  /* ========================================================================
+/* ========================================================================
      4c. TOKEN SEARCH (modal: / or Cmd/Ctrl+K)
      Walks document.styleSheets at load, builds a search index of all
      --uds-* custom properties, and offers a fuzzy-match modal.
      ======================================================================== */
-  var TOKEN_INDEX = [];
+var TOKEN_INDEX = [];
 
-  function buildTokenIndex() {
+function buildTokenIndex() {
     if (TOKEN_INDEX.length) return TOKEN_INDEX;
     var seen = {};
 
@@ -4610,9 +4611,9 @@
       return a.name.localeCompare(b.name);
     });
     return TOKEN_INDEX;
-  }
+}
 
-  function tokenCategory(name) {
+function tokenCategory(name) {
     if (name.indexOf('--uds-color-') === 0) return 'color';
     if (name.indexOf('--uds-space-') === 0) return 'space';
     if (name.indexOf('--uds-font-') === 0) return 'font';
@@ -4620,16 +4621,16 @@
     if (name.indexOf('--uds-shadow-') === 0 || name.indexOf('--uds-overlay-') === 0) return 'shadow';
     if (name.indexOf('--uds-primitive-') === 0) return 'primitive';
     return 'other';
-  }
+}
 
-  function isColorValue(v) {
+function isColorValue(v) {
     if (!v) return false;
     return /^#|^rgb|^hsl|^oklch|^color\(/i.test(v.trim());
-  }
+}
 
-  function escapeRegex(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+function escapeRegex(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
 
-  function searchTokens(query) {
+function searchTokens(query) {
     var idx = buildTokenIndex();
     if (!query) return idx.slice();
     var q = query.toLowerCase().replace(/^--/, '');
@@ -4637,17 +4638,17 @@
       return t.name.toLowerCase().indexOf(q) !== -1 ||
              t.value.toLowerCase().indexOf(q) !== -1;
     });
-  }
+}
 
-  function highlightMatch(name, query) {
+function highlightMatch(name, query) {
     if (!query) return name;
     var q = query.replace(/^--/, '');
     if (!q) return name;
     var re = new RegExp('(' + escapeRegex(q) + ')', 'gi');
     return name.replace(re, '<mark>$1</mark>');
-  }
+}
 
-  function renderTokenSearchResults(query) {
+function renderTokenSearchResults(query) {
     var resultsEl = document.getElementById('sg-token-search-results');
     if (!resultsEl) return;
     var results = searchTokens(query);
@@ -4699,13 +4700,13 @@
         closeTokenSearch();
       });
     });
-  }
+}
 
-  function escapeHtml(s) {
+function escapeHtml(s) {
     return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-  }
+}
 
-  function openTokenSearch() {
+function openTokenSearch() {
     var modal = document.getElementById('sg-token-search');
     if (!modal) return;
     modal.setAttribute('data-open', 'true');
@@ -4715,14 +4716,14 @@
       renderTokenSearchResults('');
       requestAnimationFrame(function () { input.focus(); });
     }
-  }
+}
 
-  function closeTokenSearch() {
+function closeTokenSearch() {
     var modal = document.getElementById('sg-token-search');
     if (modal) modal.setAttribute('data-open', 'false');
-  }
+}
 
-  function moveTokenSearchActive(delta) {
+function moveTokenSearchActive(delta) {
     var resultsEl = document.getElementById('sg-token-search-results');
     if (!resultsEl) return;
     var rows = resultsEl.querySelectorAll('.sg-token-search__row');
@@ -4735,16 +4736,16 @@
     rows.forEach(function (r) { r.removeAttribute('data-active'); });
     rows[next].setAttribute('data-active', 'true');
     rows[next].scrollIntoView({ block: 'nearest' });
-  }
+}
 
-  function activateTokenSearchRow() {
+function activateTokenSearchRow() {
     var resultsEl = document.getElementById('sg-token-search-results');
     if (!resultsEl) return;
     var active = resultsEl.querySelector('.sg-token-search__row[data-active="true"]');
     if (active) active.click();
-  }
+}
 
-  function initTokenSearch() {
+function initTokenSearch() {
     if (!document.getElementById('sg-token-search')) return;
 
     document.addEventListener('keydown', function (e) {
@@ -4786,14 +4787,14 @@
     if (headerTrigger) {
       headerTrigger.addEventListener('click', function () { openTokenSearch(); });
     }
-  }
+}
 
-  /* ========================================================================
+/* ========================================================================
      4d. DRAFT MODE (?draft=1)
      Hides components/pages with data-draft="true" on production, shows them
      with a DRAFT watermark when ?draft=1 is in the URL.
      ======================================================================== */
-  function applyDraftMode() {
+function applyDraftMode() {
     var params = new URLSearchParams(window.location.search);
     var draftMode = params.get('draft') === '1';
     document.documentElement.setAttribute('data-draft-mode', draftMode ? 'true' : 'false');
@@ -4830,12 +4831,12 @@
       }, 200);
       setTimeout(function () { clearInterval(poll); }, 3000);
     }
-  }
+}
 
-  /* ========================================================================
+/* ========================================================================
      4e. REALISTIC DATA EXAMPLES (5 data-consuming components)
      ======================================================================== */
-  var REALISTIC_DATA = {
+var REALISTIC_DATA = {
     'data-table': function () {
       var tinyHTML = '<div class="udc-data-table"><table>' +
         '<thead><tr><th class="udc-dt-check"><input type="checkbox" /></th><th>Tenant</th><th>Status</th><th>Property</th><th class="udc-dt-align-right">Balance</th></tr></thead>' +
@@ -4947,9 +4948,9 @@
         { title: 'Root only', desc: 'When there is only one level, render just the current page (no separator).', html: rootHTML }
       ];
     }
-  };
+};
 
-  function renderRealisticData() {
+function renderRealisticData() {
     Object.keys(REALISTIC_DATA).forEach(function (id) {
       var page = document.querySelector('[data-page="' + id + '"]');
       if (!page) return;
@@ -4997,10 +4998,10 @@
 
       examplesPanel.appendChild(wrap);
     });
-  }
+}
 
-  // Render the Roadmap > Components table from COMPONENT_STATUS.
-  function renderRoadmapComponents() {
+// Render the Roadmap > Components table from COMPONENT_STATUS.
+function renderRoadmapComponents() {
     var slot = document.getElementById('sg-roadmap-components');
     if (!slot || typeof COMPONENT_STATUS === 'undefined') return;
 
@@ -5033,10 +5034,10 @@
     });
     html += '</tbody></table>';
     slot.innerHTML = html;
-  }
+}
 
-  // Add an "Example only" banner to the top of every code-bearing tab panel.
-  function renderExampleOnlyBanners() {
+// Add an "Example only" banner to the top of every code-bearing tab panel.
+function renderExampleOnlyBanners() {
     var bannerHTML = '<span class="material-symbols-outlined">code_blocks</span><span><strong>Example only.</strong> All code on this page is reference. Production components live in Storybook.</span>';
     var selectors = ['examples', 'code', 'playground'];
     selectors.forEach(function (which) {
@@ -5048,10 +5049,10 @@
         panel.insertBefore(banner, panel.firstChild);
       });
     });
-  }
+}
 
-  // Extract per-component changelog entries from the global CHANGELOG array.
-  function collectComponentChangelog(componentId) {
+// Extract per-component changelog entries from the global CHANGELOG array.
+function collectComponentChangelog(componentId) {
     if (typeof CHANGELOG === 'undefined') return [];
     var out = [];
     CHANGELOG.slice().forEach(function (release) {
@@ -5065,9 +5066,9 @@
     });
     // newest first
     return out.slice().reverse();
-  }
+}
 
-  function initVersionDropdown() {
+function initVersionDropdown() {
     var dropdown = document.getElementById('sg-version-dropdown');
     if (!dropdown) return;
 
@@ -5113,33 +5114,33 @@
       opt.textContent = 'UDS ' + UDS_VERSION;
       dropdown.appendChild(opt);
     });
-  }
+}
 
-  function initAllChangelogs() {
+function initAllChangelogs() {
     renderGlobalChangelog();
     renderSiteChangelog();
     var compPages = Object.keys(COMPONENT_STATUS);
     compPages.forEach(function (id) {
       renderComponentChangelog(id);
     });
-  }
+}
 
-  /* ========================================================================
+/* ========================================================================
      13. INIT — navigate to current hash
      ======================================================================== */
-  renderStatusBadges();
-  renderComponentLinks();
-  renderComponentHeaderExtras();
-  renderRealisticData();
-  renderExampleOnlyBanners();
-  preloadAllContent();
-  renderRoadmapComponents();
-  initTokenSearch();
-  applyDraftMode();
-  initVersionDropdown();
-  initAllChangelogs();
+renderStatusBadges();
+renderComponentLinks();
+renderComponentHeaderExtras();
+renderRealisticData();
+renderExampleOnlyBanners();
+preloadAllContent();
+renderRoadmapComponents();
+initTokenSearch();
+applyDraftMode();
+initVersionDropdown();
+initAllChangelogs();
 
-  function initAiAssistPage() {
+function initAiAssistPage() {
     var tokenSlot = document.getElementById('sg-ai-tokens');
     if (tokenSlot) {
       var tokenGroups = {
@@ -5218,11 +5219,10 @@
         });
       });
     }
-  }
+}
 
-  initAiAssistPage();
+initAiAssistPage();
 
-  const { pageId, tab } = parseHash();
-  navigate(pageId, tab);
+const { pageId, tab } = parseHash();
+navigate(pageId, tab);
 
-})();
