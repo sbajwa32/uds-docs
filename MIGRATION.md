@@ -45,7 +45,7 @@ The baseline tag stays on `main` permanently as a recovery anchor.
 | 5 | Extract non-component pages with data wiring | done |
 | 6 | Per-component migration (26 components) | done — all 29 components migrated to per-component folders |
 | 7 | Demo Builder reads source-of-truth examples | done — examples live in one place, Demo Builder + docs page both fetch them |
-| 8 | Versioning model + per-component changelog aggregation | pending |
+| 8 | Versioning model + per-component changelog aggregation | done — uds/CHANGELOG.json + uds/version.json are source of truth |
 | 9 | Snapshot strategy + retroactive archive conversion | pending |
 | 10 | Rules, audits, AGENTS.md, README, skills + drift fixes | pending |
 | 11 | Performance + accessibility verification | pending |
