@@ -42,7 +42,7 @@ The baseline tag stays on `main` permanently as a recovery anchor.
 | 2 | Target layout scaffolding | in progress |
 | 3 | Extract docs site shell (CSS, ES modules, global tables) | pending |
 | 4 | Extract site modules (Demo Builder, Token Search, Playground) | partial — Demo Builder done in 4a; 4b (Token Search) and 4c (Playground) deferred to Phase 6 |
-| 5 | Extract non-component pages with data wiring | pending |
+| 5 | Extract non-component pages with data wiring | done |
 | 6 | Per-component migration (26 components) | pending |
 | 7 | Demo Builder reads source-of-truth examples | pending |
 | 8 | Versioning model + per-component changelog aggregation | pending |
