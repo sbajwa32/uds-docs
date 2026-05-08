@@ -77,11 +77,12 @@ export function downloadDemoProject({ getOrigin, generateDemoHTML, getSelectedCo
     btn.innerHTML = '<span class="sg-demo-spinner"></span>Packaging...';
   }
 
-  setTimeout(() => {
+  setTimeout(async () => {
     try {
       const zip = new JSZip();
       const origin = getOrigin();
-      zip.file('index.html', generateDemoHTML(components));
+      const html = await generateDemoHTML(components);
+      zip.file('index.html', html);
       downloadUdsFiles(zip, 'uds/', origin).then(() => {
         triggerZipDownload(zip, 'demo-html.zip');
         if (btn) { btn.disabled = false; btn.innerHTML = origLabel; }

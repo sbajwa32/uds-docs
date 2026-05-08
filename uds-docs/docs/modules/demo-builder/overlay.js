@@ -48,6 +48,9 @@ export function openDemoOverlay(html, components) {
  * In-place re-render of the iframe with fresh data/states for the same
  * components. Doesn't pollute build history. Caller provides the
  * generateDemoHTML function to avoid a circular import.
+ *
+ * Phase 7: generateDemoHTML is now async (fetches per-component examples),
+ * so we await it.
  */
 export function rebuildDemoPreview(generateDemoHTML) {
   const overlay = document.getElementById('sg-demo-overlay');
@@ -60,8 +63,8 @@ export function rebuildDemoPreview(generateDemoHTML) {
     rebuildBtn.dataset.originalLabel = rebuildBtn.innerHTML;
     rebuildBtn.innerHTML = '<span class="material-symbols-outlined" style="font-size:16px;vertical-align:middle;animation:sg-spin 0.6s linear infinite;display:inline-block;">progress_activity</span>';
   }
-  setTimeout(() => {
-    const fresh = generateDemoHTML(components);
+  setTimeout(async () => {
+    const fresh = await generateDemoHTML(components);
     const iframe = document.getElementById('sg-demo-iframe');
     if (iframe) iframe.srcdoc = fresh;
     if (rebuildBtn) {
