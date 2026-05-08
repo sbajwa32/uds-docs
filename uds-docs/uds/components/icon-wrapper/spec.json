@@ -1,4 +1,5 @@
 {
+  "$schema": "../../schemas/spec.schema.json",
   "component": "icon-wrapper",
   "title": "Icon Wrapper",
   "description": "A container for icons that standardizes sizing (16/20/24/32/48px) and applies the current text color.",
@@ -47,7 +48,7 @@
     },
     {
       "name": "not-applicable",
-      "description": "The wrapper is not focusable or interactive — interactivity belongs to the parent element"
+      "description": "The wrapper is not focusable or interactive \u2014 interactivity belongs to the parent element"
     }
   ],
   "contentGuidelines": "Icons should reinforce, not replace, a text label. Reserve standalone icons for highly recognizable affordances (close, back, search).",
@@ -61,17 +62,17 @@
   "dosDonts": {
     "dos": [
       "Add aria-hidden=\"true\" on the inner Material Symbols span when the icon is decorative",
-      "Pick a size from the documented enum — don't introduce one-off sizes"
+      "Pick a size from the documented enum \u2014 don't introduce one-off sizes"
     ],
     "donts": [
-      "Don't use icon-wrapper for shapes or illustrations — only for Material Symbols icons",
+      "Don't use icon-wrapper for shapes or illustrations \u2014 only for Material Symbols icons",
       "Don't put icon-wrapper inside a button when the host component already handles icon sizing (e.g. Button, Dropdown)"
     ]
   },
   "accessibility": {
     "keyboard": [
       {
-        "key": "—",
+        "key": "\u2014",
         "action": "Not focusable; place icon-wrapper inside an interactive element if needed"
       }
     ],

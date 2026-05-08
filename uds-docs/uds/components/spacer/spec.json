@@ -1,11 +1,12 @@
 {
+  "$schema": "../../schemas/spec.schema.json",
   "component": "spacer",
   "title": "Spacer",
   "description": "A spacer adds consistent vertical or horizontal space using UDS space tokens.",
   "whenToUse": "When CSS gap or margin is not available (e.g. in a flow where children cannot be flex/grid items). To enforce a specific token-sized gap.",
   "whenNotToUse": "When you can use CSS gap or margin with tokens directly. Prefer CSS layout properties.",
   "acceptanceCriteria": [
-    "Renders the correct gap for every size token (050–600)",
+    "Renders the correct gap for every size token (050\u2013600)",
     "Both vertical and horizontal axes apply the token to the correct dimension",
     "Spacer takes no space when its size token resolves to 0",
     "Spacer is not focusable and produces no SR output"
@@ -66,14 +67,14 @@
     ],
     "donts": [
       "Don't put interactive content inside a spacer",
-      "Don't use spacer to push elements to the edges — use flex/grid alignment instead",
-      "Don't introduce custom sizes — pick from the documented spacing scale"
+      "Don't use spacer to push elements to the edges \u2014 use flex/grid alignment instead",
+      "Don't introduce custom sizes \u2014 pick from the documented spacing scale"
     ]
   },
   "accessibility": {
     "keyboard": [
       {
-        "key": "—",
+        "key": "\u2014",
         "action": "Not focusable; the spacer is decorative whitespace"
       }
     ],

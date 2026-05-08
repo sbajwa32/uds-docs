@@ -1,4 +1,5 @@
 {
+  "$schema": "../../schemas/spec.schema.json",
   "component": "label",
   "title": "Label",
   "description": "A label identifies an input, selection control, or form field and can include required-state affordances.",

@@ -1,4 +1,5 @@
 {
+  "$schema": "../../schemas/spec.schema.json",
   "component": "divider",
   "title": "Divider",
   "description": "A divider creates visual separation between related content.",
@@ -58,13 +59,13 @@
     "donts": [
       "Don't use a divider when whitespace alone communicates separation",
       "Don't use dividers as decoration; they should always indicate a content boundary",
-      "Don't stack multiple dividers — increase padding instead"
+      "Don't stack multiple dividers \u2014 increase padding instead"
     ]
   },
   "accessibility": {
     "keyboard": [
       {
-        "key": "—",
+        "key": "\u2014",
         "action": "Not focusable; the divider is presentational"
       }
     ],
@@ -96,5 +97,5 @@
   "draft": false,
   "figmaNodeId": "5749:10953",
   "storybookSlug": null,
-  "_legacyAccessibilityNotes": "Purely presentational — use <hr> for semantic separation if appropriate, otherwise role=\"separator\"."
+  "_legacyAccessibilityNotes": "Purely presentational \u2014 use <hr> for semantic separation if appropriate, otherwise role=\"separator\"."
 }

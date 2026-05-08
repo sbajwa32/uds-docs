@@ -1,0 +1,11 @@
+{
+  "$schema": "../../schemas/changelog.schema.json",
+  "addedIn": "0.3",
+  "entries": [
+    {
+      "version": "0.3",
+      "type": "added",
+      "text": "In-progress navigational link component with default/current page/disabled states, optional open-in-new-window affordance, token-first CSS, examples, code, playground, and Demo Builder coverage"
+    }
+  ]
+}

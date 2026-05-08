@@ -1,0 +1,11 @@
+{
+  "$schema": "../../schemas/status.schema.json",
+  "current": "blocked",
+  "since": "0.1",
+  "history": [
+    {
+      "version": "0.1",
+      "status": "blocked"
+    }
+  ]
+}

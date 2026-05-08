@@ -1,4 +1,5 @@
 {
+  "$schema": "../../schemas/spec.schema.json",
   "component": "link",
   "title": "Link",
   "description": "A link navigates users to another page, route, resource, or external destination.",

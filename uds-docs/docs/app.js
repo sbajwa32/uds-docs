@@ -420,9 +420,17 @@ function computeCompleteness(data) {
 
 function loadContent(componentId) {
     if (contentCache[componentId]) return Promise.resolve(contentCache[componentId]);
-    return fetch('./content/' + componentId + '.json').then(function (r) {
-      if (!r.ok) throw new Error('Content not found: ' + componentId);
-      return r.json();
+    // Phase 6 in-flight: try the new per-component path first, fall back to
+    // the legacy content/<id>.json. The fallback gets removed at end of
+    // Phase 6 once all 26 components have moved.
+    var newPath = './uds/components/' + componentId + '/spec.json';
+    var oldPath = './content/' + componentId + '.json';
+    return fetch(newPath).then(function (r) {
+      if (r.ok) return r.json();
+      return fetch(oldPath).then(function (r2) {
+        if (!r2.ok) throw new Error('Content not found: ' + componentId);
+        return r2.json();
+      });
     }).then(function (data) {
       contentCache[componentId] = data;
       completenessScores[componentId] = computeCompleteness(data);

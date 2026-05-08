@@ -1,0 +1,11 @@
+{
+  "$schema": "../../schemas/changelog.schema.json",
+  "addedIn": "0.3",
+  "entries": [
+    {
+      "version": "0.3",
+      "type": "added",
+      "text": "Blocked form-control label component with multiline/basic/extended features, default/disabled/error/interactive/success variants, token-first CSS, examples, code, playground, and Demo Builder coverage"
+    }
+  ]
+}

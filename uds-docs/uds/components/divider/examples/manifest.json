@@ -1,0 +1,12 @@
+{
+  "$schema": "../../../schemas/manifest.schema.json",
+  "examples": [
+    {
+      "id": "padding-variants",
+      "file": "padding-variants.html",
+      "label": "Padding variants",
+      "showInDocs": true,
+      "demoWeight": 3
+    }
+  ]
+}
