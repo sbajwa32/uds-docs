@@ -218,7 +218,7 @@
     "developer": "Unassigned"
   },
   "draft": false,
-  "figmaNodeId": null,
+  "figmaNodeId": "5289:70",
   "storybookSlug": null,
   "_legacyAccessibilityNotes": "Use role=\"dialog\" with aria-modal=\"true\" and an accessible name via aria-labelledby. Focus should move into the dialog on open and restore on close."
 }

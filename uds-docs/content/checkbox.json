@@ -49,7 +49,7 @@
     "developer": "Unassigned"
   },
   "draft": false,
-  "figmaNodeId": null,
+  "figmaNodeId": "6010:28999",
   "storybookSlug": null,
   "_legacyAccessibilityNotes": "Uses native <input type=\"checkbox\"> for screen reader support. The visible indicator is purely decorative — the native input handles interaction."
 }

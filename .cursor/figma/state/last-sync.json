@@ -15,10 +15,11 @@
   },
   "site": {
     "udsVersion": "0.3",
-    "siteVersion": "2026.05.07.3",
+    "siteVersion": "2026.05.08.1",
     "commit": null
   },
   "notes": [
-    "0.3 baseline captured after direct Figma read. Ignored pages with {Ignore} were excluded. Internal support pages checkbox-control, input, and slot were not added to public docs."
+    "0.3 baseline captured after direct Figma read. Ignored pages with {Ignore} were excluded. Internal support pages checkbox-control, input, and slot were not added to public docs.",
+    "2026-05-08 verification audit: re-read Figma 0.3 directly. Tokens (counts, names, alias targets, modes), statuses, FIGMA_LINKS, sidebar coverage, content JSON coverage, release notes (both files), and implementation-ready vs placeholder-only classification all match Figma. Filled in 16 missing figmaNodeId values for components that have canonical component-set nodes in Figma (button left null because 5 sibling component-sets; data-table/text-input/tooltip have no top-level component-set so remain null)."
   ]
 }

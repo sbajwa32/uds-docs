@@ -49,7 +49,7 @@
     "developer": "Unassigned"
   },
   "draft": false,
-  "figmaNodeId": null,
+  "figmaNodeId": "5657:6576",
   "storybookSlug": null,
   "_legacyAccessibilityNotes": "Use role=\"alert\" for critical/error messages. Dismiss buttons need aria-label=\"Dismiss\"."
 }

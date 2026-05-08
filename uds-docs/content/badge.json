@@ -68,7 +68,7 @@
     "developer": "Unassigned"
   },
   "draft": false,
-  "figmaNodeId": null,
+  "figmaNodeId": "5794:7948",
   "storybookSlug": null,
   "_legacyAccessibilityNotes": "Badges are decorative by default; convey meaning via surrounding text as well. Do not rely on color alone — the label text carries the meaning."
 }

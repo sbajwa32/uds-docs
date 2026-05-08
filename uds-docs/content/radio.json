@@ -51,7 +51,7 @@
     "developer": "Unassigned"
   },
   "draft": false,
-  "figmaNodeId": null,
+  "figmaNodeId": "5492:2093",
   "storybookSlug": null,
   "_legacyAccessibilityNotes": "Use role=\"radiogroup\" on the container with an accessible label (via aria-labelledby or the legend element)."
 }

@@ -53,7 +53,7 @@
     "developer": "Unassigned"
   },
   "draft": false,
-  "figmaNodeId": null,
+  "figmaNodeId": "6308:32332",
   "storybookSlug": null,
   "_legacyAccessibilityNotes": "Use type=\"search\" for semantic meaning. Provide an accessible label (aria-label or visible label)."
 }

@@ -53,7 +53,7 @@
     "developer": "Unassigned"
   },
   "draft": false,
-  "figmaNodeId": null,
+  "figmaNodeId": "5586:8858",
   "storybookSlug": null,
   "_legacyAccessibilityNotes": "Use <header role=\"banner\"> as the outer element. The bento button should have aria-expanded and aria-haspopup."
 }

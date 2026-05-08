@@ -105,7 +105,7 @@
     "developer": "Unassigned"
   },
   "draft": false,
-  "figmaNodeId": null,
+  "figmaNodeId": "5745:4541",
   "storybookSlug": null,
   "_legacyAccessibilityNotes": "If the icon conveys meaning, wrap or label it accessibly (aria-label). Decorative icons should have aria-hidden=\"true\"."
 }

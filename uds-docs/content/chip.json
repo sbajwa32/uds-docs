@@ -53,7 +53,7 @@
     "developer": "Unassigned"
   },
   "draft": false,
-  "figmaNodeId": null,
+  "figmaNodeId": "6182:27972",
   "storybookSlug": null,
   "_legacyAccessibilityNotes": "aria-selected for filter chips. Dismiss buttons within chips need aria-label."
 }
