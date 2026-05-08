@@ -49,87 +49,427 @@
   var STORAGE_KEY = 'uds-demo-history';
 
   /* ========================================================================
-     1. TEMPLATES — Realistic HTML snippets per component
+     1. RNG + REALISTIC DATA POOLS
+     Each Build / Rebuild calls reseedRandom() so every preview gets fresh
+     content and states. The data is themed for property management
+     (Boardroom). Layout structure (header on top, breadcrumb after,
+     filter bar above table, etc.) is preserved by the assembler — only
+     contents and per-component states vary.
+     ======================================================================== */
+
+  // Tiny seeded RNG so reseedRandom() makes a build deterministic within
+  // its own scope. We don't expose the seed to the user; it just means a
+  // build is internally consistent (same tenant in table = same balance).
+  var _rng = Math.random;
+  function mulberry32(a) {
+    return function () {
+      a |= 0; a = a + 0x6D2B79F5 | 0;
+      var t = Math.imul(a ^ a >>> 15, 1 | a);
+      t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+      return ((t ^ t >>> 14) >>> 0) / 4294967296;
+    };
+  }
+  function reseedRandom(seed) {
+    _rng = mulberry32(seed != null ? seed : (Date.now() ^ Math.floor(Math.random() * 1e9)));
+  }
+  function rnd() { return _rng(); }
+  function pick(arr) { return arr[Math.floor(rnd() * arr.length)]; }
+  function pickN(arr, n) {
+    var out = arr.slice();
+    for (var i = out.length - 1; i > 0; i--) {
+      var j = Math.floor(rnd() * (i + 1));
+      var t = out[i]; out[i] = out[j]; out[j] = t;
+    }
+    return out.slice(0, Math.min(n, out.length));
+  }
+  function randInt(min, max) { return Math.floor(rnd() * (max - min + 1)) + min; }
+  function chance(p) { return rnd() < p; }
+  function fmtMoney(n) {
+    var s = n.toFixed(2);
+    return '$' + s.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  }
+
+  var DATA = {
+    tenants: [
+      'Brian Smith', 'Catherine Lee', 'David Brown', 'Eva White', 'Marcus Chen',
+      'Priya Patel', 'Olivia García', 'Tomás Rivera', 'Ada Okafor', 'Jonas Becker',
+      'Sofia Romano', 'Henry Müller', 'Naomi Tanaka', 'Lucas Dubois', 'Anya Volkov',
+      'Liam O\'Connor', 'Isabela Costa', 'Yusuf Demir', 'Maya Goldberg', 'Felix Andersen',
+      'Zara Ahmed', 'Ethan Wallace', 'Hana Park', 'Diego Morales', 'Ingrid Larsson',
+      'Theo Bennett', 'Aisha Khan', 'Caleb Foster', 'Lina Schwarz', 'Rafael Silva'
+    ],
+    properties: [
+      'Riverbend Estates', 'Sunnyvale Towers', 'Cedar Hills', 'Oakwood Gardens',
+      'The Brookline', 'Maplewood Court', 'Harbor Point', 'Stonebridge Commons',
+      'Willow Creek', 'Lakeside Place', 'Birchwood Lofts', 'Foxglove Apartments',
+      'The Northgate', 'Pine Ridge', 'Summit View', 'Aurora Heights', 'The Linden'
+    ],
+    quickActions: [
+      { label: 'Upload CSV',     body: 'Import tenants from a spreadsheet',     icon: 'upload_file' },
+      { label: 'Manual Entry',   body: 'Add tenants one at a time',             icon: 'edit_note'   },
+      { label: 'Send Statements',body: 'Email this month\'s balance summary',   icon: 'mail'        },
+      { label: 'Generate Report',body: 'Build a custom owner report',           icon: 'description' },
+      { label: 'Run Reconcile',  body: 'Match bank deposits to invoices',       icon: 'rule'        },
+      { label: 'Schedule Tour',  body: 'Book a unit walkthrough',               icon: 'event'       },
+      { label: 'New Work Order', body: 'Log a maintenance request',             icon: 'build'       },
+      { label: 'Post Listing',   body: 'Publish a vacant unit',                 icon: 'campaign'    }
+    ],
+    notifications: [
+      { variant: 'info',    icon: 'info',          msg: function () { return randInt(2,7) + ' invoices are pending review. Please check the table below.'; } },
+      { variant: 'success', icon: 'check_circle',  msg: function () { return 'Payment of ' + fmtMoney(randInt(500, 9500)) + ' from ' + pick(DATA.tenants) + ' has been recorded.'; } },
+      { variant: 'warning', icon: 'warning',       msg: function () { return randInt(1,4) + ' lease(s) expire within the next 30 days.'; } },
+      { variant: 'error',   icon: 'error',         msg: function () { return 'Failed to sync with the accounting system. Last attempt ' + randInt(2, 18) + ' min ago.'; } },
+      { variant: 'info',    icon: 'info',          msg: function () { return 'New maintenance request from ' + pick(DATA.tenants) + ' at ' + pick(DATA.properties) + '.'; } }
+    ],
+    pageTitles: ['Tenants', 'Invoices', 'Properties', 'Leases', 'Work Orders'],
+    primaryActions: [
+      { label: 'New Tenant',   icon: 'add'          },
+      { label: 'Send Invoice', icon: 'send'         },
+      { label: 'New Lease',    icon: 'description'  },
+      { label: 'Add Property', icon: 'home_work'    },
+      { label: 'New Work Order',icon: 'build'       }
+    ],
+    secondaryActions: ['Export', 'Print', 'Archive', 'Duplicate'],
+    leaseTypes: ['Fixed term', 'Month-to-month', 'Sublease', 'Renewal'],
+    statuses: [
+      { variant: 'success',   label: 'Active',    weight: 5 },
+      { variant: 'warning',   label: 'Pending',   weight: 3 },
+      { variant: 'error',     label: 'Overdue',   weight: 2 },
+      { variant: 'secondary', label: 'Draft',     weight: 1 },
+      { variant: 'success',   label: 'Renewed',   weight: 1 },
+      { variant: 'secondary', label: 'Archived',  weight: 1 }
+    ],
+    navItems: [
+      { label: 'Dashboard',           icon: 'space_dashboard' },
+      { label: 'Leasing / CRM',       icon: 'book'            },
+      { label: 'People / Contacts',   icon: 'contact_phone'   },
+      { label: 'Property / Assets',   icon: 'home_work'       },
+      { label: 'Accounting',          icon: 'monetization_on' },
+      { label: 'Maintenance',         icon: 'build'           },
+      { label: 'Reports',             icon: 'analytics'       },
+      { label: 'Settings',            icon: 'settings'        }
+    ],
+    tabSets: [
+      ['Overview', 'Invoices', 'Tenants', 'Reports'],
+      ['Summary', 'Payments', 'Documents', 'History'],
+      ['Open', 'Scheduled', 'Closed', 'Archived'],
+      ['Active', 'Pending', 'Renewals', 'Overdue']
+    ],
+    chipSets: [
+      ['All', 'Active', 'Pending', 'Overdue'],
+      ['All', 'This Month', 'Last 30 days', 'Custom'],
+      ['All', 'Studio', '1 BR', '2 BR', '3+ BR'],
+      ['All', 'Open', 'In Progress', 'Closed']
+    ],
+    breadcrumbTrails: [
+      ['Home', 'Properties', null],
+      ['Home', 'Tenants', null],
+      ['Home', 'Accounting', 'Invoices'],
+      ['Home', 'Leasing', 'Applications'],
+      ['Home', 'Maintenance', 'Work Orders']
+    ],
+    dialogScripts: [
+      { title: 'Confirm Archive',         body: 'Archive this lease? You can restore it within 30 days.',                            confirm: 'Archive',  cancel: 'Cancel' },
+      { title: 'Send Late Notice',        body: 'A late-payment notice will be emailed to the tenant on file.',                      confirm: 'Send',     cancel: 'Cancel' },
+      { title: 'Delete Draft Invoice',    body: 'This invoice is still in draft. Once deleted it cannot be recovered.',              confirm: 'Delete',   cancel: 'Keep'   },
+      { title: 'Approve Application',     body: 'Approving will trigger the welcome email and create a new lease record.',           confirm: 'Approve',  cancel: 'Cancel' },
+      { title: 'Schedule Maintenance',    body: 'A technician will be dispatched on the next available slot.',                       confirm: 'Schedule', cancel: 'Cancel' }
+    ],
+    tooltipPairs: [
+      [{ icon: 'info',      tip: 'More information about this metric' }, { icon: 'help',         tip: 'Need help? Open the docs.' }],
+      [{ icon: 'sync',      tip: 'Last synced just now' },                { icon: 'history',      tip: 'View change history' }],
+      [{ icon: 'visibility',tip: 'Show full details' },                   { icon: 'lock',         tip: 'This field is read-only' }],
+      [{ icon: 'star',      tip: 'Mark as priority' },                    { icon: 'flag',         tip: 'Flag for follow-up' }]
+    ]
+  };
+
+  // Weighted status pick (Active is more common than Overdue, etc.)
+  function pickStatus() {
+    var total = DATA.statuses.reduce(function (s, x) { return s + x.weight; }, 0);
+    var roll = rnd() * total;
+    for (var i = 0; i < DATA.statuses.length; i++) {
+      roll -= DATA.statuses[i].weight;
+      if (roll <= 0) return DATA.statuses[i];
+    }
+    return DATA.statuses[0];
+  }
+
+  /* ========================================================================
+     2. TEMPLATES — every function rolls fresh data + states from DATA.
+     Layout structure stays in the assembler (header top, etc.).
      ======================================================================== */
   var DEMO_TEMPLATES = {
 
     'link': function () {
-      return '<a class="udc-link" href="#">View property</a>';
+      var labels = ['View property', 'Open invoice', 'See tenant profile', 'Show payment history', 'Edit lease', 'View statement'];
+      return '<a class="udc-link" href="#">' + pick(labels) + '</a>';
     },
     'label': function () {
-      return '<label class="udc-label" data-required="true">Full name <span class="udc-label__required" aria-hidden="true"></span></label>';
+      var fields = [
+        { name: 'Full name',         required: true  },
+        { name: 'Property address',  required: true  },
+        { name: 'Lease end date',    required: true  },
+        { name: 'Internal notes',    required: false },
+        { name: 'Emergency contact', required: false }
+      ];
+      var f = pick(fields);
+      var req = f.required ? ' data-required="true"' : '';
+      var marker = f.required ? ' <span class="udc-label__required" aria-hidden="true"></span>' : '';
+      return '<label class="udc-label"' + req + '>' + f.name + marker + '</label>';
     },
     'text-area': function () {
-      return '<div class="udc-text-area"><label class="udc-label" for="demo-notes">Notes</label><div class="udc-text-area__field"><textarea id="demo-notes" placeholder="Add notes..."></textarea></div><div class="udc-text-area__helper"><span>Optional internal note</span><span>0/250</span></div></div>';
+      var presets = [
+        { label: 'Notes',                placeholder: 'Add notes...',                            helper: 'Optional internal note' },
+        { label: 'Maintenance details',  placeholder: 'Describe the issue...',                   helper: 'Visible to the technician' },
+        { label: 'Lease addendum',       placeholder: 'Custom clause text...',                   helper: 'Will be appended to the lease PDF' },
+        { label: 'Property description', placeholder: 'Describe the unit for the listing...',    helper: 'Public-facing copy' }
+      ];
+      var p = pick(presets);
+      var max = pick([200, 250, 500, 1000]);
+      var len = chance(0.4) ? randInt(0, Math.floor(max * 0.6)) : 0;
+      return '<div class="udc-text-area"><label class="udc-label" for="demo-notes">' + p.label + '</label><div class="udc-text-area__field"><textarea id="demo-notes" placeholder="' + p.placeholder + '"></textarea></div><div class="udc-text-area__helper"><span>' + p.helper + '</span><span>' + len + '/' + max + '</span></div></div>';
     },
     'toggle': function () {
-      return '<button class="udc-toggle" role="switch" aria-checked="true"><span class="udc-toggle__control"><span class="udc-toggle__thumb"></span></span><span class="udc-toggle__label">Email notifications</span></button>';
+      var presets = ['Email notifications', 'Auto-renew lease', 'Public listing visible', 'Send late-payment reminders', 'Allow guest access', 'Sync with accounting'];
+      var checked = chance(0.7);
+      return '<button class="udc-toggle" role="switch" aria-checked="' + checked + '"' + (chance(0.05) ? ' disabled' : '') + '><span class="udc-toggle__control"><span class="udc-toggle__thumb"></span></span><span class="udc-toggle__label">' + pick(presets) + '</span></button>';
     },
     'pagination': function () {
-      return '<nav class="udc-pagination" aria-label="Pagination"><div class="udc-pagination__pages"><button class="udc-pagination__button" aria-current="page">1</button><button class="udc-pagination__button">2</button><button class="udc-pagination__button">3</button></div><div class="udc-pagination__meta"><span>Rows per page</span><span>50</span><span>1-50 / 100</span></div></nav>';
+      var perPage = pick([25, 50, 100]);
+      var total = randInt(perPage * 2 + 1, perPage * 8);
+      var pages = Math.ceil(total / perPage);
+      var current = randInt(1, Math.min(pages, 4));
+      var maxBtns = Math.min(pages, 5);
+      var pagesHtml = '';
+      for (var i = 1; i <= maxBtns; i++) {
+        pagesHtml += '<button class="udc-pagination__button"' + (i === current ? ' aria-current="page"' : '') + '>' + i + '</button>';
+      }
+      var start = (current - 1) * perPage + 1;
+      var end = Math.min(current * perPage, total);
+      return '<nav class="udc-pagination" aria-label="Pagination"><div class="udc-pagination__pages">' + pagesHtml + '</div><div class="udc-pagination__meta"><span>Rows per page</span><span>' + perPage + '</span><span>' + start + '-' + end + ' / ' + total + '</span></div></nav>';
     },
     'nav-header': function () {
-      return '<div class="udc-nav-header"><div class="udc-nav-header__left"><div class="udc-nav-logo"><span class="material-symbols-outlined" style="font-size:32px;color:var(--uds-color-icon-interactive);">apartment</span></div></div><div class="udc-nav-header__right"><button class="udc-button-ghost" data-icon-only data-size="sm"><span class="material-symbols-outlined">notifications</span></button><button class="udc-button-ghost" data-icon-only data-size="sm"><span class="material-symbols-outlined">account_circle</span></button></div></div>';
+      var unread = randInt(0, 12);
+      var notifBadge = unread > 0
+        ? '<span class="udc-badge" data-variant="error" data-size="sm" style="position:absolute;top:-2px;right:-2px;min-width:16px;height:16px;padding:0 4px;font-size:10px;">' + unread + '</span>'
+        : '';
+      return '<div class="udc-nav-header"><div class="udc-nav-header__left"><div class="udc-nav-logo"><span class="material-symbols-outlined" style="font-size:32px;color:var(--uds-color-icon-interactive);">apartment</span></div></div><div class="udc-nav-header__right"><span style="position:relative;display:inline-flex;"><button class="udc-button-ghost" data-icon-only data-size="sm" aria-label="Notifications"><span class="material-symbols-outlined">notifications</span></button>' + notifBadge + '</span><button class="udc-button-ghost" data-icon-only data-size="sm" aria-label="Account"><span class="material-symbols-outlined">account_circle</span></button></div></div>';
     },
     'nav-vertical': function () {
-      return '<nav class="udc-nav-vertical" aria-label="Main navigation" style="width:240px;"><button class="udc-nav-button" aria-selected="true"><span class="material-symbols-outlined">space_dashboard</span><span class="udc-nav-button__label">Dashboard</span></button><button class="udc-nav-button"><span class="material-symbols-outlined">book</span><span class="udc-nav-button__label">Leasing / CRM</span></button><button class="udc-nav-button"><span class="material-symbols-outlined">contact_phone</span><span class="udc-nav-button__label">People / Contacts</span></button><button class="udc-nav-button"><span class="material-symbols-outlined">home_work</span><span class="udc-nav-button__label">Property / Assets</span></button><button class="udc-nav-button"><span class="material-symbols-outlined">monetization_on</span><span class="udc-nav-button__label">Accounting</span></button></nav>';
+      var items = pickN(DATA.navItems, randInt(4, 6));
+      var selectedIdx = randInt(0, items.length - 1);
+      var html = items.map(function (it, i) {
+        var sel = i === selectedIdx ? ' aria-selected="true"' : '';
+        return '<button class="udc-nav-button"' + sel + '><span class="material-symbols-outlined">' + it.icon + '</span><span class="udc-nav-button__label">' + it.label + '</span></button>';
+      }).join('');
+      return '<nav class="udc-nav-vertical" aria-label="Main navigation" style="width:240px;">' + html + '</nav>';
     },
     'breadcrumb': function () {
-      return '<nav class="udc-breadcrumb" aria-label="Breadcrumb"><ol><li><a href="#">Home</a></li><li><a href="#">Properties</a></li><li aria-current="page">Riverbend Estates</li></ol></nav>';
+      var trail = pick(DATA.breadcrumbTrails).slice();
+      // Last segment may be a property name or a dynamic id
+      if (trail[trail.length - 1] === null) trail[trail.length - 1] = pick(DATA.properties);
+      else trail.push(pick(['#' + randInt(1000, 9999), pick(DATA.tenants), pick(DATA.properties)]));
+      var crumbs = trail.map(function (c, i) {
+        if (i === trail.length - 1) return '<li aria-current="page">' + c + '</li>';
+        return '<li><a href="#">' + c + '</a></li>';
+      }).join('');
+      return '<nav class="udc-breadcrumb" aria-label="Breadcrumb"><ol>' + crumbs + '</ol></nav>';
     },
     'notification': function () {
-      return '<div class="udc-notification" data-variant="info"><span class="udc-notification__icon"><span class="material-symbols-outlined">info</span></span><span class="udc-notification__text">3 invoices are pending review. Please check the table below.</span><button class="udc-notification__close" aria-label="Dismiss"><span class="material-symbols-outlined">close</span></button></div>';
+      var n = pick(DATA.notifications);
+      return '<div class="udc-notification" data-variant="' + n.variant + '"><span class="udc-notification__icon"><span class="material-symbols-outlined">' + n.icon + '</span></span><span class="udc-notification__text">' + n.msg() + '</span><button class="udc-notification__close" aria-label="Dismiss"><span class="material-symbols-outlined">close</span></button></div>';
     },
     'search': function () {
-      return '<div class="udc-search"><div class="udc-search__field"><span class="udc-search__icon"><span class="material-symbols-outlined">search</span></span><input type="search" placeholder="Search tenants, properties, invoices..." /><button class="udc-search__clear" aria-label="Clear"><span class="material-symbols-outlined">clear</span></button></div></div>';
+      var placeholders = [
+        'Search tenants, properties, invoices...',
+        'Search work orders...',
+        'Find a lease by tenant or property...',
+        'Search accounting transactions...',
+        'Search applications...'
+      ];
+      // Sometimes show a "typed query" state with the clear button visible
+      var typed = chance(0.3) ? pick([pick(DATA.tenants).split(' ')[0], pick(DATA.properties).split(' ')[0], 'overdue', 'invoice', 'lease']) : '';
+      var inputAttrs = typed ? ' value="' + typed + '"' : '';
+      return '<div class="udc-search"><div class="udc-search__field"><span class="udc-search__icon"><span class="material-symbols-outlined">search</span></span><input type="search" placeholder="' + pick(placeholders) + '"' + inputAttrs + ' /><button class="udc-search__clear" aria-label="Clear"' + (typed ? '' : ' style="visibility:hidden"') + '><span class="material-symbols-outlined">clear</span></button></div></div>';
     },
     'chip': function () {
-      return '<div style="display:flex;gap:8px;flex-wrap:wrap;"><button class="udc-chip" data-variant="filter" aria-selected="true"><span class="udc-chip__leading-icon"><span class="material-symbols-outlined">check</span></span><span class="udc-chip__label">All</span></button><button class="udc-chip" data-variant="filter"><span class="udc-chip__label">Active</span></button><button class="udc-chip" data-variant="filter"><span class="udc-chip__label">Pending</span></button><button class="udc-chip" data-variant="filter"><span class="udc-chip__label">Overdue</span></button></div>';
+      var set = pick(DATA.chipSets);
+      var selectedIdx = randInt(0, set.length - 1);
+      var html = set.map(function (label, i) {
+        var sel = i === selectedIdx ? ' aria-selected="true"' : '';
+        var leadingIcon = i === selectedIdx ? '<span class="udc-chip__leading-icon"><span class="material-symbols-outlined">check</span></span>' : '';
+        return '<button class="udc-chip" data-variant="filter"' + sel + '>' + leadingIcon + '<span class="udc-chip__label">' + label + '</span></button>';
+      }).join('');
+      return '<div style="display:flex;gap:8px;flex-wrap:wrap;">' + html + '</div>';
     },
     'tabs': function () {
-      return '<div class="udc-tabs" role="tablist"><button class="udc-tab" role="tab" aria-selected="true">Overview</button><button class="udc-tab" role="tab">Invoices</button><button class="udc-tab" role="tab">Tenants</button><button class="udc-tab" role="tab" disabled>Reports</button></div>';
+      var set = pick(DATA.tabSets).slice(0, randInt(3, 4));
+      var selectedIdx = randInt(0, set.length - 1);
+      // Occasionally disable the last tab to show that state
+      var disabledIdx = chance(0.25) ? set.length - 1 : -1;
+      if (disabledIdx === selectedIdx) selectedIdx = 0;
+      var html = set.map(function (label, i) {
+        var sel = i === selectedIdx ? ' aria-selected="true"' : '';
+        var dis = i === disabledIdx ? ' disabled' : '';
+        return '<button class="udc-tab" role="tab"' + sel + dis + '>' + label + '</button>';
+      }).join('');
+      return '<div class="udc-tabs" role="tablist">' + html + '</div>';
     },
     'data-table': function () {
-      return '<div class="udc-data-table"><table><thead><tr><th class="udc-dt-check"><input type="checkbox" /></th><th>Tenant <span class="udc-dt-sort" data-dir="asc"></span></th><th>Status</th><th>Property</th><th class="udc-dt-align-right">Balance</th><th class="udc-dt-action"></th></tr></thead><tbody><tr><td class="udc-dt-check"><input type="checkbox" /></td><td>Brian Smith</td><td><span class="udc-badge" data-variant="success">Active</span></td><td>Riverbend Estates</td><td class="udc-dt-align-right">$0.00</td><td class="udc-dt-action"><button class="udc-button-ghost" data-icon-only><span class="material-symbols-outlined">more_vert</span></button></td></tr><tr><td class="udc-dt-check"><input type="checkbox" /></td><td>Catherine Lee</td><td><span class="udc-badge" data-variant="warning">Pending</span></td><td>Sunnyvale Towers</td><td class="udc-dt-align-right">$1,200</td><td class="udc-dt-action"><button class="udc-button-ghost" data-icon-only><span class="material-symbols-outlined">more_vert</span></button></td></tr><tr><td class="udc-dt-check"><input type="checkbox" /></td><td>David Brown</td><td><span class="udc-badge" data-variant="error">Overdue</span></td><td>Cedar Hills</td><td class="udc-dt-align-right">$3,450</td><td class="udc-dt-action"><button class="udc-button-ghost" data-icon-only><span class="material-symbols-outlined">more_vert</span></button></td></tr><tr><td class="udc-dt-check"><input type="checkbox" /></td><td>Eva White</td><td><span class="udc-badge" data-variant="success">Active</span></td><td>Oakwood Gardens</td><td class="udc-dt-align-right">$0.00</td><td class="udc-dt-action"><button class="udc-button-ghost" data-icon-only><span class="material-symbols-outlined">more_vert</span></button></td></tr></tbody></table></div>';
+      var rowCount = randInt(4, 7);
+      var rowsTenants = pickN(DATA.tenants, rowCount);
+      var rows = rowsTenants.map(function (name) {
+        var status = pickStatus();
+        var balance = status.label === 'Overdue' ? randInt(800, 6500)
+                    : status.label === 'Pending' ? randInt(200, 2500)
+                    : status.label === 'Active'  ? (chance(0.6) ? 0 : randInt(50, 800))
+                    : randInt(0, 1500);
+        return '<tr><td class="udc-dt-check"><input type="checkbox"' + (chance(0.15) ? ' checked' : '') + ' /></td><td>' + name + '</td><td><span class="udc-badge" data-variant="' + status.variant + '">' + status.label + '</span></td><td>' + pick(DATA.properties) + '</td><td class="udc-dt-align-right">' + fmtMoney(balance) + '</td><td class="udc-dt-action"><button class="udc-button-ghost" data-icon-only><span class="material-symbols-outlined">more_vert</span></button></td></tr>';
+      }).join('');
+      var sortDir = pick(['asc', 'desc']);
+      return '<div class="udc-data-table"><table><thead><tr><th class="udc-dt-check"><input type="checkbox" /></th><th>Tenant <span class="udc-dt-sort" data-dir="' + sortDir + '"></span></th><th>Status</th><th>Property</th><th class="udc-dt-align-right">Balance</th><th class="udc-dt-action"></th></tr></thead><tbody>' + rows + '</tbody></table></div>';
     },
     'tile': function () {
-      return '<div style="display:flex;gap:16px;flex-wrap:wrap;"><div class="udc-tile" tabindex="0" style="width:240px;"><div class="udc-tile__content"><div class="udc-tile__label">Upload CSV</div><div class="udc-tile__body">Import tenants from a spreadsheet</div></div><span class="udc-tile__chevron"><span class="material-symbols-outlined">chevron_right</span></span></div><div class="udc-tile" tabindex="0" aria-selected="true" style="width:240px;"><div class="udc-tile__content"><div class="udc-tile__label">Manual Entry</div><div class="udc-tile__body">Add tenants one at a time</div></div><span class="udc-tile__chevron"><span class="material-symbols-outlined">chevron_right</span></span></div></div>';
+      var n = randInt(2, 3);
+      var tiles = pickN(DATA.quickActions, n);
+      var selectedIdx = randInt(0, tiles.length - 1);
+      var html = tiles.map(function (t, i) {
+        var sel = i === selectedIdx ? ' aria-selected="true"' : '';
+        return '<div class="udc-tile" tabindex="0"' + sel + ' style="width:240px;"><div class="udc-tile__content"><div class="udc-tile__label">' + t.label + '</div><div class="udc-tile__body">' + t.body + '</div></div><span class="udc-tile__chevron"><span class="material-symbols-outlined">chevron_right</span></span></div>';
+      }).join('');
+      return '<div style="display:flex;gap:16px;flex-wrap:wrap;">' + html + '</div>';
     },
     'list': function () {
-      return '<div class="udc-list" style="max-width:280px;"><div class="udc-list-item" tabindex="0" aria-selected="true"><span class="udc-list-item__leading-icon"><span class="material-symbols-outlined">space_dashboard</span></span><span class="udc-list-item__label">Dashboard</span></div><div class="udc-list-item" tabindex="0"><span class="udc-list-item__leading-icon"><span class="material-symbols-outlined">book</span></span><span class="udc-list-item__label">Leasing</span></div><div class="udc-list-item" tabindex="0"><span class="udc-list-item__leading-icon"><span class="material-symbols-outlined">monetization_on</span></span><span class="udc-list-item__label">Accounting</span></div></div>';
+      var items = pickN(DATA.navItems, randInt(3, 5));
+      var selectedIdx = randInt(0, items.length - 1);
+      var html = items.map(function (it, i) {
+        var sel = i === selectedIdx ? ' aria-selected="true"' : '';
+        return '<div class="udc-list-item" tabindex="0"' + sel + '><span class="udc-list-item__leading-icon"><span class="material-symbols-outlined">' + it.icon + '</span></span><span class="udc-list-item__label">' + it.label + '</span></div>';
+      }).join('');
+      return '<div class="udc-list" style="max-width:280px;">' + html + '</div>';
     },
     'button': function () {
-      return '<div style="display:flex;gap:8px;flex-wrap:wrap;"><button class="udc-button-primary"><span class="material-symbols-outlined" style="font-size:20px;">add</span> New Tenant</button><button class="udc-button-secondary">Export</button><button class="udc-button-ghost">Cancel</button></div>';
+      var primary = pick(DATA.primaryActions);
+      var secondaries = pickN(DATA.secondaryActions, randInt(1, 2));
+      var secHtml = secondaries.map(function (s) { return '<button class="udc-button-secondary">' + s + '</button>'; }).join('');
+      var ghost = chance(0.6) ? '<button class="udc-button-ghost">Cancel</button>' : '';
+      return '<div style="display:flex;gap:8px;flex-wrap:wrap;"><button class="udc-button-primary"><span class="material-symbols-outlined" style="font-size:20px;">' + primary.icon + '</span> ' + primary.label + '</button>' + secHtml + ghost + '</div>';
     },
     'text-input': function () {
-      return '<div class="udc-text-input" style="max-width:360px;"><label class="udc-text-input__label">Full name<span class="udc-text-input__required"></span></label><div class="udc-text-input__field"><input type="text" placeholder="Enter tenant name..." /></div><div class="udc-text-input__helper"><span>As it appears on the lease</span></div></div>';
+      var presets = [
+        { label: 'Full name',         placeholder: 'Enter tenant name...',         helper: 'As it appears on the lease',     required: true  },
+        { label: 'Email',             placeholder: 'tenant@example.com',           helper: 'Used for digital statements',    required: true  },
+        { label: 'Phone',             placeholder: '(555) 123-4567',               helper: 'Mobile preferred',               required: false },
+        { label: 'Property address',  placeholder: 'Street, City, State, ZIP',     helper: '',                                required: true  },
+        { label: 'Unit number',       placeholder: 'e.g. 4B',                      helper: '',                                required: false }
+      ];
+      var p = pick(presets);
+      var hasError = chance(0.12);
+      var hasValue = !hasError && chance(0.4);
+      var value = hasValue ? (p.label === 'Full name' ? pick(DATA.tenants)
+                            : p.label === 'Property address' ? pick(DATA.properties)
+                            : p.label === 'Email' ? pick(DATA.tenants).toLowerCase().replace(/[^a-z]/g, '.') + '@example.com'
+                            : p.label === 'Phone' ? '(' + randInt(200, 999) + ') ' + randInt(200, 999) + '-' + randInt(1000, 9999)
+                            : p.label === 'Unit number' ? randInt(1, 24) + pick(['A','B','C','D'])
+                            : '')
+                          : '';
+      var errorAttr = hasError ? ' data-error="true"' : '';
+      var requiredMarker = p.required ? '<span class="udc-text-input__required"></span>' : '';
+      var helperHtml = hasError ? '<div class="udc-text-input__helper"><span style="color:var(--uds-color-text-error);">This field is required.</span></div>'
+                                : (p.helper ? '<div class="udc-text-input__helper"><span>' + p.helper + '</span></div>' : '');
+      return '<div class="udc-text-input"' + errorAttr + ' style="max-width:360px;"><label class="udc-text-input__label">' + p.label + requiredMarker + '</label><div class="udc-text-input__field"><input type="text" placeholder="' + p.placeholder + '" value="' + value + '" /></div>' + helperHtml + '</div>';
     },
     'dropdown': function () {
-      return '<div class="udc-dropdown" style="max-width:300px;"><label class="udc-dropdown__label">Property</label><div class="udc-dropdown__trigger" tabindex="0" role="combobox" aria-expanded="false" aria-haspopup="listbox"><span class="udc-dropdown__value" data-placeholder>Select property...</span><span class="udc-dropdown__chevron"><span class="material-symbols-outlined">keyboard_arrow_down</span></span></div><div class="udc-dropdown__list" role="listbox"><div class="udc-dropdown__item" role="option">Riverbend Estates</div><div class="udc-dropdown__item" role="option">Sunnyvale Towers</div><div class="udc-dropdown__item" role="option">Cedar Hills</div></div></div>';
+      var configs = [
+        { label: 'Property',   options: pickN(DATA.properties, randInt(3, 5)),  placeholder: 'Select property...' },
+        { label: 'Lease type', options: DATA.leaseTypes.slice(0, randInt(3, 4)), placeholder: 'Select lease type...' },
+        { label: 'Status',     options: DATA.statuses.map(function (s) { return s.label; }).slice(0, randInt(3, 5)), placeholder: 'Select status...' },
+        { label: 'Owner',      options: pickN(DATA.tenants, randInt(3, 5)),    placeholder: 'Select owner...' }
+      ];
+      var c = pick(configs);
+      var hasValue = chance(0.5);
+      var selectedIdx = hasValue ? randInt(0, c.options.length - 1) : -1;
+      var displayValue = hasValue
+        ? '<span class="udc-dropdown__value">' + c.options[selectedIdx] + '</span>'
+        : '<span class="udc-dropdown__value" data-placeholder>' + c.placeholder + '</span>';
+      var optsHtml = c.options.map(function (o, i) {
+        return '<div class="udc-dropdown__item" role="option"' + (i === selectedIdx ? ' aria-selected="true"' : '') + '>' + o + '</div>';
+      }).join('');
+      return '<div class="udc-dropdown" style="max-width:300px;"><label class="udc-dropdown__label">' + c.label + '</label><div class="udc-dropdown__trigger" tabindex="0" role="combobox" aria-expanded="false" aria-haspopup="listbox">' + displayValue + '<span class="udc-dropdown__chevron"><span class="material-symbols-outlined">keyboard_arrow_down</span></span></div><div class="udc-dropdown__list" role="listbox">' + optsHtml + '</div></div>';
     },
     'checkbox': function () {
-      return '<div style="display:flex;flex-direction:column;gap:8px;"><label class="udc-checkbox"><input type="checkbox" checked /><span class="udc-checkbox__control"></span><span class="udc-checkbox__label">Send email notification</span></label><label class="udc-checkbox"><input type="checkbox" /><span class="udc-checkbox__control"></span><span class="udc-checkbox__label">Include payment history</span></label></div>';
+      var options = [
+        'Send email notification', 'Include payment history', 'Auto-bill on the 1st',
+        'Notify on missed payment', 'Allow online maintenance requests',
+        'Subscribe to monthly statements', 'Share lease with co-tenant',
+        'Apply security deposit interest'
+      ];
+      var picks = pickN(options, randInt(2, 4));
+      var html = picks.map(function (label) {
+        var checked = chance(0.55) ? ' checked' : '';
+        return '<label class="udc-checkbox"><input type="checkbox"' + checked + ' /><span class="udc-checkbox__control"></span><span class="udc-checkbox__label">' + label + '</span></label>';
+      }).join('');
+      return '<div style="display:flex;flex-direction:column;gap:8px;">' + html + '</div>';
     },
     'radio': function () {
-      return '<div class="udc-radio-group" role="radiogroup"><span class="udc-radio-group__legend">Lease type</span><label class="udc-radio"><input type="radio" name="demo-lease" value="fixed" checked /><span class="udc-radio__control"></span><span class="udc-radio__label">Fixed term</span></label><label class="udc-radio"><input type="radio" name="demo-lease" value="month" /><span class="udc-radio__control"></span><span class="udc-radio__label">Month-to-month</span></label></div>';
+      var configs = [
+        { legend: 'Lease type',         options: DATA.leaseTypes },
+        { legend: 'Notification frequency', options: ['Realtime', 'Daily digest', 'Weekly summary'] },
+        { legend: 'Payment method',     options: ['ACH transfer', 'Credit card', 'Mailed check'] },
+        { legend: 'Default view',       options: ['List', 'Grid', 'Calendar'] }
+      ];
+      var c = pick(configs);
+      var opts = c.options.slice(0, randInt(2, c.options.length));
+      var checkedIdx = randInt(0, opts.length - 1);
+      var html = opts.map(function (o, i) {
+        var isChecked = i === checkedIdx ? ' checked' : '';
+        var slug = o.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+        return '<label class="udc-radio"><input type="radio" name="demo-radio-grp" value="' + slug + '"' + isChecked + ' /><span class="udc-radio__control"></span><span class="udc-radio__label">' + o + '</span></label>';
+      }).join('');
+      return '<div class="udc-radio-group" role="radiogroup"><span class="udc-radio-group__legend">' + c.legend + '</span>' + html + '</div>';
     },
     'badge': function () {
-      return '<div style="display:flex;gap:8px;flex-wrap:wrap;"><span class="udc-badge" data-variant="success">Active</span><span class="udc-badge" data-variant="warning">Pending</span><span class="udc-badge" data-variant="error">Overdue</span><span class="udc-badge" data-variant="secondary">Draft</span></div>';
+      var variants = pickN(DATA.statuses, randInt(3, 5));
+      var html = variants.map(function (s) {
+        return '<span class="udc-badge" data-variant="' + s.variant + '">' + s.label + '</span>';
+      }).join('');
+      return '<div style="display:flex;gap:8px;flex-wrap:wrap;">' + html + '</div>';
     },
     'divider': function () {
       return '<hr class="udc-divider-horizontal" />';
     },
     'spacer': function () {
-      return '<div class="udc-spacer" data-size="300"></div>';
+      var sizes = ['200', '300', '400', '500'];
+      return '<div class="udc-spacer" data-size="' + pick(sizes) + '"></div>';
     },
     'icon-wrapper': function () {
-      return '<div style="display:flex;gap:12px;align-items:center;"><span class="udc-icon-wrapper" data-size="24" style="color:var(--uds-color-icon-interactive);"><span class="material-symbols-outlined">info</span></span><span class="udc-icon-wrapper" data-size="24" style="color:var(--uds-color-icon-success);"><span class="material-symbols-outlined">check_circle</span></span><span class="udc-icon-wrapper" data-size="24" style="color:var(--uds-color-icon-error);"><span class="material-symbols-outlined">error</span></span></div>';
+      var icons = [
+        { icon: 'info',           color: 'interactive' },
+        { icon: 'check_circle',   color: 'success'     },
+        { icon: 'error',          color: 'error'       },
+        { icon: 'warning',        color: 'warning'     },
+        { icon: 'home',           color: 'interactive' },
+        { icon: 'mail',           color: 'interactive' },
+        { icon: 'event',          color: 'interactive' },
+        { icon: 'monetization_on',color: 'success'     }
+      ];
+      var picks = pickN(icons, 3);
+      var size = pick(['16', '20', '24', '32']);
+      var html = picks.map(function (it) {
+        return '<span class="udc-icon-wrapper" data-size="' + size + '" style="color:var(--uds-color-icon-' + it.color + ');"><span class="material-symbols-outlined">' + it.icon + '</span></span>';
+      }).join('');
+      return '<div style="display:flex;gap:12px;align-items:center;">' + html + '</div>';
     },
     'dialog': function () {
-      return '<button class="udc-button-primary" onclick="document.getElementById(\'demo-dlg\').setAttribute(\'data-open\',\'true\');if(window.UDS)UDS.init();">Open Dialog</button><div class="udc-dialog-backdrop" id="demo-dlg" data-open="false"><div class="udc-dialog" role="dialog" aria-modal="true"><div class="udc-dialog__header"><h2 class="udc-dialog__title">Confirm Action</h2><button class="udc-dialog__close" aria-label="Close"><span class="material-symbols-outlined">close</span></button></div><div class="udc-dialog__body"><p style="font-family:var(--uds-font-family);font-size:var(--uds-font-size-base);color:var(--uds-color-text-primary);">Are you sure you want to proceed?</p></div><div class="udc-dialog__footer"><button class="udc-button-secondary" onclick="this.closest(\'.udc-dialog-backdrop\').setAttribute(\'data-open\',\'false\');">Cancel</button><button class="udc-button-primary" onclick="this.closest(\'.udc-dialog-backdrop\').setAttribute(\'data-open\',\'false\');">Confirm</button></div></div></div>';
+      var s = pick(DATA.dialogScripts);
+      return '<button class="udc-button-primary" onclick="document.getElementById(\'demo-dlg\').setAttribute(\'data-open\',\'true\');if(window.UDS)UDS.init();">Open Dialog</button><div class="udc-dialog-backdrop" id="demo-dlg" data-open="false"><div class="udc-dialog" role="dialog" aria-modal="true"><div class="udc-dialog__header"><h2 class="udc-dialog__title">' + s.title + '</h2><button class="udc-dialog__close" aria-label="Close" onclick="this.closest(\'.udc-dialog-backdrop\').setAttribute(\'data-open\',\'false\');"><span class="material-symbols-outlined">close</span></button></div><div class="udc-dialog__body"><p style="font-family:var(--uds-font-family);font-size:var(--uds-font-size-base);color:var(--uds-color-text-primary);">' + s.body + '</p></div><div class="udc-dialog__footer"><button class="udc-button-secondary" onclick="this.closest(\'.udc-dialog-backdrop\').setAttribute(\'data-open\',\'false\');">' + s.cancel + '</button><button class="udc-button-primary" onclick="this.closest(\'.udc-dialog-backdrop\').setAttribute(\'data-open\',\'false\');">' + s.confirm + '</button></div></div></div>';
     },
     'tooltip': function () {
-      return '<div style="display:flex;gap:16px;"><span class="udc-tooltip-wrapper"><button class="udc-button-ghost" data-icon-only><span class="material-symbols-outlined">info</span></button><span class="udc-tooltip" role="tooltip">More information</span></span><span class="udc-tooltip-wrapper"><button class="udc-button-ghost" data-icon-only><span class="material-symbols-outlined">help</span></button><span class="udc-tooltip" role="tooltip">Need help?</span></span></div>';
+      var pair = pick(DATA.tooltipPairs);
+      var html = pair.map(function (t) {
+        return '<span class="udc-tooltip-wrapper"><button class="udc-button-ghost" data-icon-only><span class="material-symbols-outlined">' + t.icon + '</span></button><span class="udc-tooltip" role="tooltip">' + t.tip + '</span></span>';
+      }).join('');
+      return '<div style="display:flex;gap:16px;">' + html + '</div>';
     }
   };
 
@@ -161,7 +501,8 @@
     }
 
     if (has(components, 'button') && has(components, 'data-table')) {
-      mainContent.push('<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;"><h2 style="font-family:var(--uds-font-family);font-size:var(--uds-font-size-xl);font-weight:var(--uds-font-weight-bold);color:var(--uds-color-text-primary);margin:0;">Tenants</h2>' + DEMO_TEMPLATES['button']() + '</div>');
+      var pageTitle = pick(DATA.pageTitles);
+      mainContent.push('<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;"><h2 style="font-family:var(--uds-font-family);font-size:var(--uds-font-size-xl);font-weight:var(--uds-font-weight-bold);color:var(--uds-color-text-primary);margin:0;">' + pageTitle + '</h2>' + DEMO_TEMPLATES['button']() + '</div>');
     } else if (has(components, 'button')) {
       mainContent.push('<div style="margin-bottom:16px;">' + DEMO_TEMPLATES['button']() + '</div>');
     }
@@ -169,7 +510,10 @@
     if (has(components, 'data-table')) mainContent.push('<div style="margin-bottom:24px;">' + DEMO_TEMPLATES['data-table']() + '</div>');
     if (has(components, 'pagination')) mainContent.push('<div style="margin-bottom:24px;">' + DEMO_TEMPLATES['pagination']() + '</div>');
 
-    if (has(components, 'tile')) mainContent.push('<div style="margin-bottom:24px;"><h3 style="font-family:var(--uds-font-family);font-size:var(--uds-font-size-lg);font-weight:var(--uds-font-weight-bold);color:var(--uds-color-text-primary);margin:0 0 12px;">Quick Actions</h3>' + DEMO_TEMPLATES['tile']() + '</div>');
+    if (has(components, 'tile')) {
+      var tileHeading = pick(['Quick Actions', 'Shortcuts', 'Get Started', 'What\'s next']);
+      mainContent.push('<div style="margin-bottom:24px;"><h3 style="font-family:var(--uds-font-family);font-size:var(--uds-font-size-lg);font-weight:var(--uds-font-weight-bold);color:var(--uds-color-text-primary);margin:0 0 12px;">' + tileHeading + '</h3>' + DEMO_TEMPLATES['tile']() + '</div>');
+    }
 
     if (has(components, 'divider') && mainContent.length > 0) mainContent.push(DEMO_TEMPLATES['divider']());
 
@@ -183,7 +527,8 @@
     if (has(components, 'toggle')) formFields.push(DEMO_TEMPLATES['toggle']());
 
     if (formFields.length > 0) {
-      mainContent.push('<div style="margin-top:24px;padding:24px;background:var(--uds-color-surface-subtle);border-radius:var(--uds-border-radius-container-md);"><h3 style="font-family:var(--uds-font-family);font-size:var(--uds-font-size-lg);font-weight:var(--uds-font-weight-bold);color:var(--uds-color-text-primary);margin:0 0 16px;">Add Tenant</h3><div style="display:flex;flex-direction:column;gap:16px;">' + formFields.join('') + '</div></div>');
+      var formHeading = pick(['Add Tenant', 'New Lease', 'Edit Property', 'Create Invoice', 'New Work Order', 'Update Owner']);
+      mainContent.push('<div style="margin-top:24px;padding:24px;background:var(--uds-color-surface-subtle);border-radius:var(--uds-border-radius-container-md);"><h3 style="font-family:var(--uds-font-family);font-size:var(--uds-font-size-lg);font-weight:var(--uds-font-weight-bold);color:var(--uds-color-text-primary);margin:0 0 16px;">' + formHeading + '</h3><div style="display:flex;flex-direction:column;gap:16px;">' + formFields.join('') + '</div></div>');
     }
 
     if (has(components, 'badge') && !has(components, 'data-table')) mainContent.push('<div style="margin-top:16px;">' + DEMO_TEMPLATES['badge']() + '</div>');
@@ -230,11 +575,22 @@
     return '<!DOCTYPE html>\n<html lang="en"' + themeAttrString(getThemeAttrs()) + '>\n<head>\n  <meta charset="UTF-8" />\n  <meta name="viewport" content="width=device-width, initial-scale=1.0" />\n  <title>' + title + '</title>\n  <link rel="preconnect" href="https://fonts.googleapis.com" />\n  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Poppins:wght@400;500;700&family=Roboto:wght@400;500;700&family=Lexend:wght@400;500;700&display=swap" rel="stylesheet" />\n  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />\n  <link rel="stylesheet" href="' + origin + '/uds/uds.css" />\n  <style>*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; } body { font-family: var(--uds-font-family); background: var(--uds-color-surface-page-main); color: var(--uds-color-text-primary); }</style>\n</head>\n';
   }
 
-  function generateDemoHTML(components) {
+  function generateDemoHTML(components, opts) {
+    opts = opts || {};
+    // Reseed on every generate so each Build / Rebuild rolls fresh data and
+    // states. Within a single generate call, the seed stays put so a tenant
+    // listed in the data table also gets a consistent property and balance.
+    reseedRandom(opts.seed != null ? opts.seed : Date.now() ^ Math.floor(Math.random() * 1e9));
     var origin = getBaseUrl();
     var body = assembleHTMLBody(components);
     return baseHead('UDS Demo — HTML') + '<body>\n' + body + '\n<script src="' + origin + '/uds/uds.js"><\/script>\n</body>\n</html>';
   }
+
+  // Exposed so the Rebuild button in the preview toolbar can re-roll content
+  // for the same set of components.
+  window.regenerateDemoHTML = function (components) {
+    return generateDemoHTML(components);
+  };
 
 
   /* ========================================================================
@@ -333,7 +689,7 @@
       try {
         var html = generateDemoHTML(components);
 
-        openDemoOverlay(html);
+        openDemoOverlay(html, components);
 
         var attrs = getThemeAttrs();
         var entry = {
@@ -370,20 +726,61 @@
     var history = getHistory();
     if (!history.length) return;
     var last = history[history.length - 1];
-    if (last.blobHtml) openDemoOverlay(last.blobHtml);
+    if (last.blobHtml) openDemoOverlay(last.blobHtml, last.components || []);
   };
 
-  function openDemoOverlay(html) {
+  // Re-roll the iframe with fresh data/states for the same components,
+  // without dismissing the overlay or polluting history.
+  window.rebuildDemoPreview = function () {
+    var overlay = document.getElementById('sg-demo-overlay');
+    if (!overlay) return;
+    var components = overlay._components || [];
+    if (!components.length) return;
+    var rebuildBtn = document.getElementById('sg-demo-rebuild-btn');
+    if (rebuildBtn) {
+      rebuildBtn.disabled = true;
+      rebuildBtn.dataset.originalLabel = rebuildBtn.innerHTML;
+      rebuildBtn.innerHTML = '<span class="material-symbols-outlined" style="font-size:16px;vertical-align:middle;animation:sg-spin 0.6s linear infinite;display:inline-block;">progress_activity</span>';
+    }
+    setTimeout(function () {
+      var fresh = generateDemoHTML(components);
+      var iframe = document.getElementById('sg-demo-iframe');
+      if (iframe) iframe.srcdoc = fresh;
+      if (rebuildBtn) {
+        rebuildBtn.disabled = false;
+        rebuildBtn.innerHTML = rebuildBtn.dataset.originalLabel || 'Refresh data';
+      }
+    }, 50);
+  };
+
+  function openDemoOverlay(html, components) {
     var existing = document.getElementById('sg-demo-overlay');
     if (existing) existing.remove();
 
     var overlay = document.createElement('div');
     overlay.id = 'sg-demo-overlay';
     overlay.style.cssText = 'position:fixed;inset:0;z-index:var(--uds-z-index-modal);background:var(--uds-color-surface-page-main);display:flex;flex-direction:column;';
+    // Stash components so the Rebuild button knows what to re-roll.
+    overlay._components = components || [];
+
+    var toolbarBtn = 'background:rgba(255,255,255,0.15);border:none;color:inherit;padding:4px 12px;border-radius:6px;cursor:pointer;font-family:inherit;font-size:13px;display:inline-flex;align-items:center;gap:6px;';
+    var iconStyle = 'font-size:16px;';
 
     var toolbar = document.createElement('div');
     toolbar.style.cssText = 'display:flex;align-items:center;justify-content:space-between;padding:8px 16px;background:var(--uds-color-surface-interactive-default);color:var(--uds-color-text-inverse);font-family:var(--uds-font-family);font-size:14px;flex-shrink:0;';
-    toolbar.innerHTML = '<span style="font-weight:700;">UDS Demo Preview</span><div style="display:flex;gap:8px;"><button onclick="var b=new Blob([document.getElementById(\'sg-demo-iframe\').srcdoc],{type:\'text/html\'});var a=document.createElement(\'a\');a.href=URL.createObjectURL(b);a.download=\'demo.html\';a.click();" style="background:rgba(255,255,255,0.15);border:none;color:inherit;padding:4px 12px;border-radius:6px;cursor:pointer;font-family:inherit;font-size:13px;">Save HTML</button><button onclick="document.getElementById(\'sg-demo-overlay\').remove();" style="background:rgba(255,255,255,0.15);border:none;color:inherit;padding:4px 12px;border-radius:6px;cursor:pointer;font-family:inherit;font-size:13px;">Close</button></div>';
+    toolbar.innerHTML =
+      '<span style="font-weight:700;">UDS Demo Preview</span>' +
+      '<div style="display:flex;gap:8px;">' +
+        '<button id="sg-demo-rebuild-btn" onclick="window.rebuildDemoPreview()" title="Re-roll fresh data and states without changing the selected components" style="' + toolbarBtn + '">' +
+          '<span class="material-symbols-outlined" style="' + iconStyle + '">refresh</span>Refresh data' +
+        '</button>' +
+        '<button onclick="var b=new Blob([document.getElementById(\'sg-demo-iframe\').srcdoc],{type:\'text/html\'});var a=document.createElement(\'a\');a.href=URL.createObjectURL(b);a.download=\'demo.html\';a.click();" style="' + toolbarBtn + '">' +
+          '<span class="material-symbols-outlined" style="' + iconStyle + '">download</span>Save HTML' +
+        '</button>' +
+        '<button onclick="document.getElementById(\'sg-demo-overlay\').remove();" style="' + toolbarBtn + '">' +
+          '<span class="material-symbols-outlined" style="' + iconStyle + '">close</span>Close' +
+        '</button>' +
+      '</div>';
 
     var iframe = document.createElement('iframe');
     iframe.id = 'sg-demo-iframe';
