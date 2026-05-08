@@ -41,7 +41,7 @@ The baseline tag stays on `main` permanently as a recovery anchor.
 | 1 | Migration tooling + JSON schemas | done |
 | 2 | Target layout scaffolding | in progress |
 | 3 | Extract docs site shell (CSS, ES modules, global tables) | pending |
-| 4 | Extract site modules (Demo Builder, Token Search, Playground) | pending |
+| 4 | Extract site modules (Demo Builder, Token Search, Playground) | partial — Demo Builder done in 4a; 4b (Token Search) and 4c (Playground) deferred to Phase 6 |
 | 5 | Extract non-component pages with data wiring | pending |
 | 6 | Per-component migration (26 components) | pending |
 | 7 | Demo Builder reads source-of-truth examples | pending |
@@ -58,6 +58,21 @@ Updated as each component lands.
 | ID | Status | Notes |
 |----|--------|-------|
 | (none yet) | — | Phase 6 not started |
+
+## Deferral notes
+
+- **4b (Token Search extraction)** — deferred to Phase 6. Token Search depends
+  on `escapeHtml` and the in-memory tokens index used elsewhere in app.js.
+  Extracting in Phase 4 would force either circular imports or helper
+  duplication, both of which get re-resolved in Phase 6. Empty
+  `docs/modules/token-search/` directory exists as a placeholder.
+- **4c (Playground engine extraction)** — deferred to Phase 6. The Playground
+  engine consumes `PLAYGROUNDS` (still in app.js until Phase 6 dissolves it
+  into per-component `playground.js` files), `buildIconPicker`,
+  `buildCopyButton`, `buildImplSection`, and `refreshImplSections`. All of
+  those move during Phase 6 anyway, at which point a clean
+  `docs/modules/playground/index.js` falls out naturally. Empty
+  `docs/modules/playground/` directory exists as a placeholder.
 
 ## Things that will become true at the end of the migration
 
