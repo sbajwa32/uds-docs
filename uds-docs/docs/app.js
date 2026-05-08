@@ -78,7 +78,65 @@ function parseHash() {
     return { pageId: pageId || 'changelog', tab: params.tab || null };
 }
 
-function navigate(pageId, tab) {
+// ============================================================================
+// Page fragment loader (Phase 5)
+//
+// Non-component pages live as docs/pages/<id>.html (or
+// docs/pages/tokens/<id>.html for the 4 token-reference pages). The
+// matching <div data-page="<id>" data-page-fragment></div> placeholder in
+// index.html starts empty; the first time the user navigates to that page,
+// we fetch the fragment, inject it, run any registered post-load hook, and
+// flip the placeholder so we don't fetch twice.
+// ============================================================================
+
+const TOKEN_PAGES_SET = new Set(['semantic-colors', 'primitive-colors', 'text-styles', 'spacing']);
+
+// Hooks fired AFTER a fragment's HTML is injected into its placeholder.
+// Each hook can assume its target slots (e.g. #sg-global-changelog) now
+// exist in the DOM. Components register hooks here lazily as needed.
+const PAGE_LOAD_HOOKS = {};
+
+function registerPageLoadHook(pageId, fn) {
+    if (!PAGE_LOAD_HOOKS[pageId]) PAGE_LOAD_HOOKS[pageId] = [];
+    PAGE_LOAD_HOOKS[pageId].push(fn);
+}
+
+const _fragmentLoadCache = {};
+
+async function loadPageFragment(pageId, page) {
+    if (!page || !page.hasAttribute('data-page-fragment')) return;
+    if (page.dataset.fragmentLoaded === 'true') return;
+    if (_fragmentLoadCache[pageId]) return _fragmentLoadCache[pageId];
+
+    const subdir = TOKEN_PAGES_SET.has(pageId) ? 'tokens/' : '';
+    const url = `./docs/pages/${subdir}${pageId}.html`;
+
+    _fragmentLoadCache[pageId] = (async () => {
+      try {
+        const res = await fetch(url);
+        if (!res.ok) {
+          console.error('Failed to load page fragment', url, res.status);
+          page.innerHTML = `<p style="padding:24px;color:var(--uds-color-text-error)">Failed to load page (${res.status}).</p>`;
+          return;
+        }
+        const html = await res.text();
+        page.innerHTML = html;
+        page.dataset.fragmentLoaded = 'true';
+
+        // Run any registered post-load hooks for this page
+        const hooks = PAGE_LOAD_HOOKS[pageId] || [];
+        for (const hook of hooks) {
+          try { hook(page); } catch (e) { console.error('Page load hook failed for', pageId, e); }
+        }
+      } catch (e) {
+        console.error('loadPageFragment error', pageId, e);
+      }
+    })();
+
+    return _fragmentLoadCache[pageId];
+}
+
+async function navigate(pageId, tab) {
     document.querySelectorAll('[data-page]').forEach(p => p.classList.remove('active'));
     const page = document.querySelector('[data-page="' + pageId + '"]');
     if (page) {
@@ -93,7 +151,13 @@ function navigate(pageId, tab) {
     const link = document.querySelector('.sg-sidebar-link[href="#/' + pageId + '"]');
     if (link) link.classList.add('active');
 
-    var defaultTab = page ? (page.getAttribute('data-default-tab') || 'examples') : 'examples';
+    // Lazy-load the fragment if this is a placeholder page
+    const targetPage = page || document.querySelector('[data-page="' + pageId + '"]');
+    if (targetPage && targetPage.hasAttribute('data-page-fragment') && targetPage.dataset.fragmentLoaded !== 'true') {
+      await loadPageFragment(pageId, targetPage);
+    }
+
+    var defaultTab = targetPage ? (targetPage.getAttribute('data-default-tab') || 'examples') : 'examples';
     switchTab(pageId, tab || defaultTab);
     document.querySelector('.sg-main').scrollTo(0, 0);
 
@@ -3301,33 +3365,10 @@ document.querySelectorAll('[data-tab-panel="code"] pre.sg-playground-code').forE
 /* ========================================================================
      9. POPULATE PRIMITIVE COLOR SWATCHES
      ======================================================================== */
-var PRIM_FAMILIES = [
-    'slate','neutral','stone','blue','cyan','purple',
-    'red','orange','amber','yellow','lime','green','emerald'
-];
-var PRIM_STEPS = [10,20,30,40,50,'60-M',70,80,90,100,110];
-
-document.querySelectorAll('#prim-special .sg-token-row').forEach(function (row) {
-    var name = row.querySelector('.sg-token-name');
-    if (name) row.appendChild(buildCopyButton(name.textContent));
-});
-
-PRIM_FAMILIES.forEach(function (family) {
-    var container = document.querySelector('#prim-' + family + ' .sg-token-list');
-    if (!container) return;
-    PRIM_STEPS.forEach(function (step) {
-      var varName = '--uds-primitive-color-' + family + '-' + step;
-      var row = document.createElement('div');
-      row.className = 'sg-token-row';
-      row.innerHTML =
-        '<div class="sg-token-swatch" style="background:var(' + varName + ')"></div>' +
-        '<span class="sg-token-name">' + varName + '</span>' +
-        '<span class="sg-token-value">' + family + '-' + step + '</span>';
-      var copyBtn = buildCopyButton(varName);
-      row.appendChild(copyBtn);
-      container.appendChild(row);
-    });
-});
+// The actual primitive-color row rendering was DEFERRED to the
+// 'primitive-colors' page load hook above (Phase 5) — running it eagerly
+// here breaks because the #prim-<family> slots only exist after the
+// primitive-colors page fragment is fetched and injected.
 
 
 /* ========================================================================
@@ -4507,6 +4548,107 @@ function initAllChangelogs() {
     });
 }
 
+// Run the changelog renderers AFTER the changelog page fragment loads,
+// since their target slots (#sg-global-changelog, #sg-site-changelog) are
+// inside the fragment HTML.
+registerPageLoadHook('changelog', function () {
+    renderGlobalChangelog();
+    renderSiteChangelog();
+});
+
+registerPageLoadHook('roadmap', function () {
+    renderRoadmapComponents();
+});
+
+// AI Assist page initialization (download buttons etc.) — runs once after
+// the fragment loads.
+registerPageLoadHook('ai-assist', function () {
+    initAiAssistPage();
+});
+
+// Text Styles + Primitive Colors token reference pages were rendered by an
+// inline <script> in index.html. After Phase 5, the slots are inside
+// fragment files, so the renderers run on page load instead.
+registerPageLoadHook('text-styles', function () {
+    var c = document.getElementById('text-styles-content');
+    if (!c) return;
+
+    function makeRow(cls, label, spec) {
+      return '<div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;"><span class="' + cls + '">' + label + '</span><span style="font-size:var(--uds-font-size-xs);color:var(--uds-color-text-secondary);white-space:nowrap;">.' + cls + ' &middot; ' + spec + '</span></div>';
+    }
+
+    var sections = [
+      { title: 'Headings', desc: 'Always Bold weight.', items: [
+        ['uds-text-heading-h1', 'Heading H1', '32/44 Bold'], ['uds-text-heading-h2', 'Heading H2', '24/32 Bold'],
+        ['uds-text-heading-h3', 'Heading H3', '18/26 Bold'], ['uds-text-heading-h4', 'Heading H4', '16/24 Bold']
+      ]},
+      { title: 'Paragraphs', desc: '6 sizes x 3 weights = 18 styles.', items: [
+        ['uds-text-paragraph-xl', 'Paragraph XL', '20/28 Regular'], ['uds-text-paragraph-xl-medium', 'Paragraph XL Medium', '20/28 Medium'], ['uds-text-paragraph-xl-bold', 'Paragraph XL Bold', '20/28 Bold'],
+        ['uds-text-paragraph-lg', 'Paragraph LG', '18/26 Regular'], ['uds-text-paragraph-lg-medium', 'Paragraph LG Medium', '18/26 Medium'], ['uds-text-paragraph-lg-bold', 'Paragraph LG Bold', '18/26 Bold'],
+        ['uds-text-paragraph-md', 'Paragraph MD', '16/24 Regular'], ['uds-text-paragraph-md-medium', 'Paragraph MD Medium', '16/24 Medium'], ['uds-text-paragraph-md-bold', 'Paragraph MD Bold', '16/24 Bold'],
+        ['uds-text-paragraph-base', 'Paragraph Base', '14/20 Regular'], ['uds-text-paragraph-base-medium', 'Paragraph Base Medium', '14/20 Medium'], ['uds-text-paragraph-base-bold', 'Paragraph Base Bold', '14/20 Bold'],
+        ['uds-text-paragraph-sm', 'Paragraph SM', '12/16 Regular'], ['uds-text-paragraph-sm-medium', 'Paragraph SM Medium', '12/16 Medium'], ['uds-text-paragraph-sm-bold', 'Paragraph SM Bold', '12/16 Bold'],
+        ['uds-text-paragraph-xs', 'Paragraph XS', '10/12 Regular'], ['uds-text-paragraph-xs-medium', 'Paragraph XS Medium', '10/12 Medium'], ['uds-text-paragraph-xs-bold', 'Paragraph XS Bold', '10/12 Bold']
+      ]},
+      { title: 'Labels', desc: '2 sizes x 3 weights = 6 styles.', items: [
+        ['uds-text-label-base', 'Label Base', '14/20 Regular'], ['uds-text-label-base-medium', 'Label Base Medium', '14/20 Medium'], ['uds-text-label-base-bold', 'Label Base Bold', '14/20 Bold'],
+        ['uds-text-label-sm', 'Label SM', '12/16 Regular'], ['uds-text-label-sm-medium', 'Label SM Medium', '12/16 Medium'], ['uds-text-label-sm-bold', 'Label SM Bold', '12/16 Bold']
+      ]},
+      { title: 'Inputs', desc: 'Form input text styles.', items: [
+        ['uds-text-input-base', 'Input Base', '14/20 Regular'], ['uds-text-input-base-medium', 'Input Base Medium', '14/20 Medium'], ['uds-text-input-base-bold', 'Input Base Bold', '14/20 Bold'],
+        ['uds-text-input-helper', 'Input Helper', '10/12 Regular']
+      ]},
+      { title: 'Data', desc: 'Table cell styles.', items: [
+        ['uds-text-data-cell', 'Data Cell', '14/20 Regular'], ['uds-text-data-cell-medium', 'Data Cell Medium', '14/20 Medium'], ['uds-text-data-cell-bold', 'Data Cell Bold', '14/20 Bold']
+      ]}
+    ];
+
+    sections.forEach(function (s) {
+      var html = '<div class="sg-subsection"><h3 class="sg-subsection-title">' + s.title + '</h3>';
+      if (s.desc) html += '<p class="sg-subsection-desc">' + s.desc + '</p>';
+      html += '<div class="sg-example"><div class="sg-example-preview" data-direction="column" style="gap:12px;">';
+      s.items.forEach(function (i) { html += makeRow(i[0], i[1], i[2]); });
+      html += '</div></div></div>';
+      c.innerHTML += html;
+    });
+});
+
+// Renders the per-family primitive color rows. Was eagerly run from
+// app.js section 9 (POPULATE PRIMITIVE COLOR SWATCHES); now deferred until
+// the primitive-colors fragment loads since the #prim-<family> slots only
+// exist in that fragment.
+registerPageLoadHook('primitive-colors', function () {
+    var FAMILIES = [
+      'slate','neutral','stone','blue','cyan','purple',
+      'red','orange','amber','yellow','lime','green','emerald'
+    ];
+    var STEPS = [10,20,30,40,50,'60-M',70,80,90,100,110];
+
+    document.querySelectorAll('#prim-special .sg-token-row').forEach(function (row) {
+      var name = row.querySelector('.sg-token-name');
+      if (name) row.appendChild(buildCopyButton(name.textContent));
+    });
+
+    FAMILIES.forEach(function (family) {
+      var container = document.querySelector('#prim-' + family + ' .sg-token-list');
+      if (!container) return;
+      // Avoid double-render if hook fires twice
+      if (container.children.length > 0) return;
+      STEPS.forEach(function (step) {
+        var varName = '--uds-primitive-color-' + family + '-' + step;
+        var row = document.createElement('div');
+        row.className = 'sg-token-row';
+        row.innerHTML =
+          '<div class="sg-token-swatch" style="background:var(' + varName + ')"></div>' +
+          '<span class="sg-token-name">' + varName + '</span>' +
+          '<span class="sg-token-value">' + family + '-' + step + '</span>';
+        var copyBtn = buildCopyButton(varName);
+        row.appendChild(copyBtn);
+        container.appendChild(row);
+      });
+    });
+});
+
 /* ========================================================================
      13. INIT — navigate to current hash
      ======================================================================== */
@@ -4516,7 +4658,7 @@ renderComponentHeaderExtras();
 renderRealisticData();
 renderExampleOnlyBanners();
 preloadAllContent();
-renderRoadmapComponents();
+// renderRoadmapComponents() — DEFERRED to roadmap page load hook (Phase 5)
 initTokenSearch();
 applyDraftMode();
 initVersionDropdown();
@@ -4603,7 +4745,7 @@ function initAiAssistPage() {
     }
 }
 
-initAiAssistPage();
+// initAiAssistPage() — DEFERRED to ai-assist page load hook (Phase 5)
 
 const { pageId, tab } = parseHash();
 navigate(pageId, tab);
