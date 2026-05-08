@@ -1,9 +1,10 @@
 {
-  "component": "combobox",
-  "title": "Combobox",
-  "description": "A combobox combines text entry with a selectable list of suggestions.",
-  "whenToUse": "Use when users can search or type to narrow a large option set, especially when free text and selection share the same field.",
-  "whenNotToUse": "For a closed set of simple options, use Dropdown. For 2-4 visible options, use Radio.",
+  "$schema": "../../schemas/spec.schema.json",
+  "component": "date-picker",
+  "title": "Date Picker",
+  "description": "A date picker helps users enter or select a calendar date.",
+  "whenToUse": "Use when date formatting, calendar context, or constrained date ranges matter.",
+  "whenNotToUse": "For approximate or freeform date text, use Text Input with clear helper text.",
   "acceptanceCriteria": [
     "Figma component set exists and exposes variant properties",
     "Examples and Code tabs are generated from inspected Figma structure",
@@ -12,7 +13,7 @@
   ],
   "dependencies": {
     "css": [
-      "uds/components/combobox.css"
+      "uds/components/date-picker.css"
     ],
     "js": []
   },

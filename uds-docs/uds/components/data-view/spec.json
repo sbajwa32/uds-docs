@@ -1,4 +1,5 @@
 {
+  "$schema": "../../schemas/spec.schema.json",
   "component": "data-view",
   "title": "Data View",
   "description": "A data view presents collections of records in non-table layouts such as cards or compact summaries.",

@@ -1,0 +1,12 @@
+{
+  "$schema": "../../../schemas/manifest.schema.json",
+  "examples": [
+    {
+      "id": "default",
+      "file": "default.html",
+      "label": "Default",
+      "showInDocs": true,
+      "demoWeight": 3
+    }
+  ]
+}
