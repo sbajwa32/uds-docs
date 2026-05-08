@@ -1,4 +1,5 @@
 {
+  "$schema": "../../schemas/spec.schema.json",
   "component": "nav-vertical",
   "title": "Nav Vertical",
   "description": "A vertical navigation list for primary app sections. Typically lives in a sidebar.",

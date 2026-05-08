@@ -1,4 +1,5 @@
 {
+  "$schema": "../../schemas/spec.schema.json",
   "component": "nav-header",
   "title": "Nav Header",
   "description": "A horizontal navigation header that spans the top of the application. Contains the logo, app switcher (bento), primary navigation, and user actions.",

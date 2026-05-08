@@ -28,6 +28,8 @@
 @import url('./components/label/label.css');
 @import url('./components/link/link.css');
 @import url('./components/list/list.css');
+@import url('./components/nav-header/nav-header.css');
+@import url('./components/nav-vertical/nav-vertical.css');
 @import url('./components/notification/notification.css');
 @import url('./components/pagination/pagination.css');
 @import url('./components/radio/radio.css');
@@ -43,5 +45,3 @@
 @import url('./components/combobox.css');
 @import url('./components/data-view.css');
 @import url('./components/date-picker.css');
-@import url('./components/nav-header.css');
-@import url('./components/nav-vertical.css');

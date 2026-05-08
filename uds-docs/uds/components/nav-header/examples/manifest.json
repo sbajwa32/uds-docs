@@ -1,0 +1,19 @@
+{
+  "$schema": "../../../schemas/manifest.schema.json",
+  "examples": [
+    {
+      "id": "default",
+      "file": "default.html",
+      "label": "Default",
+      "showInDocs": true,
+      "demoWeight": 3
+    },
+    {
+      "id": "bento-dropdown",
+      "file": "bento-dropdown.html",
+      "label": "Bento Dropdown",
+      "showInDocs": true,
+      "demoWeight": 1
+    }
+  ]
+}
