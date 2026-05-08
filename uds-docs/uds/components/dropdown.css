@@ -181,7 +181,7 @@
   top:              100%;
   left:             0;
   right:            0;
-  z-index:          50;
+  z-index:          var(--uds-z-index-dropdown);
   margin-top:       var(--uds-space-050);
   padding:          var(--uds-space-050);
   background-color: var(--uds-color-surface-interactive-neutral);

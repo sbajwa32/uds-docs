@@ -1,0 +1,43 @@
+/* ==========================================================================
+   UDS Layer Tokens  —  layers.css
+
+   Engineering tokens (NOT sourced from Figma). These define a 10-step
+   z-index scale used everywhere in UDS so stacking is predictable and we
+   never have to invent ad-hoc values like `9999` or `10000`.
+
+   Use the scale in increments of 10. If you need to add a new layer,
+   pick the slot that fits the semantic role — don't create a value
+   between the existing tokens.
+
+       1   base          baseline stacking inside a component
+                         (radio dot above input, sticky table cell content)
+      10   sticky        in-page sticky elements (sub-bars, table headers)
+      20   decoration    watermarks, draft badges, layer indicators
+      30   dropdown      inline menus (select, dropdown, autocomplete)
+      40   header        site / app sticky page header
+      50   overlay       modal backdrop, fullscreen overlay
+      60   modal         modal / dialog content (token search, dialog)
+      70   popover       popovers anchored to a trigger (spec checklist)
+      80   tooltip       hover tooltips (must sit above modals & popovers)
+      90   toast         toast notifications
+     100   skip-link     keyboard accessibility skip link (always topmost)
+
+   Why these values: tooltips sit above modals because a tooltip can be
+   triggered from a button INSIDE a modal — it must be readable without
+   dismissing the modal. The skip-link is the absolute top because it's
+   only visible on Tab focus and is a critical accessibility surface.
+   ========================================================================== */
+
+:root {
+  --uds-z-index-base:        1;
+  --uds-z-index-sticky:      10;
+  --uds-z-index-decoration:  20;
+  --uds-z-index-dropdown:    30;
+  --uds-z-index-header:      40;
+  --uds-z-index-overlay:     50;
+  --uds-z-index-modal:       60;
+  --uds-z-index-popover:     70;
+  --uds-z-index-tooltip:     80;
+  --uds-z-index-toast:       90;
+  --uds-z-index-skip-link:   100;
+}

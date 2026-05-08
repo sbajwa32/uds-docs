@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Poppins:wght@400;500;700&family=Roboto:wght@400;500;700&family=Lexend:wght@400;500;700&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
-  <link rel="stylesheet" href="./uds/uds.css?v=46" />
+  <link rel="stylesheet" href="./uds/uds.css?v=47" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -30,7 +30,7 @@
        Top header — fixed branding bar + appearance bar
        ===================================================================== */
     .sg-header {
-      position: sticky; top: 0; z-index: 100;
+      position: sticky; top: 0; z-index: var(--uds-z-index-header);
       font-family: var(--uds-font-family);
     }
     .sg-brand-bar {
@@ -465,7 +465,7 @@
       font-family: var(--uds-font-family);
       font-size: var(--uds-font-size-base);
       font-weight: var(--uds-font-weight-bold);
-      position: relative; z-index: 1;
+      position: relative; z-index: var(--uds-z-index-base);
     }
     .sg-lifecycle__body { min-width: 0; }
     .sg-lifecycle__title-row {
@@ -631,7 +631,7 @@
        Token search (modal)
        ===================================================================== */
     .sg-token-search {
-      position: fixed; inset: 0; z-index: 200;
+      position: fixed; inset: 0; z-index: var(--uds-z-index-modal);
       background: var(--uds-overlay-backdrop);
       display: none; align-items: flex-start; justify-content: center;
       padding: 80px 24px 24px;
@@ -685,7 +685,7 @@
       color: var(--uds-color-text-secondary);
       background: var(--uds-color-surface-subtle);
       border-bottom: 1px solid var(--uds-color-border-secondary);
-      position: sticky; top: 0; z-index: 1;
+      position: sticky; top: 0; z-index: var(--uds-z-index-sticky);
     }
     .sg-token-search__count strong {
       color: var(--uds-color-text-primary); font-weight: var(--uds-font-weight-bold);
@@ -773,7 +773,7 @@
     }
     [data-draft-mode="true"] [data-draft="true"]::before {
       content: 'DRAFT';
-      position: absolute; top: 8px; right: 8px; z-index: 50;
+      position: absolute; top: 8px; right: 8px; z-index: var(--uds-z-index-decoration);
       padding: 2px 10px;
       background: var(--uds-color-surface-warning-subtle);
       color: var(--uds-color-text-warning);
@@ -1063,7 +1063,7 @@
 
     /* Spec completeness popover (opens from the X/22 pill) */
     .sg-spec-popover {
-      position: absolute; z-index: 200;
+      position: absolute; z-index: var(--uds-z-index-popover);
       width: 360px; max-width: calc(100vw - var(--uds-space-300));
       max-height: 480px; overflow-y: auto;
       background: var(--uds-color-surface-main);
@@ -1120,16 +1120,21 @@
 
     .sg-sidebar-dot { display: none; }
 
-    /* Sidebar component tooltip — uses the actual UDS udc-tooltip styling
-       (background, border, font, shadow) positioned to the right of the
-       hovered/focused sidebar link. Uses position:fixed so it isn't clipped
-       by the sidebar's overflow-y:auto scroll container. Vertical position
-       is set by JS based on the link's bounding rect on hover/focus. */
-    .sg-sidebar-link { position: relative; }
-    .sg-sidebar-link > .udc-tooltip {
+    /* Sidebar component tooltip — UDS udc-tooltip styling (bg, border, font,
+       shadow) anchored to the right of the hovered/focused sidebar link.
+       The tooltip is portaled to <body> rather than nested inside the link
+       because `.sg-sidebar` has `position: sticky` which creates a stacking
+       context. A child of the sidebar (even position:fixed with high z-index)
+       is bounded by that stacking context and gets painted under any
+       opaque content in `.sg-main` (sg-main is a later sibling so its
+       stacking context paints on top). Portaling to body sidesteps both the
+       stacking context and the `overflow:auto` clipping issue. JS sets the
+       fixed `top` based on the link's bounding rect on hover/focus. */
+    .sg-sidebar-portal-tooltip {
       position: fixed;
       top: 0;
       bottom: auto;
+      /* Sidebar is 260px wide + 8px gap = 268px. */
       left: 268px;
       right: auto;
       transform: translateY(-50%);
@@ -1138,14 +1143,12 @@
       text-align: left; white-space: normal;
       font-size: var(--uds-font-size-sm);
       line-height: var(--uds-font-line-height-sm);
-      /* Sidebar tooltip is a transient hover element — must sit above page
-         content like dialogs, dropdowns, sticky table headers, and code
-         blocks that create their own stacking contexts. */
-      z-index: 9999;
+      z-index: var(--uds-z-index-tooltip);
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
     }
-    .sg-sidebar-link:hover > .udc-tooltip,
-    .sg-sidebar-link:focus > .udc-tooltip,
-    .sg-sidebar-link:focus-visible > .udc-tooltip {
+    .sg-sidebar-portal-tooltip[data-visible="true"] {
       opacity: 1;
       visibility: visible;
     }
@@ -1271,7 +1274,7 @@
       width: 32px; height: 32px; border: 1px solid var(--uds-color-border-secondary);
       border-radius: 6px; background: var(--uds-color-surface-main);
       cursor: pointer; color: var(--uds-color-text-secondary); transition: background 120ms, color 120ms;
-      z-index: 2;
+      z-index: var(--uds-z-index-base);
     }
     .sg-code-copy:hover { background: var(--uds-color-surface-subtle); color: var(--uds-color-text-primary); }
     .sg-code-copy .material-symbols-outlined { font-size: 18px; }
@@ -1298,7 +1301,7 @@
     .sg-icon-picker-trigger .material-symbols-outlined { font-size: 20px; color: var(--uds-color-icon-secondary); }
     .sg-icon-picker-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .sg-icon-picker-dropdown {
-      position: absolute; top: 100%; left: 0; right: 0; z-index: 100;
+      position: absolute; top: 100%; left: 0; right: 0; z-index: var(--uds-z-index-dropdown);
       margin-top: 4px; border: 1px solid var(--uds-color-border-primary); border-radius: 8px;
       background: var(--uds-color-surface-main); box-shadow: 0 8px 24px rgba(0,0,0,.12);
       max-height: 320px; display: flex; flex-direction: column;
@@ -1510,7 +1513,7 @@
     /* Skip to content link */
     .sg-skip-link {
       position: absolute; top: -100px; left: var(--uds-space-200);
-      z-index: 9999; padding: var(--uds-space-100) var(--uds-space-200);
+      z-index: var(--uds-z-index-skip-link); padding: var(--uds-space-100) var(--uds-space-200);
       background: var(--uds-color-surface-interactive-default); color: var(--uds-color-text-inverse);
       font-size: var(--uds-font-size-base); font-weight: var(--uds-font-weight-medium);
       border-radius: var(--uds-border-radius-input); text-decoration: none;
@@ -1520,7 +1523,7 @@
   </style>
   <script>
     (function () {
-      var SITE_VERSION = '2026.05.08.2';
+      var SITE_VERSION = '2026.05.08.3';
       var base = window.location.pathname.replace(/\/index\.html$/, '').replace(/\/$/, '');
       fetch(base + '/version.txt?_=' + Date.now()).then(function (r) {
         if (!r.ok) return;
@@ -1573,7 +1576,7 @@
       </span>
     </button>
     <select class="sg-version-select" id="sg-version-dropdown" aria-label="UDS version"></select>
-    <span class="sg-brand-bar-build">SITE 2026.05.08.2</span>
+    <span class="sg-brand-bar-build">SITE 2026.05.08.3</span>
   </div>
 
   <!-- Pre-flight checklist dialog -->
@@ -5138,8 +5141,8 @@ registerUdsComponents();</pre>
   <script src="https://cdn.jsdelivr.net/npm/jszip@3/dist/jszip.min.js"></script>
   <script src="./material-icons.js?v=1"></script>
   <script src="./uds/uds.js?v=30"></script>
-  <script src="./app.js?v=99"></script>
-  <script src="./demo-builder.js?v=11"></script>
+  <script src="./app.js?v=100"></script>
+  <script src="./demo-builder.js?v=12"></script>
 
 </body>
 </html>

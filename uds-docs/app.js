@@ -95,6 +95,9 @@
     var defaultTab = page ? (page.getAttribute('data-default-tab') || 'examples') : 'examples';
     switchTab(pageId, tab || defaultTab);
     document.querySelector('.sg-main').scrollTo(0, 0);
+
+    var stalePortal = document.getElementById('sg-sidebar-portal-tooltip');
+    if (stalePortal) stalePortal.setAttribute('data-visible', 'false');
   }
 
   document.querySelectorAll('.sg-sidebar-link[href^="#/"]').forEach(link => {
@@ -817,6 +820,49 @@
   // Sidebar metadata tooltip — uses the real UDS udc-tooltip CSS pattern.
   // We inject a <span class="udc-tooltip" data-position="right"> inside each
   // component sidebar link; CSS handles show/hide on :hover / :focus-within.
+  // The sidebar tooltip is portaled to <body> rather than nested inside the
+  // sidebar link. `.sg-sidebar` has `position: sticky` which creates a
+  // stacking context (per CSS spec) — anything inside it, even with
+  // `position: fixed; z-index: 9999`, gets stacked relative to the
+  // sidebar's stacking context and ends up painted under `.sg-main`.
+  // Portaling sidesteps both the stacking context and the `overflow:auto`
+  // clipping issue.
+  function getSidebarPortalTooltip() {
+    var portal = document.getElementById('sg-sidebar-portal-tooltip');
+    if (!portal) {
+      portal = document.createElement('span');
+      portal.id = 'sg-sidebar-portal-tooltip';
+      portal.className = 'udc-tooltip sg-sidebar-portal-tooltip';
+      portal.setAttribute('role', 'tooltip');
+      portal.setAttribute('data-position', 'right');
+      portal.setAttribute('data-visible', 'false');
+      document.body.appendChild(portal);
+
+      // Hide the tooltip if the sidebar scrolls — the anchor link moves and
+      // the tooltip would float away from its target.
+      var sidebar = document.querySelector('.sg-sidebar');
+      if (sidebar) {
+        sidebar.addEventListener('scroll', function () {
+          portal.setAttribute('data-visible', 'false');
+        }, { passive: true });
+      }
+    }
+    return portal;
+  }
+
+  function showSidebarPortalTooltip(link, html) {
+    var portal = getSidebarPortalTooltip();
+    portal.innerHTML = html;
+    var r = link.getBoundingClientRect();
+    portal.style.top = (r.top + r.height / 2) + 'px';
+    portal.setAttribute('data-visible', 'true');
+  }
+
+  function hideSidebarPortalTooltip() {
+    var portal = document.getElementById('sg-sidebar-portal-tooltip');
+    if (portal) portal.setAttribute('data-visible', 'false');
+  }
+
   function updateSidebarMetadataTooltip(pageId) {
     var link = document.querySelector('.sg-sidebar-link[href="#/' + pageId + '"]');
     if (!link || typeof COMPONENT_STATUS === 'undefined') return;
@@ -829,24 +875,20 @@
     // Strip legacy native title / dot indicators.
     link.removeAttribute('title');
     link.querySelectorAll('.sg-sidebar-dot').forEach(function (dot) { dot.remove(); });
+    // Strip any legacy nested tooltip from a prior render.
+    link.querySelectorAll(':scope > .udc-tooltip').forEach(function (n) { n.remove(); });
 
-    var tip = link.querySelector(':scope > .udc-tooltip');
-    if (!tip) {
-      tip = document.createElement('span');
-      tip.className = 'udc-tooltip';
-      tip.setAttribute('role', 'tooltip');
-      tip.setAttribute('data-position', 'right');
-      link.appendChild(tip);
-
-      // Position the tooltip vertically to match the link on hover/focus.
-      // We use position:fixed (set in CSS) so the sidebar's overflow:auto
-      // doesn't clip the tooltip; JS only needs to set `top`.
-      var positionTip = function () {
-        var r = link.getBoundingClientRect();
-        tip.style.top = (r.top + r.height / 2) + 'px';
-      };
-      link.addEventListener('mouseenter', positionTip);
-      link.addEventListener('focus', positionTip);
+    // Wire hover/focus handlers ONCE per link.
+    if (!link.dataset.tooltipWired) {
+      link.dataset.tooltipWired = 'true';
+      link.addEventListener('mouseenter', function () {
+        if (link.dataset.tooltipHtml) showSidebarPortalTooltip(link, link.dataset.tooltipHtml);
+      });
+      link.addEventListener('mouseleave', hideSidebarPortalTooltip);
+      link.addEventListener('focus', function () {
+        if (link.dataset.tooltipHtml) showSidebarPortalTooltip(link, link.dataset.tooltipHtml);
+      });
+      link.addEventListener('blur', hideSidebarPortalTooltip);
     }
 
     // STATUS section: 5 mini segments + status label below
@@ -901,9 +943,18 @@
         '</span>';
     }
 
-    tip.innerHTML =
+    var html =
       '<span class="sg-sidebar-tooltip__title">' + name + '</span>' +
       statusBlock + specBlock + missingHtml;
+    link.dataset.tooltipHtml = html;
+
+    // If this link is currently being hovered/focused, refresh the visible
+    // portal tooltip immediately so a stale render isn't shown.
+    var portal = document.getElementById('sg-sidebar-portal-tooltip');
+    if (portal && portal.getAttribute('data-visible') === 'true' &&
+        (link.matches(':hover') || link.matches(':focus'))) {
+      showSidebarPortalTooltip(link, html);
+    }
   }
 
   // Human-readable label for each COMPLETENESS_FIELDS path
@@ -4034,10 +4085,19 @@
       ]
     },
     {
+      version: 'SITE 2026.05.08.3',
+      date: '2026-05-08',
+      changes: [
+        { type: 'added', text: 'New UDS layer tokens (`uds-docs/uds/tokens/layers.css`) define a clean 10-step z-index scale: `--uds-z-index-base` (1), `-sticky` (10), `-decoration` (20), `-dropdown` (30), `-header` (40), `-overlay` (50), `-modal` (60), `-popover` (70), `-tooltip` (80), `-toast` (90), `-skip-link` (100). Tooltips intentionally sit above modals because a tooltip can be triggered from a button inside a modal.' },
+        { type: 'changed', text: 'Replaced every hardcoded z-index across the codebase (`9999`, `10000`, `1000`, `200`, `100`, `50`, `2`, `1`) with the new layer tokens. No more ad-hoc values.' },
+        { type: 'fixed', text: 'Sidebar component tooltip is now PORTALED to `<body>` instead of being a child of the sidebar link. `.sg-sidebar` has `position: sticky` which creates a stacking context per CSS spec — even with `position: fixed` and high z-index, a child of the sidebar gets stacked relative to the sidebar\'s context and ends up painted under `.sg-main`. Portaling sidesteps both the stacking context and the `overflow:auto` clipping issue. Tooltip also auto-hides on sidebar scroll.' }
+      ]
+    },
+    {
       version: 'SITE 2026.05.08.2',
       date: '2026-05-08',
       changes: [
-        { type: 'fixed', text: 'Sidebar component tooltip now uses `z-index: 9999` so it sits above all page content (sticky table headers, dropdowns, code blocks, dialogs) instead of getting clipped behind them.' },
+        { type: 'fixed', text: 'Sidebar component tooltip — initial attempt at fix using `z-index: 9999` (superseded by the proper portal-to-body fix in 2026.05.08.3, since `.sg-sidebar`\'s sticky stacking context bound the tooltip\'s z-index regardless of value).' },
         { type: 'changed', text: 'Status segmented bar now uses stoplight-mapped semantic surface tokens for the current step instead of a single interactive blue: ⚫ Not Started → `surface-bold`, 🔴 Blocked → `surface-error`, 🟠 In Progress → `surface-warning`, 🟡 In Review → `surface-warning-subtle`, 🟢 Production → `surface-success`. Completed steps show a subtle "passed-through" treatment.' },
         { type: 'changed', text: 'Spec segmented bar now uses success/warning semantic colors: filled segments are `surface-success` (the field is done), unfilled segments are `surface-warning-subtle` (still needs work). Same colors apply to the mini bars in the sidebar tooltip.' },
         { type: 'fixed', text: 'Demo Builder: removed orphan `udc-nav-logo__text` class reference left behind from when nav-header was refactored to icon-only logo.' },

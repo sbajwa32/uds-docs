@@ -75,7 +75,7 @@
   border-bottom:      1px solid var(--uds-color-border-secondary, #d4d4d4);
   position:           sticky;
   top:                0;
-  z-index:            1;
+  z-index:            var(--uds-z-index-sticky);
   user-select:        none;
   vertical-align:     middle;
 }

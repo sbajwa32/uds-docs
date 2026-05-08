@@ -379,7 +379,7 @@
 
     var overlay = document.createElement('div');
     overlay.id = 'sg-demo-overlay';
-    overlay.style.cssText = 'position:fixed;inset:0;z-index:10000;background:var(--uds-color-surface-page-main);display:flex;flex-direction:column;';
+    overlay.style.cssText = 'position:fixed;inset:0;z-index:var(--uds-z-index-modal);background:var(--uds-color-surface-page-main);display:flex;flex-direction:column;';
 
     var toolbar = document.createElement('div');
     toolbar.style.cssText = 'display:flex;align-items:center;justify-content:space-between;padding:8px 16px;background:var(--uds-color-surface-interactive-default);color:var(--uds-color-text-inverse);font-family:var(--uds-font-family);font-size:14px;flex-shrink:0;';
