@@ -832,9 +832,11 @@
     if (!portal) {
       portal = document.createElement('span');
       portal.id = 'sg-sidebar-portal-tooltip';
+      // Intentionally no `data-position` — `.udc-tooltip[data-position="right"]`
+      // has higher specificity (0,2,0) than `.sg-sidebar-portal-tooltip`
+      // (0,1,0) and would override our custom `left/top/transform`.
       portal.className = 'udc-tooltip sg-sidebar-portal-tooltip';
       portal.setAttribute('role', 'tooltip');
-      portal.setAttribute('data-position', 'right');
       portal.setAttribute('data-visible', 'false');
       document.body.appendChild(portal);
 
@@ -4082,6 +4084,13 @@
       date: '2026-05-08',
       changes: [
         { type: 'fixed', text: 'UDS 0.3 verification audit (re-read Figma directly): filled in 16 missing `figmaNodeId` values on `content/*.json` for components with canonical component-set nodes in Figma (`badge`, `breadcrumb`, `checkbox`, `chip`, `dialog`, `divider`, `dropdown`, `list`, `nav-header`, `nav-vertical`, `notification`, `radio`, `search`, `tabs`, `tile`, `icon-wrapper`). The "View in Figma" button on these component pages now deep-links to the actual component-set instead of falling back to the page-level node. `button` left null because Figma has 5 sibling component-sets with no single canonical one; `data-table`, `text-input`, and `tooltip` left null because their Figma pages have no top-level component-set. Updated `.cursor/figma/state/last-sync.json` with audit notes and current `siteVersion`.' }
+      ]
+    },
+    {
+      version: 'SITE 2026.05.08.4',
+      date: '2026-05-08',
+      changes: [
+        { type: 'fixed', text: 'Sidebar tooltip was rendering off-screen after the portal-to-body refactor. The portal element had `data-position="right"`, and `.udc-tooltip[data-position="right"]` has CSS specificity (0,2,0) while `.sg-sidebar-portal-tooltip` is only (0,1,0) — so the variant\'s `left: calc(100% + 8px)` won and positioned the tooltip past the viewport edge instead of at `left: 268px`. Removed `data-position` from the portal element.' }
       ]
     },
     {
