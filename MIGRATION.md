@@ -47,7 +47,7 @@ The baseline tag stays on `main` permanently as a recovery anchor.
 | 7 | Demo Builder reads source-of-truth examples | done — examples live in one place, Demo Builder + docs page both fetch them |
 | 8 | Versioning model + per-component changelog aggregation | done — uds/CHANGELOG.json + uds/version.json are source of truth |
 | 9 | Snapshot strategy + retroactive archive conversion | partial — udsPath() helper, prune-version.sh, new release.sh done; 0.2 conversion + dropdown rewrite deferred (see notes below) |
-| 10 | Rules, audits, AGENTS.md, README, skills + drift fixes | pending |
+| 10 | Rules, audits, AGENTS.md, README, skills + drift fixes | done |
 | 11 | Performance + accessibility verification | pending |
 | 12 | Final verification + PR + CI workflow | pending |
 
