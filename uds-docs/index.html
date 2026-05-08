@@ -1120,36 +1120,70 @@
       display: block;
       font-weight: var(--uds-font-weight-bold);
       color: var(--uds-color-text-primary);
-      margin-bottom: var(--uds-space-100);
+      margin-bottom: var(--uds-space-150);
+      font-size: var(--uds-font-size-base);
+      line-height: var(--uds-font-line-height-base);
     }
-    .sg-sidebar-tooltip__row {
-      display: flex; gap: var(--uds-space-100);
+    .sg-sidebar-tooltip__section {
+      display: block;
+      margin-top: var(--uds-space-150);
+    }
+    .sg-sidebar-tooltip__section:first-of-type { margin-top: 0; }
+    .sg-sidebar-tooltip__section-label {
+      display: block;
+      font-size: var(--uds-font-size-xs);
+      line-height: var(--uds-font-line-height-xs);
+      color: var(--uds-color-text-tertiary);
+      text-transform: uppercase; letter-spacing: 0.06em;
+      font-weight: var(--uds-font-weight-bold);
+      margin-bottom: var(--uds-space-075);
+    }
+    .sg-sidebar-tooltip__caption {
+      display: block;
+      margin-top: var(--uds-space-075);
       font-size: var(--uds-font-size-xs);
       line-height: var(--uds-font-line-height-xs);
       color: var(--uds-color-text-secondary);
-      margin-top: var(--uds-space-050);
     }
-    .sg-sidebar-tooltip__row strong {
-      color: var(--uds-color-text-tertiary);
-      font-weight: var(--uds-font-weight-medium);
-      text-transform: uppercase; letter-spacing: 0.04em;
-      min-width: 56px; flex-shrink: 0;
+
+    /* Mini segmented bars inside the sidebar tooltip */
+    .sg-sidebar-tooltip__mini-bar {
+      display: grid;
+      gap: 3px;
+      width: 100%;
     }
-    .sg-sidebar-tooltip__row span { color: var(--uds-color-text-primary); }
+    .sg-sidebar-tooltip__mini-bar--status {
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+    .sg-sidebar-tooltip__mini-bar--spec {
+      grid-template-columns: repeat(22, minmax(0, 1fr));
+      gap: 2px;
+    }
+    .sg-sidebar-tooltip__mini-segment {
+      display: block;
+      height: 8px;
+      border-radius: 2px;
+      background: var(--uds-color-surface-subtle);
+    }
+    .sg-sidebar-tooltip__mini-segment[data-state="complete"] {
+      background: var(--uds-color-surface-interactive-subtle);
+    }
+    .sg-sidebar-tooltip__mini-segment[data-state="current"] {
+      background: var(--uds-color-surface-interactive-default);
+    }
+    .sg-sidebar-tooltip__mini-segment--spec { height: 6px; }
+    .sg-sidebar-tooltip__mini-segment--spec[data-filled="true"] {
+      background: var(--uds-color-surface-interactive-default);
+    }
+
     .sg-sidebar-tooltip__missing {
-      margin-top: var(--uds-space-100);
+      display: block;
+      margin-top: var(--uds-space-150);
       padding-top: var(--uds-space-100);
       border-top: 1px solid var(--uds-color-border-tertiary);
       font-size: var(--uds-font-size-xs);
       line-height: var(--uds-font-line-height-xs);
-      color: var(--uds-color-text-secondary);
-    }
-    .sg-sidebar-tooltip__missing-label {
-      display: block;
-      color: var(--uds-color-text-tertiary);
-      text-transform: uppercase; letter-spacing: 0.04em;
-      font-weight: var(--uds-font-weight-medium);
-      margin-bottom: var(--uds-space-050);
+      color: var(--uds-color-text-primary);
     }
 
     /* =====================================================================
@@ -1445,7 +1479,7 @@
   </style>
   <script>
     (function () {
-      var SITE_VERSION = '2026.05.07.8';
+      var SITE_VERSION = '2026.05.07.9';
       var base = window.location.pathname.replace(/\/index\.html$/, '').replace(/\/$/, '');
       fetch(base + '/version.txt?_=' + Date.now()).then(function (r) {
         if (!r.ok) return;
@@ -1498,7 +1532,7 @@
       </span>
     </button>
     <select class="sg-version-select" id="sg-version-dropdown" aria-label="UDS version"></select>
-    <span class="sg-brand-bar-build">SITE 2026.05.07.8</span>
+    <span class="sg-brand-bar-build">SITE 2026.05.07.9</span>
   </div>
 
   <!-- Pre-flight checklist dialog -->
@@ -5063,7 +5097,7 @@ registerUdsComponents();</pre>
   <script src="https://cdn.jsdelivr.net/npm/jszip@3/dist/jszip.min.js"></script>
   <script src="./material-icons.js?v=1"></script>
   <script src="./uds/uds.js?v=30"></script>
-  <script src="./app.js?v=96"></script>
+  <script src="./app.js?v=97"></script>
   <script src="./demo-builder.js?v=10"></script>
 
 </body>

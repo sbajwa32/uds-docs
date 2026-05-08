@@ -849,24 +849,61 @@
       link.addEventListener('focus', positionTip);
     }
 
-    var statusLine = meta
-      ? '<span class="sg-sidebar-tooltip__row"><strong>Status</strong><span>' + meta.label + ' · since ' + info.since + '</span></span>'
-      : '';
-    var specLine = score
-      ? '<span class="sg-sidebar-tooltip__row"><strong>Spec</strong><span>' + score.filled + ' of ' + score.total + ' fields filled</span></span>'
-      : '<span class="sg-sidebar-tooltip__row"><strong>Spec</strong><span>Loading</span></span>';
+    // STATUS section: 5 mini segments + status label below
+    var statusBlock = '';
+    if (meta) {
+      var currentIdx = STATUS_STEPS.findIndex(function (s) { return s.key === info.status; });
+      var statusMini = STATUS_STEPS.map(function (step, idx) {
+        var st = idx < currentIdx ? 'complete' : (idx === currentIdx ? 'current' : 'future');
+        if (currentIdx < 0) st = 'future';
+        return '<span class="sg-sidebar-tooltip__mini-segment" data-state="' + st + '"></span>';
+      }).join('');
+      statusBlock =
+        '<span class="sg-sidebar-tooltip__section">' +
+          '<span class="sg-sidebar-tooltip__section-label">Status</span>' +
+          '<span class="sg-sidebar-tooltip__mini-bar sg-sidebar-tooltip__mini-bar--status">' + statusMini + '</span>' +
+          '<span class="sg-sidebar-tooltip__caption">' + meta.label + ' · since ' + info.since + '</span>' +
+        '</span>';
+    }
+
+    // SPEC section: 22 mini segments + caption
+    var specBlock = '';
+    if (score) {
+      var filledLookup = {};
+      (score.filledFields || []).forEach(function (f) { filledLookup[f] = true; });
+      var specMini = '';
+      for (var i = 0; i < score.total; i++) {
+        var fieldKey = COMPLETENESS_FIELDS[i] || '';
+        var isFilled = filledLookup[fieldKey] === true;
+        specMini += '<span class="sg-sidebar-tooltip__mini-segment sg-sidebar-tooltip__mini-segment--spec" data-filled="' + (isFilled ? 'true' : 'false') + '"></span>';
+      }
+      specBlock =
+        '<span class="sg-sidebar-tooltip__section">' +
+          '<span class="sg-sidebar-tooltip__section-label">Spec</span>' +
+          '<span class="sg-sidebar-tooltip__mini-bar sg-sidebar-tooltip__mini-bar--spec">' + specMini + '</span>' +
+          '<span class="sg-sidebar-tooltip__caption">' + score.filled + ' of ' + score.total + ' fields filled</span>' +
+        '</span>';
+    } else {
+      specBlock =
+        '<span class="sg-sidebar-tooltip__section">' +
+          '<span class="sg-sidebar-tooltip__section-label">Spec</span>' +
+          '<span class="sg-sidebar-tooltip__caption">Loading</span>' +
+        '</span>';
+    }
+
+    // Optional preview of next missing fields
     var missingHtml = '';
     if (score && score.missingFields && score.missingFields.length) {
-      var preview = score.missingFields.slice(0, 4).map(function (p) { return SPEC_FIELD_LABELS[p] || p; }).join(', ');
+      var preview = score.missingFields.slice(0, 3).map(function (p) { return SPEC_FIELD_LABELS[p] || p; }).join(', ');
       missingHtml =
         '<span class="sg-sidebar-tooltip__missing">' +
-          '<span class="sg-sidebar-tooltip__missing-label">Next to fill</span>' + preview +
+          '<span class="sg-sidebar-tooltip__section-label">Next to fill</span>' + preview +
         '</span>';
     }
 
     tip.innerHTML =
       '<span class="sg-sidebar-tooltip__title">' + name + '</span>' +
-      statusLine + specLine + missingHtml;
+      statusBlock + specBlock + missingHtml;
   }
 
   // Human-readable label for each COMPLETENESS_FIELDS path
@@ -3980,6 +4017,13 @@
       changes: [
         { type: 'changed', text: 'Reworked the component readiness section: replaced two boxed progress rows with a single clean card that holds a Status segmented bar (5 lifecycle steps) and a Spec segmented bar (22 flat segments mapped 1:1 to schema fields). The Spec bar is the click target for the existing checklist popover.' },
         { type: 'fixed', text: 'Sidebar component tooltip now uses the actual `udc-tooltip` UDS component CSS — `:hover` and `:focus-within` reveal a tooltip rendered to the right of the sidebar link with the surface, border, shadow, and font tokens from `uds/components/tooltip.css`. Removed the previous JS-positioned floating div that bypassed the UDS tooltip pattern.' }
+      ]
+    },
+    {
+      version: 'SITE 2026.05.07.9',
+      date: '2026-05-07',
+      changes: [
+        { type: 'added', text: 'Sidebar component tooltip now mirrors the visualization from the component page: a compact 5-segment Status bar and 22-segment Spec bar with the same fill states. Each section is labelled and captioned with the current value (e.g. "In Progress · since 0.1", "18 of 22 fields filled"). The "Next to fill" preview still appears below for components with missing spec fields.' }
       ]
     }
   ];
