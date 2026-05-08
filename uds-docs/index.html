@@ -350,32 +350,7 @@
           <button class="sg-page-tab" data-tab="playground">Playground</button>
         </div>
 
-        <div data-tab-panel="examples" class="active">
-          <div class="sg-subsection"><h3 class="sg-subsection-title">Variants</h3><p class="sg-subsection-desc">Primary, secondary, and ghost buttons provide different levels of visual emphasis.</p><div class="sg-example"><div class="sg-example-preview"><button class="udc-button-primary">Primary</button><button class="udc-button-secondary">Secondary</button><button class="udc-button-ghost">Ghost</button></div><details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;button class="udc-button-primary"&gt;Primary&lt;/button&gt;
-&lt;button class="udc-button-secondary"&gt;Secondary&lt;/button&gt;
-&lt;button class="udc-button-ghost"&gt;Ghost&lt;/button&gt;</code></pre></details></div></div>
-          <div class="sg-subsection"><h3 class="sg-subsection-title">Sizes</h3><p class="sg-subsection-desc">Small and default sizes. Use <code class="sg-inline-code">data-size="sm"</code> for compact variant.</p><div class="sg-example"><div class="sg-example-preview"><button class="udc-button-primary" data-size="sm">Small</button><button class="udc-button-primary">Default</button><button class="udc-button-secondary" data-size="sm">Small</button><button class="udc-button-secondary">Default</button><button class="udc-button-ghost" data-size="sm">Small</button><button class="udc-button-ghost">Default</button></div><details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;button class="udc-button-primary" data-size="sm"&gt;Small&lt;/button&gt;
-&lt;button class="udc-button-primary"&gt;Default&lt;/button&gt;</code></pre></details></div></div>
-          <div class="sg-subsection"><h3 class="sg-subsection-title">Leading icon</h3><p class="sg-subsection-desc">Add a leading icon with <code class="sg-inline-code">data-leading-icon</code>. Left padding is automatically reduced.</p><div class="sg-example"><div class="sg-example-preview"><button class="udc-button-primary" data-leading-icon><span class="material-symbols-outlined">add</span> Create</button><button class="udc-button-secondary" data-leading-icon><span class="material-symbols-outlined">edit</span> Edit</button><button class="udc-button-ghost" data-leading-icon><span class="material-symbols-outlined">download</span> Download</button></div><details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;button class="udc-button-primary" data-leading-icon&gt;
-  &lt;span class="material-symbols-outlined"&gt;add&lt;/span&gt; Create
-&lt;/button&gt;</code></pre></details></div></div>
-          <div class="sg-subsection"><h3 class="sg-subsection-title">Trailing icon</h3><p class="sg-subsection-desc">Add a trailing icon with <code class="sg-inline-code">data-trailing-icon</code>. Right padding is automatically reduced.</p><div class="sg-example"><div class="sg-example-preview"><button class="udc-button-primary" data-trailing-icon>Next <span class="material-symbols-outlined">arrow_forward</span></button><button class="udc-button-secondary" data-trailing-icon>Options <span class="material-symbols-outlined">expand_more</span></button><button class="udc-button-ghost" data-trailing-icon>More <span class="material-symbols-outlined">chevron_right</span></button></div><details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;button class="udc-button-primary" data-trailing-icon&gt;
-  Next &lt;span class="material-symbols-outlined"&gt;arrow_forward&lt;/span&gt;
-&lt;/button&gt;</code></pre></details></div></div>
-          <div class="sg-subsection"><h3 class="sg-subsection-title">Icon only</h3><p class="sg-subsection-desc">Square buttons with only an icon. Use <code class="sg-inline-code">data-icon-only</code> and always provide an <code class="sg-inline-code">aria-label</code>.</p><div class="sg-example"><div class="sg-example-preview"><button class="udc-button-primary" data-icon-only aria-label="Add"><span class="material-symbols-outlined">add</span></button><button class="udc-button-secondary" data-icon-only aria-label="Settings"><span class="material-symbols-outlined">settings</span></button><button class="udc-button-ghost" data-icon-only aria-label="Close"><span class="material-symbols-outlined">close</span></button><button class="udc-button-primary" data-icon-only data-size="sm" aria-label="Add small"><span class="material-symbols-outlined">add</span></button><button class="udc-button-secondary" data-icon-only data-size="sm" aria-label="Settings small"><span class="material-symbols-outlined">settings</span></button><button class="udc-button-ghost" data-icon-only data-size="sm" aria-label="Close small"><span class="material-symbols-outlined">close</span></button></div><details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;button class="udc-button-primary" data-icon-only aria-label="Add"&gt;
-  &lt;span class="material-symbols-outlined"&gt;add&lt;/span&gt;
-&lt;/button&gt;</code></pre></details></div></div>
-          <div class="sg-subsection"><h3 class="sg-subsection-title">Destructive</h3><p class="sg-subsection-desc">Use <code class="sg-inline-code">data-btn-color="danger"</code> on the button or a parent to signal destructive actions (maps to Figma's <em>Destructive=True</em>).</p><div class="sg-example"><div class="sg-example-preview" data-btn-color="danger"><button class="udc-button-primary" data-leading-icon><span class="material-symbols-outlined">delete</span> Delete</button><button class="udc-button-secondary">Cancel account</button><button class="udc-button-ghost">Remove</button></div><details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;div data-btn-color="danger"&gt;
-  &lt;button class="udc-button-primary" data-leading-icon&gt;
-    &lt;span class="material-symbols-outlined"&gt;delete&lt;/span&gt; Delete
-  &lt;/button&gt;
-&lt;/div&gt;</code></pre></details></div></div>
-          <div class="sg-subsection"><h3 class="sg-subsection-title">Disabled</h3><p class="sg-subsection-desc">Disabled buttons use a dedicated fill and text color — not opacity.</p><div class="sg-example"><div class="sg-example-preview"><button class="udc-button-primary" disabled>Disabled</button><button class="udc-button-secondary" disabled>Disabled</button><button class="udc-button-ghost" disabled>Disabled</button></div><details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;button class="udc-button-primary" disabled&gt;Disabled&lt;/button&gt;</code></pre></details></div></div>
-          <div class="sg-subsection"><h3 class="sg-subsection-title">Selected</h3><p class="sg-subsection-desc">Toggle-style selection via <code class="sg-inline-code">aria-selected="true"</code>.</p><div class="sg-example"><div class="sg-example-preview"><button class="udc-button-primary" aria-selected="true">Selected</button><button class="udc-button-secondary" aria-selected="true">Selected</button><button class="udc-button-ghost" aria-selected="true">Selected</button></div><details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;button class="udc-button-primary" aria-selected="true"&gt;Selected&lt;/button&gt;</code></pre></details></div></div>
-          <div class="sg-subsection"><h3 class="sg-subsection-title">Color palettes</h3><p class="sg-subsection-desc">Wrap buttons in a container with <code class="sg-inline-code">data-btn-color</code> to override the accent.</p><div class="sg-example"><div class="sg-example-preview" data-direction="column" style="gap:16px;"><div style="display:flex;gap:12px;align-items:center;"><span style="width:72px;font-size:11px;color:var(--uds-color-text-secondary);flex-shrink:0;">brand</span><button class="udc-button-primary">Primary</button><button class="udc-button-secondary">Secondary</button><button class="udc-button-ghost">Ghost</button></div><div style="display:flex;gap:12px;align-items:center;" data-btn-color="danger"><span style="width:72px;font-size:11px;color:var(--uds-color-text-secondary);flex-shrink:0;">danger</span><button class="udc-button-primary">Primary</button><button class="udc-button-secondary">Secondary</button><button class="udc-button-ghost">Ghost</button></div><div style="display:flex;gap:12px;align-items:center;" data-btn-color="success"><span style="width:72px;font-size:11px;color:var(--uds-color-text-secondary);flex-shrink:0;">success</span><button class="udc-button-primary">Primary</button><button class="udc-button-secondary">Secondary</button><button class="udc-button-ghost">Ghost</button></div><div style="display:flex;gap:12px;align-items:center;" data-btn-color="warning"><span style="width:72px;font-size:11px;color:var(--uds-color-text-secondary);flex-shrink:0;">warning</span><button class="udc-button-primary">Primary</button><button class="udc-button-secondary">Secondary</button><button class="udc-button-ghost">Ghost</button></div><div style="display:flex;gap:12px;align-items:center;" data-btn-color="neutral"><span style="width:72px;font-size:11px;color:var(--uds-color-text-secondary);flex-shrink:0;">neutral</span><button class="udc-button-primary">Primary</button><button class="udc-button-secondary">Secondary</button><button class="udc-button-ghost">Ghost</button></div></div><details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;div data-btn-color="danger"&gt;
-  &lt;button class="udc-button-primary"&gt;Delete&lt;/button&gt;
-&lt;/div&gt;</code></pre></details></div></div>
-        </div>
+        <div data-tab-panel="examples" class="active" data-needs-fetch></div>
 
         <div data-tab-panel="code">
           <h3 class="sg-subsection-title">Import</h3>
@@ -397,53 +372,7 @@
         <h1 class="sg-page-title">Text Input</h1>
         <p class="sg-page-desc">A text input lets users enter a single line of text. Includes label, optional helper text, character counter, and icon slots.</p>
         <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="guidelines">Guidelines</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
-        <div data-tab-panel="examples" class="active">
-          <div class="sg-subsection"><h3 class="sg-subsection-title">Default</h3><p class="sg-subsection-desc">Standard text input with label, placeholder, helper text, and counter.</p><div class="sg-example"><div class="sg-example-preview"><div class="udc-text-input" style="max-width:320px;"><label class="udc-text-input__label">Full name <span class="udc-text-input__required"></span></label><div class="udc-text-input__field"><input type="text" placeholder="Enter your full name" /></div><div class="udc-text-input__helper"><span>First and last name required</span><span class="udc-text-input__counter">0/60</span></div></div></div><details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;div class="udc-text-input"&gt;
-  &lt;label class="udc-text-input__label"&gt;Full name&lt;/label&gt;
-  &lt;div class="udc-text-input__field"&gt;
-    &lt;input type="text" placeholder="Enter your full name" /&gt;
-  &lt;/div&gt;
-  &lt;div class="udc-text-input__helper"&gt;
-    &lt;span&gt;First and last name required&lt;/span&gt;
-    &lt;span class="udc-text-input__counter"&gt;0/60&lt;/span&gt;
-  &lt;/div&gt;
-&lt;/div&gt;</code></pre></details></div></div>
-          <div class="sg-subsection"><h3 class="sg-subsection-title">Error state</h3><p class="sg-subsection-desc">Apply <code>data-state="error"</code> to the root wrapper.</p><div class="sg-example"><div class="sg-example-preview"><div class="udc-text-input" data-state="error" style="max-width:320px;"><label class="udc-text-input__label">Email <span class="udc-text-input__required"></span></label><div class="udc-text-input__field"><input type="email" placeholder="Enter email" value="not-an-email" /></div><div class="udc-text-input__helper"><span>Please enter a valid email</span></div></div></div><details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;div class="udc-text-input" data-state="error"&gt;…&lt;/div&gt;</code></pre></details></div></div>
-          <div class="sg-subsection"><h3 class="sg-subsection-title">Leading icon</h3><p class="sg-subsection-desc">Add a leading icon slot inside the field container.</p><div class="sg-example"><div class="sg-example-preview"><div class="udc-text-input" style="max-width:320px;"><label class="udc-text-input__label">Search</label><div class="udc-text-input__field"><span class="udc-text-input__leading-icon"><span class="material-symbols-outlined">search</span></span><input type="text" placeholder="Search..." /></div></div></div><details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;div class="udc-text-input"&gt;
-  &lt;label class="udc-text-input__label"&gt;Search&lt;/label&gt;
-  &lt;div class="udc-text-input__field"&gt;
-    &lt;span class="udc-text-input__leading-icon"&gt;
-      &lt;span class="material-symbols-outlined"&gt;search&lt;/span&gt;
-    &lt;/span&gt;
-    &lt;input type="text" placeholder="Search..." /&gt;
-  &lt;/div&gt;
-&lt;/div&gt;</code></pre></details></div></div>
-          <div class="sg-subsection"><h3 class="sg-subsection-title">Trailing button</h3><p class="sg-subsection-desc">Add a trailing action button (e.g. clear, visibility toggle).</p><div class="sg-example"><div class="sg-example-preview"><div class="udc-text-input" style="max-width:320px;"><label class="udc-text-input__label">Password</label><div class="udc-text-input__field"><input type="password" placeholder="Enter password" /><button class="udc-text-input__trailing-btn" type="button"><span class="material-symbols-outlined">visibility</span></button></div></div></div><details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;div class="udc-text-input"&gt;
-  &lt;label class="udc-text-input__label"&gt;Password&lt;/label&gt;
-  &lt;div class="udc-text-input__field"&gt;
-    &lt;input type="password" placeholder="Enter password" /&gt;
-    &lt;button class="udc-text-input__trailing-btn" type="button"&gt;
-      &lt;span class="material-symbols-outlined"&gt;visibility&lt;/span&gt;
-    &lt;/button&gt;
-  &lt;/div&gt;
-&lt;/div&gt;</code></pre></details></div></div>
-          <div class="sg-subsection"><h3 class="sg-subsection-title">Leading icon + trailing button</h3><p class="sg-subsection-desc">Both icon slots used together.</p><div class="sg-example"><div class="sg-example-preview"><div class="udc-text-input" style="max-width:320px;"><label class="udc-text-input__label">Location</label><div class="udc-text-input__field"><span class="udc-text-input__leading-icon"><span class="material-symbols-outlined">location_on</span></span><input type="text" placeholder="Enter address" /><button class="udc-text-input__trailing-btn" type="button"><span class="material-symbols-outlined">my_location</span></button></div><div class="udc-text-input__helper"><span>We'll use this for delivery</span></div></div></div><details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;div class="udc-text-input"&gt;
-  &lt;label class="udc-text-input__label"&gt;Location&lt;/label&gt;
-  &lt;div class="udc-text-input__field"&gt;
-    &lt;span class="udc-text-input__leading-icon"&gt;
-      &lt;span class="material-symbols-outlined"&gt;location_on&lt;/span&gt;
-    &lt;/span&gt;
-    &lt;input type="text" placeholder="Enter address" /&gt;
-    &lt;button class="udc-text-input__trailing-btn" type="button"&gt;
-      &lt;span class="material-symbols-outlined"&gt;my_location&lt;/span&gt;
-    &lt;/button&gt;
-  &lt;/div&gt;
-  &lt;div class="udc-text-input__helper"&gt;
-    &lt;span&gt;We'll use this for delivery&lt;/span&gt;
-  &lt;/div&gt;
-&lt;/div&gt;</code></pre></details></div></div>
-          <div class="sg-subsection"><h3 class="sg-subsection-title">Disabled</h3><div class="sg-example"><div class="sg-example-preview"><div class="udc-text-input" style="max-width:320px;"><label class="udc-text-input__label">Account ID</label><div class="udc-text-input__field"><input type="text" placeholder="Auto-generated" disabled /></div></div></div><details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;input type="text" disabled /&gt;</code></pre></details></div></div>
-        </div>
+        <div data-tab-panel="examples" class="active" data-needs-fetch></div>
         <div data-tab-panel="code">
           <h3 class="sg-subsection-title">Import</h3><pre class="sg-playground-code" style="margin-bottom:24px;">@import url('./components/text-input.css');</pre>
           <h3 class="sg-subsection-title">CSS Classes</h3>
@@ -461,15 +390,7 @@
         <h1 class="sg-page-title">Checkbox</h1>
         <p class="sg-page-desc">A checkbox lets users select one or more options from a set.</p>
         <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="guidelines">Guidelines</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
-        <div data-tab-panel="examples" class="active">
-          <div class="sg-subsection"><h3 class="sg-subsection-title">Default</h3><div class="sg-example"><div class="sg-example-preview" style="display:flex;flex-direction:column;gap:12px;"><label class="udc-checkbox"><input type="checkbox" /><span class="udc-checkbox__control"></span><span class="udc-checkbox__label">Unchecked</span></label><label class="udc-checkbox"><input type="checkbox" checked /><span class="udc-checkbox__control"></span><span class="udc-checkbox__label">Checked</span></label></div><details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;label class="udc-checkbox"&gt;
-  &lt;input type="checkbox" /&gt;
-  &lt;span class="udc-checkbox__control"&gt;&lt;/span&gt;
-  &lt;span class="udc-checkbox__label"&gt;Label&lt;/span&gt;
-&lt;/label&gt;</code></pre></details></div></div>
-          <div class="sg-subsection"><h3 class="sg-subsection-title">Disabled</h3><div class="sg-example"><div class="sg-example-preview" style="display:flex;flex-direction:column;gap:12px;"><label class="udc-checkbox"><input type="checkbox" disabled /><span class="udc-checkbox__control"></span><span class="udc-checkbox__label">Disabled</span></label><label class="udc-checkbox"><input type="checkbox" checked disabled /><span class="udc-checkbox__control"></span><span class="udc-checkbox__label">Disabled checked</span></label></div><details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;input type="checkbox" disabled /&gt;</code></pre></details></div></div>
-          <div class="sg-subsection"><h3 class="sg-subsection-title">Error state</h3><div class="sg-example"><div class="sg-example-preview" style="display:flex;flex-direction:column;gap:12px;"><label class="udc-checkbox" data-state="error"><input type="checkbox" /><span class="udc-checkbox__control"></span><span class="udc-checkbox__label">Required field</span></label></div><details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;label class="udc-checkbox" data-state="error"&gt;…&lt;/label&gt;</code></pre></details></div></div>
-        </div>
+        <div data-tab-panel="examples" class="active" data-needs-fetch></div>
         <div data-tab-panel="code"><h3 class="sg-subsection-title">Import</h3><pre class="sg-playground-code" style="margin-bottom:24px;">@import url('./components/checkbox.css');</pre><h3 class="sg-subsection-title">CSS Classes</h3><table class="sg-api-table"><thead><tr><th>Class</th><th>Description</th></tr></thead><tbody><tr><td><code>.udc-checkbox</code></td><td>Root label wrapper</td></tr><tr><td><code>.udc-checkbox__control</code></td><td>Visual checkbox indicator</td></tr><tr><td><code>.udc-checkbox__label</code></td><td>Label text</td></tr><tr><td><code>.udc-checkbox__required</code></td><td>Required dot indicator</td></tr></tbody></table></div>
         <div data-tab-panel="guidelines"></div>
         <div data-tab-panel="changelog"><p class="sg-changelog-empty">No changes recorded yet.</p></div>
@@ -481,18 +402,7 @@
         <h1 class="sg-page-title">Radio</h1>
         <p class="sg-page-desc">A radio button lets users select exactly one option from a set.</p>
         <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="guidelines">Guidelines</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
-        <div data-tab-panel="examples" class="active">
-          <div class="sg-subsection"><h3 class="sg-subsection-title">Default group</h3><div class="sg-example"><div class="sg-example-preview"><div class="udc-radio-group" role="radiogroup" aria-labelledby="demo-notif-label"><span class="udc-radio-group__legend" id="demo-notif-label">Notification preference</span><label class="udc-radio"><input type="radio" name="demo-notif" value="email" checked /><span class="udc-radio__control"></span><span class="udc-radio__label">Email</span></label><label class="udc-radio"><input type="radio" name="demo-notif" value="sms" /><span class="udc-radio__control"></span><span class="udc-radio__label">SMS</span></label><label class="udc-radio"><input type="radio" name="demo-notif" value="push" /><span class="udc-radio__control"></span><span class="udc-radio__label">Push notification</span></label></div></div><details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;div class="udc-radio-group" role="radiogroup"&gt;
-  &lt;span class="udc-radio-group__legend"&gt;Label&lt;/span&gt;
-  &lt;label class="udc-radio"&gt;
-    &lt;input type="radio" name="group" value="a" checked /&gt;
-    &lt;span class="udc-radio__control"&gt;&lt;/span&gt;
-    &lt;span class="udc-radio__label"&gt;Option&lt;/span&gt;
-  &lt;/label&gt;
-&lt;/div&gt;</code></pre></details></div></div>
-          <div class="sg-subsection"><h3 class="sg-subsection-title">Disabled</h3><div class="sg-example"><div class="sg-example-preview" style="display:flex;flex-direction:column;gap:12px;"><label class="udc-radio"><input type="radio" name="demo-dis" disabled /><span class="udc-radio__control"></span><span class="udc-radio__label">Disabled</span></label></div><details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;input type="radio" disabled /&gt;</code></pre></details></div></div>
-          <div class="sg-subsection"><h3 class="sg-subsection-title">Error state</h3><div class="sg-example"><div class="sg-example-preview" style="display:flex;flex-direction:column;gap:12px;"><label class="udc-radio" data-state="error"><input type="radio" name="demo-err" /><span class="udc-radio__control"></span><span class="udc-radio__label">Error</span></label></div><details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;label class="udc-radio" data-state="error"&gt;…&lt;/label&gt;</code></pre></details></div></div>
-        </div>
+        <div data-tab-panel="examples" class="active" data-needs-fetch></div>
         <div data-tab-panel="code"><h3 class="sg-subsection-title">Import</h3><pre class="sg-playground-code" style="margin-bottom:24px;">@import url('./components/radio.css');</pre><h3 class="sg-subsection-title">CSS Classes</h3><table class="sg-api-table"><thead><tr><th>Class</th><th>Description</th></tr></thead><tbody><tr><td><code>.udc-radio-group</code></td><td>Vertical stack wrapper</td></tr><tr><td><code>.udc-radio-group__legend</code></td><td>Group label</td></tr><tr><td><code>.udc-radio</code></td><td>Individual radio label</td></tr><tr><td><code>.udc-radio__control</code></td><td>Visual circle indicator</td></tr><tr><td><code>.udc-radio__label</code></td><td>Label text</td></tr></tbody></table></div>
         <div data-tab-panel="guidelines"></div>
         <div data-tab-panel="changelog"><p class="sg-changelog-empty">No changes recorded yet.</p></div>
@@ -505,77 +415,7 @@
         <p class="sg-page-desc">A dropdown lets users select a single value from a list of options. It combines a trigger button with a floating option list.</p>
         <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="guidelines">Guidelines</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
 
-        <div data-tab-panel="examples" class="active">
-          <!-- Default -->
-          <div class="sg-subsection"><h3 class="sg-subsection-title">Default</h3>
-            <div class="sg-example"><div class="sg-example-preview" style="min-height:280px;">
-              <div class="udc-dropdown" style="max-width:340px;">
-                <label class="udc-dropdown__label">Favourite fruit <span class="udc-dropdown__required"></span></label>
-                <div class="udc-dropdown__trigger" tabindex="0" role="combobox" aria-expanded="false" aria-haspopup="listbox">
-                  <span class="udc-dropdown__leading-icon"><span class="material-symbols-outlined">add_circle_outline</span></span>
-                  <span class="udc-dropdown__value" data-placeholder>Select an option</span>
-                  <span class="udc-dropdown__chevron"><span class="material-symbols-outlined">keyboard_arrow_down</span></span>
-                </div>
-                <div class="udc-dropdown__helper"><span>Choose your preferred fruit</span><span class="udc-dropdown__counter">0/1</span></div>
-                <div class="udc-dropdown__list" role="listbox">
-                  <div class="udc-dropdown__item" role="option">Apple</div>
-                  <div class="udc-dropdown__item" role="option">Banana</div>
-                  <div class="udc-dropdown__item" role="option">Cherry</div>
-                  <div class="udc-dropdown__item" role="option">Dragonfruit</div>
-                </div>
-              </div>
-            </div>
-            <details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;div class="udc-dropdown"&gt;
-  &lt;label class="udc-dropdown__label"&gt;Label &lt;span class="udc-dropdown__required"&gt;&lt;/span&gt;&lt;/label&gt;
-  &lt;div class="udc-dropdown__trigger" tabindex="0" role="combobox" aria-expanded="false" aria-haspopup="listbox"&gt;
-    &lt;span class="udc-dropdown__leading-icon"&gt;&lt;span class="material-symbols-outlined"&gt;add_circle_outline&lt;/span&gt;&lt;/span&gt;
-    &lt;span class="udc-dropdown__value" data-placeholder&gt;Select an option&lt;/span&gt;
-    &lt;span class="udc-dropdown__chevron"&gt;&lt;span class="material-symbols-outlined"&gt;keyboard_arrow_down&lt;/span&gt;&lt;/span&gt;
-  &lt;/div&gt;
-  &lt;div class="udc-dropdown__helper"&gt;&lt;span&gt;Helper text&lt;/span&gt;&lt;/div&gt;
-  &lt;div class="udc-dropdown__list" role="listbox"&gt;
-    &lt;div class="udc-dropdown__item" role="option"&gt;Option 1&lt;/div&gt;
-    &lt;div class="udc-dropdown__item" role="option"&gt;Option 2&lt;/div&gt;
-  &lt;/div&gt;
-&lt;/div&gt;</code></pre></details>
-          </div></div>
-
-          <!-- Error state -->
-          <div class="sg-subsection"><h3 class="sg-subsection-title">Error state</h3>
-            <div class="sg-example"><div class="sg-example-preview">
-              <div class="udc-dropdown" data-state="error" style="max-width:340px;">
-                <label class="udc-dropdown__label">Category <span class="udc-dropdown__required"></span></label>
-                <div class="udc-dropdown__trigger" tabindex="0" role="combobox" aria-expanded="false" aria-haspopup="listbox">
-                  <span class="udc-dropdown__leading-icon"><span class="material-symbols-outlined">add_circle_outline</span></span>
-                  <span class="udc-dropdown__value" data-placeholder>Select an option</span>
-                  <span class="udc-dropdown__chevron"><span class="material-symbols-outlined">keyboard_arrow_down</span></span>
-                </div>
-                <div class="udc-dropdown__helper"><span>Selection is required</span></div>
-              </div>
-            </div>
-            <details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;div class="udc-dropdown" data-state="error"&gt;
-  …
-&lt;/div&gt;</code></pre></details>
-          </div></div>
-
-          <!-- Disabled -->
-          <div class="sg-subsection"><h3 class="sg-subsection-title">Disabled</h3>
-            <div class="sg-example"><div class="sg-example-preview">
-              <div class="udc-dropdown" style="max-width:340px;">
-                <label class="udc-dropdown__label">Region</label>
-                <div class="udc-dropdown__trigger disabled" tabindex="-1" role="combobox" aria-expanded="false" aria-haspopup="listbox" aria-disabled="true">
-                  <span class="udc-dropdown__leading-icon"><span class="material-symbols-outlined">add_circle_outline</span></span>
-                  <span class="udc-dropdown__value">Locked value</span>
-                  <span class="udc-dropdown__chevron"><span class="material-symbols-outlined">keyboard_arrow_down</span></span>
-                </div>
-                <div class="udc-dropdown__helper"><span>Contact admin to change</span></div>
-              </div>
-            </div>
-            <details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;div class="udc-dropdown__trigger" aria-disabled="true"&gt;
-  …
-&lt;/div&gt;</code></pre></details>
-          </div></div>
-        </div>
+        <div data-tab-panel="examples" class="active" data-needs-fetch></div>
 
         <div data-tab-panel="code">
           <h3 class="sg-subsection-title">Import</h3>
@@ -614,12 +454,7 @@
         <h1 class="sg-page-title">Badge</h1>
         <p class="sg-page-desc">A badge is a visual indicator for categorization, status, or labels.</p>
         <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="guidelines">Guidelines</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
-        <div data-tab-panel="examples" class="active">
-          <div class="sg-subsection"><h3 class="sg-subsection-title">Prominent (filled)</h3><div class="sg-example"><div class="sg-example-preview"><span class="udc-badge">Info</span><span class="udc-badge" data-variant="secondary">Secondary</span><span class="udc-badge" data-variant="success">Success</span><span class="udc-badge" data-variant="error">Error</span><span class="udc-badge" data-variant="warning">Warning</span></div><details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;span class="udc-badge"&gt;Info&lt;/span&gt;
-&lt;span class="udc-badge" data-variant="success"&gt;Success&lt;/span&gt;</code></pre></details></div></div>
-          <div class="sg-subsection"><h3 class="sg-subsection-title">Subtle</h3><div class="sg-example"><div class="sg-example-preview"><span class="udc-badge" data-prominent="false">Info</span><span class="udc-badge" data-variant="secondary" data-prominent="false">Secondary</span><span class="udc-badge" data-variant="success" data-prominent="false">Success</span><span class="udc-badge" data-variant="error" data-prominent="false">Error</span><span class="udc-badge" data-variant="warning" data-prominent="false">Warning</span></div><details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;span class="udc-badge" data-prominent="false"&gt;Info&lt;/span&gt;</code></pre></details></div></div>
-          <div class="sg-subsection"><h3 class="sg-subsection-title">Small size</h3><div class="sg-example"><div class="sg-example-preview"><span class="udc-badge" data-size="sm">Info</span><span class="udc-badge" data-variant="success" data-size="sm">Success</span><span class="udc-badge" data-variant="error" data-size="sm">Error</span></div><details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;span class="udc-badge" data-size="sm"&gt;Info&lt;/span&gt;</code></pre></details></div></div>
-        </div>
+        <div data-tab-panel="examples" class="active" data-needs-fetch></div>
         <div data-tab-panel="code"><h3 class="sg-subsection-title">Import</h3><pre class="sg-playground-code" style="margin-bottom:24px;">@import url('./components/badge.css');</pre><h3 class="sg-subsection-title">Data Attributes</h3><table class="sg-api-table"><thead><tr><th>Attribute</th><th>Values</th><th>Description</th></tr></thead><tbody><tr><td><code>data-variant</code></td><td><code>secondary</code>, <code>success</code>, <code>error</code>, <code>warning</code></td><td>Color variant (default is info/blue)</td></tr><tr><td><code>data-prominent</code></td><td><code>false</code></td><td>Subtle/tinted style</td></tr><tr><td><code>data-size</code></td><td><code>sm</code></td><td>Compact size</td></tr></tbody></table></div>
         <div data-tab-panel="guidelines"></div>
         <div data-tab-panel="changelog"><p class="sg-changelog-empty">No changes recorded yet.</p></div>
@@ -631,12 +466,7 @@
         <h1 class="sg-page-title">Divider</h1>
         <p class="sg-page-desc">A horizontal divider separates content into clear groups.</p>
         <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="guidelines">Guidelines</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
-        <div data-tab-panel="examples" class="active">
-          <div class="sg-subsection"><h3 class="sg-subsection-title">Padding variants</h3><div class="sg-example"><div class="sg-example-preview" data-direction="column" style="gap:0;width:100%;"><p style="font-size:13px;color:var(--uds-color-text-secondary);">sm (default)</p><hr class="udc-divider-horizontal" /><p style="font-size:13px;color:var(--uds-color-text-secondary);">md</p><hr class="udc-divider-horizontal" data-padding="md" /><p style="font-size:13px;color:var(--uds-color-text-secondary);">lg</p><hr class="udc-divider-horizontal" data-padding="lg" /><p style="font-size:13px;color:var(--uds-color-text-secondary);">xl</p><hr class="udc-divider-horizontal" data-padding="xl" /><p style="font-size:13px;color:var(--uds-color-text-secondary);">Content after</p></div><details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;hr class="udc-divider-horizontal" /&gt;
-&lt;hr class="udc-divider-horizontal" data-padding="md" /&gt;
-&lt;hr class="udc-divider-horizontal" data-padding="lg" /&gt;
-&lt;hr class="udc-divider-horizontal" data-padding="xl" /&gt;</code></pre></details></div></div>
-        </div>
+        <div data-tab-panel="examples" class="active" data-needs-fetch></div>
         <div data-tab-panel="code"><h3 class="sg-subsection-title">Import</h3><pre class="sg-playground-code" style="margin-bottom:24px;">@import url('./components/divider.css');</pre><table class="sg-api-table"><thead><tr><th>Attribute</th><th>Values</th></tr></thead><tbody><tr><td><code>data-padding</code></td><td><code>md</code>, <code>lg</code>, <code>xl</code> (default: sm)</td></tr></tbody></table></div>
         <div data-tab-panel="guidelines"></div>
         <div data-tab-panel="changelog"><p class="sg-changelog-empty">No changes recorded yet.</p></div>
@@ -648,11 +478,7 @@
         <h1 class="sg-page-title">Icon Wrapper</h1>
         <p class="sg-page-desc">An icon wrapper constrains an icon to a fixed size with consistent inner padding.</p>
         <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="guidelines">Guidelines</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
-        <div data-tab-panel="examples" class="active">
-          <div class="sg-subsection"><h3 class="sg-subsection-title">Sizes</h3><div class="sg-example"><div class="sg-example-preview" style="align-items:flex-end;gap:20px;"><div style="text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px;"><span class="udc-icon-wrapper" data-size="16" style="color:var(--uds-color-surface-interactive-default);"><span class="material-symbols-outlined">info</span></span><span class="sg-swatch-label">16</span></div><div style="text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px;"><span class="udc-icon-wrapper" style="color:var(--uds-color-surface-interactive-default);"><span class="material-symbols-outlined">info</span></span><span class="sg-swatch-label">24</span></div><div style="text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px;"><span class="udc-icon-wrapper" data-size="48" style="color:var(--uds-color-surface-interactive-default);"><span class="material-symbols-outlined">info</span></span><span class="sg-swatch-label">48</span></div><div style="text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px;"><span class="udc-icon-wrapper" data-size="64" style="color:var(--uds-color-surface-interactive-default);"><span class="material-symbols-outlined">info</span></span><span class="sg-swatch-label">64</span></div></div><details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;span class="udc-icon-wrapper" data-size="24"&gt;
-  &lt;span class="material-symbols-outlined"&gt;info&lt;/span&gt;
-&lt;/span&gt;</code></pre></details></div></div>
-        </div>
+        <div data-tab-panel="examples" class="active" data-needs-fetch></div>
         <div data-tab-panel="code"><h3 class="sg-subsection-title">Import</h3><pre class="sg-playground-code" style="margin-bottom:24px;">@import url('./components/icon-wrapper.css');</pre><table class="sg-api-table"><thead><tr><th>Attribute</th><th>Values</th></tr></thead><tbody><tr><td><code>data-size</code></td><td><code>16</code>, <code>20</code>, <code>24</code> (default), <code>32</code>, <code>48</code>, <code>64</code></td></tr></tbody></table></div>
         <div data-tab-panel="guidelines"></div>
         <div data-tab-panel="changelog"><p class="sg-changelog-empty">No changes recorded yet.</p></div>
@@ -664,9 +490,7 @@
         <h1 class="sg-page-title">Spacer</h1>
         <p class="sg-page-desc">A spacer adds consistent whitespace between elements using the spacing scale.</p>
         <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="guidelines">Guidelines</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
-        <div data-tab-panel="examples" class="active">
-          <div class="sg-subsection"><h3 class="sg-subsection-title">Sizes</h3><div class="sg-example"><div class="sg-example-preview" data-direction="column" style="gap:8px;"><div style="display:flex;align-items:center;gap:0;"><span class="udc-badge">Before</span><div class="udc-spacer" data-size="100" style="background:var(--uds-color-surface-info-subtle);outline:1px dashed var(--uds-color-border-interactive);"></div><span class="udc-badge" data-variant="success">After (100)</span></div><div style="display:flex;align-items:center;gap:0;"><span class="udc-badge">Before</span><div class="udc-spacer" data-size="300" style="background:var(--uds-color-surface-info-subtle);outline:1px dashed var(--uds-color-border-interactive);"></div><span class="udc-badge" data-variant="success">After (300)</span></div><div style="display:flex;align-items:center;gap:0;"><span class="udc-badge">Before</span><div class="udc-spacer" data-size="600" style="background:var(--uds-color-surface-info-subtle);outline:1px dashed var(--uds-color-border-interactive);"></div><span class="udc-badge" data-variant="success">After (600)</span></div></div><details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;div class="udc-spacer" data-size="300"&gt;&lt;/div&gt;</code></pre></details></div></div>
-        </div>
+        <div data-tab-panel="examples" class="active" data-needs-fetch></div>
         <div data-tab-panel="code"><h3 class="sg-subsection-title">Import</h3><pre class="sg-playground-code" style="margin-bottom:24px;">@import url('./components/spacer.css');</pre><table class="sg-api-table"><thead><tr><th>Attribute</th><th>Values</th></tr></thead><tbody><tr><td><code>data-size</code></td><td><code>050</code>, <code>075</code>, <code>100</code>, <code>150</code>, <code>200</code>, <code>300</code>, <code>400</code>, <code>600</code></td></tr></tbody></table></div>
         <div data-tab-panel="guidelines"></div>
         <div data-tab-panel="changelog"><p class="sg-changelog-empty">No changes recorded yet.</p></div>
@@ -678,19 +502,7 @@
         <h1 class="sg-page-title">Breadcrumb</h1>
         <p class="sg-page-desc">A breadcrumb shows the user's location in a page hierarchy.</p>
         <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="guidelines">Guidelines</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
-        <div data-tab-panel="examples" class="active">
-          <div class="sg-subsection"><h3 class="sg-subsection-title">Framed (default)</h3><div class="sg-example"><div class="sg-example-preview"><nav class="udc-breadcrumb" aria-label="Breadcrumb framed"><ol><li><a href="javascript:void(0)">Home</a></li><li><a href="javascript:void(0)">Products</a></li><li aria-current="page">Widget Pro</li></ol></nav></div><details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;nav class="udc-breadcrumb" aria-label="Breadcrumb"&gt;
-  &lt;ol&gt;
-    &lt;li&gt;&lt;a href="#"&gt;Home&lt;/a&gt;&lt;/li&gt;
-    &lt;li&gt;&lt;a href="#"&gt;Products&lt;/a&gt;&lt;/li&gt;
-    &lt;li aria-current="page"&gt;Widget Pro&lt;/li&gt;
-  &lt;/ol&gt;
-&lt;/nav&gt;</code></pre></details></div></div>
-          <div class="sg-subsection"><h3 class="sg-subsection-title">Frameless</h3><div class="sg-example"><div class="sg-example-preview"><nav class="udc-breadcrumb" data-frameless aria-label="Breadcrumb frameless"><ol><li><a href="javascript:void(0)">Dashboard</a></li><li><a href="javascript:void(0)">Settings</a></li><li aria-current="page">Profile</li></ol></nav></div><details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;nav class="udc-breadcrumb" data-frameless&gt;…&lt;/nav&gt;</code></pre></details></div></div>
-          <div class="sg-subsection"><h3 class="sg-subsection-title">Deep hierarchy</h3><div class="sg-example"><div class="sg-example-preview"><nav class="udc-breadcrumb" aria-label="Breadcrumb deep"><ol><li><a href="javascript:void(0)">Home</a></li><li><a href="javascript:void(0)">Category</a></li><li><a href="javascript:void(0)">Sub-category</a></li><li><a href="javascript:void(0)">Section</a></li><li aria-current="page">Current Page</li></ol></nav></div><details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;nav class="udc-breadcrumb"&gt;
-  &lt;ol&gt;…5 items…&lt;/ol&gt;
-&lt;/nav&gt;</code></pre></details></div></div>
-        </div>
+        <div data-tab-panel="examples" class="active" data-needs-fetch></div>
         <div data-tab-panel="code"><h3 class="sg-subsection-title">Import</h3><pre class="sg-playground-code" style="margin-bottom:24px;">@import url('./components/breadcrumb.css');</pre><table class="sg-api-table"><thead><tr><th>Attribute</th><th>Description</th></tr></thead><tbody><tr><td><code>data-frameless</code></td><td>Removes the pill container</td></tr><tr><td><code>aria-current="page"</code></td><td>Marks the current page (bold, non-interactive)</td></tr></tbody></table></div>
         <div data-tab-panel="guidelines"></div>
         <div data-tab-panel="changelog"><p class="sg-changelog-empty">No changes recorded yet.</p></div>
@@ -702,14 +514,7 @@
         <h1 class="sg-page-title">Tabs</h1>
         <p class="sg-page-desc">Horizontal tabs let users switch between related views in a single content area.</p>
         <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="guidelines">Guidelines</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
-        <div data-tab-panel="examples" class="active">
-          <div class="sg-subsection"><h3 class="sg-subsection-title">Default</h3><div class="sg-example"><div class="sg-example-preview"><div class="udc-tabs" role="tablist"><button class="udc-tab" role="tab" aria-selected="true">Overview</button><button class="udc-tab" role="tab">Details</button><button class="udc-tab" role="tab">History</button></div></div><details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;div class="udc-tabs" role="tablist"&gt;
-  &lt;button class="udc-tab" role="tab" aria-selected="true"&gt;Overview&lt;/button&gt;
-  &lt;button class="udc-tab" role="tab"&gt;Details&lt;/button&gt;
-&lt;/div&gt;</code></pre></details></div></div>
-          <div class="sg-subsection"><h3 class="sg-subsection-title">Small size</h3><div class="sg-example"><div class="sg-example-preview"><div class="udc-tabs" role="tablist" data-size="sm"><button class="udc-tab" role="tab" aria-selected="true">Tab 1</button><button class="udc-tab" role="tab">Tab 2</button><button class="udc-tab" role="tab">Tab 3</button><button class="udc-tab" role="tab">Tab 4</button></div></div><details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;div class="udc-tabs" role="tablist" data-size="sm"&gt;…&lt;/div&gt;</code></pre></details></div></div>
-          <div class="sg-subsection"><h3 class="sg-subsection-title">Disabled tab</h3><div class="sg-example"><div class="sg-example-preview"><div class="udc-tabs" role="tablist"><button class="udc-tab" role="tab" aria-selected="true">Active</button><button class="udc-tab" role="tab">Normal</button><button class="udc-tab" role="tab" disabled>Disabled</button></div></div><details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;button class="udc-tab" role="tab" disabled&gt;Disabled&lt;/button&gt;</code></pre></details></div></div>
-        </div>
+        <div data-tab-panel="examples" class="active" data-needs-fetch></div>
         <div data-tab-panel="code"><h3 class="sg-subsection-title">Import</h3><pre class="sg-playground-code" style="margin-bottom:24px;">@import url('./components/tab-horizontal.css');</pre><table class="sg-api-table"><thead><tr><th>Class / Attribute</th><th>Description</th></tr></thead><tbody><tr><td><code>.udc-tabs</code></td><td>Tab bar container</td></tr><tr><td><code>.udc-tab</code></td><td>Individual tab button</td></tr><tr><td><code>data-size="sm"</code></td><td>Compact vertical padding</td></tr><tr><td><code>aria-selected="true"</code></td><td>Active tab</td></tr><tr><td><code>disabled</code></td><td>Disabled tab</td></tr></tbody></table></div>
         <div data-tab-panel="guidelines"></div>
         <div data-tab-panel="changelog"><p class="sg-changelog-empty">No changes recorded yet.</p></div>
@@ -722,95 +527,7 @@
         <p class="sg-page-desc">A top-level application header bar with logo, bento dropdown for app switching, search, and user action buttons.</p>
         <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="guidelines">Guidelines</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
 
-        <div data-tab-panel="examples" class="active">
-          <div class="sg-subsection"><h3 class="sg-subsection-title">Default</h3>
-            <div class="sg-example"><div class="sg-example-preview" style="background:var(--uds-color-surface-page);padding:0;overflow:auto;">
-              <div class="udc-nav-header">
-                <div class="udc-nav-header__left">
-                  <div class="udc-nav-logo"><span class="material-symbols-outlined" style="font-size:32px;color:var(--uds-color-icon-interactive);">apartment</span></div>
-                  <div class="udc-nav-bento-wrapper">
-                    <button class="udc-nav-bento-button" aria-expanded="false" aria-haspopup="true">
-                      <span class="material-symbols-outlined" style="color:var(--uds-color-icon-interactive);">dashboard</span>
-                      Boardroom
-                      <span class="material-symbols-outlined udc-nav-bento-button__chevron">keyboard_arrow_down</span>
-                    </button>
-                    <div class="udc-nav-bento" data-open="false">
-                      <div class="udc-nav-bento__list">
-                        <button class="udc-nav-button" aria-selected="true"><span class="material-symbols-outlined">space_dashboard</span><span class="udc-nav-button__label">Dashboard</span></button>
-                        <button class="udc-nav-button"><span class="material-symbols-outlined">book</span><span class="udc-nav-button__label">Leasing / CRM</span></button>
-                        <button class="udc-nav-button"><span class="material-symbols-outlined">contact_phone</span><span class="udc-nav-button__label">People / Contacts</span></button>
-                        <button class="udc-nav-button"><span class="material-symbols-outlined">home_work</span><span class="udc-nav-button__label">Property / Assets</span></button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="udc-nav-header__center">
-                  <div class="udc-nav-search">
-                    <span class="material-symbols-outlined">auto_awesome</span>
-                    <input class="udc-nav-search__input" type="text" placeholder="Search or ask a question">
-                  </div>
-                </div>
-                <div class="udc-nav-header__right">
-                  <button class="udc-nav-mywork">
-                    <span class="material-symbols-outlined">notifications_active</span>
-                    My Work
-                    <span class="udc-badge" data-variant="warning" style="width:24px;height:24px;padding:0;display:inline-flex;align-items:center;justify-content:center;">5</span>
-                  </button>
-                  <div class="udc-nav-account">
-                    <button class="udc-button-ghost" data-icon-only><span class="material-symbols-outlined">notifications</span></button>
-                    <button class="udc-button-ghost" data-icon-only><span class="material-symbols-outlined">settings</span></button>
-                    <button class="udc-button-ghost" data-icon-only><span class="material-symbols-outlined">account_circle</span></button>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;div class="udc-nav-header"&gt;
-  &lt;div class="udc-nav-header__left"&gt;
-    &lt;div class="udc-nav-logo"&gt;…&lt;/div&gt;
-    &lt;div class="udc-nav-bento-wrapper"&gt;
-      &lt;button class="udc-nav-bento-button" aria-expanded="false"&gt;…&lt;/button&gt;
-      &lt;div class="udc-nav-bento" data-open="false"&gt;…&lt;/div&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-  &lt;div class="udc-nav-header__center"&gt;…&lt;/div&gt;
-  &lt;div class="udc-nav-header__right"&gt;…&lt;/div&gt;
-&lt;/div&gt;</code></pre></details></div>
-          </div>
-          <div class="sg-subsection"><h3 class="sg-subsection-title">Bento Dropdown</h3>
-            <div class="sg-example"><div class="sg-example-preview" style="min-height:420px;">
-              <div class="udc-nav-bento-wrapper">
-                <button class="udc-nav-bento-button" aria-expanded="false" aria-haspopup="true">
-                  <span class="material-symbols-outlined" style="color:var(--uds-color-icon-interactive);">dashboard</span>
-                  Boardroom
-                  <span class="material-symbols-outlined udc-nav-bento-button__chevron">keyboard_arrow_down</span>
-                </button>
-                <div class="udc-nav-bento" data-open="true" style="position:relative;top:auto;">
-                  <div class="udc-nav-bento__tiles">
-                    <a class="udc-nav-tile" href="javascript:void(0)"><span class="material-symbols-outlined">home</span>Transaction</a>
-                    <a class="udc-nav-tile" href="javascript:void(0)"><span class="material-symbols-outlined">assignment</span>Leads</a>
-                    <a class="udc-nav-tile" href="javascript:void(0)"><span class="material-symbols-outlined">monetization_on</span>Accounting</a>
-                  </div>
-                  <div class="udc-nav-bento__list">
-                    <button class="udc-nav-button" aria-selected="true"><span class="material-symbols-outlined">space_dashboard</span><span class="udc-nav-button__label">Boardroom</span></button>
-                    <button class="udc-nav-button"><span class="material-symbols-outlined">verified_user</span><span class="udc-nav-button__label">Compliance Center</span></button>
-                    <button class="udc-nav-button"><span class="material-symbols-outlined">person</span><span class="udc-nav-button__label">Personal</span></button>
-                    <button class="udc-nav-button"><span class="material-symbols-outlined">business</span><span class="udc-nav-button__label">Commercial</span><span class="udc-nav-button__trailing"><span class="material-symbols-outlined">open_in_new</span></span></button>
-                    <button class="udc-nav-button"><span class="material-symbols-outlined">manage_accounts</span><span class="udc-nav-button__label">Accounts</span></button>
-                  </div>
-                  <a class="udc-nav-bento__footer" href="javascript:void(0)">Customize menu</a>
-                </div>
-              </div>
-            </div>
-            <details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;div class="udc-nav-bento-wrapper"&gt;
-  &lt;button class="udc-nav-bento-button" aria-expanded="false"&gt;…&lt;/button&gt;
-  &lt;div class="udc-nav-bento" data-open="false"&gt;
-    &lt;div class="udc-nav-bento__tiles"&gt;…&lt;/div&gt;
-    &lt;div class="udc-nav-bento__list"&gt;…&lt;/div&gt;
-    &lt;a class="udc-nav-bento__footer"&gt;Customize menu&lt;/a&gt;
-  &lt;/div&gt;
-&lt;/div&gt;</code></pre></details></div>
-          </div>
-        </div>
+        <div data-tab-panel="examples" class="active" data-needs-fetch></div>
         <div data-tab-panel="code">
           <h3 class="sg-subsection-title">Import</h3>
           <pre class="sg-playground-code" style="margin-bottom:24px;">@import url('./components/nav-header.css');
@@ -844,59 +561,7 @@
         <h1 class="sg-page-title">Nav Vertical</h1>
         <p class="sg-page-desc">A vertical sidebar navigation list with icon + label items. Supports leading-icon and text-only variants.</p>
         <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="guidelines">Guidelines</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
-        <div data-tab-panel="examples" class="active">
-          <div class="sg-subsection"><h3 class="sg-subsection-title">With Leading Icons</h3>
-            <div class="sg-example"><div class="sg-example-preview" style="max-width:240px;">
-              <nav class="udc-nav-vertical" aria-label="Main navigation">
-                <button class="udc-nav-button" aria-selected="true"><span class="material-symbols-outlined">space_dashboard</span><span class="udc-nav-button__label">Dashboard</span></button>
-                <button class="udc-nav-button"><span class="material-symbols-outlined">book</span><span class="udc-nav-button__label">Leasing / CRM</span></button>
-                <button class="udc-nav-button"><span class="material-symbols-outlined">contact_phone</span><span class="udc-nav-button__label">People / Contacts</span></button>
-                <button class="udc-nav-button"><span class="material-symbols-outlined">home_work</span><span class="udc-nav-button__label">Property / Assets</span></button>
-                <button class="udc-nav-button"><span class="material-symbols-outlined">monetization_on</span><span class="udc-nav-button__label">Accounting / Finance</span></button>
-                <button class="udc-nav-button"><span class="material-symbols-outlined">summarize</span><span class="udc-nav-button__label">Compliance / Reporting</span></button>
-                <button class="udc-nav-button"><span class="material-symbols-outlined">admin_panel_settings</span><span class="udc-nav-button__label">Admin / Settings</span></button>
-              </nav>
-            </div>
-            <details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;nav class="udc-nav-vertical" aria-label="Main navigation"&gt;
-  &lt;button class="udc-nav-button" aria-selected="true"&gt;
-    &lt;span class="material-symbols-outlined"&gt;space_dashboard&lt;/span&gt;
-    &lt;span class="udc-nav-button__label"&gt;Dashboard&lt;/span&gt;
-  &lt;/button&gt;
-  &lt;button class="udc-nav-button"&gt;…&lt;/button&gt;
-&lt;/nav&gt;</code></pre></details></div>
-          </div>
-          <div class="sg-subsection"><h3 class="sg-subsection-title">Without Leading Icons</h3>
-            <div class="sg-example"><div class="sg-example-preview" style="max-width:240px;">
-              <nav class="udc-nav-vertical" data-leading-icons="false" aria-label="Text-only navigation">
-                <button class="udc-nav-button" aria-selected="true"><span class="udc-nav-button__label">Dashboard</span></button>
-                <button class="udc-nav-button"><span class="udc-nav-button__label">Leasing / CRM</span></button>
-                <button class="udc-nav-button"><span class="udc-nav-button__label">People / Contacts</span></button>
-                <button class="udc-nav-button"><span class="udc-nav-button__label">Property / Assets</span></button>
-                <button class="udc-nav-button"><span class="udc-nav-button__label">Accounting / Finance</span></button>
-                <button class="udc-nav-button"><span class="udc-nav-button__label">Compliance / Reporting</span></button>
-                <button class="udc-nav-button"><span class="udc-nav-button__label">Admin / Settings</span></button>
-              </nav>
-            </div>
-            <details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;nav class="udc-nav-vertical" data-leading-icons="false"&gt;
-  &lt;button class="udc-nav-button" aria-selected="true"&gt;
-    &lt;span class="udc-nav-button__label"&gt;Dashboard&lt;/span&gt;
-  &lt;/button&gt;
-  &lt;button class="udc-nav-button"&gt;…&lt;/button&gt;
-&lt;/nav&gt;</code></pre></details></div>
-          </div>
-          <div class="sg-subsection"><h3 class="sg-subsection-title">Rail (compact vertical)</h3>
-            <div class="sg-example"><div class="sg-example-preview" style="display:flex;gap:8px;">
-              <button class="udc-nav-button-vertical"><span class="material-symbols-outlined">home</span>Home</button>
-              <button class="udc-nav-button-vertical" aria-selected="true"><span class="material-symbols-outlined">book</span>Leads</button>
-              <button class="udc-nav-button-vertical"><span class="material-symbols-outlined">monetization_on</span>Finance</button>
-            </div>
-            <details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;button class="udc-nav-button-vertical"&gt;
-  &lt;span class="material-symbols-outlined"&gt;home&lt;/span&gt;
-  Home
-&lt;/button&gt;
-&lt;button class="udc-nav-button-vertical" aria-selected="true"&gt;…&lt;/button&gt;</code></pre></details></div>
-          </div>
-        </div>
+        <div data-tab-panel="examples" class="active" data-needs-fetch></div>
         <div data-tab-panel="code">
           <h3 class="sg-subsection-title">Import</h3>
           <pre class="sg-playground-code" style="margin-bottom:24px;">@import url('./components/nav-vertical.css');</pre>
@@ -923,172 +588,7 @@
         <h1 class="sg-page-title">Data Table</h1>
         <p class="sg-page-desc">A data grid with sortable headers, row selection via checkboxes, cell types (text, badge, action button), alignment helpers, and error highlighting.</p>
         <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="guidelines">Guidelines</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
-        <div data-tab-panel="examples" class="active">
-
-          <div class="sg-subsection"><h3 class="sg-subsection-title">Basic table</h3>
-            <div class="sg-example"><div class="sg-example-preview" style="overflow-x:auto;">
-              <div class="udc-data-table">
-                <table>
-                  <thead><tr>
-                    <th>Name</th><th>Role</th><th>Email</th><th class="udc-dt-align-right">Balance</th>
-                  </tr></thead>
-                  <tbody>
-                    <tr><td>Brian Smith</td><td>Tenant</td><td>brian@example.com</td><td class="udc-dt-align-right">$0.00</td></tr>
-                    <tr><td>Catherine Lee</td><td>Owner</td><td>catherine@example.com</td><td class="udc-dt-align-right">$1,200</td></tr>
-                    <tr><td>David Brown</td><td>Tenant</td><td>david@example.com</td><td class="udc-dt-align-right">$150</td></tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-            <details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;div class="udc-data-table"&gt;
-  &lt;table&gt;
-    &lt;thead&gt;
-      &lt;tr&gt;
-        &lt;th&gt;Name&lt;/th&gt;
-        &lt;th&gt;Role&lt;/th&gt;
-        &lt;th class="udc-dt-align-right"&gt;Balance&lt;/th&gt;
-      &lt;/tr&gt;
-    &lt;/thead&gt;
-    &lt;tbody&gt;
-      &lt;tr&gt;&lt;td&gt;Brian Smith&lt;/td&gt;&lt;td&gt;Tenant&lt;/td&gt;&lt;td class="udc-dt-align-right"&gt;$0.00&lt;/td&gt;&lt;/tr&gt;
-    &lt;/tbody&gt;
-  &lt;/table&gt;
-&lt;/div&gt;</code></pre></details></div>
-          </div>
-
-          <div class="sg-subsection"><h3 class="sg-subsection-title">With checkboxes, sort, badges &amp; actions</h3>
-            <div class="sg-example"><div class="sg-example-preview" style="overflow-x:auto;">
-              <div class="udc-data-table">
-                <table>
-                  <thead><tr>
-                    <th class="udc-dt-check"><input type="checkbox" /></th>
-                    <th>Uploaded By <span class="udc-dt-sort" data-dir="asc"></span></th>
-                    <th>Invoice Status</th>
-                    <th>Property</th>
-                    <th>Invoice Number</th>
-                    <th>Due Date</th>
-                    <th class="udc-dt-align-right">Amount</th>
-                    <th class="udc-dt-action"></th>
-                  </tr></thead>
-                  <tbody>
-                    <tr>
-                      <td class="udc-dt-check"><input type="checkbox" /></td>
-                      <td>Brian Smith</td>
-                      <td><span class="udc-badge" data-variant="warning" data-prominent="false">Low Confidence</span></td>
-                      <td>Riverbend Estates</td>
-                      <td>INV-002</td>
-                      <td>Feb 20, 2024</td>
-                      <td class="udc-dt-align-right">$75</td>
-                      <td class="udc-dt-action"><button class="udc-button-ghost" data-icon-only><span class="material-symbols-outlined">more_vert</span></button></td>
-                    </tr>
-                    <tr>
-                      <td class="udc-dt-check"><input type="checkbox" /></td>
-                      <td>Catherine Lee</td>
-                      <td><span class="udc-badge" data-variant="success">Delivered</span></td>
-                      <td>Sunnyvale Towers</td>
-                      <td>INV-003</td>
-                      <td>Mar 5, 2024</td>
-                      <td class="udc-dt-align-right">$100</td>
-                      <td class="udc-dt-action"><button class="udc-button-ghost" data-icon-only><span class="material-symbols-outlined">more_vert</span></button></td>
-                    </tr>
-                    <tr>
-                      <td class="udc-dt-check"><input type="checkbox" /></td>
-                      <td>David Brown</td>
-                      <td><span class="udc-badge" data-variant="error">Delivery Failed</span></td>
-                      <td>Cedar Hills Residence</td>
-                      <td>INV-004</td>
-                      <td>Apr 12, 2024</td>
-                      <td class="udc-dt-align-right">$150</td>
-                      <td class="udc-dt-action"><button class="udc-button-ghost" data-icon-only><span class="material-symbols-outlined">more_vert</span></button></td>
-                    </tr>
-                    <tr>
-                      <td class="udc-dt-check"><input type="checkbox" /></td>
-                      <td>Eva White</td>
-                      <td><span class="udc-badge" data-variant="warning" data-prominent="false">Suspected Duplicate</span></td>
-                      <td>Oakwood Gardens</td>
-                      <td>INV-005</td>
-                      <td>May 30, 2024</td>
-                      <td class="udc-dt-align-right">$200</td>
-                      <td class="udc-dt-action"><button class="udc-button-ghost" data-icon-only><span class="material-symbols-outlined">more_vert</span></button></td>
-                    </tr>
-                    <tr>
-                      <td class="udc-dt-check"><input type="checkbox" /></td>
-                      <td>Grace Kim</td>
-                      <td><span class="udc-badge" data-variant="success">Delivered</span></td>
-                      <td>Silver Lake Apartments</td>
-                      <td>INV-007</td>
-                      <td>Jul 25, 2024</td>
-                      <td class="udc-dt-align-right">$300</td>
-                      <td class="udc-dt-action"><button class="udc-button-ghost" data-icon-only><span class="material-symbols-outlined">more_vert</span></button></td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-            <details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;div class="udc-data-table"&gt;
-  &lt;table&gt;
-    &lt;thead&gt;&lt;tr&gt;
-      &lt;th class="udc-dt-check"&gt;&lt;input type="checkbox" /&gt;&lt;/th&gt;
-      &lt;th&gt;Name &lt;span class="udc-dt-sort" data-dir="asc"&gt;&lt;/span&gt;&lt;/th&gt;
-      &lt;th&gt;Status&lt;/th&gt;
-      &lt;th class="udc-dt-align-right"&gt;Amount&lt;/th&gt;
-      &lt;th class="udc-dt-action"&gt;&lt;/th&gt;
-    &lt;/tr&gt;&lt;/thead&gt;
-    &lt;tbody&gt;&lt;tr&gt;
-      &lt;td class="udc-dt-check"&gt;&lt;input type="checkbox" /&gt;&lt;/td&gt;
-      &lt;td&gt;Brian Smith&lt;/td&gt;
-      &lt;td&gt;&lt;span class="udc-badge" data-variant="success"&gt;Delivered&lt;/span&gt;&lt;/td&gt;
-      &lt;td class="udc-dt-align-right"&gt;$75&lt;/td&gt;
-      &lt;td class="udc-dt-action"&gt;
-        &lt;button class="udc-button-ghost" data-icon-only&gt;
-          &lt;span class="material-symbols-outlined"&gt;more_vert&lt;/span&gt;
-        &lt;/button&gt;
-      &lt;/td&gt;
-    &lt;/tr&gt;&lt;/tbody&gt;
-  &lt;/table&gt;
-&lt;/div&gt;</code></pre></details></div>
-          </div>
-
-          <div class="sg-subsection"><h3 class="sg-subsection-title">Striped rows</h3>
-            <div class="sg-example"><div class="sg-example-preview" style="overflow-x:auto;">
-              <div class="udc-data-table" data-striped="true">
-                <table>
-                  <thead><tr><th>Unit</th><th>Tenant</th><th>Lease End</th><th class="udc-dt-align-right">Rent</th></tr></thead>
-                  <tbody>
-                    <tr><td>101</td><td>Alice Cooper</td><td>Dec 2026</td><td class="udc-dt-align-right">$1,800</td></tr>
-                    <tr><td>102</td><td>Bob Dylan</td><td>Mar 2027</td><td class="udc-dt-align-right">$2,100</td></tr>
-                    <tr><td>103</td><td>Carol King</td><td>Jun 2026</td><td class="udc-dt-align-right">$1,950</td></tr>
-                    <tr><td>104</td><td>Dan Murphy</td><td>Sep 2027</td><td class="udc-dt-align-right">$2,300</td></tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-            <details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;div class="udc-data-table" data-striped="true"&gt;
-  &lt;table&gt;…&lt;/table&gt;
-&lt;/div&gt;</code></pre></details></div>
-          </div>
-
-          <div class="sg-subsection"><h3 class="sg-subsection-title">Error highlight on row</h3>
-            <div class="sg-example"><div class="sg-example-preview" style="overflow-x:auto;">
-              <div class="udc-data-table">
-                <table>
-                  <thead><tr><th>Invoice</th><th>Status</th><th class="udc-dt-align-right">Amount</th></tr></thead>
-                  <tbody>
-                    <tr><td>INV-001</td><td>Paid</td><td class="udc-dt-align-right">$500</td></tr>
-                    <tr data-highlight="error"><td>INV-002</td><td>Failed</td><td class="udc-dt-align-right">$250</td></tr>
-                    <tr><td>INV-003</td><td>Paid</td><td class="udc-dt-align-right">$800</td></tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-            <details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;tr data-highlight="error"&gt;
-  &lt;td&gt;INV-002&lt;/td&gt;
-  &lt;td&gt;Failed&lt;/td&gt;
-  &lt;td class="udc-dt-align-right"&gt;$250&lt;/td&gt;
-&lt;/tr&gt;</code></pre></details></div>
-          </div>
-
-        </div>
+        <div data-tab-panel="examples" class="active" data-needs-fetch></div>
         <div data-tab-panel="code">
           <h3 class="sg-subsection-title">Import</h3>
           <pre class="sg-playground-code" style="margin-bottom:24px;">@import url('./components/data-table.css');</pre>
@@ -1120,93 +620,7 @@
         <h1 class="sg-page-title">Tile</h1>
         <p class="sg-page-desc">A selectable card with a label, body text, and optional trailing chevron. Supports default, hover, selected, focused, and disabled states.</p>
         <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="guidelines">Guidelines</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
-        <div data-tab-panel="examples" class="active">
-
-          <div class="sg-subsection"><h3 class="sg-subsection-title">Default</h3>
-            <div class="sg-example"><div class="sg-example-preview" style="display:flex;gap:16px;flex-wrap:wrap;">
-              <div class="udc-tile" tabindex="0" style="width:260px;">
-                <div class="udc-tile__content">
-                  <div class="udc-tile__label">Upload CSV<span class="udc-tile__required"></span></div>
-                  <div class="udc-tile__body">Import residents from a spreadsheet file</div>
-                </div>
-                <span class="udc-tile__chevron"><span class="material-symbols-outlined">chevron_right</span></span>
-              </div>
-              <div class="udc-tile" tabindex="0" aria-selected="true" style="width:260px;">
-                <div class="udc-tile__content">
-                  <div class="udc-tile__label">Manual Entry<span class="udc-tile__required"></span></div>
-                  <div class="udc-tile__body">Add residents one at a time</div>
-                </div>
-                <span class="udc-tile__chevron"><span class="material-symbols-outlined">chevron_right</span></span>
-              </div>
-              <div class="udc-tile" tabindex="-1" aria-disabled="true" style="width:260px;">
-                <div class="udc-tile__content">
-                  <div class="udc-tile__label">API Sync</div>
-                  <div class="udc-tile__body">Sync from an external system</div>
-                </div>
-                <span class="udc-tile__chevron"><span class="material-symbols-outlined">chevron_right</span></span>
-              </div>
-            </div>
-            <details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;div class="udc-tile" tabindex="0"&gt;
-  &lt;div class="udc-tile__content"&gt;
-    &lt;div class="udc-tile__label"&gt;
-      Upload CSV
-      &lt;span class="udc-tile__required"&gt;&lt;/span&gt;
-    &lt;/div&gt;
-    &lt;div class="udc-tile__body"&gt;Import residents from a spreadsheet&lt;/div&gt;
-  &lt;/div&gt;
-  &lt;span class="udc-tile__chevron"&gt;
-    &lt;span class="material-symbols-outlined"&gt;chevron_right&lt;/span&gt;
-  &lt;/span&gt;
-&lt;/div&gt;
-
-&lt;!-- Selected --&gt;
-&lt;div class="udc-tile" aria-selected="true"&gt;…&lt;/div&gt;
-
-&lt;!-- Disabled --&gt;
-&lt;div class="udc-tile" aria-disabled="true"&gt;…&lt;/div&gt;</code></pre></details></div>
-          </div>
-
-          <div class="sg-subsection"><h3 class="sg-subsection-title">Multiple body lines</h3>
-            <div class="sg-example"><div class="sg-example-preview" style="display:flex;gap:16px;">
-              <div class="udc-tile" tabindex="0" style="width:280px;">
-                <div class="udc-tile__content">
-                  <div class="udc-tile__label">Unit 1410</div>
-                  <div class="udc-tile__body">Bob Smith</div>
-                  <div class="udc-tile__body">Lease ends Dec 2026</div>
-                  <div class="udc-tile__body">Balance: $0.00</div>
-                </div>
-                <span class="udc-tile__chevron"><span class="material-symbols-outlined">chevron_right</span></span>
-              </div>
-            </div>
-            <details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;div class="udc-tile" tabindex="0"&gt;
-  &lt;div class="udc-tile__content"&gt;
-    &lt;div class="udc-tile__label"&gt;Unit 1410&lt;/div&gt;
-    &lt;div class="udc-tile__body"&gt;Bob Smith&lt;/div&gt;
-    &lt;div class="udc-tile__body"&gt;Lease ends Dec 2026&lt;/div&gt;
-    &lt;div class="udc-tile__body"&gt;Balance: $0.00&lt;/div&gt;
-  &lt;/div&gt;
-  &lt;span class="udc-tile__chevron"&gt;…&lt;/span&gt;
-&lt;/div&gt;</code></pre></details></div>
-          </div>
-
-          <div class="sg-subsection"><h3 class="sg-subsection-title">Without chevron</h3>
-            <div class="sg-example"><div class="sg-example-preview">
-              <div class="udc-tile" tabindex="0" style="width:260px;">
-                <div class="udc-tile__content">
-                  <div class="udc-tile__label">Option A</div>
-                  <div class="udc-tile__body">No trailing chevron</div>
-                </div>
-              </div>
-            </div>
-            <details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;div class="udc-tile" tabindex="0"&gt;
-  &lt;div class="udc-tile__content"&gt;
-    &lt;div class="udc-tile__label"&gt;Option A&lt;/div&gt;
-    &lt;div class="udc-tile__body"&gt;No trailing chevron&lt;/div&gt;
-  &lt;/div&gt;
-&lt;/div&gt;</code></pre></details></div>
-          </div>
-
-        </div>
+        <div data-tab-panel="examples" class="active" data-needs-fetch></div>
         <div data-tab-panel="code">
           <h3 class="sg-subsection-title">Import</h3>
           <pre class="sg-playground-code" style="margin-bottom:24px;">@import url('./components/tile.css');</pre>
@@ -1234,74 +648,7 @@
         <h1 class="sg-page-title">List</h1>
         <p class="sg-page-desc">A vertical list of selectable items with optional leading and trailing icons. Supports default, hover, active, selected, and focused states.</p>
         <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="guidelines">Guidelines</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
-        <div data-tab-panel="examples" class="active">
-
-          <div class="sg-subsection"><h3 class="sg-subsection-title">Basic list</h3>
-            <div class="sg-example"><div class="sg-example-preview" style="max-width:320px;">
-              <div class="udc-list">
-                <div class="udc-list-item" tabindex="0" aria-selected="true"><span class="udc-list-item__label">Dashboard</span></div>
-                <div class="udc-list-item" tabindex="0"><span class="udc-list-item__label">Leasing / CRM</span></div>
-                <div class="udc-list-item" tabindex="0"><span class="udc-list-item__label">People / Contacts</span></div>
-                <div class="udc-list-item" tabindex="0"><span class="udc-list-item__label">Property / Assets</span></div>
-                <div class="udc-list-item" tabindex="0"><span class="udc-list-item__label">Accounting / Finance</span></div>
-              </div>
-            </div>
-            <details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;div class="udc-list"&gt;
-  &lt;div class="udc-list-item" tabindex="0" aria-selected="true"&gt;
-    &lt;span class="udc-list-item__label"&gt;Dashboard&lt;/span&gt;
-  &lt;/div&gt;
-  &lt;div class="udc-list-item" tabindex="0"&gt;
-    &lt;span class="udc-list-item__label"&gt;Leasing / CRM&lt;/span&gt;
-  &lt;/div&gt;
-  …
-&lt;/div&gt;</code></pre></details></div>
-          </div>
-
-          <div class="sg-subsection"><h3 class="sg-subsection-title">With leading icons</h3>
-            <div class="sg-example"><div class="sg-example-preview" style="max-width:320px;">
-              <div class="udc-list">
-                <div class="udc-list-item" tabindex="0"><span class="udc-list-item__leading-icon"><span class="material-symbols-outlined">add_circle_outline</span></span><span class="udc-list-item__label">Add new item</span></div>
-                <div class="udc-list-item" tabindex="0"><span class="udc-list-item__leading-icon"><span class="material-symbols-outlined">add_circle_outline</span></span><span class="udc-list-item__label">Add another</span></div>
-                <div class="udc-list-item" tabindex="0" aria-selected="true"><span class="udc-list-item__leading-icon"><span class="material-symbols-outlined">add_circle_outline</span></span><span class="udc-list-item__label">Selected item</span></div>
-              </div>
-            </div>
-            <details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;div class="udc-list-item" tabindex="0"&gt;
-  &lt;span class="udc-list-item__leading-icon"&gt;
-    &lt;span class="material-symbols-outlined"&gt;add_circle_outline&lt;/span&gt;
-  &lt;/span&gt;
-  &lt;span class="udc-list-item__label"&gt;Add new item&lt;/span&gt;
-&lt;/div&gt;</code></pre></details></div>
-          </div>
-
-          <div class="sg-subsection"><h3 class="sg-subsection-title">With trailing icons</h3>
-            <div class="sg-example"><div class="sg-example-preview" style="max-width:320px;">
-              <div class="udc-list">
-                <div class="udc-list-item" tabindex="0"><span class="udc-list-item__label">Remove option 1</span><span class="udc-list-item__trailing-icon"><span class="material-symbols-outlined">remove_circle_outline</span></span></div>
-                <div class="udc-list-item" tabindex="0"><span class="udc-list-item__label">Remove option 2</span><span class="udc-list-item__trailing-icon"><span class="material-symbols-outlined">remove_circle_outline</span></span></div>
-              </div>
-            </div>
-            <details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;div class="udc-list-item" tabindex="0"&gt;
-  &lt;span class="udc-list-item__label"&gt;Remove option&lt;/span&gt;
-  &lt;span class="udc-list-item__trailing-icon"&gt;
-    &lt;span class="material-symbols-outlined"&gt;remove_circle_outline&lt;/span&gt;
-  &lt;/span&gt;
-&lt;/div&gt;</code></pre></details></div>
-          </div>
-
-          <div class="sg-subsection"><h3 class="sg-subsection-title">Both icons</h3>
-            <div class="sg-example"><div class="sg-example-preview" style="max-width:320px;">
-              <div class="udc-list">
-                <div class="udc-list-item" tabindex="0"><span class="udc-list-item__leading-icon"><span class="material-symbols-outlined">add_circle_outline</span></span><span class="udc-list-item__label">Item with both</span><span class="udc-list-item__trailing-icon"><span class="material-symbols-outlined">remove_circle_outline</span></span></div>
-              </div>
-            </div>
-            <details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;div class="udc-list-item" tabindex="0"&gt;
-  &lt;span class="udc-list-item__leading-icon"&gt;…&lt;/span&gt;
-  &lt;span class="udc-list-item__label"&gt;Item with both&lt;/span&gt;
-  &lt;span class="udc-list-item__trailing-icon"&gt;…&lt;/span&gt;
-&lt;/div&gt;</code></pre></details></div>
-          </div>
-
-        </div>
+        <div data-tab-panel="examples" class="active" data-needs-fetch></div>
         <div data-tab-panel="code">
           <h3 class="sg-subsection-title">Import</h3>
           <pre class="sg-playground-code" style="margin-bottom:24px;">@import url('./components/list.css');</pre>
@@ -1327,107 +674,7 @@
         <h1 class="sg-page-title">Notification</h1>
         <p class="sg-page-desc">Inline status banners for info, success, error, and warning messages. Supports subtle, prominent, and inline styles.</p>
         <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="guidelines">Guidelines</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
-        <div data-tab-panel="examples" class="active">
-
-          <div class="sg-subsection"><h3 class="sg-subsection-title">Info (default)</h3>
-            <div class="sg-example"><div class="sg-example-preview" style="display:flex;flex-direction:column;gap:12px;">
-              <div class="udc-notification" data-variant="info">
-                <span class="udc-notification__icon"><span class="material-symbols-outlined">info</span></span>
-                <span class="udc-notification__text">Your changes have been saved.</span>
-              </div>
-              <div class="udc-notification" data-variant="info" data-prominent="true">
-                <span class="udc-notification__icon"><span class="material-symbols-outlined">info</span></span>
-                <span class="udc-notification__text">Your changes have been saved.</span>
-              </div>
-              <div class="udc-notification" data-variant="info" data-inline="true">
-                <span class="udc-notification__icon"><span class="material-symbols-outlined">info</span></span>
-                <span class="udc-notification__text">Your changes have been saved.</span>
-              </div>
-            </div>
-            <details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;div class="udc-notification" data-variant="info"&gt;
-  &lt;span class="udc-notification__icon"&gt;&lt;span class="material-symbols-outlined"&gt;info&lt;/span&gt;&lt;/span&gt;
-  &lt;span class="udc-notification__text"&gt;Message&lt;/span&gt;
-&lt;/div&gt;</code></pre></details></div>
-          </div>
-
-          <div class="sg-subsection"><h3 class="sg-subsection-title">Success</h3>
-            <div class="sg-example"><div class="sg-example-preview" style="display:flex;flex-direction:column;gap:12px;">
-              <div class="udc-notification" data-variant="success">
-                <span class="udc-notification__icon"><span class="material-symbols-outlined">check_circle</span></span>
-                <span class="udc-notification__text">Operation completed successfully.</span>
-              </div>
-              <div class="udc-notification" data-variant="success" data-prominent="true">
-                <span class="udc-notification__icon"><span class="material-symbols-outlined">check_circle</span></span>
-                <span class="udc-notification__text">Operation completed successfully.</span>
-              </div>
-              <div class="udc-notification" data-variant="success" data-inline="true">
-                <span class="udc-notification__icon"><span class="material-symbols-outlined">check_circle</span></span>
-                <span class="udc-notification__text">Operation completed successfully.</span>
-              </div>
-            </div>
-            <details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;div class="udc-notification" data-variant="success"&gt;…&lt;/div&gt;
-&lt;div class="udc-notification" data-variant="success" data-prominent="true"&gt;…&lt;/div&gt;
-&lt;div class="udc-notification" data-variant="success" data-inline="true"&gt;…&lt;/div&gt;</code></pre></details></div>
-          </div>
-
-          <div class="sg-subsection"><h3 class="sg-subsection-title">Error</h3>
-            <div class="sg-example"><div class="sg-example-preview" style="display:flex;flex-direction:column;gap:12px;">
-              <div class="udc-notification" data-variant="error">
-                <span class="udc-notification__icon"><span class="material-symbols-outlined">error_outline</span></span>
-                <span class="udc-notification__text">Something went wrong. Please try again.</span>
-              </div>
-              <div class="udc-notification" data-variant="error" data-prominent="true">
-                <span class="udc-notification__icon"><span class="material-symbols-outlined">error_outline</span></span>
-                <span class="udc-notification__text">Something went wrong. Please try again.</span>
-              </div>
-              <div class="udc-notification" data-variant="error" data-inline="true">
-                <span class="udc-notification__icon"><span class="material-symbols-outlined">error_outline</span></span>
-                <span class="udc-notification__text">Something went wrong. Please try again.</span>
-              </div>
-            </div>
-            <details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;div class="udc-notification" data-variant="error"&gt;…&lt;/div&gt;
-&lt;div class="udc-notification" data-variant="error" data-prominent="true"&gt;…&lt;/div&gt;
-&lt;div class="udc-notification" data-variant="error" data-inline="true"&gt;…&lt;/div&gt;</code></pre></details></div>
-          </div>
-
-          <div class="sg-subsection"><h3 class="sg-subsection-title">Warning</h3>
-            <div class="sg-example"><div class="sg-example-preview" style="display:flex;flex-direction:column;gap:12px;">
-              <div class="udc-notification" data-variant="warning">
-                <span class="udc-notification__icon"><span class="material-symbols-outlined">warning_amber</span></span>
-                <span class="udc-notification__text">Your session will expire in 5 minutes.</span>
-              </div>
-              <div class="udc-notification" data-variant="warning" data-prominent="true">
-                <span class="udc-notification__icon"><span class="material-symbols-outlined">warning_amber</span></span>
-                <span class="udc-notification__text">Your session will expire in 5 minutes.</span>
-              </div>
-              <div class="udc-notification" data-variant="warning" data-inline="true">
-                <span class="udc-notification__icon"><span class="material-symbols-outlined">warning_amber</span></span>
-                <span class="udc-notification__text">Your session will expire in 5 minutes.</span>
-              </div>
-            </div>
-            <details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;div class="udc-notification" data-variant="warning"&gt;…&lt;/div&gt;
-&lt;div class="udc-notification" data-variant="warning" data-prominent="true"&gt;…&lt;/div&gt;
-&lt;div class="udc-notification" data-variant="warning" data-inline="true"&gt;…&lt;/div&gt;</code></pre></details></div>
-          </div>
-
-          <div class="sg-subsection"><h3 class="sg-subsection-title">With close button</h3>
-            <div class="sg-example"><div class="sg-example-preview" style="display:flex;flex-direction:column;gap:12px;">
-              <div class="udc-notification" data-variant="info">
-                <span class="udc-notification__icon"><span class="material-symbols-outlined">info</span></span>
-                <span class="udc-notification__text">Dismissible notification example.</span>
-                <button class="udc-notification__close" aria-label="Dismiss"><span class="material-symbols-outlined">close</span></button>
-              </div>
-            </div>
-            <details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;div class="udc-notification" data-variant="info"&gt;
-  &lt;span class="udc-notification__icon"&gt;…&lt;/span&gt;
-  &lt;span class="udc-notification__text"&gt;Dismissible notification example.&lt;/span&gt;
-  &lt;button class="udc-notification__close" aria-label="Dismiss"&gt;
-    &lt;span class="material-symbols-outlined"&gt;close&lt;/span&gt;
-  &lt;/button&gt;
-&lt;/div&gt;</code></pre></details></div>
-          </div>
-
-        </div>
+        <div data-tab-panel="examples" class="active" data-needs-fetch></div>
         <div data-tab-panel="code">
           <h3 class="sg-subsection-title">Import</h3>
           <pre class="sg-playground-code" style="margin-bottom:24px;">@import url('./components/notification.css');</pre>
@@ -1454,118 +701,7 @@
         <h1 class="sg-page-title">Dialog</h1>
         <p class="sg-page-desc">A modal overlay with a title bar, scrollable content area, and action footer. Supports 1–4 content slots.</p>
         <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="guidelines">Guidelines</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
-        <div data-tab-panel="examples" class="active">
-
-          <div class="sg-subsection"><h3 class="sg-subsection-title">1-slot dialog</h3>
-            <div class="sg-example"><div class="sg-example-preview" style="display:flex;justify-content:center;">
-              <div class="udc-dialog" role="dialog" aria-modal="false" style="position:relative;box-shadow:0 10px 20px 2px rgba(0,0,0,0.2);">
-                <div class="udc-dialog__header">
-                  <h2 class="udc-dialog__title">Dialog title</h2>
-                  <button class="udc-dialog__close" aria-label="Close"><span class="material-symbols-outlined">close</span></button>
-                </div>
-                <div class="udc-dialog__body">
-                  <div style="background:var(--uds-color-surface-alt);padding:var(--uds-space-300);text-align:center;font-size:12px;color:var(--uds-color-text-primary);border-radius:4px;">Slot – Replace This</div>
-                </div>
-                <div class="udc-dialog__footer">
-                  <button class="udc-button-secondary">Cancel</button>
-                  <button class="udc-button-primary">Confirm</button>
-                </div>
-              </div>
-            </div>
-            <details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;div class="udc-dialog-backdrop" data-open="true"&gt;
-  &lt;div class="udc-dialog" role="dialog" aria-modal="true"&gt;
-    &lt;div class="udc-dialog__header"&gt;
-      &lt;h2 class="udc-dialog__title"&gt;Dialog title&lt;/h2&gt;
-      &lt;button class="udc-dialog__close" aria-label="Close"&gt;
-        &lt;span class="material-symbols-outlined"&gt;close&lt;/span&gt;
-      &lt;/button&gt;
-    &lt;/div&gt;
-    &lt;div class="udc-dialog__body"&gt;
-      &lt;!-- Content here --&gt;
-    &lt;/div&gt;
-    &lt;div class="udc-dialog__footer"&gt;
-      &lt;button class="udc-button-secondary"&gt;Cancel&lt;/button&gt;
-      &lt;button class="udc-button-primary"&gt;Confirm&lt;/button&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-&lt;/div&gt;</code></pre></details></div>
-          </div>
-
-          <div class="sg-subsection"><h3 class="sg-subsection-title">2-slot dialog</h3>
-            <div class="sg-example"><div class="sg-example-preview" style="display:flex;justify-content:center;">
-              <div class="udc-dialog" role="dialog" aria-modal="false" style="position:relative;box-shadow:0 10px 20px 2px rgba(0,0,0,0.2);">
-                <div class="udc-dialog__header">
-                  <h2 class="udc-dialog__title">Dialog title</h2>
-                  <button class="udc-dialog__close" aria-label="Close"><span class="material-symbols-outlined">close</span></button>
-                </div>
-                <div class="udc-dialog__body">
-                  <div style="background:var(--uds-color-surface-alt);padding:var(--uds-space-300);text-align:center;font-size:12px;color:var(--uds-color-text-primary);border-radius:4px;">Slot 1</div>
-                  <div style="background:var(--uds-color-surface-alt);padding:var(--uds-space-300);text-align:center;font-size:12px;color:var(--uds-color-text-primary);border-radius:4px;">Slot 2</div>
-                </div>
-                <div class="udc-dialog__footer">
-                  <button class="udc-button-secondary">Cancel</button>
-                  <button class="udc-button-primary">Confirm</button>
-                </div>
-              </div>
-            </div>
-            <details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;!-- Same structure, add more children in .udc-dialog__body --&gt;</code></pre></details></div>
-          </div>
-
-          <div class="sg-subsection"><h3 class="sg-subsection-title">3-slot dialog</h3>
-            <div class="sg-example"><div class="sg-example-preview" style="display:flex;justify-content:center;">
-              <div class="udc-dialog" role="dialog" aria-modal="false" style="position:relative;box-shadow:0 10px 20px 2px rgba(0,0,0,0.2);">
-                <div class="udc-dialog__header">
-                  <h2 class="udc-dialog__title">Dialog title</h2>
-                  <button class="udc-dialog__close" aria-label="Close"><span class="material-symbols-outlined">close</span></button>
-                </div>
-                <div class="udc-dialog__body">
-                  <div style="background:var(--uds-color-surface-alt);padding:var(--uds-space-300);text-align:center;font-size:12px;color:var(--uds-color-text-primary);border-radius:4px;">Slot 1</div>
-                  <div style="background:var(--uds-color-surface-alt);padding:var(--uds-space-300);text-align:center;font-size:12px;color:var(--uds-color-text-primary);border-radius:4px;">Slot 2</div>
-                  <div style="background:var(--uds-color-surface-alt);padding:var(--uds-space-300);text-align:center;font-size:12px;color:var(--uds-color-text-primary);border-radius:4px;">Slot 3</div>
-                </div>
-                <div class="udc-dialog__footer">
-                  <button class="udc-button-secondary">Cancel</button>
-                  <button class="udc-button-primary">Confirm</button>
-                </div>
-              </div>
-            </div>
-            <details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;!-- Same structure with 3 content sections --&gt;</code></pre></details></div>
-          </div>
-
-          <div class="sg-subsection"><h3 class="sg-subsection-title">Interactive demo (open dialog)</h3>
-            <div class="sg-example"><div class="sg-example-preview">
-              <button class="udc-button-primary" onclick="document.getElementById('demo-dialog-backdrop').setAttribute('data-open','true');UDS.init();">Open Dialog</button>
-              <div class="udc-dialog-backdrop" id="demo-dialog-backdrop" data-open="false">
-                <div class="udc-dialog" role="dialog" aria-modal="true" aria-labelledby="demo-dlg-title">
-                  <div class="udc-dialog__header">
-                    <h2 class="udc-dialog__title" id="demo-dlg-title">Delete tenant</h2>
-                    <button class="udc-dialog__close" aria-label="Close"><span class="material-symbols-outlined">close</span></button>
-                  </div>
-                  <div class="udc-dialog__body">
-                    <p style="margin:0;font-family:var(--uds-font-family);font-size:var(--uds-font-size-base);color:var(--uds-color-text-primary);">Are you sure you want to delete this tenant? (Bob Smith, Unit 1410)</p>
-                    <p style="margin:0;font-family:var(--uds-font-family);font-size:var(--uds-font-size-sm);color:var(--uds-color-text-error);">This tenant will be deleted immediately and you can not recover this tenant if you delete it.</p>
-                  </div>
-                  <div class="udc-dialog__footer">
-                    <button class="udc-button-secondary" onclick="this.closest('.udc-dialog-backdrop').setAttribute('data-open','false');">Cancel</button>
-                    <button class="udc-button-primary" onclick="this.closest('.udc-dialog-backdrop').setAttribute('data-open','false');">Delete</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;button onclick="document.getElementById('my-dialog').setAttribute('data-open','true')"&gt;
-  Open Dialog
-&lt;/button&gt;
-
-&lt;div class="udc-dialog-backdrop" id="my-dialog" data-open="false"&gt;
-  &lt;div class="udc-dialog" role="dialog" aria-modal="true"&gt;
-    &lt;div class="udc-dialog__header"&gt;…&lt;/div&gt;
-    &lt;div class="udc-dialog__body"&gt;…&lt;/div&gt;
-    &lt;div class="udc-dialog__footer"&gt;…&lt;/div&gt;
-  &lt;/div&gt;
-&lt;/div&gt;</code></pre></details></div>
-          </div>
-
-        </div>
+        <div data-tab-panel="examples" class="active" data-needs-fetch></div>
         <div data-tab-panel="code">
           <h3 class="sg-subsection-title">Import</h3>
           <pre class="sg-playground-code" style="margin-bottom:24px;">@import url('./components/dialog.css');</pre>
@@ -1593,66 +729,7 @@
         <h1 class="sg-page-title">Chip</h1>
         <p class="sg-page-desc">Compact elements for filtering, input tags, and dropdown triggers. Supports selected state, leading/trailing icons, and four variants.</p>
         <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="guidelines">Guidelines</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
-        <div data-tab-panel="examples" class="active">
-
-          <div class="sg-subsection"><h3 class="sg-subsection-title">Filter chips</h3>
-            <div class="sg-example"><div class="sg-example-preview" style="display:flex;gap:var(--uds-space-100);flex-wrap:wrap;">
-              <button class="udc-chip" data-variant="filter"><span class="udc-chip__label">All</span></button>
-              <button class="udc-chip" data-variant="filter" aria-selected="true"><span class="udc-chip__leading-icon"><span class="material-symbols-outlined">check</span></span><span class="udc-chip__label">Active</span></button>
-              <button class="udc-chip" data-variant="filter"><span class="udc-chip__label">Pending</span></button>
-              <button class="udc-chip" data-variant="filter"><span class="udc-chip__label">Closed</span></button>
-            </div>
-            <details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;button class="udc-chip" data-variant="filter"&gt;
-  &lt;span class="udc-chip__label"&gt;All&lt;/span&gt;
-&lt;/button&gt;
-&lt;button class="udc-chip" data-variant="filter" aria-selected="true"&gt;
-  &lt;span class="udc-chip__leading-icon"&gt;
-    &lt;span class="material-symbols-outlined"&gt;check&lt;/span&gt;
-  &lt;/span&gt;
-  &lt;span class="udc-chip__label"&gt;Active&lt;/span&gt;
-&lt;/button&gt;</code></pre></details></div>
-          </div>
-
-          <div class="sg-subsection"><h3 class="sg-subsection-title">Input chips (removable tags)</h3>
-            <div class="sg-example"><div class="sg-example-preview" style="display:flex;gap:var(--uds-space-100);flex-wrap:wrap;">
-              <button class="udc-chip" data-variant="input" aria-selected="true"><span class="udc-chip__leading-icon"><span class="material-symbols-outlined">check</span></span><span class="udc-chip__label">JavaScript</span><span class="udc-chip__trailing-icon"><span class="material-symbols-outlined">close</span></span></button>
-              <button class="udc-chip" data-variant="input" aria-selected="true"><span class="udc-chip__leading-icon"><span class="material-symbols-outlined">check</span></span><span class="udc-chip__label">React</span><span class="udc-chip__trailing-icon"><span class="material-symbols-outlined">close</span></span></button>
-              <button class="udc-chip" data-variant="input" aria-selected="true"><span class="udc-chip__leading-icon"><span class="material-symbols-outlined">check</span></span><span class="udc-chip__label">Vue</span><span class="udc-chip__trailing-icon"><span class="material-symbols-outlined">close</span></span></button>
-            </div>
-            <details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;button class="udc-chip" data-variant="input" aria-selected="true"&gt;
-  &lt;span class="udc-chip__leading-icon"&gt;…&lt;/span&gt;
-  &lt;span class="udc-chip__label"&gt;JavaScript&lt;/span&gt;
-  &lt;span class="udc-chip__trailing-icon"&gt;
-    &lt;span class="material-symbols-outlined"&gt;close&lt;/span&gt;
-  &lt;/span&gt;
-&lt;/button&gt;</code></pre></details></div>
-          </div>
-
-          <div class="sg-subsection"><h3 class="sg-subsection-title">Dropdown chips</h3>
-            <div class="sg-example"><div class="sg-example-preview" style="display:flex;gap:var(--uds-space-100);flex-wrap:wrap;">
-              <button class="udc-chip" data-variant="dropdown"><span class="udc-chip__label">Category</span><span class="udc-chip__trailing-icon"><span class="material-symbols-outlined">keyboard_arrow_down</span></span></button>
-              <button class="udc-chip" data-variant="dropdown" aria-selected="true"><span class="udc-chip__leading-icon"><span class="material-symbols-outlined">check</span></span><span class="udc-chip__label">Status</span><span class="udc-chip__trailing-icon"><span class="material-symbols-outlined">keyboard_arrow_down</span></span></button>
-            </div>
-            <details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;button class="udc-chip" data-variant="dropdown"&gt;
-  &lt;span class="udc-chip__label"&gt;Category&lt;/span&gt;
-  &lt;span class="udc-chip__trailing-icon"&gt;
-    &lt;span class="material-symbols-outlined"&gt;keyboard_arrow_down&lt;/span&gt;
-  &lt;/span&gt;
-&lt;/button&gt;</code></pre></details></div>
-          </div>
-
-          <div class="sg-subsection"><h3 class="sg-subsection-title">Default chips (with all icons)</h3>
-            <div class="sg-example"><div class="sg-example-preview" style="display:flex;gap:var(--uds-space-100);flex-wrap:wrap;">
-              <button class="udc-chip"><span class="udc-chip__leading-icon"><span class="material-symbols-outlined">check</span></span><span class="udc-chip__label">Chip label</span><span class="udc-chip__trailing-icon"><span class="material-symbols-outlined">close</span></span></button>
-            </div>
-            <details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;button class="udc-chip"&gt;
-  &lt;span class="udc-chip__leading-icon"&gt;…&lt;/span&gt;
-  &lt;span class="udc-chip__label"&gt;Chip label&lt;/span&gt;
-  &lt;span class="udc-chip__trailing-icon"&gt;…&lt;/span&gt;
-&lt;/button&gt;</code></pre></details></div>
-          </div>
-
-        </div>
+        <div data-tab-panel="examples" class="active" data-needs-fetch></div>
         <div data-tab-panel="code">
           <h3 class="sg-subsection-title">Import</h3>
           <pre class="sg-playground-code" style="margin-bottom:var(--uds-space-300);">@import url('./components/chip.css');</pre>
@@ -1678,47 +755,7 @@
         <h1 class="sg-page-title">Search</h1>
         <p class="sg-page-desc">A search input with a leading search icon and a clear button that appears when the field has a value. Supports default, hover, focused, and error states.</p>
         <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="guidelines">Guidelines</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
-        <div data-tab-panel="examples" class="active">
-
-          <div class="sg-subsection"><h3 class="sg-subsection-title">Default</h3>
-            <div class="sg-example"><div class="sg-example-preview" style="max-width:400px;">
-              <div class="udc-search">
-                <div class="udc-search__field">
-                  <span class="udc-search__icon"><span class="material-symbols-outlined">search</span></span>
-                  <input type="search" placeholder="Search tenants, properties..." />
-                  <button class="udc-search__clear" aria-label="Clear"><span class="material-symbols-outlined">clear</span></button>
-                </div>
-              </div>
-            </div>
-            <details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;div class="udc-search"&gt;
-  &lt;div class="udc-search__field"&gt;
-    &lt;span class="udc-search__icon"&gt;
-      &lt;span class="material-symbols-outlined"&gt;search&lt;/span&gt;
-    &lt;/span&gt;
-    &lt;input type="search" placeholder="Search..." /&gt;
-    &lt;button class="udc-search__clear" aria-label="Clear"&gt;
-      &lt;span class="material-symbols-outlined"&gt;clear&lt;/span&gt;
-    &lt;/button&gt;
-  &lt;/div&gt;
-&lt;/div&gt;</code></pre></details></div>
-          </div>
-
-          <div class="sg-subsection"><h3 class="sg-subsection-title">Error state</h3>
-            <div class="sg-example"><div class="sg-example-preview" style="max-width:400px;">
-              <div class="udc-search" data-state="error">
-                <div class="udc-search__field">
-                  <span class="udc-search__icon"><span class="material-symbols-outlined">search</span></span>
-                  <input type="search" placeholder="Search..." value="Invalid query" />
-                  <button class="udc-search__clear" aria-label="Clear"><span class="material-symbols-outlined">clear</span></button>
-                </div>
-              </div>
-            </div>
-            <details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;div class="udc-search" data-state="error"&gt;
-  &lt;div class="udc-search__field"&gt;…&lt;/div&gt;
-&lt;/div&gt;</code></pre></details></div>
-          </div>
-
-        </div>
+        <div data-tab-panel="examples" class="active" data-needs-fetch></div>
         <div data-tab-panel="code">
           <h3 class="sg-subsection-title">Import</h3>
           <pre class="sg-playground-code" style="margin-bottom:var(--uds-space-300);">@import url('./components/search.css');</pre>
@@ -1744,58 +781,7 @@
         <h1 class="sg-page-title">Tooltip</h1>
         <p class="sg-page-desc">A lightweight text popover that appears on hover or focus. CSS-only — no JavaScript required. Supports top, bottom, left, and right positioning.</p>
         <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="guidelines">Guidelines</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
-        <div data-tab-panel="examples" class="active">
-
-          <div class="sg-subsection"><h3 class="sg-subsection-title">Top (default)</h3>
-            <div class="sg-example"><div class="sg-example-preview" style="display:flex;gap:var(--uds-space-300);padding-top:60px;">
-              <span class="udc-tooltip-wrapper">
-                <button class="udc-button-secondary">Hover me</button>
-                <span class="udc-tooltip" role="tooltip">This is a tooltip</span>
-              </span>
-              <span class="udc-tooltip-wrapper">
-                <button class="udc-button-primary">Another trigger</button>
-                <span class="udc-tooltip" role="tooltip">Helpful information for the user</span>
-              </span>
-            </div>
-            <details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;span class="udc-tooltip-wrapper"&gt;
-  &lt;button class="udc-button-secondary"&gt;Hover me&lt;/button&gt;
-  &lt;span class="udc-tooltip" role="tooltip"&gt;This is a tooltip&lt;/span&gt;
-&lt;/span&gt;</code></pre></details></div>
-          </div>
-
-          <div class="sg-subsection"><h3 class="sg-subsection-title">Positions</h3>
-            <div class="sg-example"><div class="sg-example-preview" style="display:flex;gap:var(--uds-space-400);padding:60px;flex-wrap:wrap;justify-content:center;">
-              <span class="udc-tooltip-wrapper">
-                <button class="udc-button-ghost">Top</button>
-                <span class="udc-tooltip" role="tooltip">Top tooltip</span>
-              </span>
-              <span class="udc-tooltip-wrapper">
-                <button class="udc-button-ghost">Bottom</button>
-                <span class="udc-tooltip" role="tooltip" data-position="bottom">Bottom tooltip</span>
-              </span>
-              <span class="udc-tooltip-wrapper">
-                <button class="udc-button-ghost">Left</button>
-                <span class="udc-tooltip" role="tooltip" data-position="left">Left tooltip</span>
-              </span>
-              <span class="udc-tooltip-wrapper">
-                <button class="udc-button-ghost">Right</button>
-                <span class="udc-tooltip" role="tooltip" data-position="right">Right tooltip</span>
-              </span>
-            </div>
-            <details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;!-- Default (top) --&gt;
-&lt;span class="udc-tooltip" role="tooltip"&gt;Top&lt;/span&gt;
-
-&lt;!-- Bottom --&gt;
-&lt;span class="udc-tooltip" role="tooltip" data-position="bottom"&gt;Bottom&lt;/span&gt;
-
-&lt;!-- Left --&gt;
-&lt;span class="udc-tooltip" role="tooltip" data-position="left"&gt;Left&lt;/span&gt;
-
-&lt;!-- Right --&gt;
-&lt;span class="udc-tooltip" role="tooltip" data-position="right"&gt;Right&lt;/span&gt;</code></pre></details></div>
-          </div>
-
-        </div>
+        <div data-tab-panel="examples" class="active" data-needs-fetch></div>
         <div data-tab-panel="code">
           <h3 class="sg-subsection-title">Import</h3>
           <pre class="sg-playground-code" style="margin-bottom:var(--uds-space-300);">@import url('./components/tooltip.css');</pre>
@@ -1821,16 +807,7 @@
         <h1 class="sg-page-title">Link</h1>
         <p class="sg-page-desc">A link navigates users to another page, route, resource, or external destination.</p>
         <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="guidelines">Guidelines</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
-        <div data-tab-panel="examples" class="active">
-          <div class="sg-subsection"><h3 class="sg-subsection-title">States</h3><p class="sg-subsection-desc">Default, current page, disabled, and external-link affordance from the Figma variant matrix.</p>
-            <div class="sg-example"><div class="sg-example-preview" style="display:flex;gap:var(--uds-space-300);align-items:center;">
-              <a class="udc-link" href="#">Default link</a>
-              <a class="udc-link" href="#" aria-current="page">Current page</a>
-              <a class="udc-link" aria-disabled="true">Disabled</a>
-              <a class="udc-link" href="#" target="_blank" rel="noopener noreferrer" data-new-window>External <span class="material-symbols-outlined" aria-hidden="true">open_in_new</span></a>
-            </div><details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;a class="udc-link" href="#"&gt;Default link&lt;/a&gt;</code></pre></details></div>
-          </div>
-        </div>
+        <div data-tab-panel="examples" class="active" data-needs-fetch></div>
         <div data-tab-panel="code"><h3 class="sg-subsection-title">Vanilla HTML</h3><pre class="sg-playground-code"><code>&lt;a class="udc-link" href="/properties"&gt;Properties&lt;/a&gt;
 &lt;a class="udc-link" href="/settings" aria-current="page"&gt;Settings&lt;/a&gt;
 &lt;a class="udc-link" href="https://example.com" target="_blank" rel="noopener noreferrer" data-new-window&gt;
@@ -1845,18 +822,7 @@
         <h1 class="sg-page-title">Label</h1>
         <p class="sg-page-desc">A label identifies an input, selection control, or form field and can include required-state affordances.</p>
         <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="guidelines">Guidelines</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
-        <div data-tab-panel="examples" class="active">
-          <div class="sg-subsection"><h3 class="sg-subsection-title">Variants</h3><p class="sg-subsection-desc">Label variants cover default, required, disabled, error, interactive, success, prominent, smaller, and multiline use cases.</p>
-            <div class="sg-example"><div class="sg-example-preview" style="display:flex;flex-direction:column;gap:var(--uds-space-150);max-width:420px;">
-              <span class="udc-label">Default label</span>
-              <span class="udc-label" data-required="true">Required label <span class="udc-label__required" aria-hidden="true"></span></span>
-              <span class="udc-label" data-variant="error">Error label</span>
-              <span class="udc-label" data-variant="success">Success label</span>
-              <span class="udc-label" data-size="sm" data-prominent="true">Small prominent label</span>
-              <span class="udc-label" data-multiline="true">Multiline label text wraps when it needs to describe a longer form field.</span>
-            </div><details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;span class="udc-label" data-variant="error"&gt;Error label&lt;/span&gt;</code></pre></details></div>
-          </div>
-        </div>
+        <div data-tab-panel="examples" class="active" data-needs-fetch></div>
         <div data-tab-panel="code"><h3 class="sg-subsection-title">Vanilla HTML</h3><pre class="sg-playground-code"><code>&lt;label class="udc-label" for="full-name" data-required="true"&gt;
   Full name &lt;span class="udc-label__required" aria-hidden="true"&gt;&lt;/span&gt;
 &lt;/label&gt;</code></pre></div>
@@ -1869,14 +835,7 @@
         <h1 class="sg-page-title">Text Area</h1>
         <p class="sg-page-desc">A text area lets users enter multi-line freeform text.</p>
         <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="guidelines">Guidelines</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
-        <div data-tab-panel="examples" class="active">
-          <div class="sg-subsection"><h3 class="sg-subsection-title">Default and error</h3><p class="sg-subsection-desc">Text Area uses the same label/helper/counter model as Text Input, with multi-line entry states from Figma.</p>
-            <div class="sg-example"><div class="sg-example-preview" style="display:flex;gap:var(--uds-space-400);flex-wrap:wrap;">
-              <div class="udc-text-area"><label class="udc-label" for="notes">Notes</label><div class="udc-text-area__field"><textarea id="notes" placeholder="Add notes..."></textarea></div><div class="udc-text-area__helper"><span>Optional internal note</span><span>0/250</span></div></div>
-              <div class="udc-text-area" data-state="error-focused"><label class="udc-label" data-variant="error" for="reason">Reason</label><div class="udc-text-area__field"><textarea id="reason" aria-invalid="true">Too short</textarea></div><div class="udc-text-area__helper"><span>Enter at least 10 characters</span><span>9/250</span></div></div>
-            </div><details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;div class="udc-text-area"&gt;...&lt;/div&gt;</code></pre></details></div>
-          </div>
-        </div>
+        <div data-tab-panel="examples" class="active" data-needs-fetch></div>
         <div data-tab-panel="code"><h3 class="sg-subsection-title">Vanilla HTML</h3><pre class="sg-playground-code"><code>&lt;div class="udc-text-area"&gt;
   &lt;label class="udc-label" for="notes"&gt;Notes&lt;/label&gt;
   &lt;div class="udc-text-area__field"&gt;
@@ -1893,7 +852,7 @@
         <h1 class="sg-page-title">Combobox</h1>
         <p class="sg-page-desc">A combobox combines text entry with a selectable list of suggestions.</p>
         <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="guidelines">Guidelines</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
-        <div data-tab-panel="examples" class="active"><div class="sg-migration-block"><h3 class="sg-subsection-title">Placeholder-only</h3><p class="sg-subsection-desc">Figma 0.3 has a public Combobox page, but no inspectable component set is available yet. Examples will be generated after the Figma component set exposes variants, layers, and anatomy.</p></div></div>
+        <div data-tab-panel="examples" class="active" data-needs-fetch></div>
         <div data-tab-panel="code"><div class="sg-migration-block"><h3 class="sg-subsection-title">Deferred</h3><p class="sg-subsection-desc">No reference HTML is generated yet because the Figma page does not contain a component set to inspect. This prevents the docs from inventing API or markup before design is ready.</p></div></div>
         <div data-tab-panel="guidelines"></div>
         <div data-tab-panel="changelog"><p class="sg-changelog-empty">No changes recorded yet.</p></div>
@@ -1904,7 +863,7 @@
         <h1 class="sg-page-title">Date Picker</h1>
         <p class="sg-page-desc">A date picker helps users enter or select a calendar date.</p>
         <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="guidelines">Guidelines</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
-        <div data-tab-panel="examples" class="active"><div class="sg-migration-block"><h3 class="sg-subsection-title">Placeholder-only</h3><p class="sg-subsection-desc">Figma 0.3 has a public Date Picker page, but no inspectable component set is available yet. Examples will be generated after the Figma component set exposes variants, layers, and anatomy.</p></div></div>
+        <div data-tab-panel="examples" class="active" data-needs-fetch></div>
         <div data-tab-panel="code"><div class="sg-migration-block"><h3 class="sg-subsection-title">Deferred</h3><p class="sg-subsection-desc">No reference HTML is generated yet because the Figma page does not contain a component set to inspect. This prevents the docs from inventing API or markup before design is ready.</p></div></div>
         <div data-tab-panel="guidelines"></div>
         <div data-tab-panel="changelog"><p class="sg-changelog-empty">No changes recorded yet.</p></div>
@@ -1915,15 +874,7 @@
         <h1 class="sg-page-title">Toggle</h1>
         <p class="sg-page-desc">A toggle switches a setting on or off and reflects the current state immediately.</p>
         <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="guidelines">Guidelines</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
-        <div data-tab-panel="examples" class="active">
-          <div class="sg-subsection"><h3 class="sg-subsection-title">States</h3><p class="sg-subsection-desc">Toggle covers active true/false and disabled variants from Figma.</p>
-            <div class="sg-example"><div class="sg-example-preview" style="display:flex;flex-direction:column;gap:var(--uds-space-200);">
-              <button class="udc-toggle" role="switch" aria-checked="true"><span class="udc-toggle__control"><span class="udc-toggle__thumb"></span></span><span class="udc-toggle__label">Email notifications</span></button>
-              <button class="udc-toggle" role="switch" aria-checked="false"><span class="udc-toggle__control"><span class="udc-toggle__thumb"></span></span><span class="udc-toggle__label">SMS alerts</span></button>
-              <button class="udc-toggle" role="switch" aria-checked="false" aria-disabled="true"><span class="udc-toggle__control"><span class="udc-toggle__thumb"></span></span><span class="udc-toggle__label">Locked setting</span></button>
-            </div><details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;button class="udc-toggle" role="switch" aria-checked="true"&gt;...&lt;/button&gt;</code></pre></details></div>
-          </div>
-        </div>
+        <div data-tab-panel="examples" class="active" data-needs-fetch></div>
         <div data-tab-panel="code"><h3 class="sg-subsection-title">Vanilla HTML</h3><pre class="sg-playground-code"><code>&lt;button class="udc-toggle" role="switch" aria-checked="true"&gt;
   &lt;span class="udc-toggle__control"&gt;&lt;span class="udc-toggle__thumb"&gt;&lt;/span&gt;&lt;/span&gt;
   &lt;span class="udc-toggle__label"&gt;Email notifications&lt;/span&gt;
@@ -1937,13 +888,7 @@
         <h1 class="sg-page-title">Pagination</h1>
         <p class="sg-page-desc">Pagination lets users move through pages of results or records.</p>
         <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="guidelines">Guidelines</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
-        <div data-tab-panel="examples" class="active">
-          <div class="sg-subsection"><h3 class="sg-subsection-title">Default</h3><p class="sg-subsection-desc">Pagination provides page buttons, current page state, and rows-per-page context.</p>
-            <div class="sg-example"><div class="sg-example-preview">
-              <nav class="udc-pagination" aria-label="Pagination"><div class="udc-pagination__pages"><button class="udc-pagination__button" aria-label="Previous page"><span class="material-symbols-outlined">chevron_left</span></button><button class="udc-pagination__button" aria-current="page">1</button><button class="udc-pagination__button">2</button><button class="udc-pagination__button">3</button><button class="udc-pagination__button" aria-label="Next page"><span class="material-symbols-outlined">chevron_right</span></button></div><div class="udc-pagination__meta"><span>Rows per page</span><span>50</span><span>1-50 / 100</span></div></nav>
-            </div><details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;nav class="udc-pagination" aria-label="Pagination"&gt;...&lt;/nav&gt;</code></pre></details></div>
-          </div>
-        </div>
+        <div data-tab-panel="examples" class="active" data-needs-fetch></div>
         <div data-tab-panel="code"><h3 class="sg-subsection-title">Vanilla HTML</h3><pre class="sg-playground-code"><code>&lt;nav class="udc-pagination" aria-label="Pagination"&gt;
   &lt;div class="udc-pagination__pages"&gt;
     &lt;button class="udc-pagination__button" aria-label="Previous page"&gt;...&lt;/button&gt;
@@ -1961,7 +906,7 @@
         <h1 class="sg-page-title">Data View</h1>
         <p class="sg-page-desc">A data view presents collections of records in non-table layouts such as cards or compact summaries.</p>
         <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="guidelines">Guidelines</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
-        <div data-tab-panel="examples" class="active"><div class="sg-migration-block"><h3 class="sg-subsection-title">Placeholder-only</h3><p class="sg-subsection-desc">Figma 0.3 has a public Data View page, but no inspectable component set is available yet. Examples will be generated after the Figma component set exposes variants, layers, and anatomy.</p></div></div>
+        <div data-tab-panel="examples" class="active" data-needs-fetch></div>
         <div data-tab-panel="code"><div class="sg-migration-block"><h3 class="sg-subsection-title">Deferred</h3><p class="sg-subsection-desc">No reference HTML is generated yet because the Figma page does not contain a component set to inspect. This prevents the docs from inventing API or markup before design is ready.</p></div></div>
         <div data-tab-panel="guidelines"></div>
         <div data-tab-panel="changelog"><p class="sg-changelog-empty">No changes recorded yet.</p></div>
@@ -2016,7 +961,7 @@
   <script src="https://cdn.jsdelivr.net/npm/jszip@3/dist/jszip.min.js"></script>
   <script src="./material-icons.js?v=1"></script>
   <script src="./uds/uds.js?v=31"></script>
-  <script type="module" src="./docs/app.js?v=104"></script>
+  <script type="module" src="./docs/app.js?v=105"></script>
   <script type="module" src="./docs/modules/demo-builder/index.js?v=2"></script>
 
 </body>

@@ -136,6 +136,53 @@ async function loadPageFragment(pageId, page) {
     return _fragmentLoadCache[pageId];
 }
 
+// ============================================================================
+// Per-component Examples tab renderer (Phase 7b)
+//
+// Component pages used to have inline <div data-tab-panel="examples">
+// content baked into index.html. After Phase 7b that's empty — the
+// renderer below fetches the per-component examples manifest, fetches each
+// example's HTML from uds/components/<id>/examples/, applies the canonical
+// pool's token substitution, and wraps each in the same .sg-subsection
+// markup the inline version used.
+//
+// This makes uds/components/<id>/examples/ the SINGLE source of truth for
+// example HTML — Demo Builder reads the same files (with random pool),
+// docs page Examples tab reads them too (with canonical pool). Drift is
+// structurally impossible.
+// ============================================================================
+
+const _examplesRenderInited = {};
+
+async function renderComponentExamplesTab(pageId) {
+    if (_examplesRenderInited[pageId]) return;
+    const page = document.querySelector('[data-page="' + pageId + '"]');
+    if (!page) return;
+    const panel = page.querySelector('[data-tab-panel="examples"][data-needs-fetch]');
+    if (!panel) return;
+
+    try {
+      const [{ fetchAllExamples }, { CANONICAL_POOL }] = await Promise.all([
+        import('./modules/demo-builder/example-fetcher.js'),
+        import('./modules/demo-builder/canonical-pool.js')
+      ]);
+      const examples = await fetchAllExamples(pageId, CANONICAL_POOL);
+      if (!examples.length) {
+        panel.innerHTML = '<p class="sg-subsection-desc" style="padding:24px;color:var(--uds-color-text-secondary)">No examples available yet.</p>';
+        _examplesRenderInited[pageId] = true;
+        return;
+      }
+      panel.innerHTML = examples.map(function (e) {
+        const desc = e.description ? '<p class="sg-subsection-desc">' + esc(e.description) + '</p>' : '';
+        return '<div class="sg-subsection"><h3 class="sg-subsection-title">' + esc(e.label) + '</h3>' + desc + e.html + '</div>';
+      }).join('\n');
+      _examplesRenderInited[pageId] = true;
+    } catch (err) {
+      console.error('Failed to render examples for', pageId, err);
+      panel.innerHTML = '<p style="padding:24px;color:var(--uds-color-text-error)">Failed to load examples.</p>';
+    }
+}
+
 async function navigate(pageId, tab) {
     document.querySelectorAll('[data-page]').forEach(p => p.classList.remove('active'));
     const page = document.querySelector('[data-page="' + pageId + '"]');
@@ -200,6 +247,7 @@ function switchTab(pageId, tabId) {
 
     if (tabId === 'playground') initPlayground(pageId);
     if (tabId === 'guidelines' || tabId === 'usage') initGuidelines(pageId);
+    if (tabId === 'examples') renderComponentExamplesTab(pageId);
 }
 
 document.querySelectorAll('.sg-page-tabs').forEach(function (tablist) {
