@@ -1,0 +1,82 @@
+# UDS Repo Restructure — Migration Tracking
+
+Live tracker for the UDS repo restructure currently in progress on the
+`cursor/uds-restructure-afda` branch. The migration runs strictly phased; the
+site on `main` is untouched until the final atomic merge in Phase 12.
+
+## Why we're doing this
+
+The pre-restructure repo had Demo Builder drift, Examples-vs-Code drift, and
+scattered per-component data across 6+ files. This restructure makes each
+component a single folder so drift becomes structurally impossible. See the
+plan file referenced in the repo root for the full rationale.
+
+## Baseline
+
+- **Tag:** `pre-restructure-baseline` on `main`
+- **Commit:** `7cfccbdb99a17d21dbb71719bd6b69d6fb130afb`
+- **UDS version at baseline:** `0.3`
+- **SITE version at baseline:** `2026.05.08.7`
+- **Components at baseline:** 29 (26 implementable + 3 placeholder-only)
+- **Snapshots:** `/tmp/baseline-screenshots/` (39 PNGs) and `/tmp/baseline-data/` (data dump)
+
+## Rollback
+
+If anything goes wrong, the entire migration is contained on
+`cursor/uds-restructure-afda`. To roll back:
+
+```bash
+git checkout main
+git branch -D cursor/uds-restructure-afda  # local
+git push origin --delete cursor/uds-restructure-afda  # remote
+```
+
+The baseline tag stays on `main` permanently as a recovery anchor.
+
+## Phase status
+
+| Phase | Description | Status |
+|-------|-------------|--------|
+| 0 | Baseline capture + branch creation | done |
+| 1 | Migration tooling + JSON schemas | done |
+| 2 | Target layout scaffolding | in progress |
+| 3 | Extract docs site shell (CSS, ES modules, global tables) | pending |
+| 4 | Extract site modules (Demo Builder, Token Search, Playground) | pending |
+| 5 | Extract non-component pages with data wiring | pending |
+| 6 | Per-component migration (26 components) | pending |
+| 7 | Demo Builder reads source-of-truth examples | pending |
+| 8 | Versioning model + per-component changelog aggregation | pending |
+| 9 | Snapshot strategy + retroactive archive conversion | pending |
+| 10 | Rules, audits, AGENTS.md, README, skills + drift fixes | pending |
+| 11 | Performance + accessibility verification | pending |
+| 12 | Final verification + PR + CI workflow | pending |
+
+## Per-component migration status (Phase 6)
+
+Updated as each component lands.
+
+| ID | Status | Notes |
+|----|--------|-------|
+| (none yet) | — | Phase 6 not started |
+
+## Things that will become true at the end of the migration
+
+- `uds/` is the design system. Self-contained, copy-portable.
+- `docs/` is the documentation site. Consumes `uds/`.
+- `scripts/` holds tooling (release, bump-site, audits, migration).
+- Every component lives in `uds/components/<id>/` with `<id>.css`, `spec.json`,
+  `status.json`, `changelog.json`, `examples/*.html` + `manifest.json`,
+  optionally `<id>.js` and `playground.js`.
+- Demo Builder fetches example HTML from `uds/components/<id>/examples/` —
+  same source as the docs page Examples tab.
+- Per-component `changelog.json` is the source of truth for UDS changelogs.
+  `release.sh` aggregates them into `uds/CHANGELOG.json`.
+- Snapshots at `versions/<X>/uds/` are UDS-only. Modern docs UI renders any
+  historical version via `udsPath()` helper.
+- ES modules throughout `docs/`. No build step. No bundler.
+
+## Notes
+
+This file stays in the repo as a historical record after Phase 12. The
+per-component status table will be emptied when migration completes, but the
+file itself stays so anyone reading the repo later understands what happened.
