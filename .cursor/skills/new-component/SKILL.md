@@ -1,19 +1,22 @@
 ---
 name: new-component
-description: Scaffold a new UDS component end to end. Use when adding a new component to UDS — creates content/<id>.json, an empty CSS file, sidebar entry, page section, COMPONENT_STATUS entry, and bumps the SITE version. Triggers on phrases like "add a component", "scaffold a new component", "new component called X", "set up a new component for Y".
+description: Scaffold a new UDS component end to end. Creates uds/components/<id>/ with all required files (CSS stub, spec.json, status.json, changelog.json, examples/, playground.js), bumps SITE, adds the sidebar link and placeholder data-page block. Triggers on phrases like "add a component", "scaffold a new component", "new component called X", "set up a new component for Y".
 ---
 
 # New Component Scaffold
 
-Walks the [How to Contribute](../../uds-docs/index.html) workflow steps 4-5 mechanically. After the skill finishes, the component appears in the sidebar with a "Spec X/22" pill in red (placeholder status), ready for the designer to flesh out the spec and visual examples.
+Walks the [How to Contribute](../../uds-docs/index.html) workflow steps 4-5
+mechanically. After the skill finishes, the component appears in the
+sidebar with a "Spec X/22" pill in red (placeholder status), ready for the
+designer to flesh out the spec and visual examples.
 
 ## Step 1 — Collect required inputs from the user
 
-Ask the user for these. Don't proceed until you have all of them.
+Ask for these. Don't proceed until you have all of them.
 
 | Field | Format / example | Notes |
 |---|---|---|
-| `id` | kebab-case, no `udc-` prefix (e.g. `toggle-switch`) | Becomes `data-page="<id>"`, `content/<id>.json`, `uds/components/<id>.css` |
+| `id` | kebab-case, no `udc-` prefix (e.g. `toggle-switch`) | Becomes the folder name `uds/components/<id>/`, the `data-page` attribute, and the `<id>.css` filename |
 | `title` | Title Case (e.g. "Toggle Switch") | Sidebar label and `<h1>` page title |
 | `description` | One paragraph | Why this component exists. Goes into `description` field. |
 | `whenToUse` | 1-2 sentences | Goes into `whenToUse` field. |
@@ -21,24 +24,36 @@ Ask the user for these. Don't proceed until you have all of them.
 | `sidebarGroup` | One of: Forms & Actions / Status & Indicators / Layout / Navigation / Content / Feedback | Determines where the sidebar link is inserted. |
 | `designerOwner` | Person's name, or "Unassigned" | Goes into `owner.designer`. |
 
-Use the `AskQuestion` tool with multiple options where the answer is constrained (sidebar group), and free-text questions for the rest. Group questions logically — don't ask seven things at once.
+Use the `AskQuestion` tool with multiple options where the answer is
+constrained (sidebar group), and free-text questions for the rest. Group
+questions logically — don't ask seven things at once.
 
 ## Step 2 — Run the SITE version bump first
 
-Per [`uds-master-preflight.mdc`](../../rules/uds-master-preflight.mdc), bump-first:
+Per [`uds-master-preflight.mdc`](../../rules/uds-master-preflight.mdc),
+bump-first:
 
 ```bash
 bash uds-docs/bump-site.sh
 ```
 
-Capture the new version string from the script output. You'll need it for the SITE_CHANGELOG entry at the end.
+Capture the new version string from the script output. You'll need it for
+the SITE_CHANGELOG entry at the end.
 
-## Step 3 — Create the JSON spec file
+## Step 3 — Create the component folder
 
-Write `uds-docs/content/<id>.json` using this exact template, with `<...>` placeholders filled in from Step 1. All other fields stay empty/null — the renderer hides empty sections, so there's no "TBD" noise on the live page.
+```bash
+mkdir -p uds-docs/uds/components/<id>/examples
+```
+
+## Step 4 — Write `uds/components/<id>/spec.json`
+
+Use this template, with `<...>` placeholders filled in from Step 1. All
+other fields stay empty/null — the renderer hides empty sections.
 
 ```json
 {
+  "$schema": "../../schemas/spec.schema.json",
   "component": "<id>",
   "title": "<Title>",
   "description": "<one paragraph>",
@@ -46,7 +61,7 @@ Write `uds-docs/content/<id>.json` using this exact template, with `<...>` place
   "whenNotToUse": "<when not to use>",
   "acceptanceCriteria": [],
   "dependencies": {
-    "css": ["uds/components/<id>.css"],
+    "css": ["uds/components/<id>/<id>.css"],
     "js": []
   },
   "props": [],
@@ -73,37 +88,104 @@ Write `uds-docs/content/<id>.json` using this exact template, with `<...>` place
   "owner": { "designer": "<designerOwner>", "developer": "Unassigned" },
   "draft": false,
   "figmaNodeId": null,
-  "storybookSlug": null
+  "storybookSlug": null,
+  "implReference": null
 }
 ```
 
-This produces a spec at the required minimum (~6/22 fields). The renderer will show "Spec 6/22" in red on the page header until more fields get filled in.
+## Step 5 — Write `uds/components/<id>/status.json`
 
-## Step 4 — Create an empty CSS file
-
-```bash
-touch uds-docs/uds/components/<id>.css
+```json
+{
+  "$schema": "../../schemas/status.schema.json",
+  "current": "placeholder",
+  "since": "<UDS_VERSION from uds/version.json>",
+  "history": [
+    { "version": "<UDS_VERSION>", "status": "placeholder" }
+  ]
+}
 ```
 
-The file should exist but stay empty — the designer/dev will fill it in. The component's `dependencies.css` JSON entry already references this path.
+## Step 6 — Write `uds/components/<id>/changelog.json`
 
-## Step 5 — Add sidebar entry to `uds-docs/index.html`
+```json
+{
+  "$schema": "../../schemas/changelog.schema.json",
+  "addedIn": "<UDS_VERSION>",
+  "entries": [
+    { "version": "<UDS_VERSION>", "type": "added", "text": "Initial placeholder for <Title>." }
+  ]
+}
+```
 
-Find the requested sidebar group heading (e.g. `<span class="sg-sidebar-heading">Forms &amp; Actions</span>`) and insert a new link as the LAST entry within that group:
+## Step 7 — Create the empty CSS file + minimal example
+
+```bash
+touch uds-docs/uds/components/<id>/<id>.css
+```
+
+Write a placeholder example HTML file:
+
+```bash
+cat > uds-docs/uds/components/<id>/examples/default.html <<'EOF'
+<div class="udc-<id>">
+  <p>Default example placeholder. Designer to add real markup.</p>
+</div>
+EOF
+```
+
+And the manifest:
+
+```json
+{
+  "$schema": "../../../schemas/manifest.schema.json",
+  "examples": [
+    {
+      "id": "default",
+      "file": "default.html",
+      "label": "Default",
+      "showInDocs": true,
+      "demoWeight": 0
+    }
+  ]
+}
+```
+
+`demoWeight: 0` excludes the placeholder from the Demo Builder until a real
+example is written.
+
+## Step 8 — Write `uds/components/<id>/playground.js`
+
+```js
+// Playground config for the <id> component.
+export default {
+  controls: [],
+  render: function (state) {
+    return {
+      html: '<div class="udc-<id>">Placeholder</div>',
+      code: '<!-- placeholder; designer to add real markup -->'
+    };
+  }
+};
+```
+
+## Step 9 — Add the sidebar link in `uds-docs/index.html`
+
+Find the requested sidebar group heading (e.g.
+`<span class="sg-sidebar-heading">Forms &amp; Actions</span>`) and insert a
+new link as the LAST entry within that group:
 
 ```html
 <a class="sg-sidebar-link" href="#/<id>"><Title></a>
 ```
 
-Place it just before the next `<span class="sg-sidebar-heading">` or before `</nav>` if it's the last group.
+## Step 10 — Add page placeholder in `uds-docs/index.html`
 
-## Step 6 — Add page section to `uds-docs/index.html`
-
-Insert a new `<div data-page="<id>">` block at the end of `<main class="sg-main">`, just before the closing `</main>` or just after the last existing component page. Use this exact structure (every component page on the site follows this shape — copy it):
+Insert a new `<div data-page="<id>">` block just before `</main>`:
 
 ```html
 <!-- <TITLE> -->
-<div data-page="<id>">
+<div data-page="<id>" data-default-tab="examples">
   <h1 class="sg-page-title"><Title></h1>
   <p class="sg-page-desc"><description></p>
   <div class="sg-page-tabs" role="tablist">
@@ -113,37 +195,34 @@ Insert a new `<div data-page="<id>">` block at the end of `<main class="sg-main"
     <button class="sg-page-tab" data-tab="changelog">Changelog</button>
     <button class="sg-page-tab" data-tab="playground">Playground</button>
   </div>
-  <div data-tab-panel="examples" class="active">
-    <p class="sg-subsection-desc">Examples will be added here.</p>
-  </div>
-  <div data-tab-panel="code">
-    <p class="sg-subsection-desc">Code examples will be added here.</p>
-  </div>
+  <div data-tab-panel="examples" class="active" data-needs-fetch></div>
+  <div data-tab-panel="code"><p class="sg-subsection-desc">Code examples will be added here.</p></div>
   <div data-tab-panel="guidelines"></div>
   <div data-tab-panel="changelog"><p class="sg-changelog-empty">No changes recorded yet.</p></div>
   <div data-tab-panel="playground"></div>
 </div>
 ```
 
-The `guidelines` panel MUST stay empty — `renderGuidelines()` in `app.js` fills it from the JSON spec at runtime. See [`uds-content-schema.mdc`](../../rules/uds-content-schema.mdc).
+The `examples` panel uses `data-needs-fetch` so the docs renderer
+lazy-loads from `uds/components/<id>/examples/`. The `guidelines` panel
+stays empty — `renderGuidelines()` fills it from `spec.json` at runtime.
 
-## Step 7 — Add COMPONENT_STATUS entry in `uds-docs/app.js`
+## Step 11 — Add the component CSS import
 
-Find the `COMPONENT_STATUS` object and add a new entry. Use the current `UDS_VERSION` constant (read it from the same file) for `since`:
+Run:
 
-```js
-'<id>': { status: 'placeholder', since: '<UDS_VERSION>' },
+```bash
+python3 -c "import sys; sys.path.insert(0, 'scripts/lib'); from migrate_component import regenerate_uds_orchestrators; print(regenerate_uds_orchestrators(False))"
 ```
 
-Status starts as `placeholder` — the designer bumps it through `blocked` → `in-progress` → `review` → `production` over time.
+This regenerates `uds-docs/uds/uds.css` with the new component's CSS
+import. Hand-editing the imports is forbidden — always run the regenerator.
 
-## Step 8 — Bump the cache-bust on `app.js`
+## Step 12 — Cache-bust + SITE changelog entry
 
-Find the `<script src="./app.js?v=N"></script>` line in `index.html` and increment `N` by 1.
+In `uds-docs/index.html`, bump `?v=N` on `docs/app.js` and `uds/uds.css`.
 
-## Step 9 — Add SITE_CHANGELOG entry
-
-Find the `SITE_CHANGELOG` array in `app.js` and append a new entry at the end (newest entries go last):
+In `uds-docs/docs/data/site-changelog.js`, append to `SITE_CHANGELOG`:
 
 ```js
 {
@@ -155,33 +234,49 @@ Find the `SITE_CHANGELOG` array in `app.js` and append a new entry at the end (n
 }
 ```
 
-## Step 10 — Verify and report
+## Step 13 — Run audits + verify
 
-Open the site at `#/<id>` and confirm:
-- Sidebar link appears under the requested group with a red dot (low spec completeness)
-- Page header shows "Spec X/22" pill (red)
+```bash
+bash scripts/audit-component-completeness.sh
+bash scripts/audit-placeholders.sh
+bash scripts/audit-token-usage.sh
+```
+
+All three must pass. Then open `http://localhost:4000/#/<id>` and confirm:
+- Sidebar link appears under the requested group
+- Page header shows "Spec X/22" pill (red, since spec is at minimum)
 - Status badge reads "Not Started" / "Placeholder"
 - "Not production-ready" banner appears below the title
-- Guidelines tab renders the description, when-to-use, when-not-to-use, dependencies, and keyboard sections from the JSON
+- Guidelines tab renders the description, when-to-use, when-not-to-use,
+  dependencies, and keyboard sections from the spec.json
+- Examples tab shows the placeholder default example
+- Changelog tab shows the initial entry
 
 Then report to the user:
 - Component `<id>` scaffolded at spec completeness ~6/22
-- What's still empty in the JSON: `acceptanceCriteria`, `props`, `events`, `slots`, `states`, `dosDonts`, `accessibility.screenReader`, `accessibility.wcag`, `accessibility.contrast`, `commonlyPairedWith`, `knownIssues`, `figmaNodeId`, `storybookSlug`
 - The `<id>.css` file is empty and ready for visual styles
-- Examples tab and Code tab still show placeholder text — the designer needs to add real visual examples and HTML markup
+- The placeholder example needs to be replaced by the designer with real markup
+- Demo Builder excluded (`demoWeight: 0`) until a real example exists
 
 ## DO NOT
 
-- **Don't fabricate visual examples or API tables.** Those need designer + developer input. Leave the Examples/Code tab placeholder paragraphs in place.
-- **Don't add a CHANGELOG entry under `category: 'components'`.** That happens at release time per [`uds-release-workflow.mdc`](../../rules/uds-release-workflow.mdc), not when scaffolding. The SITE_CHANGELOG entry from Step 9 is enough.
-- **Don't claim production-ready.** Status MUST start as `placeholder`. The designer changes it later.
-- **Don't write Storybook code.** Production component code lives in the UDS Storybook repo, not the doc site.
-- **Don't put HTML spec content into `index.html`'s Guidelines panel.** The panel must stay empty — the renderer fills it from the JSON. Per [`uds-content-schema.mdc`](../../rules/uds-content-schema.mdc).
-- **Don't fill `motion` or `responsive` fields.** They're intentionally deferred until UDS has motion / breakpoint tokens.
+- **Don't fabricate visual examples or API tables.** Those need designer +
+  developer input. Leave the placeholder example in place.
+- **Don't add a per-component CHANGELOG entry that claims production-ready.**
+  Status MUST start as `placeholder`.
+- **Don't write Storybook code.** Production component code lives in the
+  UDS Storybook repo.
+- **Don't put HTML spec content into `index.html`'s Guidelines panel.** The
+  panel must stay empty — the renderer fills it from `spec.json`.
+- **Don't put example HTML inline in `index.html`.** Examples live in
+  `uds/components/<id>/examples/*.html` and are rendered by the docs page +
+  Demo Builder from there.
+- **Don't fill `motion` or `responsive` fields.** They're intentionally
+  deferred until UDS has motion / breakpoint tokens.
 
 ## See also
 
-- [`content/schema.json`](../../../uds-docs/content/schema.json) — canonical field list
+- [`uds/schemas/spec.schema.json`](../../../uds-docs/uds/schemas/spec.schema.json) — canonical spec field list
 - [`uds-content-schema.mdc`](../../rules/uds-content-schema.mdc) — JSON-only spec editing rule
 - [`uds-component-checklist.mdc`](../../rules/uds-component-checklist.mdc) — what "complete" means
-- [How to Contribute](../../../uds-docs/index.html) page (`#/contribute`) — full 9-step workflow on the doc site
+- [How to Contribute](../../../uds-docs/index.html) page (`#/contribute`) — full contributor workflow on the docs site

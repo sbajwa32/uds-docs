@@ -36,7 +36,7 @@ Read:
 - `uds-docs/content/<component>.json`
 - `uds-docs/uds/components/<component>.css`
 - `uds-docs/index.html`
-- `uds-docs/app.js`
+- `uds-docs/docs/app.js`
 - `.cursor/rules/uds-figma-component-inspection.mdc`
 - `.cursor/rules/uds-figma-change-classification.mdc`
 - `.cursor/figma/state/components.snapshot.json`, if present

@@ -47,7 +47,7 @@ Whenever you interact with either UDS Figma file (reading components, inspecting
 2. List pages in the file via Figma tooling, apply the `{Ignore}` page filter
    from `uds-figma-preflight.mdc`, and find the page matching `UDS Version: *`.
 3. Parse the version number from the page name.
-4. Read `UDS_VERSION` from `uds-docs/app.js`.
+4. Read `UDS_VERSION` from `uds-docs/docs/app.js`.
 5. If the Figma version is higher than the site version, alert the user and begin the Release Questionnaire below.
 
 Do NOT silently skip this check. If you detect a mismatch, pause your current task and address it first.
@@ -147,7 +147,7 @@ Never leave Figma changelogs out of sync with the site. If you forget, fix it im
 
 ## Key File References
 
-- `uds-docs/app.js` -- `UDS_VERSION`, `CHANGELOG`, `COMPONENT_STATUS`, `PLAYGROUNDS`
+- `uds-docs/docs/app.js` -- `UDS_VERSION`, `CHANGELOG`, `COMPONENT_STATUS`, `PLAYGROUNDS`
 - `uds-docs/index.html` -- sidebar nav, `data-page` sections, CSS styles
 - `uds-docs/release.sh` -- snapshots site, bumps version, updates `versions.json`
 - `uds-docs/bump.sh` -- increments SITE build counter and cache-busting params

@@ -6,7 +6,7 @@ description: Rebuild Release Notes frames in both UDS Figma files from the site 
 # Sync Figma Release Notes
 
 Rebuilds Release Notes in both Figma files from the canonical `CHANGELOG`
-array in `uds-docs/app.js`.
+array in `uds-docs/docs/app.js`.
 
 ## Trigger phrases
 
@@ -17,7 +17,7 @@ array in `uds-docs/app.js`.
 
 ## Source of truth
 
-- `uds-docs/app.js` `CHANGELOG`
+- `uds-docs/docs/app.js` `CHANGELOG`
 
 Do not invent release notes from memory or from the visible changelog page.
 
@@ -31,7 +31,7 @@ Do not invent release notes from memory or from the visible changelog page.
 
 ### 1. Parse the site CHANGELOG
 
-Read `uds-docs/app.js` and normalize every release into:
+Read `uds-docs/docs/app.js` and normalize every release into:
 
 ```json
 {

@@ -1,0 +1,121 @@
+# UDS — Urban Design System
+
+Design-to-engineering specification for the Urban Design System (UDS), the
+shared design system used by Boardroom and adjacent property-management apps.
+
+The site lives at <https://sbajwa32.github.io/uds-docs/> and is hosted via
+GitHub Pages.
+
+## What's in this repo
+
+The repo cleanly separates the **design system** from the **documentation
+site that documents it**:
+
+- **`uds/`** — the design system itself. Tokens (CSS custom properties),
+  per-component CSS/JS, component specs, examples. Self-contained — anyone
+  can copy this folder into another project to consume the design system.
+- **`docs/`** — the documentation site. Routing, page rendering, the Demo
+  Builder, the Token Search modal, the Playground engine. Consumes `uds/`.
+- **`scripts/`** — repo-level tooling: release management, audits, the
+  changelog aggregator, prune-version, screenshot tooling.
+- **`versions/`** — frozen UDS-only snapshots per release.
+- **`index.html`** — SPA entry point at the repo root (the GitHub Pages
+  artifact root).
+
+See [AGENTS.md](./AGENTS.md) for the full repo layout and detailed
+contribution guidelines.
+
+## Quick start
+
+The site is static — no build step, no bundler, no framework.
+
+### Run locally
+
+```bash
+cd uds-docs
+python3 -m http.server 4000
+# Open http://localhost:4000/
+```
+
+That's it. Edit any file, refresh the browser.
+
+### Make a SITE change
+
+1. `bash uds-docs/bump-site.sh` (preflight — bumps SITE version)
+2. Edit whatever
+3. Add a `SITE_CHANGELOG` entry in `docs/data/site-changelog.js` matching
+   the new version
+4. Cache-bust `docs/app.js` / `uds/uds.css` etc. in `index.html` if those
+   files changed
+5. `git add -A && git commit -m "..." && git push`
+
+GitHub Actions auto-deploys on push to `main`.
+
+### Update a UDS component
+
+Every component is one folder under `uds/components/<id>/` containing:
+
+- `<id>.css` — token-first component CSS
+- `<id>.js` — optional, for interactive components
+- `spec.json` — Guidelines-tab data (description, props, accessibility, etc.)
+- `status.json` — lifecycle status + since-version
+- `changelog.json` — full history for that component
+- `playground.js` — interactive playground config
+- `examples/*.html` + `manifest.json` — example variants used by both
+  the docs page Examples tab AND the Demo Builder
+
+Pick the file, edit, re-run the audits, bump SITE, commit. Detailed flow
+in [AGENTS.md](./AGENTS.md).
+
+### Bump UDS to a new release
+
+```bash
+bash uds-docs/release.sh 0.4
+```
+
+Snapshots the current `uds/` into `versions/0.3/uds/`, bumps
+`uds/version.json` to `0.4`, updates `versions.json`, regenerates
+`uds/CHANGELOG.json` from per-component changelogs.
+
+## Design system layers
+
+- **Tokens** (`uds/tokens/`) — primitives (raw color/font palette),
+  semantic tokens (named role aliases), font scale, layers (z-index scale).
+- **Components** (`uds/components/<id>/`) — CSS-only or CSS+JS. All
+  framework-agnostic vanilla web components / utility classes.
+- **Documentation** (`docs/`) — the SPA that renders specs, examples,
+  guidelines, playgrounds, the Demo Builder, the Token Search modal.
+
+Production framework wrappers (React, Vue, etc.) for each component live
+in the UDS Storybook repo, NOT this repo. This repo is the **specification**.
+
+## Audits
+
+```bash
+bash scripts/audit-component-completeness.sh   # every component folder has all required files
+bash scripts/audit-demo-coverage.sh            # every implementable component has a demoSuitable example
+bash scripts/audit-placeholders.sh             # every {{token}} used in examples is in the vocabulary
+bash scripts/audit-token-usage.sh              # per-component CSS uses --uds-* tokens, no hardcoded colors
+```
+
+CI workflow in `.github/workflows/audits.yml` runs these on every PR (added
+in Phase 12 of the recent restructure).
+
+## Versioning policy
+
+UDS history is preserved forever in per-component `changelog.json` files.
+Snapshots may be pruned (via `scripts/prune-version.sh <version>`) to free
+disk space, but the changelog entries always remain — the Changelog page
+on the docs site shows entries for pruned versions just like any other.
+
+See `versions/PRUNED.md` for the audit trail of pruned snapshots.
+
+## Recent restructure
+
+This repo just went through a major restructure (silo design system from
+docs site, co-locate per-component, eliminate drift between Demo Builder
+and docs page). See [MIGRATION.md](./MIGRATION.md) for the full record.
+
+## License
+
+Proprietary — © Boardroom / property-management portfolio. Not open source.

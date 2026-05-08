@@ -29,7 +29,7 @@ write to Figma or repository files.
    whose name contains `{Ignore}`.
 3. Read `uds-docs/content/*.json`.
 4. Read sidebar and `data-page` sections in `uds-docs/index.html`.
-5. Read `COMPONENT_STATUS` and `FIGMA_LINKS`/link behavior in `uds-docs/app.js`.
+5. Read `COMPONENT_STATUS` and `FIGMA_LINKS`/link behavior in `uds-docs/docs/app.js`.
 
 ## Matching model
 

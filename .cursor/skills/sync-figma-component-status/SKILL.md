@@ -5,7 +5,7 @@ description: Sync UDS Components Figma stoplight page prefixes to COMPONENT_STAT
 
 # Sync Figma Component Status
 
-Updates `COMPONENT_STATUS` in `uds-docs/app.js` from UDS Components page-name
+Updates `COMPONENT_STATUS` in `uds-docs/docs/app.js` from UDS Components page-name
 prefixes. It does not edit component specs, examples, CSS, or Figma.
 
 ## Inputs
@@ -31,7 +31,7 @@ prefixes. It does not edit component specs, examples, CSS, or Figma.
    intentionally out of scope and must not create status updates, deletion
    candidates, or missing-doc findings.
 5. Before editing `uds-docs/`, run `bash uds-docs/bump-site.sh`.
-6. Update only `COMPONENT_STATUS` in `uds-docs/app.js`.
+6. Update only `COMPONENT_STATUS` in `uds-docs/docs/app.js`.
 7. Add a concise `SITE_CHANGELOG` entry listing changed statuses.
 8. Cache-bust `app.js` in `uds-docs/index.html`.
 9. Visual-check the Roadmap and sidebar status badges.

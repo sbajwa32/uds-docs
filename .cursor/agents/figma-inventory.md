@@ -29,7 +29,7 @@ write to Figma or repository files.
 
 - UDS Tokens file key: `iqKgR73ubUHpQTIcF7XGMy`
 - UDS Components file key: `1XJoUJgtNpw4R0IIT3VjoK`
-- Site version/status source: `uds-docs/app.js`
+- Site version/status source: `uds-docs/docs/app.js`
 - Sidebar/page coverage: `uds-docs/index.html`
 - Component specs: `uds-docs/content/*.json`
 - Previous snapshot: `.cursor/figma/state/components.snapshot.json`

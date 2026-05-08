@@ -50,7 +50,7 @@ Figma, inspect the actual Figma node data:
    - `uds-docs/content/<component>.json`
    - `uds-docs/uds/components/<component>.css`
    - component examples/code in `uds-docs/index.html`
-   - `COMPONENT_STATUS` in `uds-docs/app.js`
+   - `COMPONENT_STATUS` in `uds-docs/docs/app.js`
 
 ## Release changelog coverage
 

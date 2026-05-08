@@ -72,7 +72,7 @@ Follow `uds-figma-preflight.mdc`:
 - UDS Tokens file key: `iqKgR73ubUHpQTIcF7XGMy`
 - UDS Components file key: `1XJoUJgtNpw4R0IIT3VjoK`
 - detect both `UDS Version: X.Y` pages
-- compare to `UDS_VERSION` in `uds-docs/app.js`
+- compare to `UDS_VERSION` in `uds-docs/docs/app.js`
 - skip any Figma page whose page name contains `{Ignore}`
 
 If Figma version is higher than site version, report it and continue into this

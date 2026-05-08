@@ -1,38 +1,59 @@
 ---
-description: When editing per-component spec content, edit content/<component>.json — never re-introduce component spec content into index.html. New components require a new content/<component>.json file first.
+description: When editing per-component spec content, edit the spec.json INSIDE that component's folder — never re-introduce component spec content into index.html. New components require a new uds/components/<id>/spec.json file first.
 alwaysApply: true
 ---
 
 # UDS Content Schema
 
-Per-component spec content lives in `uds-docs/content/<component>.json`. The Guidelines tab on every component page is rendered at runtime from these JSON files by `renderGuidelines()` in `app.js`. Editing the JSON is how spec content is updated — DO NOT add component-specific spec HTML directly to `index.html`.
+Per-component spec content lives in `uds-docs/uds/components/<id>/spec.json`.
+The Guidelines tab on every component page is rendered at runtime from
+these JSON files by `renderGuidelines()` in `docs/app.js`. Editing the JSON
+is how spec content is updated — DO NOT add component-specific spec HTML
+directly to `index.html`.
 
 ## Source of truth
 
-- **Schema:** `uds-docs/content/schema.json` — defines every field
-- **One file per component:** `uds-docs/content/button.json`, `text-input.json`, etc.
+- **Schema:** `uds-docs/uds/schemas/spec.schema.json` — defines every field
+- **One file per component:** `uds-docs/uds/components/button/spec.json`,
+  `uds-docs/uds/components/text-input/spec.json`, etc.
 
 ## Rules
 
-1. **Edit JSON, not HTML.** When updating a component's description, props, events, slots, accessibility, etc., edit `content/<component>.json`. The renderer picks it up automatically.
-2. **Never re-introduce spec content into `index.html`.** The component page's `<div data-tab-panel="guidelines"></div>` MUST stay empty — `renderGuidelines()` fills it from the JSON.
-3. **New components need a JSON file first.** Adding a new component requires creating `content/<component>.json` with at least: `component`, `title`, `description`, `whenToUse`, `dependencies`, `accessibility.keyboard`, and `owner`. Without these the spec is incomplete.
-4. **Empty fields are hidden.** The renderer skips sections where the field is null/empty. There's no need to add placeholder text — just leave the field empty until the spec is ready.
-5. **Don't hardcode component-id branches in `app.js`.** The renderer must stay data-driven. No `if (componentId === 'button')` paths.
-6. **Drafts use `"draft": true`.** That hides the component from the live site. Add `?draft=1` to any URL to view drafts with a watermark.
-7. **Deferred sections (motion, responsive) stay null.** UDS doesn't have motion or breakpoint tokens yet. Don't fill these in with arbitrary values.
+1. **Edit JSON, not HTML.** When updating a component's description, props,
+   events, slots, accessibility, etc., edit `uds/components/<id>/spec.json`.
+   The renderer picks it up automatically.
+2. **Never re-introduce spec content into `index.html`.** The component
+   page's `<div data-tab-panel="guidelines"></div>` MUST stay empty —
+   `renderGuidelines()` fills it from the JSON.
+3. **New components need a folder first.** Adding a new component requires
+   creating `uds/components/<id>/` with at least: `spec.json`, `status.json`,
+   `changelog.json`, `examples/manifest.json`, one example HTML file, and
+   the empty `<id>.css`. Use the `new-component` skill to scaffold all of
+   these correctly.
+4. **Empty fields are hidden.** The renderer skips sections where the
+   field is null/empty. There's no need to add placeholder text — just
+   leave the field empty until the spec is ready.
+5. **Don't hardcode component-id branches in `app.js`.** The renderer must
+   stay data-driven. No `if (componentId === 'button')` paths.
+6. **Drafts use `"draft": true`.** That hides the component from the live
+   site. Add `?draft=1` to any URL to view drafts with a watermark.
+7. **Deferred sections (motion, responsive) stay null.** UDS doesn't have
+   motion or breakpoint tokens yet. Don't fill these in with arbitrary values.
+8. **Reference the schema.** Every `spec.json` should start with
+   `"$schema": "../../schemas/spec.schema.json"` so editors can validate.
 
-## Required minimum for a new component JSON
+## Required minimum for a new component spec.json
 
 ```json
 {
+  "$schema": "../../schemas/spec.schema.json",
   "component": "<id>",
   "title": "<Title>",
   "description": "<one paragraph>",
   "whenToUse": "<one or two sentences>",
   "whenNotToUse": "<one or two sentences with alternative>",
   "dependencies": {
-    "css": ["uds/components/<id>.css"],
+    "css": ["uds/components/<id>/<id>.css"],
     "js": []
   },
   "accessibility": {
@@ -46,7 +67,9 @@ Per-component spec content lives in `uds-docs/content/<component>.json`. The Gui
 
 ## Spec completeness
 
-The Guidelines tab shows a "Spec X/Y" pill next to the component title. The completeness count comes from filled fields in the JSON. Aim for 80%+ before marking a component Production Ready.
+The Guidelines tab shows a "Spec X/Y" pill next to the component title.
+The completeness count comes from filled fields in the JSON. Aim for 80%+
+before marking a component Production Ready.
 
 ## Schema field reference (essential)
 
@@ -61,13 +84,15 @@ The Guidelines tab shows a "Spec X/Y" pill next to the component title. The comp
 - `acceptanceCriteria[]` — strings; this is also the ship checklist
 - `dosDonts.dos[]` / `dosDonts.donts[]` — strings
 - `commonlyPairedWith[]` — component IDs
+- `implReference: { exampleId }` — pointer to an entry in `examples/manifest.json` (used by Implementation Reference panel)
 
-See `content/schema.json` for the full schema.
+See `uds-docs/uds/schemas/spec.schema.json` for the full schema.
 
 ## Sync with Storybook
 
 When the spec changes:
-1. Update the JSON
+1. Update `uds/components/<id>/spec.json`
 2. Bump SITE version + add SITE_CHANGELOG entry per `uds-site-changelog.mdc`
-3. If user-facing, also add a per-component CHANGELOG entry under `category: "components"` and `component: "<id>"`
-4. File a Storybook issue if the production component needs to update to match
+3. Append a per-component changelog entry to `uds/components/<id>/changelog.json`
+4. Run `bash scripts/aggregate-changelog.sh` to refresh `uds/CHANGELOG.json`
+5. File a Storybook issue if the production component needs to update to match

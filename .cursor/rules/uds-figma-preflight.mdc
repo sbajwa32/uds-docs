@@ -39,7 +39,7 @@ Figma preflight:
    status sync, deletion detection, or new-component detection.
 3. Find the page named `UDS Version: X.Y` among the non-ignored pages.
 4. Parse `X.Y`.
-5. Read `UDS_VERSION` from `uds-docs/app.js`.
+5. Read `UDS_VERSION` from `uds-docs/docs/app.js`.
 6. If either Figma version is higher than the site version, pause normal work
    and follow `uds-release-workflow.mdc`.
 
