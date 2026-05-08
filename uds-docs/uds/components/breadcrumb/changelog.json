@@ -1,0 +1,16 @@
+{
+  "$schema": "../../schemas/changelog.schema.json",
+  "addedIn": "0.1",
+  "entries": [
+    {
+      "version": "0.1",
+      "type": "added",
+      "text": "Navigation component"
+    },
+    {
+      "version": "0.3",
+      "type": "changed",
+      "text": "Figma variant matrix confirmed: framed/frameless, depth on/off, 2-6 link groups, current/default/disabled link states, and open-in-new-window affordance"
+    }
+  ]
+}

@@ -1,4 +1,5 @@
 {
+  "$schema": "../../schemas/spec.schema.json",
   "component": "breadcrumb",
   "title": "Breadcrumb",
   "description": "A breadcrumb shows the user's location within a hierarchical structure and provides links back to each level.",

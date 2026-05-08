@@ -1,0 +1,136 @@
+{
+  "$schema": "../../schemas/spec.schema.json",
+  "component": "badge",
+  "title": "Badge",
+  "description": "A badge communicates status, category, or count in a compact visual form.",
+  "whenToUse": "To label status or state (active/pending/error). To communicate a category tag. To show counts or notifications.",
+  "whenNotToUse": "For interactive filter tags, use a Chip component instead.",
+  "acceptanceCriteria": [
+    "All five tones render in both prominent and subtle variants",
+    "Default and sm sizes render at the documented padding/typography",
+    "Text contrast against background meets WCAG AA in both light and dark modes for every variant",
+    "Badge does not receive focus and has no hover/active/disabled states",
+    "Color is never the sole indicator of meaning \u2014 every variant has a textual label"
+  ],
+  "dependencies": {
+    "css": [
+      "uds/components/badge.css"
+    ],
+    "js": []
+  },
+  "props": [
+    {
+      "name": "data-variant",
+      "type": "enum",
+      "enum": [
+        "info",
+        "secondary",
+        "success",
+        "error",
+        "warning"
+      ],
+      "default": "info",
+      "description": "Tone of the badge"
+    },
+    {
+      "name": "data-prominent",
+      "type": "enum",
+      "enum": [
+        "true",
+        "false"
+      ],
+      "default": "true",
+      "description": "true = filled (high emphasis); false = subtle (tinted background, colored text)"
+    },
+    {
+      "name": "data-size",
+      "type": "enum",
+      "enum": [
+        "default",
+        "sm"
+      ],
+      "default": "default",
+      "description": "Compact size for use inside dense surfaces (e.g. table cells, list rows)"
+    }
+  ],
+  "events": [],
+  "slots": [
+    {
+      "name": "default",
+      "description": "The badge text content. Keep short \u2014 typically a status word, count, or category label."
+    }
+  ],
+  "states": [
+    {
+      "name": "default",
+      "description": "Static visual indicator; no interactive states",
+      "hasVisual": true
+    },
+    {
+      "name": "not-applicable",
+      "description": "Badge is not focusable or interactive \u2014 no hover, focus, active, or disabled states"
+    }
+  ],
+  "contentGuidelines": "Single short word or count, ideally \u2264 12 characters. Use sentence case for status labels (\"Pending\", not \"PENDING\"). Numeric badges should display \"99+\" rather than 4-digit counts.",
+  "commonlyPairedWith": [
+    "data-table",
+    "list",
+    "tile",
+    "nav-header"
+  ],
+  "dosDonts": {
+    "dos": [
+      "Convey meaning with text, not color alone \u2014 pair status colors with explicit words",
+      "Use the subtle variant when badges sit on a colored or busy surface",
+      "Keep tone consistent: success = positive, warning = needs attention, error = blocking"
+    ],
+    "donts": [
+      "Don't make a badge interactive \u2014 use a Chip for filter/dismiss/select behavior",
+      "Don't stack badges to communicate multiple statuses; pick the most important one",
+      "Don't use the error tone for non-blocking states like \"draft\""
+    ]
+  },
+  "accessibility": {
+    "keyboard": [
+      {
+        "key": "\u2014",
+        "action": "Not focusable; badges are decorative and convey meaning via their text content"
+      }
+    ],
+    "screenReader": [
+      {
+        "trigger": "Badge encountered in reading order",
+        "announcement": "The badge text is read inline as part of the surrounding content; no role announcement is added"
+      }
+    ],
+    "wcag": [
+      {
+        "criterion": "1.4.1",
+        "level": "A",
+        "howMet": "Tone is communicated by both color and the textual label, not color alone"
+      },
+      {
+        "criterion": "1.4.3",
+        "level": "AA",
+        "howMet": "Prominent and subtle variants both meet the 4.5:1 contrast ratio against their surface tokens"
+      }
+    ],
+    "contrast": []
+  },
+  "knownIssues": [
+    "Fixed in SITE 2026.05.08.5: the `secondary` `prominent=true` variant previously paired `surface-bold` (light gray in light mode) with `text-inverse` (near-white in light mode), giving a contrast ratio of ~1.07:1 and rendering text as invisible. The CSS now uses `text-primary` for this variant, which gives ~9.7:1 in light mode and ~10:1 in dark mode. If Figma later defines a different foreground binding for this variant, sync this back."
+  ],
+  "performance": null,
+  "motion": null,
+  "responsive": null,
+  "visualHierarchy": null,
+  "densityBehavior": null,
+  "owner": {
+    "designer": "Unassigned",
+    "developer": "Unassigned"
+  },
+  "draft": false,
+  "figmaNodeId": "5794:7948",
+  "storybookSlug": null,
+  "_legacyAccessibilityNotes": "Badges are decorative by default; convey meaning via surrounding text as well. Do not rely on color alone \u2014 the label text carries the meaning."
+}

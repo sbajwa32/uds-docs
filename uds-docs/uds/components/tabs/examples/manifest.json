@@ -1,0 +1,26 @@
+{
+  "$schema": "../../../schemas/manifest.schema.json",
+  "examples": [
+    {
+      "id": "default",
+      "file": "default.html",
+      "label": "Default",
+      "showInDocs": true,
+      "demoWeight": 3
+    },
+    {
+      "id": "small-size",
+      "file": "small-size.html",
+      "label": "Small size",
+      "showInDocs": true,
+      "demoWeight": 1
+    },
+    {
+      "id": "disabled-tab",
+      "file": "disabled-tab.html",
+      "label": "Disabled tab",
+      "showInDocs": true,
+      "demoWeight": 1
+    }
+  ]
+}

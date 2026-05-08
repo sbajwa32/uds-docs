@@ -1,0 +1,13 @@
+{
+  "$schema": "../../../schemas/manifest.schema.json",
+  "examples": [
+    {
+      "id": "states",
+      "file": "states.html",
+      "label": "States",
+      "showInDocs": true,
+      "demoWeight": 3,
+      "description": "Toggle covers active true/false and disabled variants from Figma."
+    }
+  ]
+}

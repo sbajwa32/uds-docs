@@ -1,4 +1,5 @@
 {
+  "$schema": "../../schemas/spec.schema.json",
   "component": "pagination",
   "title": "Pagination",
   "description": "Pagination lets users move through pages of results or records.",

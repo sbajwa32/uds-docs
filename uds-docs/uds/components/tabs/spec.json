@@ -1,4 +1,5 @@
 {
+  "$schema": "../../schemas/spec.schema.json",
   "component": "tabs",
   "title": "Tabs",
   "description": "Tabs organize content into multiple panels where only one panel is visible at a time.",

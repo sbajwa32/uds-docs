@@ -1,4 +1,5 @@
 {
+  "$schema": "../../schemas/spec.schema.json",
   "component": "toggle",
   "title": "Toggle",
   "description": "A toggle switches a setting on or off and reflects the current state immediately.",

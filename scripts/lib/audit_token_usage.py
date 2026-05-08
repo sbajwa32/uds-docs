@@ -23,8 +23,20 @@ RGB_LIKE_RE = re.compile(r"\b(?:rgb|rgba|hsl|hsla)\s*\(", re.I)
 ALLOW_RE = re.compile(r"/\*\s*uds-allow-hardcoded[^*]*\*/")
 
 
-def strip_comments(css: str) -> str:
+def strip_all_comments(css: str) -> str:
+    """Strip both single-line and multi-line C-style comments, including
+    block comments that span multiple lines.
+    """
     return re.sub(r"/\*.*?\*/", "", css, flags=re.S)
+
+
+def is_inside_multiline_comment(css: str, char_offset: int) -> bool:
+    """Returns True if char_offset falls inside a /* ... */ block."""
+    last_open = css.rfind("/*", 0, char_offset)
+    if last_open < 0:
+        return False
+    last_close = css.rfind("*/", 0, char_offset)
+    return last_close < last_open
 
 
 def audit() -> list[str]:
@@ -37,19 +49,46 @@ def audit() -> list[str]:
             continue
         cid = comp_dir.name
         for css_file in sorted(comp_dir.glob("*.css")):
-            for line_no, raw_line in enumerate(css_file.read_text().splitlines(), 1):
-                line = raw_line
-                if ALLOW_RE.search(line):
+            text = css_file.read_text()
+            # Build line offsets so we can map char offset to line number
+            line_starts = [0]
+            for i, ch in enumerate(text):
+                if ch == "\n":
+                    line_starts.append(i + 1)
+
+            def line_of(offset: int) -> int:
+                # Binary search would be faster but linear is fine for this scale
+                lo, hi = 0, len(line_starts) - 1
+                while lo < hi:
+                    mid = (lo + hi + 1) // 2
+                    if line_starts[mid] <= offset:
+                        lo = mid
+                    else:
+                        hi = mid - 1
+                return lo + 1
+
+            for m in HEX_COLOR_RE.finditer(text):
+                if is_inside_multiline_comment(text, m.start()):
                     continue
-                no_comment = strip_comments(line)
-                if HEX_COLOR_RE.search(no_comment):
-                    errors.append(
-                        f"{css_file.relative_to(rl.REPO_ROOT)}:{line_no}: hex color — use a `--uds-color-*` token instead"
-                    )
-                if RGB_LIKE_RE.search(no_comment):
-                    errors.append(
-                        f"{css_file.relative_to(rl.REPO_ROOT)}:{line_no}: rgb()/rgba()/hsl() — use a `--uds-color-*` token instead"
-                    )
+                ln = line_of(m.start())
+                line_text = text.splitlines()[ln - 1] if ln - 1 < len(text.splitlines()) else ""
+                if ALLOW_RE.search(line_text):
+                    continue
+                # Also skip if the hex is in a // single-line comment
+                # (we don't have those in CSS, but be safe)
+                errors.append(
+                    f"{css_file.relative_to(rl.REPO_ROOT)}:{ln}: hex color — use a `--uds-color-*` token instead"
+                )
+            for m in RGB_LIKE_RE.finditer(text):
+                if is_inside_multiline_comment(text, m.start()):
+                    continue
+                ln = line_of(m.start())
+                line_text = text.splitlines()[ln - 1] if ln - 1 < len(text.splitlines()) else ""
+                if ALLOW_RE.search(line_text):
+                    continue
+                errors.append(
+                    f"{css_file.relative_to(rl.REPO_ROOT)}:{ln}: rgb()/rgba()/hsl() — use a `--uds-color-*` token instead"
+                )
     return errors
 
 
