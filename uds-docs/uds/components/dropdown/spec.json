@@ -1,9 +1,10 @@
 {
+  "$schema": "../../schemas/spec.schema.json",
   "component": "dropdown",
   "title": "Dropdown",
   "description": "A dropdown lets users select a single value from a list of options. It combines a trigger button with a floating option list.",
   "whenToUse": "Single selection from a list of 5+ options. When you need to conserve vertical space compared to radio buttons. Form fields where the user picks from a predefined set.",
-  "whenNotToUse": "For 2–4 options, use radio buttons instead so all options are visible. For text-entry with suggestions, use a combobox/autocomplete. For navigation, use nav or tabs.",
+  "whenNotToUse": "For 2\u20134 options, use radio buttons instead so all options are visible. For text-entry with suggestions, use a combobox/autocomplete. For navigation, use nav or tabs.",
   "acceptanceCriteria": [
     "Trigger uses role=\"combobox\" with aria-haspopup=\"listbox\" and aria-expanded reflecting data-open",
     "Listbox uses role=\"listbox\" and options use role=\"option\" with aria-selected on the chosen value",
@@ -11,7 +12,7 @@
     "Keyboard: Enter/Space, Arrow keys, Home/End, Escape, type-ahead all work as documented",
     "Error state recolors label, trigger border, and helper text; aria-invalid is set",
     "Closing via outside-click, Escape, and selection all return focus to the trigger",
-    "Leading icon is OPTIONAL — default examples render WITHOUT a leading icon",
+    "Leading icon is OPTIONAL \u2014 default examples render WITHOUT a leading icon",
     "When the list opens near the viewport bottom, it flips above the trigger",
     "Disabled trigger does not open and is skipped by Tab"
   ],
@@ -91,7 +92,7 @@
     {
       "name": "leadingIcon",
       "type": "string",
-      "description": "Material Symbols Outlined name rendered inside the trigger before the value. OPTIONAL — leave empty for plain text triggers."
+      "description": "Material Symbols Outlined name rendered inside the trigger before the value. OPTIONAL \u2014 leave empty for plain text triggers."
     }
   ],
   "events": [
@@ -134,7 +135,7 @@
     },
     {
       "name": "open",
-      "description": "data-open=\"true\" — option list visible, chevron rotated",
+      "description": "data-open=\"true\" \u2014 option list visible, chevron rotated",
       "hasVisual": true
     },
     {
@@ -144,7 +145,7 @@
     },
     {
       "name": "error",
-      "description": "data-state=\"error\" — label, trigger border, and helper recolor",
+      "description": "data-state=\"error\" \u2014 label, trigger border, and helper recolor",
       "hasVisual": true
     },
     {
@@ -158,10 +159,10 @@
     },
     {
       "name": "empty",
-      "description": "Open list with no matching options — render \"No options\" placeholder"
+      "description": "Open list with no matching options \u2014 render \"No options\" placeholder"
     }
   ],
-  "contentGuidelines": "Trigger placeholder: \"Select [thing]\" not \"Choose…\". Option labels: sentence case, parallel grammar (all nouns or all verbs). Avoid all-caps. If options have icons, use them consistently — either every option has one or none do.",
+  "contentGuidelines": "Trigger placeholder: \"Select [thing]\" not \"Choose\u2026\". Option labels: sentence case, parallel grammar (all nouns or all verbs). Avoid all-caps. If options have icons, use them consistently \u2014 either every option has one or none do.",
   "commonlyPairedWith": [
     "text-input",
     "checkbox",
@@ -175,10 +176,10 @@
       "Show the currently selected value in the trigger when closed"
     ],
     "donts": [
-      "Don't use a dropdown for 2–4 options — radio buttons are easier to scan",
-      "Don't use a dropdown for free text entry — use a text input or combobox/autocomplete",
+      "Don't use a dropdown for 2\u20134 options \u2014 radio buttons are easier to scan",
+      "Don't use a dropdown for free text entry \u2014 use a text input or combobox/autocomplete",
       "Don't hide critical information behind a dropdown that users have to open to see",
-      "Don't render a leading icon by default — current examples in 0.2 incorrectly use add_circle_outline"
+      "Don't render a leading icon by default \u2014 current examples in 0.2 incorrectly use add_circle_outline"
     ]
   },
   "accessibility": {
@@ -219,7 +220,7 @@
       },
       {
         "trigger": "Option receives focus inside open listbox",
-        "announcement": "[Option label], [N of M] — selected option is announced as \"selected\""
+        "announcement": "[Option label], [N of M] \u2014 selected option is announced as \"selected\""
       },
       {
         "trigger": "data-state=\"error\" applied",

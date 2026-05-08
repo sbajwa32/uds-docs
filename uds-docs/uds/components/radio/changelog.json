@@ -1,0 +1,16 @@
+{
+  "$schema": "../../schemas/changelog.schema.json",
+  "addedIn": "0.1",
+  "entries": [
+    {
+      "version": "0.1",
+      "type": "added",
+      "text": "Label, disabled, and error states"
+    },
+    {
+      "version": "0.3",
+      "type": "changed",
+      "text": "Figma radio coverage confirmed: radio button states including selected/error/disabled/hover/active combinations plus 2-5 option radio groups"
+    }
+  ]
+}

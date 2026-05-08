@@ -1,4 +1,5 @@
 {
+  "$schema": "../../schemas/spec.schema.json",
   "component": "text-input",
   "title": "Text Input",
   "description": "A text input lets users enter a single line of text. Includes label, optional helper text, character counter, and icon slots.",
@@ -133,7 +134,7 @@
     },
     {
       "name": "error",
-      "description": "data-state=\"error\" — label, border, and helper text recolor to error tokens",
+      "description": "data-state=\"error\" \u2014 label, border, and helper text recolor to error tokens",
       "hasVisual": true
     },
     {
@@ -162,10 +163,10 @@
       "Use type=\"email\" / type=\"tel\" / inputmode=\"numeric\" to surface the right mobile keyboard"
     ],
     "donts": [
-      "Don't replace labels with placeholders — placeholders disappear and reduce form usability",
+      "Don't replace labels with placeholders \u2014 placeholders disappear and reduce form usability",
       "Don't validate on every keystroke; wait until blur or submit",
       "Don't use red borders without an accompanying error message",
-      "Don't disable the field when you really mean read-only — they're different states"
+      "Don't disable the field when you really mean read-only \u2014 they're different states"
     ]
   },
   "accessibility": {
@@ -186,7 +187,7 @@
     "screenReader": [
       {
         "trigger": "Input receives focus",
-        "announcement": "[Label], edit — announces \"required\" when required is set, and the current helper text via aria-describedby"
+        "announcement": "[Label], edit \u2014 announces \"required\" when required is set, and the current helper text via aria-describedby"
       },
       {
         "trigger": "data-state=\"error\" applied",
@@ -228,12 +229,12 @@
     "contrast": []
   },
   "knownIssues": [
-    "Loading state is not yet specified — disabled is the closest approximation in 0.2"
+    "Loading state is not yet specified \u2014 disabled is the closest approximation in 0.2"
   ],
   "performance": null,
   "motion": null,
   "responsive": null,
-  "visualHierarchy": "Form fields are siblings — keep size and spacing consistent. Group related fields with shared labels (e.g. address group) and use a divider between groups in long forms.",
+  "visualHierarchy": "Form fields are siblings \u2014 keep size and spacing consistent. Group related fields with shared labels (e.g. address group) and use a divider between groups in long forms.",
   "densityBehavior": "Default field height is comfortable; sm size is reserved for filter rows above tables. Don't mix sizes within the same form.",
   "owner": {
     "designer": "Unassigned",

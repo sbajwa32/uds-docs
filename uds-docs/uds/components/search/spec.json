@@ -1,9 +1,10 @@
 {
+  "$schema": "../../schemas/spec.schema.json",
   "component": "search",
   "title": "Search",
   "description": "A search input with leading search icon, value clearing, and optional filter state.",
   "whenToUse": "For searching across a dataset or page. Place prominently when search is the primary action.",
-  "whenNotToUse": "For generic text entry — use Text Input. For dropdown-with-typeahead — use a combobox pattern.",
+  "whenNotToUse": "For generic text entry \u2014 use Text Input. For dropdown-with-typeahead \u2014 use a combobox pattern.",
   "acceptanceCriteria": [],
   "dependencies": {
     "css": [

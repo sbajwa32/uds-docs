@@ -1,4 +1,5 @@
 {
+  "$schema": "../../schemas/spec.schema.json",
   "component": "text-area",
   "title": "Text Area",
   "description": "A text area lets users enter multi-line freeform text.",

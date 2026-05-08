@@ -1,4 +1,5 @@
 {
+  "$schema": "../../schemas/spec.schema.json",
   "component": "checkbox",
   "title": "Checkbox",
   "description": "A checkbox lets users select one or more options from a set.",
@@ -51,5 +52,5 @@
   "draft": false,
   "figmaNodeId": "6010:28999",
   "storybookSlug": null,
-  "_legacyAccessibilityNotes": "Uses native <input type=\"checkbox\"> for screen reader support. The visible indicator is purely decorative — the native input handles interaction."
+  "_legacyAccessibilityNotes": "Uses native <input type=\"checkbox\"> for screen reader support. The visible indicator is purely decorative \u2014 the native input handles interaction."
 }

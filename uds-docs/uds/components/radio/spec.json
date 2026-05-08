@@ -1,8 +1,9 @@
 {
+  "$schema": "../../schemas/spec.schema.json",
   "component": "radio",
   "title": "Radio",
   "description": "A radio button lets users select exactly one option from a set.",
-  "whenToUse": "Mutually exclusive selection from 2–5 options. When the user must see all options at once.",
+  "whenToUse": "Mutually exclusive selection from 2\u20135 options. When the user must see all options at once.",
   "whenNotToUse": "For more than 5 options, use a dropdown select instead. For multiple selections, use checkboxes.",
   "acceptanceCriteria": [],
   "dependencies": {
