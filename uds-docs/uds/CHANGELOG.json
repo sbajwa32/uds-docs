@@ -1,0 +1,345 @@
+[
+  {
+    "version": "0.1",
+    "date": "2026-04-01",
+    "globalNotes": [
+      {
+        "type": "added",
+        "text": "Initial release: primitive + semantic tokens, 6 color modes, 4 font families, 3 font scales, 2 density modes"
+      },
+      {
+        "type": "added",
+        "text": "249 primitive tokens (color, font, text, space, border, style)"
+      },
+      {
+        "type": "added",
+        "text": "93 semantic color tokens across 6 modes (Base Light, Base Dark, ResMan Light, ResMan Dark, AnyoneHome Light, Inhabit Light)"
+      },
+      {
+        "type": "added",
+        "text": "Semantic font tokens with 4 font families (Inter, Poppins, Roboto, Lexend)"
+      },
+      {
+        "type": "added",
+        "text": "Semantic font-scale tokens with 3 scales (default, smaller, larger)"
+      },
+      {
+        "type": "added",
+        "text": "Semantic space tokens with 2 density modes (default, comfortable)"
+      },
+      {
+        "type": "added",
+        "text": "Semantic border tokens (radius + width)"
+      },
+      {
+        "type": "added",
+        "text": "Text styles for headings, body, labels, inputs, data cells"
+      }
+    ],
+    "byComponent": {
+      "Badge": [
+        {
+          "type": "added",
+          "text": "Status variants and sizes"
+        }
+      ],
+      "Breadcrumb": [
+        {
+          "type": "added",
+          "text": "Navigation component"
+        }
+      ],
+      "Button": [
+        {
+          "type": "added",
+          "text": "Primary, secondary, ghost variants; small + default sizes; icon support; disabled + loading states"
+        }
+      ],
+      "Checkbox": [
+        {
+          "type": "added",
+          "text": "Label, disabled, and error states"
+        }
+      ],
+      "Divider": [
+        {
+          "type": "added",
+          "text": "Horizontal and vertical orientations"
+        }
+      ],
+      "Icon Wrapper": [
+        {
+          "type": "added",
+          "text": "Size and color variants for Material Symbols"
+        }
+      ],
+      "Radio": [
+        {
+          "type": "added",
+          "text": "Label, disabled, and error states"
+        }
+      ],
+      "Spacer": [
+        {
+          "type": "added",
+          "text": "Spacing utility component"
+        }
+      ],
+      "Tabs": [
+        {
+          "type": "added",
+          "text": "Horizontal tab component with keyboard navigation"
+        }
+      ],
+      "Text Input": [
+        {
+          "type": "added",
+          "text": "Label, helper text, error state, character counter, leading/trailing icons"
+        }
+      ]
+    }
+  },
+  {
+    "version": "0.2",
+    "date": "2026-04-15",
+    "globalNotes": [],
+    "byComponent": {
+      "Chip": [
+        {
+          "type": "added",
+          "text": "Compact filter/input/dropdown chips with selected state, leading/trailing icons, removable input tags"
+        }
+      ],
+      "Data Table": [
+        {
+          "type": "added",
+          "text": "Data grid with sortable headers, checkbox selection, badge/action cell types, striped rows, error highlighting"
+        }
+      ],
+      "Dialog": [
+        {
+          "type": "added",
+          "text": "Modal overlay with title, scrollable body, action footer; backdrop click and Escape to close; 1-4 content slots"
+        }
+      ],
+      "Dropdown": [
+        {
+          "type": "added",
+          "text": "Single-select dropdown with label, helper text, leading icon, error/disabled states, keyboard navigation"
+        }
+      ],
+      "List": [
+        {
+          "type": "added",
+          "text": "Vertical list with single-select, optional leading/trailing icons, keyboard navigation; 5 interaction states"
+        }
+      ],
+      "Nav Header": [
+        {
+          "type": "added",
+          "text": "Standalone header bar with logo, bento dropdown, search, My Work, and account actions"
+        }
+      ],
+      "Nav Vertical": [
+        {
+          "type": "added",
+          "text": "Sidebar navigation with two variants: Leading Icons (default) and text-only"
+        }
+      ],
+      "Notification": [
+        {
+          "type": "added",
+          "text": "Status banners with info, success, error, warning variants; subtle, prominent, and inline styles; optional dismiss"
+        }
+      ],
+      "Search": [
+        {
+          "type": "added",
+          "text": "Search input with leading icon, auto-show clear button, hover/focused/error states"
+        }
+      ],
+      "Tile": [
+        {
+          "type": "added",
+          "text": "Selectable card with label, body text, optional chevron; default/hover/selected/focused/disabled states"
+        }
+      ],
+      "Tooltip": [
+        {
+          "type": "added",
+          "text": "CSS-only text popover on hover/focus with top/bottom/left/right positioning"
+        }
+      ]
+    }
+  },
+  {
+    "version": "0.3",
+    "date": "2026-05-07",
+    "globalNotes": [
+      {
+        "type": "added",
+        "text": "Semantic icon destructive token (`--uds-color-icon-destructive`) with light-mode red/70 and dark-mode red/50 aliases"
+      },
+      {
+        "type": "changed",
+        "text": "Internal support pages checkbox-control, input, and slot were inspected but intentionally kept out of public docs for 0.3"
+      }
+    ],
+    "byComponent": {
+      "Badge": [
+        {
+          "type": "changed",
+          "text": "Figma variant matrix confirmed: 2 sizes (Default/Small), 5 variants (Info/Secondary/Success/Error/Warning), and Prominent true/false"
+        },
+        {
+          "type": "fixed",
+          "text": "Fixed invisible text on the secondary prominent variant. The CSS paired `surface-bold` (light gray in light mode) with `text-inverse` (near-white in light mode) \u2014 contrast was ~1.07:1, basically invisible. Switched to `text-primary` for a contrast of ~9.7:1 in light mode and ~10:1 in dark mode. Affected the changelog component-name pills and per-component changelog type labels."
+        }
+      ],
+      "Breadcrumb": [
+        {
+          "type": "changed",
+          "text": "Figma variant matrix confirmed: framed/frameless, depth on/off, 2-6 link groups, current/default/disabled link states, and open-in-new-window affordance"
+        }
+      ],
+      "Button": [
+        {
+          "type": "changed",
+          "text": "Figma variant matrix confirmed for primary/secondary/ghost buttons: destructive true/false, default/small sizes, default/hover/active/selected/disabled states, leading/trailing icons, icon-only, and horizontal/vertical button groups"
+        }
+      ],
+      "Checkbox": [
+        {
+          "type": "changed",
+          "text": "Figma variant matrix confirmed for checkbox and multiline checkbox: selected true/false plus default/hover/active/focused/selected/disabled/error states"
+        }
+      ],
+      "Chip": [
+        {
+          "type": "changed",
+          "text": "Figma variant matrix confirmed: default/filter/input/dropdown variants, selected true/false, and default/hover/active/focused/focused-on-active states"
+        }
+      ],
+      "Combobox": [
+        {
+          "type": "added",
+          "text": "Placeholder page for searchable text-entry selection component from Figma 0.3"
+        }
+      ],
+      "Data Table": [
+        {
+          "type": "changed",
+          "text": "Figma data-table coverage expanded: text/dropdown/ghost-button/checkbox/badge cell types, header cells, 1-14 columns, 2-14 rows, alignment, leading/trailing icons, dividers, prominent text, and error highlighting"
+        }
+      ],
+      "Data View": [
+        {
+          "type": "added",
+          "text": "Placeholder page for non-table record collection layouts from Figma 0.3"
+        }
+      ],
+      "Date Picker": [
+        {
+          "type": "added",
+          "text": "Placeholder page for calendar date-entry component from Figma 0.3"
+        }
+      ],
+      "Dialog": [
+        {
+          "type": "changed",
+          "text": "Figma dialog component supports 1-4 slot configurations plus header and footer subcomponents"
+        }
+      ],
+      "Divider": [
+        {
+          "type": "changed",
+          "text": "Figma divider coverage confirmed for sm, md, lg, and xl padding variants"
+        }
+      ],
+      "Dropdown": [
+        {
+          "type": "changed",
+          "text": "Figma dropdown coverage confirmed: default/disabled/error field states plus dropdown item active/default/focused/hover states"
+        }
+      ],
+      "Icon Wrapper": [
+        {
+          "type": "changed",
+          "text": "Figma icon wrapper coverage confirmed for 16, 20, 24, 32, 48, and 64px sizes"
+        }
+      ],
+      "Label": [
+        {
+          "type": "added",
+          "text": "Blocked form-control label component with multiline/basic/extended features, default/disabled/error/interactive/success variants, token-first CSS, examples, code, playground, and Demo Builder coverage"
+        }
+      ],
+      "Link": [
+        {
+          "type": "added",
+          "text": "In-progress navigational link component with default/current page/disabled states, optional open-in-new-window affordance, token-first CSS, examples, code, playground, and Demo Builder coverage"
+        }
+      ],
+      "List": [
+        {
+          "type": "changed",
+          "text": "Figma list coverage confirmed: 1-10 item lists, draggable and non-draggable item variants, leading/trailing icons, and default/hover/active/focused/selected states"
+        }
+      ],
+      "Notification": [
+        {
+          "type": "changed",
+          "text": "Figma notification coverage confirmed: info/success/error/warning variants, inline true/false, and prominent true/false"
+        }
+      ],
+      "Pagination": [
+        {
+          "type": "added",
+          "text": "Blocked paginated navigation component with default/active states, rows-per-page context, token-first CSS, examples, code, playground, and Demo Builder coverage"
+        }
+      ],
+      "Radio": [
+        {
+          "type": "changed",
+          "text": "Figma radio coverage confirmed: radio button states including selected/error/disabled/hover/active combinations plus 2-5 option radio groups"
+        }
+      ],
+      "Search": [
+        {
+          "type": "changed",
+          "text": "Figma search bar coverage confirmed: default/hover/focused/active/error-active states"
+        }
+      ],
+      "Tabs": [
+        {
+          "type": "changed",
+          "text": "Figma tab coverage confirmed: default/small sizes, 2-6 tab groups, selected and disabled states, plus hover/focus/active-on-selected variants"
+        }
+      ],
+      "Text Area": [
+        {
+          "type": "added",
+          "text": "Multi-line text-entry component with default/hover/focused/active/error-focused states, token-first CSS, examples, code, playground, and Demo Builder coverage"
+        }
+      ],
+      "Text Input": [
+        {
+          "type": "changed",
+          "text": "Figma text input coverage confirmed: field default/disabled/error states and wrapper default/active/error states"
+        }
+      ],
+      "Tile": [
+        {
+          "type": "changed",
+          "text": "Figma tile coverage confirmed: default/hover/focused/selected/disabled states"
+        }
+      ],
+      "Toggle": [
+        {
+          "type": "added",
+          "text": "Immediate on/off setting control with active true/false and disabled variants, token-first CSS, examples, code, playground, and Demo Builder coverage"
+        }
+      ]
+    }
+  }
+]

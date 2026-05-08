@@ -1,0 +1,52 @@
+{
+  "0.1": {
+    "date": "2026-04-01",
+    "notes": [
+      {
+        "type": "added",
+        "text": "Initial release: primitive + semantic tokens, 6 color modes, 4 font families, 3 font scales, 2 density modes"
+      },
+      {
+        "type": "added",
+        "text": "249 primitive tokens (color, font, text, space, border, style)"
+      },
+      {
+        "type": "added",
+        "text": "93 semantic color tokens across 6 modes (Base Light, Base Dark, ResMan Light, ResMan Dark, AnyoneHome Light, Inhabit Light)"
+      },
+      {
+        "type": "added",
+        "text": "Semantic font tokens with 4 font families (Inter, Poppins, Roboto, Lexend)"
+      },
+      {
+        "type": "added",
+        "text": "Semantic font-scale tokens with 3 scales (default, smaller, larger)"
+      },
+      {
+        "type": "added",
+        "text": "Semantic space tokens with 2 density modes (default, comfortable)"
+      },
+      {
+        "type": "added",
+        "text": "Semantic border tokens (radius + width)"
+      },
+      {
+        "type": "added",
+        "text": "Text styles for headings, body, labels, inputs, data cells"
+      }
+    ]
+  },
+  "0.3": {
+    "date": "2026-05-07",
+    "notes": [
+      {
+        "type": "added",
+        "text": "Semantic icon destructive token (`--uds-color-icon-destructive`) with light-mode red/70 and dark-mode red/50 aliases"
+      },
+      {
+        "type": "changed",
+        "text": "Internal support pages checkbox-control, input, and slot were inspected but intentionally kept out of public docs for 0.3"
+      }
+    ]
+  }
+}

@@ -1145,6 +1145,29 @@ function preloadAllContent() {
       loadContent(id).then(function (data) {
         if (data) updateCompletenessIndicator(id);
       });
+      // Phase 8: also pre-fetch per-component changelog.json so the
+      // "Last updated" header panel and the per-component Changelog tab
+      // have synchronous access via _componentChangelogCache.
+      preloadComponentChangelog(id);
+    });
+}
+
+const _componentChangelogCache = {};
+function preloadComponentChangelog(componentId) {
+    if (_componentChangelogCache[componentId] !== undefined) return;
+    _componentChangelogCache[componentId] = null; // mark in-flight
+    fetch('./uds/components/' + componentId + '/changelog.json').then(function (r) {
+      if (!r.ok) return null;
+      return r.json();
+    }).then(function (data) {
+      _componentChangelogCache[componentId] = data || { entries: [] };
+      // Re-render the per-component header extras now that the cache is
+      // warm (so the "Last updated" panel can appear without a navigation).
+      if (typeof renderComponentHeaderExtras === 'function') {
+        try { renderComponentHeaderExtras(componentId); } catch (_) {}
+      }
+    }).catch(function () {
+      _componentChangelogCache[componentId] = { entries: [] };
     });
 }
 
@@ -3534,86 +3557,10 @@ if (dlBtn) {
      12. CHANGELOG + COMPONENT STATUS + VERSION DROPDOWN
      ======================================================================== */
 
-var CHANGELOG = [
-    {
-      version: '0.1',
-      date: '2026-04-01',
-      changes: [
-        { type: 'added', category: null, component: null, text: 'Initial release: primitive + semantic tokens, 6 color modes, 4 font families, 3 font scales, 2 density modes' },
-        { type: 'added', category: 'tokens', component: null, text: '249 primitive tokens (color, font, text, space, border, style)' },
-        { type: 'added', category: 'tokens', component: null, text: '93 semantic color tokens across 6 modes (Base Light, Base Dark, ResMan Light, ResMan Dark, AnyoneHome Light, Inhabit Light)' },
-        { type: 'added', category: 'tokens', component: null, text: 'Semantic font tokens with 4 font families (Inter, Poppins, Roboto, Lexend)' },
-        { type: 'added', category: 'tokens', component: null, text: 'Semantic font-scale tokens with 3 scales (default, smaller, larger)' },
-        { type: 'added', category: 'tokens', component: null, text: 'Semantic space tokens with 2 density modes (default, comfortable)' },
-        { type: 'added', category: 'tokens', component: null, text: 'Semantic border tokens (radius + width)' },
-        { type: 'added', category: 'tokens', component: null, text: 'Text styles for headings, body, labels, inputs, data cells' },
-        { type: 'added', category: 'components', component: 'Button', text: 'Primary, secondary, ghost variants; small + default sizes; icon support; disabled + loading states' },
-        { type: 'added', category: 'components', component: 'Text Input', text: 'Label, helper text, error state, character counter, leading/trailing icons' },
-        { type: 'added', category: 'components', component: 'Checkbox', text: 'Label, disabled, and error states' },
-        { type: 'added', category: 'components', component: 'Radio', text: 'Label, disabled, and error states' },
-        { type: 'added', category: 'components', component: 'Badge', text: 'Status variants and sizes' },
-        { type: 'added', category: 'components', component: 'Breadcrumb', text: 'Navigation component' },
-        { type: 'added', category: 'components', component: 'Tabs', text: 'Horizontal tab component with keyboard navigation' },
-        { type: 'added', category: 'components', component: 'Divider', text: 'Horizontal and vertical orientations' },
-        { type: 'added', category: 'components', component: 'Icon Wrapper', text: 'Size and color variants for Material Symbols' },
-        { type: 'added', category: 'components', component: 'Spacer', text: 'Spacing utility component' },
-        { type: 'added', category: 'components', component: 'Nav', text: 'Navigation system: header bar, vertical sidebar, bento dropdown, rail buttons, search, and account actions' }
-      ]
-    },
-    {
-      version: '0.2',
-      date: '2026-04-02',
-      changes: [
-        { type: 'changed', category: 'components', component: 'Nav', text: 'Split Nav into two separate components: Nav Header and Nav Vertical' },
-        { type: 'added', category: 'components', component: 'Nav Header', text: 'Standalone header bar with logo, bento dropdown, search, My Work, and account actions' },
-        { type: 'added', category: 'components', component: 'Nav Vertical', text: 'Sidebar navigation with two variants: Leading Icons (default) and text-only' },
-        { type: 'deprecated', category: 'components', component: 'Nav', text: 'Replaced by Nav Header and Nav Vertical — update imports to nav-header.css + nav-vertical.css' },
-        { type: 'added', category: 'components', component: 'Dropdown', text: 'Single-select dropdown with label, helper text, leading icon, error/disabled states, keyboard navigation' },
-        { type: 'added', category: 'components', component: 'Notification', text: 'Status banners with info, success, error, warning variants; subtle, prominent, and inline styles; optional dismiss' },
-        { type: 'added', category: 'components', component: 'Dialog', text: 'Modal overlay with title, scrollable body, action footer; backdrop click and Escape to close; 1-4 content slots' },
-        { type: 'added', category: 'components', component: 'Tile', text: 'Selectable card with label, body text, optional chevron; default/hover/selected/focused/disabled states' },
-        { type: 'added', category: 'components', component: 'List', text: 'Vertical list with single-select, optional leading/trailing icons, keyboard navigation; 5 interaction states' },
-        { type: 'added', category: 'components', component: 'Data Table', text: 'Data grid with sortable headers, checkbox selection, badge/action cell types, striped rows, error highlighting' },
-        { type: 'added', category: 'components', component: 'Chip', text: 'Compact filter/input/dropdown chips with selected state, leading/trailing icons, removable input tags' },
-        { type: 'added', category: 'components', component: 'Search', text: 'Search input with leading icon, auto-show clear button, hover/focused/error states' },
-        { type: 'added', category: 'components', component: 'Tooltip', text: 'CSS-only text popover on hover/focus with top/bottom/left/right positioning' }
-      ]
-    },
-    {
-      version: '0.3',
-      date: '2026-05-07',
-      changes: [
-        { type: 'added', category: 'tokens', component: null, text: 'Semantic icon destructive token (`--uds-color-icon-destructive`) with light-mode red/70 and dark-mode red/50 aliases' },
-        { type: 'added', category: 'components', component: 'Combobox', text: 'Placeholder page for searchable text-entry selection component from Figma 0.3' },
-        { type: 'added', category: 'components', component: 'Date Picker', text: 'Placeholder page for calendar date-entry component from Figma 0.3' },
-        { type: 'added', category: 'components', component: 'Data View', text: 'Placeholder page for non-table record collection layouts from Figma 0.3' },
-        { type: 'added', category: 'components', component: 'Label', text: 'Blocked form-control label component with multiline/basic/extended features, default/disabled/error/interactive/success variants, token-first CSS, examples, code, playground, and Demo Builder coverage' },
-        { type: 'added', category: 'components', component: 'Link', text: 'In-progress navigational link component with default/current page/disabled states, optional open-in-new-window affordance, token-first CSS, examples, code, playground, and Demo Builder coverage' },
-        { type: 'added', category: 'components', component: 'Pagination', text: 'Blocked paginated navigation component with default/active states, rows-per-page context, token-first CSS, examples, code, playground, and Demo Builder coverage' },
-        { type: 'added', category: 'components', component: 'Text Area', text: 'Multi-line text-entry component with default/hover/focused/active/error-focused states, token-first CSS, examples, code, playground, and Demo Builder coverage' },
-        { type: 'added', category: 'components', component: 'Toggle', text: 'Immediate on/off setting control with active true/false and disabled variants, token-first CSS, examples, code, playground, and Demo Builder coverage' },
-        { type: 'changed', category: 'components', component: 'Badge', text: 'Figma variant matrix confirmed: 2 sizes (Default/Small), 5 variants (Info/Secondary/Success/Error/Warning), and Prominent true/false' },
-        { type: 'changed', category: 'components', component: 'Breadcrumb', text: 'Figma variant matrix confirmed: framed/frameless, depth on/off, 2-6 link groups, current/default/disabled link states, and open-in-new-window affordance' },
-        { type: 'changed', category: 'components', component: 'Button', text: 'Figma variant matrix confirmed for primary/secondary/ghost buttons: destructive true/false, default/small sizes, default/hover/active/selected/disabled states, leading/trailing icons, icon-only, and horizontal/vertical button groups' },
-        { type: 'changed', category: 'components', component: 'Checkbox', text: 'Figma variant matrix confirmed for checkbox and multiline checkbox: selected true/false plus default/hover/active/focused/selected/disabled/error states' },
-        { type: 'changed', category: 'components', component: 'Chip', text: 'Figma variant matrix confirmed: default/filter/input/dropdown variants, selected true/false, and default/hover/active/focused/focused-on-active states' },
-        { type: 'changed', category: 'components', component: 'Data Table', text: 'Figma data-table coverage expanded: text/dropdown/ghost-button/checkbox/badge cell types, header cells, 1-14 columns, 2-14 rows, alignment, leading/trailing icons, dividers, prominent text, and error highlighting' },
-        { type: 'changed', category: 'components', component: 'Dialog', text: 'Figma dialog component supports 1-4 slot configurations plus header and footer subcomponents' },
-        { type: 'changed', category: 'components', component: 'Dropdown', text: 'Figma dropdown coverage confirmed: default/disabled/error field states plus dropdown item active/default/focused/hover states' },
-        { type: 'changed', category: 'components', component: 'List', text: 'Figma list coverage confirmed: 1-10 item lists, draggable and non-draggable item variants, leading/trailing icons, and default/hover/active/focused/selected states' },
-        { type: 'changed', category: 'components', component: 'Notification', text: 'Figma notification coverage confirmed: info/success/error/warning variants, inline true/false, and prominent true/false' },
-        { type: 'changed', category: 'components', component: 'Radio', text: 'Figma radio coverage confirmed: radio button states including selected/error/disabled/hover/active combinations plus 2-5 option radio groups' },
-        { type: 'changed', category: 'components', component: 'Search', text: 'Figma search bar coverage confirmed: default/hover/focused/active/error-active states' },
-        { type: 'changed', category: 'components', component: 'Tabs', text: 'Figma tab coverage confirmed: default/small sizes, 2-6 tab groups, selected and disabled states, plus hover/focus/active-on-selected variants' },
-        { type: 'changed', category: 'components', component: 'Text Input', text: 'Figma text input coverage confirmed: field default/disabled/error states and wrapper default/active/error states' },
-        { type: 'changed', category: 'components', component: 'Tile', text: 'Figma tile coverage confirmed: default/hover/focused/selected/disabled states' },
-        { type: 'changed', category: 'components', component: 'Icon Wrapper', text: 'Figma icon wrapper coverage confirmed for 16, 20, 24, 32, 48, and 64px sizes' },
-        { type: 'changed', category: 'components', component: 'Divider', text: 'Figma divider coverage confirmed for sm, md, lg, and xl padding variants' },
-        { type: 'fixed', category: 'components', component: 'Badge', text: 'Fixed invisible text on the secondary prominent variant. The CSS paired `surface-bold` (light gray in light mode) with `text-inverse` (near-white in light mode) — contrast was ~1.07:1, basically invisible. Switched to `text-primary` for a contrast of ~9.7:1 in light mode and ~10:1 in dark mode. Affected the changelog component-name pills and per-component changelog type labels.' },
-        { type: 'changed', category: null, component: null, text: 'Internal support pages checkbox-control, input, and slot were inspected but intentionally kept out of public docs for 0.3' }
-      ]
-    }
-];
+// CHANGELOG dissolved in Phase 8 — per-component changelog.json files
+// are the source of truth, aggregated into uds/CHANGELOG.json by
+// scripts/aggregate-changelog.sh and consumed by renderGlobalChangelog().
+
 
 // SITE_CHANGELOG moved to docs/data/site-changelog.js (Phase 3c)
 import { SITE_CHANGELOG } from './data/site-changelog.js';
@@ -3653,7 +3600,21 @@ var COMPONENT_STATUS = {
     'data-view': { status: 'placeholder', since: '0.3' },
 };
 
+// UDS_VERSION is loaded from uds/version.json on init (Phase 8). The
+// initial value below is just a fallback used while the fetch is in-flight
+// or on error — the fetch overwrites it on module load so all downstream
+// code (version dropdown, snapshot detection, etc.) sees the real value.
 var UDS_VERSION = '0.3';
+
+(async () => {
+    try {
+      const res = await fetch('./uds/version.json');
+      if (res.ok) {
+        const data = await res.json();
+        if (data && data.version) UDS_VERSION = data.version;
+      }
+    } catch (_) {}
+})();
 
 window.COMPONENT_STATUS_MAP = {};
 Object.keys(COMPONENT_STATUS).forEach(function (id) {
@@ -3710,56 +3671,86 @@ function renderCategorySection(parent, categoryTitle, changes, typeOrder) {
     parent.appendChild(catGroup);
 }
 
-function renderGlobalChangelog() {
+// Phase 8: fetch the aggregated changelog from uds/CHANGELOG.json (built
+// by scripts/aggregate-changelog.sh from per-component changelog.json files
+// + uds/CHANGELOG.globalNotes.json) instead of reading from the in-memory
+// CHANGELOG table. Per-component changelog.json files are the source of truth.
+async function renderGlobalChangelog() {
     var container = document.getElementById('sg-global-changelog');
     if (!container) return;
-    container.innerHTML = '';
+    container.innerHTML = '<p class="sg-changelog-empty">Loading...</p>';
 
-    CHANGELOG.slice().reverse().forEach(function (release) {
+    let releases;
+    try {
+      const res = await fetch('./uds/CHANGELOG.json');
+      if (!res.ok) throw new Error('CHANGELOG.json not found');
+      releases = await res.json();
+    } catch (e) {
+      console.error('Failed to load uds/CHANGELOG.json:', e);
+      container.innerHTML = '<p class="sg-changelog-empty">Failed to load changelog.</p>';
+      return;
+    }
+
+    container.innerHTML = '';
+    var typeOrder = ['added', 'changed', 'fixed', 'deprecated', 'removed'];
+
+    releases.slice().reverse().forEach(function (release) {
       var section = document.createElement('div');
       section.className = 'sg-cl-version';
 
       var header = document.createElement('div');
       header.className = 'sg-cl-header';
       header.innerHTML = '<span class="sg-cl-ver-num">' + release.version + '</span>' +
-        '<span class="sg-cl-ver-date">' + release.date + '</span>';
+        '<span class="sg-cl-ver-date">' + (release.date || '') + '</span>';
       section.appendChild(header);
 
-      if (release.migration) {
-        var mig = document.createElement('div');
-        mig.className = 'sg-cl-migration';
-        mig.innerHTML = '<div class="sg-cl-migration-title">Migration Guide</div>' + release.migration;
-        section.appendChild(mig);
-      }
-
-      var typeOrder = ['added', 'changed', 'fixed', 'deprecated', 'removed'];
-
-      var general = release.changes.filter(function (c) { return !c.category; });
-      var tokens = release.changes.filter(function (c) { return c.category === 'tokens'; });
-      var components = release.changes.filter(function (c) { return c.category === 'components'; });
-
-      if (general.length) {
-        general.forEach(function (entry) {
-          var item = document.createElement('div');
-          item.className = 'sg-cl-item';
-          item.style.fontSize = '15px';
-          item.style.fontWeight = '500';
-          item.innerHTML = entry.text;
-          section.appendChild(item);
+      // Global (non-component) notes — group by type within the section
+      if (release.globalNotes && release.globalNotes.length) {
+        var notesGroup = document.createElement('div');
+        notesGroup.className = 'sg-cl-group';
+        var notesGroupTitle = document.createElement('div');
+        notesGroupTitle.className = 'sg-cl-group-title sg-cl-group-title--added';
+        notesGroupTitle.textContent = 'Release Notes';
+        notesGroup.appendChild(notesGroupTitle);
+        typeOrder.forEach(function (type) {
+          var ofType = release.globalNotes.filter(function (e) { return e.type === type; });
+          if (ofType.length) renderChangeItems(notesGroup, ofType, type);
         });
+        section.appendChild(notesGroup);
       }
 
-      if (tokens.length) {
-        renderCategorySection(section, 'Tokens', tokens, typeOrder);
-      }
+      // Per-component sections
+      var components = release.byComponent || {};
+      var compNames = Object.keys(components);
+      if (compNames.length) {
+        var compsGroup = document.createElement('div');
+        compsGroup.className = 'sg-cl-group';
+        var compsGroupTitle = document.createElement('div');
+        compsGroupTitle.className = 'sg-cl-group-title sg-cl-group-title--added';
+        compsGroupTitle.textContent = 'Components';
+        compsGroup.appendChild(compsGroupTitle);
 
-      if (components.length) {
-        renderCategorySection(section, 'Components', components, typeOrder);
+        compNames.forEach(function (name) {
+          var entries = components[name];
+          // Inject the component name as a "pill" prefix on each entry
+          var entriesWithComp = entries.map(function (e) {
+            return { type: e.type, text: e.text, component: name };
+          });
+          // Group by type within this component
+          typeOrder.forEach(function (type) {
+            var ofType = entriesWithComp.filter(function (e) { return e.type === type; });
+            if (ofType.length) renderChangeItems(compsGroup, ofType, type);
+          });
+        });
+
+        section.appendChild(compsGroup);
       }
 
       container.appendChild(section);
     });
 }
+
+// Legacy entry point preserved for back-compat. Wraps the renderer above.
 
 function renderSiteChangelog() {
     var container = document.getElementById('sg-site-changelog');
@@ -3792,55 +3783,74 @@ function renderSiteChangelog() {
     });
 }
 
+// Phase 8: read per-component history from uds/components/<id>/changelog.json.
+// The function STAYS sync (returns immediately) and renders async — kicks off
+// the fetch and updates the panel when data arrives.
 function renderComponentChangelog(pageId) {
     var panel = document.querySelector('[data-page="' + pageId + '"] [data-tab-panel="changelog"]');
     if (!panel) return;
 
-    var pageName = pageId.split('-').map(function (w) {
-      return w.charAt(0).toUpperCase() + w.slice(1);
-    }).join(' ');
+    panel.innerHTML = '<p class="sg-changelog-empty">Loading...</p>';
 
-    var entries = [];
-    CHANGELOG.forEach(function (release) {
-      var matching = release.changes.filter(function (c) {
-        if (!c.component) return false;
-        if (Array.isArray(c.component)) {
-          return c.component.some(function (comp) { return comp.toLowerCase() === pageName.toLowerCase(); });
-        }
-        return c.component.toLowerCase() === pageName.toLowerCase();
-      });
-      if (matching.length > 0) {
-        entries.push({ version: release.version, date: release.date, changes: matching });
-      }
-    });
-
-    if (entries.length === 0) {
+    fetch('./uds/components/' + pageId + '/changelog.json').then(function (r) {
+      if (!r.ok) throw new Error('No changelog');
+      return r.json();
+    }).then(function (data) {
+      _renderComponentChangelogEntries(panel, data.entries || [], pageId);
+    }).catch(function () {
       panel.innerHTML = '<p class="sg-changelog-empty">No changes recorded yet. This component was introduced in the initial release.</p>';
+    });
+}
+
+function _renderComponentChangelogEntries(panel, allEntries, pageId) {
+    if (!allEntries.length) {
+      panel.innerHTML = '<p class="sg-changelog-empty">No changes recorded yet.</p>';
       return;
     }
 
+    // Group entries by version (newest version first for display)
+    var byVersion = {};
+    allEntries.forEach(function (e) {
+      if (!byVersion[e.version]) byVersion[e.version] = [];
+      byVersion[e.version].push({ type: e.type, text: e.text });
+    });
+
+    // Sort versions descending (newest first)
+    var versions = Object.keys(byVersion).sort(function (a, b) {
+      var pa = a.split(/[.\-]/).map(function (x) { return /^\d+$/.test(x) ? parseInt(x, 10) : 0; });
+      var pb = b.split(/[.\-]/).map(function (x) { return /^\d+$/.test(x) ? parseInt(x, 10) : 0; });
+      for (var i = 0; i < Math.max(pa.length, pb.length); i++) {
+        if ((pa[i] || 0) !== (pb[i] || 0)) return (pb[i] || 0) - (pa[i] || 0);
+      }
+      return 0;
+    });
+
+    var entries = versions.map(function (v) {
+      return { version: v, date: '', changes: byVersion[v] };
+    });
+
     panel.innerHTML = '';
-    entries.reverse().forEach(function (release) {
+    entries.forEach(function (release) {
       var section = document.createElement('div');
       section.className = 'sg-cl-version';
 
       var header = document.createElement('div');
       header.className = 'sg-cl-header';
       header.innerHTML = '<span class="sg-cl-ver-num" style="font-size:22px;">' + release.version + '</span>' +
-        '<span class="sg-cl-ver-date">' + release.date + '</span>';
+        '<span class="sg-cl-ver-date">' + (release.date || '') + '</span>';
       section.appendChild(header);
 
-      release.changes.forEach(function (c) {
-        var item = document.createElement('div');
-        item.className = 'sg-cl-item' + (c.type === 'deprecated' || c.type === 'removed' ? ' sg-cl-item--' + c.type : '');
-        var typeLabel = '<span class="udc-badge sg-cl-component" data-variant="secondary" data-prominent="true" data-size="sm">' + c.type + '</span>';
-        item.innerHTML = typeLabel + c.text;
-        section.appendChild(item);
+      var typeOrder = ['added', 'changed', 'fixed', 'deprecated', 'removed'];
+      typeOrder.forEach(function (type) {
+        var ofType = release.changes.filter(function (c) { return c.type === type; });
+        if (ofType.length) renderChangeItems(section, ofType, type);
       });
 
       panel.appendChild(section);
     });
 }
+
+// Legacy implementation preserved during migration; not called.
 
 var FIGMA_LINKS = {
     button:         '5055-139',
@@ -4522,21 +4532,35 @@ function renderExampleOnlyBanners() {
     });
 }
 
-// Extract per-component changelog entries from the global CHANGELOG array.
+// Phase 8: read per-component changelog from the warm cache populated by
+// preloadComponentChangelog. Returns [{version, date, changes:[{type, text}]}]
+// in newest-first order. Returns [] if the cache hasn't loaded yet — caller
+// should be tolerant (the header panel just doesn't render until a re-render
+// fires after the cache warms).
 function collectComponentChangelog(componentId) {
-    if (typeof CHANGELOG === 'undefined') return [];
-    var out = [];
-    CHANGELOG.slice().forEach(function (release) {
-      var matches = (release.changes || []).filter(function (c) {
-        return c.category === 'components' && c.component &&
-               c.component.toLowerCase().replace(/\s+/g, '-') === componentId;
-      });
-      if (matches.length) {
-        out.push({ version: release.version, date: release.date, changes: matches });
-      }
+    var data = _componentChangelogCache[componentId];
+    if (!data || !data.entries || !data.entries.length) return [];
+
+    // Group entries by version
+    var byVersion = {};
+    data.entries.forEach(function (e) {
+      if (!byVersion[e.version]) byVersion[e.version] = [];
+      byVersion[e.version].push({ type: e.type, text: e.text });
     });
-    // newest first
-    return out.slice().reverse();
+    // Sort versions newest-first
+    var versions = Object.keys(byVersion).sort(function (a, b) {
+      var pa = a.split(/[.\-]/).map(function (x) { return /^\d+$/.test(x) ? parseInt(x, 10) : 0; });
+      var pb = b.split(/[.\-]/).map(function (x) { return /^\d+$/.test(x) ? parseInt(x, 10) : 0; });
+      for (var i = 0; i < Math.max(pa.length, pb.length); i++) {
+        if ((pa[i] || 0) !== (pb[i] || 0)) return (pb[i] || 0) - (pa[i] || 0);
+      }
+      return 0;
+    });
+    return versions.map(function (v) {
+      // Date intentionally empty — not stored per-entry. The "Last updated"
+      // panel falls back to just version when date is missing.
+      return { version: v, date: '', changes: byVersion[v] };
+    });
 }
 
 function initVersionDropdown() {
