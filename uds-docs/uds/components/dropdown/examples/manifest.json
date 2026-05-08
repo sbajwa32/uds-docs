@@ -21,6 +21,14 @@
       "label": "Disabled",
       "showInDocs": true,
       "demoWeight": 1
+    },
+    {
+      "id": "rich",
+      "file": "rich.html",
+      "label": "Rich (leading icon, helper, counter, required)",
+      "description": "Demonstrates udc-dropdown__leading-icon, udc-dropdown__helper, udc-dropdown__counter, and udc-dropdown__required — the four subparts that were missing from Demo Builder coverage.",
+      "showInDocs": true,
+      "demoWeight": 3
     }
   ]
 }
