@@ -19,6 +19,10 @@
 # Node (if any)
 node_modules/
 
+# Python bytecode (from migration scripts)
+__pycache__/
+*.pyc
+
 # Agent transcripts
 agent-transcripts/
 

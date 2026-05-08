@@ -1,0 +1,46 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "UDS Component Examples Manifest",
+  "description": "Declares the example HTML files for a component, what shows in docs, and what's eligible for the Demo Builder. Lives at uds/components/<id>/examples/manifest.json.",
+  "type": "object",
+  "required": ["examples"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "examples": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "file"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Stable identifier for this example, used as the IMPL_DATA reference target and for linking."
+          },
+          "file": {
+            "type": "string",
+            "description": "Path to the HTML fragment, relative to this manifest. e.g. 'default.html'."
+          },
+          "label": {
+            "type": "string",
+            "description": "Human-readable heading shown above the example on the docs page."
+          },
+          "description": {
+            "type": "string",
+            "description": "Optional caption shown below the heading."
+          },
+          "showInDocs": {
+            "type": "boolean",
+            "default": true,
+            "description": "Whether this example renders on the component's docs page Examples tab."
+          },
+          "demoWeight": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0,
+            "description": "Demo Builder picks weighted-randomly among entries with demoWeight > 0. 0 excludes from Demo Builder."
+          }
+        }
+      }
+    }
+  }
+}
