@@ -1,0 +1,46 @@
+{
+  "$schema": "../../schemas/impl.schema.json",
+  "jsFunc": "initTextInput",
+  "jsFile": "uds/components/text-input/text-input.js",
+  "tokens": {
+    "Color": [
+      "--uds-color-surface-main",
+      "--uds-color-surface-white",
+      "--uds-color-surface-interactive-none",
+      "--uds-color-surface-interactive-disabled",
+      "--uds-color-surface-interactive-subtle-hover",
+      "--uds-color-surface-interactive-subtle-active",
+      "--uds-color-text-primary",
+      "--uds-color-text-secondary",
+      "--uds-color-text-disabled",
+      "--uds-color-text-disabled-bold",
+      "--uds-color-text-error",
+      "--uds-color-border-primary",
+      "--uds-color-border-error",
+      "--uds-color-border-outline-focus-visible",
+      "--uds-color-icon-secondary",
+      "--uds-color-icon-error"
+    ],
+    "Font": [
+      "--uds-font-family",
+      "--uds-font-size-xs",
+      "--uds-font-size-sm",
+      "--uds-font-size-base",
+      "--uds-font-line-height-xs",
+      "--uds-font-line-height-sm",
+      "--uds-font-line-height-base",
+      "--uds-font-weight-regular",
+      "--uds-font-weight-medium",
+      "--uds-font-weight-bold"
+    ],
+    "Space": [
+      "--uds-space-050",
+      "--uds-space-075",
+      "--uds-space-100"
+    ],
+    "Border": [
+      "--uds-border-radius-input"
+    ]
+  },
+  "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\" />\n  <link href=\"https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined\" rel=\"stylesheet\" />\n  <link rel=\"stylesheet\" href=\"uds/uds.css\" />\n</head>\n<body>\n\n  <div class=\"udc-text-input\">\n    <label class=\"udc-text-input__label\">Email address</label>\n    <div class=\"udc-text-input__field\">\n      <input type=\"email\" placeholder=\"you@example.com\" required />\n    </div>\n    <div class=\"udc-text-input__helper\">\n      <span>We'll never share your email</span>\n    </div>\n  </div>\n\n  <script src=\"uds/uds.js\"></script>\n</body>\n</html>"
+}

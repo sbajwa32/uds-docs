@@ -1295,8 +1295,13 @@ function initPlayground(pageId) {
     cfg._update = update;
     update();
 
-    var implSection = buildImplSection(pageId);
-    if (implSection) right.appendChild(implSection);
+    // Phase 13: impl.json is fetched on-demand. The cache means subsequent
+    // playground inits for the same component are synchronous.
+    loadImplData(pageId).then(function (data) {
+      if (!data) return;
+      var implSection = buildImplSection(pageId);
+      if (implSection) right.appendChild(implSection);
+    });
 
     playgroundInited[pageId] = true;
 }
@@ -2725,479 +2730,22 @@ const PLAYGROUNDS = {
     }
 };
 
-/* ========================================================================
-     6b. IMPLEMENTATION REFERENCE DATA
-     ======================================================================== */
-var IMPL_DATA = {
-    button: {
-      jsFunc: null,
-      tokens: {
-        'Color': [
-          '--uds-color-surface-interactive-default','--uds-color-surface-interactive-hover',
-          '--uds-color-surface-interactive-active','--uds-color-surface-interactive-disabled',
-          '--uds-color-surface-interactive-none','--uds-color-surface-interactive-subtle-hover',
-          '--uds-color-surface-interactive-subtle-active',
-          '--uds-color-surface-interactive-red','--uds-color-surface-interactive-red-hover',
-          '--uds-color-surface-interactive-red-active','--uds-color-surface-interactive-red-subtle-hover',
-          '--uds-color-surface-interactive-red-subtle-active','--uds-color-surface-white',
-          '--uds-color-text-inverse','--uds-color-text-brand','--uds-color-text-disabled-bold',
-          '--uds-color-text-error',
-          '--uds-color-border-interactive','--uds-color-border-error',
-          '--uds-color-border-outline-focus-visible'
-        ],
-        'Font': ['--uds-font-family','--uds-font-size-base','--uds-font-line-height-base','--uds-font-weight-medium'],
-        'Space': ['--uds-space-075','--uds-space-100','--uds-space-150','--uds-space-200'],
-        'Border': ['--uds-border-radius-input']
-      },
-      html: function () {
-        return '<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8" />\n  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />\n  <link rel="stylesheet" href="uds/uds.css" />\n</head>\n<body>\n\n  <!-- Primary -->\n  <button class="udc-button-primary">Save changes</button>\n\n  <!-- Secondary -->\n  <button class="udc-button-secondary">Cancel</button>\n\n  <!-- Ghost -->\n  <button class="udc-button-ghost">Learn more</button>\n\n  <!-- With leading icon -->\n  <button class="udc-button-primary" data-leading-icon>\n    <span class="material-symbols-outlined">add</span>\n    New item\n  </button>\n\n  <!-- Icon only -->\n  <button class="udc-button-ghost" data-icon-only aria-label="More actions">\n    <span class="material-symbols-outlined">more_vert</span>\n  </button>\n\n  <!-- Small + destructive -->\n  <div data-btn-color="danger">\n    <button class="udc-button-primary" data-size="sm">Delete</button>\n  </div>\n\n</body>\n</html>';
-      },
-    },
-
-    'text-input': {
-      jsFunc: 'initTextInput',
-      tokens: {
-        'Color': [
-          '--uds-color-surface-main','--uds-color-surface-white',
-          '--uds-color-surface-interactive-none','--uds-color-surface-interactive-disabled',
-          '--uds-color-surface-interactive-subtle-hover','--uds-color-surface-interactive-subtle-active',
-          '--uds-color-text-primary','--uds-color-text-secondary','--uds-color-text-disabled',
-          '--uds-color-text-disabled-bold','--uds-color-text-error',
-          '--uds-color-border-primary','--uds-color-border-error',
-          '--uds-color-border-outline-focus-visible',
-          '--uds-color-icon-secondary','--uds-color-icon-error'
-        ],
-        'Font': [
-          '--uds-font-family','--uds-font-size-xs','--uds-font-size-sm','--uds-font-size-base',
-          '--uds-font-line-height-xs','--uds-font-line-height-sm','--uds-font-line-height-base',
-          '--uds-font-weight-regular','--uds-font-weight-medium','--uds-font-weight-bold'
-        ],
-        'Space': ['--uds-space-050','--uds-space-075','--uds-space-100'],
-        'Border': ['--uds-border-radius-input']
-      },
-      html: function () {
-        return '<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8" />\n  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />\n  <link rel="stylesheet" href="uds/uds.css" />\n</head>\n<body>\n\n  <div class="udc-text-input">\n    <label class="udc-text-input__label">Email address</label>\n    <div class="udc-text-input__field">\n      <input type="email" placeholder="you@example.com" required />\n    </div>\n    <div class="udc-text-input__helper">\n      <span>We\'ll never share your email</span>\n    </div>\n  </div>\n\n  <script src="uds/uds.js"><\/script>\n</body>\n</html>';
-      },
-    },
-
-    dropdown: {
-      jsFunc: 'initDropdown',
-      tokens: {
-        'Color': [
-          '--uds-color-surface-interactive-neutral','--uds-color-surface-interactive-none',
-          '--uds-color-surface-interactive-disabled',
-          '--uds-color-surface-interactive-subtle-hover','--uds-color-surface-interactive-subtle-active',
-          '--uds-color-surface-white',
-          '--uds-color-text-primary','--uds-color-text-secondary','--uds-color-text-interactive',
-          '--uds-color-text-disabled-bold','--uds-color-text-error',
-          '--uds-color-icon-interactive','--uds-color-icon-error','--uds-color-icon-disabled',
-          '--uds-color-border-primary','--uds-color-border-interactive',
-          '--uds-color-border-error','--uds-color-border-disabled',
-          '--uds-color-border-outline-focus-visible'
-        ],
-        'Font': [
-          '--uds-font-family','--uds-font-size-xs','--uds-font-size-sm','--uds-font-size-base',
-          '--uds-font-line-height-xs','--uds-font-line-height-sm','--uds-font-line-height-base',
-          '--uds-font-weight-regular','--uds-font-weight-medium','--uds-font-weight-bold'
-        ],
-        'Space': ['--uds-space-050','--uds-space-100','--uds-space-150','--uds-space-200'],
-        'Border': ['--uds-border-radius-input']
-      },
-      html: function () {
-        return '<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8" />\n  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />\n  <link rel="stylesheet" href="uds/uds.css" />\n</head>\n<body>\n\n  <div class="udc-dropdown">\n    <label class="udc-dropdown__label">Favourite fruit</label>\n    <div class="udc-dropdown__trigger" tabindex="0" role="combobox"\n         aria-expanded="false" aria-haspopup="listbox">\n      <span class="udc-dropdown__leading-icon">\n        <span class="material-symbols-outlined">add_circle_outline</span>\n      </span>\n      <span class="udc-dropdown__value" data-placeholder>Choose...</span>\n      <span class="udc-dropdown__chevron">\n        <span class="material-symbols-outlined">keyboard_arrow_down</span>\n      </span>\n    </div>\n    <div class="udc-dropdown__helper"><span>Pick one fruit</span></div>\n    <div class="udc-dropdown__list" role="listbox">\n      <div class="udc-dropdown__item" role="option">Apple</div>\n      <div class="udc-dropdown__item" role="option">Banana</div>\n      <div class="udc-dropdown__item" role="option">Cherry</div>\n    </div>\n  </div>\n\n  <script src="uds/uds.js"><\/script>\n</body>\n</html>';
-      },
-    },
-
-    checkbox: {
-      jsFunc: 'initCheckbox',
-      tokens: {
-        'Color': [
-          '--uds-color-surface-interactive-default','--uds-color-surface-interactive-disabled',
-          '--uds-color-surface-interactive-red-subtle',
-          '--uds-color-text-primary','--uds-color-text-disabled','--uds-color-text-error',
-          '--uds-color-icon-inverse','--uds-color-icon-error',
-          '--uds-color-border-primary','--uds-color-border-disabled','--uds-color-border-error',
-          '--uds-color-border-interactive','--uds-color-border-outline-focus-visible'
-        ],
-        'Font': ['--uds-font-family','--uds-font-size-base','--uds-font-line-height-base','--uds-font-weight-medium','--uds-font-weight-bold'],
-        'Space': ['--uds-space-100']
-      },
-      html: function () {
-        return '<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8" />\n  <link rel="stylesheet" href="uds/uds.css" />\n</head>\n<body>\n\n  <label class="udc-checkbox">\n    <input type="checkbox" />\n    <span class="udc-checkbox__control"></span>\n    <span class="udc-checkbox__label">Accept terms</span>\n  </label>\n\n  <!-- Required -->\n  <label class="udc-checkbox" data-required="true">\n    <input type="checkbox" required />\n    <span class="udc-checkbox__control"></span>\n    <span class="udc-checkbox__label">I agree</span>\n    <span class="udc-checkbox__required"></span>\n  </label>\n\n  <script src="uds/uds.js"><\/script>\n</body>\n</html>';
-      },
-    },
-
-    radio: {
-      jsFunc: null,
-      tokens: {
-        'Color': [
-          '--uds-color-text-primary','--uds-color-text-disabled','--uds-color-text-error',
-          '--uds-color-text-interactive',
-          '--uds-color-icon-error','--uds-color-icon-interactive',
-          '--uds-color-border-primary','--uds-color-border-disabled','--uds-color-border-error',
-          '--uds-color-border-interactive','--uds-color-border-outline-focus-visible'
-        ],
-        'Font': ['--uds-font-family','--uds-font-size-sm','--uds-font-size-base','--uds-font-line-height-sm','--uds-font-line-height-base','--uds-font-weight-medium','--uds-font-weight-bold'],
-        'Space': ['--uds-space-050','--uds-space-100']
-      },
-      html: function () {
-        return '<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8" />\n  <link rel="stylesheet" href="uds/uds.css" />\n</head>\n<body>\n\n  <fieldset class="udc-radio-group">\n    <legend class="udc-radio-group__legend">Preferred contact</legend>\n    <label class="udc-radio">\n      <input type="radio" name="contact" value="email" checked />\n      <span class="udc-radio__control"></span>\n      <span class="udc-radio__label">Email</span>\n    </label>\n    <label class="udc-radio">\n      <input type="radio" name="contact" value="phone" />\n      <span class="udc-radio__control"></span>\n      <span class="udc-radio__label">Phone</span>\n    </label>\n    <label class="udc-radio">\n      <input type="radio" name="contact" value="sms" />\n      <span class="udc-radio__control"></span>\n      <span class="udc-radio__label">SMS</span>\n    </label>\n  </fieldset>\n\n</body>\n</html>';
-      },
-    },
-
-    badge: {
-      jsFunc: null,
-      tokens: {
-        'Color': [
-          '--uds-color-surface-alt','--uds-color-surface-bold',
-          '--uds-color-surface-info','--uds-color-surface-info-subtle',
-          '--uds-color-surface-success','--uds-color-surface-success-subtle',
-          '--uds-color-surface-error','--uds-color-surface-error-subtle',
-          '--uds-color-surface-warning','--uds-color-surface-warning-subtle',
-          '--uds-color-text-inverse','--uds-color-text-secondary',
-          '--uds-color-text-info','--uds-color-text-success','--uds-color-text-error','--uds-color-text-warning'
-        ],
-        'Font': ['--uds-font-family','--uds-font-size-xs','--uds-font-size-base','--uds-font-line-height-sm','--uds-font-line-height-base','--uds-font-weight-regular'],
-        'Space': ['--uds-space-025','--uds-space-050','--uds-space-100'],
-        'Border': ['--uds-border-radius-container-sm']
-      },
-      html: function () {
-        return '<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8" />\n  <link rel="stylesheet" href="uds/uds.css" />\n</head>\n<body>\n\n  <span class="udc-badge">Default</span>\n  <span class="udc-badge" data-variant="success">Active</span>\n  <span class="udc-badge" data-variant="error">Failed</span>\n  <span class="udc-badge" data-variant="warning">Pending</span>\n  <span class="udc-badge" data-variant="secondary">Draft</span>\n\n  <!-- Subtle / tinted -->\n  <span class="udc-badge" data-prominent="false">Info</span>\n  <span class="udc-badge" data-variant="success" data-prominent="false">Active</span>\n\n  <!-- Small -->\n  <span class="udc-badge" data-size="sm">Sm</span>\n\n</body>\n</html>';
-      },
-    },
-
-    breadcrumb: {
-      jsFunc: null,
-      tokens: {
-        'Color': [
-          '--uds-color-surface-main','--uds-color-text-primary','--uds-color-text-interactive-neutral',
-          '--uds-color-icon-secondary','--uds-color-border-tertiary'
-        ],
-        'Font': ['--uds-font-family','--uds-font-size-base','--uds-font-line-height-base','--uds-font-weight-regular','--uds-font-weight-bold'],
-        'Space': ['--uds-space-150','--uds-space-200','--uds-space-300'],
-        'Border': ['--uds-border-radius-container-xl']
-      },
-      html: function () {
-        return '<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8" />\n  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />\n  <link rel="stylesheet" href="uds/uds.css" />\n</head>\n<body>\n\n  <nav class="udc-breadcrumb" aria-label="Breadcrumb">\n    <ol>\n      <li><a href="/">Home</a></li>\n      <li><a href="/products">Products</a></li>\n      <li><a href="/products/widgets" aria-current="page">Widgets</a></li>\n    </ol>\n  </nav>\n\n  <!-- Frameless variant -->\n  <nav class="udc-breadcrumb" data-frameless aria-label="Breadcrumb">\n    <ol>\n      <li><a href="/">Home</a></li>\n      <li><a href="/settings" aria-current="page">Settings</a></li>\n    </ol>\n  </nav>\n\n</body>\n</html>';
-      },
-    },
-
-    tabs: {
-      jsFunc: 'initTabs',
-      tokens: {
-        'Color': [
-          '--uds-color-text-primary','--uds-color-text-disabled','--uds-color-text-interactive',
-          '--uds-color-surface-interactive-subtle-hover',
-          '--uds-color-border-primary','--uds-color-border-disabled','--uds-color-border-interactive',
-          '--uds-color-border-interactive-hover','--uds-color-border-outline-focus-visible'
-        ],
-        'Font': ['--uds-font-family','--uds-font-size-base','--uds-font-line-height-base','--uds-font-weight-medium'],
-        'Space': ['--uds-space-100','--uds-space-200','--uds-space-300']
-      },
-      html: function () {
-        return '<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8" />\n  <link rel="stylesheet" href="uds/uds.css" />\n</head>\n<body>\n\n  <div class="udc-tabs" role="tablist">\n    <button class="udc-tab" role="tab" aria-selected="true" aria-controls="panel-1" id="tab-1">Overview</button>\n    <button class="udc-tab" role="tab" aria-selected="false" aria-controls="panel-2" id="tab-2">Details</button>\n    <button class="udc-tab" role="tab" aria-selected="false" aria-controls="panel-3" id="tab-3" disabled>Disabled</button>\n  </div>\n\n  <div id="panel-1" role="tabpanel" aria-labelledby="tab-1">Overview content</div>\n  <div id="panel-2" role="tabpanel" aria-labelledby="tab-2" hidden>Details content</div>\n  <div id="panel-3" role="tabpanel" aria-labelledby="tab-3" hidden>Disabled content</div>\n\n  <script src="uds/uds.js"><\/script>\n</body>\n</html>';
-      },
-    },
-
-    divider: {
-      jsFunc: null,
-      tokens: {
-        'Color': ['--uds-color-border-tertiary'],
-        'Space': ['--uds-space-050','--uds-space-100','--uds-space-150','--uds-space-200'],
-        'Border': ['--uds-border-radius-full']
-      },
-      html: function () {
-        return '<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8" />\n  <link rel="stylesheet" href="uds/uds.css" />\n</head>\n<body>\n\n  <p>Content above</p>\n  <hr class="udc-divider-horizontal" />\n  <p>Content below</p>\n\n  <!-- With padding variants -->\n  <hr class="udc-divider-horizontal" data-padding="md" />\n  <hr class="udc-divider-horizontal" data-padding="lg" />\n  <hr class="udc-divider-horizontal" data-padding="xl" />\n\n</body>\n</html>';
-      },
-    },
-
-    'icon-wrapper': {
-      jsFunc: null,
-      tokens: {},
-      html: function () {
-        return '<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8" />\n  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />\n  <link rel="stylesheet" href="uds/uds.css" />\n</head>\n<body>\n\n  <span class="udc-icon-wrapper" data-size="16"><span class="material-symbols-outlined">info</span></span>\n  <span class="udc-icon-wrapper" data-size="24"><span class="material-symbols-outlined">info</span></span>\n  <span class="udc-icon-wrapper" data-size="48"><span class="material-symbols-outlined">info</span></span>\n\n</body>\n</html>';
-      },
-    },
-
-    spacer: {
-      jsFunc: null,
-      tokens: {
-        'Space': ['--uds-space-050','--uds-space-100','--uds-space-150','--uds-space-200','--uds-space-300','--uds-space-400','--uds-space-500','--uds-space-600']
-      },
-      html: function () {
-        return '<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8" />\n  <link rel="stylesheet" href="uds/uds.css" />\n</head>\n<body>\n\n  <div style="display:flex; flex-direction:column;">\n    <p>First section</p>\n    <div class="udc-spacer" data-size="200"></div>\n    <p>Second section</p>\n    <div class="udc-spacer" data-size="400"></div>\n    <p>Third section</p>\n  </div>\n\n</body>\n</html>';
-      },
-    },
-
-    'nav-header': {
-      jsFunc: 'initNavBento',
-      tokens: {
-        'Surface': [
-          '--uds-color-surface-main','--uds-color-surface-interactive-subtle-hover',
-          '--uds-color-surface-interactive-active','--uds-color-surface-interactive-hover',
-          '--uds-color-surface-page'
-        ],
-        'Text': [
-          '--uds-color-text-primary','--uds-color-text-inverse','--uds-color-text-secondary',
-          '--uds-color-text-interactive'
-        ],
-        'Icon': [
-          '--uds-color-icon-secondary','--uds-color-icon-interactive'
-        ],
-        'Border': [
-          '--uds-color-border-secondary',
-          '--uds-border-radius-container-full','--uds-border-radius-container-lg',
-          '--uds-border-radius-container-xl','--uds-border-radius-input'
-        ],
-        'Space': [
-          '--uds-space-025','--uds-space-050','--uds-space-075','--uds-space-100',
-          '--uds-space-150','--uds-space-200','--uds-space-250','--uds-space-300'
-        ],
-        'Font': [
-          '--uds-font-family','--uds-font-size-base','--uds-font-line-height-base',
-          '--uds-font-weight-medium','--uds-font-weight-bold'
-        ]
-      },
-      html: function () {
-        return '<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8" />\n  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />\n  <link rel="stylesheet" href="uds/uds.css" />\n</head>\n<body>\n\n  <div class="udc-nav-header">\n    <div class="udc-nav-header__left">\n      <div class="udc-nav-logo"><span class="material-symbols-outlined" style="font-size:32px;">apartment</span></div>\n      <div class="udc-nav-bento-wrapper">\n        <button class="udc-nav-bento-button" aria-expanded="false">\n          <span class="material-symbols-outlined">dashboard</span>\n          Boardroom\n          <span class="material-symbols-outlined udc-nav-bento-button__chevron">keyboard_arrow_down</span>\n        </button>\n        <div class="udc-nav-bento" data-open="false">\n          <div class="udc-nav-bento__list">\n            <button class="udc-nav-button" aria-selected="true"><span class="material-symbols-outlined">space_dashboard</span><span class="udc-nav-button__label">Dashboard</span></button>\n            <button class="udc-nav-button"><span class="material-symbols-outlined">book</span><span class="udc-nav-button__label">Leasing / CRM</span></button>\n          </div>\n        </div>\n      </div>\n    </div>\n    <div class="udc-nav-header__center">\n      <div class="udc-nav-search">\n        <span class="material-symbols-outlined">auto_awesome</span>\n        <input class="udc-nav-search__input" type="text" placeholder="Search or ask a question">\n      </div>\n    </div>\n    <div class="udc-nav-header__right">\n      <div class="udc-nav-account">\n        <button class="udc-button-ghost" data-icon-only><span class="material-symbols-outlined">notifications</span></button>\n        <button class="udc-button-ghost" data-icon-only><span class="material-symbols-outlined">settings</span></button>\n        <button class="udc-button-ghost" data-icon-only><span class="material-symbols-outlined">account_circle</span></button>\n      </div>\n    </div>\n  </div>\n\n  <script src="uds/uds.js"><\/script>\n</body>\n</html>';
-      },
-    },
-
-    'data-table': {
-      jsFunc: 'initDataTable',
-      tokens: {
-        'Surface': [
-          '--uds-color-surface-alt','--uds-color-surface-interactive-none',
-          '--uds-color-surface-interactive-subtle-hover','--uds-color-surface-info-subtle',
-          '--uds-color-surface-interactive-red-subtle'
-        ],
-        'Text': ['--uds-color-text-primary'],
-        'Icon': ['--uds-color-icon-secondary','--uds-color-icon-interactive'],
-        'Border': ['--uds-color-border-secondary','--uds-border-radius-container-sm'],
-        'Space': ['--uds-space-075','--uds-space-100','--uds-space-200'],
-        'Font': [
-          '--uds-font-family','--uds-font-size-base','--uds-font-weight-bold',
-          '--uds-font-weight-regular','--uds-font-line-height-base'
-        ]
-      },
-      html: function () {
-        return '<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8" />\n  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />\n  <link rel="stylesheet" href="uds/uds.css" />\n</head>\n<body>\n\n  <div class="udc-data-table">\n    <table>\n      <thead>\n        <tr>\n          <th class="udc-dt-check"><input type="checkbox" /></th>\n          <th>Name <span class="udc-dt-sort"></span></th>\n          <th>Status</th>\n          <th class="udc-dt-align-right">Amount</th>\n          <th class="udc-dt-action"></th>\n        </tr>\n      </thead>\n      <tbody>\n        <tr>\n          <td class="udc-dt-check"><input type="checkbox" /></td>\n          <td>Brian Smith</td>\n          <td><span class="udc-badge" data-variant="success">Delivered</span></td>\n          <td class="udc-dt-align-right">$75</td>\n          <td class="udc-dt-action"><button class="udc-button-ghost" data-icon-only><span class="material-symbols-outlined">more_vert</span></button></td>\n        </tr>\n      </tbody>\n    </table>\n  </div>\n\n  <script src="uds/uds.js"><\/script>\n</body>\n</html>';
-      },
-    },
-    'tile': {
-      jsFunc: 'initTile',
-      tokens: {
-        'Surface': [
-          '--uds-color-surface-main','--uds-color-surface-interactive-subtle',
-          '--uds-color-surface-info-subtle'
-        ],
-        'Text': ['--uds-color-text-primary','--uds-color-text-error'],
-        'Icon': ['--uds-color-icon-secondary'],
-        'Border': [
-          '--uds-color-border-primary','--uds-color-border-interactive','--uds-color-border-disabled',
-          '--uds-color-border-outline-focus-visible','--uds-border-radius-input'
-        ],
-        'Space': ['--uds-space-050','--uds-space-100','--uds-space-200'],
-        'Font': [
-          '--uds-font-family','--uds-font-size-base','--uds-font-weight-bold',
-          '--uds-font-weight-regular','--uds-font-line-height-base'
-        ]
-      },
-      html: function () {
-        return '<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8" />\n  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />\n  <link rel="stylesheet" href="uds/uds.css" />\n</head>\n<body>\n\n  <div class="udc-tile" tabindex="0">\n    <div class="udc-tile__content">\n      <div class="udc-tile__label">Upload CSV<span class="udc-tile__required"></span></div>\n      <div class="udc-tile__body">Import residents from a spreadsheet</div>\n    </div>\n    <span class="udc-tile__chevron">\n      <span class="material-symbols-outlined">chevron_right</span>\n    </span>\n  </div>\n\n  <script src="uds/uds.js"><\/script>\n</body>\n</html>';
-      },
-    },
-    'list': {
-      jsFunc: 'initList',
-      tokens: {
-        'Surface': [
-          '--uds-color-surface-interactive-none','--uds-color-surface-interactive-subtle',
-          '--uds-color-surface-interactive-subtle-hover','--uds-color-surface-interactive-subtle-active',
-          '--uds-color-surface-interactive-active'
-        ],
-        'Text': ['--uds-color-text-primary','--uds-color-text-inverse'],
-        'Icon': ['--uds-color-icon-primary','--uds-color-icon-inverse'],
-        'Border': [
-          '--uds-color-border-outline-focus-visible','--uds-border-radius-input'
-        ],
-        'Space': ['--uds-space-100','--uds-space-150','--uds-space-200'],
-        'Font': [
-          '--uds-font-family','--uds-font-size-base','--uds-font-weight-medium',
-          '--uds-font-line-height-base'
-        ]
-      },
-      html: function () {
-        return '<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8" />\n  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />\n  <link rel="stylesheet" href="uds/uds.css" />\n</head>\n<body>\n\n  <div class="udc-list">\n    <div class="udc-list-item" tabindex="0" aria-selected="true">\n      <span class="udc-list-item__label">Dashboard</span>\n    </div>\n    <div class="udc-list-item" tabindex="0">\n      <span class="udc-list-item__label">Leasing / CRM</span>\n    </div>\n    <div class="udc-list-item" tabindex="0">\n      <span class="udc-list-item__leading-icon"><span class="material-symbols-outlined">add_circle_outline</span></span>\n      <span class="udc-list-item__label">Add new</span>\n    </div>\n  </div>\n\n  <script src="uds/uds.js"><\/script>\n</body>\n</html>';
-      },
-    },
-    'notification': {
-      jsFunc: 'initNotification',
-      tokens: {
-        'Surface': [
-          '--uds-color-surface-info-subtle','--uds-color-surface-info',
-          '--uds-color-surface-success-subtle','--uds-color-surface-success',
-          '--uds-color-surface-error-subtle','--uds-color-surface-error',
-          '--uds-color-surface-warning-subtle','--uds-color-surface-warning'
-        ],
-        'Text': [
-          '--uds-color-text-info','--uds-color-text-success','--uds-color-text-error',
-          '--uds-color-text-warning','--uds-color-text-inverse'
-        ],
-        'Icon': [
-          '--uds-color-icon-info','--uds-color-icon-success','--uds-color-icon-error',
-          '--uds-color-icon-warning'
-        ],
-        'Border': ['--uds-border-radius-container-sm'],
-        'Space': ['--uds-space-100','--uds-space-150','--uds-space-200'],
-        'Font': ['--uds-font-family','--uds-font-size-base','--uds-font-weight-medium','--uds-font-line-height-base']
-      },
-      html: function () {
-        return '<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8" />\n  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />\n  <link rel="stylesheet" href="uds/uds.css" />\n</head>\n<body>\n\n  <div class="udc-notification" data-variant="info">\n    <span class="udc-notification__icon"><span class="material-symbols-outlined">info</span></span>\n    <span class="udc-notification__text">Informational message</span>\n  </div>\n\n  <div class="udc-notification" data-variant="success" data-prominent="true">\n    <span class="udc-notification__icon"><span class="material-symbols-outlined">check_circle</span></span>\n    <span class="udc-notification__text">Success!</span>\n  </div>\n\n  <div class="udc-notification" data-variant="error" data-inline="true">\n    <span class="udc-notification__icon"><span class="material-symbols-outlined">error_outline</span></span>\n    <span class="udc-notification__text">Something went wrong</span>\n  </div>\n\n  <script src="uds/uds.js"><\/script>\n</body>\n</html>';
-      },
-    },
-    'dialog': {
-      jsFunc: 'initDialog',
-      tokens: {
-        'Surface': [
-          '--uds-color-surface-main','--uds-color-surface-subtle','--uds-color-surface-alt',
-          '--uds-color-surface-interactive-none','--uds-color-surface-interactive-subtle-hover'
-        ],
-        'Text': ['--uds-color-text-primary','--uds-color-text-inverse'],
-        'Icon': ['--uds-color-icon-secondary'],
-        'Border': [
-          '--uds-color-border-interactive','--uds-border-radius-container-xl','--uds-border-radius-input'
-        ],
-        'Space': ['--uds-space-075','--uds-space-100','--uds-space-200','--uds-space-300'],
-        'Font': ['--uds-font-family','--uds-font-size-xl','--uds-font-weight-bold','--uds-font-line-height-400'],
-        'Effect': ['elevation depth-500: 0 10px 20px 2px rgba(0,0,0,0.2)']
-      },
-      html: function () {
-        return '<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8" />\n  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />\n  <link rel="stylesheet" href="uds/uds.css" />\n</head>\n<body>\n\n  <button class="udc-button-primary" onclick="document.getElementById(\'my-dialog\').setAttribute(\'data-open\',\'true\');UDS.init();">Open Dialog</button>\n\n  <div class="udc-dialog-backdrop" id="my-dialog" data-open="false">\n    <div class="udc-dialog" role="dialog" aria-modal="true" aria-labelledby="dlg-title">\n      <div class="udc-dialog__header">\n        <h2 class="udc-dialog__title" id="dlg-title">Dialog title</h2>\n        <button class="udc-dialog__close" aria-label="Close">\n          <span class="material-symbols-outlined">close</span>\n        </button>\n      </div>\n      <div class="udc-dialog__body">\n        <p>Your content goes here.</p>\n      </div>\n      <div class="udc-dialog__footer">\n        <button class="udc-button-secondary">Cancel</button>\n        <button class="udc-button-primary">Confirm</button>\n      </div>\n    </div>\n  </div>\n\n  <script src="uds/uds.js"><\/script>\n</body>\n</html>';
-      },
-    },
-    'nav-vertical': {
-      jsFunc: 'initNavVertical',
-      tokens: {
-        'Surface': [
-          '--uds-color-surface-interactive-none','--uds-color-surface-interactive-subtle-hover',
-          '--uds-color-surface-interactive-subtle-active','--uds-color-surface-interactive-active',
-          '--uds-color-surface-interactive-default'
-        ],
-        'Text': [
-          '--uds-color-text-primary','--uds-color-text-inverse','--uds-color-text-interactive',
-          '--uds-color-text-interactive-hover','--uds-color-text-disabled'
-        ],
-        'Icon': [
-          '--uds-color-icon-primary','--uds-color-icon-interactive','--uds-color-icon-inverse',
-          '--uds-color-icon-disabled'
-        ],
-        'Border': [
-          '--uds-color-border-outline-focus-visible','--uds-border-radius-input',
-          '--uds-border-radius-container-full'
-        ],
-        'Space': [
-          '--uds-space-075','--uds-space-100','--uds-space-150','--uds-space-200'
-        ],
-        'Font': [
-          '--uds-font-family','--uds-font-size-base','--uds-font-line-height-base',
-          '--uds-font-weight-medium'
-        ]
-      },
-      html: function () {
-        return '<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8" />\n  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />\n  <link rel="stylesheet" href="uds/uds.css" />\n</head>\n<body>\n\n  <nav class="udc-nav-vertical" aria-label="Main navigation">\n    <button class="udc-nav-button" aria-selected="true">\n      <span class="material-symbols-outlined">space_dashboard</span>\n      <span class="udc-nav-button__label">Dashboard</span>\n    </button>\n    <button class="udc-nav-button">\n      <span class="material-symbols-outlined">book</span>\n      <span class="udc-nav-button__label">Leasing / CRM</span>\n    </button>\n  </nav>\n\n  <!-- Without leading icons -->\n  <nav class="udc-nav-vertical" data-leading-icons="false">\n    <button class="udc-nav-button" aria-selected="true">\n      <span class="udc-nav-button__label">Dashboard</span>\n    </button>\n  </nav>\n\n  <script src="uds/uds.js"><\/script>\n</body>\n</html>';
-      },
-    },
-    'chip': {
-      jsFunc: 'initChip',
-      tokens: {
-        'Surface': ['--uds-color-surface-interactive-none','--uds-color-surface-interactive-subtle-hover','--uds-color-surface-interactive-subtle-active','--uds-color-surface-interactive-active','--uds-color-surface-interactive-hover','--uds-color-surface-main'],
-        'Text': ['--uds-color-text-primary','--uds-color-text-inverse'],
-        'Icon': ['--uds-color-icon-inverse'],
-        'Border': ['--uds-color-border-primary','--uds-color-border-outline-focus-visible','--uds-border-radius-container'],
-        'Space': ['--uds-space-050','--uds-space-100'],
-        'Font': ['--uds-font-family','--uds-font-size-base','--uds-font-size-lg','--uds-font-size-md','--uds-font-weight-regular','--uds-font-line-height-base']
-      },
-      html: function () { return '<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8" />\n  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />\n  <link rel="stylesheet" href="uds/uds.css" />\n</head>\n<body>\n\n  <button class="udc-chip" data-variant="filter">Chip</button>\n  <button class="udc-chip" data-variant="filter" aria-selected="true">\n    <span class="udc-chip__leading-icon"><span class="material-symbols-outlined">check</span></span>\n    <span class="udc-chip__label">Active</span>\n  </button>\n\n  <script src="uds/uds.js"><\/script>\n</body>\n</html>'; },
-    },
-    'search': {
-      jsFunc: 'initSearch',
-      tokens: {
-        'Surface': ['--uds-color-surface-main','--uds-color-surface-subtle','--uds-color-surface-interactive-none','--uds-color-surface-interactive-subtle-hover'],
-        'Text': ['--uds-color-text-primary','--uds-color-text-secondary'],
-        'Icon': ['--uds-color-icon-secondary'],
-        'Border': ['--uds-color-border-primary','--uds-color-border-outline-focus-visible','--uds-color-border-error','--uds-border-radius-input'],
-        'Space': ['--uds-space-025','--uds-space-050','--uds-space-075','--uds-space-100','--uds-space-600'],
-        'Font': ['--uds-font-family','--uds-font-size-base','--uds-font-size-2xl','--uds-font-weight-regular','--uds-font-line-height-base']
-      },
-      html: function () { return '<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8" />\n  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />\n  <link rel="stylesheet" href="uds/uds.css" />\n</head>\n<body>\n\n  <div class="udc-search">\n    <div class="udc-search__field">\n      <span class="udc-search__icon"><span class="material-symbols-outlined">search</span></span>\n      <input type="search" placeholder="Search..." />\n      <button class="udc-search__clear" aria-label="Clear"><span class="material-symbols-outlined">clear</span></button>\n    </div>\n  </div>\n\n  <script src="uds/uds.js"><\/script>\n</body>\n</html>'; },
-    },
-
-    link: {
-      jsFunc: null,
-      tokens: { 'Color': ['--uds-color-text-interactive','--uds-color-text-interactive-hover','--uds-color-text-interactive-active','--uds-color-text-disabled','--uds-color-border-outline-focus-visible'], 'Font': ['--uds-font-family','--uds-font-size-base','--uds-font-weight-medium'], 'Space': ['--uds-space-050'], 'Border': ['--uds-border-radius-container-sm'] },
-      html: function () { return '<!DOCTYPE html>\n<html lang="en">\n<head><meta charset="UTF-8" /><link rel="stylesheet" href="uds/uds.css" /></head>\n<body>\n  <a class="udc-link" href="#">View property</a>\n</body>\n</html>'; }
-    },
-    label: {
-      jsFunc: null,
-      tokens: { 'Color': ['--uds-color-text-primary','--uds-color-text-disabled','--uds-color-text-error','--uds-color-text-interactive','--uds-color-text-success','--uds-color-surface-error'], 'Font': ['--uds-font-family','--uds-font-size-xs','--uds-font-size-sm','--uds-font-weight-medium','--uds-font-weight-bold'], 'Space': ['--uds-space-050'] },
-      html: function () { return '<!DOCTYPE html>\n<html lang="en">\n<head><meta charset="UTF-8" /><link rel="stylesheet" href="uds/uds.css" /></head>\n<body>\n  <label class="udc-label" for="name">Full name <span class="udc-label__required" aria-hidden="true"></span></label>\n</body>\n</html>'; }
-    },
-    'text-area': {
-      jsFunc: null,
-      tokens: { 'Color': ['--uds-color-surface-main','--uds-color-text-primary','--uds-color-text-secondary','--uds-color-text-error','--uds-color-border-primary','--uds-color-border-error','--uds-color-border-outline-focus-visible'], 'Font': ['--uds-font-family','--uds-font-size-xs','--uds-font-size-base'], 'Space': ['--uds-space-075','--uds-space-100'], 'Border': ['--uds-border-radius-input'] },
-      html: function () { return '<!DOCTYPE html>\n<html lang="en">\n<head><meta charset="UTF-8" /><link rel="stylesheet" href="uds/uds.css" /></head>\n<body>\n  <div class="udc-text-area"><label class="udc-label" for="notes">Notes</label><div class="udc-text-area__field"><textarea id="notes"></textarea></div></div>\n</body>\n</html>'; }
-    },
-    toggle: {
-      jsFunc: null,
-      tokens: { 'Color': ['--uds-color-surface-interactive-default','--uds-color-surface-interactive-disabled','--uds-color-surface-white','--uds-color-text-primary','--uds-color-text-disabled','--uds-color-border-primary','--uds-color-border-interactive','--uds-color-border-disabled'], 'Space': ['--uds-space-075','--uds-space-100'], 'Border': ['--uds-border-radius-container-full'], 'Shadow': ['--uds-shadow-depth-100'] },
-      html: function () { return '<!DOCTYPE html>\n<html lang="en">\n<head><meta charset="UTF-8" /><link rel="stylesheet" href="uds/uds.css" /></head>\n<body>\n  <button class="udc-toggle" role="switch" aria-checked="true"><span class="udc-toggle__control"><span class="udc-toggle__thumb"></span></span><span class="udc-toggle__label">Email notifications</span></button>\n</body>\n</html>'; }
-    },
-    pagination: {
-      jsFunc: null,
-      tokens: { 'Color': ['--uds-color-surface-main','--uds-color-surface-interactive-default','--uds-color-surface-interactive-subtle-hover','--uds-color-text-primary','--uds-color-text-inverse','--uds-color-text-secondary','--uds-color-border-primary','--uds-color-border-interactive'], 'Font': ['--uds-font-family','--uds-font-size-sm','--uds-font-weight-medium'], 'Space': ['--uds-space-050','--uds-space-100','--uds-space-200'], 'Border': ['--uds-border-radius-input'] },
-      html: function () { return '<!DOCTYPE html>\n<html lang="en">\n<head><meta charset="UTF-8" /><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" /><link rel="stylesheet" href="uds/uds.css" /></head>\n<body>\n  <nav class="udc-pagination" aria-label="Pagination"><div class="udc-pagination__pages"><button class="udc-pagination__button" aria-current="page">1</button><button class="udc-pagination__button">2</button></div></nav>\n</body>\n</html>'; }
-    },
-    'tooltip': {
-      jsFunc: null,
-      tokens: {
-        'Surface': ['--uds-color-surface-main'],
-        'Text': ['--uds-color-text-primary'],
-        'Border': ['--uds-border-radius-container'],
-        'Shadow': ['--uds-shadow-depth-300'],
-        'Space': ['--uds-space-100','--uds-space-150','--uds-space-200'],
-        'Font': ['--uds-font-family','--uds-font-size-base','--uds-font-weight-regular','--uds-font-line-height-base']
-      },
-      html: function () { return '<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8" />\n  <link rel="stylesheet" href="uds/uds.css" />\n</head>\n<body style="padding:80px;">\n\n  <span class="udc-tooltip-wrapper">\n    <button class="udc-button-secondary">Hover me</button>\n    <span class="udc-tooltip" role="tooltip">This is a tooltip</span>\n  </span>\n\n</body>\n</html>'; },
-    }
-};
 
 /* ========================================================================
      6c. BUILD IMPLEMENTATION REFERENCE SECTION
      ======================================================================== */
 var jsBehaviorCache = {};
 
-var JS_FUNC_TO_FILE = {
-    initTextInput:    'uds/components/text-input.js',
-    initTabs:         'uds/components/tabs.js',
-    initCheckbox:     'uds/components/checkbox.js',
-    initNavBento:     'uds/components/nav-header.js',
-    initNavVertical:  'uds/components/nav-vertical.js',
-    initDropdown:     'uds/components/dropdown.js',
-    initNotification: 'uds/components/notification.js',
-    initDialog:       'uds/components/dialog.js',
-    initTile:         'uds/components/tile.js',
-    initList:         'uds/components/list.js',
-    initDataTable:    'uds/components/data-table.js',
-    initChip:         'uds/components/chip.js',
-    initSearch:       'uds/components/search.js'
-};
-
-function fetchJsBehavior(funcName, callback) {
+// Phase 13: fetchJsBehavior takes a `data` arg with jsFunc + jsFile, sourced
+// from per-component impl.json. Replaces the legacy JS_FUNC_TO_FILE table.
+function fetchJsBehavior(data, callback) {
+    var funcName = data && data.jsFunc;
+    if (!funcName) { callback(''); return; }
     if (jsBehaviorCache[funcName] !== undefined) {
       callback(jsBehaviorCache[funcName]);
       return;
     }
-    var file = JS_FUNC_TO_FILE[funcName] || 'uds/uds.js';
+    var file = data.jsFile || 'uds/uds.js';
     fetch(file).then(function (r) { return r.text(); }).then(function (text) {
       var pattern = new RegExp('(  function ' + funcName + '\\([^)]*\\)[\\s\\S]*?\\n  \\})');
       var match = text.match(pattern);
@@ -3219,8 +2767,24 @@ function fetchCssFile(path, callback) {
     });
 }
 
+// Phase 13: per-component impl.json files cached after first fetch.
+var implDataCache = {};
+
+function loadImplData(pageId) {
+    if (implDataCache[pageId] !== undefined) {
+      return Promise.resolve(implDataCache[pageId]);
+    }
+    return fetch('./uds/components/' + pageId + '/impl.json')
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .catch(function () { return null; })
+      .then(function (data) {
+        implDataCache[pageId] = data;
+        return data;
+      });
+}
+
 function buildImplSection(pageId) {
-    var data = IMPL_DATA[pageId];
+    var data = implDataCache[pageId];
     if (!data) return null;
 
     var details = document.createElement('details');
@@ -3286,9 +2850,8 @@ function buildImplSection(pageId) {
         wrap2.appendChild(buildCopyButton(function () { return pre2.textContent; }));
         wrap2.appendChild(pre2);
         panel.appendChild(wrap2);
-        // Read CSS path from content/<pageId>.json (dependencies.css[0]). JSON is the
-        // single source of truth — IMPL_DATA used to mirror the path; that's been removed.
-        // loadContent is idempotent (cached), so calling it here is safe even if
+        // Read CSS path from spec.json (dependencies.css[0]). loadContent is
+        // idempotent (cached), so calling it here is safe even if
         // preloadAllContent already fetched it.
         loadContent(pageId).then(function (json) {
           var cssPath = (json && json.dependencies && json.dependencies.css && json.dependencies.css[0]) || null;
@@ -3328,14 +2891,16 @@ function buildImplSection(pageId) {
 function updateComponentTab(panel, data) {
     var pre = panel._pre;
     if (!pre) return;
-    pre.textContent = data.html();
+    // Phase 13: data.html is now a plain string (was a zero-arg function in
+    // the old IMPL_DATA table). Tolerate both shapes for resilience.
+    pre.textContent = typeof data.html === 'function' ? data.html() : (data.html || '');
 }
 
 function updateBehaviorTab(panel, data) {
     var pre = panel._pre;
     if (!pre) return;
     if (data.jsFunc) {
-      fetchJsBehavior(data.jsFunc, function (code) { pre.textContent = code; });
+      fetchJsBehavior(data, function (code) { pre.textContent = code; });
     }
 }
 

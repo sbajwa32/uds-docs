@@ -1,0 +1,45 @@
+{
+  "$schema": "../../schemas/impl.schema.json",
+  "jsFunc": null,
+  "jsFile": null,
+  "tokens": {
+    "Color": [
+      "--uds-color-surface-interactive-default",
+      "--uds-color-surface-interactive-hover",
+      "--uds-color-surface-interactive-active",
+      "--uds-color-surface-interactive-disabled",
+      "--uds-color-surface-interactive-none",
+      "--uds-color-surface-interactive-subtle-hover",
+      "--uds-color-surface-interactive-subtle-active",
+      "--uds-color-surface-interactive-red",
+      "--uds-color-surface-interactive-red-hover",
+      "--uds-color-surface-interactive-red-active",
+      "--uds-color-surface-interactive-red-subtle-hover",
+      "--uds-color-surface-interactive-red-subtle-active",
+      "--uds-color-surface-white",
+      "--uds-color-text-inverse",
+      "--uds-color-text-brand",
+      "--uds-color-text-disabled-bold",
+      "--uds-color-text-error",
+      "--uds-color-border-interactive",
+      "--uds-color-border-error",
+      "--uds-color-border-outline-focus-visible"
+    ],
+    "Font": [
+      "--uds-font-family",
+      "--uds-font-size-base",
+      "--uds-font-line-height-base",
+      "--uds-font-weight-medium"
+    ],
+    "Space": [
+      "--uds-space-075",
+      "--uds-space-100",
+      "--uds-space-150",
+      "--uds-space-200"
+    ],
+    "Border": [
+      "--uds-border-radius-input"
+    ]
+  },
+  "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\" />\n  <link href=\"https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined\" rel=\"stylesheet\" />\n  <link rel=\"stylesheet\" href=\"uds/uds.css\" />\n</head>\n<body>\n\n  <!-- Primary -->\n  <button class=\"udc-button-primary\">Save changes</button>\n\n  <!-- Secondary -->\n  <button class=\"udc-button-secondary\">Cancel</button>\n\n  <!-- Ghost -->\n  <button class=\"udc-button-ghost\">Learn more</button>\n\n  <!-- With leading icon -->\n  <button class=\"udc-button-primary\" data-leading-icon>\n    <span class=\"material-symbols-outlined\">add</span>\n    New item\n  </button>\n\n  <!-- Icon only -->\n  <button class=\"udc-button-ghost\" data-icon-only aria-label=\"More actions\">\n    <span class=\"material-symbols-outlined\">more_vert</span>\n  </button>\n\n  <!-- Small + destructive -->\n  <div data-btn-color=\"danger\">\n    <button class=\"udc-button-primary\" data-size=\"sm\">Delete</button>\n  </div>\n\n</body>\n</html>"
+}

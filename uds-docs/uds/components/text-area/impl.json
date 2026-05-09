@@ -1,0 +1,29 @@
+{
+  "$schema": "../../schemas/impl.schema.json",
+  "jsFunc": null,
+  "jsFile": null,
+  "tokens": {
+    "Color": [
+      "--uds-color-surface-main",
+      "--uds-color-text-primary",
+      "--uds-color-text-secondary",
+      "--uds-color-text-error",
+      "--uds-color-border-primary",
+      "--uds-color-border-error",
+      "--uds-color-border-outline-focus-visible"
+    ],
+    "Font": [
+      "--uds-font-family",
+      "--uds-font-size-xs",
+      "--uds-font-size-base"
+    ],
+    "Space": [
+      "--uds-space-075",
+      "--uds-space-100"
+    ],
+    "Border": [
+      "--uds-border-radius-input"
+    ]
+  },
+  "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head><meta charset=\"UTF-8\" /><link rel=\"stylesheet\" href=\"uds/uds.css\" /></head>\n<body>\n  <div class=\"udc-text-area\"><label class=\"udc-label\" for=\"notes\">Notes</label><div class=\"udc-text-area__field\"><textarea id=\"notes\"></textarea></div></div>\n</body>\n</html>"
+}

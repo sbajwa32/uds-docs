@@ -1,0 +1,30 @@
+{
+  "$schema": "../../schemas/impl.schema.json",
+  "jsFunc": "initTabs",
+  "jsFile": "uds/components/tabs/tabs.js",
+  "tokens": {
+    "Color": [
+      "--uds-color-text-primary",
+      "--uds-color-text-disabled",
+      "--uds-color-text-interactive",
+      "--uds-color-surface-interactive-subtle-hover",
+      "--uds-color-border-primary",
+      "--uds-color-border-disabled",
+      "--uds-color-border-interactive",
+      "--uds-color-border-interactive-hover",
+      "--uds-color-border-outline-focus-visible"
+    ],
+    "Font": [
+      "--uds-font-family",
+      "--uds-font-size-base",
+      "--uds-font-line-height-base",
+      "--uds-font-weight-medium"
+    ],
+    "Space": [
+      "--uds-space-100",
+      "--uds-space-200",
+      "--uds-space-300"
+    ]
+  },
+  "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\" />\n  <link rel=\"stylesheet\" href=\"uds/uds.css\" />\n</head>\n<body>\n\n  <div class=\"udc-tabs\" role=\"tablist\">\n    <button class=\"udc-tab\" role=\"tab\" aria-selected=\"true\" aria-controls=\"panel-1\" id=\"tab-1\">Overview</button>\n    <button class=\"udc-tab\" role=\"tab\" aria-selected=\"false\" aria-controls=\"panel-2\" id=\"tab-2\">Details</button>\n    <button class=\"udc-tab\" role=\"tab\" aria-selected=\"false\" aria-controls=\"panel-3\" id=\"tab-3\" disabled>Disabled</button>\n  </div>\n\n  <div id=\"panel-1\" role=\"tabpanel\" aria-labelledby=\"tab-1\">Overview content</div>\n  <div id=\"panel-2\" role=\"tabpanel\" aria-labelledby=\"tab-2\" hidden>Details content</div>\n  <div id=\"panel-3\" role=\"tabpanel\" aria-labelledby=\"tab-3\" hidden>Disabled content</div>\n\n  <script src=\"uds/uds.js\"></script>\n</body>\n</html>"
+}

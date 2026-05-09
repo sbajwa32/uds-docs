@@ -1,0 +1,29 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "UDS Component Implementation Reference",
+  "description": "Per-component impl.json file. Powers the 'Implementation Reference' details on the Code tab — the 'Component File' tab (raw HTML), the 'Behavior (JS)' tab (links to a JS init function), and the 'Tokens Used' tab (categorized list of CSS custom properties). Migrated from the legacy IMPL_DATA global table during the Phase 13 cleanup.",
+  "type": "object",
+  "properties": {
+    "$schema": { "type": "string" },
+    "jsFunc": {
+      "type": ["string", "null"],
+      "description": "Name of the init function defined in <id>.js, e.g. 'initTextInput'. Null if the component is CSS-only."
+    },
+    "jsFile": {
+      "type": ["string", "null"],
+      "description": "Path to the JS file containing jsFunc, relative to uds-docs/. Null when jsFunc is null. Replaces the legacy JS_FUNC_TO_FILE global table that mapped function names to file paths."
+    },
+    "tokens": {
+      "type": "object",
+      "description": "CSS custom properties the component depends on, grouped by category. Common groups: Color, Font, Space, Border. Each group is an array of token names like '--uds-color-surface-main'.",
+      "additionalProperties": {
+        "type": "array",
+        "items": { "type": "string" }
+      }
+    },
+    "html": {
+      "type": "string",
+      "description": "The full HTML body shown in the 'Component File' tab and bundled into the ZIP download. Includes <!DOCTYPE>, <head>, <link> tags, and component example markup. Plain string — no template substitution."
+    }
+  }
+}

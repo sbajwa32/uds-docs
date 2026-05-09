@@ -1,0 +1,26 @@
+{
+  "$schema": "../../schemas/impl.schema.json",
+  "jsFunc": null,
+  "jsFile": null,
+  "tokens": {
+    "Color": [
+      "--uds-color-text-primary",
+      "--uds-color-text-disabled",
+      "--uds-color-text-error",
+      "--uds-color-text-interactive",
+      "--uds-color-text-success",
+      "--uds-color-surface-error"
+    ],
+    "Font": [
+      "--uds-font-family",
+      "--uds-font-size-xs",
+      "--uds-font-size-sm",
+      "--uds-font-weight-medium",
+      "--uds-font-weight-bold"
+    ],
+    "Space": [
+      "--uds-space-050"
+    ]
+  },
+  "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head><meta charset=\"UTF-8\" /><link rel=\"stylesheet\" href=\"uds/uds.css\" /></head>\n<body>\n  <label class=\"udc-label\" for=\"name\">Full name <span class=\"udc-label__required\" aria-hidden=\"true\"></span></label>\n</body>\n</html>"
+}

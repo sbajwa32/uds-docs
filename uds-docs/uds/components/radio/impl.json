@@ -1,0 +1,34 @@
+{
+  "$schema": "../../schemas/impl.schema.json",
+  "jsFunc": null,
+  "jsFile": null,
+  "tokens": {
+    "Color": [
+      "--uds-color-text-primary",
+      "--uds-color-text-disabled",
+      "--uds-color-text-error",
+      "--uds-color-text-interactive",
+      "--uds-color-icon-error",
+      "--uds-color-icon-interactive",
+      "--uds-color-border-primary",
+      "--uds-color-border-disabled",
+      "--uds-color-border-error",
+      "--uds-color-border-interactive",
+      "--uds-color-border-outline-focus-visible"
+    ],
+    "Font": [
+      "--uds-font-family",
+      "--uds-font-size-sm",
+      "--uds-font-size-base",
+      "--uds-font-line-height-sm",
+      "--uds-font-line-height-base",
+      "--uds-font-weight-medium",
+      "--uds-font-weight-bold"
+    ],
+    "Space": [
+      "--uds-space-050",
+      "--uds-space-100"
+    ]
+  },
+  "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\" />\n  <link rel=\"stylesheet\" href=\"uds/uds.css\" />\n</head>\n<body>\n\n  <fieldset class=\"udc-radio-group\">\n    <legend class=\"udc-radio-group__legend\">Preferred contact</legend>\n    <label class=\"udc-radio\">\n      <input type=\"radio\" name=\"contact\" value=\"email\" checked />\n      <span class=\"udc-radio__control\"></span>\n      <span class=\"udc-radio__label\">Email</span>\n    </label>\n    <label class=\"udc-radio\">\n      <input type=\"radio\" name=\"contact\" value=\"phone\" />\n      <span class=\"udc-radio__control\"></span>\n      <span class=\"udc-radio__label\">Phone</span>\n    </label>\n    <label class=\"udc-radio\">\n      <input type=\"radio\" name=\"contact\" value=\"sms\" />\n      <span class=\"udc-radio__control\"></span>\n      <span class=\"udc-radio__label\">SMS</span>\n    </label>\n  </fieldset>\n\n</body>\n</html>"
+}

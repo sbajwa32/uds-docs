@@ -1,0 +1,41 @@
+{
+  "$schema": "../../schemas/impl.schema.json",
+  "jsFunc": "initSearch",
+  "jsFile": "uds/components/search/search.js",
+  "tokens": {
+    "Surface": [
+      "--uds-color-surface-main",
+      "--uds-color-surface-subtle",
+      "--uds-color-surface-interactive-none",
+      "--uds-color-surface-interactive-subtle-hover"
+    ],
+    "Text": [
+      "--uds-color-text-primary",
+      "--uds-color-text-secondary"
+    ],
+    "Icon": [
+      "--uds-color-icon-secondary"
+    ],
+    "Border": [
+      "--uds-color-border-primary",
+      "--uds-color-border-outline-focus-visible",
+      "--uds-color-border-error",
+      "--uds-border-radius-input"
+    ],
+    "Space": [
+      "--uds-space-025",
+      "--uds-space-050",
+      "--uds-space-075",
+      "--uds-space-100",
+      "--uds-space-600"
+    ],
+    "Font": [
+      "--uds-font-family",
+      "--uds-font-size-base",
+      "--uds-font-size-2xl",
+      "--uds-font-weight-regular",
+      "--uds-font-line-height-base"
+    ]
+  },
+  "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\" />\n  <link href=\"https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined\" rel=\"stylesheet\" />\n  <link rel=\"stylesheet\" href=\"uds/uds.css\" />\n</head>\n<body>\n\n  <div class=\"udc-search\">\n    <div class=\"udc-search__field\">\n      <span class=\"udc-search__icon\"><span class=\"material-symbols-outlined\">search</span></span>\n      <input type=\"search\" placeholder=\"Search...\" />\n      <button class=\"udc-search__clear\" aria-label=\"Clear\"><span class=\"material-symbols-outlined\">clear</span></button>\n    </div>\n  </div>\n\n  <script src=\"uds/uds.js\"></script>\n</body>\n</html>"
+}

@@ -1,0 +1,38 @@
+{
+  "$schema": "../../schemas/impl.schema.json",
+  "jsFunc": "initDataTable",
+  "jsFile": "uds/components/data-table/data-table.js",
+  "tokens": {
+    "Surface": [
+      "--uds-color-surface-alt",
+      "--uds-color-surface-interactive-none",
+      "--uds-color-surface-interactive-subtle-hover",
+      "--uds-color-surface-info-subtle",
+      "--uds-color-surface-interactive-red-subtle"
+    ],
+    "Text": [
+      "--uds-color-text-primary"
+    ],
+    "Icon": [
+      "--uds-color-icon-secondary",
+      "--uds-color-icon-interactive"
+    ],
+    "Border": [
+      "--uds-color-border-secondary",
+      "--uds-border-radius-container-sm"
+    ],
+    "Space": [
+      "--uds-space-075",
+      "--uds-space-100",
+      "--uds-space-200"
+    ],
+    "Font": [
+      "--uds-font-family",
+      "--uds-font-size-base",
+      "--uds-font-weight-bold",
+      "--uds-font-weight-regular",
+      "--uds-font-line-height-base"
+    ]
+  },
+  "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\" />\n  <link href=\"https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined\" rel=\"stylesheet\" />\n  <link rel=\"stylesheet\" href=\"uds/uds.css\" />\n</head>\n<body>\n\n  <div class=\"udc-data-table\">\n    <table>\n      <thead>\n        <tr>\n          <th class=\"udc-dt-check\"><input type=\"checkbox\" /></th>\n          <th>Name <span class=\"udc-dt-sort\"></span></th>\n          <th>Status</th>\n          <th class=\"udc-dt-align-right\">Amount</th>\n          <th class=\"udc-dt-action\"></th>\n        </tr>\n      </thead>\n      <tbody>\n        <tr>\n          <td class=\"udc-dt-check\"><input type=\"checkbox\" /></td>\n          <td>Brian Smith</td>\n          <td><span class=\"udc-badge\" data-variant=\"success\">Delivered</span></td>\n          <td class=\"udc-dt-align-right\">$75</td>\n          <td class=\"udc-dt-action\"><button class=\"udc-button-ghost\" data-icon-only><span class=\"material-symbols-outlined\">more_vert</span></button></td>\n        </tr>\n      </tbody>\n    </table>\n  </div>\n\n  <script src=\"uds/uds.js\"></script>\n</body>\n</html>"
+}

@@ -1,0 +1,26 @@
+{
+  "$schema": "../../schemas/impl.schema.json",
+  "jsFunc": null,
+  "jsFile": null,
+  "tokens": {
+    "Color": [
+      "--uds-color-text-interactive",
+      "--uds-color-text-interactive-hover",
+      "--uds-color-text-interactive-active",
+      "--uds-color-text-disabled",
+      "--uds-color-border-outline-focus-visible"
+    ],
+    "Font": [
+      "--uds-font-family",
+      "--uds-font-size-base",
+      "--uds-font-weight-medium"
+    ],
+    "Space": [
+      "--uds-space-050"
+    ],
+    "Border": [
+      "--uds-border-radius-container-sm"
+    ]
+  },
+  "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head><meta charset=\"UTF-8\" /><link rel=\"stylesheet\" href=\"uds/uds.css\" /></head>\n<body>\n  <a class=\"udc-link\" href=\"#\">View property</a>\n</body>\n</html>"
+}

@@ -1,0 +1,45 @@
+{
+  "$schema": "../../schemas/impl.schema.json",
+  "jsFunc": "initNotification",
+  "jsFile": "uds/components/notification/notification.js",
+  "tokens": {
+    "Surface": [
+      "--uds-color-surface-info-subtle",
+      "--uds-color-surface-info",
+      "--uds-color-surface-success-subtle",
+      "--uds-color-surface-success",
+      "--uds-color-surface-error-subtle",
+      "--uds-color-surface-error",
+      "--uds-color-surface-warning-subtle",
+      "--uds-color-surface-warning"
+    ],
+    "Text": [
+      "--uds-color-text-info",
+      "--uds-color-text-success",
+      "--uds-color-text-error",
+      "--uds-color-text-warning",
+      "--uds-color-text-inverse"
+    ],
+    "Icon": [
+      "--uds-color-icon-info",
+      "--uds-color-icon-success",
+      "--uds-color-icon-error",
+      "--uds-color-icon-warning"
+    ],
+    "Border": [
+      "--uds-border-radius-container-sm"
+    ],
+    "Space": [
+      "--uds-space-100",
+      "--uds-space-150",
+      "--uds-space-200"
+    ],
+    "Font": [
+      "--uds-font-family",
+      "--uds-font-size-base",
+      "--uds-font-weight-medium",
+      "--uds-font-line-height-base"
+    ]
+  },
+  "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\" />\n  <link href=\"https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined\" rel=\"stylesheet\" />\n  <link rel=\"stylesheet\" href=\"uds/uds.css\" />\n</head>\n<body>\n\n  <div class=\"udc-notification\" data-variant=\"info\">\n    <span class=\"udc-notification__icon\"><span class=\"material-symbols-outlined\">info</span></span>\n    <span class=\"udc-notification__text\">Informational message</span>\n  </div>\n\n  <div class=\"udc-notification\" data-variant=\"success\" data-prominent=\"true\">\n    <span class=\"udc-notification__icon\"><span class=\"material-symbols-outlined\">check_circle</span></span>\n    <span class=\"udc-notification__text\">Success!</span>\n  </div>\n\n  <div class=\"udc-notification\" data-variant=\"error\" data-inline=\"true\">\n    <span class=\"udc-notification__icon\"><span class=\"material-symbols-outlined\">error_outline</span></span>\n    <span class=\"udc-notification__text\">Something went wrong</span>\n  </div>\n\n  <script src=\"uds/uds.js\"></script>\n</body>\n</html>"
+}
