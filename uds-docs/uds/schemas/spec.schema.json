@@ -169,7 +169,8 @@
 
     "draft": { "type": "boolean", "default": false, "description": "When true, hide from sidebar/routing on production. Show with ?draft=1." },
 
-    "figmaNodeId": { "type": ["string", "null"], "description": "Deep-link to specific variant node in Figma. If null, falls back to component page link." },
+    "figmaNodeId": { "type": ["string", "null"], "description": "Deep-link to specific variant node in Figma. If null, the renderer falls back to figmaPageNodeId." },
+    "figmaPageNodeId": { "type": ["string", "null"], "description": "Deep-link to the component's page-level node in the UDS Components Figma file. Used as fallback when figmaNodeId is null. Migrated from the legacy FIGMA_LINKS table during the Phase 13 cleanup." },
     "storybookSlug": { "type": ["string", "null"], "description": "Storybook story path, e.g. 'components-button--primary'. If null, falls back to the Storybook home." },
 
     "implReference": {

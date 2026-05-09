@@ -1143,7 +1143,15 @@ function preloadAllContent() {
     if (typeof COMPONENT_STATUS === 'undefined') return;
     Object.keys(COMPONENT_STATUS).forEach(function (id) {
       loadContent(id).then(function (data) {
-        if (data) updateCompletenessIndicator(id);
+        if (data) {
+          updateCompletenessIndicator(id);
+          // Phase 13: now that contentCache[id] has the spec, re-render the
+          // page-link bar so the Figma deep-link, Storybook slug, and Report
+          // Issue title pick up the data they need from spec.json.
+          if (typeof renderComponentLinksFor === 'function') {
+            renderComponentLinksFor(id);
+          }
+        }
       });
       // Phase 8: also pre-fetch per-component changelog.json so the
       // "Last updated" header panel and the per-component Changelog tab
@@ -3568,37 +3576,36 @@ import { SITE_CHANGELOG } from './data/site-changelog.js';
 // STATUS_LABELS moved to docs/data/status-labels.js (Phase 3c)
 import { STATUS_LABELS } from './data/status-labels.js';
 
-var COMPONENT_STATUS = {
-    button:         { status: 'in-progress', since: '0.1' },
-    'text-input':   { status: 'blocked',     since: '0.1' },
-    dropdown:       { status: 'in-progress', since: '0.2' },
-    checkbox:       { status: 'in-progress', since: '0.1' },
-    radio:          { status: 'in-progress', since: '0.1' },
-    badge:          { status: 'in-progress', since: '0.1' },
-    breadcrumb:     { status: 'blocked',     since: '0.1' },
-    tabs:           { status: 'blocked',     since: '0.1' },
-    divider:        { status: 'blocked',     since: '0.1' },
-    'icon-wrapper': { status: 'in-progress', since: '0.1' },
-    spacer:         { status: 'in-progress', since: '0.1' },
-    'nav-header':   { status: 'blocked',     since: '0.1' },
-    'nav-vertical': { status: 'blocked',     since: '0.1' },
-    notification:   { status: 'blocked',     since: '0.2' },
-    dialog:         { status: 'blocked',     since: '0.2' },
-    tile:           { status: 'blocked',     since: '0.2' },
-    list:           { status: 'blocked',     since: '0.2' },
-    'data-table':   { status: 'in-progress', since: '0.2' },
-    chip:           { status: 'blocked',     since: '0.2' },
-    search:         { status: 'blocked',     since: '0.2' },
-    tooltip:        { status: 'blocked',     since: '0.2' },
-    'link': { status: 'in-progress', since: '0.3' },
-    'label': { status: 'blocked', since: '0.3' },
-    'text-area': { status: 'placeholder', since: '0.3' },
-    'combobox': { status: 'placeholder', since: '0.3' },
-    'date-picker': { status: 'placeholder', since: '0.3' },
-    'toggle': { status: 'placeholder', since: '0.3' },
-    'pagination': { status: 'blocked', since: '0.3' },
-    'data-view': { status: 'placeholder', since: '0.3' },
-};
+// COMPONENT_STATUS is built at boot from uds/components.json + each
+// per-component status.json. The single source of truth is the per-component
+// folder; this map is just an in-memory index for fast O(1) lookups by render
+// functions. componentsReady resolves after the map is fully populated.
+var COMPONENT_STATUS = {};
+var componentsReady = (async () => {
+    try {
+      const manifestRes = await fetch('./uds/components.json');
+      if (!manifestRes.ok) return;
+      const manifest = await manifestRes.json();
+      const ids = (manifest.components || []).map(c => c.id);
+      const statuses = await Promise.all(
+        ids.map(id => fetch(`./uds/components/${id}/status.json`)
+          .then(r => r.ok ? r.json() : null)
+          .catch(() => null))
+      );
+      ids.forEach((id, i) => {
+        const s = statuses[i];
+        if (s) {
+          COMPONENT_STATUS[id] = { status: s.current, since: s.since };
+        }
+      });
+      window.COMPONENT_STATUS_MAP = window.COMPONENT_STATUS_MAP || {};
+      Object.keys(COMPONENT_STATUS).forEach(id => {
+        window.COMPONENT_STATUS_MAP[id] = COMPONENT_STATUS[id].status;
+      });
+    } catch (e) {
+      console.error('Failed to load component manifest:', e);
+    }
+})();
 
 // UDS_VERSION is loaded from uds/version.json on init (Phase 8). The
 // initial value below is just a fallback used while the fetch is in-flight
@@ -3615,11 +3622,6 @@ var UDS_VERSION = '0.3';
       }
     } catch (_) {}
 })();
-
-window.COMPONENT_STATUS_MAP = {};
-Object.keys(COMPONENT_STATUS).forEach(function (id) {
-    window.COMPONENT_STATUS_MAP[id] = COMPONENT_STATUS[id].status;
-});
 
 var TYPE_LABELS = {
     added: 'Added', changed: 'Changed', fixed: 'Fixed',
@@ -3852,38 +3854,6 @@ function _renderComponentChangelogEntries(panel, allEntries, pageId) {
 
 // Legacy implementation preserved during migration; not called.
 
-var FIGMA_LINKS = {
-    button:         '5055-139',
-    'text-input':   '5002-1178',
-    dropdown:       '5122-68',
-    checkbox:       '5445-5056',
-    radio:          '5445-5057',
-    badge:          '5440-5049',
-    breadcrumb:     '5574-5423',
-    tabs:           '5264-299',
-    divider:        '5621-7292',
-    'icon-wrapper': '5657-6776',
-    spacer:         '5594-5633',
-    'nav-header':   '5373-972',
-    'nav-vertical': '6598-8553',
-    notification:   '5452-5855',
-    dialog:         '5264-298',
-    tile:           '5264-297',
-    list:           '5510-5779',
-    'data-table':   '5122-870',
-    chip:           '5502-7753',
-    search:         '5603-3307',
-    tooltip:        '5476-2091',
-    'link': '5621-7276',
-    'label': '5794-4372',
-    'text-area': '6166-25791',
-    'combobox': '6143-19347',
-    'date-picker': '6094-27859',
-    'toggle': '5557-1808',
-    'pagination': '6672-1706',
-    'data-view': '5802-33467',
-};
-
 function renderStatusBadges() {
     Object.keys(COMPONENT_STATUS).forEach(function (id) {
       renderComponentProgress(id);
@@ -3896,20 +3866,23 @@ var STORYBOOK_BASE_URL = 'https://storybook.example.com';
 // Placeholder GitHub repo for issue reports
 var GITHUB_REPO = 'sbajwa32/uds-docs';
 
-function renderComponentLinks() {
-    Object.keys(COMPONENT_STATUS).forEach(function (id) {
-      var page = document.querySelector('[data-page="' + id + '"]');
-      if (!page) return;
-      var desc = page.querySelector('.sg-page-desc');
-      if (!desc || page.querySelector('.sg-page-links')) return;
+// Render the page-link bar for a single component. Idempotent — if a bar
+// already exists, it's replaced with a fresh one. Safe to call multiple times
+// (e.g. once at boot with empty contentCache, then again per-component as
+// each spec.json arrives).
+function renderComponentLinksFor(id) {
+    var page = document.querySelector('[data-page="' + id + '"]');
+    if (!page) return;
+    var desc = page.querySelector('.sg-page-desc');
+    if (!desc) return;
 
-      var bar = document.createElement('div');
-      bar.className = 'sg-page-links';
+    var bar = document.createElement('div');
+    bar.className = 'sg-page-links';
 
-      // View in Figma (variant deep-link when available)
-      var data = contentCache[id] || {};
-      var variantNode = data.figmaNodeId;
-      var pageNode = FIGMA_LINKS[id];
+    // View in Figma (variant deep-link when available)
+    var data = contentCache[id] || {};
+    var variantNode = data.figmaNodeId;
+    var pageNode = data.figmaPageNodeId;
       var figmaLink = document.createElement('a');
       figmaLink.className = 'sg-page-link';
       var figmaLabel = variantNode ? 'Figma (variant)' : 'Figma';
@@ -3952,8 +3925,16 @@ function renderComponentLinks() {
       issueLink.rel = 'noopener noreferrer';
       bar.appendChild(issueLink);
 
+    var existing = page.querySelector(':scope > .sg-page-links');
+    if (existing) {
+      existing.replaceWith(bar);
+    } else {
       desc.insertAdjacentElement('afterend', bar);
-    });
+    }
+}
+
+function renderComponentLinks() {
+    Object.keys(COMPONENT_STATUS).forEach(renderComponentLinksFor);
 }
 
 // "Not for production" banner + Last updated timestamp + Recent changes highlight
@@ -4629,7 +4610,7 @@ registerPageLoadHook('changelog', function () {
 });
 
 registerPageLoadHook('roadmap', function () {
-    renderRoadmapComponents();
+    componentsReady.then(renderRoadmapComponents);
 });
 
 // AI Assist page initialization (download buttons etc.) — runs once after
@@ -4723,18 +4704,28 @@ registerPageLoadHook('primitive-colors', function () {
 
 /* ========================================================================
      13. INIT — navigate to current hash
+     ========================================================================
+     Phase 13: COMPONENT_STATUS is built asynchronously from per-component
+     status.json files. Render calls that walk components must await
+     componentsReady so the map is populated before they iterate.
      ======================================================================== */
-renderStatusBadges();
-renderComponentLinks();
-renderComponentHeaderExtras();
+
+// These don't depend on COMPONENT_STATUS — they can run synchronously.
 renderRealisticData();
 renderExampleOnlyBanners();
-preloadAllContent();
-// renderRoadmapComponents() — DEFERRED to roadmap page load hook (Phase 5)
 initTokenSearch();
-applyDraftMode();
 initVersionDropdown();
 initAllChangelogs();
+
+// These walk Object.keys(COMPONENT_STATUS) — must wait for the map to populate.
+componentsReady.then(function () {
+  renderStatusBadges();
+  renderComponentLinks();
+  renderComponentHeaderExtras();
+  preloadAllContent();
+  applyDraftMode();
+  // renderRoadmapComponents() — DEFERRED to roadmap page load hook (Phase 5)
+});
 
 function initAiAssistPage() {
     var tokenSlot = document.getElementById('sg-ai-tokens');

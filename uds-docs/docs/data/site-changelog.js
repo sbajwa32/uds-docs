@@ -578,6 +578,15 @@ export const SITE_CHANGELOG = [
       changes: [
         { type: 'fixed', text: 'Demo Builder `nav-header` template was a stripped-down version of the canonical example shown on the Nav Header component page — just a logo and two icon-only ghost buttons floating in a mostly-empty bar, missing the bento brand dropdown, the center search slot, and the My Work / account cluster, so the header looked unbalanced compared to its own component spec. Rewrote the template to match the canonical pattern: `__left` now has logo + `udc-nav-bento-wrapper` (brand button + bento dropdown list, brand picked from `Boardroom`/`Tenant360`/`PropertyOS`/`LeasePro`/`Holdings`); `__center` has `udc-nav-search` with the AI sparkle icon and rotating placeholder; `__right` has `udc-nav-mywork` with a randomized count badge plus a `udc-nav-account` cluster (notifications, sometimes settings, account_circle).' }
       ]
+    },
+    {
+      version: 'SITE 2026.05.09.1',
+      date: '2026-05-09',
+      changes: [
+        { type: 'changed', text: 'Phase 13 cleanup: the `FIGMA_LINKS` global table is gone from `app.js`. Page-level Figma deep-link IDs now live alongside variant-level IDs in each `uds/components/<id>/spec.json` as the new `figmaPageNodeId` field. The renderer reads variant first, page-level fallback second — same UX, no more drift surface.' },
+        { type: 'changed', text: 'Phase 13 cleanup: the `COMPONENT_STATUS` global table is gone from `app.js`. The map is now built at boot from `uds/components.json` (newly added — single source of truth for which components exist) plus each per-component `status.json`. A `componentsReady` promise gates the bootstrap; render functions that walk components now `await` it. New script `scripts/aggregate-components.sh` regenerates `components.json` and runs automatically as part of the migration tooling.' },
+        { type: 'added', text: 'New manifest file `uds/components.json` lists every component in the current UDS release in display order (earliest version first, alphabetical tiebreak). Schema at `uds/schemas/components-manifest.schema.json`.' }
+      ]
     }
 ];
 

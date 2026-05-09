@@ -59,6 +59,7 @@
   },
   "draft": false,
   "figmaNodeId": "5350:1996",
+  "figmaPageNodeId": "5264-299",
   "storybookSlug": null,
   "_legacyAccessibilityNotes": "Use role=\"tablist\" on the container and role=\"tab\" on each tab button. aria-selected indicates the active tab."
 }

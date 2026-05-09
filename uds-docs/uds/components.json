@@ -1,0 +1,150 @@
+{
+  "$schema": "./schemas/components-manifest.schema.json",
+  "components": [
+    {
+      "id": "badge",
+      "title": "Badge",
+      "since": "0.1"
+    },
+    {
+      "id": "breadcrumb",
+      "title": "Breadcrumb",
+      "since": "0.1"
+    },
+    {
+      "id": "button",
+      "title": "Button",
+      "since": "0.1"
+    },
+    {
+      "id": "checkbox",
+      "title": "Checkbox",
+      "since": "0.1"
+    },
+    {
+      "id": "divider",
+      "title": "Divider",
+      "since": "0.1"
+    },
+    {
+      "id": "icon-wrapper",
+      "title": "Icon Wrapper",
+      "since": "0.1"
+    },
+    {
+      "id": "nav-header",
+      "title": "Nav Header",
+      "since": "0.1"
+    },
+    {
+      "id": "nav-vertical",
+      "title": "Nav Vertical",
+      "since": "0.1"
+    },
+    {
+      "id": "radio",
+      "title": "Radio",
+      "since": "0.1"
+    },
+    {
+      "id": "spacer",
+      "title": "Spacer",
+      "since": "0.1"
+    },
+    {
+      "id": "tabs",
+      "title": "Tabs",
+      "since": "0.1"
+    },
+    {
+      "id": "text-input",
+      "title": "Text Input",
+      "since": "0.1"
+    },
+    {
+      "id": "chip",
+      "title": "Chip",
+      "since": "0.2"
+    },
+    {
+      "id": "data-table",
+      "title": "Data Table",
+      "since": "0.2"
+    },
+    {
+      "id": "dialog",
+      "title": "Dialog",
+      "since": "0.2"
+    },
+    {
+      "id": "dropdown",
+      "title": "Dropdown",
+      "since": "0.2"
+    },
+    {
+      "id": "list",
+      "title": "List",
+      "since": "0.2"
+    },
+    {
+      "id": "notification",
+      "title": "Notification",
+      "since": "0.2"
+    },
+    {
+      "id": "search",
+      "title": "Search",
+      "since": "0.2"
+    },
+    {
+      "id": "tile",
+      "title": "Tile",
+      "since": "0.2"
+    },
+    {
+      "id": "tooltip",
+      "title": "Tooltip",
+      "since": "0.2"
+    },
+    {
+      "id": "combobox",
+      "title": "Combobox",
+      "since": "0.3"
+    },
+    {
+      "id": "data-view",
+      "title": "Data View",
+      "since": "0.3"
+    },
+    {
+      "id": "date-picker",
+      "title": "Date Picker",
+      "since": "0.3"
+    },
+    {
+      "id": "label",
+      "title": "Label",
+      "since": "0.3"
+    },
+    {
+      "id": "link",
+      "title": "Link",
+      "since": "0.3"
+    },
+    {
+      "id": "pagination",
+      "title": "Pagination",
+      "since": "0.3"
+    },
+    {
+      "id": "text-area",
+      "title": "Text Area",
+      "since": "0.3"
+    },
+    {
+      "id": "toggle",
+      "title": "Toggle",
+      "since": "0.3"
+    }
+  ]
+}

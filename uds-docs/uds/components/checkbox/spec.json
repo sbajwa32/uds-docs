@@ -51,6 +51,7 @@
   },
   "draft": false,
   "figmaNodeId": "6010:28999",
+  "figmaPageNodeId": "5445-5056",
   "storybookSlug": null,
   "_legacyAccessibilityNotes": "Uses native <input type=\"checkbox\"> for screen reader support. The visible indicator is purely decorative \u2014 the native input handles interaction."
 }

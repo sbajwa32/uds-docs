@@ -242,6 +242,7 @@
   },
   "draft": false,
   "figmaNodeId": null,
+  "figmaPageNodeId": "5002-1178",
   "storybookSlug": null,
   "_legacyAccessibilityNotes": "Always pair with a visible <label>. Use placeholder for hints, never as a label replacement. Error messages should be announced via aria-describedby."
 }

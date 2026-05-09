@@ -55,6 +55,7 @@
   },
   "draft": false,
   "figmaNodeId": "6182:27972",
+  "figmaPageNodeId": "5502-7753",
   "storybookSlug": null,
   "_legacyAccessibilityNotes": "aria-selected for filter chips. Dismiss buttons within chips need aria-label."
 }
