@@ -601,6 +601,15 @@ export const SITE_CHANGELOG = [
         { type: 'added', text: 'Archive-view banner appears at the top of every page when `?uds=X.Y` is present. Tells the user which archive they\'re viewing and offers a one-click return to live. Dimmed Pre-flight + Build Demo buttons in archive view (interactive features only run against live UDS).' },
         { type: 'added', text: 'Playground tab is hidden in archive view (historical snapshots don\'t carry `playground.js` modules — interactive playgrounds only render against live UDS data).' }
       ]
+    },
+    {
+      version: 'SITE 2026.05.09.3',
+      date: '2026-05-09',
+      changes: [
+        { type: 'changed', text: 'Phase 15a: extracted Token Search modal into `docs/modules/token-search/index.js` as a self-contained ES module (~267 lines). Exports `initTokenSearch()`, `openTokenSearch()`, `closeTokenSearch()`. Wired up via a single import in `app.js`. The placeholder folder created back in Phase 4 is now real — finishes Phase 4b.' },
+        { type: 'changed', text: 'Phase 15b: extracted Playground engine into `docs/modules/playground/index.js` as a factory module (~181 lines). `createPlaygroundEngine(ctx)` returns `{ initPlayground, refreshPlaygrounds, loadPlaygroundConfig }` and takes its DOM helper deps (`buildCopyButton`, `buildIconPicker`, impl-section helpers, `udsResolve`) via a context object — keeps the engine decoupled without forcing extraction of every transitive helper. Finishes Phase 4c. The placeholder folder created back in Phase 4 is now real.' },
+        { type: 'fixed', text: 'Net effect on `app.js`: 3,037 → 2,671 lines (-12% from Phase 14, -49% from the original baseline of 5,228 lines). The router/tab-switcher/theme-bar/render-helpers core is now what dominates `app.js`; everything self-contained has been extracted to its own module.' }
+      ]
     }
 ];
 
