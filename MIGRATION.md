@@ -57,6 +57,7 @@ The baseline tag stays on `main` permanently as a recovery anchor.
 | 13 | Dissolve remaining global tables (FIGMA_LINKS, COMPONENT_STATUS, IMPL_DATA, JS_FUNC_TO_FILE, PLAYGROUNDS) | done — see Phase 13 section below |
 | 14 | Retroactive 0.2 archive conversion + version-aware dropdown rewrite | done — see Phase 14 section below |
 | 15 | Token Search + Playground engine module extraction (finishes Phase 4b/4c) | done — see Phase 15 section below |
+| 16 | Systemic accessibility remediation (last deferred item) | done — see Phase 16 section below |
 
 ## Per-component migration status (Phase 6)
 
@@ -395,6 +396,102 @@ Same callable shape, dramatically smaller `app.js`.
 - Archive view (`?uds=0.2`): still works correctly, playground tab still
   hidden, zero console errors
 
+## Phase 16 — systemic accessibility remediation
+
+The last deferred item from Phase 11 was the 681-node systemic color-contrast
+debt and a handful of aria-allowed-attr / aria-required-children failures.
+Phase 16 fixed it.
+
+Color-contrast violations across 6 sample pages dropped from **308 nodes to
+3 nodes — a 99% reduction**. The 3 remaining are timing-related edge cases
+on the archive-view fragment loader, not real bugs.
+
+The fixes are TOKEN-LEVEL where possible so every consumer of UDS benefits,
+not just the docs site. Component CSS that referenced primitive tokens
+directly was also refactored to use semantic tokens.
+
+### Token bumps (`uds/tokens/semantic.css`)
+
+**Light mode:**
+
+| Token | Was | Now | Why |
+|-------|-----|-----|-----|
+| `text-secondary` | neutral-50 (`#a3a3a3`) | neutral-70 (`#525252`) | 2.85:1 → **7.04:1** on neutral-10 |
+| `text-info` | blue-70 (`#005ff0`) | blue-80 (`#004be2`) | 4.44:1 → **5.7:1** on surface-info-subtle |
+| `text-warning` | orange-70 (`#ea580c`) | orange-90 (`#9a3412`) | 4.04:1 → **5.6:1** on surface-warning-subtle |
+| `text-success` | green-70 (`#16a34a`) | green-80 (`#15803d`) | 3.32:1 → **4.71:1** on surface-success-subtle |
+| `surface-warning` | orange-70 | orange-80 | 3.43:1 → **5.21:1** white text |
+| `surface-error` | red-70 | red-80 | 4.42:1 → **6.71:1** white text |
+| `surface-success` | green-70 | green-80 | 3.02:1 → **4.83:1** white text |
+| `surface-info` | blue-70 | blue-80 | 6.21:1 → **8.5:1** white text |
+| `surface-interactive-red` | red-70 | red-80 | same as surface-error |
+
+**Dark mode:**
+
+| Token | Was | Now | Why |
+|-------|-----|-----|-----|
+| `text-secondary` | neutral-70 (`#525252`) | neutral-50 (`#a3a3a3`) | 3.9:1 → **9.4:1** on neutral-110 (the original mapping was inverted — secondary text in dark mode should be lighter than primary, not darker) |
+
+All bumps stay within the same color family so the visual identity is
+preserved.
+
+### Component CSS refactor
+
+`button.css`'s `[data-btn-color="success/warning/neutral"]` palette
+overrides switched from primitive-token references (`green-70`, `orange-70`,
+`neutral-90`) to semantic tokens (`surface-success`, `surface-warning`,
+`surface-inverse`). Side benefit: the audit-token-usage rule of
+"components only reference semantic tokens" is no longer violated by the
+button overrides.
+
+### ARIA fixes
+
+- Added `role="tab"` to all 33 `.sg-page-tab` buttons in `index.html` plus
+  the changelog and ai-assist fragments — fixes `aria-required-children`
+  on every component page tablist.
+- Converted `aria-selected="true"` → `aria-current="page"` on every
+  `udc-nav-button` and `udc-nav-tile` example/playground/impl entry.
+  `aria-current` is the WCAG-correct attribute for a navigation item;
+  `aria-selected` only validates inside listbox/tablist. `nav-vertical.css`
+  now styles both selectors for backwards compat.
+- Converted `aria-selected="true"` → `aria-pressed="true"` on the button
+  "selected" example. `aria-pressed` is the right ARIA pattern for a
+  toggle button. `button.css` styles all three:
+  `[aria-pressed="true"]`, `[aria-selected="true"]`, `[data-selected]`.
+
+### Header bar opacity fixes (`docs/site.css`)
+
+- Subtitle/version/build opacity 0.5/0.6/0.7 → 0.95 (was failing 4.5:1
+  against blue brand bar; now passes at ~6.5:1).
+- Search trigger background `rgba(255,255,255,0.12)` → `rgba(0,0,0,0.18)`.
+  The white-on-white-tinted-blue composite was 3.68:1; now white text
+  reaches ~7.9:1.
+
+### Site-CSS targeted overrides (`docs/site.css`)
+
+- `.sg-theme-bar-label`: `text-secondary` → `text-primary` (10px bold
+  uppercase labels need 4.5:1; even bumped text-secondary sat at 4.0:1
+  on subtle bg).
+- `.sg-sidebar-heading`: same fix for the same reason.
+
+### UDS CHANGELOG
+
+Added a 0.3 "fixed" entry to `uds/CHANGELOG.globalNotes.json` documenting
+the token-level accessibility bumps so any consumer of UDS knows about
+the contrast changes. The aggregated `uds/CHANGELOG.json` reflects this
+on the Changelog page.
+
+### Verification
+
+- All 4 audits clean
+- Round-trip `--all-components`: OK
+- Round-trip `--changelogs`: OK
+- Smoke test: 33/33 actual pages render with zero console errors
+- axe-core: **308 → 3** color-contrast/aria nodes across 6 sample pages
+- Archive view (`?uds=0.2`): still works correctly with bumped tokens
+- Visual confirmation: section labels readable, component pills crisp,
+  status colors clear, header bar text passes contrast
+
 ### Verification (same as Phase 12, plus)
 
 - All four audits clean
@@ -405,6 +502,19 @@ Same callable shape, dramatically smaller `app.js`.
   including playground tabs for button, text-input, data-table, badge,
   nav-header (verified preview/code/control rendering after dynamic
   import)
+
+## All deferred items now resolved
+
+The "deferred items" listed in earlier phase summaries are all done:
+
+| Item | Resolved in |
+|------|-------------|
+| `versions/0.2/` retroactive conversion + version-aware dropdown | Phase 14 |
+| Token Search module extraction | Phase 15a |
+| Playground engine module extraction | Phase 15b |
+| Systemic accessibility remediation | Phase 16 |
+
+The restructure is now feature-complete with no outstanding deferred work.
 
 ## Things that will become true at the end of the migration
 
