@@ -29,7 +29,7 @@ export default {
             hl.push('        </div>');
           }
           hl.push('        <div class="udc-nav-bento__list">');
-          hl.push('          <button class="udc-nav-button" aria-selected="true"><span class="material-symbols-outlined">space_dashboard</span><span class="udc-nav-button__label">Dashboard</span></button>');
+          hl.push('          <button class="udc-nav-button" aria-current="page"><span class="material-symbols-outlined">space_dashboard</span><span class="udc-nav-button__label">Dashboard</span></button>');
           hl.push('          <button class="udc-nav-button"><span class="material-symbols-outlined">book</span><span class="udc-nav-button__label">Leasing / CRM</span></button>');
           hl.push('        </div>');
           hl.push('      </div>');

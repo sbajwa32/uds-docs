@@ -152,13 +152,13 @@
   --uds-color-surface-black:                              var(--uds-primitive-color-special-black);
 
   /* ---- Surface: status ---- */
-  --uds-color-surface-info:                               var(--uds-primitive-color-blue-70);
+  --uds-color-surface-info:                               var(--uds-primitive-color-blue-80);   /* Phase 16: bumped to -80 so white text passes WCAG AA (8.5:1) */
   --uds-color-surface-info-subtle:                        var(--uds-primitive-color-blue-20);
-  --uds-color-surface-success:                            var(--uds-primitive-color-green-70);
+  --uds-color-surface-success:                            var(--uds-primitive-color-green-80); /* Phase 16: bumped to -80 so white text passes WCAG AA (4.83:1) */
   --uds-color-surface-success-subtle:                     var(--uds-primitive-color-green-20);
-  --uds-color-surface-error:                              var(--uds-primitive-color-red-70);
+  --uds-color-surface-error:                              var(--uds-primitive-color-red-80);   /* Phase 16: bumped to -80 so white text passes WCAG AA (6.71:1) */
   --uds-color-surface-error-subtle:                       var(--uds-primitive-color-red-20);
-  --uds-color-surface-warning:                            var(--uds-primitive-color-orange-70);
+  --uds-color-surface-warning:                            var(--uds-primitive-color-orange-80); /* Phase 16: bumped to -80 so white text passes WCAG AA (5.21:1) */
   --uds-color-surface-warning-subtle:                     var(--uds-primitive-color-orange-20);
 
   /* ---- Surface: interactive ---- */
@@ -171,7 +171,7 @@
   --uds-color-surface-interactive-subtle:                 var(--uds-primitive-color-blue-10); /* experimental */
   --uds-color-surface-interactive-subtle-hover:           var(--uds-primitive-color-blue-20); /* experimental */
   --uds-color-surface-interactive-subtle-active:          var(--uds-primitive-color-blue-30); /* experimental */
-  --uds-color-surface-interactive-red:                    var(--uds-primitive-color-red-70);
+  --uds-color-surface-interactive-red:                    var(--uds-primitive-color-red-80); /* Phase 16: bumped to -80 so white text passes WCAG AA (6.71:1) */
   --uds-color-surface-interactive-red-hover:              var(--uds-primitive-color-red-60-M);
   --uds-color-surface-interactive-red-active:             var(--uds-primitive-color-red-80);
   --uds-color-surface-interactive-red-subtle:             var(--uds-primitive-color-red-10);
@@ -191,17 +191,17 @@
   --uds-color-text-brand:                                 var(--uds-primitive-color-blue-70); /* experimental */
   --uds-color-text-primary:                               var(--uds-primitive-color-neutral-100);
   --uds-color-text-inverse:                               var(--uds-primitive-color-neutral-20);
-  --uds-color-text-secondary:                             var(--uds-primitive-color-neutral-50);
+  --uds-color-text-secondary:                             var(--uds-primitive-color-neutral-70); /* WCAG AA: 7.04:1 on neutral-10, 6.49:1 on neutral-30 (surface-alt) */
   --uds-color-text-disabled:                              var(--uds-primitive-color-neutral-40);
   --uds-color-text-disabled-bold:                         var(--uds-primitive-color-neutral-50);
   --uds-color-text-interactive:                           var(--uds-primitive-color-blue-70);
   --uds-color-text-interactive-hover:                     var(--uds-primitive-color-blue-60-M);
   --uds-color-text-interactive-active:                    var(--uds-primitive-color-blue-80);
   --uds-color-text-interactive-neutral:                   var(--uds-primitive-color-neutral-100);
-  --uds-color-text-info:                                  var(--uds-primitive-color-blue-70);
-  --uds-color-text-success:                               var(--uds-primitive-color-green-70);
-  --uds-color-text-error:                                 var(--uds-primitive-color-red-70);
-  --uds-color-text-warning:                               var(--uds-primitive-color-orange-70);
+  --uds-color-text-info:                                  var(--uds-primitive-color-blue-80); /* WCAG AA: 7.7:1 on neutral-10, 5.7:1 on surface-info-subtle (was blue-70 = 4.44:1 on subtle, failing) */
+  --uds-color-text-success:                               var(--uds-primitive-color-green-80);  /* WCAG AA: 4.83:1 on neutral-10 (was green-70 = 3.32:1) */
+  --uds-color-text-error:                                 var(--uds-primitive-color-red-70);    /* 4.83:1 on neutral-10 */
+  --uds-color-text-warning:                               var(--uds-primitive-color-orange-90); /* WCAG AA: 8.0:1 on neutral-10, 5.6:1 on surface-warning-subtle (orange-20) */
 
   /* ---- Icon ---- */
   --uds-color-icon-none:                                  var(--uds-primitive-color-special-none);
@@ -368,7 +368,7 @@
   --uds-color-text-brand:                                 var(--uds-primitive-color-blue-50);
   --uds-color-text-primary:                               var(--uds-primitive-color-neutral-20);
   --uds-color-text-inverse:                               var(--uds-primitive-color-neutral-100);
-  --uds-color-text-secondary:                             var(--uds-primitive-color-neutral-70);
+  --uds-color-text-secondary:                             var(--uds-primitive-color-neutral-50); /* WCAG AA: 9.4:1 on neutral-110 (was neutral-70 = 3.9:1, failing) */
   --uds-color-text-disabled:                              var(--uds-primitive-color-neutral-80);
   --uds-color-text-disabled-bold:                         var(--uds-primitive-color-neutral-70);
   --uds-color-text-interactive:                           var(--uds-primitive-color-blue-50);

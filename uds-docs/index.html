@@ -11,11 +11,11 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Poppins:wght@400;500;700&family=Roboto:wght@400;500;700&family=Lexend:wght@400;500;700&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
-  <link rel="stylesheet" href="./uds/uds.css?v=48" />
-  <link rel="stylesheet" href="./docs/site.css?v=2" />
+  <link rel="stylesheet" href="./uds/uds.css?v=51" />
+  <link rel="stylesheet" href="./docs/site.css?v=5" />
   <script>
     (function () {
-      var SITE_VERSION = '2026.05.09.3';
+      var SITE_VERSION = '2026.05.09.4';
       var base = window.location.pathname.replace(/\/index\.html$/, '').replace(/\/$/, '');
       fetch(base + '/version.txt?_=' + Date.now()).then(function (r) {
         if (!r.ok) return;
@@ -68,7 +68,7 @@
       </span>
     </button>
     <select class="sg-version-select" id="sg-version-dropdown" aria-label="UDS version"></select>
-    <span class="sg-brand-bar-build">SITE 2026.05.09.3</span>
+    <span class="sg-brand-bar-build">SITE 2026.05.09.4</span>
   </div>
 
   <!-- Pre-flight checklist dialog -->
@@ -349,11 +349,11 @@
         <h1 class="sg-page-title">Button</h1>
         <p class="sg-page-desc">A button triggers an event or action. Switch the <strong>Brand</strong> control to see accent color changes.</p>
         <div class="sg-page-tabs" role="tablist">
-          <button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button>
-          <button class="sg-page-tab" data-tab="code">Code</button>
-          <button class="sg-page-tab" data-tab="guidelines">Guidelines</button>
-          <button class="sg-page-tab" data-tab="changelog">Changelog</button>
-          <button class="sg-page-tab" data-tab="playground">Playground</button>
+          <button role="tab" class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button>
+          <button role="tab" class="sg-page-tab" data-tab="code">Code</button>
+          <button role="tab" class="sg-page-tab" data-tab="guidelines">Guidelines</button>
+          <button role="tab" class="sg-page-tab" data-tab="changelog">Changelog</button>
+          <button role="tab" class="sg-page-tab" data-tab="playground">Playground</button>
         </div>
 
         <div data-tab-panel="examples" class="active" data-needs-fetch></div>
@@ -377,7 +377,7 @@
       <div data-page="text-input">
         <h1 class="sg-page-title">Text Input</h1>
         <p class="sg-page-desc">A text input lets users enter a single line of text. Includes label, optional helper text, character counter, and icon slots.</p>
-        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="guidelines">Guidelines</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
+        <div class="sg-page-tabs" role="tablist"><button role="tab" class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button role="tab" class="sg-page-tab" data-tab="code">Code</button><button role="tab" class="sg-page-tab" data-tab="guidelines">Guidelines</button><button role="tab" class="sg-page-tab" data-tab="changelog">Changelog</button><button role="tab" class="sg-page-tab" data-tab="playground">Playground</button></div>
         <div data-tab-panel="examples" class="active" data-needs-fetch></div>
         <div data-tab-panel="code">
           <h3 class="sg-subsection-title">Import</h3><pre class="sg-playground-code" style="margin-bottom:24px;">@import url('./components/text-input.css');</pre>
@@ -395,7 +395,7 @@
       <div data-page="checkbox">
         <h1 class="sg-page-title">Checkbox</h1>
         <p class="sg-page-desc">A checkbox lets users select one or more options from a set.</p>
-        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="guidelines">Guidelines</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
+        <div class="sg-page-tabs" role="tablist"><button role="tab" class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button role="tab" class="sg-page-tab" data-tab="code">Code</button><button role="tab" class="sg-page-tab" data-tab="guidelines">Guidelines</button><button role="tab" class="sg-page-tab" data-tab="changelog">Changelog</button><button role="tab" class="sg-page-tab" data-tab="playground">Playground</button></div>
         <div data-tab-panel="examples" class="active" data-needs-fetch></div>
         <div data-tab-panel="code"><h3 class="sg-subsection-title">Import</h3><pre class="sg-playground-code" style="margin-bottom:24px;">@import url('./components/checkbox.css');</pre><h3 class="sg-subsection-title">CSS Classes</h3><table class="sg-api-table"><thead><tr><th>Class</th><th>Description</th></tr></thead><tbody><tr><td><code>.udc-checkbox</code></td><td>Root label wrapper</td></tr><tr><td><code>.udc-checkbox__control</code></td><td>Visual checkbox indicator</td></tr><tr><td><code>.udc-checkbox__label</code></td><td>Label text</td></tr><tr><td><code>.udc-checkbox__required</code></td><td>Required dot indicator</td></tr></tbody></table></div>
         <div data-tab-panel="guidelines"></div>
@@ -407,7 +407,7 @@
       <div data-page="radio">
         <h1 class="sg-page-title">Radio</h1>
         <p class="sg-page-desc">A radio button lets users select exactly one option from a set.</p>
-        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="guidelines">Guidelines</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
+        <div class="sg-page-tabs" role="tablist"><button role="tab" class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button role="tab" class="sg-page-tab" data-tab="code">Code</button><button role="tab" class="sg-page-tab" data-tab="guidelines">Guidelines</button><button role="tab" class="sg-page-tab" data-tab="changelog">Changelog</button><button role="tab" class="sg-page-tab" data-tab="playground">Playground</button></div>
         <div data-tab-panel="examples" class="active" data-needs-fetch></div>
         <div data-tab-panel="code"><h3 class="sg-subsection-title">Import</h3><pre class="sg-playground-code" style="margin-bottom:24px;">@import url('./components/radio.css');</pre><h3 class="sg-subsection-title">CSS Classes</h3><table class="sg-api-table"><thead><tr><th>Class</th><th>Description</th></tr></thead><tbody><tr><td><code>.udc-radio-group</code></td><td>Vertical stack wrapper</td></tr><tr><td><code>.udc-radio-group__legend</code></td><td>Group label</td></tr><tr><td><code>.udc-radio</code></td><td>Individual radio label</td></tr><tr><td><code>.udc-radio__control</code></td><td>Visual circle indicator</td></tr><tr><td><code>.udc-radio__label</code></td><td>Label text</td></tr></tbody></table></div>
         <div data-tab-panel="guidelines"></div>
@@ -419,7 +419,7 @@
       <div data-page="dropdown">
         <h1 class="sg-page-title">Dropdown</h1>
         <p class="sg-page-desc">A dropdown lets users select a single value from a list of options. It combines a trigger button with a floating option list.</p>
-        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="guidelines">Guidelines</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
+        <div class="sg-page-tabs" role="tablist"><button role="tab" class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button role="tab" class="sg-page-tab" data-tab="code">Code</button><button role="tab" class="sg-page-tab" data-tab="guidelines">Guidelines</button><button role="tab" class="sg-page-tab" data-tab="changelog">Changelog</button><button role="tab" class="sg-page-tab" data-tab="playground">Playground</button></div>
 
         <div data-tab-panel="examples" class="active" data-needs-fetch></div>
 
@@ -459,7 +459,7 @@
       <div data-page="badge">
         <h1 class="sg-page-title">Badge</h1>
         <p class="sg-page-desc">A badge is a visual indicator for categorization, status, or labels.</p>
-        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="guidelines">Guidelines</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
+        <div class="sg-page-tabs" role="tablist"><button role="tab" class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button role="tab" class="sg-page-tab" data-tab="code">Code</button><button role="tab" class="sg-page-tab" data-tab="guidelines">Guidelines</button><button role="tab" class="sg-page-tab" data-tab="changelog">Changelog</button><button role="tab" class="sg-page-tab" data-tab="playground">Playground</button></div>
         <div data-tab-panel="examples" class="active" data-needs-fetch></div>
         <div data-tab-panel="code"><h3 class="sg-subsection-title">Import</h3><pre class="sg-playground-code" style="margin-bottom:24px;">@import url('./components/badge.css');</pre><h3 class="sg-subsection-title">Data Attributes</h3><table class="sg-api-table"><thead><tr><th>Attribute</th><th>Values</th><th>Description</th></tr></thead><tbody><tr><td><code>data-variant</code></td><td><code>secondary</code>, <code>success</code>, <code>error</code>, <code>warning</code></td><td>Color variant (default is info/blue)</td></tr><tr><td><code>data-prominent</code></td><td><code>false</code></td><td>Subtle/tinted style</td></tr><tr><td><code>data-size</code></td><td><code>sm</code></td><td>Compact size</td></tr></tbody></table></div>
         <div data-tab-panel="guidelines"></div>
@@ -471,7 +471,7 @@
       <div data-page="divider">
         <h1 class="sg-page-title">Divider</h1>
         <p class="sg-page-desc">A horizontal divider separates content into clear groups.</p>
-        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="guidelines">Guidelines</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
+        <div class="sg-page-tabs" role="tablist"><button role="tab" class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button role="tab" class="sg-page-tab" data-tab="code">Code</button><button role="tab" class="sg-page-tab" data-tab="guidelines">Guidelines</button><button role="tab" class="sg-page-tab" data-tab="changelog">Changelog</button><button role="tab" class="sg-page-tab" data-tab="playground">Playground</button></div>
         <div data-tab-panel="examples" class="active" data-needs-fetch></div>
         <div data-tab-panel="code"><h3 class="sg-subsection-title">Import</h3><pre class="sg-playground-code" style="margin-bottom:24px;">@import url('./components/divider.css');</pre><table class="sg-api-table"><thead><tr><th>Attribute</th><th>Values</th></tr></thead><tbody><tr><td><code>data-padding</code></td><td><code>md</code>, <code>lg</code>, <code>xl</code> (default: sm)</td></tr></tbody></table></div>
         <div data-tab-panel="guidelines"></div>
@@ -483,7 +483,7 @@
       <div data-page="icon-wrapper">
         <h1 class="sg-page-title">Icon Wrapper</h1>
         <p class="sg-page-desc">An icon wrapper constrains an icon to a fixed size with consistent inner padding.</p>
-        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="guidelines">Guidelines</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
+        <div class="sg-page-tabs" role="tablist"><button role="tab" class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button role="tab" class="sg-page-tab" data-tab="code">Code</button><button role="tab" class="sg-page-tab" data-tab="guidelines">Guidelines</button><button role="tab" class="sg-page-tab" data-tab="changelog">Changelog</button><button role="tab" class="sg-page-tab" data-tab="playground">Playground</button></div>
         <div data-tab-panel="examples" class="active" data-needs-fetch></div>
         <div data-tab-panel="code"><h3 class="sg-subsection-title">Import</h3><pre class="sg-playground-code" style="margin-bottom:24px;">@import url('./components/icon-wrapper.css');</pre><table class="sg-api-table"><thead><tr><th>Attribute</th><th>Values</th></tr></thead><tbody><tr><td><code>data-size</code></td><td><code>16</code>, <code>20</code>, <code>24</code> (default), <code>32</code>, <code>48</code>, <code>64</code></td></tr></tbody></table></div>
         <div data-tab-panel="guidelines"></div>
@@ -495,7 +495,7 @@
       <div data-page="spacer">
         <h1 class="sg-page-title">Spacer</h1>
         <p class="sg-page-desc">A spacer adds consistent whitespace between elements using the spacing scale.</p>
-        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="guidelines">Guidelines</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
+        <div class="sg-page-tabs" role="tablist"><button role="tab" class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button role="tab" class="sg-page-tab" data-tab="code">Code</button><button role="tab" class="sg-page-tab" data-tab="guidelines">Guidelines</button><button role="tab" class="sg-page-tab" data-tab="changelog">Changelog</button><button role="tab" class="sg-page-tab" data-tab="playground">Playground</button></div>
         <div data-tab-panel="examples" class="active" data-needs-fetch></div>
         <div data-tab-panel="code"><h3 class="sg-subsection-title">Import</h3><pre class="sg-playground-code" style="margin-bottom:24px;">@import url('./components/spacer.css');</pre><table class="sg-api-table"><thead><tr><th>Attribute</th><th>Values</th></tr></thead><tbody><tr><td><code>data-size</code></td><td><code>050</code>, <code>075</code>, <code>100</code>, <code>150</code>, <code>200</code>, <code>300</code>, <code>400</code>, <code>600</code></td></tr></tbody></table></div>
         <div data-tab-panel="guidelines"></div>
@@ -507,7 +507,7 @@
       <div data-page="breadcrumb">
         <h1 class="sg-page-title">Breadcrumb</h1>
         <p class="sg-page-desc">A breadcrumb shows the user's location in a page hierarchy.</p>
-        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="guidelines">Guidelines</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
+        <div class="sg-page-tabs" role="tablist"><button role="tab" class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button role="tab" class="sg-page-tab" data-tab="code">Code</button><button role="tab" class="sg-page-tab" data-tab="guidelines">Guidelines</button><button role="tab" class="sg-page-tab" data-tab="changelog">Changelog</button><button role="tab" class="sg-page-tab" data-tab="playground">Playground</button></div>
         <div data-tab-panel="examples" class="active" data-needs-fetch></div>
         <div data-tab-panel="code"><h3 class="sg-subsection-title">Import</h3><pre class="sg-playground-code" style="margin-bottom:24px;">@import url('./components/breadcrumb.css');</pre><table class="sg-api-table"><thead><tr><th>Attribute</th><th>Description</th></tr></thead><tbody><tr><td><code>data-frameless</code></td><td>Removes the pill container</td></tr><tr><td><code>aria-current="page"</code></td><td>Marks the current page (bold, non-interactive)</td></tr></tbody></table></div>
         <div data-tab-panel="guidelines"></div>
@@ -519,7 +519,7 @@
       <div data-page="tabs">
         <h1 class="sg-page-title">Tabs</h1>
         <p class="sg-page-desc">Horizontal tabs let users switch between related views in a single content area.</p>
-        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="guidelines">Guidelines</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
+        <div class="sg-page-tabs" role="tablist"><button role="tab" class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button role="tab" class="sg-page-tab" data-tab="code">Code</button><button role="tab" class="sg-page-tab" data-tab="guidelines">Guidelines</button><button role="tab" class="sg-page-tab" data-tab="changelog">Changelog</button><button role="tab" class="sg-page-tab" data-tab="playground">Playground</button></div>
         <div data-tab-panel="examples" class="active" data-needs-fetch></div>
         <div data-tab-panel="code"><h3 class="sg-subsection-title">Import</h3><pre class="sg-playground-code" style="margin-bottom:24px;">@import url('./components/tab-horizontal.css');</pre><table class="sg-api-table"><thead><tr><th>Class / Attribute</th><th>Description</th></tr></thead><tbody><tr><td><code>.udc-tabs</code></td><td>Tab bar container</td></tr><tr><td><code>.udc-tab</code></td><td>Individual tab button</td></tr><tr><td><code>data-size="sm"</code></td><td>Compact vertical padding</td></tr><tr><td><code>aria-selected="true"</code></td><td>Active tab</td></tr><tr><td><code>disabled</code></td><td>Disabled tab</td></tr></tbody></table></div>
         <div data-tab-panel="guidelines"></div>
@@ -531,7 +531,7 @@
       <div data-page="nav-header">
         <h1 class="sg-page-title">Nav Header</h1>
         <p class="sg-page-desc">A top-level application header bar with logo, bento dropdown for app switching, search, and user action buttons.</p>
-        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="guidelines">Guidelines</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
+        <div class="sg-page-tabs" role="tablist"><button role="tab" class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button role="tab" class="sg-page-tab" data-tab="code">Code</button><button role="tab" class="sg-page-tab" data-tab="guidelines">Guidelines</button><button role="tab" class="sg-page-tab" data-tab="changelog">Changelog</button><button role="tab" class="sg-page-tab" data-tab="playground">Playground</button></div>
 
         <div data-tab-panel="examples" class="active" data-needs-fetch></div>
         <div data-tab-panel="code">
@@ -566,7 +566,7 @@
       <div data-page="nav-vertical">
         <h1 class="sg-page-title">Nav Vertical</h1>
         <p class="sg-page-desc">A vertical sidebar navigation list with icon + label items. Supports leading-icon and text-only variants.</p>
-        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="guidelines">Guidelines</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
+        <div class="sg-page-tabs" role="tablist"><button role="tab" class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button role="tab" class="sg-page-tab" data-tab="code">Code</button><button role="tab" class="sg-page-tab" data-tab="guidelines">Guidelines</button><button role="tab" class="sg-page-tab" data-tab="changelog">Changelog</button><button role="tab" class="sg-page-tab" data-tab="playground">Playground</button></div>
         <div data-tab-panel="examples" class="active" data-needs-fetch></div>
         <div data-tab-panel="code">
           <h3 class="sg-subsection-title">Import</h3>
@@ -593,7 +593,7 @@
       <div data-page="data-table">
         <h1 class="sg-page-title">Data Table</h1>
         <p class="sg-page-desc">A data grid with sortable headers, row selection via checkboxes, cell types (text, badge, action button), alignment helpers, and error highlighting.</p>
-        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="guidelines">Guidelines</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
+        <div class="sg-page-tabs" role="tablist"><button role="tab" class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button role="tab" class="sg-page-tab" data-tab="code">Code</button><button role="tab" class="sg-page-tab" data-tab="guidelines">Guidelines</button><button role="tab" class="sg-page-tab" data-tab="changelog">Changelog</button><button role="tab" class="sg-page-tab" data-tab="playground">Playground</button></div>
         <div data-tab-panel="examples" class="active" data-needs-fetch></div>
         <div data-tab-panel="code">
           <h3 class="sg-subsection-title">Import</h3>
@@ -625,7 +625,7 @@
       <div data-page="tile">
         <h1 class="sg-page-title">Tile</h1>
         <p class="sg-page-desc">A selectable card with a label, body text, and optional trailing chevron. Supports default, hover, selected, focused, and disabled states.</p>
-        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="guidelines">Guidelines</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
+        <div class="sg-page-tabs" role="tablist"><button role="tab" class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button role="tab" class="sg-page-tab" data-tab="code">Code</button><button role="tab" class="sg-page-tab" data-tab="guidelines">Guidelines</button><button role="tab" class="sg-page-tab" data-tab="changelog">Changelog</button><button role="tab" class="sg-page-tab" data-tab="playground">Playground</button></div>
         <div data-tab-panel="examples" class="active" data-needs-fetch></div>
         <div data-tab-panel="code">
           <h3 class="sg-subsection-title">Import</h3>
@@ -653,7 +653,7 @@
       <div data-page="list">
         <h1 class="sg-page-title">List</h1>
         <p class="sg-page-desc">A vertical list of selectable items with optional leading and trailing icons. Supports default, hover, active, selected, and focused states.</p>
-        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="guidelines">Guidelines</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
+        <div class="sg-page-tabs" role="tablist"><button role="tab" class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button role="tab" class="sg-page-tab" data-tab="code">Code</button><button role="tab" class="sg-page-tab" data-tab="guidelines">Guidelines</button><button role="tab" class="sg-page-tab" data-tab="changelog">Changelog</button><button role="tab" class="sg-page-tab" data-tab="playground">Playground</button></div>
         <div data-tab-panel="examples" class="active" data-needs-fetch></div>
         <div data-tab-panel="code">
           <h3 class="sg-subsection-title">Import</h3>
@@ -679,7 +679,7 @@
       <div data-page="notification">
         <h1 class="sg-page-title">Notification</h1>
         <p class="sg-page-desc">Inline status banners for info, success, error, and warning messages. Supports subtle, prominent, and inline styles.</p>
-        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="guidelines">Guidelines</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
+        <div class="sg-page-tabs" role="tablist"><button role="tab" class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button role="tab" class="sg-page-tab" data-tab="code">Code</button><button role="tab" class="sg-page-tab" data-tab="guidelines">Guidelines</button><button role="tab" class="sg-page-tab" data-tab="changelog">Changelog</button><button role="tab" class="sg-page-tab" data-tab="playground">Playground</button></div>
         <div data-tab-panel="examples" class="active" data-needs-fetch></div>
         <div data-tab-panel="code">
           <h3 class="sg-subsection-title">Import</h3>
@@ -706,7 +706,7 @@
       <div data-page="dialog">
         <h1 class="sg-page-title">Dialog</h1>
         <p class="sg-page-desc">A modal overlay with a title bar, scrollable content area, and action footer. Supports 1–4 content slots.</p>
-        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="guidelines">Guidelines</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
+        <div class="sg-page-tabs" role="tablist"><button role="tab" class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button role="tab" class="sg-page-tab" data-tab="code">Code</button><button role="tab" class="sg-page-tab" data-tab="guidelines">Guidelines</button><button role="tab" class="sg-page-tab" data-tab="changelog">Changelog</button><button role="tab" class="sg-page-tab" data-tab="playground">Playground</button></div>
         <div data-tab-panel="examples" class="active" data-needs-fetch></div>
         <div data-tab-panel="code">
           <h3 class="sg-subsection-title">Import</h3>
@@ -734,7 +734,7 @@
       <div data-page="chip">
         <h1 class="sg-page-title">Chip</h1>
         <p class="sg-page-desc">Compact elements for filtering, input tags, and dropdown triggers. Supports selected state, leading/trailing icons, and four variants.</p>
-        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="guidelines">Guidelines</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
+        <div class="sg-page-tabs" role="tablist"><button role="tab" class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button role="tab" class="sg-page-tab" data-tab="code">Code</button><button role="tab" class="sg-page-tab" data-tab="guidelines">Guidelines</button><button role="tab" class="sg-page-tab" data-tab="changelog">Changelog</button><button role="tab" class="sg-page-tab" data-tab="playground">Playground</button></div>
         <div data-tab-panel="examples" class="active" data-needs-fetch></div>
         <div data-tab-panel="code">
           <h3 class="sg-subsection-title">Import</h3>
@@ -760,7 +760,7 @@
       <div data-page="search">
         <h1 class="sg-page-title">Search</h1>
         <p class="sg-page-desc">A search input with a leading search icon and a clear button that appears when the field has a value. Supports default, hover, focused, and error states.</p>
-        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="guidelines">Guidelines</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
+        <div class="sg-page-tabs" role="tablist"><button role="tab" class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button role="tab" class="sg-page-tab" data-tab="code">Code</button><button role="tab" class="sg-page-tab" data-tab="guidelines">Guidelines</button><button role="tab" class="sg-page-tab" data-tab="changelog">Changelog</button><button role="tab" class="sg-page-tab" data-tab="playground">Playground</button></div>
         <div data-tab-panel="examples" class="active" data-needs-fetch></div>
         <div data-tab-panel="code">
           <h3 class="sg-subsection-title">Import</h3>
@@ -786,7 +786,7 @@
       <div data-page="tooltip">
         <h1 class="sg-page-title">Tooltip</h1>
         <p class="sg-page-desc">A lightweight text popover that appears on hover or focus. CSS-only — no JavaScript required. Supports top, bottom, left, and right positioning.</p>
-        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="guidelines">Guidelines</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
+        <div class="sg-page-tabs" role="tablist"><button role="tab" class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button role="tab" class="sg-page-tab" data-tab="code">Code</button><button role="tab" class="sg-page-tab" data-tab="guidelines">Guidelines</button><button role="tab" class="sg-page-tab" data-tab="changelog">Changelog</button><button role="tab" class="sg-page-tab" data-tab="playground">Playground</button></div>
         <div data-tab-panel="examples" class="active" data-needs-fetch></div>
         <div data-tab-panel="code">
           <h3 class="sg-subsection-title">Import</h3>
@@ -812,7 +812,7 @@
       <div data-page="link">
         <h1 class="sg-page-title">Link</h1>
         <p class="sg-page-desc">A link navigates users to another page, route, resource, or external destination.</p>
-        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="guidelines">Guidelines</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
+        <div class="sg-page-tabs" role="tablist"><button role="tab" class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button role="tab" class="sg-page-tab" data-tab="code">Code</button><button role="tab" class="sg-page-tab" data-tab="guidelines">Guidelines</button><button role="tab" class="sg-page-tab" data-tab="changelog">Changelog</button><button role="tab" class="sg-page-tab" data-tab="playground">Playground</button></div>
         <div data-tab-panel="examples" class="active" data-needs-fetch></div>
         <div data-tab-panel="code"><h3 class="sg-subsection-title">Vanilla HTML</h3><pre class="sg-playground-code"><code>&lt;a class="udc-link" href="/properties"&gt;Properties&lt;/a&gt;
 &lt;a class="udc-link" href="/settings" aria-current="page"&gt;Settings&lt;/a&gt;
@@ -827,7 +827,7 @@
       <div data-page="label">
         <h1 class="sg-page-title">Label</h1>
         <p class="sg-page-desc">A label identifies an input, selection control, or form field and can include required-state affordances.</p>
-        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="guidelines">Guidelines</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
+        <div class="sg-page-tabs" role="tablist"><button role="tab" class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button role="tab" class="sg-page-tab" data-tab="code">Code</button><button role="tab" class="sg-page-tab" data-tab="guidelines">Guidelines</button><button role="tab" class="sg-page-tab" data-tab="changelog">Changelog</button><button role="tab" class="sg-page-tab" data-tab="playground">Playground</button></div>
         <div data-tab-panel="examples" class="active" data-needs-fetch></div>
         <div data-tab-panel="code"><h3 class="sg-subsection-title">Vanilla HTML</h3><pre class="sg-playground-code"><code>&lt;label class="udc-label" for="full-name" data-required="true"&gt;
   Full name &lt;span class="udc-label__required" aria-hidden="true"&gt;&lt;/span&gt;
@@ -840,7 +840,7 @@
       <div data-page="text-area">
         <h1 class="sg-page-title">Text Area</h1>
         <p class="sg-page-desc">A text area lets users enter multi-line freeform text.</p>
-        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="guidelines">Guidelines</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
+        <div class="sg-page-tabs" role="tablist"><button role="tab" class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button role="tab" class="sg-page-tab" data-tab="code">Code</button><button role="tab" class="sg-page-tab" data-tab="guidelines">Guidelines</button><button role="tab" class="sg-page-tab" data-tab="changelog">Changelog</button><button role="tab" class="sg-page-tab" data-tab="playground">Playground</button></div>
         <div data-tab-panel="examples" class="active" data-needs-fetch></div>
         <div data-tab-panel="code"><h3 class="sg-subsection-title">Vanilla HTML</h3><pre class="sg-playground-code"><code>&lt;div class="udc-text-area"&gt;
   &lt;label class="udc-label" for="notes"&gt;Notes&lt;/label&gt;
@@ -857,7 +857,7 @@
       <div data-page="combobox">
         <h1 class="sg-page-title">Combobox</h1>
         <p class="sg-page-desc">A combobox combines text entry with a selectable list of suggestions.</p>
-        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="guidelines">Guidelines</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
+        <div class="sg-page-tabs" role="tablist"><button role="tab" class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button role="tab" class="sg-page-tab" data-tab="code">Code</button><button role="tab" class="sg-page-tab" data-tab="guidelines">Guidelines</button><button role="tab" class="sg-page-tab" data-tab="changelog">Changelog</button><button role="tab" class="sg-page-tab" data-tab="playground">Playground</button></div>
         <div data-tab-panel="examples" class="active" data-needs-fetch></div>
         <div data-tab-panel="code"><div class="sg-migration-block"><h3 class="sg-subsection-title">Deferred</h3><p class="sg-subsection-desc">No reference HTML is generated yet because the Figma page does not contain a component set to inspect. This prevents the docs from inventing API or markup before design is ready.</p></div></div>
         <div data-tab-panel="guidelines"></div>
@@ -868,7 +868,7 @@
       <div data-page="date-picker">
         <h1 class="sg-page-title">Date Picker</h1>
         <p class="sg-page-desc">A date picker helps users enter or select a calendar date.</p>
-        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="guidelines">Guidelines</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
+        <div class="sg-page-tabs" role="tablist"><button role="tab" class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button role="tab" class="sg-page-tab" data-tab="code">Code</button><button role="tab" class="sg-page-tab" data-tab="guidelines">Guidelines</button><button role="tab" class="sg-page-tab" data-tab="changelog">Changelog</button><button role="tab" class="sg-page-tab" data-tab="playground">Playground</button></div>
         <div data-tab-panel="examples" class="active" data-needs-fetch></div>
         <div data-tab-panel="code"><div class="sg-migration-block"><h3 class="sg-subsection-title">Deferred</h3><p class="sg-subsection-desc">No reference HTML is generated yet because the Figma page does not contain a component set to inspect. This prevents the docs from inventing API or markup before design is ready.</p></div></div>
         <div data-tab-panel="guidelines"></div>
@@ -879,7 +879,7 @@
       <div data-page="toggle">
         <h1 class="sg-page-title">Toggle</h1>
         <p class="sg-page-desc">A toggle switches a setting on or off and reflects the current state immediately.</p>
-        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="guidelines">Guidelines</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
+        <div class="sg-page-tabs" role="tablist"><button role="tab" class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button role="tab" class="sg-page-tab" data-tab="code">Code</button><button role="tab" class="sg-page-tab" data-tab="guidelines">Guidelines</button><button role="tab" class="sg-page-tab" data-tab="changelog">Changelog</button><button role="tab" class="sg-page-tab" data-tab="playground">Playground</button></div>
         <div data-tab-panel="examples" class="active" data-needs-fetch></div>
         <div data-tab-panel="code"><h3 class="sg-subsection-title">Vanilla HTML</h3><pre class="sg-playground-code"><code>&lt;button class="udc-toggle" role="switch" aria-checked="true"&gt;
   &lt;span class="udc-toggle__control"&gt;&lt;span class="udc-toggle__thumb"&gt;&lt;/span&gt;&lt;/span&gt;
@@ -893,7 +893,7 @@
       <div data-page="pagination">
         <h1 class="sg-page-title">Pagination</h1>
         <p class="sg-page-desc">Pagination lets users move through pages of results or records.</p>
-        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="guidelines">Guidelines</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
+        <div class="sg-page-tabs" role="tablist"><button role="tab" class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button role="tab" class="sg-page-tab" data-tab="code">Code</button><button role="tab" class="sg-page-tab" data-tab="guidelines">Guidelines</button><button role="tab" class="sg-page-tab" data-tab="changelog">Changelog</button><button role="tab" class="sg-page-tab" data-tab="playground">Playground</button></div>
         <div data-tab-panel="examples" class="active" data-needs-fetch></div>
         <div data-tab-panel="code"><h3 class="sg-subsection-title">Vanilla HTML</h3><pre class="sg-playground-code"><code>&lt;nav class="udc-pagination" aria-label="Pagination"&gt;
   &lt;div class="udc-pagination__pages"&gt;
@@ -911,7 +911,7 @@
       <div data-page="data-view">
         <h1 class="sg-page-title">Data View</h1>
         <p class="sg-page-desc">A data view presents collections of records in non-table layouts such as cards or compact summaries.</p>
-        <div class="sg-page-tabs" role="tablist"><button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button class="sg-page-tab" data-tab="code">Code</button><button class="sg-page-tab" data-tab="guidelines">Guidelines</button><button class="sg-page-tab" data-tab="changelog">Changelog</button><button class="sg-page-tab" data-tab="playground">Playground</button></div>
+        <div class="sg-page-tabs" role="tablist"><button role="tab" class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button role="tab" class="sg-page-tab" data-tab="code">Code</button><button role="tab" class="sg-page-tab" data-tab="guidelines">Guidelines</button><button role="tab" class="sg-page-tab" data-tab="changelog">Changelog</button><button role="tab" class="sg-page-tab" data-tab="playground">Playground</button></div>
         <div data-tab-panel="examples" class="active" data-needs-fetch></div>
         <div data-tab-panel="code"><div class="sg-migration-block"><h3 class="sg-subsection-title">Deferred</h3><p class="sg-subsection-desc">No reference HTML is generated yet because the Figma page does not contain a component set to inspect. This prevents the docs from inventing API or markup before design is ready.</p></div></div>
         <div data-tab-panel="guidelines"></div>

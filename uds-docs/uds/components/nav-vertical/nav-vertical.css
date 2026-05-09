@@ -85,6 +85,11 @@
 }
 
 /* Selected */
+/* Phase 16: aria-current="page" is the WCAG-correct attribute for marking
+   the currently-active navigation item. aria-selected only validates inside
+   a [role="listbox"] / [role="tab"] container; for nav buttons, aria-current
+   is the right ARIA pattern. Both selectors are kept for backwards compat. */
+.udc-nav-button[aria-current="page"],
 .udc-nav-button[aria-selected="true"] {
   background: var(--uds-color-surface-interactive-active);
   color: var(--uds-color-text-inverse);
@@ -92,6 +97,7 @@
   border-radius: var(--uds-border-radius-input);
 }
 
+.udc-nav-button[aria-current="page"] .material-symbols-outlined,
 .udc-nav-button[aria-selected="true"] .material-symbols-outlined {
   color: var(--uds-color-icon-inverse);
 }
