@@ -24,6 +24,12 @@ body {
   position: sticky; top: 0; z-index: var(--uds-z-index-header);
   font-family: var(--uds-font-family);
 }
+/* The brand bar uses `surface-interactive-default` which flips with theme
+   (saturated -70 blue in light mode, lighter -50 blue in dark mode). text-
+   inverse correctly flips with it (light text in light mode, dark text in
+   dark mode) so contrast passes in both. Phase 17 originally hardcoded
+   this to a fixed light, which then failed in dark mode where the bg is
+   also light. Reverted. */
 .sg-brand-bar {
   background: var(--uds-color-surface-interactive-default); color: var(--uds-color-text-inverse);
   padding: 0 var(--uds-space-300); height: var(--uds-space-500);
@@ -118,7 +124,12 @@ body {
 }
 /* Phase 16: kbd background bumped from rgba(255,255,255,0.18) → 0.32 so the
    white text inside the kbd has ≥4.5:1 contrast against the now-darker chip
-   background on top of the brand bar's blue. */
+   background on top of the brand bar's blue.
+   Phase 17: switched color from var(--uds-color-text-inverse) to a fixed
+   white. text-inverse flips to dark in dark mode, but the kbd background
+   stays a translucent dark overlay regardless of theme — so dark text on
+   dark bg failed contrast. The brand bar itself is theme-invariant
+   (always blue) so a fixed white text is correct here. */
 .sg-header-search-trigger__kbds kbd {
   display: inline-flex; align-items: center; justify-content: center;
   min-width: 18px; height: 18px; padding: 0 5px;
@@ -126,7 +137,7 @@ body {
   background: rgba(0,0,0,0.32);
   border: 1px solid rgba(255,255,255,0.30);
   border-radius: 3px;
-  color: var(--uds-color-text-inverse);
+  color: rgb(245, 245, 245);
   line-height: 1;
 }
 @media (max-width: 720px) {

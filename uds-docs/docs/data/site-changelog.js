@@ -622,6 +622,18 @@ export const SITE_CHANGELOG = [
         { type: 'changed', text: 'Phase 16: button.css `[data-btn-color="success/warning/neutral"]` palette overrides switched from primitive-token references (`green-70`, `orange-70`, `neutral-90`) to semantic tokens (`surface-success`, `surface-warning`, `surface-inverse`). Side benefit: the audit-token-usage rule of "components only reference semantic tokens" is no longer violated by the button overrides.' },
         { type: 'changed', text: 'Phase 16: site-CSS `.sg-theme-bar-label` and `.sg-sidebar-heading` switched from `text-secondary` to `text-primary`. These are 10px bold uppercase section labels — even with the bumped text-secondary they sat at ~4.0:1 on subtle surfaces; switching to text-primary clears 10:1+ comfortably while staying visually distinct from inline body text.' }
       ]
+    },
+    {
+      version: 'SITE 2026.05.09.5',
+      date: '2026-05-09',
+      changes: [
+        { type: 'fixed', text: 'Phase 17: multi-theme accessibility audit. Phase 16 only verified Base Light. Cross-theme axe-core scanning revealed 297 additional contrast failures across the other 5 supported theme combinations (Base Dark: 40, ResMan Dark: 40, AnyoneHome Light: 106, Inhabit Light: 111). Token-level fixes brought all 6 themes × 7 page types (42 combos) to **0 violations**.' },
+        { type: 'changed', text: 'Phase 17: dark-mode text tokens bumped from -50 to -40 primitives. text-info, text-warning, text-success, text-error in `[data-color-scheme="dark"]` were giving ~4.1-4.3:1 contrast on -100 subtle surfaces — just below WCAG AA 4.5:1. Bumping to -40 (lighter) raises every combination above 6:1 while staying visually consistent with the dark-mode aesthetic.' },
+        { type: 'changed', text: 'Phase 17: AnyoneHome (emerald) and Inhabit (amber) brand accents bumped from -70 to -90 primitives for `surface-interactive-default`. emerald-70 (#059669) gave white text only 3.45:1; amber-70 (#d97706) gave 2.66:1 — both failing WCAG AA. emerald-90 (#065f46) gives 6.97:1, amber-90 (#92400e) gives 6.06:1. Hover/active levels move in lockstep so the visual hierarchy is preserved (just shifted darker). The brand accent is still recognizably emerald/amber.' },
+        { type: 'fixed', text: 'Phase 17: kbd text in the header search trigger (`/` and `⌘K` shortcuts) switched from `var(--uds-color-text-inverse)` to a fixed `rgb(245,245,245)`. text-inverse flips with theme (light text in light mode, dark text in dark mode) — but the kbd has its own `rgba(0,0,0,0.32)` overlay background that composites near-black regardless of theme. Dark text on near-black was 2.45:1 in dark mode. The kbd is the one place in the brand bar where the CHILD background overrides the PARENT theme-flipping bg, so theme-invariant text is correct.' },
+        { type: 'added', text: 'Phase 17: new `scripts/audit-theme-contrast.sh` + `lib/audit_theme_contrast.js` — multi-theme axe-core scanner that validates contrast/aria across all 6 theme combinations on 7 representative pages. Wired into `.github/workflows/audits.yml` as a separate `theme-contrast` job. Catches future theme-specific regressions that the Phase 16 single-theme scan would have missed.' },
+        { type: 'added', text: 'Phase 17: extended `role="tab"` to the 4 token-page fragments (`docs/pages/tokens/*.html`) — Phase 16 only updated index.html and changelog/ai-assist fragments. semantic-colors and primitive-colors fragments needed the role too.' }
+      ]
     }
 ];
 

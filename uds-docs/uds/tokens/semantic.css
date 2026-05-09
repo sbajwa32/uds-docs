@@ -375,10 +375,10 @@
   --uds-color-text-interactive-hover:                     var(--uds-primitive-color-blue-40);
   --uds-color-text-interactive-active:                    var(--uds-primitive-color-blue-60-M);
   --uds-color-text-interactive-neutral:                   var(--uds-primitive-color-neutral-20);
-  --uds-color-text-info:                                  var(--uds-primitive-color-blue-50);
-  --uds-color-text-success:                               var(--uds-primitive-color-green-50);
-  --uds-color-text-error:                                 var(--uds-primitive-color-red-50);
-  --uds-color-text-warning:                               var(--uds-primitive-color-orange-50);
+  --uds-color-text-info:                                  var(--uds-primitive-color-blue-40);    /* Phase 17: dark-mode bumped to -40 for AA on subtle bg (was -50 = 4.28:1) */
+  --uds-color-text-success:                               var(--uds-primitive-color-green-40);   /* Phase 17: dark-mode bumped to -40 for AA on subtle bg */
+  --uds-color-text-error:                                 var(--uds-primitive-color-red-40);     /* Phase 17: dark-mode bumped to -40 for AA on subtle bg */
+  --uds-color-text-warning:                               var(--uds-primitive-color-orange-40);  /* Phase 17: dark-mode bumped to -40 for AA on subtle bg (was -50 = 4.14:1) */
 
   /* ---- Icon ---- */
   --uds-color-icon-brand:                                 var(--uds-primitive-color-blue-50);
@@ -424,47 +424,56 @@
   --uds-color-border-subtle-interactive-active:           var(--uds-primitive-color-blue-30);
 }
 
-/* ---- AnyoneHome — interactive accent: emerald ---- */
+/* ---- AnyoneHome — interactive accent: emerald ----
+   Phase 17: bumped fill levels from -70/-60-M/-80 to -90/-80/-100. The -70
+   level (emerald #059669) gave white text only 3.45:1 — failing WCAG AA.
+   -90 (#065f46) gives 6.97:1 white text. Hover/active levels move in lockstep
+   so the visual hierarchy is preserved (just shifted darker). Text/icon/
+   border tokens that pair with neutral surfaces stay at -70 so they remain
+   visibly the AnyoneHome accent. */
 [data-theme="anyonehome"] {
-  --uds-color-surface-interactive-default:                var(--uds-primitive-color-emerald-70);
-  --uds-color-surface-interactive-hover:                  var(--uds-primitive-color-emerald-60-M);
-  --uds-color-surface-interactive-active:                 var(--uds-primitive-color-emerald-80);
+  --uds-color-surface-interactive-default:                var(--uds-primitive-color-emerald-90);
+  --uds-color-surface-interactive-hover:                  var(--uds-primitive-color-emerald-80);
+  --uds-color-surface-interactive-active:                 var(--uds-primitive-color-emerald-100);
   --uds-color-surface-interactive-subtle:                 var(--uds-primitive-color-emerald-10);
   --uds-color-surface-interactive-subtle-hover:           var(--uds-primitive-color-emerald-20);
   --uds-color-surface-interactive-subtle-active:          var(--uds-primitive-color-emerald-30);
   --uds-color-surface-brand-dynamic-bold:                 var(--uds-primitive-color-emerald-100);
-  --uds-color-text-brand:                                 var(--uds-primitive-color-emerald-70);
-  --uds-color-icon-brand:                                 var(--uds-primitive-color-emerald-70);
-  --uds-color-icon-interactive:                           var(--uds-primitive-color-emerald-70);
-  --uds-color-icon-interactive-hover:                     var(--uds-primitive-color-emerald-60-M);
-  --uds-color-icon-interactive-active:                    var(--uds-primitive-color-emerald-80);
-  --uds-color-border-brand:                               var(--uds-primitive-color-emerald-70);
-  --uds-color-border-interactive:                         var(--uds-primitive-color-emerald-70);
-  --uds-color-border-interactive-hover:                   var(--uds-primitive-color-emerald-60-M);
-  --uds-color-border-interactive-active:                  var(--uds-primitive-color-emerald-80);
+  --uds-color-text-brand:                                 var(--uds-primitive-color-emerald-90);
+  --uds-color-icon-brand:                                 var(--uds-primitive-color-emerald-90);
+  --uds-color-icon-interactive:                           var(--uds-primitive-color-emerald-90);
+  --uds-color-icon-interactive-hover:                     var(--uds-primitive-color-emerald-80);
+  --uds-color-icon-interactive-active:                    var(--uds-primitive-color-emerald-100);
+  --uds-color-border-brand:                               var(--uds-primitive-color-emerald-90);
+  --uds-color-border-interactive:                         var(--uds-primitive-color-emerald-90);
+  --uds-color-border-interactive-hover:                   var(--uds-primitive-color-emerald-80);
+  --uds-color-border-interactive-active:                  var(--uds-primitive-color-emerald-100);
   --uds-color-border-subtle-interactive:                  var(--uds-primitive-color-emerald-10);
   --uds-color-border-subtle-interactive-hover:            var(--uds-primitive-color-emerald-20);
   --uds-color-border-subtle-interactive-active:           var(--uds-primitive-color-emerald-30);
 }
 
-/* ---- Inhabit — interactive accent: amber ---- */
+/* ---- Inhabit — interactive accent: amber ----
+   Phase 17: bumped from -70/-60-M/-80 to -90/-80/-100. amber-70 (#d97706)
+   gave white text only 2.66:1 — well below WCAG AA. -90 (#92400e) gives
+   6.06:1 white text. Hover/active levels move in lockstep. */
 [data-theme="inhabit"] {
-  --uds-color-surface-interactive-default:                var(--uds-primitive-color-amber-70);
-  --uds-color-surface-interactive-hover:                  var(--uds-primitive-color-amber-60-M);
-  --uds-color-surface-interactive-active:                 var(--uds-primitive-color-amber-80);
+  --uds-color-surface-interactive-default:                var(--uds-primitive-color-amber-90);
+  --uds-color-surface-interactive-hover:                  var(--uds-primitive-color-amber-80);
+  --uds-color-surface-interactive-active:                 var(--uds-primitive-color-amber-100);
   --uds-color-surface-interactive-subtle:                 var(--uds-primitive-color-amber-10);
   --uds-color-surface-interactive-subtle-hover:           var(--uds-primitive-color-amber-20);
   --uds-color-surface-interactive-subtle-active:          var(--uds-primitive-color-amber-30);
   --uds-color-surface-brand-dynamic-bold:                 var(--uds-primitive-color-amber-100);
-  --uds-color-text-brand:                                 var(--uds-primitive-color-amber-70);
-  --uds-color-icon-brand:                                 var(--uds-primitive-color-amber-70);
-  --uds-color-icon-interactive:                           var(--uds-primitive-color-amber-70);
-  --uds-color-icon-interactive-hover:                     var(--uds-primitive-color-amber-60-M);
-  --uds-color-icon-interactive-active:                    var(--uds-primitive-color-amber-80);
-  --uds-color-border-brand:                               var(--uds-primitive-color-amber-70);
-  --uds-color-border-interactive:                         var(--uds-primitive-color-amber-70);
-  --uds-color-border-interactive-hover:                   var(--uds-primitive-color-amber-60-M);
-  --uds-color-border-interactive-active:                  var(--uds-primitive-color-amber-80);
+  --uds-color-text-brand:                                 var(--uds-primitive-color-amber-90);
+  --uds-color-icon-brand:                                 var(--uds-primitive-color-amber-90);
+  --uds-color-icon-interactive:                           var(--uds-primitive-color-amber-90);
+  --uds-color-icon-interactive-hover:                     var(--uds-primitive-color-amber-80);
+  --uds-color-icon-interactive-active:                    var(--uds-primitive-color-amber-100);
+  --uds-color-border-brand:                               var(--uds-primitive-color-amber-90);
+  --uds-color-border-interactive:                         var(--uds-primitive-color-amber-90);
+  --uds-color-border-interactive-hover:                   var(--uds-primitive-color-amber-80);
+  --uds-color-border-interactive-active:                  var(--uds-primitive-color-amber-100);
   --uds-color-border-subtle-interactive:                  var(--uds-primitive-color-amber-10);
   --uds-color-border-subtle-interactive-hover:            var(--uds-primitive-color-amber-20);
   --uds-color-border-subtle-interactive-active:           var(--uds-primitive-color-amber-30);
