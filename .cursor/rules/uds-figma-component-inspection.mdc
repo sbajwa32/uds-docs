@@ -47,10 +47,10 @@ Figma, inspect the actual Figma node data:
 6. Extract token bindings and map them to CSS tokens using
    `uds-token-architecture.mdc`.
 7. Compare findings against:
-   - `uds-docs/content/<component>.json`
-   - `uds-docs/uds/components/<component>.css`
-   - component examples/code in `uds-docs/index.html`
-   - `COMPONENT_STATUS` in `uds-docs/docs/app.js`
+   - `uds-docs/uds/components/<component>/spec.json`
+   - `uds-docs/uds/components/<component>/<component>.css`
+   - `uds-docs/uds/components/<component>/examples/*.html`
+   - `uds-docs/uds/components/<component>/status.json` (the `current` field — replaces the legacy `COMPONENT_STATUS` table)
 
 ## Release changelog coverage
 
@@ -170,8 +170,8 @@ Stop and report instead of guessing when:
 
 - Do not derive props from screenshots alone.
 - Do not derive state matrices from screenshots alone.
-- Do not write `content/*.json` until node tree + variant matrix + doc-site
-  comparison are complete.
+- Do not write `uds/components/<id>/spec.json` until node tree + variant matrix +
+  doc-site comparison are complete.
 - Do not invent component anatomy when layer names or nested instances are
   ambiguous.
 - Do not overwrite a non-null `figmaNodeId` without reporting old/new.
