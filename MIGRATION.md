@@ -58,6 +58,7 @@ The baseline tag stays on `main` permanently as a recovery anchor.
 | 14 | Retroactive 0.2 archive conversion + version-aware dropdown rewrite | done — see Phase 14 section below |
 | 15 | Token Search + Playground engine module extraction (finishes Phase 4b/4c) | done — see Phase 15 section below |
 | 16 | Systemic accessibility remediation (last deferred item) | done — see Phase 16 section below |
+| 17 | Multi-theme accessibility audit + per-theme fixes + CI lock-in | done — see Phase 17 section below |
 
 ## Per-component migration status (Phase 6)
 
@@ -492,6 +493,109 @@ on the Changelog page.
 - Visual confirmation: section labels readable, component pills crisp,
   status colors clear, header bar text passes contrast
 
+## Phase 17 — multi-theme accessibility audit + CI lock-in
+
+Phase 16 only verified Base Light. UDS supports 6 theme combinations
+(Base/ResMan/AnyoneHome × Light/Dark + Inhabit Light) and each can have
+independent contrast issues. Phase 17 audited every combination across
+the representative page set and brought all of them to **zero
+violations**.
+
+### Theme-by-theme results
+
+| Theme | Phase 17 baseline | Phase 17 final |
+|-------|-------------------|----------------|
+| Base Light | 0 nodes (Phase 16 baseline) | 0 |
+| Base Dark | **40 nodes** | **0** |
+| ResMan Light | 0 nodes | 0 |
+| ResMan Dark | **40 nodes** | **0** |
+| AnyoneHome Light | **106 nodes** | **0** |
+| Inhabit Light | **111 nodes** | **0** |
+| **Total** | **297 nodes** | **0** |
+
+### Token bumps
+
+**Dark mode** — text on -100 subtle backgrounds was just below 4.5:1:
+
+| Token | Was | Now |
+|-------|-----|-----|
+| `text-info` | `blue-50` (4.28:1) | `blue-40` (7.4:1) |
+| `text-warning` | `orange-50` (4.14:1) | `orange-40` (6.5:1) |
+| `text-success` | `green-50` | `green-40` |
+| `text-error` | `red-50` | `red-40` |
+
+**AnyoneHome (emerald accent)** — `surface-interactive-default` was
+emerald-70 = 3.45:1 with white text:
+
+| Token | Was | Now |
+|-------|-----|-----|
+| `surface-interactive-default` | `emerald-70` (3.45:1) | `emerald-90` (6.97:1) |
+| `surface-interactive-hover` | `emerald-60-M` | `emerald-80` |
+| `surface-interactive-active` | `emerald-80` | `emerald-100` |
+| `text-brand`, `icon-brand`, `border-brand` (and -interactive variants) | `emerald-70` / `emerald-80` | `emerald-90` / `emerald-100` |
+
+**Inhabit (amber accent)** — `amber-70` gave white text 2.66:1, the
+worst offender:
+
+| Token | Was | Now |
+|-------|-----|-----|
+| `surface-interactive-default` | `amber-70` (2.66:1) | `amber-90` (6.06:1) |
+| `surface-interactive-hover` | `amber-60-M` | `amber-80` |
+| `surface-interactive-active` | `amber-80` | `amber-100` |
+| `text-brand`, `icon-brand`, `border-brand` (and -interactive variants) | `amber-70` / `amber-80` | `amber-90` / `amber-100` |
+
+All bumps stay within the same color family so the visual identity is
+preserved. The accent themes are visibly slightly darker but still
+recognizably emerald/amber.
+
+### Site-CSS theme-invariance fix
+
+The kbd inside `.sg-header-search-trigger__kbds` had
+`color: var(--uds-color-text-inverse)` which flips with theme. But the
+kbd's own overlay background `rgba(0,0,0,0.32)` composites to near-black
+regardless of theme — so dark text on near-black failed contrast (2.45:1)
+in dark mode.
+
+The brand bar itself uses text-inverse correctly (it flips with the
+brand-bar bg which also flips). Only the kbd needed theme-invariance
+because its child overlay overrides the parent's theme flip. Fix: switched
+kbd color to a fixed `rgb(245,245,245)`.
+
+(Initial Phase 17 attempt also fixed brand bar / search trigger / preflight
++ demo buttons to fixed light values; that broke them in dark mode where
+the parent backgrounds are LIGHT blue. Reverted those back to text-inverse —
+only the kbd needs theme-invariance, since its child overlay overrides the
+parent's bg flip.)
+
+### ARIA fix
+
+`role="tab"` extended to the 4 token-page fragments
+(`docs/pages/tokens/*.html`) — Phase 16 only updated `index.html` and the
+changelog/ai-assist fragments. semantic-colors and primitive-colors had
+their own `sg-page-tabs` that needed the role too.
+
+### Audit script + CI
+
+- New `scripts/audit-theme-contrast.sh` + `lib/audit_theme_contrast.js`
+  runs axe-core across **6 themes × 7 representative pages = 42
+  page-theme combinations**. Fails if any contrast/aria violations exist.
+- Wired into `.github/workflows/audits.yml` as a separate
+  `theme-contrast` job (parallel to the static `audits` job). Catches
+  future theme-specific regressions at PR time.
+- Audit waits 5500ms per page-theme combo so the lazy fragment loader
+  settles before axe scans (avoids transient mid-render false positives).
+
+### Verification
+
+- All 4 static audits clean
+- Round-trip `--all-components`: OK
+- Round-trip `--changelogs`: OK
+- **Multi-theme contrast audit: 0 violations across 42 page-theme combos**
+- Visual confirmation via screenshots of AnyoneHome Light, Inhabit Light,
+  Base Dark themes
+- UDS `CHANGELOG.globalNotes.json` updated with cross-theme contrast fix
+  entry for downstream UDS consumers
+
 ### Verification (same as Phase 12, plus)
 
 - All four audits clean
@@ -512,9 +616,11 @@ The "deferred items" listed in earlier phase summaries are all done:
 | `versions/0.2/` retroactive conversion + version-aware dropdown | Phase 14 |
 | Token Search module extraction | Phase 15a |
 | Playground engine module extraction | Phase 15b |
-| Systemic accessibility remediation | Phase 16 |
+| Systemic accessibility remediation (Base Light) | Phase 16 |
+| Multi-theme accessibility audit + CI lock-in | Phase 17 |
 
-The restructure is now feature-complete with no outstanding deferred work.
+The restructure is now feature-complete with no outstanding deferred work
+and zero accessibility violations across all 6 supported themes.
 
 ## Things that will become true at the end of the migration
 
