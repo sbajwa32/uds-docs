@@ -1,0 +1,31 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "UDS Component Status",
+  "description": "Lifecycle status for a single component. Lives at uds/components/<id>/status.json.",
+  "type": "object",
+  "required": ["current", "since"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "current": {
+      "type": "string",
+      "enum": ["placeholder", "blocked", "in-progress", "review", "production", "deprecated"],
+      "description": "Current lifecycle status."
+    },
+    "since": {
+      "type": "string",
+      "description": "UDS version in which the current status was entered. e.g. '0.1', '0.3'."
+    },
+    "history": {
+      "type": "array",
+      "description": "Audit trail. release.sh appends here on status changes.",
+      "items": {
+        "type": "object",
+        "required": ["version", "status"],
+        "properties": {
+          "version": { "type": "string" },
+          "status": { "type": "string", "enum": ["placeholder", "blocked", "in-progress", "review", "production", "deprecated"] }
+        }
+      }
+    }
+  }
+}

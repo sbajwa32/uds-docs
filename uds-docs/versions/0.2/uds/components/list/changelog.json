@@ -1,0 +1,11 @@
+{
+  "$schema": "../../schemas/changelog.schema.json",
+  "addedIn": "0.2",
+  "entries": [
+    {
+      "version": "0.2",
+      "type": "added",
+      "text": "Vertical list with single-select, optional leading/trailing icons, keyboard navigation; 5 interaction states"
+    }
+  ]
+}

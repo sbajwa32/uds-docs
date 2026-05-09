@@ -1,0 +1,159 @@
+{
+  "$schema": "../../schemas/spec.schema.json",
+  "component": "label",
+  "title": "Label",
+  "description": "A label identifies an input, selection control, or form field and can include required-state affordances.",
+  "whenToUse": "Use labels above or beside form controls so users understand what information is required.",
+  "whenNotToUse": "Do not use placeholder text as a label replacement; pair form controls with visible labels.",
+  "acceptanceCriteria": [
+    "Basic and extended label variants render",
+    "Default/disabled/error/interactive/success tones render",
+    "Multiline labels wrap cleanly",
+    "Required dot aligns with label text",
+    "Label can be associated with form controls via for/id"
+  ],
+  "dependencies": {
+    "css": [
+      "uds/components/label.css"
+    ],
+    "js": []
+  },
+  "props": [
+    {
+      "name": "data-variant",
+      "type": "enum",
+      "enum": [
+        "default",
+        "disabled",
+        "error",
+        "interactive",
+        "success"
+      ],
+      "default": "default",
+      "description": "Label tone/state."
+    },
+    {
+      "name": "data-multiline",
+      "type": "boolean",
+      "default": false,
+      "description": "Allows wrapping label text."
+    },
+    {
+      "name": "data-size",
+      "type": "enum",
+      "enum": [
+        "default",
+        "sm"
+      ],
+      "default": "default",
+      "description": "Default or smaller text size."
+    },
+    {
+      "name": "data-prominent",
+      "type": "boolean",
+      "default": false,
+      "description": "Uses bold text treatment."
+    },
+    {
+      "name": "data-align",
+      "type": "enum",
+      "enum": [
+        "left",
+        "middle",
+        "right"
+      ],
+      "default": "left",
+      "description": "Horizontal text alignment."
+    },
+    {
+      "name": "data-required",
+      "type": "boolean",
+      "default": false,
+      "description": "Shows required dot."
+    }
+  ],
+  "events": [],
+  "slots": [],
+  "states": [
+    {
+      "name": "default",
+      "description": "Standard label",
+      "hasVisual": true
+    },
+    {
+      "name": "disabled",
+      "description": "Muted label",
+      "hasVisual": true
+    },
+    {
+      "name": "error",
+      "description": "Error label",
+      "hasVisual": true
+    },
+    {
+      "name": "success",
+      "description": "Success label",
+      "hasVisual": true
+    },
+    {
+      "name": "focus",
+      "description": "Not applicable; label itself is not focusable"
+    }
+  ],
+  "contentGuidelines": "Labels should be short noun phrases in sentence case.",
+  "commonlyPairedWith": [
+    "text-input",
+    "text-area",
+    "dropdown",
+    "checkbox",
+    "radio"
+  ],
+  "dosDonts": {
+    "dos": [
+      "Always pair labels with controls",
+      "Use error tone only with visible error copy",
+      "Use required dot only for required fields"
+    ],
+    "donts": [
+      "Do not use placeholder text as a label",
+      "Do not make labels interactive unless they target a control",
+      "Do not use all caps"
+    ]
+  },
+  "accessibility": {
+    "keyboard": [
+      {
+        "key": "\u2014",
+        "action": "Not focusable by itself; associated control receives focus"
+      }
+    ],
+    "screenReader": [
+      {
+        "trigger": "Associated control receives focus",
+        "announcement": "Label text is announced as the control name"
+      }
+    ],
+    "wcag": [
+      {
+        "criterion": "1.3.1",
+        "level": "A",
+        "howMet": "Use for/id or wrapping label to programmatically name controls"
+      }
+    ],
+    "contrast": []
+  },
+  "knownIssues": [],
+  "performance": null,
+  "motion": null,
+  "responsive": null,
+  "visualHierarchy": null,
+  "densityBehavior": null,
+  "owner": {
+    "designer": "Unassigned",
+    "developer": "Unassigned"
+  },
+  "draft": false,
+  "figmaNodeId": "5794:4394",
+  "figmaPageNodeId": "5794-4372",
+  "storybookSlug": null
+}

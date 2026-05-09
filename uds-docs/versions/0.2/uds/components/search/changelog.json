@@ -1,0 +1,11 @@
+{
+  "$schema": "../../schemas/changelog.schema.json",
+  "addedIn": "0.2",
+  "entries": [
+    {
+      "version": "0.2",
+      "type": "added",
+      "text": "Search input with leading icon, auto-show clear button, hover/focused/error states"
+    }
+  ]
+}

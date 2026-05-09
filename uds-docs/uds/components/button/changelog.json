@@ -1,0 +1,16 @@
+{
+  "$schema": "../../schemas/changelog.schema.json",
+  "addedIn": "0.1",
+  "entries": [
+    {
+      "version": "0.1",
+      "type": "added",
+      "text": "Primary, secondary, ghost variants; small + default sizes; icon support; disabled + loading states"
+    },
+    {
+      "version": "0.3",
+      "type": "changed",
+      "text": "Figma variant matrix confirmed for primary/secondary/ghost buttons: destructive true/false, default/small sizes, default/hover/active/selected/disabled states, leading/trailing icons, icon-only, and horizontal/vertical button groups"
+    }
+  ]
+}

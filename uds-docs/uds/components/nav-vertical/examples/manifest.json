@@ -1,0 +1,26 @@
+{
+  "$schema": "../../../schemas/manifest.schema.json",
+  "examples": [
+    {
+      "id": "with-leading-icons",
+      "file": "with-leading-icons.html",
+      "label": "With Leading Icons",
+      "showInDocs": true,
+      "demoWeight": 3
+    },
+    {
+      "id": "without-leading-icons",
+      "file": "without-leading-icons.html",
+      "label": "Without Leading Icons",
+      "showInDocs": true,
+      "demoWeight": 1
+    },
+    {
+      "id": "rail-compact-vertical",
+      "file": "rail-compact-vertical.html",
+      "label": "Rail (compact vertical)",
+      "showInDocs": true,
+      "demoWeight": 1
+    }
+  ]
+}

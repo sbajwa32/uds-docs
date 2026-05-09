@@ -1,0 +1,11 @@
+{
+  "$schema": "../../schemas/changelog.schema.json",
+  "addedIn": "0.2",
+  "entries": [
+    {
+      "version": "0.2",
+      "type": "added",
+      "text": "Status banners with info, success, error, warning variants; subtle, prominent, and inline styles; optional dismiss"
+    }
+  ]
+}

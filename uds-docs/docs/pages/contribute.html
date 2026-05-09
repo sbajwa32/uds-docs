@@ -1,0 +1,21 @@
+        <h1 class="sg-page-title">How to Contribute</h1>
+        <p class="sg-page-desc">Workflow for designers proposing new components, tokens, or spec updates.</p>
+
+        <ol class="sg-contribute-steps">
+          <li><strong>Propose in Roadmap.</strong> Add an entry to the <a href="#/roadmap">Roadmap</a> with a short rationale. Tag it as <code>proposed</code>.</li>
+          <li><strong>Get approval.</strong> Async review with at least one designer + one developer. Discuss in the Roadmap entry's GitHub issue.</li>
+          <li><strong>Design in Figma.</strong> Build the component variants and states in the UDS Components file. Apply the appropriate stoplight status emoji to the page name (🟠 in progress, 🟡 review, 🟢 production).</li>
+          <li><strong>Create the spec.</strong> Add <code>content/&lt;component&gt;.json</code> following <a href="https://github.com/sbajwa32/uds-docs/blob/main/uds-docs/content/schema.json">the schema</a>. Fill in <code>description</code>, <code>whenToUse</code>, <code>whenNotToUse</code>, <code>acceptanceCriteria</code>, <code>props</code>, <code>events</code>, <code>slots</code>, <code>states</code>, <code>accessibility.keyboard</code>, and <code>owner</code> at minimum.</li>
+          <li><strong>Add to the doc site.</strong> Add a new <code>&lt;div data-page="..."&gt;</code> in <code>index.html</code> with Examples, Code, Guidelines, Changelog, and Playground tabs. Add a sidebar link. The Guidelines tab will auto-render from the JSON.</li>
+          <li><strong>Notify dev.</strong> File a Storybook issue requesting the web component implementation. Link to the spec page.</li>
+          <li><strong>Land in Storybook.</strong> Developer implements the web component to match the spec 1:1. Both designer and developer review.</li>
+          <li><strong>Update status to Production Ready.</strong> Once shipped, update <code>COMPONENT_STATUS</code> in <code>app.js</code> and the Figma page name emoji to 🟢.</li>
+          <li><strong>Bump UDS version.</strong> If this is a meaningful release, bump UDS X.Y in <code>versions.json</code> and add a CHANGELOG entry under the new release.</li>
+        </ol>
+
+        <h3 class="sg-subsection-title" style="margin-top:var(--uds-space-500);">Editing an existing spec</h3>
+        <p class="sg-subsection-desc">For changes to a component already on the site, edit <code>content/&lt;component&gt;.json</code> directly. The Guidelines tab and spec completeness indicator update automatically. Bump the SITE version, add a SITE_CHANGELOG entry, and a per-component CHANGELOG entry if the change is user-facing.</p>
+
+        <h3 class="sg-subsection-title" style="margin-top:var(--uds-space-500);">Draft spec workflow</h3>
+        <p class="sg-subsection-desc">Set <code>"draft": true</code> in a component's JSON to hide it from the live site. Append <code>?draft=1</code> to any URL to view drafts with a watermark.</p>
+      

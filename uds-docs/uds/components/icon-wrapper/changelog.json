@@ -1,0 +1,16 @@
+{
+  "$schema": "../../schemas/changelog.schema.json",
+  "addedIn": "0.1",
+  "entries": [
+    {
+      "version": "0.1",
+      "type": "added",
+      "text": "Size and color variants for Material Symbols"
+    },
+    {
+      "version": "0.3",
+      "type": "changed",
+      "text": "Figma icon wrapper coverage confirmed for 16, 20, 24, 32, 48, and 64px sizes"
+    }
+  ]
+}

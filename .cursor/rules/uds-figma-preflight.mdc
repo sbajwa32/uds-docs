@@ -39,7 +39,9 @@ Figma preflight:
    status sync, deletion detection, or new-component detection.
 3. Find the page named `UDS Version: X.Y` among the non-ignored pages.
 4. Parse `X.Y`.
-5. Read `UDS_VERSION` from `uds-docs/app.js`.
+5. Read the current UDS version from `uds-docs/uds/version.json` (the
+   `version` field). The legacy `UDS_VERSION` constant in `app.js` is gone
+   (Phase 8) — `app.js` now fetches `version.json` at boot.
 6. If either Figma version is higher than the site version, pause normal work
    and follow `uds-release-workflow.mdc`.
 
@@ -65,7 +67,7 @@ Rules:
 
 ## Stoplight status mapping
 
-Figma component page prefixes map to `COMPONENT_STATUS` values:
+Figma component page prefixes map to the `current` field in each per-component `uds/components/<id>/status.json`:
 
 | Figma prefix | Status key | Badge label |
 | --- | --- | --- |
@@ -76,7 +78,7 @@ Figma component page prefixes map to `COMPONENT_STATUS` values:
 | green | `production` | Production Ready |
 
 When the Figma prefix is ambiguous or unavailable, report `confidence: low` and
-do not update `COMPONENT_STATUS`.
+do not update the per-component `status.json`.
 
 ## Direct-read first
 

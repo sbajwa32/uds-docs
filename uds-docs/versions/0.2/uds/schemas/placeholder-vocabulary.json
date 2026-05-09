@@ -1,0 +1,198 @@
+{
+  "$schema": "../../uds/schemas/placeholder-vocabulary.schema.json",
+  "$comment": "Registry of every valid {{placeholder}} that may appear in components/<id>/examples/*.html. The substitution engine validates each {{...}} against this file at runtime and audit-placeholders.sh enforces it at commit time. To add a new placeholder, add it here AND wire it into both data-pools.js (random pool) and canonical-pool.js (fixed pool used by docs page).",
+  "placeholders": {
+    "tenant": {
+      "type": "string",
+      "pool": "tenants",
+      "transform": "fullName",
+      "description": "Full tenant name, e.g. 'Brian Smith'."
+    },
+    "tenant.first": {
+      "type": "string",
+      "pool": "tenants",
+      "transform": "firstName",
+      "description": "First name only, e.g. 'Brian'."
+    },
+    "tenant.last": {
+      "type": "string",
+      "pool": "tenants",
+      "transform": "lastName",
+      "description": "Last name only, e.g. 'Smith'."
+    },
+    "tenant.email": {
+      "type": "string",
+      "pool": "tenants",
+      "transform": "email",
+      "description": "Email derived from name, e.g. 'brian.smith@example.com'."
+    },
+    "tenant.phone": {
+      "type": "string",
+      "pool": "phones",
+      "description": "Phone number in (NNN) NNN-NNNN format."
+    },
+    "property": {
+      "type": "string",
+      "pool": "properties",
+      "description": "Property name, e.g. 'Riverbend Estates'."
+    },
+    "property.name": {
+      "type": "string",
+      "pool": "properties",
+      "description": "Same as 'property' — explicit form for clarity."
+    },
+    "property.unit": {
+      "type": "string",
+      "pool": "units",
+      "description": "Unit identifier, e.g. '4B'."
+    },
+    "property.address": {
+      "type": "string",
+      "pool": "addresses",
+      "description": "Street + city + state + zip."
+    },
+    "balance": {
+      "type": "currency",
+      "pool": "money",
+      "description": "Currency-formatted amount, e.g. '$1,200.00'."
+    },
+    "amount": {
+      "type": "currency",
+      "pool": "money",
+      "description": "Alias for balance, used in non-tenant contexts."
+    },
+    "status.label": {
+      "type": "string",
+      "pool": "statuses",
+      "field": "label",
+      "description": "Status display label, e.g. 'Active', 'Overdue', 'Pending'."
+    },
+    "status.variant": {
+      "type": "string",
+      "pool": "statuses",
+      "field": "variant",
+      "description": "Status semantic variant, e.g. 'success', 'warning', 'error'."
+    },
+    "leaseType": {
+      "type": "string",
+      "pool": "leaseTypes",
+      "description": "Lease type, e.g. 'Fixed term', 'Month-to-month'."
+    },
+    "navItem.label": {
+      "type": "string",
+      "pool": "navItems",
+      "field": "label",
+      "description": "Navigation item label, e.g. 'Dashboard', 'Leasing / CRM'."
+    },
+    "navItem.icon": {
+      "type": "string",
+      "pool": "navItems",
+      "field": "icon",
+      "description": "Material symbol icon name for a navigation item."
+    },
+    "primaryAction.label": {
+      "type": "string",
+      "pool": "primaryActions",
+      "field": "label",
+      "description": "Primary CTA button label, e.g. 'New Tenant', 'Send Invoice'."
+    },
+    "primaryAction.icon": {
+      "type": "string",
+      "pool": "primaryActions",
+      "field": "icon",
+      "description": "Material symbol icon for primary CTA."
+    },
+    "secondaryAction.label": {
+      "type": "string",
+      "pool": "secondaryActions",
+      "description": "Secondary action label, e.g. 'Export', 'Print'."
+    },
+    "pageTitle": {
+      "type": "string",
+      "pool": "pageTitles",
+      "description": "Page heading, e.g. 'Tenants', 'Invoices'."
+    },
+    "tabLabel": {
+      "type": "string",
+      "pool": "tabSets",
+      "transform": "flattened",
+      "description": "Single tab label drawn from a tab set."
+    },
+    "chipLabel": {
+      "type": "string",
+      "pool": "chipSets",
+      "transform": "flattened",
+      "description": "Single filter chip label."
+    },
+    "brand": {
+      "type": "string",
+      "pool": "brands",
+      "description": "App brand name, e.g. 'Boardroom', 'Tenant360'."
+    },
+    "notification.message": {
+      "type": "string",
+      "pool": "notifications",
+      "field": "msg",
+      "description": "Generated notification body text."
+    },
+    "notification.variant": {
+      "type": "string",
+      "pool": "notifications",
+      "field": "variant",
+      "description": "Notification semantic variant."
+    },
+    "notification.icon": {
+      "type": "string",
+      "pool": "notifications",
+      "field": "icon",
+      "description": "Material symbol icon name for a notification."
+    },
+    "date.relative": {
+      "type": "string",
+      "transform": "relativeDate",
+      "description": "Relative date phrase, e.g. '6 min ago', '2 days ago'."
+    },
+    "id.short": {
+      "type": "string",
+      "transform": "shortId",
+      "description": "Short numeric ID like '#5932'."
+    },
+    "count.unread": {
+      "type": "integer",
+      "transform": "unreadCount",
+      "description": "Unread badge count, 0–15."
+    },
+    "tooltip.text": {
+      "type": "string",
+      "pool": "tooltips",
+      "field": "tip",
+      "description": "Body text for a tooltip."
+    },
+    "tooltip.icon": {
+      "type": "string",
+      "pool": "tooltips",
+      "field": "icon",
+      "description": "Material symbol icon for a tooltip trigger."
+    },
+    "dialog.title": {
+      "type": "string",
+      "pool": "dialogScripts",
+      "field": "title"
+    },
+    "dialog.body": {
+      "type": "string",
+      "pool": "dialogScripts",
+      "field": "body"
+    },
+    "dialog.confirm": {
+      "type": "string",
+      "pool": "dialogScripts",
+      "field": "confirm"
+    },
+    "dialog.cancel": {
+      "type": "string",
+      "pool": "dialogScripts",
+      "field": "cancel"
+    }
+  }
+}

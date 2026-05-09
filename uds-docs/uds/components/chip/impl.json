@@ -1,0 +1,40 @@
+{
+  "$schema": "../../schemas/impl.schema.json",
+  "jsFunc": "initChip",
+  "jsFile": "uds/components/chip/chip.js",
+  "tokens": {
+    "Surface": [
+      "--uds-color-surface-interactive-none",
+      "--uds-color-surface-interactive-subtle-hover",
+      "--uds-color-surface-interactive-subtle-active",
+      "--uds-color-surface-interactive-active",
+      "--uds-color-surface-interactive-hover",
+      "--uds-color-surface-main"
+    ],
+    "Text": [
+      "--uds-color-text-primary",
+      "--uds-color-text-inverse"
+    ],
+    "Icon": [
+      "--uds-color-icon-inverse"
+    ],
+    "Border": [
+      "--uds-color-border-primary",
+      "--uds-color-border-outline-focus-visible",
+      "--uds-border-radius-container"
+    ],
+    "Space": [
+      "--uds-space-050",
+      "--uds-space-100"
+    ],
+    "Font": [
+      "--uds-font-family",
+      "--uds-font-size-base",
+      "--uds-font-size-lg",
+      "--uds-font-size-md",
+      "--uds-font-weight-regular",
+      "--uds-font-line-height-base"
+    ]
+  },
+  "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\" />\n  <link href=\"https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined\" rel=\"stylesheet\" />\n  <link rel=\"stylesheet\" href=\"uds/uds.css\" />\n</head>\n<body>\n\n  <button class=\"udc-chip\" data-variant=\"filter\">Chip</button>\n  <button class=\"udc-chip\" data-variant=\"filter\" aria-selected=\"true\">\n    <span class=\"udc-chip__leading-icon\"><span class=\"material-symbols-outlined\">check</span></span>\n    <span class=\"udc-chip__label\">Active</span>\n  </button>\n\n  <script src=\"uds/uds.js\"></script>\n</body>\n</html>"
+}

@@ -1,0 +1,11 @@
+{
+  "$schema": "../../schemas/changelog.schema.json",
+  "addedIn": "0.1",
+  "entries": [
+    {
+      "version": "0.2",
+      "type": "added",
+      "text": "Standalone header bar with logo, bento dropdown, search, My Work, and account actions"
+    }
+  ]
+}

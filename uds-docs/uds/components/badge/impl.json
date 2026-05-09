@@ -1,0 +1,42 @@
+{
+  "$schema": "../../schemas/impl.schema.json",
+  "jsFunc": null,
+  "jsFile": null,
+  "tokens": {
+    "Color": [
+      "--uds-color-surface-alt",
+      "--uds-color-surface-bold",
+      "--uds-color-surface-info",
+      "--uds-color-surface-info-subtle",
+      "--uds-color-surface-success",
+      "--uds-color-surface-success-subtle",
+      "--uds-color-surface-error",
+      "--uds-color-surface-error-subtle",
+      "--uds-color-surface-warning",
+      "--uds-color-surface-warning-subtle",
+      "--uds-color-text-inverse",
+      "--uds-color-text-secondary",
+      "--uds-color-text-info",
+      "--uds-color-text-success",
+      "--uds-color-text-error",
+      "--uds-color-text-warning"
+    ],
+    "Font": [
+      "--uds-font-family",
+      "--uds-font-size-xs",
+      "--uds-font-size-base",
+      "--uds-font-line-height-sm",
+      "--uds-font-line-height-base",
+      "--uds-font-weight-regular"
+    ],
+    "Space": [
+      "--uds-space-025",
+      "--uds-space-050",
+      "--uds-space-100"
+    ],
+    "Border": [
+      "--uds-border-radius-container-sm"
+    ]
+  },
+  "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\" />\n  <link rel=\"stylesheet\" href=\"uds/uds.css\" />\n</head>\n<body>\n\n  <span class=\"udc-badge\">Default</span>\n  <span class=\"udc-badge\" data-variant=\"success\">Active</span>\n  <span class=\"udc-badge\" data-variant=\"error\">Failed</span>\n  <span class=\"udc-badge\" data-variant=\"warning\">Pending</span>\n  <span class=\"udc-badge\" data-variant=\"secondary\">Draft</span>\n\n  <!-- Subtle / tinted -->\n  <span class=\"udc-badge\" data-prominent=\"false\">Info</span>\n  <span class=\"udc-badge\" data-variant=\"success\" data-prominent=\"false\">Active</span>\n\n  <!-- Small -->\n  <span class=\"udc-badge\" data-size=\"sm\">Sm</span>\n\n</body>\n</html>"
+}

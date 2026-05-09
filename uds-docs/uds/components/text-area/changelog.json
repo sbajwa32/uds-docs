@@ -1,0 +1,11 @@
+{
+  "$schema": "../../schemas/changelog.schema.json",
+  "addedIn": "0.3",
+  "entries": [
+    {
+      "version": "0.3",
+      "type": "added",
+      "text": "Multi-line text-entry component with default/hover/focused/active/error-focused states, token-first CSS, examples, code, playground, and Demo Builder coverage"
+    }
+  ]
+}

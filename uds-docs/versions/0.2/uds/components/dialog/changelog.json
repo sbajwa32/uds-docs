@@ -1,0 +1,11 @@
+{
+  "$schema": "../../schemas/changelog.schema.json",
+  "addedIn": "0.2",
+  "entries": [
+    {
+      "version": "0.2",
+      "type": "added",
+      "text": "Modal overlay with title, scrollable body, action footer; backdrop click and Escape to close; 1-4 content slots"
+    }
+  ]
+}

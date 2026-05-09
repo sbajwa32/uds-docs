@@ -1,0 +1,31 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "UDS Component Changelog",
+  "description": "Per-component changelog. Source of truth — release.sh aggregates these into uds/CHANGELOG.json. Lives at uds/components/<id>/changelog.json.",
+  "type": "object",
+  "required": ["addedIn", "entries"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "addedIn": {
+      "type": "string",
+      "description": "UDS version this component first appeared in. Cross-validated against status.json.history[0].version."
+    },
+    "entries": {
+      "type": "array",
+      "description": "All changes ever, oldest first (matches global CHANGELOG convention).",
+      "items": {
+        "type": "object",
+        "required": ["version", "type", "text"],
+        "properties": {
+          "version": { "type": "string", "description": "UDS version this entry was shipped in." },
+          "type": {
+            "type": "string",
+            "enum": ["added", "changed", "fixed", "deprecated", "removed"],
+            "description": "Type of change."
+          },
+          "text": { "type": "string", "description": "Description of the change." }
+        }
+      }
+    }
+  }
+}

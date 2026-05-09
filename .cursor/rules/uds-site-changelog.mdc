@@ -18,7 +18,11 @@ NEVER manually edit the version string. ALWAYS use the script.
 
 ## 2. Add a SITE_CHANGELOG entry
 
-In `uds-docs/app.js`, find the `SITE_CHANGELOG` array. Add or update an entry for the current SITE version:
+After the repo restructure, the SITE changelog lives at
+`uds-docs/docs/data/site-changelog.js` (no longer inside `app.js`). Find
+the `SITE_CHANGELOG` array and **append** a new entry for the current SITE
+version (newest entries go LAST in the array — the renderer reverses for
+display):
 
 ```javascript
 {
@@ -41,8 +45,9 @@ Three things to update:
 ### a. Query params on script/link tags in `index.html`:
 - `<link rel="stylesheet" href="./uds/uds.css?v=N" />` — bump if any CSS changed
 - `<script src="./uds/uds.js?v=N"></script>` — bump if any JS changed
-- `<script src="./app.js?v=N"></script>` — bump if app.js changed
-- `<script src="./demo-builder.js?v=N"></script>` — bump if demo-builder.js changed
+- `<script type="module" src="./docs/app.js?v=N"></script>` — bump if `docs/app.js` (or anything it imports) changed
+- `<script type="module" src="./docs/modules/demo-builder/index.js?v=N"></script>` — bump if any Demo Builder module changed
+- `<link rel="stylesheet" href="./docs/site.css?v=N" />` — bump if `docs/site.css` changed
 
 Only bump the ones where the underlying file actually changed.
 

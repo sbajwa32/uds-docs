@@ -1,0 +1,11 @@
+{
+  "$schema": "../../schemas/changelog.schema.json",
+  "addedIn": "0.2",
+  "entries": [
+    {
+      "version": "0.2",
+      "type": "added",
+      "text": "Single-select dropdown with label, helper text, leading icon, error/disabled states, keyboard navigation"
+    }
+  ]
+}

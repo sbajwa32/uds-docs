@@ -1,0 +1,28 @@
+{
+  "$schema": "../../schemas/impl.schema.json",
+  "jsFunc": null,
+  "jsFile": null,
+  "tokens": {
+    "Color": [
+      "--uds-color-surface-interactive-default",
+      "--uds-color-surface-interactive-disabled",
+      "--uds-color-surface-white",
+      "--uds-color-text-primary",
+      "--uds-color-text-disabled",
+      "--uds-color-border-primary",
+      "--uds-color-border-interactive",
+      "--uds-color-border-disabled"
+    ],
+    "Space": [
+      "--uds-space-075",
+      "--uds-space-100"
+    ],
+    "Border": [
+      "--uds-border-radius-container-full"
+    ],
+    "Shadow": [
+      "--uds-shadow-depth-100"
+    ]
+  },
+  "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head><meta charset=\"UTF-8\" /><link rel=\"stylesheet\" href=\"uds/uds.css\" /></head>\n<body>\n  <button class=\"udc-toggle\" role=\"switch\" aria-checked=\"true\"><span class=\"udc-toggle__control\"><span class=\"udc-toggle__thumb\"></span></span><span class=\"udc-toggle__label\">Email notifications</span></button>\n</body>\n</html>"
+}

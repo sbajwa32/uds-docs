@@ -1,0 +1,16 @@
+{
+  "$schema": "../../schemas/changelog.schema.json",
+  "addedIn": "0.1",
+  "entries": [
+    {
+      "version": "0.1",
+      "type": "added",
+      "text": "Horizontal tab component with keyboard navigation"
+    },
+    {
+      "version": "0.3",
+      "type": "changed",
+      "text": "Figma tab coverage confirmed: default/small sizes, 2-6 tab groups, selected and disabled states, plus hover/focus/active-on-selected variants"
+    }
+  ]
+}

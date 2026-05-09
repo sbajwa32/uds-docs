@@ -1,0 +1,21 @@
+{
+  "$schema": "../../schemas/changelog.schema.json",
+  "addedIn": "0.1",
+  "entries": [
+    {
+      "version": "0.1",
+      "type": "added",
+      "text": "Status variants and sizes"
+    },
+    {
+      "version": "0.3",
+      "type": "changed",
+      "text": "Figma variant matrix confirmed: 2 sizes (Default/Small), 5 variants (Info/Secondary/Success/Error/Warning), and Prominent true/false"
+    },
+    {
+      "version": "0.3",
+      "type": "fixed",
+      "text": "Fixed invisible text on the secondary prominent variant. The CSS paired `surface-bold` (light gray in light mode) with `text-inverse` (near-white in light mode) \u2014 contrast was ~1.07:1, basically invisible. Switched to `text-primary` for a contrast of ~9.7:1 in light mode and ~10:1 in dark mode. Affected the changelog component-name pills and per-component changelog type labels."
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "$schema": "../../schemas/impl.schema.json",
+  "jsFunc": null,
+  "jsFile": null,
+  "tokens": {},
+  "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\" />\n  <link href=\"https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined\" rel=\"stylesheet\" />\n  <link rel=\"stylesheet\" href=\"uds/uds.css\" />\n</head>\n<body>\n\n  <span class=\"udc-icon-wrapper\" data-size=\"16\"><span class=\"material-symbols-outlined\">info</span></span>\n  <span class=\"udc-icon-wrapper\" data-size=\"24\"><span class=\"material-symbols-outlined\">info</span></span>\n  <span class=\"udc-icon-wrapper\" data-size=\"48\"><span class=\"material-symbols-outlined\">info</span></span>\n\n</body>\n</html>"
+}

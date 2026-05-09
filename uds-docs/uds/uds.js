@@ -35,20 +35,24 @@
   /* ========================================================================
      Load component scripts dynamically
      ======================================================================== */
+  // Per-component JS lives at uds/components/<id>/<id>.js after the
+  // Phase 6 repo restructure. The list below mirrors that — kept hand-
+  // written here so this file stays standalone (no fetch + glob); it gets
+  // updated when a new interactive component lands.
   var COMPONENT_SCRIPTS = [
-    'components/text-input.js',
-    'components/tabs.js',
-    'components/checkbox.js',
-    'components/dropdown.js',
-    'components/notification.js',
-    'components/dialog.js',
-    'components/tile.js',
-    'components/list.js',
-    'components/data-table.js',
-    'components/nav-header.js',
-    'components/nav-vertical.js',
-    'components/chip.js',
-    'components/search.js'
+    'components/text-input/text-input.js',
+    'components/tabs/tabs.js',
+    'components/checkbox/checkbox.js',
+    'components/dropdown/dropdown.js',
+    'components/notification/notification.js',
+    'components/dialog/dialog.js',
+    'components/tile/tile.js',
+    'components/list/list.js',
+    'components/data-table/data-table.js',
+    'components/nav-header/nav-header.js',
+    'components/nav-vertical/nav-vertical.js',
+    'components/chip/chip.js',
+    'components/search/search.js'
   ];
 
   var basePath = '';

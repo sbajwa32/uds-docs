@@ -1,0 +1,11 @@
+{
+  "$schema": "../../schemas/changelog.schema.json",
+  "addedIn": "0.3",
+  "entries": [
+    {
+      "version": "0.3",
+      "type": "added",
+      "text": "Immediate on/off setting control with active true/false and disabled variants, token-first CSS, examples, code, playground, and Demo Builder coverage"
+    }
+  ]
+}

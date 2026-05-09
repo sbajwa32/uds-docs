@@ -1,0 +1,13 @@
+{
+  "$schema": "../../../schemas/manifest.schema.json",
+  "examples": [
+    {
+      "id": "default",
+      "file": "default.html",
+      "label": "Default",
+      "showInDocs": true,
+      "demoWeight": 3,
+      "description": "Pagination provides page buttons, current page state, and rows-per-page context."
+    }
+  ]
+}

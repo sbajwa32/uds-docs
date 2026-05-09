@@ -1,0 +1,33 @@
+{
+  "$schema": "../../../schemas/manifest.schema.json",
+  "examples": [
+    {
+      "id": "1-slot-dialog",
+      "file": "1-slot-dialog.html",
+      "label": "1-slot dialog",
+      "showInDocs": true,
+      "demoWeight": 3
+    },
+    {
+      "id": "2-slot-dialog",
+      "file": "2-slot-dialog.html",
+      "label": "2-slot dialog",
+      "showInDocs": true,
+      "demoWeight": 1
+    },
+    {
+      "id": "3-slot-dialog",
+      "file": "3-slot-dialog.html",
+      "label": "3-slot dialog",
+      "showInDocs": true,
+      "demoWeight": 1
+    },
+    {
+      "id": "interactive-demo-open-dialog",
+      "file": "interactive-demo-open-dialog.html",
+      "label": "Interactive demo (open dialog)",
+      "showInDocs": true,
+      "demoWeight": 1
+    }
+  ]
+}

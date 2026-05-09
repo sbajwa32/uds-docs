@@ -1,0 +1,16 @@
+{
+  "$schema": "../../schemas/changelog.schema.json",
+  "addedIn": "0.2",
+  "entries": [
+    {
+      "version": "0.2",
+      "type": "added",
+      "text": "Status banners with info, success, error, warning variants; subtle, prominent, and inline styles; optional dismiss"
+    },
+    {
+      "version": "0.3",
+      "type": "changed",
+      "text": "Figma notification coverage confirmed: info/success/error/warning variants, inline true/false, and prominent true/false"
+    }
+  ]
+}

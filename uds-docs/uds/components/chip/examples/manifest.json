@@ -1,0 +1,33 @@
+{
+  "$schema": "../../../schemas/manifest.schema.json",
+  "examples": [
+    {
+      "id": "filter-chips",
+      "file": "filter-chips.html",
+      "label": "Filter chips",
+      "showInDocs": true,
+      "demoWeight": 3
+    },
+    {
+      "id": "input-chips-removable-tags",
+      "file": "input-chips-removable-tags.html",
+      "label": "Input chips (removable tags)",
+      "showInDocs": true,
+      "demoWeight": 1
+    },
+    {
+      "id": "dropdown-chips",
+      "file": "dropdown-chips.html",
+      "label": "Dropdown chips",
+      "showInDocs": true,
+      "demoWeight": 1
+    },
+    {
+      "id": "default-chips-with-all-icons",
+      "file": "default-chips-with-all-icons.html",
+      "label": "Default chips (with all icons)",
+      "showInDocs": true,
+      "demoWeight": 1
+    }
+  ]
+}

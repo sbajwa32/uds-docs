@@ -47,7 +47,7 @@ Whenever you interact with either UDS Figma file (reading components, inspecting
 2. List pages in the file via Figma tooling, apply the `{Ignore}` page filter
    from `uds-figma-preflight.mdc`, and find the page matching `UDS Version: *`.
 3. Parse the version number from the page name.
-4. Read `UDS_VERSION` from `uds-docs/app.js`.
+4. Read `UDS_VERSION` from `uds-docs/docs/app.js`.
 5. If the Figma version is higher than the site version, alert the user and begin the Release Questionnaire below.
 
 Do NOT silently skip this check. If you detect a mismatch, pause your current task and address it first.
@@ -60,7 +60,7 @@ When a version bump is detected, present questions in rounds using the AskQuesti
 
 - "I noticed UDS went from {old} to {new} in Figma. What's in this release?"
 - "Are there any breaking changes? (renamed tokens, removed classes, changed markup)"
-- Auto-detect component status changes by reading page name prefixes (stoplight icons) from UDS Components and comparing against `COMPONENT_STATUS` in `app.js`. Report any mismatches.
+- Auto-detect component status changes by reading page name prefixes (stoplight icons) from UDS Components and comparing against each `uds/components/<id>/status.json`. Report any mismatches.
 
 ### Round 2 -- Tokens
 
@@ -82,7 +82,7 @@ Only request ZIPs if the token audit explicitly says fallback is required.
 
 ### Round 3 -- New Components
 
-- Run `figma-inventory` to compare Figma component pages (those with stoplight prefixes, excluding pages whose names contain `{Ignore}`) against `COMPONENT_STATUS`, sidebar links, and `content/*.json`.
+- Run `figma-inventory` to compare Figma component pages (those with stoplight prefixes, excluding pages whose names contain `{Ignore}`) against `uds/components.json`, sidebar links, and per-component `uds/components/<id>/spec.json`.
 - The inventory must include component-set variant coverage for every
   non-ignored component page: component-set names, variant-property names,
   property values, and variant counts.
@@ -100,25 +100,25 @@ Only request ZIPs if the token audit explicitly says fallback is required.
 
 After the questionnaire, execute these steps in order. NEVER run `release.sh` without explicit user confirmation.
 
-1. **Snapshot**: Run `bash uds-docs/release.sh {new_version}` to archive the current site into `versions/{old}/`
-2. **Update statuses**: Run `sync-figma-component-status` and update `COMPONENT_STATUS` only for high-confidence, non-breaking status changes
-3. **Update CHANGELOG**: Add a new release entry to the `CHANGELOG` array in `app.js`:
-   - Use `category: 'tokens'` for token changes, `category: 'components'` for component changes, `category: null` for global summary
+1. **Snapshot**: Run `bash uds-docs/release.sh {new_version}` to archive the current `uds/` into `versions/{old}/uds/` (UDS-only, not full-site).
+2. **Update statuses**: Run `sync-figma-component-status` and update each affected component's `uds/components/<id>/status.json` only for high-confidence, non-breaking status changes. Do NOT touch the legacy `COMPONENT_STATUS` table — it's gone (Phase 13b). The boot loader builds the in-memory map from `uds/components/<id>/status.json` files via `uds/components.json`.
+3. **Update CHANGELOG**: Add per-component changelog entries to `uds/components/<id>/changelog.json` (each component owns its own history). For non-component release notes, add to `uds/CHANGELOG.globalNotes.json` under the new version key. Then run `bash scripts/aggregate-changelog.sh` to refresh `uds/CHANGELOG.json`.
    - Use correct `type`: `added`, `changed`, `fixed`, `deprecated`, `removed`
-   - Include `migration` field on the release if there are breaking changes
    - Do not write the release entry from page names alone. It must include the
      component-set variant coverage pass from `figma-inventory`, including
      meaningful new/confirmed variant and state coverage on existing
      components and internal/support pages intentionally excluded from public
      docs.
-4. **Regenerate tokens**: Run `import-figma-tokens`; direct Figma Variables are primary, ZIPs fallback only
-5. **Add new components** (if any): Use `new-component` only after `figma-inventory` / `figma-component-inspector` identify high-confidence new components with enough required minimum content
+4. **Regenerate tokens**: Run `import-figma-tokens`; direct Figma Variables are primary, ZIPs fallback only. After regen, run `bash scripts/audit-theme-contrast.sh` to verify the 6-theme WCAG AA contract still holds. If new tokens regress contrast, document with token bumps in the same PR.
+5. **Add new components** (if any): Use `new-component` only after `figma-inventory` / `figma-component-inspector` identify high-confidence new components with enough required minimum content. Then run `bash scripts/aggregate-components.sh` to refresh `uds/components.json`.
 6. **Update Figma release notes**: Run `sync-figma-release-notes` to populate the new version page in both UDS Tokens and UDS Components with the unified changelog
-7. **Bump site**: Run `bash uds-docs/bump.sh` to set the initial SITE build counter
+7. **Bump site**: Run `bash uds-docs/bump-site.sh` to set the initial SITE build counter
 8. **Verify**: Open the browser and confirm changelog, version dropdown, and status badges are correct
    - Verify that the 0.x release changelog includes token changes, new
      components, existing-component variant/state coverage, and excluded
      internal/support pages when applicable
+   - Use the version dropdown to switch to the prior version (`?uds={old}`)
+     and confirm the archive renders correctly through `udsResolve()`.
 
 ## Post-Release Checklist
 
@@ -135,27 +135,37 @@ Release v{new} complete. Manual Figma steps remaining:
 
 ## Changelog Sync Rule
 
-Whenever the `CHANGELOG` array in `app.js` is modified — whether during a formal release or an ad-hoc update (e.g., adding a new component, fixing an entry, reordering) — you MUST also update the Release Notes pages in **both** Figma files (`UDS Tokens` and `UDS Components`) to match. The two Figma changelogs must always be identical to each other and to the site changelog. Use `use_figma` to:
+Whenever a per-component `uds/components/<id>/changelog.json` or `uds/CHANGELOG.globalNotes.json` is modified — whether during a formal release or an ad-hoc update (e.g., adding a new component, fixing an entry, reordering) — you MUST:
 
-1. Run `sync-figma-release-notes`.
-2. Navigate to the `UDS Version: X.Y` page in each file.
-3. Remove only the existing "Release Notes" frame.
-4. Rebuild it programmatically with the full changelog content (all versions, newest first), using the established styled format.
-5. Verify both files contain identical release-note text.
+1. Run `bash scripts/aggregate-changelog.sh` to refresh the aggregated `uds/CHANGELOG.json`.
+2. Update the Release Notes pages in **both** Figma files (`UDS Tokens` and `UDS Components`) to match. The two Figma changelogs must always be identical to each other and to the aggregated site changelog. Use `sync-figma-release-notes` to:
+   1. Navigate to the `UDS Version: X.Y` page in each file.
+   2. Remove only the existing "Release Notes" frame.
+   3. Rebuild it programmatically with the full changelog content (all versions, newest first), using the established styled format.
+   4. Verify both files contain identical release-note text.
 
 Never leave Figma changelogs out of sync with the site. If you forget, fix it immediately once noticed.
 
 ## Key File References
 
-- `uds-docs/app.js` -- `UDS_VERSION`, `CHANGELOG`, `COMPONENT_STATUS`, `PLAYGROUNDS`
-- `uds-docs/index.html` -- sidebar nav, `data-page` sections, CSS styles
-- `uds-docs/release.sh` -- snapshots site, bumps version, updates `versions.json`
-- `uds-docs/bump.sh` -- increments SITE build counter and cache-busting params
-- `uds-docs/versions.json` -- manifest of archived versions
+- `uds-docs/uds/version.json` — single source of truth for current UDS version
+- `uds-docs/uds/components.json` — manifest of every component in this release
+- `uds-docs/uds/CHANGELOG.json` — aggregated release changelog (auto-built; do NOT edit by hand)
+- `uds-docs/uds/CHANGELOG.globalNotes.json` — hand-curated non-component release notes per version
+- `uds-docs/uds/components/<id>/{spec,status,changelog,impl}.json` — single source of truth for that component
+- `uds-docs/docs/app.js` — router, render functions, theme switcher
+- `uds-docs/docs/helpers/uds-path.js` — `udsResolve()`, `viewingVersion()` for version-aware fetches
+- `uds-docs/index.html` — SPA shell, sidebar nav, `data-page` placeholders
+- `uds-docs/release.sh` — snapshots `uds/` to `versions/<old>/uds/`, bumps `uds/version.json`
+- `uds-docs/bump-site.sh` — increments SITE build counter and cache-busting params
+- `uds-docs/versions.json` — manifest of archived versions (drives the version dropdown)
+- `scripts/aggregate-changelog.sh` — regenerates `uds/CHANGELOG.json` from per-component changelogs
+- `scripts/aggregate-components.sh` — regenerates `uds/components.json` from `uds/components/<id>/`
+- `scripts/audit-theme-contrast.sh` — multi-theme axe-core a11y audit (WCAG AA across 6 themes)
 
 ## Component Status Mapping
 
-Figma page name prefixes map to status values in `COMPONENT_STATUS`:
+Figma page name prefixes map to the `current` field in each per-component `status.json`:
 
 | Figma Prefix | Status Key     | Badge Label        |
 |-------------|----------------|--------------------|

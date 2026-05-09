@@ -1,0 +1,16 @@
+{
+  "$schema": "../../schemas/changelog.schema.json",
+  "addedIn": "0.1",
+  "entries": [
+    {
+      "version": "0.1",
+      "type": "added",
+      "text": "Label, disabled, and error states"
+    },
+    {
+      "version": "0.3",
+      "type": "changed",
+      "text": "Figma variant matrix confirmed for checkbox and multiline checkbox: selected true/false plus default/hover/active/focused/selected/disabled/error states"
+    }
+  ]
+}

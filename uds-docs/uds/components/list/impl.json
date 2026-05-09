@@ -1,0 +1,38 @@
+{
+  "$schema": "../../schemas/impl.schema.json",
+  "jsFunc": "initList",
+  "jsFile": "uds/components/list/list.js",
+  "tokens": {
+    "Surface": [
+      "--uds-color-surface-interactive-none",
+      "--uds-color-surface-interactive-subtle",
+      "--uds-color-surface-interactive-subtle-hover",
+      "--uds-color-surface-interactive-subtle-active",
+      "--uds-color-surface-interactive-active"
+    ],
+    "Text": [
+      "--uds-color-text-primary",
+      "--uds-color-text-inverse"
+    ],
+    "Icon": [
+      "--uds-color-icon-primary",
+      "--uds-color-icon-inverse"
+    ],
+    "Border": [
+      "--uds-color-border-outline-focus-visible",
+      "--uds-border-radius-input"
+    ],
+    "Space": [
+      "--uds-space-100",
+      "--uds-space-150",
+      "--uds-space-200"
+    ],
+    "Font": [
+      "--uds-font-family",
+      "--uds-font-size-base",
+      "--uds-font-weight-medium",
+      "--uds-font-line-height-base"
+    ]
+  },
+  "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\" />\n  <link href=\"https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined\" rel=\"stylesheet\" />\n  <link rel=\"stylesheet\" href=\"uds/uds.css\" />\n</head>\n<body>\n\n  <div class=\"udc-list\">\n    <div class=\"udc-list-item\" tabindex=\"0\" aria-selected=\"true\">\n      <span class=\"udc-list-item__label\">Dashboard</span>\n    </div>\n    <div class=\"udc-list-item\" tabindex=\"0\">\n      <span class=\"udc-list-item__label\">Leasing / CRM</span>\n    </div>\n    <div class=\"udc-list-item\" tabindex=\"0\">\n      <span class=\"udc-list-item__leading-icon\"><span class=\"material-symbols-outlined\">add_circle_outline</span></span>\n      <span class=\"udc-list-item__label\">Add new</span>\n    </div>\n  </div>\n\n  <script src=\"uds/uds.js\"></script>\n</body>\n</html>"
+}

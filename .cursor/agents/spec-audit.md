@@ -22,7 +22,7 @@ If the user's request is ambiguous, default to `all`.
 
 ### 1. Read the canonical schema
 
-Read `uds-docs/content/schema.json` to get the field list. The "applicable" fields for completeness scoring (matching `COMPLETENESS_FIELDS` in `uds-docs/app.js`) are:
+Read `uds-docs/uds/components/schema/spec.json` to get the field list. The "applicable" fields for completeness scoring (matching `COMPLETENESS_FIELDS` in `uds-docs/docs/app.js`) are:
 
 ```
 description, whenToUse, whenNotToUse,
@@ -125,7 +125,7 @@ If auditing a single component, omit the Summary section and just produce the pe
 
 ## See also
 
-- `uds-docs/content/schema.json` — canonical schema
-- `uds-docs/app.js` `COMPLETENESS_FIELDS` constant — the live source of the 22-field list
+- `uds-docs/uds/components/schema/spec.json` — canonical schema
+- `uds-docs/docs/app.js` `COMPLETENESS_FIELDS` constant — the live source of the 22-field list
 - `.cursor/rules/uds-content-schema.mdc` — required-minimum definition
 - `.cursor/skills/new-component/SKILL.md` — what new components start with (~6/22)

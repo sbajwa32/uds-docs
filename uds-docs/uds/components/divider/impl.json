@@ -1,0 +1,20 @@
+{
+  "$schema": "../../schemas/impl.schema.json",
+  "jsFunc": null,
+  "jsFile": null,
+  "tokens": {
+    "Color": [
+      "--uds-color-border-tertiary"
+    ],
+    "Space": [
+      "--uds-space-050",
+      "--uds-space-100",
+      "--uds-space-150",
+      "--uds-space-200"
+    ],
+    "Border": [
+      "--uds-border-radius-full"
+    ]
+  },
+  "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\" />\n  <link rel=\"stylesheet\" href=\"uds/uds.css\" />\n</head>\n<body>\n\n  <p>Content above</p>\n  <hr class=\"udc-divider-horizontal\" />\n  <p>Content below</p>\n\n  <!-- With padding variants -->\n  <hr class=\"udc-divider-horizontal\" data-padding=\"md\" />\n  <hr class=\"udc-divider-horizontal\" data-padding=\"lg\" />\n  <hr class=\"udc-divider-horizontal\" data-padding=\"xl\" />\n\n</body>\n</html>"
+}

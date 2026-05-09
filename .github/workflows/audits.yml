@@ -1,0 +1,85 @@
+name: UDS Audits
+
+# Runs on every PR + every push to main. Fails the check if any audit
+# script exits non-zero. Catches drift between the per-component folders
+# and what the docs site/Demo Builder actually consume.
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  audits:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Component completeness
+        run: bash scripts/audit-component-completeness.sh
+
+      - name: Demo Builder coverage
+        run: bash scripts/audit-demo-coverage.sh
+
+      - name: Placeholder vocabulary
+        run: bash scripts/audit-placeholders.sh
+
+      - name: Token-first CSS
+        run: bash scripts/audit-token-usage.sh
+
+      # Round-trip checks — these compare against /tmp/baseline-data which
+      # only exists in the cloud agent VM. Skip in CI but keep the script
+      # available for human runs. (Round-trip drift is caught by the four
+      # audits above plus the per-component schema validation.)
+
+  theme-contrast:
+    # Phase 17: multi-theme axe-core scan across all 6 supported theme
+    # combinations. Fails if any color-contrast, aria-allowed-attr, or
+    # aria-required-children violations exist on the representative page
+    # set. Heavier than the static audits (needs Node + Chrome) so it runs
+    # in its own job for parallelism.
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install audit deps
+        run: npm install --no-save axe-core ws
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Start docs server
+        run: |
+          cd uds-docs
+          python3 -m http.server 4000 &
+          sleep 2
+
+      - name: Start headless Chrome
+        run: |
+          mkdir -p /tmp/cdp-ci
+          google-chrome \
+            --headless --disable-gpu --no-sandbox \
+            --user-data-dir=/tmp/cdp-ci \
+            --remote-debugging-port=9332 \
+            --disable-application-cache \
+            --window-size=1280,1600 \
+            "http://localhost:4000/" &
+          sleep 6
+
+      - name: Multi-theme contrast audit
+        run: bash scripts/audit-theme-contrast.sh

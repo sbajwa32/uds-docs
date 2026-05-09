@@ -1,0 +1,26 @@
+{
+  "$schema": "../../../schemas/manifest.schema.json",
+  "examples": [
+    {
+      "id": "framed-default",
+      "file": "framed-default.html",
+      "label": "Framed (default)",
+      "showInDocs": true,
+      "demoWeight": 3
+    },
+    {
+      "id": "frameless",
+      "file": "frameless.html",
+      "label": "Frameless",
+      "showInDocs": true,
+      "demoWeight": 1
+    },
+    {
+      "id": "deep-hierarchy",
+      "file": "deep-hierarchy.html",
+      "label": "Deep hierarchy",
+      "showInDocs": true,
+      "demoWeight": 1
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "$schema": "../../schemas/impl.schema.json",
+  "jsFunc": "initCheckbox",
+  "jsFile": "uds/components/checkbox/checkbox.js",
+  "tokens": {
+    "Color": [
+      "--uds-color-surface-interactive-default",
+      "--uds-color-surface-interactive-disabled",
+      "--uds-color-surface-interactive-red-subtle",
+      "--uds-color-text-primary",
+      "--uds-color-text-disabled",
+      "--uds-color-text-error",
+      "--uds-color-icon-inverse",
+      "--uds-color-icon-error",
+      "--uds-color-border-primary",
+      "--uds-color-border-disabled",
+      "--uds-color-border-error",
+      "--uds-color-border-interactive",
+      "--uds-color-border-outline-focus-visible"
+    ],
+    "Font": [
+      "--uds-font-family",
+      "--uds-font-size-base",
+      "--uds-font-line-height-base",
+      "--uds-font-weight-medium",
+      "--uds-font-weight-bold"
+    ],
+    "Space": [
+      "--uds-space-100"
+    ]
+  },
+  "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\" />\n  <link rel=\"stylesheet\" href=\"uds/uds.css\" />\n</head>\n<body>\n\n  <label class=\"udc-checkbox\">\n    <input type=\"checkbox\" />\n    <span class=\"udc-checkbox__control\"></span>\n    <span class=\"udc-checkbox__label\">Accept terms</span>\n  </label>\n\n  <!-- Required -->\n  <label class=\"udc-checkbox\" data-required=\"true\">\n    <input type=\"checkbox\" required />\n    <span class=\"udc-checkbox__control\"></span>\n    <span class=\"udc-checkbox__label\">I agree</span>\n    <span class=\"udc-checkbox__required\"></span>\n  </label>\n\n  <script src=\"uds/uds.js\"></script>\n</body>\n</html>"
+}

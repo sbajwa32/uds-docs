@@ -1,0 +1,26 @@
+{
+  "$schema": "../../schemas/changelog.schema.json",
+  "addedIn": "0.1",
+  "entries": [
+    {
+      "version": "0.1",
+      "type": "added",
+      "text": "Navigation system: header bar, vertical sidebar, bento dropdown, rail buttons, search, and account actions"
+    },
+    {
+      "version": "0.2",
+      "type": "deprecated",
+      "text": "Replaced by Nav Header and Nav Vertical \u2014 update imports to nav-header.css + nav-vertical.css"
+    },
+    {
+      "version": "0.2",
+      "type": "changed",
+      "text": "Split Nav into two separate components: Nav Header and Nav Vertical"
+    },
+    {
+      "version": "0.2",
+      "type": "added",
+      "text": "Sidebar navigation with two variants: Leading Icons (default) and text-only"
+    }
+  ]
+}

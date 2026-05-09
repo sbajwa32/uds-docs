@@ -1,55 +1,90 @@
 ---
-description: Checklist for implementing new UDS components — ensures consistency across CSS, JS, content JSON, and the doc site.
+description: Checklist for implementing or updating a UDS component — ensures the per-component folder is whole and consistent across CSS, spec, examples, status, changelog, and playground.
 globs: ["uds-docs/**"]
 alwaysApply: false
 ---
 
 # UDS Component Completeness Checklist
 
-Every new UDS component must include ALL of the following before it is considered complete:
+After the repo restructure, every component lives in **one folder**:
+`uds-docs/uds/components/<id>/`. Editing that folder is editing the
+component end-to-end. The checklist below ensures the folder stays whole
+and consistent.
 
-## CSS (`uds/components/{name}.css`)
+## Required files in every component folder
+
+- [ ] `<id>.css` — token-first component CSS (audited by `audit-token-usage.sh`)
+- [ ] `<id>.js` — only if the component has interactive behavior
+- [ ] `spec.json` — conforms to `uds/schemas/spec.schema.json` (the Guidelines tab renders from this)
+- [ ] `status.json` — `{ current, since, history[] }`
+- [ ] `changelog.json` — all component history (oldest first), `addedIn` matches `status.history[0].version`
+- [ ] `playground.js` — exports a default `{ controls, render }` config (used by Playground tab)
+- [ ] `examples/manifest.json` — conforms to `uds/schemas/manifest.schema.json`
+- [ ] `examples/*.html` — at least one HTML example file referenced by the manifest
+
+## CSS (`<id>.css`)
 - [ ] `:hover` state on interactive elements
-- [ ] `:focus-visible` style with `--uds-color-border-outline-focus-visible` on all focusable elements
+- [ ] `:focus-visible` style with `--uds-color-border-outline-focus-visible` on focusable elements
 - [ ] `disabled` / `aria-disabled="true"` styling (if applicable)
-- [ ] All colors, spacing, fonts, radii use UDS tokens (see `uds-token-first-css` rule)
+- [ ] All colors, spacing, fonts, radii use UDS tokens (no hex codes outside `var(--uds-color-X, #fallback)` form)
 - [ ] Shadow values use `--uds-shadow-*` tokens
 
-## JS (`uds/components/{name}.js`) — only when the component has interactive behavior
+## JS (`<id>.js`) — only when interactive
 - [ ] IIFE pattern with `window.UDS._init{Name} = init{Name}`
 - [ ] `_udsInit` guard (set AFTER validation, not before)
 - [ ] Keyboard activation (Enter/Space) for any focusable interactive element
-- [ ] Registered in `uds/uds.js` orchestrator COMPONENT_SCRIPTS array
-- [ ] Registered in `UDS.init()` function with correct selector
+- [ ] Listed in `uds/uds.js` `COMPONENT_SCRIPTS` array (path: `components/<id>/<id>.js`)
+- [ ] Wired into `UDS.init()` with the correct selector
 
-## Spec — JSON content (`content/{name}.json`)
-This is the source of truth for the Guidelines tab. The renderer fills the tab automatically.
+## Spec (`spec.json`)
 - [ ] Required minimum: `component`, `title`, `description`, `whenToUse`, `whenNotToUse`, `dependencies.css`, `accessibility.keyboard`, `owner`
 - [ ] Aim for 80%+ spec completeness before marking Production Ready (see `uds-content-schema.mdc`)
-- [ ] Add `figmaNodeId` if a deep-link to a specific variant exists
-- [ ] Add `storybookSlug` once the Storybook story exists
+- [ ] `figmaNodeId` set if a deep-link to a specific Figma variant exists
+- [ ] `storybookSlug` set once the Storybook story exists
+- [ ] `implReference: { exampleId }` points to a real entry in `examples/manifest.json`
 
-## Documentation site (`index.html`)
-- [ ] Sidebar link enabled (not `disabled` class)
-- [ ] `<div data-page="{name}">` with title, description, tabbed navigation
-- [ ] Examples tab with at least 2-3 example variants
-- [ ] Code tab with vanilla HTML structure (Example only — production code lives in Storybook)
-- [ ] Guidelines tab is an EMPTY `<div data-tab-panel="guidelines"></div>` — `renderGuidelines()` fills it from JSON
-- [ ] Changelog tab (placeholder if no changes yet)
-- [ ] Playground tab (empty div — wired by app.js)
-- [ ] DO NOT add Usage-tab style HTML inside the Guidelines panel — edit the JSON instead
+## Status (`status.json`)
+- [ ] `current` is one of `placeholder | blocked | in-progress | review | production | deprecated`
+- [ ] `since` is the UDS version where the current status was entered
+- [ ] `history[0].version` matches `addedIn` in `changelog.json`
 
-## App logic (`app.js`)
-- [ ] `PLAYGROUNDS['{name}']` with controls array and `render(state)` returning `{ html, code }` (vanilla only — no `reactCode`/`vueCode`)
-  - All icon controls use `type: 'icon-search'`
-- [ ] `IMPL_DATA['{name}']` with `cssFile`, `jsFunc`, `tokens`, `html()`
-- [ ] `COMPONENT_STATUS['{name}']` with status and since version
-- [ ] `FIGMA_LINKS['{name}']` with Figma node ID
-- [ ] `CHANGELOG` entry under the current version with `category: "components"` and `component: "{name}"`
-- [ ] `JS_FUNC_TO_FILE['{funcName}']` mapping (if component has JS)
-- [ ] Component CSS and JS files added to the download ZIP `files` array
+## Changelog (`changelog.json`)
+- [ ] `addedIn` matches the earliest entry's version
+- [ ] `entries[]` are oldest-first within the array
+- [ ] Each entry has `{ version, type, text }` where type is `added | changed | fixed | deprecated | removed`
+- [ ] Re-run `bash scripts/aggregate-changelog.sh` after any changelog edit so `uds/CHANGELOG.json` stays in sync
+
+## Examples (`examples/*.html` + `manifest.json`)
+- [ ] At least one `manifest.json` entry has `demoWeight > 0` (so the Demo Builder picks it)
+- [ ] Every example file referenced in the manifest exists
+- [ ] Every `{{placeholder}}` used in HTML is registered in `uds/schemas/placeholder-vocabulary.json`
+- [ ] The set of `udc-*` subpart classes used in examples covers the component's documented API (e.g. nav-header should use bento, search, mywork, account; dropdown should use leading-icon, helper, counter, required when those exist)
+
+## Playground (`playground.js`)
+- [ ] Default export is `{ controls: [...], render: function (state) { return { html, code } } }`
+- [ ] All controls have `key`, `label`, `type`, `default`
+- [ ] Icon-search controls use `type: 'icon-search'`
+- [ ] `render(state)` returns vanilla HTML — no React/Vue snippets
+
+## Site / app.js wiring (one-time per new component)
+- [ ] Sidebar link in `uds-docs/index.html` (under the right group)
+- [ ] `<div data-page="<id>" data-page-fragment data-default-tab="examples">...</div>` placeholder in `index.html`
+  - The Examples tab content does NOT go in `index.html` — it lives in `uds/components/<id>/examples/*.html` and the docs site renders from there
+
+## Pre-commit gate
+
+Run all four audits before committing component changes:
+
+```bash
+bash scripts/audit-component-completeness.sh
+bash scripts/audit-demo-coverage.sh
+bash scripts/audit-placeholders.sh
+bash scripts/audit-token-usage.sh
+```
+
+All four must exit 0.
 
 ## Code quality (vanilla)
 - [ ] All `udc-*` class names match the canonical BEM pattern
 - [ ] All keyboard interactions in JS match the spec's `accessibility.keyboard` table
-- [ ] Realistic data examples added if the component is data-consuming (Data Table, List, Dropdown, Search, Breadcrumb)
+- [ ] Realistic data examples for data-consuming components (Data Table, List, Dropdown, Search, Breadcrumb) — use the placeholder vocabulary so the Demo Builder can roll varied data

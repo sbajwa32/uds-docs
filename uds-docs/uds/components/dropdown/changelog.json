@@ -1,0 +1,16 @@
+{
+  "$schema": "../../schemas/changelog.schema.json",
+  "addedIn": "0.2",
+  "entries": [
+    {
+      "version": "0.2",
+      "type": "added",
+      "text": "Single-select dropdown with label, helper text, leading icon, error/disabled states, keyboard navigation"
+    },
+    {
+      "version": "0.3",
+      "type": "changed",
+      "text": "Figma dropdown coverage confirmed: default/disabled/error field states plus dropdown item active/default/focused/hover states"
+    }
+  ]
+}

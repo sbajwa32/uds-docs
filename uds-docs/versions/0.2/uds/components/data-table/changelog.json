@@ -1,0 +1,11 @@
+{
+  "$schema": "../../schemas/changelog.schema.json",
+  "addedIn": "0.2",
+  "entries": [
+    {
+      "version": "0.2",
+      "type": "added",
+      "text": "Data grid with sortable headers, checkbox selection, badge/action cell types, striped rows, error highlighting"
+    }
+  ]
+}

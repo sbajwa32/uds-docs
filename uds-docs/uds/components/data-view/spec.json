@@ -1,0 +1,57 @@
+{
+  "$schema": "../../schemas/spec.schema.json",
+  "component": "data-view",
+  "title": "Data View",
+  "description": "A data view presents collections of records in non-table layouts such as cards or compact summaries.",
+  "whenToUse": "Use when users need to browse structured records but a tabular grid is not the best representation.",
+  "whenNotToUse": "For dense row-and-column comparison, sorting, and bulk actions, use Data Table.",
+  "acceptanceCriteria": [
+    "Figma component set exists and exposes variant properties",
+    "Examples and Code tabs are generated from inspected Figma structure",
+    "Component CSS uses UDS tokens only",
+    "Spec JSON reaches required minimum plus props/states/accessibility"
+  ],
+  "dependencies": {
+    "css": [
+      "uds/components/data-view.css"
+    ],
+    "js": []
+  },
+  "props": [],
+  "events": [],
+  "slots": [],
+  "states": [],
+  "contentGuidelines": null,
+  "commonlyPairedWith": [],
+  "dosDonts": {
+    "dos": [],
+    "donts": []
+  },
+  "accessibility": {
+    "keyboard": [
+      {
+        "key": "Tab",
+        "action": "Move focus to/from the component"
+      }
+    ],
+    "screenReader": [],
+    "wcag": [],
+    "contrast": []
+  },
+  "knownIssues": [
+    "Figma 0.3 has a public placeholder page but no inspectable component set yet; examples, CSS implementation, playground, and Demo Builder entry are intentionally deferred until the Figma component set exists."
+  ],
+  "performance": null,
+  "motion": null,
+  "responsive": null,
+  "visualHierarchy": null,
+  "densityBehavior": null,
+  "owner": {
+    "designer": "Unassigned",
+    "developer": "Unassigned"
+  },
+  "draft": false,
+  "figmaNodeId": null,
+  "figmaPageNodeId": "5802-33467",
+  "storybookSlug": null
+}

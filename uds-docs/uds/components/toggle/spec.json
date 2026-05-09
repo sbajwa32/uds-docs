@@ -1,0 +1,132 @@
+{
+  "$schema": "../../schemas/spec.schema.json",
+  "component": "toggle",
+  "title": "Toggle",
+  "description": "A toggle switches a setting on or off and reflects the current state immediately.",
+  "whenToUse": "Use for binary settings that take effect immediately, such as enabling a preference.",
+  "whenNotToUse": "For selecting one option from a group, use Radio. For submitting a form decision, use Checkbox or Button.",
+  "acceptanceCriteria": [
+    "On/off and disabled variants render",
+    "Space toggles the switch",
+    "State is exposed with role=\"switch\" and aria-checked",
+    "Visible label or aria-label names the control",
+    "Disabled toggle does not fire change"
+  ],
+  "dependencies": {
+    "css": [
+      "uds/components/toggle.css"
+    ],
+    "js": []
+  },
+  "props": [
+    {
+      "name": "checked",
+      "type": "boolean",
+      "default": false,
+      "description": "On/off value."
+    },
+    {
+      "name": "disabled",
+      "type": "boolean",
+      "default": false,
+      "description": "Disables interaction."
+    },
+    {
+      "name": "aria-label",
+      "type": "string",
+      "description": "Accessible label when visible label is absent."
+    }
+  ],
+  "events": [
+    {
+      "name": "change",
+      "description": "Fires when the checked value changes",
+      "payload": "{ checked: boolean }"
+    }
+  ],
+  "slots": [],
+  "states": [
+    {
+      "name": "default",
+      "description": "Off resting state",
+      "hasVisual": true
+    },
+    {
+      "name": "selected",
+      "description": "On/active state",
+      "hasVisual": true
+    },
+    {
+      "name": "focus-visible",
+      "description": "Keyboard focus",
+      "hasVisual": true
+    },
+    {
+      "name": "disabled",
+      "description": "Disabled on/off states",
+      "hasVisual": true
+    }
+  ],
+  "contentGuidelines": "Use a short label describing the setting. Toggles take effect immediately.",
+  "commonlyPairedWith": [
+    "label",
+    "settings"
+  ],
+  "dosDonts": {
+    "dos": [
+      "Use for immediate binary settings",
+      "Keep labels concise",
+      "Persist the checked state clearly"
+    ],
+    "donts": [
+      "Do not use for form submission choices",
+      "Do not use for mutually exclusive options",
+      "Do not omit accessible name"
+    ]
+  },
+  "accessibility": {
+    "keyboard": [
+      {
+        "key": "Tab",
+        "action": "Move focus to/from the switch"
+      },
+      {
+        "key": "Space",
+        "action": "Toggle on/off"
+      }
+    ],
+    "screenReader": [
+      {
+        "trigger": "Switch receives focus",
+        "announcement": "Label, switch, on/off, disabled when applicable"
+      }
+    ],
+    "wcag": [
+      {
+        "criterion": "2.1.1",
+        "level": "A",
+        "howMet": "Operable via keyboard"
+      },
+      {
+        "criterion": "4.1.2",
+        "level": "A",
+        "howMet": "Uses role switch and aria-checked"
+      }
+    ],
+    "contrast": []
+  },
+  "knownIssues": [],
+  "performance": null,
+  "motion": null,
+  "responsive": null,
+  "visualHierarchy": null,
+  "densityBehavior": null,
+  "owner": {
+    "designer": "Unassigned",
+    "developer": "Unassigned"
+  },
+  "draft": false,
+  "figmaNodeId": "6322:4941",
+  "figmaPageNodeId": "5557-1808",
+  "storybookSlug": null
+}

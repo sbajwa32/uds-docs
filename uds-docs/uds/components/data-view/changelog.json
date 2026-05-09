@@ -1,0 +1,11 @@
+{
+  "$schema": "../../schemas/changelog.schema.json",
+  "addedIn": "0.3",
+  "entries": [
+    {
+      "version": "0.3",
+      "type": "added",
+      "text": "Placeholder page for non-table record collection layouts from Figma 0.3"
+    }
+  ]
+}

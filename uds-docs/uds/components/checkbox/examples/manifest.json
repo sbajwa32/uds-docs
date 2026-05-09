@@ -1,0 +1,26 @@
+{
+  "$schema": "../../../schemas/manifest.schema.json",
+  "examples": [
+    {
+      "id": "default",
+      "file": "default.html",
+      "label": "Default",
+      "showInDocs": true,
+      "demoWeight": 3
+    },
+    {
+      "id": "disabled",
+      "file": "disabled.html",
+      "label": "Disabled",
+      "showInDocs": true,
+      "demoWeight": 1
+    },
+    {
+      "id": "error-state",
+      "file": "error-state.html",
+      "label": "Error state",
+      "showInDocs": true,
+      "demoWeight": 1
+    }
+  ]
+}

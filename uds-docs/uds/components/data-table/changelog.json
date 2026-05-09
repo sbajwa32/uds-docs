@@ -1,0 +1,16 @@
+{
+  "$schema": "../../schemas/changelog.schema.json",
+  "addedIn": "0.2",
+  "entries": [
+    {
+      "version": "0.2",
+      "type": "added",
+      "text": "Data grid with sortable headers, checkbox selection, badge/action cell types, striped rows, error highlighting"
+    },
+    {
+      "version": "0.3",
+      "type": "changed",
+      "text": "Figma data-table coverage expanded: text/dropdown/ghost-button/checkbox/badge cell types, header cells, 1-14 columns, 2-14 rows, alignment, leading/trailing icons, dividers, prominent text, and error highlighting"
+    }
+  ]
+}

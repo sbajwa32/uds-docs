@@ -1,0 +1,28 @@
+{
+  "$schema": "../../../schemas/manifest.schema.json",
+  "examples": [
+    {
+      "id": "default",
+      "file": "default.html",
+      "label": "Default",
+      "showInDocs": true,
+      "demoWeight": 5
+    },
+    {
+      "id": "bento-dropdown",
+      "file": "bento-dropdown.html",
+      "label": "Bento Dropdown",
+      "showInDocs": true,
+      "demoWeight": 1
+    },
+    {
+      "id": "bento-tiles",
+      "file": "bento-tiles.html",
+      "label": "Bento — Tile Grid",
+      "description": "Alternate bento layout that arranges apps as a tile grid with an 'All apps' footer link. Uses udc-nav-bento__tiles + udc-nav-tile + udc-nav-bento__footer + udc-nav-button__trailing — the four subparts that were missing from Demo Builder coverage.",
+      "showInDocs": true,
+      "demoWeight": 3
+    }
+  ]
+}
+

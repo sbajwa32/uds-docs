@@ -1,0 +1,39 @@
+{
+  "$schema": "../../schemas/impl.schema.json",
+  "jsFunc": "initTile",
+  "jsFile": "uds/components/tile/tile.js",
+  "tokens": {
+    "Surface": [
+      "--uds-color-surface-main",
+      "--uds-color-surface-interactive-subtle",
+      "--uds-color-surface-info-subtle"
+    ],
+    "Text": [
+      "--uds-color-text-primary",
+      "--uds-color-text-error"
+    ],
+    "Icon": [
+      "--uds-color-icon-secondary"
+    ],
+    "Border": [
+      "--uds-color-border-primary",
+      "--uds-color-border-interactive",
+      "--uds-color-border-disabled",
+      "--uds-color-border-outline-focus-visible",
+      "--uds-border-radius-input"
+    ],
+    "Space": [
+      "--uds-space-050",
+      "--uds-space-100",
+      "--uds-space-200"
+    ],
+    "Font": [
+      "--uds-font-family",
+      "--uds-font-size-base",
+      "--uds-font-weight-bold",
+      "--uds-font-weight-regular",
+      "--uds-font-line-height-base"
+    ]
+  },
+  "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\" />\n  <link href=\"https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined\" rel=\"stylesheet\" />\n  <link rel=\"stylesheet\" href=\"uds/uds.css\" />\n</head>\n<body>\n\n  <div class=\"udc-tile\" tabindex=\"0\">\n    <div class=\"udc-tile__content\">\n      <div class=\"udc-tile__label\">Upload CSV<span class=\"udc-tile__required\"></span></div>\n      <div class=\"udc-tile__body\">Import residents from a spreadsheet</div>\n    </div>\n    <span class=\"udc-tile__chevron\">\n      <span class=\"material-symbols-outlined\">chevron_right</span>\n    </span>\n  </div>\n\n  <script src=\"uds/uds.js\"></script>\n</body>\n</html>"
+}
