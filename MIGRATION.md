@@ -55,6 +55,7 @@ The baseline tag stays on `main` permanently as a recovery anchor.
 | 11 | Performance + accessibility verification | partial — measured + small fixes done, pre-existing systemic a11y debt deferred (see notes below) |
 | 12 | Final verification + PR + CI workflow | done |
 | 13 | Dissolve remaining global tables (FIGMA_LINKS, COMPONENT_STATUS, IMPL_DATA, JS_FUNC_TO_FILE, PLAYGROUNDS) | done — see Phase 13 section below |
+| 14 | Retroactive 0.2 archive conversion + version-aware dropdown rewrite | done — see Phase 14 section below |
 
 ## Per-component migration status (Phase 6)
 
@@ -206,6 +207,115 @@ substeps, eliminating every drift surface in `app.js`.
 | Per-component data files per component | 5 (spec, status, changelog, playground, examples) | 6 (+ impl.json) |
 | `app.js` vs original baseline | -8% | -43% |
 | New schemas | 6 | 8 (+ components-manifest, impl) |
+
+## Phase 14 — retroactive 0.2 conversion + version-aware dropdown
+
+Phases 9 + 12 had laid the foundation (`udsPath()`, `prune-version.sh`,
+new `release.sh`) but stopped short of two things: (1) converting the
+existing `versions/0.2/` legacy frozen archive to UDS-only shape, and
+(2) actually wiring the version dropdown to use `udsPath()`. Phase 14
+finished both.
+
+### What changed
+
+Before Phase 14, picking "UDS 0.2" from the version dropdown navigated
+to `/versions/0.2/index.html` — a separate frozen full-site copy with
+its own `app.js`, `index.html`, `demo-builder.js`, etc. Bug fixes to
+the docs UI did NOT flow to historical views. Each archive was a
+9MB+ static museum with stale code.
+
+After Phase 14:
+- Picking "UDS 0.2" sets `?uds=0.2` on the current URL and reloads.
+- The modern docs site renders the archive by reading data through
+  `udsResolve()` — every UDS-data fetch (`components.json`, per-component
+  `spec.json`/`status.json`/`changelog.json`/`impl.json`, the `<id>.css`
+  + `<id>.js` files referenced by spec.json + impl.json, the global
+  `CHANGELOG.json`) routes through the helper.
+- Bug fixes to docs UI flow automatically to historical views. Only
+  the UDS data is frozen per release; the rendering shell is always
+  the latest.
+
+### One-time conversion
+
+`scripts/convert-archive.sh` reads the legacy frozen `versions/<X>/`
+shape (separate `index.html`, `app.js`, `demo-builder.js`, `content/`,
+plus a flat `uds/components/<id>.css` layout) and produces the new
+UDS-only per-component shape:
+
+- Per-component folders: `uds/components/<id>/{<id>.css, spec.json,
+  status.json, changelog.json}` (and `<id>.js` if the component is
+  interactive)
+- Aggregated: `uds/components.json`, `uds/version.json`,
+  `uds/CHANGELOG.json`
+- Self-contained: schemas copied into `uds/schemas/`
+- Removes everything else: `index.html`, `app.js`, `demo-builder.js`,
+  `bump-site.sh`, `material-icons.js`, `ai-context.json`, `content/`,
+  etc.
+
+Tolerates the IIFE-indented declarations in legacy app.js and the legacy
+flat `changes:[]` CHANGELOG shape (translates `{component:'Button',type:'added',text:...}`
+entries into per-component `changelog.json` plus the modern `byComponent`
+map in the global CHANGELOG.json).
+
+Idempotent — sentinel: `<archive>/uds/components.json`.
+
+### versions/0.2/ converted
+
+- 21 components migrated to per-component folders
+- 8 globalNotes (0.1 release-level notes) preserved
+- 23 component changelog entries across 12 component groups (covers
+  the Nav split into Nav Header + Nav Vertical, and the 12 new 0.2
+  components)
+- ~2 MB disk savings vs frozen full-site copy (per archived version
+  going forward)
+
+### App.js wiring
+
+- `docs/helpers/uds-path.js` gains `udsResolve(path)` — single function
+  that returns a fetchable URL respecting the `?uds=X.Y` URL param.
+  Plus `viewingVersion()`, `isViewingHistorical()`, `currentVersion()`
+  accessors.
+- 8 fetch sites in app.js + 2 fetch sites in `demo-builder/example-fetcher.js`
+  rewritten to route through `udsResolve()`.
+- All gated on `versionsReady` so the version map is settled before the
+  first request fires.
+- Dynamic `import()` of `playground.js` uses `new URL(...,
+  document.baseURI).href` for portable resolution from any base.
+
+### UI
+
+- New archive-view banner at the top of every page when `?uds=X.Y` is
+  active — tells the user which archive is active and offers a "Return
+  to UDS X.Y (latest) →" link.
+- Pre-flight + Build Demo buttons dimmed in archive view (those are
+  docs-site features, not historical UDS data).
+- Playground tab hidden in archive view (snapshots don't carry
+  `playground.js` modules — interactive playgrounds only render against
+  live UDS data).
+- Version dropdown sets `?uds=X.Y` (or removes the param when picking
+  latest) and reloads.
+
+### Verification
+
+- All 4 audits clean
+- Round-trip `--all-components`: OK
+- Round-trip `--changelogs`: OK
+- Live (0.3): 29 components, no banner, playground visible, zero errors
+- Archive (0.2): 21 components, banner visible, playground hidden,
+  changelog shows 0.1 globalNotes + 0.2 component additions, zero errors
+- Figma deep-link still works in archive view (uses `figmaPageNodeId`
+  from spec.json)
+
+### Cumulative impact (now)
+
+| Metric | After Phase 14 |
+|--------|----------------|
+| `app.js` lines | 3,037 |
+| Drift surfaces in `app.js` | 0 |
+| Archived versions on disk | UDS-only — ~2 MB lighter per release |
+| Bug-fix flow to historical views | automatic |
+| New schemas total | 8 |
+| New helpers | `udsResolve`, `viewingVersion`, `isViewingHistorical` |
 
 ### Verification (same as Phase 12, plus)
 
