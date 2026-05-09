@@ -54,6 +54,7 @@ The baseline tag stays on `main` permanently as a recovery anchor.
 | 10 | Rules, audits, AGENTS.md, README, skills + drift fixes | done |
 | 11 | Performance + accessibility verification | partial — measured + small fixes done, pre-existing systemic a11y debt deferred (see notes below) |
 | 12 | Final verification + PR + CI workflow | done |
+| 13 | Dissolve remaining global tables (FIGMA_LINKS, COMPONENT_STATUS, IMPL_DATA, JS_FUNC_TO_FILE, PLAYGROUNDS) | done — see Phase 13 section below |
 
 ## Per-component migration status (Phase 6)
 
@@ -138,6 +139,84 @@ Tier rollout (lowest-risk → highest-risk):
   - aria-allowed-attr (11 nodes — needs targeted inspection)
   - aria-required-children (3 nodes — Demo Builder role correction)
   - scrollable-region-focusable (1 node — add tabindex)
+
+## Phase 13 — dissolve remaining global tables
+
+Phase 12 closed the migration proper, but the PR description listed deferred
+work to remove the four remaining places where component data was duplicated
+outside the per-component folder. Phase 13 finished that work in four
+substeps, eliminating every drift surface in `app.js`.
+
+### 13a. FIGMA_LINKS
+
+- Added `figmaPageNodeId` field to all 29 spec.json files (page-level Figma
+  deep-link IDs from the legacy table). Variant-level IDs in `figmaNodeId`
+  preserved.
+- View-in-Figma renderer reads variant first, page-level fallback second.
+- Schema updated: `spec.schema.json` declares both fields.
+- Drops: 30 lines of inline literal in `app.js`.
+
+### 13b. COMPONENT_STATUS
+
+- Added `uds/components.json` — the manifest listing every component in
+  display order. Single source of truth for "which components exist."
+- Added `scripts/aggregate-components.sh` to regenerate the manifest from
+  `uds/components/<id>/` directories.
+- `COMPONENT_STATUS` in `app.js` is now `{}` populated at boot from
+  `components.json` + each `status.json`. `componentsReady` promise gates
+  the bootstrap; renderers that walk components await it.
+- `renderComponentLinks` was split into `renderComponentLinksFor(id)` so
+  the page-link bar can be re-rendered per-component once spec.json arrives.
+- New schema: `components-manifest.schema.json`.
+- Drops: 30 lines of inline literal + boot wiring in `app.js`.
+
+### 13c. IMPL_DATA + JS_FUNC_TO_FILE
+
+- Wrote 26 per-component `impl.json` files (3 placeholder components have
+  no impl reference). Each carries `jsFunc`, `jsFile`, `tokens`, `html`.
+- `jsFile` replaces `JS_FUNC_TO_FILE` and points at the new per-component
+  paths (`uds/components/<id>/<id>.js`). The legacy table had stale
+  pre-Phase-6 paths and was 404ing on every Behavior tab click — fixed
+  structurally as a side effect of the migration.
+- `buildImplSection()` reads from a new `loadImplData(pageId)` helper that
+  fetches and caches `impl.json` on demand.
+- New schema: `impl.schema.json`.
+- Drops: ~430 lines / ~39kb of inline literal in `app.js`.
+
+### 13d. PLAYGROUNDS
+
+- The largest remaining drift surface — ~98kb / ~2,200 lines of inline
+  config — is dissolved.
+- Each component's playground config is now an ES-module default-export
+  in `uds/components/<id>/playground.js` (already created during Phase 6
+  but unused until Phase 13d wired them up).
+- New shared helper `docs/helpers/esc.js`. Eight playground modules that
+  reference `esc()` import it.
+- `initPlayground()` is now `async`; `loadPlaygroundConfig(pageId)` does
+  `import('../uds/components/<id>/playground.js')` on first tab click and
+  caches the result. Re-clicks are synchronous.
+- Drops: ~2,200 lines / ~98kb of inline literal in `app.js`.
+
+### Cumulative impact
+
+| Metric | After Phase 12 | After Phase 13 |
+|--------|----------------|----------------|
+| `app.js` lines | 4,824 | 2,981 (-38%) |
+| Drift surfaces in `app.js` | 4 (FIGMA_LINKS, COMPONENT_STATUS, IMPL_DATA, PLAYGROUNDS) | 0 |
+| Per-component data files per component | 5 (spec, status, changelog, playground, examples) | 6 (+ impl.json) |
+| `app.js` vs original baseline | -8% | -43% |
+| New schemas | 6 | 8 (+ components-manifest, impl) |
+
+### Verification (same as Phase 12, plus)
+
+- All four audits clean
+- Round-trip `--all-components`: OK (now teaches itself about the
+  intentional `figmaPageNodeId` addition)
+- Round-trip `--changelogs`: OK
+- Smoke test: 33/33 actual pages render with zero console errors,
+  including playground tabs for button, text-input, data-table, badge,
+  nav-header (verified preview/code/control rendering after dynamic
+  import)
 
 ## Things that will become true at the end of the migration
 
