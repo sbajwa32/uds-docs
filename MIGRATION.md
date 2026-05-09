@@ -56,6 +56,7 @@ The baseline tag stays on `main` permanently as a recovery anchor.
 | 12 | Final verification + PR + CI workflow | done |
 | 13 | Dissolve remaining global tables (FIGMA_LINKS, COMPONENT_STATUS, IMPL_DATA, JS_FUNC_TO_FILE, PLAYGROUNDS) | done — see Phase 13 section below |
 | 14 | Retroactive 0.2 archive conversion + version-aware dropdown rewrite | done — see Phase 14 section below |
+| 15 | Token Search + Playground engine module extraction (finishes Phase 4b/4c) | done — see Phase 15 section below |
 
 ## Per-component migration status (Phase 6)
 
@@ -306,7 +307,7 @@ Idempotent — sentinel: `<archive>/uds/components.json`.
 - Figma deep-link still works in archive view (uses `figmaPageNodeId`
   from spec.json)
 
-### Cumulative impact (now)
+### Cumulative impact (after Phase 14)
 
 | Metric | After Phase 14 |
 |--------|----------------|
@@ -316,6 +317,83 @@ Idempotent — sentinel: `<archive>/uds/components.json`.
 | Bug-fix flow to historical views | automatic |
 | New schemas total | 8 |
 | New helpers | `udsResolve`, `viewingVersion`, `isViewingHistorical` |
+
+## Phase 15 — Token Search + Playground engine module extraction
+
+Phases 12 + 14's PR descriptions both listed "Token Search + Playground module
+extraction — Phase 4b/4c" as deferred. The placeholder folders
+`docs/modules/token-search/` and `docs/modules/playground/` had existed as
+empty `.gitkeep` markers since Phase 4 (April). Phase 15 made them real.
+
+### 15a. Token Search → `docs/modules/token-search/index.js`
+
+Self-contained ES module (267 lines). Exports:
+- `initTokenSearch()` — wires keyboard shortcuts, input event, click-outside-to-close
+- `openTokenSearch()` / `closeTokenSearch()` — programmatic controls
+- Also assigned to `window.openTokenSearch` / `window.closeTokenSearch` so
+  inline `onclick` handlers in HTML fragments still work
+
+Owns: `TOKEN_INDEX`, `buildTokenIndex`, `searchTokens`, `highlightMatch`,
+`renderTokenSearchResults`, `moveTokenSearchActive`, `activateTokenSearchRow`,
+modal open/close state, all keyboard handlers.
+
+The modal markup itself stays in `index.html` (the
+`<div id="sg-token-search">…</div>`), but every line of behavior moved into
+the module.
+
+### 15b. Playground engine → `docs/modules/playground/index.js`
+
+Factory module (181 lines). `createPlaygroundEngine(ctx)` returns
+`{ initPlayground, refreshPlaygrounds, loadPlaygroundConfig }`.
+
+The factory pattern was the cleanest way to decouple the engine without
+forcing extraction of every transitive helper. The engine takes its DOM
+helper deps (`buildCopyButton`, `buildIconPicker`, `loadImplData`,
+`buildImplSection`, `refreshImplSections`, `udsResolve`) via a context
+object and looks them up at call time.
+
+`app.js` now does:
+
+```js
+import { createPlaygroundEngine } from './modules/playground/index.js';
+
+const _playgroundEngine = createPlaygroundEngine({
+  buildCopyButton, buildIconPicker,
+  loadImplData, buildImplSection, refreshImplSections,
+  udsResolve
+});
+const initPlayground = _playgroundEngine.initPlayground;
+const refreshPlaygrounds = _playgroundEngine.refreshPlaygrounds;
+```
+
+Same callable shape, dramatically smaller `app.js`.
+
+### Cumulative impact (after Phase 15)
+
+| Metric | After Phase 15 |
+|--------|----------------|
+| `app.js` lines | 2,671 |
+| `app.js` vs original baseline | **-49%** (5,228 → 2,671) |
+| Drift surfaces in `app.js` | 0 |
+| ES modules under `docs/modules/` | 11 (was 9 — +token-search, +playground) |
+| Empty placeholder folders in `docs/modules/` | 0 (was 2) |
+| Total schemas | 8 |
+| Total helpers | 4 (`fetch-versioned`, `uds-path`, `esc`, plus implicit `dom`-style) |
+
+### Verification
+
+- All 4 audits clean (component completeness, demo coverage, placeholders, token-first CSS)
+- Round-trip `--all-components`: OK
+- Round-trip `--changelogs`: OK
+- Token Search opens via header trigger; 498 tokens indexed and rendered;
+  keyboard navigation (Esc / arrow / Enter) works
+- Playground tab on 5 components (button, text-input, data-table, badge,
+  nav-header) renders preview/code/controls/impl-section correctly
+- Reactivity test: clicking the "Destructive" checkbox on Button's
+  playground correctly wraps the button in `<div data-btn-color="danger">`
+  (preview + code both update)
+- Archive view (`?uds=0.2`): still works correctly, playground tab still
+  hidden, zero console errors
 
 ### Verification (same as Phase 12, plus)
 
