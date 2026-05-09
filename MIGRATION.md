@@ -59,6 +59,7 @@ The baseline tag stays on `main` permanently as a recovery anchor.
 | 15 | Token Search + Playground engine module extraction (finishes Phase 4b/4c) | done — see Phase 15 section below |
 | 16 | Systemic accessibility remediation (last deferred item) | done — see Phase 16 section below |
 | 17 | Multi-theme accessibility audit + per-theme fixes + CI lock-in | done — see Phase 17 section below |
+| 18 | Documentation refresh — AGENTS.md, README.md, .cursor/rules/ | done — see Phase 18 section below |
 
 ## Per-component migration status (Phase 6)
 
@@ -607,6 +608,61 @@ their own `sg-page-tabs` that needed the role too.
   nav-header (verified preview/code/control rendering after dynamic
   import)
 
+## Phase 18 — documentation refresh
+
+`AGENTS.md` was last meaningfully updated in Phase 10. New contributors
+and agents reading the docs would miss critical pieces of how the
+codebase is now organized after Phases 13-17.
+
+Phase 18 closed the gap by updating three documents:
+
+### `AGENTS.md`
+
+- Repo layout: added `components.json`, `impl.json`, the new schemas, the
+  real (non-placeholder) `token-search/` and `playground/` modules, the
+  `helpers/esc.js`, the new audit + aggregate scripts.
+- Per-component file table: added `impl.json` row, updated `playground.js`
+  description, noted `spec.json`'s `figmaNodeId` + `figmaPageNodeId` fields.
+- New section: **Version-aware data fetching** (Phase 14) explaining
+  `udsResolve()`, `versionsReady` gating, and the dynamic-import pattern
+  for `playground.js`.
+- New section: **Accessibility contract** (Phase 16-17) explaining the
+  6-theme WCAG AA contract and the ARIA conventions (`aria-current` for
+  nav, `aria-pressed` for toggles, `role="tab"` inside `[role="tablist"]`).
+- Standard task flow: added `impl.json` + `playground.js` to the edit
+  list; added an optional `audit-theme-contrast.sh` step for color/theme
+  changes; added `aggregate-components.sh` step for adding/removing
+  components.
+- Don't do: added 4 new entries — don't bypass `udsResolve()` for
+  UDS-data fetches; don't reference primitive tokens directly in
+  component CSS; don't use `aria-selected` on standalone buttons; don't
+  regress contrast tokens without re-running `audit-theme-contrast.sh`.
+
+### `README.md`
+
+- Added `impl.json` + ES-module `playground.js` to the per-component file
+  list.
+- New section: **Version dropdown / archive view** (Phase 14).
+- New section: **Accessibility contract** (Phase 16-17).
+- Updated **Audits** section to include `audit-theme-contrast.sh`.
+
+### `.cursor/rules/`
+
+- `uds-release-workflow.mdc`: replaced all references to the legacy
+  `COMPONENT_STATUS` / `CHANGELOG` / `PLAYGROUNDS` tables with per-component
+  paths and the `aggregate-changelog.sh` / `aggregate-components.sh`
+  flows. Added `audit-theme-contrast.sh` step after token regen. Updated
+  the Key File References list to reflect the new layout.
+- `uds-figma-component-inspection.mdc`: replaced `content/<id>.json` with
+  `uds/components/<id>/spec.json` and per-component subpaths. Replaced
+  `COMPONENT_STATUS` references with `status.json`.
+- `uds-figma-preflight.mdc`: replaced `UDS_VERSION` constant lookup with
+  `uds/version.json` fetch. Replaced `COMPONENT_STATUS` references with
+  per-component `status.json`.
+
+No SITE bump for Phase 18 — all changes are outside `uds-docs/` (AGENTS.md,
+README.md, `.cursor/rules/`) per the `uds-site-changelog` rule's exception.
+
 ## All deferred items now resolved
 
 The "deferred items" listed in earlier phase summaries are all done:
@@ -618,9 +674,11 @@ The "deferred items" listed in earlier phase summaries are all done:
 | Playground engine module extraction | Phase 15b |
 | Systemic accessibility remediation (Base Light) | Phase 16 |
 | Multi-theme accessibility audit + CI lock-in | Phase 17 |
+| Documentation refresh (AGENTS.md, README.md, rules) | Phase 18 |
 
-The restructure is now feature-complete with no outstanding deferred work
-and zero accessibility violations across all 6 supported themes.
+The restructure is now feature-complete with no outstanding deferred work,
+zero accessibility violations across all 6 supported themes, and
+documentation that reflects the current state of the codebase.
 
 ## Things that will become true at the end of the migration
 
