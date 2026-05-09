@@ -1,5 +1,6 @@
 // Playground config for the button component.
 // Extracted from app.js PLAYGROUNDS during the UDS repo restructure.
+import { esc } from '../../../docs/helpers/esc.js';
 export default {
       controls: [
         { key: 'variant', label: 'Variant', type: 'select', default: 'primary', options: [

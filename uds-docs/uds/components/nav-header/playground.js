@@ -1,5 +1,6 @@
 // Playground config for the nav-header component.
 // Extracted from app.js PLAYGROUNDS during the UDS repo restructure.
+import { esc } from '../../../docs/helpers/esc.js';
 export default {
       controls: [
         { key: 'showSearch', label: 'Show search', type: 'checkbox', default: true },

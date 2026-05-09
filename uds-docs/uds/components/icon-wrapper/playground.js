@@ -1,5 +1,6 @@
 // Playground config for the icon-wrapper component.
 // Extracted from app.js PLAYGROUNDS during the UDS repo restructure.
+import { esc } from '../../../docs/helpers/esc.js';
 export default {
       controls: [
         { key: 'icon', label: 'Icon', type: 'icon-search', default: 'info' },

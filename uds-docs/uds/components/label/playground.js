@@ -1,5 +1,6 @@
 // Playground config for the label component.
 // Extracted from app.js PLAYGROUNDS during the UDS repo restructure.
+import { esc } from '../../../docs/helpers/esc.js';
 export default {
       controls: [
         { key: 'text', label: 'Text', type: 'text', default: 'Full name' },

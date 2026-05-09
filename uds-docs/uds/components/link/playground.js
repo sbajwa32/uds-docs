@@ -1,5 +1,6 @@
 // Playground config for the link component.
 // Extracted from app.js PLAYGROUNDS during the UDS repo restructure.
+import { esc } from '../../../docs/helpers/esc.js';
 export default {
       controls: [
         { key: 'label', label: 'Label', type: 'text', default: 'View property' },

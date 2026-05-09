@@ -28,15 +28,18 @@ def check_component(comp_id: str) -> list[str]:
     if not cdir.exists():
         return [f"{comp_id}: not migrated yet ({cdir} missing)"]
 
-    # 1. spec.json equals legacy content/<id>.json
+    # 1. spec.json equals legacy content/<id>.json (modulo intentional
+    # post-baseline additions: $schema and figmaPageNodeId — the latter was
+    # migrated from the legacy FIGMA_LINKS table during Phase 13a).
     spec = cdir / "spec.json"
     legacy_spec = BASELINE_DIR / "content" / f"{comp_id}.json"
+    POST_BASELINE_FIELDS = {"$schema", "figmaPageNodeId"}
     if spec.exists() and legacy_spec.exists():
         new = json.loads(spec.read_text())
         old = json.loads(legacy_spec.read_text())
-        new_no_schema = {k: v for k, v in new.items() if k != "$schema"}
-        if new_no_schema != old:
-            diff_keys = sorted(set(new_no_schema.keys()) ^ set(old.keys()))
+        new_filtered = {k: v for k, v in new.items() if k not in POST_BASELINE_FIELDS}
+        if new_filtered != old:
+            diff_keys = sorted(set(new_filtered.keys()) ^ set(old.keys()))
             errors.append(
                 f"{comp_id}: spec.json differs from baseline (key diff: {diff_keys})"
             )

@@ -1,5 +1,6 @@
 // Playground config for the text-input component.
 // Extracted from app.js PLAYGROUNDS during the UDS repo restructure.
+import { esc } from '../../../docs/helpers/esc.js';
 export default {
       controls: [
         { key: 'state', label: 'State', type: 'select', default: 'default', options: [
