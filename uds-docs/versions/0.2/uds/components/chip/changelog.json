@@ -1,0 +1,11 @@
+{
+  "$schema": "../../schemas/changelog.schema.json",
+  "addedIn": "0.2",
+  "entries": [
+    {
+      "version": "0.2",
+      "type": "added",
+      "text": "Compact filter/input/dropdown chips with selected state, leading/trailing icons, removable input tags"
+    }
+  ]
+}

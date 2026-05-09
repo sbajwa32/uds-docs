@@ -7,6 +7,8 @@
 
 'use strict';
 
+import { udsResolve, udsPath, viewingVersion, isViewingHistorical, currentVersion, versionsReady } from './helpers/uds-path.js';
+
 const html = document.documentElement;
 
 /* ========================================================================
@@ -468,14 +470,18 @@ function computeCompleteness(data) {
 
 function loadContent(componentId) {
     if (contentCache[componentId]) return Promise.resolve(contentCache[componentId]);
-    return fetch('./uds/components/' + componentId + '/spec.json').then(function (r) {
-      if (!r.ok) throw new Error('Content not found: ' + componentId);
-      return r.json();
-    }).then(function (data) {
-      contentCache[componentId] = data;
-      completenessScores[componentId] = computeCompleteness(data);
-      return data;
-    }).catch(function () { return null; });
+    // Phase 14: gate every UDS-data fetch on versionsReady so udsResolve()
+    // returns the right base path when ?uds=X.Y is set.
+    return versionsReady
+      .then(function () { return fetch(udsResolve('components/' + componentId + '/spec.json')); })
+      .then(function (r) {
+        if (!r.ok) throw new Error('Content not found: ' + componentId);
+        return r.json();
+      }).then(function (data) {
+        contentCache[componentId] = data;
+        completenessScores[componentId] = computeCompleteness(data);
+        return data;
+      }).catch(function () { return null; });
 }
 
 function initGuidelines(pageId) {
@@ -1164,10 +1170,10 @@ const _componentChangelogCache = {};
 function preloadComponentChangelog(componentId) {
     if (_componentChangelogCache[componentId] !== undefined) return;
     _componentChangelogCache[componentId] = null; // mark in-flight
-    fetch('./uds/components/' + componentId + '/changelog.json').then(function (r) {
-      if (!r.ok) return null;
-      return r.json();
-    }).then(function (data) {
+    versionsReady
+      .then(function () { return fetch(udsResolve('components/' + componentId + '/changelog.json')); })
+      .then(function (r) { return r && r.ok ? r.json() : null; })
+      .then(function (data) {
       _componentChangelogCache[componentId] = data || { entries: [] };
       // Re-render the per-component header extras now that the cache is
       // warm (so the "Last updated" panel can appear without a navigation).
@@ -1193,7 +1199,13 @@ function loadPlaygroundConfig(pageId) {
     if (playgroundCache[pageId] !== undefined) {
       return Promise.resolve(playgroundCache[pageId]);
     }
-    return import('../uds/components/' + pageId + '/playground.js')
+    // Phase 14: when viewing a historical archive, the snapshot may not
+    // include playground.js (only the live version carries interactive
+    // configs). Resolve to udsResolve()-style URL anchored at the site
+    // root via document.baseURI so dynamic import works either way.
+    var url = new URL(udsResolve('components/' + pageId + '/playground.js'),
+                      document.baseURI).href;
+    return import(/* @vite-ignore */ url)
       .then(function (mod) {
         playgroundCache[pageId] = mod && mod.default ? mod.default : null;
         return playgroundCache[pageId];
@@ -1347,7 +1359,7 @@ function fetchJsBehavior(data, callback) {
       return;
     }
     var file = data.jsFile || 'uds/uds.js';
-    fetch(file).then(function (r) { return r.text(); }).then(function (text) {
+    fetch(udsResolve(file)).then(function (r) { return r.text(); }).then(function (text) {
       var pattern = new RegExp('(  function ' + funcName + '\\([^)]*\\)[\\s\\S]*?\\n  \\})');
       var match = text.match(pattern);
       jsBehaviorCache[funcName] = match ? match[1] : text;
@@ -1375,7 +1387,8 @@ function loadImplData(pageId) {
     if (implDataCache[pageId] !== undefined) {
       return Promise.resolve(implDataCache[pageId]);
     }
-    return fetch('./uds/components/' + pageId + '/impl.json')
+    return versionsReady
+      .then(function () { return fetch(udsResolve('components/' + pageId + '/impl.json')); })
       .then(function (r) { return r.ok ? r.json() : null; })
       .catch(function () { return null; })
       .then(function (data) {
@@ -1457,9 +1470,11 @@ function buildImplSection(pageId) {
         loadContent(pageId).then(function (json) {
           var cssPath = (json && json.dependencies && json.dependencies.css && json.dependencies.css[0]) || null;
           if (cssPath) {
-            fetchCssFile(cssPath, function (text) { pre2.textContent = text; });
+            // Phase 14: route through udsResolve so historical archives
+            // serve their CSS from versions/<X>/uds/components/.../<id>.css
+            fetchCssFile(udsResolve(cssPath), function (text) { pre2.textContent = text; });
           } else {
-            pre2.textContent = '/* No CSS dependency declared in content/' + pageId + '.json */';
+            pre2.textContent = '/* No CSS dependency declared in spec.json */';
           }
         });
       }
@@ -1749,12 +1764,15 @@ import { STATUS_LABELS } from './data/status-labels.js';
 var COMPONENT_STATUS = {};
 var componentsReady = (async () => {
     try {
-      const manifestRes = await fetch('./uds/components.json');
+      // Phase 14: wait for the version map to settle so udsResolve()
+      // routes correctly when ?uds=X.Y is set on the URL.
+      await versionsReady;
+      const manifestRes = await fetch(udsResolve('components.json'));
       if (!manifestRes.ok) return;
       const manifest = await manifestRes.json();
       const ids = (manifest.components || []).map(c => c.id);
       const statuses = await Promise.all(
-        ids.map(id => fetch(`./uds/components/${id}/status.json`)
+        ids.map(id => fetch(udsResolve(`components/${id}/status.json`))
           .then(r => r.ok ? r.json() : null)
           .catch(() => null))
       );
@@ -1781,7 +1799,8 @@ var UDS_VERSION = '0.3';
 
 (async () => {
     try {
-      const res = await fetch('./uds/version.json');
+      await versionsReady;
+      const res = await fetch(udsResolve('version.json'));
       if (res.ok) {
         const data = await res.json();
         if (data && data.version) UDS_VERSION = data.version;
@@ -1850,7 +1869,8 @@ async function renderGlobalChangelog() {
 
     let releases;
     try {
-      const res = await fetch('./uds/CHANGELOG.json');
+      await versionsReady;
+      const res = await fetch(udsResolve('CHANGELOG.json'));
       if (!res.ok) throw new Error('CHANGELOG.json not found');
       releases = await res.json();
     } catch (e) {
@@ -1960,7 +1980,7 @@ function renderComponentChangelog(pageId) {
 
     panel.innerHTML = '<p class="sg-changelog-empty">Loading...</p>';
 
-    fetch('./uds/components/' + pageId + '/changelog.json').then(function (r) {
+    fetch(udsResolve('components/' + pageId + '/changelog.json')).then(function (r) {
       if (!r.ok) throw new Error('No changelog');
       return r.json();
     }).then(function (data) {
@@ -2710,50 +2730,95 @@ function collectComponentChangelog(componentId) {
     });
 }
 
+// Phase 14: when viewing a historical archive (?uds=X.Y), show a banner
+// at the top of the page and hide tabs/features that the archive doesn't
+// carry.
+function renderArchiveBanner() {
+    var banner = document.getElementById('sg-archive-banner');
+    if (!banner) return;
+    if (!isViewingHistorical()) {
+      banner.hidden = true;
+      banner.innerHTML = '';
+      return;
+    }
+    var v = viewingVersion();
+    var current = currentVersion() || '';
+    banner.hidden = false;
+    banner.innerHTML =
+      '<div class="sg-archive-banner__inner">' +
+      '<span class="material-symbols-outlined sg-archive-banner__icon">history</span>' +
+      '<div class="sg-archive-banner__text">' +
+      '<strong>Viewing UDS ' + v + ' archive.</strong> ' +
+      'Specs, status, CSS, and changelog are read from <code>versions/' + v + '/uds/</code>. ' +
+      'Interactive features (Playground, Demo Builder, Implementation Reference) are disabled in archive view.' +
+      '</div>' +
+      '<a class="sg-archive-banner__exit" href="' + window.location.pathname + '#/changelog">' +
+      'Return to UDS ' + current + ' (latest) →</a>' +
+      '</div>';
+    document.documentElement.setAttribute('data-archive-view', v);
+}
+
+// Hide tabs that historical archives don't carry. Called on each navigation.
+function applyArchiveTabHiding() {
+    if (!isViewingHistorical()) return;
+    document.querySelectorAll('[data-tab="playground"], [data-tab-panel="playground"]').forEach(function (el) {
+      el.style.display = 'none';
+    });
+}
+
 function initVersionDropdown() {
     var dropdown = document.getElementById('sg-version-dropdown');
     if (!dropdown) return;
 
-    var path = window.location.pathname;
-    var snapshotMatch = path.match(/\/versions\/([^/]+)\//);
-    var basePath = snapshotMatch
-      ? path.substring(0, path.indexOf('/versions/')) + '/'
-      : path.substring(0, path.lastIndexOf('/') + 1);
-    var viewingVersion = snapshotMatch ? snapshotMatch[1] : UDS_VERSION;
+    // Phase 14: viewing a historical version is now controlled by the
+    // ?uds=X.Y URL parameter, NOT a separate frozen folder. The current
+    // docs site renders any archived version by reading data through
+    // udsResolve(), which respects the param.
+    var viewing = viewingVersion(); // null when on live current version
 
-    if (snapshotMatch) {
+    if (isViewingHistorical()) {
+      // Hide interactive features that the archive may not carry —
+      // playground/demo-builder/preflight aren't ported to historical
+      // snapshots since they're docs-site features, not UDS data.
       document.querySelectorAll('.sg-preflight-btn, .sg-demo-btn').forEach(function (btn) {
-        btn.closest('.udc-tooltip-wrapper').style.display = 'none';
+        var wrap = btn.closest('.udc-tooltip-wrapper');
+        if (wrap) wrap.style.display = 'none';
       });
     }
 
-    fetch(basePath + 'versions.json').then(function (r) {
+    fetch('./versions.json').then(function (r) {
       if (!r.ok) throw new Error('no versions.json');
       return r.json();
     }).then(function (data) {
-      var latestVersion = data.latest || UDS_VERSION;
+      var latestVersion = data.latest || currentVersion();
       var allVersions = data.versions || data;
       dropdown.innerHTML = '';
 
       allVersions.forEach(function (v) {
         var opt = document.createElement('option');
         var isLatest = v === latestVersion;
-        opt.value = isLatest
-          ? basePath + 'index.html'
-          : basePath + 'versions/' + v + '/index.html';
+        opt.value = v;
         opt.textContent = 'UDS ' + v + (isLatest ? ' (latest)' : '');
-        opt.selected = v === viewingVersion;
+        opt.selected = (viewing && v === viewing) || (!viewing && isLatest);
         dropdown.appendChild(opt);
       });
 
       dropdown.addEventListener('change', function () {
-        if (dropdown.value) {
-          window.location.href = dropdown.value + '#/changelog';
+        if (!dropdown.value) return;
+        var selected = dropdown.value;
+        var params = new URLSearchParams(window.location.search);
+        if (selected === latestVersion) {
+          params.delete('uds');
+        } else {
+          params.set('uds', selected);
         }
+        var qs = params.toString();
+        var newUrl = window.location.pathname + (qs ? '?' + qs : '') + '#/changelog';
+        window.location.href = newUrl;
       });
     }).catch(function () {
       var opt = document.createElement('option');
-      opt.textContent = 'UDS ' + UDS_VERSION;
+      opt.textContent = 'UDS ' + (currentVersion() || '');
       dropdown.appendChild(opt);
     });
 }
@@ -2880,8 +2945,15 @@ registerPageLoadHook('primitive-colors', function () {
 renderRealisticData();
 renderExampleOnlyBanners();
 initTokenSearch();
-initVersionDropdown();
 initAllChangelogs();
+
+// Phase 14: archive view banner + tab hiding. Wait for versionsReady so we
+// know whether ?uds=X.Y is a real on-disk snapshot or a typo.
+versionsReady.then(function () {
+  initVersionDropdown();
+  renderArchiveBanner();
+  applyArchiveTabHiding();
+});
 
 // These walk Object.keys(COMPONENT_STATUS) — must wait for the map to populate.
 componentsReady.then(function () {

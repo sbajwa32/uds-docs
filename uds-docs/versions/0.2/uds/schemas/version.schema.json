@@ -1,0 +1,23 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "UDS Version",
+  "description": "Top-level UDS release metadata. Lives at uds/version.json.",
+  "type": "object",
+  "required": ["version", "schemaVersion"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "version": {
+      "type": "string",
+      "description": "UDS release identifier, e.g. '0.3'."
+    },
+    "released": {
+      "type": "string",
+      "format": "date",
+      "description": "ISO date the release was tagged (YYYY-MM-DD)."
+    },
+    "schemaVersion": {
+      "type": "integer",
+      "description": "Which spec.schema.json version this release conforms to. Renderer can branch on this when reading historical snapshots."
+    }
+  }
+}

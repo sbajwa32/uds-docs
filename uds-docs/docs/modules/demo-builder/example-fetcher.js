@@ -7,16 +7,21 @@
 //   - Docs page Examples tab calls fetchExampleHTML(componentId, canonicalPool())
 // Same files, same substitution engine — drift between docs and demos
 // becomes structurally impossible.
+//
+// Phase 14: all paths route through udsResolve() so historical archive
+// views (?uds=X.Y) read from versions/<X>/uds/components/.../examples/
+// when present.
 
 import { rnd } from './rng.js';
 import { applyTokenSubstitution } from './substitution.js';
+import { udsResolve } from '../../helpers/uds-path.js';
 
 const _manifestCache = {};
 const _htmlCache = {};
 
 async function fetchManifest(componentId) {
   if (_manifestCache[componentId]) return _manifestCache[componentId];
-  const url = `./uds/components/${componentId}/examples/manifest.json`;
+  const url = udsResolve(`components/${componentId}/examples/manifest.json`);
   const res = await fetch(url);
   if (!res.ok) throw new Error(`No manifest for component ${componentId} (${res.status})`);
   const m = await res.json();
@@ -27,7 +32,7 @@ async function fetchManifest(componentId) {
 async function fetchExampleFile(componentId, fileName) {
   const key = `${componentId}/${fileName}`;
   if (_htmlCache[key]) return _htmlCache[key];
-  const url = `./uds/components/${componentId}/examples/${fileName}`;
+  const url = udsResolve(`components/${componentId}/examples/${fileName}`);
   const res = await fetch(url);
   if (!res.ok) throw new Error(`No example file ${fileName} for ${componentId} (${res.status})`);
   const text = await res.text();

@@ -589,6 +589,18 @@ export const SITE_CHANGELOG = [
         { type: 'changed', text: 'Phase 13 cleanup: the `IMPL_DATA` and `JS_FUNC_TO_FILE` global tables are gone from `app.js`. The Code tab\'s "Implementation Reference" panel now reads from per-component `uds/components/<id>/impl.json` files. Each impl.json carries `jsFunc`, `jsFile`, `tokens` (categorized CSS custom property lists), and `html` (the ZIP-download body as a plain string). New schema at `uds/schemas/impl.schema.json`. As a side benefit, the Behavior tab no longer 404s — `JS_FUNC_TO_FILE` had stale pre-Phase-6 paths.' },
         { type: 'changed', text: 'Phase 13 cleanup: the `PLAYGROUNDS` global table (~98kb of inline literal in `app.js`) is gone. Each component\'s playground config now lives in `uds/components/<id>/playground.js` as an ES module default export. `initPlayground()` is async and dynamically imports the module on first tab click, caches it for re-clicks. Eight playground.js files that reference the `esc()` helper now `import { esc } from \'../../../docs/helpers/esc.js\'` — a new shared helper extracted from app.js. Net effect: app.js shrinks from ~5,200 lines to ~2,980 lines (-43%), and per-component playground configs are co-located with the rest of each component\'s data.' }
       ]
+    },
+    {
+      version: 'SITE 2026.05.09.2',
+      date: '2026-05-09',
+      changes: [
+        { type: 'added', text: 'Phase 14: version-aware UDS data routing. Selecting a historical UDS version from the version dropdown in the header no longer navigates to a frozen full-site snapshot — it now sets `?uds=X.Y` on the URL and the modern docs site renders the archive by reading data through `udsResolve()`. Bug fixes to docs-site UI now flow automatically to historical views; only the UDS data itself is frozen per release.' },
+        { type: 'changed', text: 'Phase 14: `versions/0.2/` retroactively converted from the old frozen-full-site shape to UDS-only (`versions/0.2/uds/<components, schemas, tokens, components.json, version.json, CHANGELOG.json>`). Per-component folders generated from the original frozen `content/<id>.json` + parsed `app.js` (COMPONENT_STATUS, FIGMA_LINKS, CHANGELOG). `index.html`, `app.js`, `demo-builder.js`, `bump-site.sh`, `material-icons.js`, `ai-context.json`, `content/`, etc. removed — only UDS data survives. Disk savings: ~2 MB per archived version going forward.' },
+        { type: 'added', text: 'New `udsResolve(path)` helper in `docs/helpers/uds-path.js` returns a fetchable URL for any UDS data path (e.g. `components/button/spec.json`) routed through the viewing version. Also: `viewingVersion()`, `isViewingHistorical()`, `currentVersion()` accessors. Every UDS-data fetch in app.js + demo-builder example-fetcher routes through `udsResolve()` and gates on `versionsReady` so the routing is settled before fetching.' },
+        { type: 'added', text: 'New script `scripts/convert-archive.sh` (one-time use per legacy archive) reads the frozen full-site files, splits them into per-component folders, and removes the no-longer-needed full-site copy. Idempotent (sentinel: `<archive>/uds/components.json`).' },
+        { type: 'added', text: 'Archive-view banner appears at the top of every page when `?uds=X.Y` is present. Tells the user which archive they\'re viewing and offers a one-click return to live. Dimmed Pre-flight + Build Demo buttons in archive view (interactive features only run against live UDS).' },
+        { type: 'added', text: 'Playground tab is hidden in archive view (historical snapshots don\'t carry `playground.js` modules — interactive playgrounds only render against live UDS data).' }
+      ]
     }
 ];
 

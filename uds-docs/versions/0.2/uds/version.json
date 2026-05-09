@@ -1,0 +1,6 @@
+{
+  "$schema": "./schemas/version.schema.json",
+  "version": "0.2",
+  "released": "2026-04-15",
+  "schemaVersion": "1.0"
+}

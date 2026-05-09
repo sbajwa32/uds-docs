@@ -1,0 +1,11 @@
+{
+  "$schema": "../../schemas/status.schema.json",
+  "current": "in-progress",
+  "since": "0.2",
+  "history": [
+    {
+      "version": "0.2",
+      "status": "in-progress"
+    }
+  ]
+}

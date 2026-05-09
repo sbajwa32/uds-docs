@@ -1,0 +1,11 @@
+{
+  "$schema": "../../schemas/changelog.schema.json",
+  "addedIn": "0.1",
+  "entries": [
+    {
+      "version": "0.1",
+      "type": "added",
+      "text": "Primary, secondary, ghost variants; small + default sizes; icon support; disabled + loading states"
+    }
+  ]
+}

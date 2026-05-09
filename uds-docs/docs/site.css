@@ -1511,3 +1511,55 @@ code.sg-inline-code { font-family: 'SF Mono', 'Fira Code', monospace; font-size:
   transition: top 120ms;
 }
 .sg-skip-link:focus { top: var(--uds-space-100); }
+
+/* Phase 14: Archive-view banner — appears at the top of the page when
+   ?uds=X.Y is set and points to a historical UDS snapshot. */
+#sg-archive-banner {
+  background: var(--uds-color-surface-warning-subtle, #fff7e6);
+  border-bottom: 1px solid var(--uds-color-border-warning, #f5b85b);
+  color: var(--uds-color-text-primary);
+}
+.sg-archive-banner__inner {
+  max-width: 100%;
+  padding: var(--uds-space-100) var(--uds-space-200);
+  display: flex;
+  align-items: center;
+  gap: var(--uds-space-150);
+  font-size: var(--uds-font-size-sm);
+  line-height: var(--uds-font-line-height-sm);
+}
+.sg-archive-banner__icon {
+  flex: 0 0 auto;
+  font-size: 24px;
+  color: var(--uds-color-text-warning, #b87100);
+}
+.sg-archive-banner__text {
+  flex: 1 1 auto;
+}
+.sg-archive-banner__text strong {
+  font-weight: var(--uds-font-weight-medium);
+}
+.sg-archive-banner__text code {
+  background: var(--uds-color-surface-main);
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-family: var(--uds-font-family-mono, monospace);
+  font-size: 12px;
+}
+.sg-archive-banner__exit {
+  flex: 0 0 auto;
+  color: var(--uds-color-text-link, var(--uds-color-text-primary));
+  text-decoration: none;
+  font-weight: var(--uds-font-weight-medium);
+  white-space: nowrap;
+}
+.sg-archive-banner__exit:hover {
+  text-decoration: underline;
+}
+/* In archive view, dim the demo/preflight buttons explicitly even if their
+   tooltip-wrapper got hidden via initVersionDropdown — defense in depth. */
+[data-archive-view] .sg-preflight-btn,
+[data-archive-view] .sg-demo-btn {
+  opacity: 0.4;
+  pointer-events: none;
+}

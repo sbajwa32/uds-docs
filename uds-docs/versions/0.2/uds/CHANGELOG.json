@@ -1,0 +1,191 @@
+[
+  {
+    "version": "0.1",
+    "date": "2026-04-01",
+    "globalNotes": [
+      {
+        "type": "added",
+        "text": "Initial release: primitive + semantic tokens, 6 color modes, 4 font families, 3 font scales, 2 density modes"
+      },
+      {
+        "type": "added",
+        "text": "249 primitive tokens (color, font, text, space, border, style)"
+      },
+      {
+        "type": "added",
+        "text": "93 semantic color tokens across 6 modes (Base Light, Base Dark, ResMan Light, ResMan Dark, AnyoneHome Light, Inhabit Light)"
+      },
+      {
+        "type": "added",
+        "text": "Semantic font tokens with 4 font families (Inter, Poppins, Roboto, Lexend)"
+      },
+      {
+        "type": "added",
+        "text": "Semantic font-scale tokens with 3 scales (default, smaller, larger)"
+      },
+      {
+        "type": "added",
+        "text": "Semantic space tokens with 2 density modes (default, comfortable)"
+      },
+      {
+        "type": "added",
+        "text": "Semantic border tokens (radius + width)"
+      },
+      {
+        "type": "added",
+        "text": "Text styles for headings, body, labels, inputs, data cells"
+      }
+    ],
+    "byComponent": {
+      "Button": [
+        {
+          "type": "added",
+          "text": "Primary, secondary, ghost variants; small + default sizes; icon support; disabled + loading states"
+        }
+      ],
+      "Text Input": [
+        {
+          "type": "added",
+          "text": "Label, helper text, error state, character counter, leading/trailing icons"
+        }
+      ],
+      "Checkbox": [
+        {
+          "type": "added",
+          "text": "Label, disabled, and error states"
+        }
+      ],
+      "Radio": [
+        {
+          "type": "added",
+          "text": "Label, disabled, and error states"
+        }
+      ],
+      "Badge": [
+        {
+          "type": "added",
+          "text": "Status variants and sizes"
+        }
+      ],
+      "Breadcrumb": [
+        {
+          "type": "added",
+          "text": "Navigation component"
+        }
+      ],
+      "Tabs": [
+        {
+          "type": "added",
+          "text": "Horizontal tab component with keyboard navigation"
+        }
+      ],
+      "Divider": [
+        {
+          "type": "added",
+          "text": "Horizontal and vertical orientations"
+        }
+      ],
+      "Icon Wrapper": [
+        {
+          "type": "added",
+          "text": "Size and color variants for Material Symbols"
+        }
+      ],
+      "Spacer": [
+        {
+          "type": "added",
+          "text": "Spacing utility component"
+        }
+      ],
+      "Nav": [
+        {
+          "type": "added",
+          "text": "Navigation system: header bar, vertical sidebar, bento dropdown, rail buttons, search, and account actions"
+        }
+      ]
+    }
+  },
+  {
+    "version": "0.2",
+    "date": "2026-04-02",
+    "globalNotes": [],
+    "byComponent": {
+      "Nav": [
+        {
+          "type": "changed",
+          "text": "Split Nav into two separate components: Nav Header and Nav Vertical"
+        },
+        {
+          "type": "deprecated",
+          "text": "Replaced by Nav Header and Nav Vertical \u2014 update imports to nav-header.css + nav-vertical.css"
+        }
+      ],
+      "Nav Header": [
+        {
+          "type": "added",
+          "text": "Standalone header bar with logo, bento dropdown, search, My Work, and account actions"
+        }
+      ],
+      "Nav Vertical": [
+        {
+          "type": "added",
+          "text": "Sidebar navigation with two variants: Leading Icons (default) and text-only"
+        }
+      ],
+      "Dropdown": [
+        {
+          "type": "added",
+          "text": "Single-select dropdown with label, helper text, leading icon, error/disabled states, keyboard navigation"
+        }
+      ],
+      "Notification": [
+        {
+          "type": "added",
+          "text": "Status banners with info, success, error, warning variants; subtle, prominent, and inline styles; optional dismiss"
+        }
+      ],
+      "Dialog": [
+        {
+          "type": "added",
+          "text": "Modal overlay with title, scrollable body, action footer; backdrop click and Escape to close; 1-4 content slots"
+        }
+      ],
+      "Tile": [
+        {
+          "type": "added",
+          "text": "Selectable card with label, body text, optional chevron; default/hover/selected/focused/disabled states"
+        }
+      ],
+      "List": [
+        {
+          "type": "added",
+          "text": "Vertical list with single-select, optional leading/trailing icons, keyboard navigation; 5 interaction states"
+        }
+      ],
+      "Data Table": [
+        {
+          "type": "added",
+          "text": "Data grid with sortable headers, checkbox selection, badge/action cell types, striped rows, error highlighting"
+        }
+      ],
+      "Chip": [
+        {
+          "type": "added",
+          "text": "Compact filter/input/dropdown chips with selected state, leading/trailing icons, removable input tags"
+        }
+      ],
+      "Search": [
+        {
+          "type": "added",
+          "text": "Search input with leading icon, auto-show clear button, hover/focused/error states"
+        }
+      ],
+      "Tooltip": [
+        {
+          "type": "added",
+          "text": "CSS-only text popover on hover/focus with top/bottom/left/right positioning"
+        }
+      ]
+    }
+  }
+]
