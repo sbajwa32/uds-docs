@@ -1,0 +1,78 @@
+<h1 class="sg-page-title">Contrast Checker</h1>
+<p class="sg-page-desc">
+  Live audit of every <code>--uds-color-text-*</code>, <code>--uds-color-icon-*</code>,
+  and <code>--uds-color-border-*</code> foreground token against every
+  <code>--uds-color-surface-*</code> background. Contrast is computed
+  client-side from the currently-resolved CSS variables, so flipping the
+  theme bar above (light/dark, brand, font scale, density) recomputes
+  every cell in place. Use this to validate token pairings across all
+  six supported themes without leaving the page.
+</p>
+
+<div class="sg-subsection cc-intro">
+  <h3 class="sg-subsection-title">WCAG thresholds</h3>
+  <p class="sg-subsection-desc">
+    The page uses kind-aware thresholds so verdicts match the standards
+    that actually apply.
+  </p>
+  <ul class="cc-intro-list">
+    <li>
+      <strong>Text</strong> — WCAG SC 1.4.3: <strong>4.5:1</strong> for normal
+      body text (AA), <strong>7:1</strong> for AAA, and <strong>3:1</strong>
+      for large text (18&nbsp;pt+ regular or 14&nbsp;pt+ bold).
+    </li>
+    <li>
+      <strong>Icons</strong> and <strong>borders</strong> — WCAG SC 1.4.11
+      Non-text Contrast: <strong>3:1</strong> against the adjacent surface.
+      SC 1.4.11 doesn't define an AAA tier.
+    </li>
+    <li>
+      Transparent tokens (<code>*-none</code>) are skipped — contrast is
+      undefined against / using a transparent fill.
+      Tokens whose name contains <code>-disabled</code> are intentionally
+      low-contrast by design; the ratio is still shown, but the verdict
+      pill is labelled "by design" so the result is not misread as a bug.
+    </li>
+  </ul>
+</div>
+
+<div class="sg-subsection">
+  <h3 class="sg-subsection-title">Recommended pairings</h3>
+  <p class="sg-subsection-desc">
+    Hand-picked semantic combinations covering everyday UI: body text on
+    page surfaces, status text on status-subtle, light text on bold status
+    or interactive surfaces, focus ring on page surfaces. Each card shows
+    a real "Aa" text sample, a Material Symbol icon swatch, and a bordered
+    preview pill so all three foreground kinds are visible against the
+    same surface.
+  </p>
+  <div id="cc-curated" class="cc-curated">
+    <p class="cc-loading">Loading recommended pairings…</p>
+  </div>
+</div>
+
+<div class="sg-subsection">
+  <h3 class="sg-subsection-title">Pick a surface or foreground</h3>
+  <p class="sg-subsection-desc">
+    Explore every available pairing. Toggle the axis to scan either by
+    surface (one surface, every foreground) or by foreground (one
+    foreground, every surface). Use the chip filters to narrow the
+    foreground tokens by kind.
+  </p>
+  <div id="cc-picker" class="cc-picker">
+    <p class="cc-loading">Loading picker…</p>
+  </div>
+</div>
+
+<div class="sg-subsection">
+  <h3 class="sg-subsection-title">Full matrix</h3>
+  <p class="sg-subsection-desc">
+    Compact grid of the most common surface tokens versus every text,
+    icon, and border token. Use the kind filters to collapse columns
+    you're not interested in. Scroll horizontally if needed — the first
+    column and header row are sticky.
+  </p>
+  <div id="cc-matrix" class="cc-matrix-wrap">
+    <p class="cc-loading">Loading matrix…</p>
+  </div>
+</div>

@@ -94,6 +94,7 @@ function parseHash() {
 // ============================================================================
 
 const TOKEN_PAGES_SET = new Set(['semantic-colors', 'primitive-colors', 'text-styles', 'spacing']);
+const TOOLS_PAGES_SET = new Set(['contrast-checker']);
 
 // Hooks fired AFTER a fragment's HTML is injected into its placeholder.
 // Each hook can assume its target slots (e.g. #sg-global-changelog) now
@@ -105,6 +106,18 @@ function registerPageLoadHook(pageId, fn) {
     PAGE_LOAD_HOOKS[pageId].push(fn);
 }
 
+// Lazy-load the Contrast Checker module on first navigation to its page.
+registerPageLoadHook('contrast-checker', async (page) => {
+    try {
+      const mod = await import('./modules/contrast-checker/index.js');
+      if (mod && typeof mod.initContrastChecker === 'function') {
+        mod.initContrastChecker(page);
+      }
+    } catch (err) {
+      console.error('Failed to init contrast checker', err);
+    }
+});
+
 const _fragmentLoadCache = {};
 
 async function loadPageFragment(pageId, page) {
@@ -112,7 +125,9 @@ async function loadPageFragment(pageId, page) {
     if (page.dataset.fragmentLoaded === 'true') return;
     if (_fragmentLoadCache[pageId]) return _fragmentLoadCache[pageId];
 
-    const subdir = TOKEN_PAGES_SET.has(pageId) ? 'tokens/' : '';
+    let subdir = '';
+    if (TOKEN_PAGES_SET.has(pageId)) subdir = 'tokens/';
+    else if (TOOLS_PAGES_SET.has(pageId)) subdir = 'tools/';
     const url = `./docs/pages/${subdir}${pageId}.html`;
 
     _fragmentLoadCache[pageId] = (async () => {

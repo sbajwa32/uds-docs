@@ -634,6 +634,16 @@ export const SITE_CHANGELOG = [
         { type: 'added', text: 'Phase 17: new `scripts/audit-theme-contrast.sh` + `lib/audit_theme_contrast.js` — multi-theme axe-core scanner that validates contrast/aria across all 6 theme combinations on 7 representative pages. Wired into `.github/workflows/audits.yml` as a separate `theme-contrast` job. Catches future theme-specific regressions that the Phase 16 single-theme scan would have missed.' },
         { type: 'added', text: 'Phase 17: extended `role="tab"` to the 4 token-page fragments (`docs/pages/tokens/*.html`) — Phase 16 only updated index.html and changelog/ai-assist fragments. semantic-colors and primitive-colors fragments needed the role too.' }
       ]
+    },
+    {
+      version: 'SITE 2026.05.10.1',
+      date: '2026-05-10',
+      changes: [
+        { type: 'added', text: 'New sidebar category "UDS Tools" with its first tool: a Contrast Checker page at `#/contrast-checker`. Evaluates every `--uds-color-text-*`, `--uds-color-icon-*`, and `--uds-color-border-*` foreground token against every `--uds-color-surface-*` background, computes the WCAG relative-luminance contrast ratio client-side from the resolved CSS variables, and labels each pair as AAA / AA / AA-large / fail. Reactive: a MutationObserver on `<html>` re-resolves and re-renders the entire page when the theme bar flips color-scheme, brand, font-scale, density, or font, so you can validate every pairing across all 6 supported theme combinations without leaving the page.' },
+        { type: 'added', text: 'Contrast Checker layout has three sections. (1) Recommended pairings — ~18 hand-curated semantic combos rendered as readable cards: real "Aa" text + Material Symbol icon + bordered preview pill on the actual surface, with a verdict pill per foreground kind. (2) Pick a surface or foreground — interactive picker with axis toggle ("By surface" / "By foreground"), foreground-kind filter chips (text / icon / border, multi-select), and a UDS dropdown for selecting the token. (3) Full matrix — compact grid of ~16 "main" surface tokens × ~42 text + icon + border tokens, with sticky first column + header row, kind-aware cell rendering (text glyphs, Material Symbols, ringed swatches for borders), and ratio overlays color-tinted by verdict.' },
+        { type: 'added', text: 'Contrast Checker uses kind-aware WCAG thresholds. Text foregrounds follow SC 1.4.3 (4.5:1 AA / 7:1 AAA / 3:1 for large text). Icon and border foregrounds follow SC 1.4.11 Non-text Contrast (3:1 AA, no AAA tier). Transparent tokens (`*-none`) are tagged "transparent — N/A". Intentionally low-contrast `*-disabled` tokens still compute a ratio but are tagged "by design" so they aren\'t misread as bugs.' },
+        { type: 'changed', text: 'Page fragment loader in `docs/app.js` now also routes the `tools/` subdirectory in addition to the existing `tokens/` subdirectory. New `TOOLS_PAGES_SET` set + `PAGE_LOAD_HOOKS["contrast-checker"]` hook that dynamic-imports `docs/modules/contrast-checker/index.js` on first navigation and calls `initContrastChecker(pageEl)`.' }
+      ]
     }
 ];
 
