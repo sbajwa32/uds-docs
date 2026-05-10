@@ -1593,3 +1593,436 @@ code.sg-inline-code { font-family: 'SF Mono', 'Fira Code', monospace; font-size:
   opacity: 0.4;
   pointer-events: none;
 }
+
+/* =====================================================================
+   Contrast Checker (#/contrast-checker)
+   ===================================================================== */
+
+.cc-loading {
+  color: var(--uds-color-text-secondary);
+  padding: var(--uds-space-200) 0;
+}
+
+.cc-intro-list {
+  list-style: disc;
+  padding-left: var(--uds-space-300);
+  display: flex;
+  flex-direction: column;
+  gap: var(--uds-space-100);
+  color: var(--uds-color-text-primary);
+}
+.cc-intro-list li {
+  line-height: var(--uds-font-line-height-md);
+}
+.cc-intro-list code {
+  font-size: var(--uds-font-size-sm);
+}
+
+/* ---- Shared sample swatches (text/icon/border previews) -------------- */
+
+.cc-sample {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 28px;
+  border-radius: var(--uds-border-radius-container-sm);
+  flex: 0 0 auto;
+  font-size: var(--uds-font-size-md);
+  font-weight: var(--uds-font-weight-medium);
+  line-height: 1;
+}
+.cc-sample--sm {
+  width: 28px;
+  height: 22px;
+  font-size: var(--uds-font-size-base);
+}
+.cc-sample--icon .material-symbols-outlined {
+  font-size: 18px;
+}
+.cc-sample--sm.cc-sample--icon .material-symbols-outlined {
+  font-size: 14px;
+}
+.cc-sample--border {
+  border: 2px solid currentColor;
+}
+
+/* ---- Verdict pill ---------------------------------------------------- */
+
+.cc-ratio {
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+  font-size: var(--uds-font-size-sm);
+  color: var(--uds-color-text-primary);
+  white-space: nowrap;
+}
+.cc-verdict {
+  display: inline-flex;
+  align-items: center;
+  height: 20px;
+  padding: 0 var(--uds-space-100);
+  border-radius: var(--uds-border-radius-container-full);
+  font-size: var(--uds-font-size-xs);
+  font-weight: var(--uds-font-weight-medium);
+  white-space: nowrap;
+  letter-spacing: 0.02em;
+}
+.cc-verdict-aaa {
+  background: var(--uds-color-surface-success-subtle);
+  color: var(--uds-color-text-success);
+}
+.cc-verdict-aa {
+  background: var(--uds-color-surface-info-subtle);
+  color: var(--uds-color-text-info);
+}
+.cc-verdict-aa-large {
+  background: var(--uds-color-surface-warning-subtle);
+  color: var(--uds-color-text-warning);
+}
+.cc-verdict-fail {
+  background: var(--uds-color-surface-error-subtle);
+  color: var(--uds-color-text-error);
+}
+.cc-verdict-na {
+  background: var(--uds-color-surface-alt);
+  color: var(--uds-color-text-secondary);
+}
+.cc-by-design {
+  display: inline-flex;
+  align-items: center;
+  height: 20px;
+  padding: 0 var(--uds-space-100);
+  border-radius: var(--uds-border-radius-container-full);
+  font-size: var(--uds-font-size-xs);
+  background: var(--uds-color-surface-alt);
+  color: var(--uds-color-text-secondary);
+}
+
+/* ---- Section 1: curated cards --------------------------------------- */
+
+.cc-curated {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: var(--uds-space-200);
+}
+.cc-card {
+  border: 1px solid var(--uds-color-border-tertiary);
+  border-radius: var(--uds-border-radius-container);
+  overflow: hidden;
+  background: var(--uds-color-surface-main);
+  box-shadow: var(--uds-shadow-depth-100);
+  display: flex;
+  flex-direction: column;
+}
+.cc-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--uds-space-150);
+  padding: var(--uds-space-100) var(--uds-space-150);
+  background: var(--uds-color-surface-subtle);
+  border-bottom: 1px solid var(--uds-color-border-tertiary);
+}
+.cc-card-title {
+  font-size: var(--uds-font-size-base);
+  font-weight: var(--uds-font-weight-medium);
+  color: var(--uds-color-text-primary);
+}
+.cc-card-surface {
+  font-size: var(--uds-font-size-xs);
+  color: var(--uds-color-text-secondary);
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+  text-align: right;
+  word-break: break-all;
+}
+.cc-card-body {
+  background: var(--cc-card-bg, var(--uds-color-surface-main));
+  padding: var(--uds-space-150);
+  display: flex;
+  flex-direction: column;
+  gap: var(--uds-space-100);
+  flex: 1;
+}
+.cc-card-row {
+  display: grid;
+  grid-template-columns: 56px 36px 1fr auto;
+  align-items: center;
+  gap: var(--uds-space-100);
+  padding: var(--uds-space-075);
+  border-radius: var(--uds-border-radius-container-sm);
+  background: var(--uds-color-surface-main);
+  border: 1px solid var(--uds-color-border-tertiary);
+}
+.cc-card-row-kind {
+  font-size: var(--uds-font-size-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--uds-color-text-secondary);
+  font-weight: var(--uds-font-weight-medium);
+}
+.cc-card-fg {
+  font-size: var(--uds-font-size-xs);
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+  color: var(--uds-color-text-secondary);
+  word-break: break-all;
+  min-width: 0;
+}
+.cc-card-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--uds-space-075);
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+/* ---- Section 2: picker --------------------------------------------- */
+
+.cc-picker {
+  display: flex;
+  flex-direction: column;
+  gap: var(--uds-space-200);
+}
+.cc-picker-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--uds-space-200);
+  padding: var(--uds-space-150);
+  background: var(--uds-color-surface-subtle);
+  border: 1px solid var(--uds-color-border-tertiary);
+  border-radius: var(--uds-border-radius-container);
+}
+.cc-picker-axis {
+  display: inline-flex;
+  gap: var(--uds-space-050);
+}
+.cc-picker-kinds {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--uds-space-075);
+  flex-wrap: wrap;
+}
+.cc-picker-kinds-label,
+.cc-matrix-controls-label {
+  font-size: var(--uds-font-size-sm);
+  font-weight: var(--uds-font-weight-medium);
+  color: var(--uds-color-text-secondary);
+}
+.cc-picker-kind[aria-selected="false"] .udc-chip__leading-icon,
+.cc-matrix-kind[aria-selected="false"] .udc-chip__leading-icon {
+  display: none;
+}
+.cc-picker-select {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--uds-space-100);
+  flex: 1 1 240px;
+}
+.cc-picker-select-label {
+  font-size: var(--uds-font-size-sm);
+  font-weight: var(--uds-font-weight-medium);
+  color: var(--uds-color-text-secondary);
+  white-space: nowrap;
+}
+.cc-picker-select-input {
+  flex: 1;
+  min-width: 200px;
+  height: 36px;
+  padding: 0 var(--uds-space-150);
+  border-radius: var(--uds-border-radius-input);
+  border: 1px solid var(--uds-color-border-primary);
+  background: var(--uds-color-surface-main);
+  color: var(--uds-color-text-primary);
+  font-family: var(--uds-font-family);
+  font-size: var(--uds-font-size-base);
+  cursor: pointer;
+}
+.cc-picker-select-input:focus-visible {
+  outline: 2px solid var(--uds-color-border-outline-focus-visible);
+  outline-offset: 2px;
+}
+.cc-picker-target {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--uds-space-150);
+  padding: var(--uds-space-100) var(--uds-space-150);
+  border: 1px solid var(--uds-color-border-tertiary);
+  border-radius: var(--uds-border-radius-container);
+  background: var(--uds-color-surface-main);
+}
+.cc-picker-target-label {
+  font-size: var(--uds-font-size-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--uds-color-text-secondary);
+  font-weight: var(--uds-font-weight-medium);
+}
+.cc-picker-target-swatch {
+  width: 28px;
+  height: 22px;
+  border-radius: var(--uds-border-radius-container-sm);
+  border: 1px solid var(--uds-color-border-tertiary);
+  display: inline-block;
+}
+.cc-picker-target-name {
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+  font-size: var(--uds-font-size-sm);
+  color: var(--uds-color-text-primary);
+}
+.cc-picker-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: var(--uds-space-100);
+  margin-top: var(--uds-space-150);
+}
+.cc-tile {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto auto;
+  column-gap: var(--uds-space-100);
+  align-items: center;
+  padding: var(--uds-space-100);
+  border: 1px solid var(--uds-color-border-tertiary);
+  border-radius: var(--uds-border-radius-container-sm);
+  background: var(--uds-color-surface-main);
+}
+.cc-tile[data-status="fail"] { border-color: var(--uds-color-border-error); }
+.cc-tile[data-status="aa-large"] { border-color: var(--uds-color-border-warning); }
+.cc-tile[data-status="aa"] { border-color: var(--uds-color-border-info); }
+.cc-tile[data-status="aaa"] { border-color: var(--uds-color-border-success); }
+.cc-tile-sample {
+  grid-row: 1 / 3;
+  display: inline-flex;
+}
+.cc-tile-name {
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+  font-size: var(--uds-font-size-xs);
+  color: var(--uds-color-text-primary);
+  word-break: break-all;
+  min-width: 0;
+}
+.cc-tile-verdict {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--uds-space-075);
+  flex-wrap: wrap;
+}
+
+/* ---- Section 3: matrix --------------------------------------------- */
+
+.cc-matrix-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--uds-space-150);
+}
+.cc-matrix-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--uds-space-100);
+  flex-wrap: wrap;
+}
+.cc-matrix-scroll {
+  overflow: auto;
+  border: 1px solid var(--uds-color-border-tertiary);
+  border-radius: var(--uds-border-radius-container);
+  max-height: 70vh;
+}
+table.cc-matrix {
+  border-collapse: separate;
+  border-spacing: 0;
+  width: max-content;
+  min-width: 100%;
+  font-size: var(--uds-font-size-sm);
+  background: var(--uds-color-surface-main);
+}
+.cc-matrix th,
+.cc-matrix td {
+  padding: var(--uds-space-075);
+  border-right: 1px solid var(--uds-color-border-tertiary);
+  border-bottom: 1px solid var(--uds-color-border-tertiary);
+  vertical-align: top;
+  text-align: left;
+  background: var(--uds-color-surface-main);
+}
+.cc-matrix thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: var(--uds-color-surface-subtle);
+}
+.cc-matrix-corner {
+  left: 0;
+  z-index: 3 !important;
+  position: sticky;
+  background: var(--uds-color-surface-subtle) !important;
+  min-width: 220px;
+  font-weight: var(--uds-font-weight-medium);
+  color: var(--uds-color-text-secondary);
+}
+.cc-matrix-row {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background: var(--uds-color-surface-subtle) !important;
+  display: flex;
+  align-items: center;
+  gap: var(--uds-space-100);
+  min-width: 220px;
+}
+.cc-matrix-row-swatch {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  flex: 0 0 18px;
+  border-radius: var(--uds-border-radius-container-sm);
+  border: 1px solid var(--uds-color-border-tertiary);
+}
+.cc-matrix-row-name {
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+  font-size: var(--uds-font-size-xs);
+  color: var(--uds-color-text-primary);
+  word-break: break-all;
+}
+.cc-matrix-col {
+  min-width: 140px;
+}
+.cc-matrix-col-kind {
+  display: block;
+  font-size: var(--uds-font-size-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--uds-color-text-secondary);
+  margin-bottom: var(--uds-space-025);
+}
+.cc-matrix-col-name {
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+  font-size: var(--uds-font-size-xs);
+  color: var(--uds-color-text-primary);
+  display: block;
+  word-break: break-all;
+}
+.cc-matrix-cell {
+  min-width: 140px;
+}
+.cc-matrix-cell-sample {
+  margin-bottom: var(--uds-space-050);
+}
+.cc-matrix-cell-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--uds-space-050);
+}
+/* Kind-tinted column-group accents in the header row */
+.cc-matrix-col--text { box-shadow: inset 0 3px 0 0 var(--uds-color-border-info); }
+.cc-matrix-col--icon { box-shadow: inset 0 3px 0 0 var(--uds-color-border-success); }
+.cc-matrix-col--border { box-shadow: inset 0 3px 0 0 var(--uds-color-border-warning); }
+
+@media (max-width: 720px) {
+  .cc-picker-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .cc-picker-select {
+    flex: 1 1 auto;
+  }
+}
