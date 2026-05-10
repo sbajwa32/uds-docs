@@ -644,6 +644,14 @@ export const SITE_CHANGELOG = [
         { type: 'added', text: 'Contrast Checker uses kind-aware WCAG thresholds. Text foregrounds follow SC 1.4.3 (4.5:1 AA / 7:1 AAA / 3:1 for large text). Icon and border foregrounds follow SC 1.4.11 Non-text Contrast (3:1 AA, no AAA tier). Transparent tokens (`*-none`) are tagged "transparent — N/A". Intentionally low-contrast `*-disabled` tokens still compute a ratio but are tagged "by design" so they aren\'t misread as bugs.' },
         { type: 'changed', text: 'Page fragment loader in `docs/app.js` now also routes the `tools/` subdirectory in addition to the existing `tokens/` subdirectory. New `TOOLS_PAGES_SET` set + `PAGE_LOAD_HOOKS["contrast-checker"]` hook that dynamic-imports `docs/modules/contrast-checker/index.js` on first navigation and calls `initContrastChecker(pageEl)`.' }
       ]
+    },
+    {
+      version: 'SITE 2026.05.10.2',
+      date: '2026-05-10',
+      changes: [
+        { type: 'fixed', text: 'Universal site cache-bypass. The inline auto-reload loader in `index.html` used to call `window.location.reload()` on version mismatch — but modern browsers treat that as a normal reload, which still serves `index.html` from the HTTP cache (GH Pages defaults to ~10-min `Cache-Control: max-age=600` on HTML, and `<meta http-equiv>` tags are widely ignored). Net effect: users could get stuck on a stale SPA shell after a deploy, with no way out short of a manual hard refresh. The loader now navigates to `location.pathname?_uds=<remote-version>` via `location.replace()` — a brand-new URL forces a network revalidate, so every fresh deploy reaches every open tab within ~60s. A sessionStorage cooldown caps auto-bypass at once per minute so a misconfigured deploy can\'t trap a tab in a redirect spiral.' },
+        { type: 'fixed', text: 'Runtime fetches now auto-version-stamp. Previously only the static script/link tags in `index.html` carried `?v=N` cache-busters; every runtime `fetch()` (page fragments under `docs/pages/`, per-component `uds/components/<id>/*.json`, examples HTML, `playground.js` modules, `version.json`, `versions.json`, etc.) had no cache-buster at all and could sit in the HTTP cache indefinitely. The inline cache-bypass script now monkey-patches `window.fetch` to auto-append `?v=<SITE_VERSION>` to same-origin relative URLs that don\'t already carry a `_` or `v` query param. Absolute URLs (http://, https://, blob:, data:) and URLs that already carry a cache-buster pass through untouched, so `fetchVersioned()` and Google Fonts requests are unaffected. The patch installs in the inline `<head>` script so it\'s active before any module-init fetches fire from `app.js` imports.' }
+      ]
     }
 ];
 

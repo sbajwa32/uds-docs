@@ -14,17 +14,76 @@
   <link rel="stylesheet" href="./uds/uds.css?v=52" />
   <link rel="stylesheet" href="./docs/site.css?v=7" />
   <script>
+    // ========================================================================
+    // Universal site cache-bypass — runs BEFORE the type="module" script so
+    // every subsequent fetch (including module-init fetches in app.js's
+    // imports) is automatically version-stamped.
+    //
+    // Two failure modes this fixes:
+    //
+    //   1. index.html itself getting stuck on the HTTP cache. GH Pages serves
+    //      HTML with a ~10-min default TTL and <meta http-equiv> tags are
+    //      ignored. window.location.reload() doesn't bypass that cache, so a
+    //      vanilla reload after a new deploy can keep serving the stale shell.
+    //      Fix: on version mismatch, navigate to a NEW URL (different query
+    //      string) via location.replace() — that forces a network revalidate.
+    //
+    //   2. Runtime fetches for page fragments, per-component JSON, examples,
+    //      etc. that don't carry ?v= cache busters. Solved by monkey-patching
+    //      window.fetch to auto-append ?v=<SITE_VERSION> to same-origin
+    //      relative URLs that don't already carry _ or v query params.
+    //
+    // Both effects key off the same SITE_VERSION constant below, so the only
+    // thing a contributor has to remember to make a deploy hit every open tab
+    // is the existing uds-docs/bump-site.sh preflight.
+    // ========================================================================
     (function () {
-      var SITE_VERSION = '2026.05.10.1';
+      var SITE_VERSION = '2026.05.10.2';
+      window.SITE_VERSION = SITE_VERSION;
+
+      // ---- Part 1: monkey-patch fetch() for universal cache-busting ------
+      var _origFetch = window.fetch.bind(window);
+      window.fetch = function (input, init) {
+        try {
+          if (typeof input === 'string') {
+            // Skip absolute URLs (http://, https://, blob:, data:) and URLs
+            // that already carry a cache-buster (_= or v=). Same-origin
+            // relative URLs get an automatic ?v=<SITE_VERSION> stamp.
+            var isAbsolute = /^[a-z][a-z0-9+.-]*:/i.test(input);
+            var hasBuster = /[?&](_|v)=/.test(input);
+            if (!isAbsolute && !hasBuster) {
+              input = input + (input.indexOf('?') >= 0 ? '&' : '?') + 'v=' + SITE_VERSION;
+            }
+          }
+        } catch (_) { /* fall through to original fetch */ }
+        return _origFetch(input, init);
+      };
+
+      // ---- Part 2: poll version.txt and force-bypass HTTP cache on mismatch
+      // Cooldown so a stuck deploy or cache header can't trap the user in a
+      // redirect spiral. One auto-bypass per minute per tab is plenty.
+      var COOLDOWN_KEY = 'uds-cache-bypass-last';
+      var COOLDOWN_MS = 60000;
+      try {
+        var lastReload = parseInt(sessionStorage.getItem(COOLDOWN_KEY) || '0', 10);
+        if (Date.now() - lastReload < COOLDOWN_MS) return;
+      } catch (_) { /* sessionStorage may be unavailable; carry on */ }
+
       var base = window.location.pathname.replace(/\/index\.html$/, '').replace(/\/$/, '');
-      fetch(base + '/version.txt?_=' + Date.now()).then(function (r) {
-        if (!r.ok) return;
+      // The cache-buster on version.txt here is purely defensive — the new
+      // fetch() wrapper above will already have stamped a ?v= onto it.
+      _origFetch(base + '/version.txt?_=' + Date.now()).then(function (r) {
+        if (!r.ok) return null;
         return r.text();
       }).then(function (remote) {
-        if (remote && remote.trim() !== SITE_VERSION) {
-          console.log('[UDS] New version detected (' + remote.trim() + '), reloading...');
-          window.location.reload();
-        }
+        if (!remote) return;
+        var fresh = remote.trim();
+        if (fresh === SITE_VERSION) return;
+        console.log('[UDS] New SITE version detected (' + fresh + ' vs ' + SITE_VERSION + ') — bypassing cache…');
+        try { sessionStorage.setItem(COOLDOWN_KEY, String(Date.now())); } catch (_) {}
+        var sep = window.location.search ? '&' : '?';
+        var fresher = window.location.pathname + window.location.search + sep + '_uds=' + fresh + window.location.hash;
+        window.location.replace(fresher);
       }).catch(function () {});
     })();
   </script>
@@ -68,7 +127,7 @@
       </span>
     </button>
     <select class="sg-version-select" id="sg-version-dropdown" aria-label="UDS version"></select>
-    <span class="sg-brand-bar-build">SITE 2026.05.10.1</span>
+    <span class="sg-brand-bar-build">SITE 2026.05.10.2</span>
   </div>
 
   <!-- Pre-flight checklist dialog -->
@@ -975,7 +1034,7 @@
   <script src="https://cdn.jsdelivr.net/npm/jszip@3/dist/jszip.min.js"></script>
   <script src="./material-icons.js?v=1"></script>
   <script src="./uds/uds.js?v=31"></script>
-  <script type="module" src="./docs/app.js?v=112"></script>
+  <script type="module" src="./docs/app.js?v=113"></script>
   <script type="module" src="./docs/modules/demo-builder/index.js?v=2"></script>
 
 </body>
