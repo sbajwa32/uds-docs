@@ -10,6 +10,16 @@ Component pages used to be a pile of unlabeled component sets sprawled at random
 - A designer can edit the visual template once and every agent run picks it up
 - Token bindings are forced — no raw hex anywhere
 
+## Direction of data flow (CRITICAL)
+
+This rule covers **code → Figma** writes, opposite of most UDS sync work. The card builder READS from `uds-docs/uds/components/<id>/spec.json` and WRITES card structure into the UDS Components Figma file. It must follow:
+
+- [`uds-figma-write-safety.mdc`](./uds-figma-write-safety.mdc) — Figma writes are denied by default; this skill writes only when the user explicitly invokes it. Every write must produce the standard "Figma write summary" report.
+- [`uds-source-of-truth.mdc`](./uds-source-of-truth.mdc) — `uds-docs/uds/` is read-only for this skill. Never modifies spec/status/changelog/impl/css under that path. Reads only.
+- [`uds-figma-preflight.mdc`](./uds-figma-preflight.mdc) — discovery and read-only inspection always come before any write.
+
+If an audit finding suggests the spec or component CSS should change, surface it as a recommendation; do not edit `uds-docs/uds/`. The authorized write paths into `uds-docs/uds/` are the named Figma-sync skills (`import-figma-tokens`, `sync-figma-component-spec`, `sync-figma-component-status`, `link-figma-nodes`, `new-component`) — not this one.
+
 ## File targets
 
 - **Mainline:** `UDS Components` (file key `1XJoUJgtNpw4R0IIT3VjoK`) — write only after explicit user approval
@@ -97,7 +107,7 @@ Inter Bold, sits below the eyebrow.
 | Section | Default title (override per JSON if richer is available) |
 |---|---|
 | HEADER | The component title (e.g. `Button`), 80–112px, `text-primary` (light card) or `text-inverse` (dark card), -2 to -3% tracking |
-| ANATOMY | "States" or pulled from `content/<id>.json#states[].name` summary, 32px |
+| ANATOMY | "States" or pulled from `spec.json#states[].name` summary, 32px |
 | VARIANTS | "<n> variants" using the natural-language variant list (e.g. `Primary, secondary, and ghost`), 32px |
 | SUB-COMPONENTS | The composition pattern in plain English (e.g. `Button groups`), 32px |
 | USAGE | `When to use, when not to`, 32px |
@@ -106,7 +116,9 @@ Inter Bold, sits below the eyebrow.
 
 ## Status → token map
 
-The page-name stoplight prefix drives every status-tinted color in the card. The mapping is:
+Status comes from `uds-docs/uds/components/<id>/status.json` (`current` field) as the primary source. The page-name stoplight prefix in the Figma file is a secondary signal — they should agree, but if they disagree, use the JSON status and surface the mismatch to the user (do not auto-correct the Figma page name; that's [`sync-figma-component-status`](../skills/sync-figma-component-status/SKILL.md)'s job).
+
+The mapping is:
 
 | Prefix | Status (in `app.js#COMPONENT_STATUS`) | Pill label | Color tokens |
 |---|---|---|---|
@@ -156,10 +168,10 @@ Below the link cards: a 1px divider (white at 8%) full-width, then the META meta
 
 | Label | Value | Font |
 |---|---|---|
-| `DESIGNER` | `<owner.designer>` from `content/<id>.json` | Inter Semi Bold 16 |
-| `DEVELOPER` | `<owner.developer>` from `content/<id>.json` | Inter Semi Bold 16 |
-| `CSS` | `uds/components/<id>.css` | Geist Mono Regular 13 |
-| `SPEC JSON` | `content/<id>.json` | Geist Mono Regular 13 |
+| `DESIGNER` | `<owner.designer>` from `spec.json` | Inter Semi Bold 16 |
+| `DEVELOPER` | `<owner.developer>` from `spec.json` | Inter Semi Bold 16 |
+| `CSS` | `uds/components/<id>/<id>.css` | Geist Mono Regular 13 |
+| `SPEC JSON` | `uds/components/<id>/spec.json` | Geist Mono Regular 13 |
 | (spacer fill) |  |  |
 | Status pill | Same recipe as HEADER's status pill | Geist Mono Medium 12 |
 
@@ -167,7 +179,11 @@ Every label uses Geist Mono Medium 11 uppercase, +8% tracking, white at 50%.
 
 ## Section content rules
 
-Driven by `uds-docs/content/<id>.json`. Match the existing "empty fields are hidden" rule from [`uds-content-schema.mdc`](./uds-content-schema.mdc).
+Driven by `uds-docs/uds/components/<id>/spec.json` (conforms to `uds-docs/uds/schemas/spec.schema.json`). Match the existing "empty fields are hidden" rule from [`uds-content-schema.mdc`](./uds-content-schema.mdc).
+
+The skill READS spec.json, never writes it. Same for `status.json`, `changelog.json`, `impl.json`, and `examples/*.html` — see [`uds-source-of-truth.mdc`](./uds-source-of-truth.mdc).
+
+All JSON fields below refer to keys in `uds-docs/uds/components/<id>/spec.json` unless otherwise noted.
 
 | Section | Required JSON fields | Behavior when empty |
 |---|---|---|
@@ -193,12 +209,36 @@ When a section is omitted, the eyebrow numbers stay in **rendering order**. So a
 
 ## Order of operations (every agent run)
 
-1. **Discover.** Read the matching `_TEMPLATE` page in the Figma file FIRST (page name starts with `📐 _TEMPLATE`). If the template differs from this rule, the template wins — designers can override here without touching code.
-2. **Confirm tokens are subscribed.** `get_libraries` should show `UDS Tokens` in `libraries_added_to_file`. If not, ask the user to subscribe — don't auto-subscribe.
-3. **Read the JSON spec.** `uds-docs/content/<id>.json`. If it doesn't exist, the page is a placeholder.
-4. **Inspect the page's existing nodes.** Find component sets, sub-components, the page-name prefix.
-5. **Run the builder.** Single `use_figma` call per component (per the skill).
-6. **Audit.** The `figma-component-card-audit` subagent verifies the result.
+1. **Pre-flight per [`uds-figma-preflight.mdc`](./uds-figma-preflight.mdc).** Read-only inspection first.
+2. **Discover.** Read the matching `_TEMPLATE` page in the Figma file FIRST (page name starts with `📐 _TEMPLATE`). If the template differs from this rule, the template wins — designers can override here without touching code.
+3. **Confirm tokens are subscribed.** `get_libraries` should show `UDS Tokens` in `libraries_added_to_file`. If not, ask the user to subscribe — don't auto-subscribe.
+4. **Read the JSON spec.** `uds-docs/uds/components/<id>/spec.json` and `status.json`. If `spec.json` doesn't exist, the page is a placeholder.
+5. **Inspect the page's existing nodes.** Find component sets, sub-components, the page-name prefix. Cross-check status with `status.json#current`.
+6. **Confirm the user-authorized write scope.** Per [`uds-figma-write-safety.mdc`](./uds-figma-write-safety.mdc), this skill only runs when the user has named the target (single component, batch, or library-wide). Do not invoke as a side effect of another task.
+7. **Run the builder.** Single `use_figma` call per component (per the skill).
+8. **Emit the Figma write summary.** Per [`uds-figma-write-safety.mdc`](./uds-figma-write-safety.mdc), every write produces a structured before/after report.
+9. **Audit.** The `figma-component-card-audit` subagent verifies the result.
+
+## Required Figma write summary
+
+After every component card build (per [`uds-figma-write-safety.mdc`](./uds-figma-write-safety.mdc)), the agent MUST return:
+
+```markdown
+## Figma write summary
+
+- File: UDS Components | UDS Components Testbed
+- File key: ...
+- Page: <emoji + component-id>
+- Node/frame: udc-<id>-page (root frame), plus content + 7 section cards
+- Operation: create | rebuild | update
+- Old value: <if rebuilding: prior wrapper structure brief>
+- New value: <new wrapper dimensions and section list>
+- Component sets reparented: <list of IDs and their new parent cards>
+- Component sets duplicated/deleted: <should be empty — flag if not>
+- Rollback note: existing component sets are reparented in place; revert by re-parenting back to page level and deleting the udc-<id>-page wrapper
+```
+
+For batch runs, return one summary block per component, plus a top-level batch summary with counts.
 
 ## Mainline rollout protocol
 
@@ -213,6 +253,18 @@ Once a component card is approved on the testbed and the audit passes:
 
 - [`.cursor/skills/figma-component-card/SKILL.md`](../skills/figma-component-card/SKILL.md) — executable recipe and gotchas
 - [`.cursor/agents/figma-component-card-audit.md`](../agents/figma-component-card-audit.md) — read-only verification
-- [`uds-content-schema.mdc`](./uds-content-schema.mdc) — JSON-only spec editing rule
+- [`uds-source-of-truth.mdc`](./uds-source-of-truth.mdc) — `uds-docs/uds/` is read-only for this skill
+- [`uds-figma-write-safety.mdc`](./uds-figma-write-safety.mdc) — Figma write discipline and required summary report
+- [`uds-figma-preflight.mdc`](./uds-figma-preflight.mdc) — pre-flight discovery requirements
+- [`uds-figma-change-classification.mdc`](./uds-figma-change-classification.mdc) — how Figma-derived findings get classified
+- [`uds-figma-component-inspection.mdc`](./uds-figma-component-inspection.mdc) — read-only inspection patterns this skill builds on
+- [`uds-token-architecture.mdc`](./uds-token-architecture.mdc) — token vocabulary contract this rule's bindings respect
+- [`uds-content-schema.mdc`](./uds-content-schema.mdc) — JSON spec field rules
 - [`uds-release-workflow.mdc`](./uds-release-workflow.mdc) — Figma file synchronization on releases
+- Sibling Figma-sync skills (the AUTHORIZED writers of `uds-docs/uds/`):
+  - [`import-figma-tokens`](../skills/import-figma-tokens/SKILL.md)
+  - [`sync-figma-component-spec`](../skills/sync-figma-component-spec/SKILL.md)
+  - [`sync-figma-component-status`](../skills/sync-figma-component-status/SKILL.md)
+  - [`link-figma-nodes`](../skills/link-figma-nodes/SKILL.md)
+  - [`new-component`](../skills/new-component/SKILL.md)
 - [`AGENTS.md`](../../AGENTS.md) — top-level agent notes

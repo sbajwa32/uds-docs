@@ -9,7 +9,15 @@ Builds the canonical seven-section card layout on a UDS component page in Figma.
 
 ## Mandatory prerequisite
 
-You MUST also load [`figma-use`](../../../plugins/cache/cursor-public/figma/3590366424deba5651026319b71b291d10004f1b/skills/figma-use/SKILL.md) before any `use_figma` call. That skill teaches the Plugin API rules. This skill teaches the UDS-specific recipe on top.
+You MUST load these BEFORE any `use_figma` call:
+
+- [`figma-use`](../../../plugins/cache/cursor-public/figma/3590366424deba5651026319b71b291d10004f1b/skills/figma-use/SKILL.md) — Plugin API rules (font preload, paint binding, layout sizing, atomic-failure semantics)
+- [`uds-figma-component-card.mdc`](../../rules/uds-figma-component-card.mdc) — the design specification this skill implements
+- [`uds-figma-preflight.mdc`](../../rules/uds-figma-preflight.mdc) — read-only discovery first
+- [`uds-figma-write-safety.mdc`](../../rules/uds-figma-write-safety.mdc) — Figma writes are denied unless explicitly user-invoked, and require the standard write-summary report
+- [`uds-source-of-truth.mdc`](../../rules/uds-source-of-truth.mdc) — `uds-docs/uds/` is read-only for this skill
+
+This skill is the *implementation* of the rule; the rule is the *specification*. If the two ever drift, the rule wins and the skill must be updated.
 
 ## Inputs
 
@@ -17,19 +25,21 @@ Ask the user (via `AskQuestion`) for any of these that aren't already obvious fr
 
 | Input | Required | Notes |
 |---|---|---|
-| `fileKey` | Yes | Default to the testbed (`HuQdX4txzccYX5GEnFnxAn`). Only target mainline (`1XJoUJgtNpw4R0IIT3VjoK`) on explicit user request. |
-| `componentId` | Yes | Kebab-case (e.g. `button`, `text-input`). Must match an existing page in the file AND a JSON file in `uds-docs/content/<id>.json`. |
+| `fileKey` | Yes | Default to the testbed (`HuQdX4txzccYX5GEnFnxAn`). Only target mainline (`1XJoUJgtNpw4R0IIT3VjoK`) on explicit user request — and per [`uds-figma-write-safety.mdc`](../../rules/uds-figma-write-safety.mdc) the user must name "mainline" specifically. |
+| `componentId` | Yes | Kebab-case (e.g. `button`, `text-input`). Must match an existing page in the file AND a directory at `uds-docs/uds/components/<id>/` containing `spec.json`. |
 | Scope | Default: pilot | Single component → build that one page; `all` → build every component page in the file with a stoplight prefix. |
 
 For a batch run, do NOT iterate one component at a time across many `use_figma` calls. Use a single script that loops, building 5–8 components per call (per the figma-use 10-op limit), and `return` per-component IDs so the next call can resume.
 
 ## Pre-flight (do these once at the start of the session)
 
-1. **Verify UDS Tokens library is subscribed.** Call `get_libraries`. If `libraries_added_to_file` does not include `UDS Tokens`, stop and ask the user to subscribe it via Figma's library picker. Do not attempt to auto-subscribe.
-2. **Read the rule.** [`uds-figma-component-card.mdc`](../../rules/uds-figma-component-card.mdc).
-3. **Read the gotchas.** [`references/gotchas.md`](references/gotchas.md). Skip any of those and you will waste 30 turns relearning them.
-4. **Read the token map.** [`references/token-map.json`](references/token-map.json). Hardcoded library variable keys for every UDS token used by the builder. Do not look these up dynamically per-run; they are stable.
-5. **Open the `📐 _TEMPLATE` page.** If it exists, inspect its structure FIRST. The template overrides this skill if there's a difference (designers can edit the template without touching code).
+1. **Confirm explicit user intent.** Per [`uds-figma-write-safety.mdc`](../../rules/uds-figma-write-safety.mdc), Figma writes are denied unless the user named the target. Confirm they want a card built/rebuilt for the named component(s) in the named file.
+2. **Verify UDS Tokens library is subscribed.** Call `get_libraries`. If `libraries_added_to_file` does not include `UDS Tokens`, stop and ask the user to subscribe it via Figma's library picker. Do not attempt to auto-subscribe.
+3. **Read the rule.** [`uds-figma-component-card.mdc`](../../rules/uds-figma-component-card.mdc).
+4. **Read the gotchas.** [`references/gotchas.md`](references/gotchas.md). Skip any of those and you will waste 30 turns relearning them.
+5. **Read the token map.** [`references/token-map.json`](references/token-map.json). Hardcoded library variable keys for every UDS token used by the builder. Do not look these up dynamically per-run; they are stable.
+6. **Open the `📐 _TEMPLATE` page.** If it exists, inspect its structure FIRST. The template overrides this skill if there's a difference (designers can edit the template without touching code).
+7. **Read the spec and status.** `uds-docs/uds/components/<id>/spec.json` and `uds-docs/uds/components/<id>/status.json`. Cross-check that `status.json#current` matches the Figma page's stoplight prefix; if not, surface the mismatch and stop — that's a [`sync-figma-component-status`](../sync-figma-component-status/SKILL.md) job, not this one.
 
 ## The build recipe (single `use_figma` call per component)
 
@@ -43,8 +53,8 @@ The builder is a single self-contained script that:
    - Sub-component COMPONENTs / COMPONENT_SETs with leading underscore or matching `<id>-<sub>` names (these become SUB-COMPONENTS)
    - Default state instance: parse children of the primary set for `State=Default, Size=Default` (or fall back to the set's `defaultVariant`)
    - Hover, Active, Disabled state instances by parsing children of the primary set
-5. Reads `uds-docs/content/<id>.json` from disk (the agent supplies this as a string parameter, since `use_figma` cannot read the filesystem)
-6. Determines status from the page-name emoji prefix
+5. Reads `uds-docs/uds/components/<id>/spec.json` and `status.json` from disk (the agent supplies these as string parameters, since `use_figma` cannot read the filesystem)
+6. Determines status from `status.json#current`; cross-checks against page-name emoji prefix and halts if they disagree
 7. Tears down any existing `udc-<id>-page` frame
 8. Reparents existing component sets to a temp position so the wrapper can be deleted safely
 9. Builds the new `udc-<id>-page` frame top-down: outer wrapper → content → 7 sections → reparent sets back into the right cards → cleanup
@@ -62,7 +72,8 @@ const CONFIG = {
   pageId: '5055:139',                          // the component's Figma page id
   componentId: 'button',                       // kebab-case
   status: 'in-progress',                       // mapped from page-name emoji
-  json: { /* parsed content/button.json */ },  // injected from disk
+  json: { /* parsed uds-docs/uds/components/button/spec.json */ },  // injected from disk
+  statusJson: { /* parsed uds-docs/uds/components/button/status.json */ },  // injected from disk
   storybookUrl: 'https://storybook/?path=/story/button (placeholder)',
   docsUrl: 'https://uds-docs/?#button',
   // Optional overrides; if not provided, builder discovers via convention
@@ -90,19 +101,21 @@ If the page name starts with anything else (e.g. `_support`, `📗`, `🎬`, `�
 
 1. **Identify the page.** Match `componentId` to a page in the file. Confirm with the user if there are multiple matches.
 2. **Pre-flight checks** (above).
-3. **Read JSON.** `uds-docs/content/<componentId>.json`. If absent, treat as placeholder (`status: 'placeholder'`, no sections requiring JSON content).
+3. **Read spec + status JSON.** `uds-docs/uds/components/<componentId>/spec.json` and `status.json`. If `spec.json` is absent, treat as placeholder (`status: 'placeholder'`, no sections requiring spec content).
 4. **Substitute config and run the builder.** One `use_figma` call.
-5. **Run the audit.** Invoke the [`figma-component-card-audit`](../../agents/figma-component-card-audit.md) subagent on the just-built page.
-6. **Report to the user.** Summary of what was built, what was omitted (and why), audit findings.
+5. **Emit the Figma write summary report** per [`uds-figma-write-safety.mdc`](../../rules/uds-figma-write-safety.mdc).
+6. **Run the audit.** Invoke the [`figma-component-card-audit`](../../agents/figma-component-card-audit.md) subagent on the just-built page.
+7. **Report to the user.** Summary of what was built, what was omitted (and why), audit findings.
 
 ## Procedure for a batch (all components)
 
 1. Pre-flight (once).
-2. **Read all JSON specs in parallel** from `uds-docs/content/*.json`.
-3. **Inspect every page's children** in one `use_figma` call to gather: page id, name (status emoji), top-level component sets, sub-components.
+2. **Read all spec + status JSONs in parallel** from `uds-docs/uds/components/*/spec.json` and `uds-docs/uds/components/*/status.json`.
+3. **Inspect every page's children** in one `use_figma` call to gather: page id, name (status emoji), top-level component sets, sub-components. Cross-check each page's emoji prefix against its `status.json#current`; surface mismatches.
 4. **Run the builder in batches of 5–8 components per `use_figma` call.** Each batch returns the IDs of pages it built.
-5. **Run the audit** for `all` after every batch.
-6. **Report a single summary** at the end.
+5. **Emit one Figma write summary block per component**, plus a top-level batch summary.
+6. **Run the audit** for `all` after every batch.
+7. **Report a single summary** at the end.
 
 If any batch errors, the next batch starts from where it left off — don't restart the whole thing.
 
@@ -111,7 +124,8 @@ If any batch errors, the next batch starts from where it left off — don't rest
 - **Single source of truth for the card structure is the rule and the `_TEMPLATE` Figma page.** This skill is the wiring; if the wiring drifts from the rule, fix the wiring.
 - **Variables MUST be re-imported every `use_figma` call.** See [gotchas.md](references/gotchas.md). Stored variable IDs from previous calls return stub variables that look bound but render as the literal color.
 - **Never write raw hex into bound paints' `color` field unless you also bind it.** The literal is the design-time fallback; the binding is what survives mode flips.
-- **Never modify the JSON spec from this skill.** That's [`new-component`](../new-component/SKILL.md)'s job. This skill READS the JSON; if the JSON is incomplete, omit the affected section.
+- **Never modify any file under `uds-docs/uds/`.** Per [`uds-source-of-truth.mdc`](../../rules/uds-source-of-truth.mdc), that path is read-only for this skill. Spec/status/changelog/impl edits go through the named Figma-sync skills ([`sync-figma-component-spec`](../sync-figma-component-spec/SKILL.md), [`sync-figma-component-status`](../sync-figma-component-status/SKILL.md), [`new-component`](../new-component/SKILL.md), [`link-figma-nodes`](../link-figma-nodes/SKILL.md), [`import-figma-tokens`](../import-figma-tokens/SKILL.md)) — not this one.
+- **Every Figma write must be paired with a write-summary report.** See [`uds-figma-write-safety.mdc`](../../rules/uds-figma-write-safety.mdc).
 
 ## DO NOT
 
@@ -128,8 +142,18 @@ If any batch errors, the next batch starts from where it left off — don't rest
 - [`uds-figma-component-card.mdc`](../../rules/uds-figma-component-card.mdc) — design specification (the "what")
 - [`figma-component-card-audit.md`](../../agents/figma-component-card-audit.md) — read-only verification subagent
 - [`figma-use`](../../../plugins/cache/cursor-public/figma/3590366424deba5651026319b71b291d10004f1b/skills/figma-use/SKILL.md) — Plugin API rules (mandatory pre-load before any `use_figma`)
-- [`uds-content-schema.mdc`](../../rules/uds-content-schema.mdc) — JSON spec content rules
+- [`uds-source-of-truth.mdc`](../../rules/uds-source-of-truth.mdc) — `uds-docs/uds/` is read-only for this skill
+- [`uds-figma-write-safety.mdc`](../../rules/uds-figma-write-safety.mdc) — Figma write discipline + required summary
+- [`uds-figma-preflight.mdc`](../../rules/uds-figma-preflight.mdc) — pre-flight discovery requirements
+- [`uds-figma-component-inspection.mdc`](../../rules/uds-figma-component-inspection.mdc) — read-only inspection patterns
+- [`uds-content-schema.mdc`](../../rules/uds-content-schema.mdc) — spec.json field rules
 - [`uds-release-workflow.mdc`](../../rules/uds-release-workflow.mdc) — release-time Figma synchronization
+- Companion Figma-sync skills (the AUTHORIZED writers of `uds-docs/uds/`):
+  - [`import-figma-tokens`](../import-figma-tokens/SKILL.md)
+  - [`sync-figma-component-spec`](../sync-figma-component-spec/SKILL.md)
+  - [`sync-figma-component-status`](../sync-figma-component-status/SKILL.md)
+  - [`link-figma-nodes`](../link-figma-nodes/SKILL.md)
+  - [`new-component`](../new-component/SKILL.md)
 - [`references/build-card.js`](references/build-card.js) — full builder script
 - [`references/gotchas.md`](references/gotchas.md) — known pitfalls (read these first!)
 - [`references/token-map.json`](references/token-map.json) — UDS Tokens library variable keys

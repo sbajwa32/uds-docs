@@ -11,7 +11,11 @@
 //
 // Required pre-flight (see SKILL.md):
 //   - UDS Tokens library subscribed to the file (`get_libraries`)
-//   - JSON spec for the component injected into CONFIG.json
+//   - Spec JSON read from `uds-docs/uds/components/<id>/spec.json`,
+//     status from `uds-docs/uds/components/<id>/status.json`,
+//     both injected into CONFIG.json + CONFIG.statusJson
+//   - User-explicit invocation (no Figma writes without it; see
+//     `uds-figma-write-safety.mdc`)
 //   - Inter Bold/Semi Bold/Medium/Regular and Geist Mono Bold/Medium/Regular
 //     are loaded by this script automatically
 //
@@ -29,7 +33,7 @@ const CONFIG = {
   docsUrl: 'https://uds-docs/?#button',
   storybookUrl: 'https://storybook/?path=/story/button (placeholder)',
 
-  // Parsed content/<id>.json — the agent reads this from disk and injects
+  // Parsed uds-docs/uds/components/<id>/spec.json — agent reads from disk and injects
   json: {
     title: 'Button',
     description: 'A button triggers an action or event...',
@@ -38,8 +42,10 @@ const CONFIG = {
     accessibility: { keyboard: [{ key: 'Space', action: 'Activate the button' }, /* ... */] },
     legacyAccessibilityNotes: 'Always use a <button> element...',
     owner: { designer: 'Unassigned', developer: 'Unassigned' },
-    cssDependency: 'uds/components/button.css'
+    dependencies: { css: ['uds/components/button.css'] }
   },
+  // Parsed uds-docs/uds/components/<id>/status.json
+  statusJson: { current: 'in-progress', since: '0.1', history: [/* ... */] },
 
   // Component-set IDs on the page (auto-discovered if null)
   primarySetId: '5055:148',              // main variant set (becomes ANATOMY hero source + first VARIANTS column)
