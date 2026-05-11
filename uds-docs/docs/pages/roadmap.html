@@ -9,13 +9,13 @@
         </ul>
 
         <h3 class="sg-subsection-title" style="margin-top:var(--uds-space-400);">Components</h3>
-        <p class="sg-subsection-desc">Tracked at <code>COMPONENT_STATUS</code> in <code>app.js</code>. The list below is auto-rendered from that source.</p>
+        <p class="sg-subsection-desc">Tracked in per-component <code>uds/components/&lt;id&gt;/status.json</code> files. The list below is auto-rendered from <code>uds/components.json</code> + each <code>status.json</code>.</p>
         <div id="sg-roadmap-components"></div>
 
         <h3 class="sg-subsection-title" style="margin-top:var(--uds-space-400);">Site features</h3>
         <ul class="sg-roadmap-list">
           <li><strong>Token search</strong> <span class="sg-roadmap-tag" data-status="done">Shipped</span> — global header search box and keyboard shortcut (<kbd>/</kbd> or <kbd>&#8984;K</kbd>) across all UDS tokens. Click a result to copy <code>var(--name)</code>.</li>
           <li><strong>Inline spec editing</strong> <span class="sg-roadmap-tag" data-status="proposed">Proposed</span> — designers edit Guidelines via a schema-generated form, saves create a GitHub PR.</li>
-          <li><strong>Figma → JSON sync</strong> <span class="sg-roadmap-tag" data-status="proposed">Proposed</span> — server-side action to pull Figma updates into <code>content/*.json</code> automatically.</li>
+          <li><strong>Figma → JSON sync</strong> <span class="sg-roadmap-tag" data-status="proposed">Proposed</span> — server-side action to pull Figma updates into per-component <code>uds/components/&lt;id&gt;/spec.json</code> automatically.</li>
         </ul>
       

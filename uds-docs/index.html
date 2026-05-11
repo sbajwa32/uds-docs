@@ -38,7 +38,7 @@
     // is the existing uds-docs/bump-site.sh preflight.
     // ========================================================================
     (function () {
-      var SITE_VERSION = '2026.05.11.2';
+      var SITE_VERSION = '2026.05.11.3';
       window.SITE_VERSION = SITE_VERSION;
 
       // ---- Part 1: monkey-patch fetch() for universal cache-busting ------
@@ -127,7 +127,7 @@
       </span>
     </button>
     <select class="sg-version-select" id="sg-version-dropdown" aria-label="UDS version"></select>
-    <span class="sg-brand-bar-build">SITE 2026.05.11.2</span>
+    <span class="sg-brand-bar-build">SITE 2026.05.11.3</span>
   </div>
 
   <!-- Pre-flight checklist dialog -->
@@ -143,9 +143,9 @@
         <h3>1. Site Changelog</h3>
         <div class="sg-rule-file">uds-site-changelog.mdc</div>
         <ul>
-          <li>Bump <code>SITE YYYY.MM.DD.N</code> in index.html</li>
-          <li>Add/update entry in <code>SITE_CHANGELOG</code> array in app.js</li>
-          <li>Increment <code>?v=N</code> cache params on CSS/JS script tags</li>
+          <li>Run <code>bash uds-docs/bump-site.sh</code> to bump <code>SITE YYYY.MM.DD.N</code> in index.html and version.txt</li>
+          <li>Add/update entry in the <code>SITE_CHANGELOG</code> array in <code>docs/data/site-changelog.js</code></li>
+          <li>Increment <code>?v=N</code> cache params on the CSS/JS tags in index.html for files that actually changed</li>
         </ul>
 
         <h3>2. Token-First CSS</h3>
@@ -160,18 +160,17 @@
         <h3>3. Component Checklist</h3>
         <div class="sg-rule-file">uds-component-checklist.mdc</div>
         <ul>
+          <li>Per-component folder <code>uds/components/&lt;id&gt;/</code> contains <code>&lt;id&gt;.css</code>, <code>&lt;id&gt;.js</code> (if interactive), <code>spec.json</code>, <code>status.json</code>, <code>changelog.json</code>, <code>impl.json</code>, <code>playground.js</code>, <code>examples/manifest.json</code>, <code>examples/*.html</code></li>
           <li>CSS: <code>:hover</code>, <code>:focus-visible</code>, disabled states</li>
-          <li>JS (when interactive): IIFE pattern, <code>_udsInit</code> guard, keyboard handlers</li>
-          <li>Registered in <code>uds.js</code> orchestrator</li>
-          <li>PLAYGROUNDS, IMPL_DATA, COMPONENT_STATUS, FIGMA_LINKS entries in <code>app.js</code></li>
-          <li>CHANGELOG entry under <code>category: "components"</code></li>
-          <li>CSS + JS files added to download ZIP array</li>
+          <li>JS (when interactive): IIFE pattern, <code>_udsInit</code> guard, keyboard handlers; registered in <code>uds.js</code> orchestrator</li>
+          <li>No <code>app.js</code> edits required — status / changelog / Figma deep-link / Implementation Reference / Playground all load from the per-component JSON at runtime via <code>udsResolve()</code></li>
+          <li>Append a per-component <code>changelog.json</code> entry, then run <code>bash scripts/aggregate-changelog.sh</code> to refresh the aggregated <code>uds/CHANGELOG.json</code></li>
         </ul>
 
         <h3>4. Content Schema (spec source of truth)</h3>
         <div class="sg-rule-file">uds-content-schema.mdc</div>
         <ul>
-          <li>Per-component spec lives in <code>content/&lt;component&gt;.json</code></li>
+          <li>Per-component spec lives in <code>uds/components/&lt;id&gt;/spec.json</code></li>
           <li>Edit the JSON, NEVER re-introduce spec HTML into <code>index.html</code></li>
           <li>Empty fields are auto-hidden by the renderer — no placeholder text needed</li>
           <li>Required minimum: <code>component, title, description, whenToUse, dependencies, accessibility.keyboard, owner</code></li>
@@ -1034,7 +1033,7 @@
   <script src="https://cdn.jsdelivr.net/npm/jszip@3/dist/jszip.min.js"></script>
   <script src="./material-icons.js?v=1"></script>
   <script src="./uds/uds.js?v=31"></script>
-  <script type="module" src="./docs/app.js?v=115"></script>
+  <script type="module" src="./docs/app.js?v=116"></script>
   <script type="module" src="./docs/modules/demo-builder/index.js?v=2"></script>
 
 </body>

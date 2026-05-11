@@ -670,6 +670,14 @@ export const SITE_CHANGELOG = [
         { type: 'removed', text: 'Deleted `uds-docs/bump.sh` — a legacy variant of `bump-site.sh` that used UTC dates (vs `bump-site.sh`\'s local dates) and tried to cache-bust a top-level `app.js?v=` query that has not existed since the docs site moved to `docs/app.js?v=`. Two competing bump scripts risked TZ-dependent SITE-version collisions. Every rule and skill in the repo already cites `bump-site.sh` as the canonical entry point.' },
         { type: 'removed', text: 'Deleted `uds-docs/scripts/audit-demo-builder.sh` and the now-empty `uds-docs/scripts/` directory. The script was entirely pre-refactor (read `app.js` for `COMPONENT_STATUS`, read `content/<id>.json`, read a flat `demo-builder.js`, globbed `uds/components/*.css`); none of those paths exist in the post-restructure tree, and the modern equivalent (`scripts/audit-demo-coverage.sh` at the repo root) supersedes it. Kept the audit-demo-coverage call in CI; only the dead script was removed.' }
       ]
+    },
+    {
+      version: 'SITE 2026.05.11.3',
+      date: '2026-05-11',
+      changes: [
+        { type: 'changed', text: 'Refreshed user-facing doc-site fragments to drop pre-refactor references. The Pre-flight checklist dialog in `index.html` no longer says "add SITE_CHANGELOG entry in `app.js`" or "PLAYGROUNDS / IMPL_DATA / COMPONENT_STATUS / FIGMA_LINKS entries in `app.js`" — those instructions are replaced with the post-Phase-13 reality: `bash uds-docs/bump-site.sh` + entry in `docs/data/site-changelog.js`, per-component folder under `uds/components/<id>/` (with `spec.json`, `status.json`, `changelog.json`, `impl.json`, `playground.js`, `examples/`), and the explicit note that no `app.js` edits are required because all per-component data loads at runtime via `udsResolve()`. The Content Schema entry now points at `uds/components/<id>/spec.json` instead of `content/<component>.json`.' },
+        { type: 'changed', text: 'Refreshed the Roadmap (`docs/pages/roadmap.html`), Cursor Workflows (`cursor-workflows.html`), Contribute (`contribute.html`), AI Assist (`ai-assist.html`), Getting Started (`getting-started.html`), FAQ (`faq.html`), and About (`about.html`) page fragments. All references to the legacy `content/<component>.json` path, `COMPONENT_STATUS` in `app.js`, the `content/schema.json` URL, and the legacy AGENTS-side global-table descriptions are replaced with their post-restructure equivalents (`uds/components/<id>/spec.json`, `uds/components.json` manifest, per-component `status.json`, `uds/schemas/spec.schema.json`, the `new-component` skill scaffold flow, `bash uds-docs/release.sh <version>` for UDS bumps, and `bash scripts/aggregate-changelog.sh` after editing per-component changelogs). The contributor steps in Contribute now reflect the per-component folder workflow end-to-end.' }
+      ]
     }
 ];
 

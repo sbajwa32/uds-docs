@@ -12,8 +12,9 @@
           Theming: set data-color-scheme="dark" on html for dark mode. Semantic tokens adapt automatically.
           Pattern mapping: toast→udc-notification, modal→udc-dialog, select→udc-dropdown, tag→udc-chip, status→udc-badge, card→udc-tile, sidebar→udc-nav-vertical, topbar→udc-nav-header.
           Full JSON context: https://sbajwa32.github.io/uds-docs/ai-context.json
-          Per-component spec (with acceptance criteria, props, events, slots, states, accessibility): https://sbajwa32.github.io/uds-docs/content/&lt;component&gt;.json
-          Schema: https://sbajwa32.github.io/uds-docs/content/schema.json
+          Per-component spec (with acceptance criteria, props, events, slots, states, accessibility): https://sbajwa32.github.io/uds-docs/uds/components/&lt;component&gt;/spec.json
+          Component manifest (live list of every component): https://sbajwa32.github.io/uds-docs/uds/components.json
+          Schema: https://sbajwa32.github.io/uds-docs/uds/schemas/spec.schema.json
           Storybook (production components): see Storybook URL on the doc site.
         </div>
         <h1 class="sg-page-title">AI Assist</h1>
@@ -222,7 +223,7 @@ box-shadow: 0 4px 12px rgba(0,0,0,0.08);</pre>
             <ul style="font-size:var(--uds-font-size-base);line-height:1.8;padding-left:var(--uds-space-250);">
               <li>The HTML examples on this site are <strong>example only</strong> — they show the design intent (markup shape, classes, ARIA, keyboard behavior).</li>
               <li>Use the framework-agnostic <strong>web components from the UDS Storybook</strong> in production projects (any framework).</li>
-              <li>Per-component spec is in <code class="sg-inline-code">content/&lt;component&gt;.json</code> on this site — fetch it for acceptance criteria, props, events, slots, accessibility.</li>
+              <li>Per-component spec is in <code class="sg-inline-code">uds/components/&lt;component&gt;/spec.json</code> on this site — fetch it for acceptance criteria, props, events, slots, accessibility. The full list of components lives in <code class="sg-inline-code">uds/components.json</code>.</li>
               <li>Vanilla HTML projects can use <code class="sg-inline-code">uds/uds.css</code> + <code class="sg-inline-code">uds/uds.js</code> directly with the example markup as a fallback.</li>
             </ul>
           </div>

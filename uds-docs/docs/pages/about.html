@@ -26,7 +26,7 @@
                 This site
               </div>
               <h3 class="sg-about-card__title">UDS Documentation Site</h3>
-              <p class="sg-about-card__body">The <strong>design specification</strong> layer of UDS — where designers author the contract that developers implement. Every component has a structured JSON spec (<code>content/&lt;component&gt;.json</code>) that defines props, events, slots, states, accessibility, and acceptance criteria. The doc site renders that spec as Guidelines, plus visual examples and an interactive playground.</p>
+              <p class="sg-about-card__body">The <strong>design specification</strong> layer of UDS — where designers author the contract that developers implement. Every component has a structured JSON spec (<code>uds/components/&lt;component&gt;/spec.json</code>) that defines props, events, slots, states, accessibility, and acceptance criteria. The doc site renders that spec as Guidelines, plus visual examples and an interactive playground.</p>
               <ul class="sg-about-card__list">
                 <li><strong>Designers</strong> author specs here and confirm visual examples match Figma.</li>
                 <li><strong>Developers</strong> read specs here and ship 1:1 implementations to Storybook.</li>
@@ -80,9 +80,9 @@
                   <h3 class="sg-lifecycle__title">Spec</h3>
                   <span class="sg-lifecycle__owner" data-role="designer"><span class="material-symbols-outlined">brush</span>Designer</span>
                 </div>
-                <p class="sg-lifecycle__desc">Designer writes the structured spec in <code>content/&lt;id&gt;.json</code> — description, when-to-use, props, events, slots, states, accessibility. The Guidelines tab on the doc site auto-renders from this file. Use the <a class="sg-gl-link" href="#/cursor-workflows"><code>new-component</code> skill</a> to scaffold.</p>
+                <p class="sg-lifecycle__desc">Designer writes the structured spec in <code>uds/components/&lt;id&gt;/spec.json</code> — description, when-to-use, props, events, slots, states, accessibility. The Guidelines tab on the doc site auto-renders from this file. Use the <a class="sg-gl-link" href="#/cursor-workflows"><code>new-component</code> skill</a> to scaffold.</p>
                 <div class="sg-lifecycle__meta">
-                  <span class="sg-lifecycle__loc"><span class="material-symbols-outlined">data_object</span>content/&lt;id&gt;.json</span>
+                  <span class="sg-lifecycle__loc"><span class="material-symbols-outlined">data_object</span>uds/components/&lt;id&gt;/spec.json</span>
                   <span class="sg-roadmap-tag" data-status="in-progress">Spec building</span>
                 </div>
               </div>
@@ -157,6 +157,6 @@
           <dt>Prop / Attribute</dt><dd>An input value the Storybook web component should accept (e.g. <code>variant="primary"</code>, <code>disabled</code>).</dd>
           <dt>Event</dt><dd>A custom event the Storybook web component should dispatch (e.g. <code>change</code>, <code>dismiss</code>, <code>select</code>).</dd>
           <dt>Stoplight status</dt><dd>The component readiness indicator: Placeholder → Blocked → In Progress → In Review → Production Ready → Deprecated.</dd>
-          <dt>Spec completeness</dt><dd>How filled-in this component's <code>content/&lt;component&gt;.json</code> spec is. Different from production status — a Production-Ready component might still have an incomplete written spec.</dd>
+          <dt>Spec completeness</dt><dd>How filled-in this component's <code>uds/components/&lt;component&gt;/spec.json</code> is. Different from production status — a Production-Ready component might still have an incomplete written spec.</dd>
         </dl>
       

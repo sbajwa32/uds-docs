@@ -13,7 +13,7 @@
 
         <details class="sg-faq"><summary>Why is all the code "Example only"?</summary><div>The doc site is the design specification. Production components live in Storybook as framework-agnostic web components. Code on this site is a reference for what the spec implies — it's not what you ship.</div></details>
 
-        <details class="sg-faq"><summary>What happens to the spec when a component is updated?</summary><div>Update <code>content/&lt;component&gt;.json</code> first (the source of truth for the spec). The Guidelines tab and AI context regenerate automatically. Then update the visual implementation in Storybook to match.</div></details>
+        <details class="sg-faq"><summary>What happens to the spec when a component is updated?</summary><div>Update <code>uds/components/&lt;component&gt;/spec.json</code> first (the source of truth for the spec). The Guidelines tab and AI context regenerate automatically. Then update the visual implementation in Storybook to match.</div></details>
 
         <details class="sg-faq"><summary>How do AI agents consume UDS?</summary><div>Two ways: (1) point them at <a href="#/ai-assist">/ai-assist</a> on this site, or (2) drop the downloadable <code>uds-design-system.mdc</code> Cursor rule into <code>.cursor/rules/</code> in any project. The rule is self-contained — no internet fetch required.</div></details>
 
