@@ -32,4 +32,4 @@ rm -f index.html.bak
 # Update version.txt
 echo "${NEW_VERSION}" > version.txt
 
-echo "Done. Now add a SITE_CHANGELOG entry for version 'SITE ${NEW_VERSION}' with date '$(date '+%Y-%m-%d')' in app.js"
+echo "Done. Now add a SITE_CHANGELOG entry for version 'SITE ${NEW_VERSION}' with date '$(date '+%Y-%m-%d')' in docs/data/site-changelog.js"

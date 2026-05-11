@@ -1,5 +1,5 @@
 ---
-description: UDS (Urban Design System) — use this design system for all UI. CSS tokens for colors/spacing/fonts, 21 components, multi-theme support. Production components live in Storybook as framework-agnostic web components.
+description: UDS (Urban Design System) — use this design system for all UI. CSS tokens for colors/spacing/fonts, 29 components (see uds/components.json for the live list), multi-theme support. Production components live in Storybook as framework-agnostic web components.
 alwaysApply: true
 ---
 
@@ -16,7 +16,7 @@ You are building UI with the **Urban Design System (UDS)**. UDS has two layers:
 
 **Docs (design spec):** https://sbajwa32.github.io/uds-docs/
 **AI context (JSON):** https://sbajwa32.github.io/uds-docs/ai-context.json
-**Per-component spec:** https://sbajwa32.github.io/uds-docs/content/<component>.json (acceptance criteria, props, events, slots, states, accessibility)
+**Per-component spec:** https://sbajwa32.github.io/uds-docs/uds/components/<component>/spec.json (acceptance criteria, props, events, slots, states, accessibility). Manifest of every component: https://sbajwa32.github.io/uds-docs/uds/components.json
 **Storybook (production components):** https://storybook.example.com — TODO: update once live
 **Tokens install:** `npm install uds-core` then `import 'uds-core/uds.css'`
 **Icons:** Material Symbols Outlined — browse at https://fonts.google.com/icons
@@ -549,7 +549,7 @@ Before returning ANY code, verify:
 
 ## When You Need More Detail
 
-- **Full per-component spec** (acceptance criteria, props, events, slots, states, accessibility): fetch `https://sbajwa32.github.io/uds-docs/content/<component>.json`
+- **Full per-component spec** (acceptance criteria, props, events, slots, states, accessibility): fetch `https://sbajwa32.github.io/uds-docs/uds/components/<component>/spec.json` (manifest of every component: `https://sbajwa32.github.io/uds-docs/uds/components.json`)
 - **Live token values**: fetch `https://sbajwa32.github.io/uds-docs/uds/uds.css`
 - **Design rationale, do/don'ts, recipes**: browse the doc site at https://sbajwa32.github.io/uds-docs/
 - **Production component implementation**: use the UDS Storybook web components

@@ -5,9 +5,9 @@
 #   e.g. ./release.sh 0.4
 #
 # Phase 9 model: snapshots archive ONLY uds/ (not the whole docs site).
-# The modern docs UI renders any version's UDS data through the udsPath()
-# helper, so docs improvements automatically benefit historical views
-# without per-snapshot re-rendering.
+# The modern docs UI renders any version's UDS data through the udsResolve()
+# helper (in docs/helpers/uds-path.js), so docs improvements automatically
+# benefit historical views without per-snapshot re-rendering.
 #
 # Per the locked policy, UDS history (per-component changelogs) is preserved
 # forever. This script never touches changelog data — pruning a snapshot
