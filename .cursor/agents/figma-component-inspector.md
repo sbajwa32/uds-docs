@@ -33,10 +33,14 @@ If the input is missing or ambiguous, ask the caller for one component name.
 Read:
 
 - UDS Components Figma file: `1XJoUJgtNpw4R0IIT3VjoK`
-- `uds-docs/content/<component>.json`
-- `uds-docs/uds/components/<component>.css`
-- `uds-docs/index.html`
-- `uds-docs/docs/app.js`
+- `uds-docs/uds/components/<id>/spec.json`
+- `uds-docs/uds/components/<id>/<id>.css`
+- `uds-docs/uds/components/<id>/impl.json`
+- `uds-docs/uds/components/<id>/examples/manifest.json` and the referenced `examples/*.html`
+- `uds-docs/uds/components/<id>/status.json`
+- `uds-docs/uds/components.json` (manifest)
+- `uds-docs/index.html` (sidebar + `data-page` placeholder only — spec/impl/example content lives under `uds/components/<id>/`)
+- `uds-docs/uds/version.json`
 - `.cursor/rules/uds-figma-component-inspection.mdc`
 - `.cursor/rules/uds-figma-change-classification.mdc`
 - `.cursor/figma/state/components.snapshot.json`, if present
@@ -47,7 +51,7 @@ Read:
 
 1. Run the Figma preflight:
    - Components file version page
-   - Site `UDS_VERSION`
+   - Site UDS version (from `uds-docs/uds/version.json`)
    - mismatch yes/no
 2. Find the component page by normalized name.
 3. Exclude pages whose page name contains `{Ignore}`. If the only matching
@@ -97,7 +101,7 @@ Only call something a prop/state if it is supported by one of:
 - Figma variant property
 - explicit layer/property convention
 - existing CSS attribute
-- current JSON schema/content
+- current JSON spec (`uds/components/<id>/spec.json`) or schema (`uds/schemas/spec.schema.json`)
 - explicit component description
 
 ### 4. Extract anatomy and dependencies
@@ -139,11 +143,12 @@ screenshots alone:
 
 Compare against:
 
-- `content/<component>.json`
-- component CSS
-- examples/code in `index.html`
-- `COMPONENT_STATUS`
-- `figmaNodeId`
+- `uds/components/<id>/spec.json` (props, events, slots, states, accessibility, `figmaNodeId`, `figmaPageNodeId`, `storybookSlug`)
+- `uds/components/<id>/<id>.css` (component-class implementation)
+- `uds/components/<id>/examples/*.html` and `examples/manifest.json`
+- `uds/components/<id>/impl.json` (`html`, `tokens`, `jsFunc`, `jsFile`)
+- `uds/components/<id>/status.json` (`current`)
+- `uds/components.json` (manifest entry)
 
 Classify mismatches:
 
@@ -160,7 +165,7 @@ Assign confidence to each finding.
 
 ## Preflight
 - Components file version: X.Y
-- Site UDS_VERSION: X.Y
+- Site UDS version (from `uds-docs/uds/version.json`): X.Y
 - Mismatch: yes/no
 
 ## Confidence summary
@@ -246,4 +251,3 @@ docs pages by default.
 - Do not invent props, slots, states, or token bindings.
 - Do not recommend leaving a public implementation-ready component as
   scaffold-only. It needs Examples, Code, CSS, and spec coverage.
-*** End Patch

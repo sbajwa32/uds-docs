@@ -52,7 +52,7 @@ if that mode blocks MCP calls. It may call Figma MCP read APIs such as
 ## Preflight
 - Tokens version:
 - Components version:
-- Site UDS_VERSION:
+- Site UDS version (from `uds-docs/uds/version.json`):
 - Mismatch:
 
 ## Read capabilities

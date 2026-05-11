@@ -29,9 +29,10 @@ write to Figma or repository files.
 
 - UDS Tokens file key: `iqKgR73ubUHpQTIcF7XGMy`
 - UDS Components file key: `1XJoUJgtNpw4R0IIT3VjoK`
-- Site version/status source: `uds-docs/docs/app.js`
+- Site UDS version: `uds-docs/uds/version.json` (`version` field — single source of truth; `app.js` fetches it at boot)
+- Site component statuses: per-component `uds-docs/uds/components/<id>/status.json` (`current` field) — `app.js` builds the in-memory map at boot from `uds/components.json` + each `status.json`
 - Sidebar/page coverage: `uds-docs/index.html`
-- Component specs: `uds-docs/content/*.json`
+- Component specs: `uds-docs/uds/components/<id>/spec.json` (with `figmaNodeId` + `figmaPageNodeId`); component manifest at `uds-docs/uds/components.json`
 - Previous snapshot: `.cursor/figma/state/components.snapshot.json`
 
 ## Procedure
@@ -62,11 +63,10 @@ write to Figma or repository files.
      - top-level child names/types
      - updated timestamp if available
 6. Read doc-site state:
-   - `UDS_VERSION`
-   - `COMPONENT_STATUS`
-   - sidebar links
-   - `data-page` component sections
-   - `content/*.json` component IDs and `figmaNodeId`
+   - `version` from `uds-docs/uds/version.json`
+   - `current` field of each `uds-docs/uds/components/<id>/status.json`
+   - sidebar links and `data-page` component sections in `uds-docs/index.html`
+   - the manifest `uds-docs/uds/components.json` and each `uds-docs/uds/components/<id>/spec.json` (`figmaNodeId`, `figmaPageNodeId`)
 7. Compare against `.cursor/figma/state/components.snapshot.json` if present.
 8. Classify every finding using `.cursor/rules/uds-figma-change-classification.mdc`.
 
@@ -83,7 +83,7 @@ it as `unknown` and confidence low.
 ## Preflight
 - Tokens file version:
 - Components file version:
-- Site UDS_VERSION:
+- Site UDS version (from `uds-docs/uds/version.json`):
 - Version mismatch:
 - Confidence:
 

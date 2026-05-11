@@ -48,7 +48,7 @@ Report:
 ## Figma preflight
 - Tokens file version:
 - Components file version:
-- Site UDS_VERSION:
+- Site UDS version (from `uds-docs/uds/version.json`):
 - Mismatch:
 - Action:
 ```

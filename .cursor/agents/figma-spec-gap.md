@@ -19,7 +19,7 @@ write to Figma or repository files.
 
 | Input | Behavior |
 |---|---|
-| no input / `all` | Compare all UDS component pages and all `content/*.json` files |
+| no input / `all` | Compare every component listed in `uds-docs/uds/components.json` (with each spec at `uds-docs/uds/components/<id>/spec.json`) against UDS Components Figma pages |
 | component id | Compare only that component |
 
 ## Required reads
@@ -27,9 +27,9 @@ write to Figma or repository files.
 1. Run the Figma preflight from `uds-figma-preflight.mdc`.
 2. Read UDS Components Figma pages/component-set names, excluding any page
    whose name contains `{Ignore}`.
-3. Read `uds-docs/content/*.json`.
+3. Read `uds-docs/uds/components.json` (the manifest) and each `uds-docs/uds/components/<id>/spec.json` (which contains both `figmaNodeId` and `figmaPageNodeId`).
 4. Read sidebar and `data-page` sections in `uds-docs/index.html`.
-5. Read `COMPONENT_STATUS` and `FIGMA_LINKS`/link behavior in `uds-docs/docs/app.js`.
+5. Read each `uds-docs/uds/components/<id>/status.json` for current status (the legacy `COMPONENT_STATUS` and `FIGMA_LINKS` tables in `app.js` are gone — `app.js` builds those maps at boot from the per-component JSON via `udsResolve()`).
 
 ## Matching model
 
@@ -51,7 +51,7 @@ For each component:
 ## Preflight
 - Tokens file version:
 - Components file version:
-- Site UDS_VERSION:
+- Site UDS version (from `uds-docs/uds/version.json`):
 - Mismatch:
 
 ## Summary
