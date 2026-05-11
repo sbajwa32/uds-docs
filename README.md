@@ -8,19 +8,33 @@ GitHub Pages.
 
 ## What's in this repo
 
-The repo cleanly separates the **design system** from the **documentation
-site that documents it**:
+The git repo root contains:
 
-- **`uds/`** — the design system itself. Tokens (CSS custom properties),
-  per-component CSS/JS, component specs, examples. Self-contained — anyone
-  can copy this folder into another project to consume the design system.
-- **`docs/`** — the documentation site. Routing, page rendering, the Demo
-  Builder, the Token Search modal, the Playground engine. Consumes `uds/`.
-- **`scripts/`** — repo-level tooling: release management, audits, the
-  changelog aggregator, prune-version, screenshot tooling.
-- **`versions/`** — frozen UDS-only snapshots per release.
-- **`index.html`** — SPA entry point at the repo root (the GitHub Pages
-  artifact root).
+- **`uds-docs/`** — the GitHub Pages deploy artifact root. Holds the SPA
+  entry (`index.html`), the design system itself, the docs SPA, and the
+  per-release UDS snapshots.
+- **`scripts/`** — repo-level tooling at the workspace root: audits,
+  changelog/components aggregators, prune-version, archive conversion,
+  screenshot tooling.
+- **`.cursor/`**, **`.github/`** — Cursor rules/skills/agents, GitHub
+  Actions workflows.
+- Top-level `AGENTS.md`, `README.md`, `MIGRATION.md`.
+
+Inside `uds-docs/` the design system is cleanly separated from the
+documentation site:
+
+- **`uds-docs/uds/`** — the design system itself. Tokens (CSS custom
+  properties), per-component CSS/JS, component specs, examples.
+  Self-contained — anyone can copy this folder into another project to
+  consume the design system.
+- **`uds-docs/docs/`** — the documentation site. Routing, page rendering,
+  the Demo Builder, the Token Search modal, the Playground engine.
+  Consumes `uds-docs/uds/`.
+- **`uds-docs/versions/`** — frozen UDS-only snapshots per release.
+- **`uds-docs/index.html`** — SPA entry point (the GitHub Pages artifact
+  root).
+- **`uds-docs/bump-site.sh`**, **`uds-docs/release.sh`** — version-bump
+  scripts (run from the repo root).
 
 See [AGENTS.md](./AGENTS.md) for the full repo layout and detailed
 contribution guidelines.
@@ -53,7 +67,7 @@ GitHub Actions auto-deploys on push to `main`.
 
 ### Update a UDS component
 
-Every component is one folder under `uds/components/<id>/` containing:
+Every component is one folder under `uds-docs/uds/components/<id>/` containing:
 
 - `<id>.css` — token-first component CSS
 - `<id>.js` — optional, for interactive components
@@ -74,17 +88,17 @@ in [AGENTS.md](./AGENTS.md).
 bash uds-docs/release.sh 0.4
 ```
 
-Snapshots the current `uds/` into `versions/0.3/uds/`, bumps
-`uds/version.json` to `0.4`, updates `versions.json`, regenerates
-`uds/CHANGELOG.json` from per-component changelogs.
+Snapshots the current `uds-docs/uds/` into `uds-docs/versions/0.3/uds/`,
+bumps `uds-docs/uds/version.json` to `0.4`, updates `uds-docs/versions.json`,
+regenerates `uds-docs/uds/CHANGELOG.json` from per-component changelogs.
 
 ## Design system layers
 
-- **Tokens** (`uds/tokens/`) — primitives (raw color/font palette),
+- **Tokens** (`uds-docs/uds/tokens/`) — primitives (raw color/font palette),
   semantic tokens (named role aliases), font scale, layers (z-index scale).
-- **Components** (`uds/components/<id>/`) — CSS-only or CSS+JS. All
+- **Components** (`uds-docs/uds/components/<id>/`) — CSS-only or CSS+JS. All
   framework-agnostic vanilla web components / utility classes.
-- **Documentation** (`docs/`) — the SPA that renders specs, examples,
+- **Documentation** (`uds-docs/docs/`) — the SPA that renders specs, examples,
   guidelines, playgrounds, the Demo Builder, the Token Search modal.
 
 Production framework wrappers (React, Vue, etc.) for each component live
@@ -127,8 +141,8 @@ Light) on 7 representative pages — 42 page-theme combinations.
 
 The repo enforces **WCAG AA contrast across all 6 supported theme
 combinations**. Token bumps to keep this contract are documented in
-`uds/CHANGELOG.globalNotes.json`. Component CSS that wants to style a
-"selected" or "active" state should follow these ARIA conventions:
+`uds-docs/uds/CHANGELOG.globalNotes.json`. Component CSS that wants to
+style a "selected" or "active" state should follow these ARIA conventions:
 
 - Tabs → `role="tab"` inside `[role="tablist"]`
 - Nav items → `aria-current="page"` (NOT `aria-selected`)
@@ -138,11 +152,12 @@ combinations**. Token bumps to keep this contract are documented in
 ## Versioning policy
 
 UDS history is preserved forever in per-component `changelog.json` files.
-Snapshots may be pruned (via `scripts/prune-version.sh <version>`) to free
-disk space, but the changelog entries always remain — the Changelog page
-on the docs site shows entries for pruned versions just like any other.
+Snapshots may be pruned (via `bash scripts/prune-version.sh <version>`) to
+free disk space, but the changelog entries always remain — the Changelog
+page on the docs site shows entries for pruned versions just like any
+other.
 
-See `versions/PRUNED.md` for the audit trail of pruned snapshots.
+See `uds-docs/versions/PRUNED.md` for the audit trail of pruned snapshots.
 
 ## Recent restructure
 
