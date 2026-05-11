@@ -29,7 +29,7 @@ const CONFIG = {
   componentId: 'button',                 // kebab-case
   componentTitle: 'Button',              // Title Case
   status: 'in-progress',                 // 'in-progress' | 'review' | 'blocked' | 'production' | 'placeholder'
-  udsVersion: '0.4',
+  udsVersion: '0.3',                     // read from uds-docs/uds/version.json at build time
   docsUrl: 'https://uds-docs/?#button',
   storybookUrl: 'https://storybook/?path=/story/button (placeholder)',
 
@@ -42,7 +42,7 @@ const CONFIG = {
     accessibility: { keyboard: [{ key: 'Space', action: 'Activate the button' }, /* ... */] },
     legacyAccessibilityNotes: 'Always use a <button> element...',
     owner: { designer: 'Unassigned', developer: 'Unassigned' },
-    dependencies: { css: ['uds/components/button.css'] }
+    dependencies: { css: ['uds/components/button/button.css'] }
   },
   // Parsed uds-docs/uds/components/<id>/status.json
   statusJson: { current: 'in-progress', since: '0.1', history: [/* ... */] },

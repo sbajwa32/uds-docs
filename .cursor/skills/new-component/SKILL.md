@@ -5,7 +5,7 @@ description: Scaffold a new UDS component end to end. Creates uds/components/<id
 
 # New Component Scaffold
 
-Walks the [How to Contribute](../../uds-docs/index.html) workflow steps 4-5
+Walks the [How to Contribute](../../../uds-docs/index.html) workflow steps 4-5
 mechanically. After the skill finishes, the component appears in the
 sidebar with a "Spec X/22" pill in red (placeholder status), ready for the
 designer to flesh out the spec and visual examples.
@@ -209,7 +209,7 @@ stays empty — `renderGuidelines()` fills it from `spec.json` at runtime.
 
 ## Step 11 — Add the component CSS import
 
-Run:
+Run from the **repository root** (`/workspace/`) so `scripts/lib` resolves:
 
 ```bash
 python3 -c "import sys; sys.path.insert(0, 'scripts/lib'); from migrate_component import regenerate_uds_orchestrators; print(regenerate_uds_orchestrators(False))"
@@ -217,6 +217,8 @@ python3 -c "import sys; sys.path.insert(0, 'scripts/lib'); from migrate_componen
 
 This regenerates `uds-docs/uds/uds.css` with the new component's CSS
 import. Hand-editing the imports is forbidden — always run the regenerator.
+
+Then run `bash scripts/aggregate-components.sh` from the repo root so the new component appears in `uds-docs/uds/components.json` (the manifest used by `app.js` to enumerate components at boot).
 
 ## Step 12 — Cache-bust + SITE changelog entry
 
@@ -279,4 +281,4 @@ Then report to the user:
 - [`uds/schemas/spec.schema.json`](../../../uds-docs/uds/schemas/spec.schema.json) — canonical spec field list
 - [`uds-content-schema.mdc`](../../rules/uds-content-schema.mdc) — JSON-only spec editing rule
 - [`uds-component-checklist.mdc`](../../rules/uds-component-checklist.mdc) — what "complete" means
-- [How to Contribute](../../../uds-docs/index.html) page (`#/contribute`) — full contributor workflow on the docs site
+- [How to Contribute](../../../uds-docs/docs/pages/contribute.html) page (rendered at `#/contribute` on the live site) — full contributor workflow

@@ -109,16 +109,15 @@ For `implementation-ready` components, also propose:
 
 | Inspector finding | Doc-site output |
 |---|---|
-| primary/default variants | Examples tab |
-| HTML anatomy | Code tab |
-| component classes and states | `uds/components/<component>.css` |
-| controls that can vary safely | `PLAYGROUNDS` entry |
-| implementation reference | `IMPL_DATA` entry |
-| demo suitability | `demo-builder.js` template and component picker entry |
-| distributable CSS | ZIP file list in `app.js` |
+| primary/default variants | `uds/components/<id>/examples/*.html` (+ `examples/manifest.json` entries — read by both the docs Examples tab AND the Demo Builder) |
+| HTML anatomy | `uds/components/<id>/impl.json` (`html` field — Code tab "Implementation Reference") |
+| component classes and states | `uds/components/<id>/<id>.css` |
+| controls that can vary safely | `uds/components/<id>/playground.js` (default-exports the Playground config; loaded via dynamic `import()`) |
+| implementation reference | `uds/components/<id>/impl.json` (`jsFunc`, `jsFile`, `tokens`, `html`) |
+| demo suitability | flip an `examples/<variant>.html` entry's `demoWeight` in `examples/manifest.json` (Demo Builder reads the same files as the docs page — no separate template list) |
 
 Do not generate production framework code. The docs site remains vanilla
-HTML/CSS/JS reference only.
+HTML/CSS/JS reference only. Note that all of the above paths sit under `uds-docs/uds/`, which is one of the authorized write scopes for this skill (see `uds-source-of-truth.mdc`).
 
 ### 7. Dry-run output
 
@@ -147,15 +146,13 @@ Stop without editing.
 If applying:
 
 1. Run `bash uds-docs/bump-site.sh` before edits.
-2. For `implementation-ready` components, update JSON, Examples, Code, CSS,
-   Implementation Reference, Playground/Demo Builder, and ZIP file list as
-   applicable.
-3. For `placeholder-only` components, update `knownIssues` and visible docs so
-   the reason is explicit; do not add Demo Builder entries.
-4. Add or update the `SITE_CHANGELOG` entry.
-5. Cache-bust changed assets.
-6. Visual-check Examples, Code, Guidelines, and Demo Builder if affected.
-7. Commit and push directly to `main`.
+2. For `implementation-ready` components, update `spec.json`, `examples/*.html` + `examples/manifest.json`, `<id>.css`, `impl.json`, and `playground.js` under `uds/components/<id>/` as applicable.
+3. For `placeholder-only` components, update `knownIssues` in `spec.json` and any visible docs surfaces so the reason is explicit; do not raise `demoWeight` on any example (the Demo Builder picks up implementable components from non-zero `demoWeight` only).
+4. Add or update the `SITE_CHANGELOG` entry in `uds-docs/docs/data/site-changelog.js`.
+5. Append a per-component `changelog.json` entry and run `bash scripts/aggregate-changelog.sh`.
+6. Cache-bust changed docs-site assets in `uds-docs/index.html` (`?v=N` on `docs/app.js`, `docs/site.css`, `uds/uds.css`, `uds/uds.js`, or `docs/modules/demo-builder/index.js` only when those specific files changed).
+7. Visual-check Examples, Code, Guidelines, and the Demo Builder if affected.
+8. Commit and push directly to `main`.
 
 ## Output
 

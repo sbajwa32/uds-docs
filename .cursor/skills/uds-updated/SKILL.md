@@ -72,7 +72,7 @@ Follow `uds-figma-preflight.mdc`:
 - UDS Tokens file key: `iqKgR73ubUHpQTIcF7XGMy`
 - UDS Components file key: `1XJoUJgtNpw4R0IIT3VjoK`
 - detect both `UDS Version: X.Y` pages
-- compare to `UDS_VERSION` in `uds-docs/docs/app.js`
+- compare to the `version` field in `uds-docs/uds/version.json` (single source of truth — `docs/app.js` fetches it at boot)
 - skip any Figma page whose page name contains `{Ignore}`
 
 If Figma version is higher than site version, report it and continue into this
@@ -215,8 +215,8 @@ If there are safe updates and the run is not dry-run:
    - component spec → `sync-figma-component-spec`
    - node links → `link-figma-nodes`
    - release notes → `sync-figma-release-notes`
-3. Add/update a SITE_CHANGELOG entry for the SITE version from the bump script.
-4. Cache-bust changed assets in `index.html`.
+3. Add/update a `SITE_CHANGELOG` entry in `uds-docs/docs/data/site-changelog.js` for the SITE version from the bump script.
+4. Cache-bust changed assets in `uds-docs/index.html` (`docs/app.js`, `docs/site.css`, `uds/uds.css`, `uds/uds.js`, `docs/modules/demo-builder/index.js`).
 
 ### 9. Verify
 
@@ -225,20 +225,17 @@ Required verification:
 - parse changed JSON files
 - run token CSS sanity checks if token files changed
 - visually inspect affected pages in the desktop preview when available
-- confirm `version.txt` matches the SITE version displayed in `index.html`
+- confirm `uds-docs/version.txt` matches the SITE version displayed in `uds-docs/index.html`
 - confirm no generated docs render literal HTML as elements
-- **run `bash uds-docs/scripts/audit-demo-builder.sh`** — must exit 0.
-  This catches Demo Builder drift: any implementable component (one whose
-  `content/<id>.json` `knownIssues` does NOT contain "no inspectable
-  component set yet") MUST be in both `DEMO_COMPONENTS` and `DEMO_TEMPLATES`,
-  and every `udc-*` class used in `demo-builder.js` MUST be defined in some
-  `uds/components/*.css` file. If this fails, fix Demo Builder before
-  declaring the sync complete.
-- confirm the UDS `CHANGELOG`  entry includes the release coverage pass:
-  tokens, new component pages, existing-component variant/state coverage, and
-  internal/support exclusions
-- confirm Figma Release Notes frames in both UDS files contain the same
-  expanded release text as the site changelog
+- **run all four static audits** — must each exit 0:
+  - `bash scripts/audit-component-completeness.sh` (every component folder has the required files)
+  - `bash scripts/audit-demo-coverage.sh` (every implementable component has at least one `demoWeight > 0` example in `examples/manifest.json`; all `udc-*` classes used in examples are defined in some `uds/components/<id>/<id>.css`)
+  - `bash scripts/audit-placeholders.sh` (every `{{token}}` used is in `uds/schemas/placeholder-vocabulary.json`)
+  - `bash scripts/audit-token-usage.sh` (per-component CSS uses only semantic tokens, no hardcoded colors)
+- if any token CSS or component status that affects color contrast changed, also run `bash scripts/audit-theme-contrast.sh` (requires the local server on port 4000 and headless Chrome on port 9332)
+- after editing per-component `changelog.json` files or `uds/CHANGELOG.globalNotes.json`, run `bash scripts/aggregate-changelog.sh` to refresh `uds/CHANGELOG.json`
+- confirm the aggregated `uds/CHANGELOG.json` entry includes the release coverage pass: tokens, new component pages, existing-component variant/state coverage, and internal/support exclusions
+- confirm Figma Release Notes frames in both UDS files contain the same expanded release text as the aggregated site changelog
 
 ### 10. Update sync snapshots
 

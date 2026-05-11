@@ -1,12 +1,11 @@
 ---
 name: sync-figma-release-notes
-description: Rebuild Release Notes frames in both UDS Figma files from the site CHANGELOG. Use during releases or after CHANGELOG changes that must be mirrored in Figma.
+description: Rebuild Release Notes frames in both UDS Figma files from the aggregated UDS CHANGELOG. Use during releases or after CHANGELOG changes that must be mirrored in Figma.
 ---
 
 # Sync Figma Release Notes
 
-Rebuilds Release Notes in both Figma files from the canonical `CHANGELOG`
-array in `uds-docs/docs/app.js`.
+Rebuilds Release Notes in both Figma files from the canonical aggregated UDS changelog at `uds-docs/uds/CHANGELOG.json` (built by `bash scripts/aggregate-changelog.sh` from per-component `uds/components/<id>/changelog.json` files plus `uds/CHANGELOG.globalNotes.json`).
 
 ## Trigger phrases
 
@@ -17,9 +16,10 @@ array in `uds-docs/docs/app.js`.
 
 ## Source of truth
 
-- `uds-docs/docs/app.js` `CHANGELOG`
+- `uds-docs/uds/CHANGELOG.json` (aggregated; **do not edit by hand**)
+- Authored via per-component `uds-docs/uds/components/<id>/changelog.json` and `uds-docs/uds/CHANGELOG.globalNotes.json`, then `bash scripts/aggregate-changelog.sh`
 
-Do not invent release notes from memory or from the visible changelog page.
+Do not invent release notes from memory or from the visible changelog page. The legacy in-memory `CHANGELOG` array in `app.js` is gone (Phase 8) — `app.js` fetches `CHANGELOG.json` at runtime via `udsResolve('CHANGELOG.json')`.
 
 ## Required rules
 
@@ -29,9 +29,9 @@ Do not invent release notes from memory or from the visible changelog page.
 
 ## Workflow
 
-### 1. Parse the site CHANGELOG
+### 1. Parse the aggregated CHANGELOG
 
-Read `uds-docs/docs/app.js` and normalize every release into:
+Run `bash scripts/aggregate-changelog.sh` to refresh the aggregate (skip if you just regenerated it). Then read `uds-docs/uds/CHANGELOG.json` and normalize every release into:
 
 ```json
 {
@@ -65,7 +65,7 @@ Report:
 Figma preflight:
 - File:
 - Version page:
-- Site UDS_VERSION:
+- Site UDS version (from `uds-docs/uds/version.json`):
 - Mismatch:
 - Confidence:
 ```
@@ -146,7 +146,7 @@ Report:
 
 ## Guardrails
 
-- Do not modify the `CHANGELOG` array in this skill.
+- Do not edit `uds/CHANGELOG.json` directly in this skill (it's aggregated). If the source needs changes, edit per-component `changelog.json` / `CHANGELOG.globalNotes.json` and re-run `bash scripts/aggregate-changelog.sh`, then resume from step 1.
 - Do not run `release.sh`.
 - Do not change token or component data.
 - Do not edit Figma pages other than the target release page.

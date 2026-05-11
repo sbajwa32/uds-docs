@@ -5,7 +5,7 @@ description: Populate figmaNodeId fields in UDS component JSON specs from canoni
 
 # Link Figma Nodes
 
-Adds stable Figma node deep links to `uds-docs/content/<component>.json`.
+Adds stable Figma node deep links (`figmaNodeId` for the canonical variant and `figmaPageNodeId` for the page-level fallback) to `uds-docs/uds/components/<id>/spec.json`.
 
 This skill exists because `figmaNodeId` is a fast, high-value completeness field
 but it is unsafe to guess when multiple nodes match a component name.
@@ -77,9 +77,9 @@ bash uds-docs/bump-site.sh
 
 Then:
 
-1. Update only `figmaNodeId` fields in `content/*.json`.
-2. Add a SITE_CHANGELOG entry.
-3. Cache-bust `app.js` if needed only when app code changed (usually no).
+1. Update only `figmaNodeId` (and, where applicable, `figmaPageNodeId`) fields in `uds-docs/uds/components/<id>/spec.json`.
+2. Add a `SITE_CHANGELOG` entry in `uds-docs/docs/data/site-changelog.js`.
+3. No cache-bust on `docs/app.js` is required for spec-only edits (the in-memory FIGMA_LINKS table is gone — `app.js` reads `figmaNodeId` / `figmaPageNodeId` from each `spec.json` at runtime via `udsResolve()`).
 4. Visual-check that page link buttons now deep-link correctly.
 5. Commit and push directly to `main`.
 

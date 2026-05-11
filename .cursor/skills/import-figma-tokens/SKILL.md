@@ -63,7 +63,7 @@ Before editing anything under `uds-docs/`, run:
 bash uds-docs/bump-site.sh
 ```
 
-Use the script output for the `SITE_CHANGELOG` entry.
+Use the script output for the `SITE_CHANGELOG` entry in `uds-docs/docs/data/site-changelog.js`.
 
 ### 4. Generate CSS deterministically
 
@@ -102,7 +102,7 @@ Before committing:
 
 ### 6. Changelog and cache busting
 
-Update `SITE_CHANGELOG` with:
+Update `SITE_CHANGELOG` in `uds-docs/docs/data/site-changelog.js` with:
 
 - direct Variables or ZIP fallback source
 - added tokens
@@ -110,10 +110,9 @@ Update `SITE_CHANGELOG` with:
 - renamed/deleted tokens, if user confirmed them
 - deferred collections ignored
 
-Cache-bust token CSS links if the linked bundle changed.
+Cache-bust token CSS links in `uds-docs/index.html` (`uds/uds.css?v=N`) if the linked bundle changed.
 
-If the UDS `CHANGELOG` array changes, sync Figma release notes immediately via
-`sync-figma-release-notes`.
+If a token change warrants a UDS release note (token additions/changes/removals that downstream consumers should know about), append an entry to `uds-docs/uds/CHANGELOG.globalNotes.json` under the relevant version key, then run `bash scripts/aggregate-changelog.sh` to refresh `uds-docs/uds/CHANGELOG.json`. Then immediately sync Figma release notes via `sync-figma-release-notes`.
 
 ### 7. Update sync state
 
