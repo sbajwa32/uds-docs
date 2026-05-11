@@ -9,6 +9,22 @@ alwaysApply: true
 
 This is NOT a post-hoc checklist. It is a mandatory three-phase workflow.
 
+### Phase 0: BEFORE you start — is this even your call?
+
+If the request is going to modify any file under **`uds-docs/uds/`**
+(tokens, component CSS, spec.json, examples, schemas, status.json,
+changelog.json, impl.json, components.json, version.json), stop and
+re-read `.cursor/rules/uds-source-of-truth.mdc`. That directory is
+Figma's source of truth and is almost never agent-modifiable; the
+authorized write paths are the named Figma-sync skills
+(`import-figma-tokens`, `sync-figma-component-spec`, etc.) or an
+explicit user-directed revert toward verified Figma parity. If the
+work doesn't fit one of those, surface findings rather than apply
+edits.
+
+This check sits BEFORE the SITE bump on purpose — there's no point
+running `bump-site.sh` if the proposed change shouldn't happen at all.
+
 ### Phase 1: BEFORE making any changes
 
 When you receive a request that will modify ANY file in `uds-docs/`, your FIRST action must be:
