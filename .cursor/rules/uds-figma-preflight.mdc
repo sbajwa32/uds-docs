@@ -25,7 +25,7 @@ Before doing any Figma-derived analysis or write, report:
 Figma preflight:
 - Tokens file version: X.Y or unavailable
 - Components file version: X.Y or unavailable
-- Site UDS_VERSION: X.Y
+- Site UDS version (from `uds-docs/uds/version.json`): X.Y
 - Version mismatch: yes/no
 - Figma capability check: pass/partial/fail
 - Action: continue / dry-run only / pause for release flow

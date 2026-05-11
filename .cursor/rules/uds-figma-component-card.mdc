@@ -120,7 +120,7 @@ Status comes from `uds-docs/uds/components/<id>/status.json` (`current` field) a
 
 The mapping is:
 
-| Prefix | Status (in `app.js#COMPONENT_STATUS`) | Pill label | Color tokens |
+| Prefix | Status (`current` field in `uds/components/<id>/status.json`) | Pill label | Color tokens |
 |---|---|---|---|
 | 🟠 / 🟡 | `in-progress` | `IN PROGRESS` | text/border/icon/surface `-warning` |
 | 🔴 | `blocked` | `BLOCKED` | `-error` |
@@ -148,7 +148,7 @@ For placeholder pages with no inspectable component, the hero shows a "no compon
 Horizontal auto-layout, items in this exact order:
 
 1. **Status pill** — `surface-<status>` at 0.18 opacity bg, 1px `border-<status>` stroke, full-radius. Contents: 8px ellipse `icon-<status>`, Geist Mono Medium 12 label (uppercase, +8% tracking, `text-<status>`).
-2. **CSS chip** — translucent white at 6% bg, 10% white stroke, full-radius. Contents: Geist Mono Regular 12 `text-inverse` at 70% opacity, value `uds/components/<id>.css`.
+2. **CSS chip** — translucent white at 6% bg, 10% white stroke, full-radius. Contents: Geist Mono Regular 12 `text-inverse` at 70% opacity, value `uds/components/<id>/<id>.css`.
 3. **Spacer** (auto-fill).
 4. **Docs link button** — solid white pill, Inter Semi Bold 13 in dark, Geist Mono Bold 13 `↗` arrow.
 5. **Storybook link button** — translucent (8% white bg, 20% white stroke), Inter Semi Bold 13 white, Geist Mono Bold 13 `↗`.

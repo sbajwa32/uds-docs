@@ -31,7 +31,7 @@ When you receive a request that will modify ANY file in `uds-docs/`, your FIRST 
 
 1. **Run `bash uds-docs/bump-site.sh`** — this script uses the system `date` command to compute the correct version, then updates all 3 locations (index.html display, index.html inline script, version.txt) automatically. NEVER manually set the date or version number.
 2. Read the script output to get the new version string.
-3. Add a stub SITE_CHANGELOG entry in `app.js` using the version and date from the script output.
+3. Add a stub `SITE_CHANGELOG` entry in `uds-docs/docs/data/site-changelog.js` using the version and date from the script output.
 
 **WHY:** The date in the conversation system header is from when the conversation STARTED, not the current date. It can be days or weeks stale. The bump script uses the system `date` command as the ONLY source of truth. NEVER guess, calculate, or remember dates.
 
@@ -43,12 +43,12 @@ Now do whatever the user asked for. Edit CSS, HTML, JS, add components, etc.
 
 After all changes are complete:
 
-1. **Fill in the SITE_CHANGELOG stub** with descriptions of what actually changed
-2. **Cache bust** — increment `?v=N` on any script/link tags for files that changed (uds.css, uds.js, app.js, demo-builder.js)
+1. **Fill in the `SITE_CHANGELOG` stub** in `uds-docs/docs/data/site-changelog.js` with descriptions of what actually changed
+2. **Cache bust** — increment `?v=N` on any script/link tags in `uds-docs/index.html` for files that changed (`uds/uds.css`, `uds/uds.js`, `docs/app.js`, `docs/site.css`, `docs/modules/demo-builder/index.js`)
 3. **Token-first CSS** — verify no new hardcoded colors, spacing, fonts
-4. **Component checklist** — if a component was added/modified, verify all pieces exist (CSS, JS where applicable, content/<id>.json, sidebar link, page section)
-5. **Content schema** — if you edited a component's spec, verify it was JSON-side (`content/<component>.json`), not a re-introduction of HTML in `index.html`
-6. **Release workflow** — if UDS `CHANGELOG` was modified, sync Figma release notes IMMEDIATELY via use_figma
+4. **Component checklist** — if a component was added/modified, verify all pieces exist in `uds-docs/uds/components/<id>/` (`<id>.css`, `<id>.js` where applicable, `spec.json`, `status.json`, `changelog.json`, `impl.json`, `playground.js`, `examples/manifest.json`, `examples/*.html`), plus the sidebar link and `data-page` placeholder in `uds-docs/index.html`
+5. **Content schema** — if you edited a component's spec, verify it was JSON-side (`uds-docs/uds/components/<id>/spec.json`), not a re-introduction of HTML in `index.html`
+6. **Release workflow** — if any per-component `changelog.json` or `uds/CHANGELOG.globalNotes.json` was modified, run `bash scripts/aggregate-changelog.sh` and sync Figma release notes IMMEDIATELY via the `sync-figma-release-notes` skill
 
 ## Why this order matters
 

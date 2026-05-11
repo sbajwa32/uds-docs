@@ -24,4 +24,4 @@ All CSS in UDS component files and the documentation site must use semantic toke
 
 ## When adding new component CSS
 
-Before writing any CSS property, check if a UDS token exists for that value. If you're unsure, reference `uds/tokens/semantic.css` for the full token list.
+Before writing any CSS property, check if a UDS token exists for that value. If you're unsure, reference `uds-docs/uds/tokens/semantic.css` for the full token list.

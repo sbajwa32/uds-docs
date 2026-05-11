@@ -11,7 +11,7 @@ The Urban Design System (UDS) spans two Figma files and a documentation site:
 
 - **UDS Tokens** -- Figma file key: `iqKgR73ubUHpQTIcF7XGMy`
 - **UDS Components** -- Figma file key: `1XJoUJgtNpw4R0IIT3VjoK`
-- **Doc site** -- `uds-docs/` directory, version tracked in `app.js` as `UDS_VERSION`
+- **Doc site** -- `uds-docs/` directory, version tracked in `uds-docs/uds/version.json` (single source of truth; `docs/app.js` fetches it at boot)
 
 Both Figma files contain a page named `UDS Version: X.Y` (e.g., `UDS Version: 0.1`).
 
@@ -47,7 +47,7 @@ Whenever you interact with either UDS Figma file (reading components, inspecting
 2. List pages in the file via Figma tooling, apply the `{Ignore}` page filter
    from `uds-figma-preflight.mdc`, and find the page matching `UDS Version: *`.
 3. Parse the version number from the page name.
-4. Read `UDS_VERSION` from `uds-docs/docs/app.js`.
+4. Read the `version` field from `uds-docs/uds/version.json` (single source of truth — `docs/app.js` loads it at boot via `udsResolve('version.json')`).
 5. If the Figma version is higher than the site version, alert the user and begin the Release Questionnaire below.
 
 Do NOT silently skip this check. If you detect a mismatch, pause your current task and address it first.

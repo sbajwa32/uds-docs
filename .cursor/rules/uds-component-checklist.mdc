@@ -18,7 +18,8 @@ and consistent.
 - [ ] `spec.json` — conforms to `uds/schemas/spec.schema.json` (the Guidelines tab renders from this)
 - [ ] `status.json` — `{ current, since, history[] }`
 - [ ] `changelog.json` — all component history (oldest first), `addedIn` matches `status.history[0].version`
-- [ ] `playground.js` — exports a default `{ controls, render }` config (used by Playground tab)
+- [ ] `impl.json` — Implementation Reference data (`{ jsFunc, jsFile, tokens, html }`) read by the Code tab; conforms to `uds/schemas/impl.schema.json`
+- [ ] `playground.js` — ES module default-exporting the `{ controls, render }` config (used by Playground tab; loaded via dynamic `import()`)
 - [ ] `examples/manifest.json` — conforms to `uds/schemas/manifest.schema.json`
 - [ ] `examples/*.html` — at least one HTML example file referenced by the manifest
 
@@ -66,10 +67,12 @@ and consistent.
 - [ ] Icon-search controls use `type: 'icon-search'`
 - [ ] `render(state)` returns vanilla HTML — no React/Vue snippets
 
-## Site / app.js wiring (one-time per new component)
+## Site chrome wiring (one-time per new component)
 - [ ] Sidebar link in `uds-docs/index.html` (under the right group)
-- [ ] `<div data-page="<id>" data-page-fragment data-default-tab="examples">...</div>` placeholder in `index.html`
+- [ ] `<div data-page="<id>" data-default-tab="overview">...</div>` placeholder in `uds-docs/index.html`
   - The Examples tab content does NOT go in `index.html` — it lives in `uds/components/<id>/examples/*.html` and the docs site renders from there
+- [ ] `id` appears in `uds/components.json` (run `bash scripts/aggregate-components.sh` to refresh after adding the folder)
+- [ ] No edits to `docs/app.js` are required: status, changelog, playground, impl, and Figma deep-links are all loaded at runtime from the per-component JSON via `udsResolve()`
 
 ## Pre-commit gate
 
