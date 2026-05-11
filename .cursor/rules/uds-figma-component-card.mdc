@@ -1,0 +1,218 @@
+# UDS Figma Component Card
+
+Specification for the canvas layout used on every component page in the UDS Components Figma file (and its testbed). One frame per component, named `udc-<id>-page`, holding seven cards in a fixed order. The component sets, sub-components, and instance previews live INSIDE these cards — they are never loose top-level nodes.
+
+## Why this rule exists
+
+Component pages used to be a pile of unlabeled component sets sprawled at random positions. This rule defines the canonical "card" treatment so:
+- Every page reads the same way (same card order, same eyebrows, same status colors)
+- Future agents and skills produce identical output without re-deciding layout questions
+- A designer can edit the visual template once and every agent run picks it up
+- Token bindings are forced — no raw hex anywhere
+
+## File targets
+
+- **Mainline:** `UDS Components` (file key `1XJoUJgtNpw4R0IIT3VjoK`) — write only after explicit user approval
+- **Testbed:** `UDS Components Testbed` / `UDS-Components-0.4-Testbed` (file key `HuQdX4txzccYX5GEnFnxAn`) — safe to iterate
+
+Always work on the testbed first unless the user explicitly says "mainline". Token bindings come from the `UDS Tokens` library (file key `iqKgR73ubUHpQTIcF7XGMy`); subscribe it to the file before binding anything.
+
+## Page wrapper anatomy
+
+```
+udc-<id>-page (FRAME, 2800w, hug height, fill: surface-subtle)
+├── content (FRAME, FILL w, hug h, autolayout V, gap: space/1000, padding: space/800)
+│   ├── HEADER          (dark card)
+│   ├── ANATOMY         (light card)  ← optional, omit for placeholder pages
+│   ├── VARIANTS        (light card)  ← omit if no inspectable component sets
+│   ├── SUB-COMPONENTS  (light card)  ← omit if no underscored components
+│   ├── USAGE           (light card)
+│   ├── ACCESSIBILITY   (light card)  ← optional, requires accessibility.keyboard
+│   └── META            (dark card)
+```
+
+The page is positioned at `(0, 0)`. Component sets are reparented INTO the appropriate cards — never duplicated, never left at top level.
+
+## Card recipes
+
+### Light card (ANATOMY, VARIANTS, SUB-COMPONENTS, USAGE, ACCESSIBILITY)
+
+| Property | Token / value |
+|---|---|
+| Fill | `uds/color/surface/surface-main` |
+| Stroke | 1px `uds/color/border/border-tertiary` |
+| Radius | `uds/border/radius/container-xl` (24px) |
+| Effects | Dual drop shadow: `0,1,3,0 @ 4%` + `0,12,32,-4 @ 5%` |
+| Inner padding | `uds/space/800` (64px) |
+| Inner item gap | `uds/space/400` (32px) |
+| ClipsContent | true |
+
+### Dark card (HEADER, META)
+
+| Property | Token / value |
+|---|---|
+| Fill | `uds/color/surface/surface-xxbold` |
+| Stroke | 1px `uds/color/border/border-inverse` |
+| Radius | `uds/border/radius/container-xl` (24px) |
+| Effects | Dual drop shadow: `0,4,12,0 @ 15%` + `0,24,60,-8 @ 25%` |
+| Inner padding | `uds/space/1000` (80px) |
+| Inner item gap | `uds/space/600` (HEADER) / `uds/space/600` (META) |
+| ClipsContent | true |
+
+HEADER additionally has an 8px-tall top accent strip in `uds/color/border/<status>` (gradient: 0.3 → 1 → 0.3 alpha) directly above the inner row.
+
+## Numbered eyebrow (every section)
+
+Identical pattern across all 7 sections. The number is the only thing that changes (`01` HEADER, `02` ANATOMY, `03` VARIANTS, `04` SUB-COMPONENTS, `05` USAGE, `06` ACCESSIBILITY, `07` META).
+
+```
+[mono number 48-56pt]  │ 1px×32-40 vertical bar  │ KICKER (mono 11-12pt, +8% tracking)
+                                                  · / section-name (mono 11pt, muted)
+```
+
+| Field | Value |
+|---|---|
+| Number font | Geist Mono Medium, `48px / 48` (cards) or `56px / 56` (HEADER) |
+| Number color | `uds/color/text/<status>` (e.g. `text-warning` for in-progress) |
+| Vertical bar | 1×32-40 rectangle, fill `uds/color/border/<status>` at 0.4-0.5 opacity |
+| Kicker | Geist Mono Medium 11-12, +8% tracking, `text-<status>` |
+| Sub-label | Geist Mono Regular 11, `text-secondary` (light cards) or white at 50% (dark cards) |
+
+Kicker text per section:
+
+| Section | Kicker | Sub-label |
+|---|---|---|
+| HEADER | `COMPONENT` | `uds-components / <UDS_VERSION>` |
+| ANATOMY | `STATES & VISUAL` | `· / anatomy` |
+| VARIANTS | `COMPONENT VARIANTS` | `· / variants` |
+| SUB-COMPONENTS | `COMPOSITION` | `· / sub-components` |
+| USAGE | `GUIDELINES` | `· / usage` |
+| ACCESSIBILITY | `A11Y / WCAG` | `· / accessibility` |
+| META | `RESOURCES & OWNERS` | `· / meta` |
+
+## Section titles
+
+Inter Bold, sits below the eyebrow.
+
+| Section | Default title (override per JSON if richer is available) |
+|---|---|
+| HEADER | The component title (e.g. `Button`), 80–112px, `text-primary` (light card) or `text-inverse` (dark card), -2 to -3% tracking |
+| ANATOMY | "States" or pulled from `content/<id>.json#states[].name` summary, 32px |
+| VARIANTS | "<n> variants" using the natural-language variant list (e.g. `Primary, secondary, and ghost`), 32px |
+| SUB-COMPONENTS | The composition pattern in plain English (e.g. `Button groups`), 32px |
+| USAGE | `When to use, when not to`, 32px |
+| ACCESSIBILITY | `Keyboard & screen reader`, 32px |
+| META | `Where to go from here`, 36px, `text-inverse` |
+
+## Status → token map
+
+The page-name stoplight prefix drives every status-tinted color in the card. The mapping is:
+
+| Prefix | Status (in `app.js#COMPONENT_STATUS`) | Pill label | Color tokens |
+|---|---|---|---|
+| 🟠 / 🟡 | `in-progress` | `IN PROGRESS` | text/border/icon/surface `-warning` |
+| 🔴 | `blocked` | `BLOCKED` | `-error` |
+| 🟡 (when explicitly review status) | `review` | `IN REVIEW` | `-warning` (yellow tone via mode) |
+| 🟢 | `production` | `PRODUCTION READY` | `-success` |
+| ⚫ / ⚫️ | `placeholder` | `NOT STARTED` | `-tertiary` (no specific status color, all neutral) |
+
+For placeholder pages: HEADER stays dark, but the eyebrow number, top accent strip, kicker, and pill use neutral tokens (`border-tertiary`, `text-secondary`) instead of a status color. Don't fake an orange/green for placeholder.
+
+## HEADER right panel ("hero preview")
+
+A status-tinted preview frame on the right of the HEADER inner row.
+
+| Field | Value |
+|---|---|
+| Width × Height | 720 × 380, FIXED both axes |
+| Fill | Linear gradient — two stops, both bound to `uds/color/surface/<status>-subtle` and `uds/color/surface/<status>` (deeper) |
+| Radius | `uds/border/radius/container-lg` (16px) |
+| Children (top to bottom, centered) | 4×16 dot pattern (5px ellipses, fill `border-<status>`, opacity 0.55, gap 28×28); ONE instance of the default variant of the primary/main component set; Geist Mono caption (e.g. `DEFAULT · PRIMARY · MEDIUM`) in `text-<status>` |
+
+For placeholder pages with no inspectable component, the hero shows a "no component yet" treatment: skip the dot pattern and instance, fill the panel with `surface-subtle`, place a single mono label `PLACEHOLDER · COMPONENT NOT YET BUILT` centered.
+
+## Pill row (HEADER, just under description)
+
+Horizontal auto-layout, items in this exact order:
+
+1. **Status pill** — `surface-<status>` at 0.18 opacity bg, 1px `border-<status>` stroke, full-radius. Contents: 8px ellipse `icon-<status>`, Geist Mono Medium 12 label (uppercase, +8% tracking, `text-<status>`).
+2. **CSS chip** — translucent white at 6% bg, 10% white stroke, full-radius. Contents: Geist Mono Regular 12 `text-inverse` at 70% opacity, value `uds/components/<id>.css`.
+3. **Spacer** (auto-fill).
+4. **Docs link button** — solid white pill, Inter Semi Bold 13 in dark, Geist Mono Bold 13 `↗` arrow.
+5. **Storybook link button** — translucent (8% white bg, 20% white stroke), Inter Semi Bold 13 white, Geist Mono Bold 13 `↗`.
+
+## META link cards
+
+Two prominent cards in a HORIZONTAL auto-layout, item gap `space/300` (24px). Both FILL width.
+
+| Card | Style | Kicker | Title (Inter Bold 28, -1%) | URL (Geist Mono Regular 12) |
+|---|---|---|---|---|
+| Primary (UDS Docs) | Solid white, no stroke, `radius/container-lg` | `SPEC` | `UDS Docs page` | `https://uds-docs/?#<id>` |
+| Secondary (Storybook) | 4% white bg, 15% white stroke | `CODE` | `Open in Storybook` | `https://storybook/?path=/story/<id> (placeholder)` |
+
+Both cards have a top row with kicker on the left and a Geist Mono Bold 22 `↗` on the right.
+
+Below the link cards: a 1px divider (white at 8%) full-width, then the META meta-row with these fields (in this order, gap `space/800`):
+
+| Label | Value | Font |
+|---|---|---|
+| `DESIGNER` | `<owner.designer>` from `content/<id>.json` | Inter Semi Bold 16 |
+| `DEVELOPER` | `<owner.developer>` from `content/<id>.json` | Inter Semi Bold 16 |
+| `CSS` | `uds/components/<id>.css` | Geist Mono Regular 13 |
+| `SPEC JSON` | `content/<id>.json` | Geist Mono Regular 13 |
+| (spacer fill) |  |  |
+| Status pill | Same recipe as HEADER's status pill | Geist Mono Medium 12 |
+
+Every label uses Geist Mono Medium 11 uppercase, +8% tracking, white at 50%.
+
+## Section content rules
+
+Driven by `uds-docs/content/<id>.json`. Match the existing "empty fields are hidden" rule from [`uds-content-schema.mdc`](./uds-content-schema.mdc).
+
+| Section | Required JSON fields | Behavior when empty |
+|---|---|---|
+| HEADER | `title`, `description`, `dependencies.css`, `owner` | If `description` empty, omit the description text but keep the rest |
+| ANATOMY | An inspectable component set with named state variants (`State=Default/Hover/Active/Disabled` minimum) | If no states inspectable, OMIT the entire ANATOMY card. Don't fake states. |
+| VARIANTS | At least one `COMPONENT_SET` at the page top level | If none, OMIT the VARIANTS card |
+| SUB-COMPONENTS | Component sets named with leading underscore (e.g. `_udc-dialog_header`) OR explicit sub-set component sets like `udc-button-group-*` | If none, OMIT the SUB-COMPONENTS card |
+| USAGE | `whenToUse` AND/OR `whenNotToUse` | If both empty, OMIT |
+| ACCESSIBILITY | `accessibility.keyboard` non-empty | If empty, OMIT (no point showing an empty table) |
+| META | Always shown — owners and links are universal |
+
+When a section is omitted, the eyebrow numbers stay in **rendering order**. So a page with no SUB-COMPONENTS goes `01 → 02 → 03 → 05 → 06 → 07` (skipping 04). DON'T renumber. Maintains stable mental model across components.
+
+## What NOT to do
+
+- **No raw hex anywhere.** Every `fills`, `strokes`, paint, and (where applicable) padding/gap/radius MUST be bound to a `uds/*` library variable. The literal `color` value in a paint object is fine and required (it sets the design-time appearance), but the binding is what survives mode changes.
+- **Don't introduce new top-level nodes on the page.** Reparent existing component sets into the cards; never duplicate them, never leave them at page level.
+- **Don't fake content.** Empty JSON fields → omitted card. Don't paste placeholder lorem ipsum just to fill a card.
+- **Don't hardcode component IDs in the rule or skill.** The skill must discover state variant ids by parsing the component-set children's `name` field for `State=...` patterns. The same logic must work across every component without code changes.
+- **Don't change the card order.** It's `HEADER → ANATOMY → VARIANTS → SUB-COMPONENTS → USAGE → ACCESSIBILITY → META`. Always.
+- **Don't put the new card layout into the mainline `UDS Components` Figma file** without the user explicitly saying "mainline".
+- **Don't bump the SITE version for changes confined to `.cursor/`.** This rule lives outside `uds-docs/`, so it does NOT trigger [`uds-master-preflight.mdc`](./uds-master-preflight.mdc) / [`uds-site-changelog.mdc`](./uds-site-changelog.mdc). The Figma builder script (if added under `.cursor/skills/figma-component-card/references/`) is also outside `uds-docs/`.
+
+## Order of operations (every agent run)
+
+1. **Discover.** Read the matching `_TEMPLATE` page in the Figma file FIRST (page name starts with `📐 _TEMPLATE`). If the template differs from this rule, the template wins — designers can override here without touching code.
+2. **Confirm tokens are subscribed.** `get_libraries` should show `UDS Tokens` in `libraries_added_to_file`. If not, ask the user to subscribe — don't auto-subscribe.
+3. **Read the JSON spec.** `uds-docs/content/<id>.json`. If it doesn't exist, the page is a placeholder.
+4. **Inspect the page's existing nodes.** Find component sets, sub-components, the page-name prefix.
+5. **Run the builder.** Single `use_figma` call per component (per the skill).
+6. **Audit.** The `figma-component-card-audit` subagent verifies the result.
+
+## Mainline rollout protocol
+
+Once a component card is approved on the testbed and the audit passes:
+
+1. Get user approval to push to mainline (`UDS Components`, file key `1XJoUJgtNpw4R0IIT3VjoK`)
+2. Re-run the builder targeting the mainline file key
+3. Re-run the audit on the mainline page
+4. Per [`uds-release-workflow.mdc`](./uds-release-workflow.mdc), if this changes how the spec is published, also update the version cover in the mainline file
+
+## See also
+
+- [`.cursor/skills/figma-component-card/SKILL.md`](../skills/figma-component-card/SKILL.md) — executable recipe and gotchas
+- [`.cursor/agents/figma-component-card-audit.md`](../agents/figma-component-card-audit.md) — read-only verification
+- [`uds-content-schema.mdc`](./uds-content-schema.mdc) — JSON-only spec editing rule
+- [`uds-release-workflow.mdc`](./uds-release-workflow.mdc) — Figma file synchronization on releases
+- [`AGENTS.md`](../../AGENTS.md) — top-level agent notes

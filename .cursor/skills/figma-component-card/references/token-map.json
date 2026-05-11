@@ -1,0 +1,112 @@
+{
+  "_comment": "UDS Tokens library variable keys. Re-import these via figma.variables.importVariableByKeyAsync inside every use_figma call. Stored Variable IDs from previous calls do NOT bind correctly — see gotchas.md.",
+  "_libraryFileKey": "iqKgR73ubUHpQTIcF7XGMy",
+  "_libraryName": "UDS Tokens",
+  "color": {
+    "text": {
+      "text-primary": "f5a3ae409e24defe81a3ccbeba0ab5e2c09979d1",
+      "text-secondary": "96997351d5ceaa1fbc4dd9a899955e66ba8cc530",
+      "text-disabled": "af48047b5e222762d9ab11dee658501a62ee066b",
+      "text-warning": "3479470213f4939afa288b2b9cefe921b8fa3872",
+      "text-success": "82e829c8a57a30b1353803953e3f8ba4c60c6a61",
+      "text-error": "5087f33cc61bef6dc94ae0ad4431a1dc9144e151",
+      "text-info": "930a3c4ba5600d99a953c46b39c4d0b261d30475",
+      "text-inverse": "c3d0c76272400932235c808161118490985ecc07"
+    },
+    "surface": {
+      "surface-main": "929a0f30897b12884c1848b5071f7ab3e0a31b72",
+      "surface-alt": "d42911ee04e7227d6058c18e410ccf70c750ce33",
+      "surface-subtle": "15cb1c4345ec1d9765099ca75012a4df3be0b0ee",
+      "surface-bold": "18b0c1f45b52f6777464de95c523612f55dc7885",
+      "surface-xbold": "c48f688a3153c1bf7a16b635fb9accb29774a8fc",
+      "surface-xxbold": "7a4c0f3ef4a0c5dcbbe5b2ddf35883b2e670602a",
+      "surface-inverse": "874f1e009d0e5a10ec31376a561bef71347522be",
+      "page-main": "6d6cdb813de786e9463b8a720ac612eb01c1434e",
+      "page-alt": "9a8a04dd1a3894a2e4398e118b9403e0ec7867d8",
+      "page-subtle": "8e741579507ed611ee7799a8b4b7a242a898b555",
+      "page-inverse": "1fc04a9a66295d40ae74f8620a186bdd1b9a26e0",
+      "surface-warning": "a3403de09a15bb6631040f5c0bf2a53c94046c8e",
+      "surface-warning-subtle": "8dfade28315d60ab5ce01ec8d03262f29d03b809",
+      "surface-success-subtle": "da3a13c384795382d7d382dbe261940bf9785fc7",
+      "surface-error-subtle": "a95a51677a276e176398cef0964712ad2888912a",
+      "surface-info-subtle": "623ad1162619cfc0f4ba0ec159f302d099c7b148"
+    },
+    "border": {
+      "border-primary": "f4b910ed348d20c1718dd6dd931bbe842476d669",
+      "border-secondary": "ad15bcf93e58eb189fa4ea000b5b30f178725b30",
+      "border-tertiary": "4b5b4b8634b4ffab2973b268fd3abb2afa4fdab3",
+      "border-warning": "ae378dce787169c5c217eb162c98352248c585c8",
+      "border-success": "6c476d9bf9b9ef9fe73e567bd5df3dab72baa900",
+      "border-error": "03e65086fe8048fbd914f94f9ee891f25a8a2278",
+      "border-info": "e1a3b7113ba7043c9fd884828ff1396c70b75829",
+      "border-inverse": "7e206b401133055335d505380407a7b581b3509f"
+    },
+    "icon": {
+      "icon-warning": "2eb55aaa5cc2d0ee82a247c9c5fd556474e430d2",
+      "icon-success": "38a52b0c4c1a23e37d0b9baef788e6c55fd98d98",
+      "icon-error": "5ebf9c22ec9164dc863c86f15a6fa179a58539c7",
+      "icon-info": "a74fe26b34fb6d8c458fd8997069f20d2bbb4b8e",
+      "icon-secondary": "8e49e4fd8e1ada3295b207bb6b2d82d1380999ef",
+      "icon-inverse": "a09a8fd7e6aef1a9642ee185cf41f1190b58861b"
+    }
+  },
+  "space": {
+    "0": "13b3cd9b9bf547bfb9bc5a01a421b5f61124bc43",
+    "050": "d57c22a4dbcb967fb354c4c25aca0347dd504908",
+    "100": "29032578d5d46bc95048b1253b344e47f3285eed",
+    "150": "0dfe69e370d9d4f7c5d8baff9a4d0c5ac75e8c95",
+    "200": "b7345e548fde2c3df0c839521b64580dab1d5ee1",
+    "250": "52c87fcd6d39a3a0e6cd56af8d94b5e3b054a88b",
+    "300": "3793a751fc882450d12db3437f29027bceefc4c6",
+    "400": "d7f2cfa27379c4e034bb7b84140a1864ce816088",
+    "500": "b40ec2e2a18939369ed2059004018a119f1cab14",
+    "600": "1d3642a57002fd5b2bd785e26a2cfe9a3242a450",
+    "700": "30c7f0ecbd03f1750c106be97340b2d3a99cc604",
+    "800": "cf4a3b05190c11603f24e38aea14c3f61abf32bb",
+    "1000": "b398603cd7cd6ef46f6a6659cdc68f85102fe705",
+    "1200": "e3eb477edb94587ce144ebd5536643372a1faee1"
+  },
+  "border-radius": {
+    "container-sm": "5b9a5c362d9741929aa9dcb031109cee1856c934",
+    "container-md": "2b1f70b62e82d711274209d6d1c7763dcb63752f",
+    "container-lg": "d27395d9b45c18b11eec3168fd02337f589d5844",
+    "container-xl": "90ef1b511f2ba8710bb1366d855d4382dad79fc7",
+    "container-full": "2f5e24bb23151523f549b042e6239383eb38b545",
+    "input": "df1d55f92f35e0e854c1ddf5c3864453990f459b"
+  },
+  "_statusToTokenGroup": {
+    "in-progress": "warning",
+    "review": "warning",
+    "blocked": "error",
+    "production": "success",
+    "placeholder": "tertiary"
+  },
+  "_resolvedColorLiterals": {
+    "_comment": "Default-mode resolved colors to pass as the literal in setBoundVariableForPaint. The literal is the design-time fallback; the binding is what survives mode flips.",
+    "text-primary": [0.09, 0.09, 0.09],
+    "text-secondary": [0.4, 0.4, 0.4],
+    "text-disabled": [0.6, 0.6, 0.6],
+    "text-warning": [0.78, 0.46, 0.04],
+    "text-success": [0.1, 0.5, 0.3],
+    "text-error": [0.7, 0.18, 0.18],
+    "text-info": [0.15, 0.4, 0.7],
+    "text-inverse": [1, 1, 1],
+    "surface-main": [1, 1, 1],
+    "surface-subtle": [0.96, 0.96, 0.96],
+    "surface-xxbold": [0.04, 0.04, 0.04],
+    "surface-warning-subtle": [1, 0.93, 0.83],
+    "surface-warning": [0.95, 0.6, 0.1],
+    "surface-success-subtle": [0.94, 0.99, 0.96],
+    "surface-error-subtle": [0.99, 0.95, 0.95],
+    "border-primary": [0.7, 0.7, 0.7],
+    "border-secondary": [0.85, 0.85, 0.85],
+    "border-tertiary": [0.96, 0.96, 0.96],
+    "border-inverse": [0.15, 0.15, 0.15],
+    "border-warning": [0.95, 0.6, 0.1],
+    "border-success": [0.1, 0.5, 0.3],
+    "border-error": [0.7, 0.18, 0.18],
+    "icon-warning": [0.95, 0.6, 0.1],
+    "icon-success": [0.1, 0.5, 0.3],
+    "icon-error": [0.7, 0.18, 0.18]
+  }
+}
