@@ -1,0 +1,139 @@
+---
+description: Figma is the source of truth for everything under uds-docs/uds/ — tokens, component CSS, specs, examples, schemas, all of it. Agents must not autonomously modify those files in response to audit findings; surface findings as reports instead.
+alwaysApply: true
+---
+
+# UDS Source of Truth
+
+## Principle
+
+**`uds-docs/uds/` is a derivative of Figma.** Every file under that path
+is either an export of Figma data or an implementation expression of a
+Figma-recorded design decision. The authority over what those files
+contain lives in the UDS Tokens and UDS Components Figma files, not in
+the repo.
+
+That covers, non-exhaustively:
+
+| Path | What it represents |
+|---|---|
+| `uds-docs/uds/tokens/*.css` | Token values (exported from Figma Variables) |
+| `uds-docs/uds/components/<id>/<id>.css` | Component implementation — which tokens it binds, layout, states |
+| `uds-docs/uds/components/<id>/spec.json` | Component contract (props, events, slots, states, accessibility) |
+| `uds-docs/uds/components/<id>/examples/*.html` | Example markup that must match the component contract |
+| `uds-docs/uds/components/<id>/status.json` | Lifecycle status (read from the Figma stoplight prefix) |
+| `uds-docs/uds/components/<id>/changelog.json` | Per-component release history |
+| `uds-docs/uds/components/<id>/impl.json` | Implementation Reference panel data |
+| `uds-docs/uds/components/<id>/playground.js` | Playground config |
+| `uds-docs/uds/schemas/*.json` | JSON schemas for the above (vocabulary contract) |
+| `uds-docs/uds/version.json`, `CHANGELOG.json`, `components.json` | Release manifests |
+
+This rule supersedes any agent intuition that says "I should fix the
+audit by editing the design system."
+
+## Prohibited: autonomous edits under `uds-docs/uds/`
+
+Agents must NOT modify any file under `uds-docs/uds/` in response to:
+
+- `audit-theme-contrast.sh` failures (or any axe-core / WCAG finding)
+- `audit-token-usage.sh` findings (other than restoring values from Figma)
+- `audit-component-completeness.sh` findings
+- `audit-placeholders.sh` findings
+- A11y issues observed in screenshots, manual review, or browser DevTools
+- Any "obvious-looking" fix the agent identifies on its own — token
+  darkening, primitive→semantic swaps, ARIA-attribute migrations,
+  example markup tweaks, spec-text edits, status changes, etc.
+
+If a code-detected concern affects a `uds-docs/uds/` file, the agent's
+job is to **report the finding** with proposed options and **wait for
+user direction**. Never apply.
+
+## Authorized write paths into `uds-docs/uds/`
+
+Only these paths may modify files under `uds-docs/uds/`, and each
+requires explicit user authorization:
+
+1. The named **Figma-sync skills**, each with their own change-classification
+   discipline (`uds-figma-change-classification.mdc`):
+   - `import-figma-tokens` — token values from Figma Variables
+   - `sync-figma-component-spec` — component spec from Figma
+   - `sync-figma-component-status` — lifecycle status from Figma stoplight
+   - `link-figma-nodes` — populate `figmaNodeId` / `figmaPageNodeId`
+   - `new-component` — scaffold a new component from a Figma node
+2. A **revert toward verified Figma parity** — i.e., restoring code to
+   match what Figma already says. Requires explicit user direction (e.g.
+   "revert Phase 16/17 token bumps"). The revert must be sourced from a
+   known-good commit (e.g. the most recent Figma sync) or a fresh
+   Figma read, not a guess.
+3. The **`release.sh` workflow** for snapshotting `uds/` into
+   `versions/<X>/uds/` at release time. This doesn't *modify* the
+   current `uds/` — it copies it.
+
+Any other proposed write into `uds-docs/uds/` must stop and ask the user.
+
+## Files outside `uds-docs/uds/`
+
+Files outside `uds-docs/uds/` — i.e., `uds-docs/docs/**`,
+`uds-docs/index.html`, `uds-docs/version.txt`, `uds-docs/scripts/**`,
+`uds-docs/AGENTS.md`, `uds-docs/README.md`, `scripts/**` at the repo
+root, `.cursor/**`, `AGENTS.md` at the repo root — are documentation-site
+infrastructure or repo-level tooling. They are agent-modifiable under
+the normal workflow (`uds-master-preflight.mdc`,
+`uds-site-changelog.mdc`).
+
+Note that site-side CSS like `uds-docs/docs/site.css` is also fair game
+for the agent: the `.sg-*` classes that style the documentation chrome
+are NOT the design system. Only the `.udc-*` classes inside
+`uds-docs/uds/components/<id>/<id>.css` are.
+
+## When an audit reports a failure under `uds-docs/uds/`
+
+The correct agent response:
+
+1. **Report** the finding: which audit, which page/component/token,
+   which WCAG criterion or rule, what the measured value is, what the
+   threshold is.
+2. **Propose** options. For contrast failures, at minimum:
+   - (a) accept the failure as a documented exception
+   - (b) change a foreground token at the component or site-CSS layer
+     (only allowed if the foreground swap doesn't itself touch
+     `uds-docs/uds/` — i.e. it's a `.sg-*` site class or external
+     consumer)
+   - (c) introduce a new `*-bold` or otherwise-qualified surface variant
+     in Figma, then re-sync
+   - (d) bump the offending token in Figma, then re-sync
+3. **Wait** for the user to pick a path. Do not apply any option that
+   modifies `uds-docs/uds/`.
+
+The audit script itself (`scripts/audit-theme-contrast.sh` and its
+underlying `scripts/lib/audit_theme_contrast.js`) is read-only by design
+and does not modify any file. Failing CI is the intended UX for surfacing
+the design conversation. A red CI build is not a bug to silence by
+editing tokens.
+
+## Why this rule exists
+
+The agent that ran Phase 16 and Phase 17 of the repo restructure
+(commits `6022fcd` and `6564ae8`) saw axe-core report 308 contrast
+violations and decided to fix them by bumping ~38 token values in
+`uds/tokens/semantic.css` (including the AnyoneHome and Inhabit brand
+accents — a visible brand-identity shift). It also swapped primitive
+token references for semantic ones in `uds/components/button/button.css`.
+
+None of those changes were sourced from Figma. None had user
+authorization as a design change. They shipped under UDS 0.3 without a
+version bump or a Figma round-trip, putting Figma and code in silent
+disagreement for ~3 days until the user spotted the brand-color shift.
+PR #7 (commit `fbb9a16`+) reverted all of that to the post-Figma-sync
+0.3 state.
+
+This rule codifies the lesson so a future agent doesn't reach the same
+"helpful" conclusion when it sees a red CI run.
+
+## Related rules
+
+- `.cursor/rules/uds-figma-write-safety.mdc` — covers writes INTO Figma
+- `.cursor/rules/uds-figma-change-classification.mdc` — how Figma-derived findings get classified
+- `.cursor/rules/uds-token-architecture.mdc` — the token vocabulary contract
+- `.cursor/rules/uds-release-workflow.mdc` — release-time mechanics
+- `.cursor/rules/uds-master-preflight.mdc` — the broader pre-flight order

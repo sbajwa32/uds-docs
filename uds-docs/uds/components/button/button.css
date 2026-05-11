@@ -96,10 +96,6 @@
   border-color:     var(--_btn-fill-active);
 }
 
-/* Phase 16: aria-pressed is the WCAG-correct ARIA attribute for a toggle
-   button. aria-selected is kept for backwards compatibility but should be
-   used only inside a [role="listbox"] or [role="tablist"] container. */
-.udc-button-primary[aria-pressed="true"],
 .udc-button-primary[aria-selected="true"],
 .udc-button-primary[data-selected] {
   background-color: var(--_btn-fill);
@@ -132,7 +128,6 @@
   background-color: var(--_btn-subtle-active);
 }
 
-.udc-button-secondary[aria-pressed="true"],
 .udc-button-secondary[aria-selected="true"],
 .udc-button-secondary[data-selected] {
   background-color: var(--uds-color-surface-interactive-none);
@@ -166,7 +161,6 @@
   background-color: var(--_btn-subtle-active);
 }
 
-.udc-button-ghost[aria-pressed="true"],
 .udc-button-ghost[aria-selected="true"],
 .udc-button-ghost[data-selected] {
   background-color: var(--uds-color-surface-interactive-none);
@@ -275,47 +269,41 @@
   --_btn-border:         var(--uds-color-border-error);
 }
 
-/* Phase 16: switched from primitive-token references (green-70, orange-70,
-   neutral-90) to semantic tokens. Side benefit: text-on-fill now passes
-   WCAG AA contrast for the success/warning/neutral fills (the primitive
-   -70 values gave white text 3.02:1 / 3.26:1 / 4.83:1 respectively;
-   semantic surface-success / surface-warning have been bumped to -80
-   primitives in this same phase, raising those to 4.83:1 / 5.21:1). */
 [data-btn-color="success"],
 [data-btn-color="success"] .udc-button-primary,
 [data-btn-color="success"] .udc-button-secondary,
 [data-btn-color="success"] .udc-button-ghost {
-  --_btn-fill:           var(--uds-color-surface-success);
-  --_btn-fill-hover:     var(--uds-color-surface-success);
-  --_btn-fill-active:    var(--uds-color-surface-success);
-  --_btn-subtle-hover:   var(--uds-color-surface-success-subtle);
-  --_btn-subtle-active:  var(--uds-color-surface-success-subtle);
-  --_btn-text:           var(--uds-color-text-success);
-  --_btn-border:         var(--uds-color-border-success);
+  --_btn-fill:           var(--uds-primitive-color-green-70);
+  --_btn-fill-hover:     var(--uds-primitive-color-green-80);
+  --_btn-fill-active:    var(--uds-primitive-color-green-90);
+  --_btn-subtle-hover:   var(--uds-primitive-color-green-20);
+  --_btn-subtle-active:  var(--uds-primitive-color-green-30);
+  --_btn-text:           var(--uds-primitive-color-green-70);
+  --_btn-border:         var(--uds-primitive-color-green-70);
 }
 
 [data-btn-color="warning"],
 [data-btn-color="warning"] .udc-button-primary,
 [data-btn-color="warning"] .udc-button-secondary,
 [data-btn-color="warning"] .udc-button-ghost {
-  --_btn-fill:           var(--uds-color-surface-warning);
-  --_btn-fill-hover:     var(--uds-color-surface-warning);
-  --_btn-fill-active:    var(--uds-color-surface-warning);
-  --_btn-subtle-hover:   var(--uds-color-surface-warning-subtle);
-  --_btn-subtle-active:  var(--uds-color-surface-warning-subtle);
-  --_btn-text:           var(--uds-color-text-warning);
-  --_btn-border:         var(--uds-color-border-warning);
+  --_btn-fill:           var(--uds-primitive-color-orange-70);
+  --_btn-fill-hover:     var(--uds-primitive-color-orange-80);
+  --_btn-fill-active:    var(--uds-primitive-color-orange-90);
+  --_btn-subtle-hover:   var(--uds-primitive-color-orange-20);
+  --_btn-subtle-active:  var(--uds-primitive-color-orange-30);
+  --_btn-text:           var(--uds-primitive-color-orange-70);
+  --_btn-border:         var(--uds-primitive-color-orange-70);
 }
 
 [data-btn-color="neutral"],
 [data-btn-color="neutral"] .udc-button-primary,
 [data-btn-color="neutral"] .udc-button-secondary,
 [data-btn-color="neutral"] .udc-button-ghost {
-  --_btn-fill:           var(--uds-color-surface-inverse);
-  --_btn-fill-hover:     var(--uds-color-surface-inverse);
-  --_btn-fill-active:    var(--uds-color-surface-inverse);
-  --_btn-subtle-hover:   var(--uds-color-surface-alt);
-  --_btn-subtle-active:  var(--uds-color-surface-alt);
-  --_btn-text:           var(--uds-color-text-primary);
-  --_btn-border:         var(--uds-color-text-primary);
+  --_btn-fill:           var(--uds-primitive-color-neutral-90);
+  --_btn-fill-hover:     var(--uds-primitive-color-neutral-100);
+  --_btn-fill-active:    var(--uds-primitive-color-neutral-110);
+  --_btn-subtle-hover:   var(--uds-primitive-color-neutral-20);
+  --_btn-subtle-active:  var(--uds-primitive-color-neutral-30);
+  --_btn-text:           var(--uds-primitive-color-neutral-90);
+  --_btn-border:         var(--uds-primitive-color-neutral-90);
 }
