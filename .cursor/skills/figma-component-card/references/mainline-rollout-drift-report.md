@@ -287,73 +287,95 @@ the **structural** decisions (variants direction, stage radius, section
 titles) match neither template — they're decisions the script-author
 made independently.
 
-## Proposed fix order (non-binding — needs your call)
+## Status of the fix tiers
 
-In ascending order of invasiveness:
+### Tier A — Skill/rule corrections — APPLIED in this PR
 
-### Tier A — Skill/rule corrections (no Figma writes)
+Brought the rule and skill into honest alignment with what the builder
+actually does. The "template wins" contract that the builder never
+honored has been removed.
 
-These bring the rule and skill into honest alignment with what the
-builder actually does, and prevent future agents from believing the
-"template wins" contract that the builder doesn't honor.
+- A1. ✅ Updated `uds-figma-component-card.mdc` step 2 — the template is
+  now described as a designer-authored visual reference and **NOT a
+  runtime input**. The "template wins" line was deleted. Cross-links to
+  the audit script and this report were added.
+- A2. ✅ Updated `SKILL.md` pre-flight step 6 to match A1.
+- A3. ✅ Added `.cursor/figma/state/card-template.snapshot.json`
+  (structural snapshot of the canonical mainline `📐 _TEMPLATE` page,
+  id `7481:14`) and `scripts/audit-figma-card-template.sh` (CI audit
+  that fails when `build-card.js` stops emitting the snapshot's values).
+  Wired into `.github/workflows/audits.yml` as the "Figma card template
+  recipe currency" step.
 
-- A1. Update `uds-figma-component-card.mdc` step 2 to either say "the
-  builder reads the recipe in `build-card.js`; the `📐 _TEMPLATE` page
-  is illustrative only and must be kept in sync with the recipe" — OR —
-  remove the "template wins" line and replace with a TODO until
-  template-driven build is implemented.
-- A2. Update `SKILL.md` pre-flight step 6 to match A1.
-- A3. Add an audit script that diffs the mainline `📐 _TEMPLATE` page
-  against the built cards and surfaces any drift (read-only CI check).
+### Tier B — Builder corrections — APPLIED B1–B6 in this PR; B7–B8 DEFERRED
 
-### Tier B — Builder corrections (changes `build-card.js` only — agent toolchain, no Figma writes, no `uds-docs/uds/` writes)
+Concrete fixes to `build-card.js`. No Figma writes, no `uds-docs/uds/`
+writes.
 
-Concrete fixes the script needs whether or not we adopt template-driven
-build:
+- B1. ✅ Outer `udc-<id>-page` wrapper now binds all four corner radii to
+  `V.radius.xl` (24) and sets `clipsContent = true` so the rounded
+  corners actually render. Matches mainline template
+  `_template-component-card`.
+- B2. ✅ VARIANTS row switched from `VERTICAL`/FILL to `HORIZONTAL` with
+  FIXED-width stages computed as `floor((2544 - 32 * (n - 1)) / n)` for
+  n variant sets — even-split across the inner card width minus 32px
+  gaps. Matches mainline template stages of 827px each at n=3.
+- B3. ✅ SUB-COMPONENTS row switched the same way (was `subs-col`
+  VERTICAL/FILL → now `subs-row` HORIZONTAL/FIXED).
+- B4. ✅ Stage corner radii (ANATOMY state cells, VARIANTS stages,
+  SUB-COMPONENTS stages) all rebound to `V.radius.md` (12). Outer cards,
+  hero-preview, USAGE columns, META link cards, and the keyboard-table
+  remain at `V.radius.lg` (16) per the template.
+- B5. ✅ `keyboard-table` now binds all four corner radii to
+  `V.radius.lg` (16) and sets `clipsContent = true` to mask the
+  bottom-edge row borders.
+- B6. ✅ Section text aligned to the mainline template:
+  - VARIANTS title → "Variant matrix" (was: "All variants" / "N variants")
+  - VARIANTS description → "Each variant shows the full state matrix —
+    destructive on/off, sizes, icon options, and interaction states."
+  - SUB-COMPONENTS title → "Component groups" (was: "Sub-component sets")
+  - SUB-COMPONENTS description → "Sub-component sets that compose with
+    the primary set — like button groups or input add-ons. Reparented
+    in as their own stages."
+  - ANATOMY description → "Interaction states for the primary medium
+    variant. Each state has its own visual treatment to communicate
+    affordance." (was: dynamic with `${primarySet.node.name}`)
+- B7. ⏸ DEFERRED — Auto-discovery for COMPONENT-typed primaries (not
+  just COMPONENT_SETs). The button mainline page lost ANATOMY and
+  SUB-COMPONENTS sections because its primary `udc-button-primary` is
+  an INSTANCE/COMPONENT, not a COMPONENT_SET. Builder needs a code
+  path that handles single-COMPONENT primaries and improved State-
+  variant matching. Tracked in `.cursor/figma/state/card-template.snapshot.json` `knownDeferredFromBuilder`.
+- B8. ⏸ DEFERRED — Stragglers dedupe. Badge mainline page has a
+  stranded `udc-badge` INSTANCE at `y=3480`. Removing duplicate
+  INSTANCEs is destructive and needs a designer-confirmed policy
+  before it can land. Tracked alongside B7.
 
-- B1. Set `outer.cornerRadius` (or `topLeftRadius`/`topRightRadius`/
-  `bottomLeftRadius`/`bottomRightRadius` bound to `V.radius.xl`) on the
-  outer `udc-<id>-page` wrapper. Match mainline template = 24.
-- B2. Switch VARIANTS row back to `HORIZONTAL` with **FIXED** stages
-  sized to fit the variant count (not the `HUG` it was, not the `FILL`
-  vertical it became). Mainline template shows ~827w per stage when
-  three stages fit; the math is `(2544 - 32 * (n - 1)) / n` for n
-  stages with 32 gap.
-- B3. Switch SUB-COMPONENTS row back to `HORIZONTAL` with FIXED stages.
-- B4. Bind stage corner radii to `V.radius.md` (12) instead of
-  `V.radius.lg` (16) for ANATOMY, VARIANTS, and SUB-COMPONENTS stages.
-- B5. Bind `keyboard-table.cornerRadius*` to `V.radius.lg` (16).
-- B6. Update the section title/description strings to match mainline
-  template wording. (VARIANTS = "Variant matrix", SUB-COMPONENTS =
-  "Component groups" or component-specific naming.)
-- B7. Fix the button-style auto-discovery failure: handle COMPONENT
-  primaries (not just COMPONENT_SETs), and improve the State-variant
-  matcher so it works across components with different variant
-  property names.
-- B8. Fix the stragglers logic so single primary INSTANCEs aren't
-  stranded — they should be detached or absorbed into the hero
-  preview.
+Both deferred items need a testbed validation pass before shipping;
+current PR scope is the layout-recipe corrections that are unambiguous
+matches to the mainline template.
 
-### Tier C — Mainline cards rebuild (Figma writes — requires explicit "mainline" approval per `uds-figma-write-safety.mdc`)
+### Tier C — Mainline cards rebuild — NOT YET REQUESTED
 
-After Tier B is in, re-run the builder against the 8 in-progress
-mainline pages in update mode (per
-`uds-figma-component-card-update.mdc`). Inventory descendants before
-teardown. Verify zero `droppedNodes`. Emit per-component write
-summaries.
+After Tier B lands, re-running the builder against the 8 in-progress
+mainline pages in update mode would produce cards that match the
+canonical `📐 _TEMPLATE`. Per `uds-figma-component-card-update.mdc`,
+update mode preserves descendants and surfaces any `droppedNodes`.
 
-This requires explicit user direction naming "mainline" before any
-write happens.
+This requires explicit user direction naming **"mainline"** per
+`uds-figma-write-safety.mdc` before any write happens. Not authorized
+by the current task.
 
-### Tier D — Reconcile the two `📐 _TEMPLATE` pages (Figma writes to BOTH files — requires explicit approval)
+### Tier D — Reconcile the two `📐 _TEMPLATE` pages — NOT YET REQUESTED
 
-Out of scope for the figma-component-card skill, but flagging: as long
-as the mainline and testbed `📐 _TEMPLATE` pages disagree (corner
-radius, HEADER inner gap, hero padding, dot pattern, keyboard-table
-radius, meta-row content), every build that runs against either file
-will produce drift on the other. Pick a canonical template (probably
-the mainline one, since that's the public file) and update the other
-to match.
+The mainline `📐 _TEMPLATE { Component card }` (`7481:14`) and the
+testbed equivalent (`9085:2`) diverge on outer wrapper corner radius,
+HEADER inner gap, hero padding, hero dot-pattern presence, keyboard-
+table radius, and meta-row content. As long as both exist as canonical
+references but disagree, the audit can only enforce one of them. The
+mainline snapshot is the source of truth in this PR; the testbed
+template would benefit from being brought into alignment in a separate
+Figma write workflow. Not authorized by the current task.
 
 ## Non-recommendations
 
