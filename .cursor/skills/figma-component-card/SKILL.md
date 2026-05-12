@@ -1,7 +1,7 @@
 ---
 name: figma-component-card
 description: Build or update the canonical "component card" canvas layout on a UDS component page in Figma. Use when the user says "build/update the figma page for X", "regenerate the component cards", "scaffold the figma page for <component>", "apply the component card pilot to <component>", or "roll out the component card design across the library". Produces the seven-section card layout (HEADER, ANATOMY, VARIANTS, SUB-COMPONENTS, USAGE, ACCESSIBILITY, META) per `.cursor/rules/uds-figma-component-card.mdc`.
-lastUpdated: 2026-05-12T18:41:50Z
+lastUpdated: 2026-05-12T19:30:49Z
 ---
 
 # UDS Figma Component Card Skill
@@ -60,7 +60,7 @@ For a batch run, do NOT iterate one component at a time across many `use_figma` 
 3. **Read the rule.** [`uds-figma-component-card.mdc`](../../rules/uds-figma-component-card.mdc).
 4. **Read the gotchas.** [`references/gotchas.md`](references/gotchas.md). Skip any of those and you will waste 30 turns relearning them.
 5. **Read the token map.** [`references/token-map.json`](references/token-map.json). Hardcoded library variable keys for every UDS token used by the builder. Do not look these up dynamically per-run; they are stable.
-6. **Open the `📐 _TEMPLATE` page.** If it exists, inspect its structure FIRST. The template overrides this skill if there's a difference (designers can edit the template without touching code).
+6. **Read the `📐 _TEMPLATE` page as a design reference (NOT a runtime input).** The template page documents every section and slot a card can contain. The builder stamps from the hardcoded recipe in [`references/build-card.js`](references/build-card.js) — it never opens the template page. If the rolled-out cards drift from the template, that's a recipe bug to fix in code (see [`references/mainline-rollout-drift-report.md`](references/mainline-rollout-drift-report.md) for the prior rollout's drift catalog). Run `bash scripts/audit-figma-card-template.sh` before any rollout to verify the recipe still matches the snapshot at `.cursor/figma/state/card-template.snapshot.json`.
 7. **Read the spec and status.** `uds-docs/uds/components/<id>/spec.json` and `uds-docs/uds/components/<id>/status.json`. Cross-check that `status.json#current` matches the Figma page's stoplight prefix; if not, surface the mismatch and stop — that's a [`sync-figma-component-status`](../sync-figma-component-status/SKILL.md) job, not this one.
 
 ## The build recipe (single `use_figma` call per component)

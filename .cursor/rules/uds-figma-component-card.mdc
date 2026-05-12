@@ -2,7 +2,7 @@
 description: Canonical card layout for UDS Components Figma pages. Defines the seven-card structure, token bindings, and read-only contract against uds-docs/uds/components/<id>/spec.json. Loaded when the figma-component-card skill runs or the figma-component-card-audit subagent runs.
 alwaysApply: false
 globs: [".cursor/skills/figma-component-card/**", ".cursor/agents/figma-component-card-audit.md"]
-lastUpdated: 2026-05-12T18:41:50Z
+lastUpdated: 2026-05-12T19:30:49Z
 ---
 
 # UDS Figma Component Card
@@ -14,7 +14,7 @@ Specification for the canvas layout used on every component page in the UDS Comp
 Component pages used to be a pile of unlabeled component sets sprawled at random positions. This rule defines the canonical "card" treatment so:
 - Every page reads the same way (same card order, same eyebrows, same status colors)
 - Future agents and skills produce identical output without re-deciding layout questions
-- A designer can edit the visual template once and every agent run picks it up
+- A designer-authored template documents the canonical layout in Figma so the recipe in the builder script always has a visual reference to be measured against
 - Token bindings are forced — no raw hex anywhere
 
 ## Direction of data flow (CRITICAL)
@@ -220,7 +220,7 @@ When a section is omitted, the eyebrow numbers stay in **rendering order**. So a
 ## Order of operations (every agent run)
 
 1. **Pre-flight per [`uds-figma-preflight.mdc`](./uds-figma-preflight.mdc).** Read-only inspection first.
-2. **Discover.** Read the matching `_TEMPLATE` page in the Figma file FIRST (page name starts with `📐 _TEMPLATE`). If the template differs from this rule, the template wins — designers can override here without touching code.
+2. **Discover.** The `📐 _TEMPLATE` page in the Figma file is the canonical visual reference for what cards should look like — it documents every section, slot, padding, radius, and design decision. The builder reproduces this layout from a hardcoded recipe in [`.cursor/skills/figma-component-card/references/build-card.js`](../skills/figma-component-card/references/build-card.js); **the template is NOT a runtime input** — `build-card.js` never opens the template page. If the rolled-out cards drift from the template, that's a recipe bug to fix in `build-card.js` (and ideally surfaced by `bash scripts/audit-figma-card-template.sh`, which compares the recipe to the snapshot at `.cursor/figma/state/card-template.snapshot.json`). See [`.cursor/skills/figma-component-card/references/mainline-rollout-drift-report.md`](../skills/figma-component-card/references/mainline-rollout-drift-report.md) for the prior rollout's drift catalog and the lesson behind this clarification.
 3. **Confirm tokens are subscribed.** `get_libraries` should show `UDS Tokens` in `libraries_added_to_file`. If not, ask the user to subscribe — don't auto-subscribe.
 4. **Read the JSON spec.** `uds-docs/uds/components/<id>/spec.json` and `status.json`. If `spec.json` doesn't exist, the page is a placeholder.
 5. **Inspect the page's existing nodes.** Find component sets, sub-components, the page-name prefix. Cross-check status with `status.json#current`. **If a `udc-<id>-page` frame already exists, switch into update mode per [`uds-figma-component-card-update.mdc`](./uds-figma-component-card-update.mdc) — diff against template / page content / spec.json, inventory descendants before any teardown, no-op when in sync.**
