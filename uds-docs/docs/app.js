@@ -497,8 +497,25 @@ function loadContent(componentId) {
       }).then(function (data) {
         contentCache[componentId] = data;
         completenessScores[componentId] = computeCompleteness(data);
+        bindSpecToPageChrome(componentId, data);
         return data;
       }).catch(function () { return null; });
+}
+
+// Phase 19: page chrome (title + description) sources from spec.json instead
+// of being hardcoded in index.html. Eliminates the description-drift class
+// (component description previously lived in two places — the <p class="sg-page-desc">
+// in index.html chrome AND the spec.json description field — and they drifted).
+// Markup contract: <div data-page="<id>"> contains <h1 data-bind="title"> and
+// <p data-bind="description"> placeholders that this function fills.
+function bindSpecToPageChrome(componentId, data) {
+    if (!data) return;
+    var page = document.querySelector('[data-page="' + componentId + '"]');
+    if (!page) return;
+    var titleEl = page.querySelector('[data-bind="title"]');
+    if (titleEl && data.title) titleEl.textContent = data.title;
+    var descEl = page.querySelector('[data-bind="description"]');
+    if (descEl && data.description) descEl.textContent = data.description;
 }
 
 function initGuidelines(pageId) {

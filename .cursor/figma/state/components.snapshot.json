@@ -293,16 +293,26 @@
       "figmaPageName": "\ud83d\udd34 nav-header",
       "pageNodeId": "5373:972",
       "componentSetNodeId": "5684:11340",
-      "defaultVariantNodeId": null,
+      "defaultVariantNodeId": "5684:11341",
       "status": "blocked",
       "since": "0.3",
-      "variantProperties": {},
-      "nestedInstances": [],
+      "variantProperties": {
+        "Show Search Box": ["true", "false"],
+        "Show My Work": ["true", "false"],
+        "Variant": ["Default"]
+      },
+      "nestedInstances": [
+        { "nodeId": "5684:11344", "name": "_udc-nav-header_logo",        "mainComponentName": "_udc-nav-header_logo",        "mainComponentNodeId": "6403:39130" },
+        { "nodeId": "5684:11345", "name": "_udc-nav-header_title-area",  "mainComponentName": "_udc-nav-header_title-area",  "mainComponentNodeId": "5505:7875" },
+        { "nodeId": "5684:11346", "name": "Search Box",                  "mainComponentName": "udc-search",                  "mainComponentNodeId": "5053:53" },
+        { "nodeId": "5684:11348", "name": "_udc-nav-header_mywork-button","mainComponentName": "_udc-nav-header_mywork-button","mainComponentNodeId": "6403:33941" },
+        { "nodeId": "5684:11349", "name": "_udc-nav-header_account-actions","mainComponentName": "_udc-nav-header_account-actions","mainComponentNodeId": "6403:34784" }
+      ],
       "tokenBindings": [],
       "fingerprint": {
-        "nodeTreeHash": "seed:5373:972",
-        "variantHash": "seed:5684:11340",
-        "tokenBindingHash": "not-captured"
+        "nodeTreeHash": "captured:2026-05-12:5373:972",
+        "variantHash": "captured:2026-05-12:5684:11340",
+        "tokenBindingHash": "captured-out-of-band:see-changelog"
       }
     },
     {

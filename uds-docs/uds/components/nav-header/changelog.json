@@ -21,6 +21,71 @@
       "version": "0.2",
       "type": "added",
       "text": "Standalone header bar with logo, bento dropdown, search, My Work, and account actions"
+    },
+    {
+      "version": "0.3",
+      "type": "fixed",
+      "text": "figmaNodeId corrected from 5586:8858 (sub-component) to 5684:11340 (canonical udc-nav-header set) after a deep figma-component-inspector pass on page 5373:972."
+    },
+    {
+      "version": "0.3",
+      "type": "added",
+      "text": "Spec populated from inspector: showSearch + showMyWork props (BOOLEANs from the Figma set), bento-toggle + bento-dismiss events, 8 anatomy slots, default / bento-open / title-only / not-applicable states, commonlyPairedWith for every nested instance, 4 screenReader entries, 5 WCAG criteria, 10 acceptance criteria."
+    },
+    {
+      "version": "0.3",
+      "type": "changed",
+      "text": "Mirrored Figma sub-component rename _udc-nav-header_bentobutton \u2192 _udc-nav-header_title-area (id 5586:8858 preserved). CSS public-contract rename: .udc-nav-bento-button \u2192 .udc-nav-title-area, .udc-nav-bento-button__chevron \u2192 .udc-nav-title-area__chevron. Spec slot bento (trigger) \u2192 title-area. Dropdown panel intentionally kept as .udc-nav-bento because Figma still calls that component _udc-nav-header_dropdown."
+    },
+    {
+      "version": "0.3",
+      "type": "fixed",
+      "text": "Chevron color realigned with Figma: --uds-color-icon-secondary \u2192 --uds-color-icon-primary."
+    },
+    {
+      "version": "0.3",
+      "type": "fixed",
+      "text": "Bento trigger icon + chevron size realigned with Figma: 20px literal \u2192 --uds-font-size-2xl (24px) \u2014 matches udc-icon-wrapper Size=24px."
+    },
+    {
+      "version": "0.3",
+      "type": "fixed",
+      "text": "Bento dropdown shadow realigned with Figma: --uds-shadow-bento \u2192 --uds-shadow-depth-300."
+    },
+    {
+      "version": "0.3",
+      "type": "fixed",
+      "text": "Bento dropdown footer realigned with Figma: 14px / text-interactive \u2192 12px / text-primary (--uds-font-size-sm + --uds-color-text-primary)."
+    },
+    {
+      "version": "0.3",
+      "type": "fixed",
+      "text": "Nav-tile font size: 10px literal \u2192 --uds-font-size-sm (12px). Removes a token-usage violation and matches Figma font/size/sm."
+    },
+    {
+      "version": "0.3",
+      "type": "fixed",
+      "text": "Nav-tile background and foreground: always-blue \u2192 transparent default (interactive-none + text-interactive + icon-interactive) with aria-current=\"page\" driving the blue + text-inverse selected state. Hover split between subtle-hover (default) and interactive-hover (selected). Matches Figma two-state tile anatomy."
+    },
+    {
+      "version": "0.3",
+      "type": "fixed",
+      "text": "Escape-while-open dismissal in nav-header.js. Handler now bound to document, gated on panel[data-open=true], restores focus to the trigger on dismiss. Matches the bento-dismiss event contract."
+    },
+    {
+      "version": "0.3",
+      "type": "fixed",
+      "text": "aria-label on icon-only ghost buttons in account-actions pill \u2014 Notifications / Settings / Account \u2014 added to examples/default.html, playground render strings (HTML + Vue), and impl.json reference HTML."
+    },
+    {
+      "version": "0.3",
+      "type": "fixed",
+      "text": "Bento dropdown divider rows added per Figma _udc-nav-header_dropdown anatomy: udc-divider-horizontal (data-padding=\"sm\") between every section in bento-dropdown.html, bento-tiles.html, and the playground render."
+    },
+    {
+      "version": "0.3",
+      "type": "added",
+      "text": "Title-Only variant exposed: new .udc-nav-title-area[data-title-only=\"true\"] CSS state (transparent fill, no border/shadow, no leading icon, no chevron, font-size --uds-font-size-xl). New titleOnly boolean prop, title-only state, playground checkbox, examples/title-only.html and manifest entry. Mirrors Figma _udc-nav-header_title-area Title Only=True (5586:8859)."
     }
   ]
 }

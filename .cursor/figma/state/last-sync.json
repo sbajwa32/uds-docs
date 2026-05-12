@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "lastSuccessfulSync": "2026-05-07T17:16:25Z",
+  "lastSuccessfulSync": "2026-05-12T15:12:00Z",
   "tokens": {
     "figmaFileKey": "iqKgR73ubUHpQTIcF7XGMy",
     "figmaVersion": "0.3",
@@ -11,15 +11,16 @@
     "figmaFileKey": "1XJoUJgtNpw4R0IIT3VjoK",
     "figmaVersion": "0.3",
     "snapshotPath": ".cursor/figma/state/components.snapshot.json",
-    "snapshotChecksum": "bc81b85df2cdbdb5aa51e826d5978c758154c1a1e1995d583f9c543c3c3e8637"
+    "snapshotChecksum": "5e3acd2e07cb40139e2f2b9289db82c20a0cc9be33efb511e6ff02c2a060e379"
   },
   "site": {
     "udsVersion": "0.3",
-    "siteVersion": "2026.05.08.1",
+    "siteVersion": "2026.05.12.4",
     "commit": null
   },
   "notes": [
     "0.3 baseline captured after direct Figma read. Ignored pages with {Ignore} were excluded. Internal support pages checkbox-control, input, and slot were not added to public docs.",
-    "2026-05-08 verification audit: re-read Figma 0.3 directly. Tokens (counts, names, alias targets, modes), statuses, FIGMA_LINKS, sidebar coverage, content JSON coverage, release notes (both files), and implementation-ready vs placeholder-only classification all match Figma. Filled in 16 missing figmaNodeId values for components that have canonical component-set nodes in Figma (button left null because 5 sibling component-sets; data-table/text-input/tooltip have no top-level component-set so remain null)."
+    "2026-05-08 verification audit: re-read Figma 0.3 directly. Tokens (counts, names, alias targets, modes), statuses, FIGMA_LINKS, sidebar coverage, content JSON coverage, release notes (both files), and implementation-ready vs placeholder-only classification all match Figma. Filled in 16 missing figmaNodeId values for components that have canonical component-set nodes in Figma (button left null because 5 sibling component-sets; data-table/text-input/tooltip have no top-level component-set so remain null).",
+    "2026-05-12 nav-header deep inspection + sync: figma-component-inspector ran twice against page 5373:972. First pass captured the canonical udc-nav-header set (5684:11340), default variant (5684:11341), variant matrix (Show Search Box BOOLEAN, Show My Work BOOLEAN, Variant=Default), nested-instance graph (logo, title-area, search, mywork-button, account-actions), 12 Figma\u2194code divergences, and the Title Only=True bare-title variant of the title-area sub-component. Second pass captured the Figma-side rename of the trigger sub-component from _udc-nav-header_bentobutton to _udc-nav-header_title-area (id 5586:8858 preserved). Authoring-error attribution corrected: the \"Component set has existing errors\" message that previously appeared to come from udc-nav-header actually originates from udc-badge (5794:7948) on the badge page; it propagates only because the My Work pill nests a badge. The canonical udc-nav-header set reads cleanly on every plugin-API surface."
   ]
 }
