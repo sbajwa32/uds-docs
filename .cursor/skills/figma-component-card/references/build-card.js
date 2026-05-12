@@ -350,6 +350,8 @@ async function buildOne(CONFIG) {
   outer.primaryAxisSizingMode = 'AUTO';
   outer.counterAxisSizingMode = 'FIXED';
   outer.fills = [bind(V.surface.subtle, COLORS.light)];
+  for (const r of ['topLeftRadius','topRightRadius','bottomLeftRadius','bottomRightRadius']) outer.setBoundVariable(r, V.radius.xl);
+  outer.clipsContent = true;
 
   // 8px top accent strip on the outer wrapper
   const statusAccent = figma.createRectangle();
@@ -697,7 +699,7 @@ async function buildOne(CONFIG) {
     const inner = innerPad(card, 'VERTICAL', '400', '800');
     secHead(inner, '02', 'STATES & VISUAL', '· / anatomy',
       'States',
-      `Interaction states for ${primarySet ? primarySet.node.name : 'the primary variant'}. Each state has its own visual treatment to communicate affordance.`
+      'Interaction states for the primary medium variant. Each state has its own visual treatment to communicate affordance.'
     );
 
     const grid = figma.createAutoLayout('HORIZONTAL', { name: 'state-grid', itemSpacing: 16, fills: [] });
@@ -716,7 +718,11 @@ async function buildOne(CONFIG) {
       cell.setBoundVariable('itemSpacing', V.space['200']);
       cell.paddingTop = 48; cell.paddingBottom = 24; cell.paddingLeft = 24; cell.paddingRight = 24;
       cell.fills = [sSurfaceSubtle()];
-      for (const r of ['topLeftRadius','topRightRadius','bottomLeftRadius','bottomRightRadius']) cell.setBoundVariable(r, V.radius.lg);
+      // ANATOMY state cells use radius/container-md (12) per mainline _TEMPLATE
+      // (id 7481:14). Inner stage cards across ANATOMY/VARIANTS/SUB-COMPONENTS
+      // all use md; only the outer wrappers (HEADER, USAGE columns, META link
+      // cards, the keyboard-table) use lg.
+      for (const r of ['topLeftRadius','topRightRadius','bottomLeftRadius','bottomRightRadius']) cell.setBoundVariable(r, V.radius.md);
 
       // Instance of the state variant
       try {
@@ -764,32 +770,42 @@ async function buildOne(CONFIG) {
     const card = lightCard(content, 'VARIANTS');
     sectionIds.VARIANTS = card.id;
     const inner = innerPad(card, 'VERTICAL', '400', '800');
-    const titleText = variantSets.length === 1
-      ? 'All variants'
-      : `${variantSets.length} variants`;
     secHead(inner, '03', 'COMPONENT VARIANTS', '· / variants',
-      titleText,
-      `Every visual variation of ${variantSets.length === 1 ? 'the component' : 'these component sets'}, organized by its variant properties.`
+      'Variant matrix',
+      'Each variant shows the full state matrix — destructive on/off, sizes, icon options, and interaction states.'
     );
 
-    // variants-row — VERTICAL when stages stack, with FILL/HUG stages.
-    // Reference cards (badge / data-table) use one full-width stage per
-    // component set rather than wrapped horizontal tiles.
-    const row = figma.createAutoLayout('VERTICAL', { name: 'variants-row', itemSpacing: 24, fills: [] });
+    // variants-row — HORIZONTAL with FIXED-width stages, even-split across the
+    // inner card width (2544) minus 32px gaps. This matches the mainline
+    // _TEMPLATE page (id 7481:14, frame 7687:46), where stages live side-by-
+    // side rather than stacked. Earlier iteration used VERTICAL/FILL; that
+    // contradicted the template and lost the variant-matrix-at-a-glance
+    // affordance the design relies on. See references/mainline-rollout-drift-
+    // report.md drift #1 for context.
+    const row = figma.createAutoLayout('HORIZONTAL', { name: 'variants-row', itemSpacing: 32, fills: [] });
     inner.appendChild(row);
     row.layoutSizingHorizontal = 'FILL';
     row.layoutSizingVertical = 'HUG';
-    row.setBoundVariable('itemSpacing', V.space['300']);
+    row.setBoundVariable('itemSpacing', V.space['400']);
+
+    const VARIANT_INNER_WIDTH = 2544;
+    const stageGap = 32;
+    const stageCount = variantSets.length;
+    const stageWidth = Math.max(200, Math.floor((VARIANT_INNER_WIDTH - stageGap * (stageCount - 1)) / stageCount));
 
     for (const e of variantSets) {
       const stage = figma.createAutoLayout('VERTICAL', { name: `stage-${e.node.name}`, itemSpacing: 24, fills: [] });
       row.appendChild(stage);
-      stage.layoutSizingHorizontal = 'FILL';
+      // Resize FIRST so both axes go to FIXED, then promote the vertical axis
+      // back to HUG so the stage sizes to its content (instance height varies
+      // per component). Per references/gotchas.md "Resize before sizing modes".
+      stage.resize(stageWidth, 200);
+      stage.layoutSizingHorizontal = 'FIXED';
       stage.layoutSizingVertical = 'HUG';
       stage.setBoundVariable('itemSpacing', V.space['300']);
       stage.paddingTop = 32; stage.paddingBottom = 40; stage.paddingLeft = 40; stage.paddingRight = 40;
       stage.fills = [bind(V.surface.subtle, COLORS.light)];
-      for (const r of ['topLeftRadius','topRightRadius','bottomLeftRadius','bottomRightRadius']) stage.setBoundVariable(r, V.radius.lg);
+      for (const r of ['topLeftRadius','topRightRadius','bottomLeftRadius','bottomRightRadius']) stage.setBoundVariable(r, V.radius.md);
 
       const lbl = figma.createText();
       lbl.fontName = { family: 'Inter', style: 'Bold' };
@@ -820,27 +836,36 @@ async function buildOne(CONFIG) {
     sectionIds.SUB_COMPONENTS = card.id;
     const inner = innerPad(card, 'VERTICAL', '400', '800');
     secHead(inner, '04', 'COMPOSITION', '· / sub-components',
-      'Sub-component sets',
-      `${subSets.length} sub-component set${subSets.length === 1 ? '' : 's'} used to compose this component. Reparented from their original page-level positions; reusable but not typically instanced standalone.`
+      'Component groups',
+      'Sub-component sets that compose with the primary set — like button groups or input add-ons. Reparented in as their own stages.'
     );
 
-    // subs-col — VERTICAL stack, gap 24. Stages are full-width FILL/HUG,
-    // each with a stage-head (name + sub-line) and the COMPONENT_SET below.
-    const col = figma.createAutoLayout('VERTICAL', { name: 'subs-col', itemSpacing: 24, fills: [] });
-    inner.appendChild(col);
-    col.layoutSizingHorizontal = 'FILL';
-    col.layoutSizingVertical = 'HUG';
-    col.setBoundVariable('itemSpacing', V.space['300']);
+    // subs-row — HORIZONTAL with FIXED-width stages, mirroring VARIANTS.
+    // Mainline _TEMPLATE (id 7481:14, frame 7687:70) places sub-components
+    // side-by-side rather than stacked. See references/mainline-rollout-
+    // drift-report.md drift #2 for the prior VERTICAL/FILL regression and
+    // why HORIZONTAL/FIXED is the correct match.
+    const row = figma.createAutoLayout('HORIZONTAL', { name: 'subs-row', itemSpacing: 32, fills: [] });
+    inner.appendChild(row);
+    row.layoutSizingHorizontal = 'FILL';
+    row.layoutSizingVertical = 'HUG';
+    row.setBoundVariable('itemSpacing', V.space['400']);
+
+    const SUB_INNER_WIDTH = 2544;
+    const subGap = 32;
+    const subCount = subSets.length;
+    const subStageWidth = Math.max(200, Math.floor((SUB_INNER_WIDTH - subGap * (subCount - 1)) / subCount));
 
     for (const e of subSets) {
       const stage = figma.createAutoLayout('VERTICAL', { name: `stage-${e.node.name}`, itemSpacing: 16, fills: [] });
-      col.appendChild(stage);
-      stage.layoutSizingHorizontal = 'FILL';
+      row.appendChild(stage);
+      stage.resize(subStageWidth, 200);
+      stage.layoutSizingHorizontal = 'FIXED';
       stage.layoutSizingVertical = 'HUG';
       stage.setBoundVariable('itemSpacing', V.space['200']);
       stage.paddingTop = 32; stage.paddingBottom = 40; stage.paddingLeft = 40; stage.paddingRight = 40;
       stage.fills = [bind(V.surface.subtle, COLORS.light)];
-      for (const r of ['topLeftRadius','topRightRadius','bottomLeftRadius','bottomRightRadius']) stage.setBoundVariable(r, V.radius.lg);
+      for (const r of ['topLeftRadius','topRightRadius','bottomLeftRadius','bottomRightRadius']) stage.setBoundVariable(r, V.radius.md);
 
       // stage-head: name (Geist Mono Medium 14) + sub-line (Inter Regular 13, FILL/HUG)
       const head = figma.createAutoLayout('VERTICAL', { name: 'stage-head', itemSpacing: 8, fills: [] });
@@ -986,11 +1011,17 @@ async function buildOne(CONFIG) {
       'How keyboard users and assistive technology interact with this component.'
     );
 
-    // Table: VERTICAL, gap 0, no outer stroke/radius (rows carry their own bottom borders).
+    // Table: VERTICAL, gap 0, no outer stroke (rows carry their own bottom
+    // borders). Mainline _TEMPLATE (id 7481:14, frame 7688:42) wraps the
+    // table in a 16-radius (container-lg) frame so the corners round
+    // visually around the row stack. clipsContent ensures the rounded
+    // corners actually mask the row borders at the bottom edge.
     const table = figma.createAutoLayout('VERTICAL', { name: 'keyboard-table', itemSpacing: 0, fills: [] });
     inner.appendChild(table);
     table.layoutSizingHorizontal = 'FILL';
     table.layoutSizingVertical = 'HUG';
+    for (const r of ['topLeftRadius','topRightRadius','bottomLeftRadius','bottomRightRadius']) table.setBoundVariable(r, V.radius.lg);
+    table.clipsContent = true;
 
     // thead — HORIZONTAL, FILL/HUG, gap 24 (space/300), padding [16, 24, 16, 24]
     const thead = figma.createAutoLayout('HORIZONTAL', { name: 'thead', itemSpacing: 24, fills: [] });
