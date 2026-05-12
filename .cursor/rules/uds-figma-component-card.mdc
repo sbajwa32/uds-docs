@@ -111,13 +111,27 @@ Kicker text per section:
 
 | Section | Kicker | Sub-label |
 |---|---|---|
-| HEADER | `COMPONENT` | `uds-components / <UDS_VERSION>` |
+| HEADER | `COMPONENT` | (none — see note) |
 | ANATOMY | `STATES & VISUAL` | `· / anatomy` |
 | VARIANTS | `COMPONENT VARIANTS` | `· / variants` |
 | SUB-COMPONENTS | `COMPOSITION` | `· / sub-components` |
 | USAGE | `GUIDELINES` | `· / usage` |
 | ACCESSIBILITY | `A11Y / WCAG` | `· / accessibility` |
 | META | `RESOURCES & OWNERS` | `· / meta` |
+
+HEADER intentionally has no sub-label as of 2026-05-12. Earlier versions
+showed `uds-components / <UDS_VERSION>` here, but that displayed the same
+information on every component card and required every card to be
+rebuilt on every UDS release without adding any decision-supporting
+information — the canonical UDS version lives in
+`uds-docs/uds/version.json#version` and on the `UDS Version: X.Y` Figma
+page. The eyebrow's `eb-col` wrapper for HEADER now contains just the
+kicker text node; keep the wrapper for structural symmetry with other
+sections, even though it's a single-child column.
+
+The META status pill is also intentionally version-free for the same
+reason: the pill label is the bare status string from the Status → token
+map table (`IN PROGRESS`, `BLOCKED`, etc.), with no `· UDS X.Y` suffix.
 
 ## Section titles
 
