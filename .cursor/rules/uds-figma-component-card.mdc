@@ -223,7 +223,7 @@ Below the link cards: a 1px divider (`border-tertiary`) full-width, then the MET
 
 | Label | Value | Font |
 |---|---|---|
-| `GENERATED` | ISO timestamp the agent stamped when this card was last rebuilt, e.g. `2026-05-12 15:43 UTC` | Geist Mono Regular 13, `text-secondary` |
+| `GENERATED` | ISO timestamp the agent stamped when this card was last rebuilt, e.g. `2026-05-12 15:43 UTC` | Geist Mono Regular 13, `text-primary` |
 | `CSS` | `uds/components/<id>/<id>.css` (on-disk path) | Geist Mono Regular 13, `text-primary` |
 | `SPEC JSON` | `uds/components/<id>/spec.json` | Geist Mono Regular 13, `text-primary` |
 | (spacer fill) |  |  |
