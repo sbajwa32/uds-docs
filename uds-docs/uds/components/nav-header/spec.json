@@ -5,7 +5,16 @@
   "description": "A horizontal navigation header that spans the top of the application. Contains the logo, app switcher (bento), primary navigation, and user actions.",
   "whenToUse": "At the top of every authenticated page in the app shell. To house the brand mark, app switcher, and primary global actions.",
   "whenNotToUse": "On marketing or landing pages (use a simpler header). On mobile-only views, consider a collapsible pattern.",
-  "acceptanceCriteria": [],
+  "acceptanceCriteria": [
+    "Outer element uses <header role=\"banner\">.",
+    "Inner content uses a 3-column grid (left, center, right) constrained to max-width 1440px.",
+    "Bento trigger exposes aria-expanded and aria-haspopup; activating it toggles the dropdown.",
+    "Bento dropdown closes on Escape and on outside click.",
+    "Icon-only ghost buttons in the account pill have aria-label.",
+    "My Work badge announces meaning (e.g. \"N unread\") to screen readers, not just the bare number.",
+    "When showSearch=false the centered search field is omitted and the layout remains balanced.",
+    "When showMyWork=false the My Work pill is omitted from the right region."
+  ],
   "dependencies": {
     "css": [
       "uds/components/nav-header.css"
@@ -14,36 +23,96 @@
       "uds/components/nav-header.js"
     ]
   },
-  "props": [],
-  "events": [],
-  "slots": [],
-  "states": [],
+  "props": [
+    {
+      "name": "showSearch",
+      "type": "boolean",
+      "default": true,
+      "description": "When true, renders the centered search field. Mirrors the Figma `Show Search Box` boolean on the udc-nav-header component set."
+    },
+    {
+      "name": "showMyWork",
+      "type": "boolean",
+      "default": true,
+      "description": "When true, renders the My Work pill (with notification badge) in the right region. Mirrors the Figma `Show My Work` boolean on the udc-nav-header component set."
+    }
+  ],
+  "events": [
+    {
+      "name": "bento-toggle",
+      "description": "Fires when the bento (app switcher) dropdown opens or closes. The trigger button toggles aria-expanded; the wrapper toggles data-open.",
+      "payload": "{ open: boolean }"
+    },
+    {
+      "name": "bento-dismiss",
+      "description": "Fires when the bento dropdown closes due to Escape key or outside click.",
+      "payload": "{ reason: 'escape' | 'outside-click' }"
+    }
+  ],
+  "slots": [
+    { "name": "brand",        "description": "Logo / brand mark on the far left. Figma binds this to surface/brand-bold." },
+    { "name": "bento",        "description": "App switcher trigger. Wraps icon + page title + chevron and expands the bento dropdown." },
+    { "name": "center",       "description": "Centered region — by default a search field. Hidden when showSearch=false." },
+    { "name": "actions",      "description": "Right-side primary actions. By default the My Work pill; hidden when showMyWork=false." },
+    { "name": "account",      "description": "Right-side account-actions pill containing three icon-only ghost buttons." },
+    { "name": "bento.tiles",  "description": "Row of nav tiles inside the bento dropdown (top of the panel)." },
+    { "name": "bento.list",   "description": "Main list of destinations inside the bento dropdown. Built on udc-list." },
+    { "name": "bento.footer", "description": "Footer row inside the bento dropdown (e.g. \"Customize menu\")." }
+  ],
+  "states": [
+    { "name": "default",    "description": "Bento dropdown closed; data-open absent on the wrapper; aria-expanded='false' on the trigger.", "hasVisual": true },
+    { "name": "bento-open", "description": "Bento dropdown visible; data-open='true' on the wrapper; aria-expanded='true' on the trigger.", "hasVisual": true },
+    { "name": "not-applicable", "description": "Figma does not define hover / focus / disabled states at the header level. Those states are inherited from nested components (search, button-ghost, badge, list).", "hasVisual": false }
+  ],
   "contentGuidelines": null,
-  "commonlyPairedWith": [],
+  "commonlyPairedWith": [
+    "search",
+    "button-ghost",
+    "badge",
+    "divider",
+    "list",
+    "icon-wrapper",
+    "nav-vertical"
+  ],
   "dosDonts": {
     "dos": [],
     "donts": []
   },
   "accessibility": {
     "keyboard": [
-      {
-        "key": "Tab",
-        "action": "Move focus through nav header items"
-      },
-      {
-        "key": "Enter / Space",
-        "action": "Activate focused button or link"
-      },
-      {
-        "key": "Escape",
-        "action": "Close the bento dropdown when open"
-      }
+      { "key": "Tab",            "action": "Move focus through nav header items" },
+      { "key": "Enter / Space",  "action": "Activate focused button or link" },
+      { "key": "Escape",         "action": "Close the bento dropdown when open" }
     ],
-    "screenReader": [],
-    "wcag": [],
+    "screenReader": [
+      { "trigger": "Page load",                          "announcement": "Outer container exposes role=\"banner\" so the header is identified as a landmark." },
+      { "trigger": "Focus moves to bento trigger",       "announcement": "Trigger exposes aria-haspopup and aria-expanded; expanded state is announced as the dropdown opens or closes." },
+      { "trigger": "Focus moves to an icon-only button", "announcement": "Each icon-only ghost button in the account pill exposes an aria-label describing its action." },
+      { "trigger": "My Work pill receives focus",        "announcement": "Badge count is exposed via accessible name (e.g. \"My Work, 5 unread\") rather than a bare number." }
+    ],
+    "wcag": [
+      { "criterion": "1.3.1", "level": "A",  "howMet": "Semantic <header> + landmark role; bento trigger is a real <button>; account actions are real buttons." },
+      { "criterion": "1.4.3", "level": "AA", "howMet": "Text and meaningful icon contrast meets 4.5:1 (text) / 3:1 (non-text). Currently unverified — see knownIssues for divergences between Figma intent and CSS." },
+      { "criterion": "2.1.1", "level": "A",  "howMet": "All interactive elements are keyboard-reachable in DOM order." },
+      { "criterion": "2.4.7", "level": "AA", "howMet": "Visible focus indicators on all focusable elements (bento trigger + sub-components)." },
+      { "criterion": "4.1.2", "level": "A",  "howMet": "Bento trigger exposes name/role/state; icon-only ghost buttons require aria-label." }
+    ],
     "contrast": []
   },
-  "knownIssues": [],
+  "knownIssues": [
+    "Figma's canonical udc-nav-header component set (5684:11340) reports authoring errors (\"Component set for node has existing errors\"); this is the underlying reason the component page is 🔴 blocked.",
+    "Bento chevron color: Figma binds icon-primary (#171717), but nav-header.css uses --uds-color-icon-secondary (#a3a3a3). Pending design decision.",
+    "Nav-tile font size in nav-header.css is hardcoded `10px`; Figma binds `font/size/sm` (12px). Both a token-usage violation and a sizing discrepancy.",
+    "Nav-tile background in nav-header.css is always --uds-color-surface-interactive-active; in Figma the default tile is transparent (interactive-none) and only the selected tile is interactive-active.",
+    "Bento footer in nav-header.css renders 14px / text-interactive; Figma renders 12px / text-primary. Pending design decision.",
+    "Bento dropdown shadow uses --uds-shadow-bento in CSS; Figma binds depth-300. Verify whether the two are aliased.",
+    "Bento button icon size in CSS is 20px; Figma's udc-icon-wrapper inside the bento button is Size=24px (default).",
+    "Logo glyph in examples/default.html is an `apartment` Material Symbol; Figma's canonical logo is a hand-drawn brand mark in surface/brand-bold (#023674).",
+    "examples/default.html omits aria-label on the three icon-only ghost buttons in the account pill.",
+    "nav-header.js handles Escape only when focus is on the trigger; Escape inside the open panel does not close the panel.",
+    "Bento dropdown markup omits the two udc-divider-horizontal rows that Figma includes (between tiles and list, and between list and footer).",
+    "Frame 31 max-width (1440) is bound in Figma to `content-container/max-width-nav-container` — a collection that is NOT currently in the imported token collections. CSS bakes 1440 as a literal."
+  ],
   "performance": null,
   "motion": null,
   "responsive": null,
@@ -54,7 +123,7 @@
     "developer": "Unassigned"
   },
   "draft": false,
-  "figmaNodeId": "5586:8858",
+  "figmaNodeId": "5684:11340",
   "figmaPageNodeId": "5373-972",
   "storybookSlug": null,
   "_legacyAccessibilityNotes": "Use <header role=\"banner\"> as the outer element. The bento button should have aria-expanded and aria-haspopup."
