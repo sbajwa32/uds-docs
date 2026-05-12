@@ -223,8 +223,6 @@ Below the link cards: a 1px divider (`border-tertiary`) full-width, then the MET
 
 | Label | Value | Font |
 |---|---|---|
-| `DESIGNER` | `<owner.designer>` from `spec.json` | Inter Semi Bold 16, `text-primary` |
-| `DEVELOPER` | `<owner.developer>` from `spec.json` | Inter Semi Bold 16, `text-primary` |
 | `CSS` | `uds/components/<id>/<id>.css` (on-disk path) | Geist Mono Regular 13, `text-primary` |
 | `SPEC JSON` | `uds/components/<id>/spec.json` | Geist Mono Regular 13, `text-primary` |
 | `GENERATED` | ISO timestamp the agent stamped when this card was last rebuilt, e.g. `2026-05-12 15:43 UTC` | Geist Mono Regular 13, `text-secondary` |
@@ -236,6 +234,15 @@ Every meta-row label uses Geist Mono Medium 11 uppercase, +8% tracking,
 provenance marker, NOT a content field from `spec.json`. The card
 builder MUST stamp it from the system clock at build time (UTC). Do not
 hand-edit; rebuild the card to refresh.
+
+The `DESIGNER` and `DEVELOPER` fields were also part of the meta-row in
+earlier revisions, sourced from `spec.json#owner.{designer,developer}`.
+They were removed on 2026-05-12 — the team isn't actively maintaining
+those values (every component reads `Unassigned` and would stay that way
+for the foreseeable future). The schema field `spec.json#owner` is
+preserved for now in case the team wants to start tracking later, but it
+isn't rendered on the card. Don't reintroduce these fields without a
+design decision.
 
 ## Section content rules
 
