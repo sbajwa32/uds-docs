@@ -18,7 +18,12 @@
 
     trigger.addEventListener('click', function (e) { e.stopPropagation(); toggle(); });
     document.addEventListener('click', function (e) { if (!el.contains(e.target)) toggle(false); });
-    trigger.addEventListener('keydown', function (e) { if (e.key === 'Escape') toggle(false); });
+    document.addEventListener('keydown', function (e) {
+      if (e.key !== 'Escape') return;
+      if (panel.getAttribute('data-open') !== 'true') return;
+      toggle(false);
+      trigger.focus();
+    });
   }
 
   window.UDS = window.UDS || {};

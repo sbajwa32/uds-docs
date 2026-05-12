@@ -3,6 +3,7 @@
 import { esc } from '../../../docs/helpers/esc.js';
 export default {
       controls: [
+        { key: 'titleOnly', label: 'Title-only mode (no bento trigger)', type: 'checkbox', default: false },
         { key: 'showSearch', label: 'Show search', type: 'checkbox', default: true },
         { key: 'showMyWork', label: 'Show My Work', type: 'checkbox', default: true },
         { key: 'showBento', label: 'Show bento dropdown', type: 'checkbox', default: false },
@@ -14,27 +15,32 @@ export default {
         var hl = ['<div class="udc-nav-header">'];
         hl.push('  <div class="udc-nav-header__left">');
         hl.push('    <div class="udc-nav-logo"><span class="material-symbols-outlined" style="font-size:32px;color:var(--uds-color-icon-interactive);">apartment</span></div>');
-        hl.push('    <div class="udc-nav-bento-wrapper">');
-        hl.push('      <button class="udc-nav-title-area" aria-expanded="' + (s.showBento ? 'true' : 'false') + '">');
-        hl.push('        <span class="material-symbols-outlined" style="color:var(--uds-color-icon-interactive);">dashboard</span>');
-        hl.push('        ' + appName);
-        hl.push('        <span class="material-symbols-outlined udc-nav-title-area__chevron">keyboard_arrow_down</span>');
-        hl.push('      </button>');
-        if (s.showBento) {
-          hl.push('      <div class="udc-nav-bento" data-open="true" style="position:relative;top:auto;">');
-          if (s.showTiles) {
-            hl.push('        <div class="udc-nav-bento__tiles">');
-            hl.push('          <a class="udc-nav-tile" href="javascript:void(0)"><span class="material-symbols-outlined">home</span>Transaction</a>');
-            hl.push('          <a class="udc-nav-tile" href="javascript:void(0)"><span class="material-symbols-outlined">assignment</span>Leads</a>');
+        if (s.titleOnly) {
+          hl.push('    <div class="udc-nav-title-area" data-title-only="true">' + appName + '</div>');
+        } else {
+          hl.push('    <div class="udc-nav-bento-wrapper">');
+          hl.push('      <button class="udc-nav-title-area" aria-expanded="' + (s.showBento ? 'true' : 'false') + '" aria-haspopup="true">');
+          hl.push('        <span class="material-symbols-outlined" style="color:var(--uds-color-icon-interactive);">dashboard</span>');
+          hl.push('        ' + appName);
+          hl.push('        <span class="material-symbols-outlined udc-nav-title-area__chevron">keyboard_arrow_down</span>');
+          hl.push('      </button>');
+          if (s.showBento) {
+            hl.push('      <div class="udc-nav-bento" data-open="true" style="position:relative;top:auto;">');
+            if (s.showTiles) {
+              hl.push('        <div class="udc-nav-bento__tiles">');
+              hl.push('          <a class="udc-nav-tile" href="javascript:void(0)"><span class="material-symbols-outlined">home</span>Transaction</a>');
+              hl.push('          <a class="udc-nav-tile" href="javascript:void(0)"><span class="material-symbols-outlined">assignment</span>Leads</a>');
+              hl.push('        </div>');
+              hl.push('        <hr class="udc-divider-horizontal" data-padding="sm" />');
+            }
+            hl.push('        <div class="udc-nav-bento__list">');
+            hl.push('          <button class="udc-nav-button" aria-current="page"><span class="material-symbols-outlined">space_dashboard</span><span class="udc-nav-button__label">Dashboard</span></button>');
+            hl.push('          <button class="udc-nav-button"><span class="material-symbols-outlined">book</span><span class="udc-nav-button__label">Leasing / CRM</span></button>');
             hl.push('        </div>');
+            hl.push('      </div>');
           }
-          hl.push('        <div class="udc-nav-bento__list">');
-          hl.push('          <button class="udc-nav-button" aria-current="page"><span class="material-symbols-outlined">space_dashboard</span><span class="udc-nav-button__label">Dashboard</span></button>');
-          hl.push('          <button class="udc-nav-button"><span class="material-symbols-outlined">book</span><span class="udc-nav-button__label">Leasing / CRM</span></button>');
-          hl.push('        </div>');
-          hl.push('      </div>');
+          hl.push('    </div>');
         }
-        hl.push('    </div>');
         hl.push('  </div>');
         if (s.showSearch) {
           hl.push('  <div class="udc-nav-header__center">');
@@ -49,9 +55,9 @@ export default {
           hl.push('    <button class="udc-nav-mywork"><span class="material-symbols-outlined">notifications_active</span> My Work <span class="udc-badge" data-variant="warning" style="width:24px;height:24px;padding:0;display:inline-flex;align-items:center;justify-content:center;">5</span></button>');
         }
         hl.push('    <div class="udc-nav-account">');
-        hl.push('      <button class="udc-button-ghost" data-icon-only><span class="material-symbols-outlined">notifications</span></button>');
-        hl.push('      <button class="udc-button-ghost" data-icon-only><span class="material-symbols-outlined">settings</span></button>');
-        hl.push('      <button class="udc-button-ghost" data-icon-only><span class="material-symbols-outlined">account_circle</span></button>');
+        hl.push('      <button class="udc-button-ghost" data-icon-only aria-label="Notifications"><span class="material-symbols-outlined">notifications</span></button>');
+        hl.push('      <button class="udc-button-ghost" data-icon-only aria-label="Settings"><span class="material-symbols-outlined">settings</span></button>');
+        hl.push('      <button class="udc-button-ghost" data-icon-only aria-label="Account"><span class="material-symbols-outlined">account_circle</span></button>');
         hl.push('    </div>');
         hl.push('  </div>');
         hl.push('</div>');
@@ -79,8 +85,8 @@ export default {
         }
         rL.push('      </div>');
         rL.push('      <div className="udc-nav-header__right">');
-        rL.push('        <button className="udc-button-ghost" data-icon-only><span className="material-symbols-outlined">notifications</span></button>');
-        rL.push('        <button className="udc-button-ghost" data-icon-only><span className="material-symbols-outlined">account_circle</span></button>');
+        rL.push('        <button className="udc-button-ghost" data-icon-only aria-label="Notifications"><span className="material-symbols-outlined">notifications</span></button>');
+        rL.push('        <button className="udc-button-ghost" data-icon-only aria-label="Account"><span className="material-symbols-outlined">account_circle</span></button>');
         rL.push('      </div>');
         rL.push('    </div>');
         rL.push('  );');
@@ -92,8 +98,8 @@ export default {
         vL.push('      <div class="udc-nav-logo"><span class="material-symbols-outlined">apartment</span><span class="udc-nav-logo__text">Boardroom</span></div>');
         vL.push('    </div>');
         vL.push('    <div class="udc-nav-header__right">');
-        vL.push('      <button class="udc-button-ghost" data-icon-only><span class="material-symbols-outlined">notifications</span></button>');
-        vL.push('      <button class="udc-button-ghost" data-icon-only><span class="material-symbols-outlined">account_circle</span></button>');
+        vL.push('      <button class="udc-button-ghost" data-icon-only aria-label="Notifications"><span class="material-symbols-outlined">notifications</span></button>');
+        vL.push('      <button class="udc-button-ghost" data-icon-only aria-label="Account"><span class="material-symbols-outlined">account_circle</span></button>');
         vL.push('    </div>');
         vL.push('  </div>');
         vL.push('</template>');
