@@ -100,7 +100,9 @@
     "contrast": []
   },
   "knownIssues": [
-    "Figma's canonical udc-nav-header component set (5684:11340) reports authoring errors (\"Component set for node has existing errors\"); this is the underlying reason the component page is 🔴 blocked.",
+    "Authoring errors (\"Component set for node has existing errors\") originate from the udc-badge component set (5794:7948) on the badge Figma page. They surface during deep inspection of nav-header because the My Work pill nests a udc-badge instance. The canonical udc-nav-header set (5684:11340) itself now reads cleanly. The 🔴 blocked status on the nav-header page persists for the remaining knownIssues entries below.",
+    "Figma sub-component set was renamed from `_udc-nav-header_bentobutton` to `_udc-nav-header_title-area` (id 5586:8858 preserved). The doc-site retains the `bento-button`/`bento-toggle`/`bento-dismiss` vocabulary because the canonical anatomy pins `Title Only=False`, which is the same pill anatomy as before. A future contract change could mirror the Figma renaming (e.g. a `title-area` slot + a `titleOnly` boolean prop). Until that design call lands, the doc-site terminology intentionally diverges.",
+    "Figma's `_udc-nav-header_title-area` set exposes a `Title Only=True` variant (132×48, paragraph/xl-bold, no leading icon, no chevron, transparent pill chrome, radius 8). The doc-site canonical anatomy pins `Title Only=False` and does not expose this bare-title mode. Consider whether to surface a `titleOnly` boolean prop on the public nav-header API.",
     "Bento chevron color: Figma binds icon-primary (#171717), but nav-header.css uses --uds-color-icon-secondary (#a3a3a3). Pending design decision.",
     "Nav-tile font size in nav-header.css is hardcoded `10px`; Figma binds `font/size/sm` (12px). Both a token-usage violation and a sizing discrepancy.",
     "Nav-tile background in nav-header.css is always --uds-color-surface-interactive-active; in Figma the default tile is transparent (interactive-none) and only the selected tile is interactive-active.",
