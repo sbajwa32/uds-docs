@@ -31,21 +31,26 @@ Always work on the testbed first unless the user explicitly says "mainline". Tok
 
 ```
 udc-<id>-page (FRAME, 2800w, hug height, fill: surface-subtle)
+├── status-accent (RECTANGLE, 2800×8, status-tinted gradient — wrapper-level)
 ├── content (FRAME, FILL w, hug h, autolayout V, gap: space/1000, padding: space/800)
-│   ├── HEADER          (dark card)
+│   ├── HEADER          (light card, taller padding)
 │   ├── ANATOMY         (light card)  ← optional, omit for placeholder pages
 │   ├── VARIANTS        (light card)  ← omit if no inspectable component sets
 │   ├── SUB-COMPONENTS  (light card)  ← omit if no underscored components
 │   ├── USAGE           (light card)
 │   ├── ACCESSIBILITY   (light card)  ← optional, requires accessibility.keyboard
-│   └── META            (dark card)
+│   └── META            (light card, taller padding)
 ```
 
 The page is positioned at `(0, 0)`. Component sets are reparented INTO the appropriate cards — never duplicated, never left at top level.
 
-## Card recipes
+## Card recipe (universal)
 
-### Light card (ANATOMY, VARIANTS, SUB-COMPONENTS, USAGE, ACCESSIBILITY)
+After the 2026-05-12 design revision, **every card on every component
+page uses the same light-surface recipe.** The earlier "dark card"
+treatment for HEADER and META was retired because translucent-white text
+on `surface-xxbold` failed WCAG AA contrast in several theme modes (see
+the accessibility note below for context).
 
 | Property | Token / value |
 |---|---|
@@ -53,23 +58,30 @@ The page is positioned at `(0, 0)`. Component sets are reparented INTO the appro
 | Stroke | 1px `uds/color/border/border-tertiary` |
 | Radius | `uds/border/radius/container-xl` (24px) |
 | Effects | Dual drop shadow: `0,1,3,0 @ 4%` + `0,12,32,-4 @ 5%` |
-| Inner padding | `uds/space/800` (64px) |
-| Inner item gap | `uds/space/400` (32px) |
+| Inner padding (most cards) | `uds/space/800` (64px) |
+| Inner padding (HEADER + META) | `uds/space/1000` (80px) — taller because they carry the bookending content |
+| Inner item gap (most cards) | `uds/space/400` (32px) |
+| Inner item gap (HEADER inner row) | `uds/space/600` (48px) between left column and hero preview |
+| Inner item gap (META inner) | `uds/space/500` (40px) between sec-head / links-row / divider / meta-row |
 | ClipsContent | true |
 
-### Dark card (HEADER, META)
+HEADER additionally has an 8px-tall top accent strip in
+`uds/color/border/<status>` (gradient: 0.3 → 1 → 0.3 alpha) directly
+above the inner row, just inside the rounded-corner clip. The 2800×8
+wrapper-level `status-accent` strip at the top of `udc-<id>-page` and
+the 2672×4 HEADER inner strip are both intentional — the outer strip is
+the page-level status marker, the inner strip is the card-level marker.
 
-| Property | Token / value |
-|---|---|
-| Fill | `uds/color/surface/surface-xxbold` |
-| Stroke | 1px `uds/color/border/border-inverse` |
-| Radius | `uds/border/radius/container-xl` (24px) |
-| Effects | Dual drop shadow: `0,4,12,0 @ 15%` + `0,24,60,-8 @ 25%` |
-| Inner padding | `uds/space/1000` (80px) |
-| Inner item gap | `uds/space/600` (HEADER) / `uds/space/600` (META) |
-| ClipsContent | true |
+### Why light cards everywhere
 
-HEADER additionally has an 8px-tall top accent strip in `uds/color/border/<status>` (gradient: 0.3 → 1 → 0.3 alpha) directly above the inner row.
+The first iteration paired `surface-xxbold` (near-black) HEADER/META
+cards with `text-inverse` (near-white) text. That works in light mode
+but inverts incorrectly under several theme modes (ResMan Dark,
+Inhabit Light's amber surface variants) and produces text below 4.5:1
+contrast against the actual rendered surface color. Settling on
+`surface-main` + `text-primary` for every card moves the design within
+the AA-safe surface tokens documented in
+`uds-token-architecture.mdc#accessibility-contract`.
 
 ## Numbered eyebrow (every section)
 
@@ -86,7 +98,7 @@ Identical pattern across all 7 sections. The number is the only thing that chang
 | Number color | `uds/color/text/<status>` (e.g. `text-warning` for in-progress) |
 | Vertical bar | 1×32-40 rectangle, fill `uds/color/border/<status>` at 0.4-0.5 opacity |
 | Kicker | Geist Mono Medium 11-12, +8% tracking, `text-<status>` |
-| Sub-label | Geist Mono Regular 11, `text-secondary` (light cards) or white at 50% (dark cards) |
+| Sub-label | Geist Mono Regular 11, `text-secondary` (every section, since all cards are light) |
 
 Kicker text per section:
 
@@ -102,21 +114,27 @@ Kicker text per section:
 
 ## Section titles
 
-Inter Bold, sits below the eyebrow.
+Inter Bold, sits below the eyebrow. All titles bind to `text-primary`
+(every card is now light).
 
 | Section | Default title (override per JSON if richer is available) |
 |---|---|
-| HEADER | The component title (e.g. `Button`), 80–112px, `text-primary` (light card) or `text-inverse` (dark card), -2 to -3% tracking |
+| HEADER | The component title (e.g. `Button`), 80–112px, `text-primary`, -2 to -3% tracking |
 | ANATOMY | "States" or pulled from `spec.json#states[].name` summary, 32px |
 | VARIANTS | "<n> variants" using the natural-language variant list (e.g. `Primary, secondary, and ghost`), 32px |
 | SUB-COMPONENTS | The composition pattern in plain English (e.g. `Button groups`), 32px |
 | USAGE | `When to use, when not to`, 32px |
 | ACCESSIBILITY | `Keyboard & screen reader`, 32px |
-| META | `Where to go from here`, 36px, `text-inverse` |
+| META | `Where to go from here`, 36px, `text-primary` |
 
 ## Status → token map
 
-Status comes from `uds-docs/uds/components/<id>/status.json` (`current` field) as the primary source. The page-name stoplight prefix in the Figma file is a secondary signal — they should agree, but if they disagree, use the JSON status and surface the mismatch to the user (do not auto-correct the Figma page name; that's [`sync-figma-component-status`](../skills/sync-figma-component-status/SKILL.md)'s job).
+Per user direction "Figma is always the source of truth," status is read
+from the Figma page-name stoplight prefix and treated as authoritative;
+`uds-docs/uds/components/<id>/status.json` is the cross-check and gets
+flagged via [`sync-figma-component-status`](../skills/sync-figma-component-status/SKILL.md)
+if it disagrees. Earlier versions of this rule read status the other
+way; that was inverted on 2026-05-12.
 
 The mapping is:
 
@@ -128,7 +146,10 @@ The mapping is:
 | 🟢 | `production` | `PRODUCTION READY` | `-success` |
 | ⚫ / ⚫️ | `placeholder` | `NOT STARTED` | `-tertiary` (no specific status color, all neutral) |
 
-For placeholder pages: HEADER stays dark, but the eyebrow number, top accent strip, kicker, and pill use neutral tokens (`border-tertiary`, `text-secondary`) instead of a status color. Don't fake an orange/green for placeholder.
+For placeholder pages: every card stays light just like a status-colored
+component page, but the eyebrow number, top accent strip, kicker, and
+status pill use neutral tokens (`border-tertiary`, `text-secondary`)
+instead of a status color. Don't fake an orange/green for placeholder.
 
 ## HEADER right panel ("hero preview")
 
@@ -148,10 +169,14 @@ For placeholder pages with no inspectable component, the hero shows a "no compon
 Horizontal auto-layout, items in this exact order:
 
 1. **Status pill** — `surface-<status>` at 0.18 opacity bg, 1px `border-<status>` stroke, full-radius. Contents: 8px ellipse `icon-<status>`, Geist Mono Medium 12 label (uppercase, +8% tracking, `text-<status>`).
-2. **CSS chip** — translucent white at 6% bg, 10% white stroke, full-radius. Contents: Geist Mono Regular 12 `text-inverse` at 70% opacity, value `uds/components/<id>.css`.
-3. **Spacer** (auto-fill).
-4. **Docs link button** — solid white pill, Inter Semi Bold 13 in dark, Geist Mono Bold 13 `↗` arrow.
-5. **Storybook link button** — translucent (8% white bg, 20% white stroke), Inter Semi Bold 13 white, Geist Mono Bold 13 `↗`.
+2. **CSS chip** — `surface-subtle` bg, 1px `border-tertiary` stroke, full-radius. Contents: Geist Mono Regular 12 `text-secondary`, value `uds/components/<id>/<id>.css` (the on-disk path).
+3. **Spacer** (auto-fill, takes remaining space).
+
+Earlier versions of this rule defined two trailing items — a "View docs"
+button and a "Storybook" button — in this row. Both were removed on
+2026-05-12 because the links didn't work and there was already a richer
+treatment for the same destinations in the META section's link cards.
+Don't add new trailing items here without a design conversation.
 
 ## META link cards
 
@@ -159,23 +184,37 @@ Two prominent cards in a HORIZONTAL auto-layout, item gap `space/300` (24px). Bo
 
 | Card | Style | Kicker | Title (Inter Bold 28, -1%) | URL (Geist Mono Regular 12) |
 |---|---|---|---|---|
-| Primary (UDS Docs) | Solid white, no stroke, `radius/container-lg` | `SPEC` | `UDS Docs page` | `https://uds-docs/?#<id>` |
-| Secondary (Storybook) | 4% white bg, 15% white stroke | `CODE` | `Open in Storybook` | `https://storybook/?path=/story/<id> (placeholder)` |
+| Primary (UDS Docs) | `surface-subtle` fill, 1px `border-tertiary` stroke, `radius/container-lg` | `SPEC` | `UDS Docs page` | `https://udsdocs.com/?#<id>` |
+| Secondary (Storybook) | `surface-subtle` fill, 1px `border-tertiary` stroke, `radius/container-lg` | `CODE` | `Open in Storybook` | `https://storybook/?path=/story/<id> (placeholder)` |
 
-Both cards have a top row with kicker on the left and a Geist Mono Bold 22 `↗` on the right.
+Both cards have a top row with kicker on the left and a Geist Mono Bold
+22 `↗` on the right. Title text binds to `text-primary`; URL text binds
+to `text-secondary`. The 2026-05-12 design revision unified both cards
+to the same subtle treatment because the previous "solid white vs
+translucent white on dark surface" pairing relied on the (now retired)
+dark META card.
 
-Below the link cards: a 1px divider (white at 8%) full-width, then the META meta-row with these fields (in this order, gap `space/800`):
+**Docs hostname:** `udsdocs.com` (the live UDS doc site). Earlier rules
+referenced `uds-docs/` as a placeholder hostname; replace with
+`udsdocs.com` wherever it appears.
+
+Below the link cards: a 1px divider (`border-tertiary`) full-width, then the META meta-row with these fields (in this order, gap `space/600`):
 
 | Label | Value | Font |
 |---|---|---|
-| `DESIGNER` | `<owner.designer>` from `spec.json` | Inter Semi Bold 16 |
-| `DEVELOPER` | `<owner.developer>` from `spec.json` | Inter Semi Bold 16 |
-| `CSS` | `uds/components/<id>/<id>.css` | Geist Mono Regular 13 |
-| `SPEC JSON` | `uds/components/<id>/spec.json` | Geist Mono Regular 13 |
+| `DESIGNER` | `<owner.designer>` from `spec.json` | Inter Semi Bold 16, `text-primary` |
+| `DEVELOPER` | `<owner.developer>` from `spec.json` | Inter Semi Bold 16, `text-primary` |
+| `CSS` | `uds/components/<id>/<id>.css` (on-disk path) | Geist Mono Regular 13, `text-primary` |
+| `SPEC JSON` | `uds/components/<id>/spec.json` | Geist Mono Regular 13, `text-primary` |
+| `GENERATED` | ISO timestamp the agent stamped when this card was last rebuilt, e.g. `2026-05-12 15:43 UTC` | Geist Mono Regular 13, `text-secondary` |
 | (spacer fill) |  |  |
 | Status pill | Same recipe as HEADER's status pill | Geist Mono Medium 12 |
 
-Every label uses Geist Mono Medium 11 uppercase, +8% tracking, white at 50%.
+Every meta-row label uses Geist Mono Medium 11 uppercase, +8% tracking,
+`text-secondary`. The `GENERATED` field was added on 2026-05-12 — it's a
+provenance marker, NOT a content field from `spec.json`. The card
+builder MUST stamp it from the system clock at build time (UTC). Do not
+hand-edit; rebuild the card to refresh.
 
 ## Section content rules
 
