@@ -3,7 +3,7 @@ name: figma-component-card-audit
 description: Audits one or all UDS component pages in a Figma file against the canonical component-card spec. Verifies structure, token bindings, status pill, link cards, content match against uds-docs/uds/components/<id>/spec.json. Read-only — never modifies files. Use when the user asks "audit the figma component cards", "verify the button page in figma", "did the rollout work", or after any agent run that touched the component-card layout.
 model: inherit
 readonly: true
-lastUpdated: 2026-05-12T18:41:50Z
+lastUpdated: 2026-05-12T19:49:37Z
 ---
 
 # Figma Component Card Audit
@@ -18,7 +18,7 @@ This subagent is read-only by design — it complies with [`uds-figma-write-safe
 |---|---|
 | `componentId` (e.g. `button`, `text-input`) | Audit only that one page |
 | `all` or no input | Audit every component page in the file (any page name with a stoplight prefix) |
-| `fileKey` | Defaults to the Testbed (`HuQdX4txzccYX5GEnFnxAn`); user can override to mainline (`1XJoUJgtNpw4R0IIT3VjoK`) |
+| `fileKey` | Always `1XJoUJgtNpw4R0IIT3VjoK` (`UDS Components`) |
 
 ## Procedure
 

@@ -718,10 +718,11 @@ async function buildOne(CONFIG) {
       cell.setBoundVariable('itemSpacing', V.space['200']);
       cell.paddingTop = 48; cell.paddingBottom = 24; cell.paddingLeft = 24; cell.paddingRight = 24;
       cell.fills = [sSurfaceSubtle()];
-      // ANATOMY state cells use radius/container-md (12) per mainline _TEMPLATE
-      // (id 7481:14). Inner stage cards across ANATOMY/VARIANTS/SUB-COMPONENTS
-      // all use md; only the outer wrappers (HEADER, USAGE columns, META link
-      // cards, the keyboard-table) use lg.
+      // ANATOMY state cells use radius/container-md (12) per the canonical
+      // _TEMPLATE page (UDS Components, id 7481:14). Inner stage cards
+      // across ANATOMY/VARIANTS/SUB-COMPONENTS all use md; only the outer
+      // wrappers (HEADER, USAGE columns, META link cards, the keyboard-
+      // table) use lg.
       for (const r of ['topLeftRadius','topRightRadius','bottomLeftRadius','bottomRightRadius']) cell.setBoundVariable(r, V.radius.md);
 
       // Instance of the state variant
@@ -775,13 +776,13 @@ async function buildOne(CONFIG) {
       'Each variant shows the full state matrix — destructive on/off, sizes, icon options, and interaction states.'
     );
 
-    // variants-row — HORIZONTAL with FIXED-width stages, even-split across the
-    // inner card width (2544) minus 32px gaps. This matches the mainline
-    // _TEMPLATE page (id 7481:14, frame 7687:46), where stages live side-by-
-    // side rather than stacked. Earlier iteration used VERTICAL/FILL; that
-    // contradicted the template and lost the variant-matrix-at-a-glance
-    // affordance the design relies on. See references/mainline-rollout-drift-
-    // report.md drift #1 for context.
+    // variants-row — HORIZONTAL with FIXED-width stages, even-split across
+    // the inner card width (2544) minus 32px gaps. This matches the
+    // canonical _TEMPLATE page (UDS Components, id 7481:14, frame 7687:46),
+    // where stages live side-by-side rather than stacked. Earlier iteration
+    // used VERTICAL/FILL; that contradicted the template and lost the
+    // variant-matrix-at-a-glance affordance the design relies on. See
+    // references/card-rollout-drift-report.md drift #1 for context.
     const row = figma.createAutoLayout('HORIZONTAL', { name: 'variants-row', itemSpacing: 32, fills: [] });
     inner.appendChild(row);
     row.layoutSizingHorizontal = 'FILL';
@@ -841,10 +842,11 @@ async function buildOne(CONFIG) {
     );
 
     // subs-row — HORIZONTAL with FIXED-width stages, mirroring VARIANTS.
-    // Mainline _TEMPLATE (id 7481:14, frame 7687:70) places sub-components
-    // side-by-side rather than stacked. See references/mainline-rollout-
-    // drift-report.md drift #2 for the prior VERTICAL/FILL regression and
-    // why HORIZONTAL/FIXED is the correct match.
+    // The canonical _TEMPLATE (UDS Components, id 7481:14, frame 7687:70)
+    // places sub-components side-by-side rather than stacked. See
+    // references/card-rollout-drift-report.md drift #2 for the prior
+    // VERTICAL/FILL regression and why HORIZONTAL/FIXED is the correct
+    // match.
     const row = figma.createAutoLayout('HORIZONTAL', { name: 'subs-row', itemSpacing: 32, fills: [] });
     inner.appendChild(row);
     row.layoutSizingHorizontal = 'FILL';
@@ -1012,10 +1014,10 @@ async function buildOne(CONFIG) {
     );
 
     // Table: VERTICAL, gap 0, no outer stroke (rows carry their own bottom
-    // borders). Mainline _TEMPLATE (id 7481:14, frame 7688:42) wraps the
-    // table in a 16-radius (container-lg) frame so the corners round
-    // visually around the row stack. clipsContent ensures the rounded
-    // corners actually mask the row borders at the bottom edge.
+    // borders). The canonical _TEMPLATE (UDS Components, id 7481:14, frame
+    // 7688:42) wraps the table in a 16-radius (container-lg) frame so the
+    // corners round visually around the row stack. clipsContent ensures
+    // the rounded corners actually mask the row borders at the bottom edge.
     const table = figma.createAutoLayout('VERTICAL', { name: 'keyboard-table', itemSpacing: 0, fills: [] });
     inner.appendChild(table);
     table.layoutSizingHorizontal = 'FILL';

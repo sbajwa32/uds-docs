@@ -1,7 +1,7 @@
 ---
 name: figma-component-card
 description: Build or update the canonical "component card" canvas layout on a UDS component page in Figma. Use when the user says "build/update the figma page for X", "regenerate the component cards", "scaffold the figma page for <component>", "apply the component card pilot to <component>", or "roll out the component card design across the library". Produces the seven-section card layout (HEADER, ANATOMY, VARIANTS, SUB-COMPONENTS, USAGE, ACCESSIBILITY, META) per `.cursor/rules/uds-figma-component-card.mdc`.
-lastUpdated: 2026-05-12T19:30:49Z
+lastUpdated: 2026-05-12T19:49:37Z
 ---
 
 # UDS Figma Component Card Skill
@@ -47,7 +47,7 @@ Ask the user (via `AskQuestion`) for any of these that aren't already obvious fr
 
 | Input | Required | Notes |
 |---|---|---|
-| `fileKey` | Yes | Default to the testbed (`HuQdX4txzccYX5GEnFnxAn`). Only target mainline (`1XJoUJgtNpw4R0IIT3VjoK`) on explicit user request — and per [`uds-figma-write-safety.mdc`](../../rules/uds-figma-write-safety.mdc) the user must name "mainline" specifically. |
+| `fileKey` | Yes | Always `1XJoUJgtNpw4R0IIT3VjoK` (`UDS Components`). Per [`uds-figma-write-safety.mdc`](../../rules/uds-figma-write-safety.mdc) the user must name the target component(s) explicitly before the builder writes to this file. |
 | `componentId` | Yes | Kebab-case (e.g. `button`, `text-input`). Must match an existing page in the file AND a directory at `uds-docs/uds/components/<id>/` containing `spec.json`. |
 | Scope | Default: pilot | Single component → build that one page; `all` → build every component page in the file with a stoplight prefix. |
 
@@ -60,7 +60,7 @@ For a batch run, do NOT iterate one component at a time across many `use_figma` 
 3. **Read the rule.** [`uds-figma-component-card.mdc`](../../rules/uds-figma-component-card.mdc).
 4. **Read the gotchas.** [`references/gotchas.md`](references/gotchas.md). Skip any of those and you will waste 30 turns relearning them.
 5. **Read the token map.** [`references/token-map.json`](references/token-map.json). Hardcoded library variable keys for every UDS token used by the builder. Do not look these up dynamically per-run; they are stable.
-6. **Read the `📐 _TEMPLATE` page as a design reference (NOT a runtime input).** The template page documents every section and slot a card can contain. The builder stamps from the hardcoded recipe in [`references/build-card.js`](references/build-card.js) — it never opens the template page. If the rolled-out cards drift from the template, that's a recipe bug to fix in code (see [`references/mainline-rollout-drift-report.md`](references/mainline-rollout-drift-report.md) for the prior rollout's drift catalog). Run `bash scripts/audit-figma-card-template.sh` before any rollout to verify the recipe still matches the snapshot at `.cursor/figma/state/card-template.snapshot.json`.
+6. **Read the `📐 _TEMPLATE` page as a design reference (NOT a runtime input).** The template page in `UDS Components` documents every section and slot a card can contain. The builder stamps from the hardcoded recipe in [`references/build-card.js`](references/build-card.js) — it never opens the template page. If the rolled-out cards drift from the template, that's a recipe bug to fix in code (see [`references/card-rollout-drift-report.md`](references/card-rollout-drift-report.md) for the prior rollout's drift catalog). Run `bash scripts/audit-figma-card-template.sh` before any rollout to verify the recipe still matches the snapshot at `.cursor/figma/state/card-template.snapshot.json`.
 7. **Read the spec and status.** `uds-docs/uds/components/<id>/spec.json` and `uds-docs/uds/components/<id>/status.json`. Cross-check that `status.json#current` matches the Figma page's stoplight prefix; if not, surface the mismatch and stop — that's a [`sync-figma-component-status`](../sync-figma-component-status/SKILL.md) job, not this one.
 
 ## The build recipe (single `use_figma` call per component)
@@ -90,7 +90,7 @@ The builder accepts (at the top of the script):
 
 ```js
 const CONFIG = {
-  fileKey: 'HuQdX4txzccYX5GEnFnxAn',         // testbed
+  fileKey: '1XJoUJgtNpw4R0IIT3VjoK',         // UDS Components
   pageId: '5055:139',                          // the component's Figma page id
   componentId: 'button',                       // kebab-case
   status: 'in-progress',                       // mapped from page-name emoji
@@ -151,7 +151,7 @@ If any batch errors, the next batch starts from where it left off — don't rest
 
 ## DO NOT
 
-- **Don't write to the mainline `UDS Components` file** without explicit user approval.
+- **Don't write to `UDS Components`** without explicit user direction naming the target component(s) per [`uds-figma-write-safety.mdc`](../../rules/uds-figma-write-safety.mdc).
 - **Don't reorder card sections.** HEADER → ANATOMY → VARIANTS → SUB-COMPONENTS → USAGE → ACCESSIBILITY → META, always.
 - **Don't renumber eyebrows.** If a section is omitted, the next section keeps its assigned number — the sequence has gaps.
 - **Don't use `Read` to verify Figma screenshots.** The Cursor `Read` tool aggressively caches by some opaque key; Figma screenshots routinely show stale content. Use the inline `await node.screenshot()` pattern documented in [gotchas.md](references/gotchas.md), or pipe the screenshot URL through a fresh-named tmp file and read with a UUID filename. Honestly, just trust the structural inspection from `use_figma` and only screenshot at the end.
