@@ -29,7 +29,7 @@ from pathlib import Path
 
 COMPONENTS_DIR = Path('uds-docs/uds/components')
 INDEX_HTML = Path('uds-docs/index.html')
-BASELINE_CONFIG = Path('.cursor/audit-baseline.json')
+BASELINE_CONFIG = Path('scripts/audit-baseline.json')
 
 # Components whose drift is grandfathered. Empty if no baseline file present.
 TOLERATED = set()
@@ -209,7 +209,7 @@ if failures:
     print('')
     print('If the drift is legitimate (e.g. cross-component class reuse like nav-header')
     print('listing .udc-nav-button defined in nav-vertical.css), add the component id to')
-    print('.cursor/audit-baseline.json audit-css-api-table.toleratedComponents — but only')
+    print('scripts/audit-baseline.json audit-css-api-table.toleratedComponents — but only')
     print('after explicit user direction.')
     sys.exit(1)
 

@@ -2,7 +2,7 @@
 # audit-changelog-currency.sh
 #
 # For each component under uds-docs/uds/components/<id>/, fail if any commit
-# after the audit baseline (.cursor/audit-baseline.json) touched a source
+# after the audit baseline (scripts/audit-baseline.json) touched a source
 # file (CSS, JS, spec.json, examples/**, impl.json, playground.js,
 # status.json) WITHOUT also touching changelog.json — i.e., the source files
 # have moved ahead of the per-component changelog.
@@ -14,14 +14,14 @@
 # Grandfathering: commits at or before the baseline SHA are ignored, so
 # pre-existing un-changelog'd state does not fail CI. To re-baseline (e.g.
 # after a sweep that backfills all changelogs), update
-# .cursor/audit-baseline.json.
+# scripts/audit-baseline.json.
 
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$REPO_ROOT"
 
-BASELINE_CONFIG=".cursor/audit-baseline.json"
+BASELINE_CONFIG="scripts/audit-baseline.json"
 COMPONENTS_DIR="uds-docs/uds/components"
 
 if [ ! -f "$BASELINE_CONFIG" ]; then

@@ -39,7 +39,7 @@ jobs:
       # aggregated CHANGELOG not re-aggregated, Figma sync-state snapshot
       # diverged from spec.json, Code-tab API table drifted from CSS. The
       # first runs may pass via baseline grandfathering (see
-      # .cursor/audit-baseline.json); new drift after merge fails CI.
+      # scripts/audit-baseline.json); new drift after merge fails CI.
       - name: Changelog currency
         run: bash scripts/audit-changelog-currency.sh
 

@@ -1,0 +1,25 @@
+{
+  "_comment": "Baseline state for audits that grandfather pre-existing drift. New drift (post-baseline) fails CI; existing drift is tolerated until a deliberate sweep clears it. Update entries only when the corresponding drift has been resolved.",
+  "audit-changelog-currency": {
+    "baseline": "1bea1a540f83c86cdd8e57ba790f233353bee3a9",
+    "baselineDate": "2026-05-12",
+    "baselineNote": "PR1 (cursor/nav-header-changelog-fix-d3c2) merge commit. Sets the floor for the changelog-currency audit; commits before this SHA may have un-recorded component file changes that we deliberately did not backfill."
+  },
+  "audit-css-api-table": {
+    "_comment": "Components whose Code-tab <table class='sg-api-table'> in index.html disagrees with their <id>.css's udc-* selectors as of 2026-05-12. The audit fails ONLY for components NOT in this tolerated list; new drift (and any new component added without a complete table) still fails. To remove an entry from this list, fix the table in index.html OR fix the CSS file to match the table.",
+    "toleratedComponents": [
+      "badge",
+      "breadcrumb",
+      "data-table",
+      "divider",
+      "icon-wrapper",
+      "nav-header",
+      "nav-vertical",
+      "radio",
+      "spacer",
+      "tabs"
+    ],
+    "baselineDate": "2026-05-12",
+    "baselineNote": "Initial run of audit-css-api-table.sh against the post-PR1 state found pre-existing API-table drift across 10 components (some missing entries, some cross-component class references that are legitimate, some BEM sub-elements deliberately omitted). Backfilling all 10 is a separate sweep; for now they're tolerated and new drift fails."
+  }
+}
