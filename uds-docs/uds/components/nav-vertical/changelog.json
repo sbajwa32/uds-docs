@@ -21,6 +21,16 @@
       "version": "0.2",
       "type": "added",
       "text": "Sidebar navigation with two variants: Leading Icons (default) and text-only"
+    },
+    {
+      "version": "0.3",
+      "type": "added",
+      "text": "Spec populated from a 2026-05-12 figma-component-inspector dry-run that the previous quick-look pass had left blank. spec.json props[] gains a leadingIcons boolean (default true) mapped to the Figma component-set udc-nav-vertical (6598:8555) variant property `Leading Icons: True | False`. spec.json states[] populated with the 5 states the underlying _udc-list_item exposes in Figma: default, hover, active, selected, focused. The Disabled state that exists in code (.udc-nav-button:disabled, [aria-disabled=\"true\"]) is intentionally NOT added to states[] because it has no Figma source \u2014 see knownIssues for the open question."
+    },
+    {
+      "version": "0.3",
+      "type": "changed",
+      "text": ".cursor/figma/state/components.snapshot.json nav-vertical entry refreshed from placeholder seed values. variantProperties was {} \u2014 now `Leading Icons: [true, false]`. nestedInstances was [] \u2014 now records the udc-list instance (6598:8558 -> main 5195:894) that wraps the 7 _udc-list_item rows; this is the structural detail the previous snapshot missed entirely. fingerprint hashes upgraded from `seed:6598:8553` / `seed:6598:8555` / `not-captured` to `captured:2026-05-12:*` markers. tokenBindings stays [] (snapshot convention) but the per-state token-binding tables for container, default, hover, active, selected, and focused list-items are documented in the inspector report."
     }
   ]
 }

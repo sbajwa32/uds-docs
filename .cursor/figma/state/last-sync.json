@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "lastSuccessfulSync": "2026-05-12T15:12:00Z",
+  "lastSuccessfulSync": "2026-05-12T19:00:00Z",
   "tokens": {
     "figmaFileKey": "iqKgR73ubUHpQTIcF7XGMy",
     "figmaVersion": "0.3",
@@ -11,17 +11,18 @@
     "figmaFileKey": "1XJoUJgtNpw4R0IIT3VjoK",
     "figmaVersion": "0.3",
     "snapshotPath": ".cursor/figma/state/components.snapshot.json",
-    "snapshotChecksum": "594342af24b34f9e0349029b31f3bd22048d19a63fc4e466f05c9ee041b9dbbc"
+    "snapshotChecksum": "e9126478a7e5e6852052ccd49c1688336988af04840ca1fbfd3b25d523cf8b48"
   },
   "site": {
     "udsVersion": "0.3",
-    "siteVersion": "2026.05.12.4",
+    "siteVersion": "2026.05.12.11",
     "commit": null
   },
   "notes": [
     "0.3 baseline captured after direct Figma read. Ignored pages with {Ignore} were excluded. Internal support pages checkbox-control, input, and slot were not added to public docs.",
     "2026-05-08 verification audit: re-read Figma 0.3 directly. Tokens (counts, names, alias targets, modes), statuses, FIGMA_LINKS, sidebar coverage, content JSON coverage, release notes (both files), and implementation-ready vs placeholder-only classification all match Figma. Filled in 16 missing figmaNodeId values for components that have canonical component-set nodes in Figma (button left null because 5 sibling component-sets; data-table/text-input/tooltip have no top-level component-set so remain null).",
     "2026-05-12 nav-header deep inspection + sync: figma-component-inspector ran twice against page 5373:972. First pass captured the canonical udc-nav-header set (5684:11340), default variant (5684:11341), variant matrix (Show Search Box BOOLEAN, Show My Work BOOLEAN, Variant=Default), nested-instance graph (logo, title-area, search, mywork-button, account-actions), 12 Figma\u2194code divergences, and the Title Only=True bare-title variant of the title-area sub-component. Second pass captured the Figma-side rename of the trigger sub-component from _udc-nav-header_bentobutton to _udc-nav-header_title-area (id 5586:8858 preserved). Authoring-error attribution corrected: the \"Component set has existing errors\" message that previously appeared to come from udc-nav-header actually originates from udc-badge (5794:7948) on the badge page; it propagates only because the My Work pill nests a badge. The canonical udc-nav-header set reads cleanly on every plugin-API surface.",
-    "2026-05-12 audit-figma-sync-state-currency.sh introduced: state-based check that spec.json figmaNodeId/figmaPageNodeId match components.snapshot.json componentSetNodeId/pageNodeId. Initial run found 4 pre-existing mismatches \u2014 button, data-table, text-input had stale snapshot componentSetNodeId values (5055:148, 5308:1331, 5594:7264) while spec.json had been deliberately left null per the 2026-05-08 verification note (\"button left null because 5 sibling component-sets\u2026 data-table/text-input/tooltip have no top-level component-set so remain null\"); radio snapshot had 5621:6582 while spec had 5492:2093 (drift; spec is the more recent value from the 2026-05-08 fill-in pass). Snapshot updated to match spec for all four components. Spec.json untouched (it was already the correct, more recent state)."
+    "2026-05-12 audit-figma-sync-state-currency.sh introduced: state-based check that spec.json figmaNodeId/figmaPageNodeId match components.snapshot.json componentSetNodeId/pageNodeId. Initial run found 4 pre-existing mismatches \u2014 button, data-table, text-input had stale snapshot componentSetNodeId values (5055:148, 5308:1331, 5594:7264) while spec.json had been deliberately left null per the 2026-05-08 verification note (\"button left null because 5 sibling component-sets\u2026 data-table/text-input/tooltip have no top-level component-set so remain null\"); radio snapshot had 5621:6582 while spec had 5492:2093 (drift; spec is the more recent value from the 2026-05-08 fill-in pass). Snapshot updated to match spec for all four components. Spec.json untouched (it was already the correct, more recent state).",
+    "2026-05-12 deep re-inspection sync (nav-header, nav-vertical, tokens). Three figma-component-inspector / figma-token-audit subagents ran read-only. Snapshot precision updates applied: nav-header.nestedInstances entries 0 and 1 (logo and title-area) extended with mainComponentSetNodeId + mainComponentVariantProperties so the parent set + variant property matrix are tracked, not just the rendered variant. nav-vertical entry: variantProperties populated with `Leading Icons: [true, false]` (parent component-set 6598:8555 exposes exactly one variant property); nestedInstances populated with the `udc-list` instance (6598:8558 -> main 5195:894) that the inspector caught the previous quick-look pass missed; fingerprint hashes upgraded from `seed:*` placeholders to `captured:2026-05-12:*`. The deeper structural questions (nav-vertical container chrome, udc-list wrapper structure, item height, focus chrome, .udc-nav-button-vertical rail with no Figma source, Figma Leading Icons=False all-selected authoring bug, nav-header bento footer color regression vs 0.3 changelog claim, nav-tile two-layer structure) are deferred pending designer review and intentionally NOT applied here \u2014 see the 2026-05-12 SITE_CHANGELOG entry for the open-questions summary."
   ]
 }

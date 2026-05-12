@@ -14,10 +14,24 @@
       "uds/components/nav-vertical.js"
     ]
   },
-  "props": [],
+  "props": [
+    {
+      "name": "leadingIcons",
+      "type": "boolean",
+      "default": true,
+      "required": false,
+      "description": "Show a leading material icon before each item label. Maps to Figma component-set `udc-nav-vertical` variant property `Leading Icons` (True | False)."
+    }
+  ],
   "events": [],
   "slots": [],
-  "states": [],
+  "states": [
+    { "name": "default", "description": "Resting state for an inactive nav item.", "hasVisual": true },
+    { "name": "hover", "description": "Pointer over an inactive nav item.", "hasVisual": true },
+    { "name": "active", "description": "Pointer pressed on an inactive nav item (mouse-down).", "hasVisual": true },
+    { "name": "selected", "description": "The current page indicator (driven by `aria-current=\"page\"` or legacy `aria-selected=\"true\"`).", "hasVisual": true },
+    { "name": "focused", "description": "Keyboard focus visible (driven by `:focus-visible`).", "hasVisual": true }
+  ],
   "contentGuidelines": null,
   "commonlyPairedWith": [],
   "dosDonts": {

@@ -130,6 +130,7 @@
   padding: var(--uds-space-100) var(--uds-space-150);
   border-radius: var(--uds-border-radius-input);
   font-size: var(--uds-font-size-xl);
+  line-height: var(--uds-font-line-height-xl);
   cursor: default;
 }
 
@@ -243,7 +244,7 @@
   display: none;
   flex-direction: column;
   gap: 0;
-  padding: var(--uds-space-150);
+  padding: var(--uds-space-150) var(--uds-space-150) var(--uds-space-200);
   width: 312px;
   background: var(--uds-color-surface-main);
   border: 1px solid var(--uds-color-border-secondary);
@@ -278,6 +279,7 @@
   padding: var(--uds-space-100) var(--uds-space-150);
   font-family: var(--uds-font-family);
   font-size: var(--uds-font-size-sm);
+  line-height: var(--uds-font-line-height-sm);
   font-weight: var(--uds-font-weight-medium);
   color: var(--uds-color-text-primary);
   cursor: pointer;

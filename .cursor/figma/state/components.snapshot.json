@@ -302,8 +302,8 @@
         "Variant": ["Default"]
       },
       "nestedInstances": [
-        { "nodeId": "5684:11344", "name": "_udc-nav-header_logo",        "mainComponentName": "_udc-nav-header_logo",        "mainComponentNodeId": "6403:39130" },
-        { "nodeId": "5684:11345", "name": "_udc-nav-header_title-area",  "mainComponentName": "_udc-nav-header_title-area",  "mainComponentNodeId": "5505:7875" },
+        { "nodeId": "5684:11344", "name": "_udc-nav-header_logo",        "mainComponentName": "_udc-nav-header_logo",        "mainComponentNodeId": "6403:39130", "mainComponentSetNodeId": "6403:39131", "mainComponentVariantProperties": { "Outline": ["false", "true"] } },
+        { "nodeId": "5684:11345", "name": "_udc-nav-header_title-area",  "mainComponentName": "_udc-nav-header_title-area",  "mainComponentNodeId": "5505:7875", "mainComponentSetNodeId": "5586:8858",  "mainComponentVariantProperties": { "Variant": ["A"], "Title Only": ["false", "true"] } },
         { "nodeId": "5684:11346", "name": "Search Box",                  "mainComponentName": "udc-search",                  "mainComponentNodeId": "5053:53" },
         { "nodeId": "5684:11348", "name": "_udc-nav-header_mywork-button","mainComponentName": "_udc-nav-header_mywork-button","mainComponentNodeId": "6403:33941" },
         { "nodeId": "5684:11349", "name": "_udc-nav-header_account-actions","mainComponentName": "_udc-nav-header_account-actions","mainComponentNodeId": "6403:34784" }
@@ -324,13 +324,17 @@
       "defaultVariantNodeId": null,
       "status": "blocked",
       "since": "0.3",
-      "variantProperties": {},
-      "nestedInstances": [],
+      "variantProperties": {
+        "Leading Icons": ["true", "false"]
+      },
+      "nestedInstances": [
+        { "nodeId": "6598:8558", "name": "udc-list", "mainComponentName": "udc-list", "mainComponentNodeId": "5195:894" }
+      ],
       "tokenBindings": [],
       "fingerprint": {
-        "nodeTreeHash": "seed:6598:8553",
-        "variantHash": "seed:6598:8555",
-        "tokenBindingHash": "not-captured"
+        "nodeTreeHash": "captured:2026-05-12:6598:8553",
+        "variantHash": "captured:2026-05-12:6598:8555",
+        "tokenBindingHash": "captured-out-of-band:see-changelog"
       }
     },
     {

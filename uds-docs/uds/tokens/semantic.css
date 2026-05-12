@@ -368,7 +368,7 @@
   --uds-color-text-brand:                                 var(--uds-primitive-color-blue-50);
   --uds-color-text-primary:                               var(--uds-primitive-color-neutral-20);
   --uds-color-text-inverse:                               var(--uds-primitive-color-neutral-100);
-  --uds-color-text-secondary:                             var(--uds-primitive-color-neutral-70);
+  --uds-color-text-secondary:                             var(--uds-primitive-color-neutral-60-M);
   --uds-color-text-disabled:                              var(--uds-primitive-color-neutral-80);
   --uds-color-text-disabled-bold:                         var(--uds-primitive-color-neutral-70);
   --uds-color-text-interactive:                           var(--uds-primitive-color-blue-50);

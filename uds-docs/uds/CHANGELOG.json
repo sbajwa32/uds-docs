@@ -217,6 +217,10 @@
         "text": "New rule `.cursor/rules/uds-source-of-truth.mdc` codifies that `uds-docs/uds/` is Figma-as-source-of-truth across every file kind (tokens, component CSS, spec.json, examples, status.json, schemas, etc.) and that agents must not autonomously modify anything under that path in response to audit findings. Cross-referenced from `AGENTS.md` (\"Don't do\" list) and `uds-master-preflight.mdc`. Authorized write paths into `uds-docs/uds/` are the named Figma-sync skills (`import-figma-tokens`, `sync-figma-component-spec`, `sync-figma-component-status`, `link-figma-nodes`, `new-component`), each requiring explicit user authorization. A revert toward verified Figma parity is also allowed with explicit user direction."
       },
       {
+        "type": "fixed",
+        "text": "`--uds-color-text-secondary` dark-mode binding aligned to Figma. Was aliased to `--uds-primitive-color-neutral-70` (#525252); Figma now aliases to `--uds-primitive-color-neutral-60-M` (#737373) in every dark mode (Base Dark, ResMan Dark). Light modes were already correct. The shift improves dark-mode `text-secondary` on `surface-main` (`#0a0a0a`) contrast from ~2.6:1 to ~4.3:1 \u2014 still below the WCAG AA 4.5:1 threshold but a meaningful improvement against the dark-mode entries in the AGENTS.md \"Currently known WCAG AA failures\" table. Sourced from a 2026-05-12 figma-token-audit dry-run that confirmed direct-Figma-Variables read against the .cursor/figma/state/tokens.snapshot.json baseline; this is the only token-value drift the audit found across 249 primitives + 94 semantic colors \u00d7 6 modes. T-1 in the audit report."
+      },
+      {
         "type": "removed",
         "text": "Reverted the unauthorized design-system edits an agent applied during the repo restructure (commits `6022fcd` Phase 16 and `6564ae8` Phase 17). Two distinct layers reverted: (1) ~38 semantic-token value bumps in `uds/tokens/semantic.css`, including the AnyoneHome (emerald-70 \u2192 emerald-90) and Inhabit (amber-70 \u2192 amber-90) brand accents, all light-mode status surface/text bumps to -80/-90, dark-mode status text shifts -50 \u2192 -40, and `text-secondary` flips in both modes \u2014 all darkening tokens to clear axe-core WCAG AA contrast violations. (2) The `uds/components/button/button.css` palette override swap from primitive-token references (`green-70`, `orange-70`, `neutral-90`) to semantic tokens (`surface-success`, `surface-warning`, `surface-inverse`), plus the paired `aria-selected` \u2192 `aria-pressed` example markup change in `button/examples/selected.html`. Neither layer was sourced from Figma. Figma is the source of truth for everything under `uds-docs/uds/` (tokens AND component implementation AND specs), and the Phase 16/17 agent did not preserve that contract. Both layers are now restored bit-for-bit to the UDS 0.3 release state (commit `16e8e89`), so Figma and code agree again. Knowing trade-off: the contrast failures Phase 16/17 was masking are restored as a known issue (e.g. white text on `surface-interactive-default` is 3.77:1 in AnyoneHome, 3.19:1 in Inhabit, both below WCAG AA 4.5:1). The right fix is a design conversation \u2014 see PR #7 description for four candidate fix paths. The `scripts/audit-theme-contrast.sh` CI job will fail until that conversation lands; that is intentional, not a regression to fix in code."
       }
@@ -336,6 +340,10 @@
           "text": "Mirrored Figma sub-component rename _udc-nav-header_bentobutton \u2192 _udc-nav-header_title-area (id 5586:8858 preserved). CSS public-contract rename: .udc-nav-bento-button \u2192 .udc-nav-title-area, .udc-nav-bento-button__chevron \u2192 .udc-nav-title-area__chevron. Spec slot bento (trigger) \u2192 title-area. Dropdown panel intentionally kept as .udc-nav-bento because Figma still calls that component _udc-nav-header_dropdown."
         },
         {
+          "type": "changed",
+          "text": ".cursor/figma/state/components.snapshot.json nav-header.nestedInstances precision update: entries 0 (logo) and 1 (title-area) now record the parent component-set node + variant-property matrix in new optional fields mainComponentSetNodeId and mainComponentVariantProperties. Logo set 6403:39131 with `Outline: [false, true]`; title-area set 5586:8858 with `Variant: [A]`, `Title Only: [false, true]`. Previously the snapshot only pointed at the rendered variant (6403:39130 / 5505:7875) which loses the variant-matrix signal. Spec.json untouched."
+        },
+        {
           "type": "fixed",
           "text": "figmaNodeId corrected from 5586:8858 (sub-component) to 5684:11340 (canonical udc-nav-header set) after a deep figma-component-inspector pass on page 5373:972."
         },
@@ -374,6 +382,28 @@
         {
           "type": "fixed",
           "text": "Bento dropdown divider rows added per Figma _udc-nav-header_dropdown anatomy: udc-divider-horizontal (data-padding=\"sm\") between every section in bento-dropdown.html, bento-tiles.html, and the playground render."
+        },
+        {
+          "type": "fixed",
+          "text": "Title-area Title Only=True line-height aligned to Figma. Added line-height: var(--uds-font-line-height-xl) (28px) to .udc-nav-title-area[data-title-only=\"true\"] so it pairs with the existing font-size: var(--uds-font-size-xl) (20px). Matches Figma text style uds/text/paragraph/xl-bold (line-height/400 = 28). Sourced from a 2026-05-12 figma-component-inspector dry-run on the _udc-nav-header_title-area Title Only=True variant (5586:8859)."
+        },
+        {
+          "type": "fixed",
+          "text": "Bento dropdown panel padding-bottom aligned to Figma. .udc-nav-bento padding split from the symmetric var(--uds-space-150) shorthand (12 all sides) to var(--uds-space-150) var(--uds-space-150) var(--uds-space-200) so the bottom edge gets 16px instead of 12. Matches Figma _udc-nav-header_dropdown padding-top 12 / padding-x 12 / padding-bottom 16. Sourced from a 2026-05-12 figma-component-inspector dry-run."
+        },
+        {
+          "type": "fixed",
+          "text": "Bento footer line-height aligned to Figma. Added line-height: var(--uds-font-line-height-sm) (16px) to .udc-nav-bento__footer so the existing font-size: var(--uds-font-size-sm) (12px) is paired with the matching line-height instead of inheriting --uds-font-line-height-base (20px). Matches Figma text style uds/text/label/sm-medium (line-height/250 = 16). Sourced from a 2026-05-12 figma-component-inspector dry-run."
+        }
+      ],
+      "Nav Vertical": [
+        {
+          "type": "added",
+          "text": "Spec populated from a 2026-05-12 figma-component-inspector dry-run that the previous quick-look pass had left blank. spec.json props[] gains a leadingIcons boolean (default true) mapped to the Figma component-set udc-nav-vertical (6598:8555) variant property `Leading Icons: True | False`. spec.json states[] populated with the 5 states the underlying _udc-list_item exposes in Figma: default, hover, active, selected, focused. The Disabled state that exists in code (.udc-nav-button:disabled, [aria-disabled=\"true\"]) is intentionally NOT added to states[] because it has no Figma source \u2014 see knownIssues for the open question."
+        },
+        {
+          "type": "changed",
+          "text": ".cursor/figma/state/components.snapshot.json nav-vertical entry refreshed from placeholder seed values. variantProperties was {} \u2014 now `Leading Icons: [true, false]`. nestedInstances was [] \u2014 now records the udc-list instance (6598:8558 -> main 5195:894) that wraps the 7 _udc-list_item rows; this is the structural detail the previous snapshot missed entirely. fingerprint hashes upgraded from `seed:6598:8553` / `seed:6598:8555` / `not-captured` to `captured:2026-05-12:*` markers. tokenBindings stays [] (snapshot convention) but the per-state token-binding tables for container, default, hover, active, selected, and focused list-items are documented in the inspector report."
         }
       ],
       "Notification": [

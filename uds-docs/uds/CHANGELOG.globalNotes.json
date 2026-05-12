@@ -54,6 +54,10 @@
       {
         "type": "changed",
         "text": "New rule `.cursor/rules/uds-source-of-truth.mdc` codifies that `uds-docs/uds/` is Figma-as-source-of-truth across every file kind (tokens, component CSS, spec.json, examples, status.json, schemas, etc.) and that agents must not autonomously modify anything under that path in response to audit findings. Cross-referenced from `AGENTS.md` (\"Don't do\" list) and `uds-master-preflight.mdc`. Authorized write paths into `uds-docs/uds/` are the named Figma-sync skills (`import-figma-tokens`, `sync-figma-component-spec`, `sync-figma-component-status`, `link-figma-nodes`, `new-component`), each requiring explicit user authorization. A revert toward verified Figma parity is also allowed with explicit user direction."
+      },
+      {
+        "type": "fixed",
+        "text": "`--uds-color-text-secondary` dark-mode binding aligned to Figma. Was aliased to `--uds-primitive-color-neutral-70` (#525252); Figma now aliases to `--uds-primitive-color-neutral-60-M` (#737373) in every dark mode (Base Dark, ResMan Dark). Light modes were already correct. The shift improves dark-mode `text-secondary` on `surface-main` (`#0a0a0a`) contrast from ~2.6:1 to ~4.3:1 \u2014 still below the WCAG AA 4.5:1 threshold but a meaningful improvement against the dark-mode entries in the AGENTS.md \"Currently known WCAG AA failures\" table. Sourced from a 2026-05-12 figma-token-audit dry-run that confirmed direct-Figma-Variables read against the .cursor/figma/state/tokens.snapshot.json baseline; this is the only token-value drift the audit found across 249 primitives + 94 semantic colors \u00d7 6 modes. T-1 in the audit report."
       }
     ]
   }

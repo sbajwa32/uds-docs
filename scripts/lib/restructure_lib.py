@@ -15,6 +15,7 @@ import re
 import subprocess
 import sys
 from pathlib import Path
+from typing import Optional
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 UDS_DOCS = REPO_ROOT / "uds-docs"
@@ -199,7 +200,7 @@ def list_implementable_components(src: str = None) -> list:
     return sorted(out)
 
 
-def get_data_page_block(html: str, comp_id: str) -> str | None:
+def get_data_page_block(html: str, comp_id: str) -> Optional[str]:
     """Return the substring of `html` that is the `<div data-page="<id>">...</div>` block.
 
     Walks divs with depth tracking since these blocks are large and contain
@@ -226,7 +227,7 @@ def get_data_page_block(html: str, comp_id: str) -> str | None:
     return html[start:]
 
 
-def get_examples_panel(html_block: str) -> str | None:
+def get_examples_panel(html_block: str) -> Optional[str]:
     """Return the inner HTML of <div data-tab-panel="examples"> within a
     component's data-page block.
     """

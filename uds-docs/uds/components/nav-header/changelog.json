@@ -86,6 +86,26 @@
       "version": "0.3",
       "type": "added",
       "text": "Title-Only variant exposed: new .udc-nav-title-area[data-title-only=\"true\"] CSS state (transparent fill, no border/shadow, no leading icon, no chevron, font-size --uds-font-size-xl). New titleOnly boolean prop, title-only state, playground checkbox, examples/title-only.html and manifest entry. Mirrors Figma _udc-nav-header_title-area Title Only=True (5586:8859)."
+    },
+    {
+      "version": "0.3",
+      "type": "fixed",
+      "text": "Title-area Title Only=True line-height aligned to Figma. Added line-height: var(--uds-font-line-height-xl) (28px) to .udc-nav-title-area[data-title-only=\"true\"] so it pairs with the existing font-size: var(--uds-font-size-xl) (20px). Matches Figma text style uds/text/paragraph/xl-bold (line-height/400 = 28). Sourced from a 2026-05-12 figma-component-inspector dry-run on the _udc-nav-header_title-area Title Only=True variant (5586:8859)."
+    },
+    {
+      "version": "0.3",
+      "type": "fixed",
+      "text": "Bento dropdown panel padding-bottom aligned to Figma. .udc-nav-bento padding split from the symmetric var(--uds-space-150) shorthand (12 all sides) to var(--uds-space-150) var(--uds-space-150) var(--uds-space-200) so the bottom edge gets 16px instead of 12. Matches Figma _udc-nav-header_dropdown padding-top 12 / padding-x 12 / padding-bottom 16. Sourced from a 2026-05-12 figma-component-inspector dry-run."
+    },
+    {
+      "version": "0.3",
+      "type": "fixed",
+      "text": "Bento footer line-height aligned to Figma. Added line-height: var(--uds-font-line-height-sm) (16px) to .udc-nav-bento__footer so the existing font-size: var(--uds-font-size-sm) (12px) is paired with the matching line-height instead of inheriting --uds-font-line-height-base (20px). Matches Figma text style uds/text/label/sm-medium (line-height/250 = 16). Sourced from a 2026-05-12 figma-component-inspector dry-run."
+    },
+    {
+      "version": "0.3",
+      "type": "changed",
+      "text": ".cursor/figma/state/components.snapshot.json nav-header.nestedInstances precision update: entries 0 (logo) and 1 (title-area) now record the parent component-set node + variant-property matrix in new optional fields mainComponentSetNodeId and mainComponentVariantProperties. Logo set 6403:39131 with `Outline: [false, true]`; title-area set 5586:8858 with `Variant: [A]`, `Title Only: [false, true]`. Previously the snapshot only pointed at the rendered variant (6403:39130 / 5505:7875) which loses the variant-matrix signal. Spec.json untouched."
     }
   ]
 }
