@@ -1,21 +1,28 @@
 ---
 name: link-figma-nodes
-description: Populate figmaNodeId fields in UDS component JSON specs from canonical UDS Components Figma nodes. Use when Figma deep links are missing or stale.
+description: Populate figmaNodeId and figmaPageNodeId fields in per-component spec.json files from canonical UDS Components Figma nodes. Use when Figma deep links are missing or stale.
 ---
 
 # Link Figma Nodes
 
-Adds stable Figma node deep links to `uds-docs/content/<component>.json`.
+Adds stable Figma node deep links to `uds-docs/uds/components/<id>/spec.json`.
 
-This skill exists because `figmaNodeId` is a fast, high-value completeness field
-but it is unsafe to guess when multiple nodes match a component name.
+This skill exists because `figmaNodeId` (variant-level) and `figmaPageNodeId`
+(page-level fallback) are fast, high-value completeness fields but it is
+unsafe to guess when multiple nodes match a component name.
+
+After Phase 13 of the repo restructure, the legacy `FIGMA_LINKS` table in
+`docs/app.js` no longer exists. The "Figma" deep-link button on each component
+docs page is built at runtime from `spec.json.figmaNodeId` (preferred) with
+`spec.json.figmaPageNodeId` as fallback. Editing `spec.json` is the only
+correct way to update these links.
 
 ## Inputs
 
 | Input | Behavior |
 |---|---|
 | component ID | Link one component |
-| `all` / omitted | Audit all missing `figmaNodeId` fields |
+| `all` / omitted | Audit all missing or stale `figmaNodeId` fields |
 
 ## Required preflight
 
@@ -27,11 +34,14 @@ but it is unsafe to guess when multiple nodes match a component name.
 
 ## Node selection policy
 
-Prefer in order:
+For `figmaNodeId` (variant deep link), prefer in order:
 
 1. Canonical component set node.
 2. Canonical default variant node.
 3. Page-level component frame, only when no component set exists.
+
+`figmaPageNodeId` always points at the component's Figma page node, never a
+variant or frame.
 
 Do not use:
 
@@ -40,6 +50,10 @@ Do not use:
 - hidden scratch layers
 - ambiguous name matches
 - nodes from a different Figma file
+- sub-component nodes (e.g. `_udc-nav-header_title-area`) when a canonical
+  parent set exists. Pointing `figmaNodeId` at a sub-component sends docs
+  users to the wrong place \u2014 this is the failure mode that motivated
+  the nav-header re-sync (commit `c656da7`).
 
 ## Workflow
 
@@ -48,24 +62,25 @@ Do not use:
 Return this before writing:
 
 ```markdown
-| Component | Current figmaNodeId | Proposed node | Node type | Confidence | Reason |
-|---|---|---|---|---|---|
-| button | null | 123:456 | COMPONENT_SET | high | Exact component set name `Button` |
+| Component | Current figmaNodeId | Current figmaPageNodeId | Proposed nodeId | Proposed pageNodeId | Node type | Confidence | Reason |
+|---|---|---|---|---|---|---|---|
+| button | null | null | 123:456 | 100:200 | COMPONENT_SET | high | Exact component set name `udc-button` on page `\ud83d\udfe1 button` |
 ```
 
 ### 2. Apply only high-confidence additions
 
 Auto-apply only when:
 
-- current `figmaNodeId` is null
-- proposed node confidence is high
+- current `figmaNodeId` is `null`
+- proposed node confidence is `high`
 - node is canonical and unambiguous
 
 Ask before:
 
-- overwriting a non-null `figmaNodeId`
+- overwriting a non-null `figmaNodeId` (even when the existing value is
+  provably wrong \u2014 the user needs to know which deep link is changing)
 - choosing between multiple possible nodes
-- linking to a frame rather than a component/component-set node
+- linking to a frame rather than a component / component-set node
 
 ### 3. Bump-first for doc edits
 
@@ -77,11 +92,32 @@ bash uds-docs/bump-site.sh
 
 Then:
 
-1. Update only `figmaNodeId` fields in `content/*.json`.
-2. Add a SITE_CHANGELOG entry.
-3. Cache-bust `app.js` if needed only when app code changed (usually no).
-4. Visual-check that page link buttons now deep-link correctly.
-5. Commit and push directly to `main`.
+1. Update `figmaNodeId` and/or `figmaPageNodeId` in
+   `uds-docs/uds/components/<id>/spec.json`. Do NOT modify any other field
+   in `spec.json` in this skill.
+2. Add a per-component `changelog.json` entry for each component whose
+   deep link changed:
+   - If `figmaNodeId` was `null` and is now set: `{ "type": "added", "text": "figmaNodeId pinned to <new> after deep inspection." }`.
+   - If `figmaNodeId` was non-null and was overwritten: `{ "type": "fixed", "text": "figmaNodeId corrected from <old> (sub-component / wrong node) to <new> (canonical <name>)." }`.
+   This is a real contract change \u2014 every "Open in Figma" deep link
+   from the docs page lands somewhere different. Treat it as such.
+3. Run `bash scripts/aggregate-changelog.sh` to refresh `uds/CHANGELOG.json`.
+4. Update `.cursor/figma/state/components.snapshot.json` \u2014 set the
+   affected component's `componentSetNodeId` (and `pageNodeId` if changed)
+   to match the new spec.json values. Bump
+   `.cursor/figma/state/last-sync.json` `lastSuccessfulSync` and recompute
+   `components.snapshotChecksum`. (`scripts/audit-figma-sync-state-currency.sh`
+   will fail CI if you skip this step.)
+5. Add a `SITE_CHANGELOG` entry in `docs/data/site-changelog.js`.
+6. Cache-bust `app.js?v=` in `index.html` (because the imported
+   `site-changelog.js` changed).
+7. Visual-check that the "Figma" page-link button on each affected docs
+   page deep-links to the correct node in Figma.
+8. Commit and push.
+
+The Phase 3 finalize checklist in `.cursor/rules/uds-master-preflight.mdc`
+is the canonical round-trip checklist; steps 2\u20137 above are this skill's
+specialization of it.
 
 ## Output
 
@@ -89,7 +125,7 @@ Then:
 # Figma Node Link Sync
 
 ## Updated
-- component: old -> new
+| Component | Field | Old | New | changelog.json entry | snapshot updated |
 
 ## Skipped
 - component: reason
@@ -101,6 +137,10 @@ Then:
 ## Do not
 
 - Do not infer a node ID from screenshots.
-- Do not overwrite non-null links silently.
-- Do not modify component specs beyond `figmaNodeId`.
-- Do not mark this as a component release unless component behavior changed.
+- Do not overwrite non-null links silently \u2014 always ask first, even if
+  the existing value is clearly wrong.
+- Do not modify component specs beyond `figmaNodeId` and `figmaPageNodeId`.
+- Do not point `figmaNodeId` at a sub-component when a canonical parent set
+  exists.
+- Do not skip the per-component `changelog.json` entry. Correcting a wrong
+  `figmaNodeId` is a `fixed` change worth recording, not a silent no-op.

@@ -7,13 +7,15 @@ alwaysApply: true
 
 ## Context
 
-The Urban Design System (UDS) spans two Figma files and a documentation site:
+The Urban Design System (UDS) spans two Figma files and a documentation site.
+The canonical file keys + version-page format are in
+[`uds-figma-preflight.mdc`](./uds-figma-preflight.mdc) §"Canonical Figma files"
+and §"Version detection" — do not duplicate them here.
 
-- **UDS Tokens** -- Figma file key: `iqKgR73ubUHpQTIcF7XGMy`
-- **UDS Components** -- Figma file key: `1XJoUJgtNpw4R0IIT3VjoK`
-- **Doc site** -- `uds-docs/` directory, version tracked in `app.js` as `UDS_VERSION`
-
-Both Figma files contain a page named `UDS Version: X.Y` (e.g., `UDS Version: 0.1`).
+The doc site lives in `uds-docs/`; the current UDS version is read from
+`uds-docs/uds/version.json` at boot (`app.js` fetches it via `udsResolve()`;
+the legacy `UDS_VERSION` constant in `app.js` is just a boot default that gets
+overwritten by the fetch).
 
 ## Delegated Figma workflows
 
@@ -41,16 +43,15 @@ All findings must follow `uds-figma-change-classification.mdc`.
 
 ## Version Detection
 
-Whenever you interact with either UDS Figma file (reading components, inspecting tokens, importing assets), you MUST:
+Whenever you interact with either UDS Figma file (reading components, inspecting
+tokens, importing assets), apply
+[`uds-figma-preflight.mdc`](./uds-figma-preflight.mdc) §"Version detection" —
+that's the canonical procedure (page filter, version parsing, comparing to
+`uds-docs/uds/version.json`).
 
-1. Run the `uds-figma-preflight.mdc` checks.
-2. List pages in the file via Figma tooling, apply the `{Ignore}` page filter
-   from `uds-figma-preflight.mdc`, and find the page matching `UDS Version: *`.
-3. Parse the version number from the page name.
-4. Read `UDS_VERSION` from `uds-docs/docs/app.js`.
-5. If the Figma version is higher than the site version, alert the user and begin the Release Questionnaire below.
-
-Do NOT silently skip this check. If you detect a mismatch, pause your current task and address it first.
+If the Figma version is higher than the site version, alert the user and begin
+the Release Questionnaire below. Do NOT silently skip this check. If you detect
+a mismatch, pause your current task and address it first.
 
 ## Release Questionnaire
 
@@ -64,28 +65,19 @@ When a version bump is detected, present questions in rounds using the AskQuesti
 
 ### Round 2 -- Tokens
 
-Run `figma-token-audit` first. Direct Figma Variables reads are the
-primary source; token ZIP exports are fallback only when direct variable
-access is unavailable, partial, or cannot produce the normalized token
-model required by `uds-token-architecture.mdc`.
-
-The audit must report:
-- direct variable read status (success / partial / failed)
-- collection and mode structure diff
-- added tokens
-- removed / renamed / moved token candidates
-- value changes across modes
-- alias target changes
-- import recommendation
+Run `figma-token-audit` first. The "direct Figma Variables first, ZIP
+fallback only" rule and the required-audit-report contract are canonical in
+[`uds-token-architecture.mdc`](./uds-token-architecture.mdc) §"Architecture
+validation gate" — follow those, don't duplicate them here.
 
 Only request ZIPs if the token audit explicitly says fallback is required.
 
 ### Round 3 -- New Components
 
 - Run `figma-inventory` to compare Figma component pages (those with stoplight prefixes, excluding pages whose names contain `{Ignore}`) against `uds/components.json`, sidebar links, and per-component `uds/components/<id>/spec.json`.
-- The inventory must include component-set variant coverage for every
-  non-ignored component page: component-set names, variant-property names,
-  property values, and variant counts.
+- The inventory must include the component-set variant-coverage pass described in
+  [`uds-figma-component-inspection.mdc`](./uds-figma-component-inspection.mdc) §"Release changelog coverage"
+  for every non-ignored component page.
 - For changed/new components, run `figma-component-inspector`. Do not rely on screenshots alone.
 - Report any components that exist in Figma but not the site.
 - "Any components deprecated or removed?"
@@ -103,11 +95,12 @@ After the questionnaire, execute these steps in order. NEVER run `release.sh` wi
 1. **Snapshot**: Run `bash uds-docs/release.sh {new_version}` to archive the current `uds/` into `versions/{old}/uds/` (UDS-only, not full-site).
 2. **Update statuses**: Run `sync-figma-component-status` and update each affected component's `uds/components/<id>/status.json` only for high-confidence, non-breaking status changes. Do NOT touch the legacy `COMPONENT_STATUS` table — it's gone (Phase 13b). The boot loader builds the in-memory map from `uds/components/<id>/status.json` files via `uds/components.json`.
 3. **Update CHANGELOG**: Add per-component changelog entries to `uds/components/<id>/changelog.json` (each component owns its own history). For non-component release notes, add to `uds/CHANGELOG.globalNotes.json` under the new version key. Then run `bash scripts/aggregate-changelog.sh` to refresh `uds/CHANGELOG.json`.
-   - Use correct `type`: `added`, `changed`, `fixed`, `deprecated`, `removed`
+   - Use correct `type`: `added`, `changed`, `fixed`, `deprecated`, `removed`.
    - Do not write the release entry from page names alone. It must include the
-     component-set variant coverage pass from `figma-inventory`, including
-     meaningful new/confirmed variant and state coverage on existing
-     components and internal/support pages intentionally excluded from public
+     full variant-coverage pass per
+     [`uds-figma-component-inspection.mdc`](./uds-figma-component-inspection.mdc) §"Release changelog coverage"
+     — meaningful new/confirmed variant and state coverage on existing
+     components, plus internal/support pages intentionally excluded from public
      docs.
 4. **Regenerate tokens**: Run `import-figma-tokens`; direct Figma Variables are primary, ZIPs fallback only. After regen, run `bash scripts/audit-theme-contrast.sh` to verify the 6-theme WCAG AA contract still holds. If new tokens regress contrast, document with token bumps in the same PR.
 5. **Add new components** (if any): Use `new-component` only after `figma-inventory` / `figma-component-inspector` identify high-confidence new components with enough required minimum content. Then run `bash scripts/aggregate-components.sh` to refresh `uds/components.json`.
@@ -165,12 +158,6 @@ Never leave Figma changelogs out of sync with the site. If you forget, fix it im
 
 ## Component Status Mapping
 
-Figma page name prefixes map to the `current` field in each per-component `status.json`:
-
-| Figma Prefix | Status Key     | Badge Label        |
-|-------------|----------------|--------------------|
-| (black)     | `placeholder`  | Not Started        |
-| (red)       | `blocked`      | Blocked            |
-| (orange)    | `in-progress`  | In Progress        |
-| (yellow)    | `review`       | In Review          |
-| (green)     | `production`   | Production Ready   |
+See [`uds-figma-preflight.mdc`](./uds-figma-preflight.mdc) §"Stoplight status
+mapping" for the canonical Figma-prefix-to-`status.json.current` table. Don't
+duplicate it here.

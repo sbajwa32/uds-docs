@@ -17,8 +17,9 @@ changelog.json, impl.json, components.json, version.json), stop and
 re-read `.cursor/rules/uds-source-of-truth.mdc`. That directory is
 Figma's source of truth and is almost never agent-modifiable; the
 authorized write paths are the named Figma-sync skills
-(`import-figma-tokens`, `sync-figma-component-spec`, etc.) or an
-explicit user-directed revert toward verified Figma parity. If the
+(`import-figma-tokens`, `sync-figma-component-spec`,
+`sync-figma-component-status`, `link-figma-nodes`, `new-component`) or
+an explicit user-directed revert toward verified Figma parity. If the
 work doesn't fit one of those, surface findings rather than apply
 edits.
 
@@ -29,32 +30,115 @@ running `bump-site.sh` if the proposed change shouldn't happen at all.
 
 When you receive a request that will modify ANY file in `uds-docs/`, your FIRST action must be:
 
-1. **Run `bash uds-docs/bump-site.sh`** — this script uses the system `date` command to compute the correct version, then updates all 3 locations (index.html display, index.html inline script, version.txt) automatically. NEVER manually set the date or version number.
+1. **Run `bash uds-docs/bump-site.sh`** — this script uses the system `date`
+   command to compute the correct version, then updates all 3 locations
+   (`index.html` display, `index.html` inline `SITE_VERSION`, `version.txt`)
+   automatically. NEVER manually set the date or version number.
 2. Read the script output to get the new version string.
-3. Add a stub SITE_CHANGELOG entry in `app.js` using the version and date from the script output.
+3. Add a stub `SITE_CHANGELOG` entry to **`uds-docs/docs/data/site-changelog.js`**
+   using the version and date from the script output. (This file is imported by
+   `app.js`; the legacy in-file `SITE_CHANGELOG` array inside `app.js` was
+   moved out during the Phase 3c restructure.)
 
-**WHY:** The date in the conversation system header is from when the conversation STARTED, not the current date. It can be days or weeks stale. The bump script uses the system `date` command as the ONLY source of truth. NEVER guess, calculate, or remember dates.
+**WHY:** The date in the conversation system header is from when the
+conversation STARTED, not the current date. It can be days or weeks stale.
+The bump script uses the system `date` command as the ONLY source of truth.
+NEVER guess, calculate, or remember dates.
 
 ### Phase 2: Make the actual changes
 
 Now do whatever the user asked for. Edit CSS, HTML, JS, add components, etc.
 
-### Phase 3: Finalize
+### Phase 3: Finalize — canonical component-update round-trip checklist
 
-After all changes are complete:
+After all changes are complete, run THIS exact checklist. Every named
+Figma-sync skill (`sync-figma-component-spec`, `sync-figma-component-status`,
+`link-figma-nodes`, `import-figma-tokens`, `new-component`) references this
+section as its definition of "done." Do not duplicate the steps inside the
+skill files; do them here.
 
-1. **Fill in the SITE_CHANGELOG stub** with descriptions of what actually changed
-2. **Cache bust** — increment `?v=N` on any script/link tags for files that changed (uds.css, uds.js, app.js, demo-builder.js)
-3. **Token-first CSS** — verify no new hardcoded colors, spacing, fonts
-4. **Component checklist** — if a component was added/modified, verify all pieces exist (CSS, JS where applicable, content/<id>.json, sidebar link, page section)
-5. **Content schema** — if you edited a component's spec, verify it was JSON-side (`content/<component>.json`), not a re-introduction of HTML in `index.html`
-6. **Release workflow** — if UDS `CHANGELOG` was modified, sync Figma release notes IMMEDIATELY via use_figma
+1. **Fill in the SITE_CHANGELOG stub** in
+   `uds-docs/docs/data/site-changelog.js` with concrete descriptions of what
+   changed.
+2. **Per-component changelog entry** — if you edited any file under
+   `uds-docs/uds/components/<id>/` (`<id>.css`, `<id>.js`, `spec.json`,
+   `status.json`, `examples/**`, `impl.json`, `playground.js`), you MUST add
+   a corresponding entry to `uds-docs/uds/components/<id>/changelog.json` for
+   the current UDS version. The only exemption is a pure revert toward
+   verified Figma parity; in that case include `[no-changelog: revert toward
+   Figma parity]` in the commit message and the `scripts/audit-changelog-currency.sh`
+   audit will skip the component.
+3. **Aggregate** — if you changed any per-component `changelog.json` or
+   `uds/CHANGELOG.globalNotes.json`, run
+   `bash scripts/aggregate-changelog.sh`. If you added or removed a
+   component folder, also run `bash scripts/aggregate-components.sh`.
+   `scripts/audit-aggregate-currency.sh` will fail CI if you skip this.
+4. **Figma sync-state snapshot** — if the change was sourced from a Figma
+   read (a Figma-sync skill ran, or you manually corrected `figmaNodeId` /
+   `figmaPageNodeId` after a direct inspection), update
+   `.cursor/figma/state/components.snapshot.json` (the relevant component's
+   `componentSetNodeId`, `pageNodeId`, `variantProperties`,
+   `nestedInstances`) and `.cursor/figma/state/last-sync.json` (bump
+   `lastSuccessfulSync`, recompute `components.snapshotChecksum`).
+   `scripts/audit-figma-sync-state-currency.sh` will fail CI if `spec.json`
+   `figmaNodeId` / `figmaPageNodeId` disagree with the snapshot.
+5. **Figma Release Notes sync** — if `uds/CHANGELOG.json` changed (whether
+   via a release or via mid-release per-component changelog additions), run
+   the `sync-figma-release-notes` skill to rebuild the `Release Notes` frame
+   on the `UDS Version: X.Y` page in BOTH `UDS Tokens` and `UDS Components`
+   Figma files. Both files must contain identical text. This is allowed
+   write scope #1 per `.cursor/rules/uds-figma-write-safety.mdc`.
+6. **Cache-bust** — increment `?v=N` in `uds-docs/index.html` on any
+   script/link tags whose source files changed:
+   - `uds/uds.css?v=N` — bump if any tokens CSS or any component CSS changed
+     (since uds.css `@import`s them).
+   - `uds/uds.js?v=N` — bump if any component JS changed (since `uds.js`
+     dynamically loads them).
+   - `docs/app.js?v=N` — bump if `app.js` itself changed OR any of its ES
+     module imports (`docs/data/*.js`, `docs/modules/**`, `docs/helpers/**`,
+     `docs/pages/**` loader changes).
+   - `docs/site.css?v=N` — bump if `docs/site.css` changed.
+7. **Token-first CSS** — for any new CSS added under `uds-docs/uds/**`,
+   verify it uses `--uds-*` tokens (no hardcoded colors, font sizes,
+   spacings, radii). `scripts/audit-token-usage.sh` enforces this.
+8. **Component checklist** — if a component was added or modified, verify
+   the per-component folder is complete: `<id>.css`, `spec.json`,
+   `status.json`, `changelog.json`, `impl.json`, `playground.js`,
+   `examples/manifest.json`, ≥1 example HTML; sidebar link in `index.html`;
+   `<div data-page="<id>">` placeholder. `scripts/audit-component-completeness.sh`
+   enforces this.
+9. **Content schema** — if you edited a component's spec, verify it was
+   JSON-side at `uds-docs/uds/components/<id>/spec.json`, NOT a
+   re-introduction of HTML in `index.html`. The Guidelines tab is rendered
+   from the JSON.
+10. **Page-chrome data-bind** — if you added a new component page, its
+    `<div data-page="<id>">` block in `index.html` must have empty
+    `<h1 class="sg-page-title" data-bind="title"></h1>` and
+    `<p class="sg-page-desc" data-bind="description"></p>` placeholders.
+    JS in `loadContent()` fills them from `spec.json`.
 
 ## Why this order matters
 
 The previous approach ("run checklist at the end") failed repeatedly because:
 - Small changes felt "too minor" for the checklist
-- By the time the edit was done, the mental task was "complete" and the checklist was skipped
+- By the time the edit was done, the mental task was "complete" and the
+  checklist was skipped
 - The version bump was disconnected from the actual edit
 
-By bumping FIRST, the version is already incremented before any edits begin. The changelog stub is waiting to be filled. These cannot be forgotten because they happen before the work, not after.
+By bumping FIRST, the version is already incremented before any edits begin.
+The changelog stub is waiting to be filled. These cannot be forgotten because
+they happen before the work, not after.
+
+The Phase 3 checklist additions (per-component changelog, aggregate, snapshot,
+Figma Release Notes) are now enforced by CI audits, not just discipline:
+
+- `scripts/audit-changelog-currency.sh` — fails if a component's source files
+  (CSS/JS/spec/examples/impl/playground) have newer commits than
+  `changelog.json`.
+- `scripts/audit-aggregate-currency.sh` — fails if `uds/CHANGELOG.json` or
+  `uds/components.json` differs from a fresh aggregate.
+- `scripts/audit-figma-sync-state-currency.sh` — fails if any `spec.json`
+  `figmaNodeId` disagrees with `components.snapshot.json` `componentSetNodeId`.
+- `scripts/audit-css-api-table.sh` — fails if the Code-tab API table in
+  `index.html` is out of sync with the actual `udc-*` selectors in the
+  component's CSS.

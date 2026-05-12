@@ -126,6 +126,12 @@ Only update snapshots after CSS and docs match the new token model.
 
 ### 8. Commit and push
 
+Before commit, complete the round-trip checklist in
+[`uds-master-preflight.mdc`](../../rules/uds-master-preflight.mdc) §"Phase 3".
+For token imports specifically: token changes are typically global (no per-component
+changelog updates needed unless a component CSS regressed), but if `uds/CHANGELOG.json`
+changes via `uds/CHANGELOG.globalNotes.json`, `sync-figma-release-notes` must run.
+
 Commit and push directly to `main`:
 
 ```bash

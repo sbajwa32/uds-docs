@@ -1,3 +1,9 @@
+---
+description: Canonical card layout for UDS Components Figma pages. Defines the seven-card structure, token bindings, and read-only contract against uds-docs/uds/components/<id>/spec.json. Loaded when the figma-component-card skill runs or the figma-component-card-audit subagent runs.
+alwaysApply: false
+globs: [".cursor/skills/figma-component-card/**", ".cursor/agents/figma-component-card-audit.md"]
+---
+
 # UDS Figma Component Card
 
 Specification for the canvas layout used on every component page in the UDS Components Figma file (and its testbed). One frame per component, named `udc-<id>-page`, holding seven cards in a fixed order. The component sets, sub-components, and instance previews live INSIDE these cards — they are never loose top-level nodes.
@@ -118,15 +124,18 @@ Inter Bold, sits below the eyebrow.
 
 Status comes from `uds-docs/uds/components/<id>/status.json` (`current` field) as the primary source. The page-name stoplight prefix in the Figma file is a secondary signal — they should agree, but if they disagree, use the JSON status and surface the mismatch to the user (do not auto-correct the Figma page name; that's [`sync-figma-component-status`](../skills/sync-figma-component-status/SKILL.md)'s job).
 
-The mapping is:
+The Figma prefix → `status.json.current` mapping is canonical in
+[`uds-figma-preflight.mdc`](./uds-figma-preflight.mdc) §"Stoplight status
+mapping". For the component-card pill, the additional mapping
+(status → pill label + color tokens) is:
 
-| Prefix | Status (in `app.js#COMPONENT_STATUS`) | Pill label | Color tokens |
-|---|---|---|---|
-| 🟠 / 🟡 | `in-progress` | `IN PROGRESS` | text/border/icon/surface `-warning` |
-| 🔴 | `blocked` | `BLOCKED` | `-error` |
-| 🟡 (when explicitly review status) | `review` | `IN REVIEW` | `-warning` (yellow tone via mode) |
-| 🟢 | `production` | `PRODUCTION READY` | `-success` |
-| ⚫ / ⚫️ | `placeholder` | `NOT STARTED` | `-tertiary` (no specific status color, all neutral) |
+| Status (in `status.json` `current` field) | Pill label | Color tokens |
+|---|---|---|
+| `in-progress` | `IN PROGRESS` | text/border/icon/surface `-warning` |
+| `blocked` | `BLOCKED` | `-error` |
+| `review` | `IN REVIEW` | `-warning` (yellow tone via mode) |
+| `production` | `PRODUCTION READY` | `-success` |
+| `placeholder` | `NOT STARTED` | `-tertiary` (no specific status color, all neutral) |
 
 For placeholder pages: HEADER stays dark, but the eyebrow number, top accent strip, kicker, and pill use neutral tokens (`border-tertiary`, `text-secondary`) instead of a status color. Don't fake an orange/green for placeholder.
 

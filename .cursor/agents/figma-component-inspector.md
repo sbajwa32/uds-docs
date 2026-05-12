@@ -33,10 +33,14 @@ If the input is missing or ambiguous, ask the caller for one component name.
 Read:
 
 - UDS Components Figma file: `1XJoUJgtNpw4R0IIT3VjoK`
-- `uds-docs/content/<component>.json`
-- `uds-docs/uds/components/<component>.css`
-- `uds-docs/index.html`
-- `uds-docs/docs/app.js`
+- `uds-docs/uds/components/<component>/spec.json`
+- `uds-docs/uds/components/<component>/<component>.css`
+- `uds-docs/uds/components/<component>/<component>.js`, if it exists
+- `uds-docs/uds/components/<component>/examples/manifest.json` + each example file
+- `uds-docs/uds/components/<component>/impl.json`
+- `uds-docs/uds/components/<component>/playground.js`
+- `uds-docs/uds/components/<component>/status.json` (the `current` field; replaces the legacy `COMPONENT_STATUS` table)
+- `uds-docs/index.html` (only the chrome / data-page block / Code-tab `<table class="sg-api-table">` for the component)
 - `.cursor/rules/uds-figma-component-inspection.mdc`
 - `.cursor/rules/uds-figma-change-classification.mdc`
 - `.cursor/figma/state/components.snapshot.json`, if present
@@ -139,11 +143,13 @@ screenshots alone:
 
 Compare against:
 
-- `content/<component>.json`
-- component CSS
-- examples/code in `index.html`
-- `COMPONENT_STATUS`
-- `figmaNodeId`
+- `uds-docs/uds/components/<id>/spec.json` (props, events, slots, states, accessibility, knownIssues, figmaNodeId, figmaPageNodeId)
+- `uds-docs/uds/components/<id>/<id>.css` (tokens used, selectors, hover/focus/disabled states)
+- `uds-docs/uds/components/<id>/examples/*.html` (anatomy + ARIA in real markup)
+- `uds-docs/uds/components/<id>/impl.json` (Implementation Reference HTML + token groups)
+- `uds-docs/uds/components/<id>/playground.js` (controls and render output)
+- `uds-docs/uds/components/<id>/status.json` `current` field (lifecycle)
+- Code-tab API table inside `<div data-page="<id>">` in `uds-docs/index.html` (the hardcoded `udc-*` selector list)
 
 Classify mismatches:
 
@@ -246,4 +252,3 @@ docs pages by default.
 - Do not invent props, slots, states, or token bindings.
 - Do not recommend leaving a public implementation-ready component as
   scaffold-only. It needs Examples, Code, CSS, and spec coverage.
-*** End Patch

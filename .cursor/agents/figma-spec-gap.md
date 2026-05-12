@@ -19,7 +19,7 @@ write to Figma or repository files.
 
 | Input | Behavior |
 |---|---|
-| no input / `all` | Compare all UDS component pages and all `content/*.json` files |
+| no input / `all` | Compare all UDS component pages and all per-component `uds/components/<id>/spec.json` files |
 | component id | Compare only that component |
 
 ## Required reads
@@ -27,9 +27,19 @@ write to Figma or repository files.
 1. Run the Figma preflight from `uds-figma-preflight.mdc`.
 2. Read UDS Components Figma pages/component-set names, excluding any page
    whose name contains `{Ignore}`.
-3. Read `uds-docs/content/*.json`.
+3. Read `uds-docs/uds/components.json` (the manifest) and each
+   `uds-docs/uds/components/<id>/spec.json` it enumerates.
 4. Read sidebar and `data-page` sections in `uds-docs/index.html`.
-5. Read `COMPONENT_STATUS` and `FIGMA_LINKS`/link behavior in `uds-docs/docs/app.js`.
+5. Read each `uds-docs/uds/components/<id>/status.json` for the `current`
+   lifecycle value (the runtime in `app.js` builds an in-memory
+   `COMPONENT_STATUS` map from these files plus `components.json` — there is
+   no static `COMPONENT_STATUS` table to read). The Figma deep-link button on
+   the docs page is built from `spec.json.figmaNodeId` (preferred) /
+   `spec.json.figmaPageNodeId` (fallback) — there is no `FIGMA_LINKS` table
+   either.
+6. Optionally cross-check the `.cursor/figma/state/components.snapshot.json`
+   baseline; treat mismatches between current Figma reads and the snapshot
+   as `stale-snapshot` findings.
 
 ## Matching model
 
@@ -70,7 +80,7 @@ For each component:
 | Doc component | Docs status | Snapshot status | Classification | Confidence | Recommendation |
 
 ## Missing Figma node links
-| Component | Current figmaNodeId | Candidate node | Confidence | Recommendation |
+| Component | Current figmaNodeId | Current figmaPageNodeId | Candidate node | Confidence | Recommendation |
 
 ## Stale or mismatched specs
 | Component | Finding | Confidence | Recommended next check |

@@ -29,9 +29,11 @@ write to Figma or repository files.
 
 - UDS Tokens file key: `iqKgR73ubUHpQTIcF7XGMy`
 - UDS Components file key: `1XJoUJgtNpw4R0IIT3VjoK`
-- Site version/status source: `uds-docs/docs/app.js`
+- Site version source: `uds-docs/uds/version.json` (`UDS_VERSION` in `app.js` is just a boot default that gets overwritten by this fetch)
+- Component status source: each `uds-docs/uds/components/<id>/status.json` `current` field (enumerated via `uds-docs/uds/components.json`; the in-memory `COMPONENT_STATUS` map in `app.js` is built at runtime from these files, not authored there)
 - Sidebar/page coverage: `uds-docs/index.html`
-- Component specs: `uds-docs/content/*.json`
+- Component manifest: `uds-docs/uds/components.json`
+- Component specs: each `uds-docs/uds/components/<id>/spec.json` (`figmaNodeId`, `figmaPageNodeId`)
 - Previous snapshot: `.cursor/figma/state/components.snapshot.json`
 
 ## Procedure
@@ -62,11 +64,11 @@ write to Figma or repository files.
      - top-level child names/types
      - updated timestamp if available
 6. Read doc-site state:
-   - `UDS_VERSION`
-   - `COMPONENT_STATUS`
-   - sidebar links
-   - `data-page` component sections
-   - `content/*.json` component IDs and `figmaNodeId`
+   - site `UDS_VERSION` from `uds-docs/uds/version.json`
+   - component statuses from each `uds-docs/uds/components/<id>/status.json` (`current` field)
+   - sidebar links in `uds-docs/index.html`
+   - `<div data-page="<id>">` component sections in `uds-docs/index.html`
+   - per-component `spec.json` `component`, `title`, `figmaNodeId`, `figmaPageNodeId` for each entry in `uds-docs/uds/components.json`
 7. Compare against `.cursor/figma/state/components.snapshot.json` if present.
 8. Classify every finding using `.cursor/rules/uds-figma-change-classification.mdc`.
 

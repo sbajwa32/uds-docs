@@ -1,12 +1,18 @@
 ---
 name: sync-figma-component-status
-description: Sync UDS Components Figma stoplight page prefixes to COMPONENT_STATUS in the doc site. Use after figma-inventory reports status mismatches.
+description: Sync UDS Components Figma stoplight page prefixes into per-component status.json files. Use after figma-inventory reports status mismatches.
 ---
 
 # Sync Figma Component Status
 
-Updates `COMPONENT_STATUS` in `uds-docs/docs/app.js` from UDS Components page-name
+Updates `uds-docs/uds/components/<id>/status.json` from UDS Components page-name
 prefixes. It does not edit component specs, examples, CSS, or Figma.
+
+After Phase 13b of the repo restructure, the legacy `COMPONENT_STATUS` table in
+`docs/app.js` no longer exists. The doc site builds the in-memory status map at
+runtime from `uds/components.json` plus each `uds/components/<id>/status.json`
+file. Editing `status.json` is the only correct way to flip a component's
+lifecycle state.
 
 ## Inputs
 
@@ -17,9 +23,10 @@ prefixes. It does not edit component specs, examples, CSS, or Figma.
 
 1. Verify the inventory report includes:
    - Figma preflight versions.
-   - Component status comparison.
+   - Component status comparison (Figma stoplight prefix vs per-component
+     `status.json` `current` field).
    - Confidence per mismatch.
-   - Classification per mismatch.
+   - Classification per mismatch (see `.cursor/rules/uds-figma-change-classification.mdc`).
 2. Filter to high-confidence mismatches only unless the user explicitly
    approves medium-confidence items.
 3. Never auto-apply:
@@ -30,12 +37,32 @@ prefixes. It does not edit component specs, examples, CSS, or Figma.
 4. Exclude any Figma page whose name contains `{Ignore}`. These pages are
    intentionally out of scope and must not create status updates, deletion
    candidates, or missing-doc findings.
-5. Before editing `uds-docs/`, run `bash uds-docs/bump-site.sh`.
-6. Update only `COMPONENT_STATUS` in `uds-docs/docs/app.js`.
-7. Add a concise `SITE_CHANGELOG` entry listing changed statuses.
-8. Cache-bust `app.js` in `uds-docs/index.html`.
-9. Visual-check the Roadmap and sidebar status badges.
-10. Commit and push directly to `main`.
+5. Before editing `uds-docs/`, run `bash uds-docs/bump-site.sh` (preflight).
+6. For each high-confidence status change, edit
+   `uds-docs/uds/components/<id>/status.json`:
+   - Update `current` to the new value (one of `placeholder`, `blocked`,
+     `in-progress`, `review`, `production`, `deprecated`).
+   - Update `since` to the current UDS version.
+   - Append the prior status to the `history[]` array with `{ status, version }`.
+   - Do NOT edit any other field.
+7. Add a per-component `changelog.json` entry for each component whose status
+   changed: `{ "version": "<UDS>", "type": "changed", "text": "Status: <old> \u2192 <new>" }`.
+   This keeps the changelog-currency audit green and surfaces the change on
+   the docs site Changelog tab.
+8. Run `bash scripts/aggregate-changelog.sh` to refresh `uds/CHANGELOG.json`.
+9. Update `.cursor/figma/state/components.snapshot.json` — bump each affected
+   component's `status` field to the new value; bump `.cursor/figma/state/last-sync.json`
+   `lastSuccessfulSync` and recompute `components.snapshotChecksum`.
+10. Add a concise `SITE_CHANGELOG` entry in `docs/data/site-changelog.js` listing
+    the changed statuses.
+11. Cache-bust `app.js` in `uds-docs/index.html` (since the imported
+    `site-changelog.js` changed).
+12. Visual-check the Roadmap and sidebar status badges.
+13. Commit and push directly to `main`.
+
+The Phase 3 finalize checklist in `.cursor/rules/uds-master-preflight.mdc` is
+the canonical round-trip checklist; steps 6\u201311 above are this skill's
+specialization of it.
 
 ## Output
 
@@ -43,7 +70,7 @@ prefixes. It does not edit component specs, examples, CSS, or Figma.
 # Component Status Sync
 
 ## Applied
-| Component | Old | New | Confidence |
+| Component | Old | New | Confidence | status.json updated | changelog.json entry |
 
 ## Skipped
 | Component | Reason |
@@ -52,5 +79,6 @@ prefixes. It does not edit component specs, examples, CSS, or Figma.
 - Roadmap checked: yes/no
 - Sidebar checked: yes/no
 - SITE version:
+- Snapshot updated: yes/no
+- Figma Release Notes need rebuild: yes/no
 ```
-
