@@ -218,14 +218,18 @@ async function buildOne(CONFIG) {
   const existingWrapper = page.children.find(c => c.name === wrapperName);
 
   // Walk every descendant collecting preservable nodes (COMPONENT_SET / COMPONENT /
-  // INSTANCE). We stop descending into COMPONENT_SETs because reparenting the set
-  // carries its variant children with it.
+  // INSTANCE). We stop descending into ALL THREE types because:
+  //  - COMPONENT_SET: variant children move with the set.
+  //  - COMPONENT: nested children are part of the component definition.
+  //  - INSTANCE: nested children are derived from the main component, cannot be
+  //    reparented (Figma throws "Cannot move node. Node is inside of an instance").
+  // Only descend through containers (FRAME/SECTION/GROUP/etc.).
   const inventoryPreservable = (root) => {
     const found = [];
     const visit = (n) => {
       if (n.type === 'COMPONENT_SET' || n.type === 'COMPONENT' || n.type === 'INSTANCE') {
         found.push({ id: n.id, name: n.name, type: n.type });
-        if (n.type === 'COMPONENT_SET') return;
+        return; // never descend into these — children move with parent
       }
       if ('children' in n && n.children) for (const c of n.children) visit(c);
     };
@@ -387,6 +391,7 @@ async function buildOne(CONFIG) {
     parent.appendChild(eb);
     eb.layoutSizingHorizontal = 'HUG';
     eb.layoutSizingVertical = 'HUG';
+    // Reference cards space NUMBER → BAR → COLUMN with 16px (space/200).
     eb.setBoundVariable('itemSpacing', V.space['200']);
 
     const n = figma.createText();
@@ -764,20 +769,22 @@ async function buildOne(CONFIG) {
       : `${variantSets.length} variants`;
     secHead(inner, '03', 'COMPONENT VARIANTS', '· / variants',
       titleText,
-      'Every visual variation of the component, organized by its variant properties.'
+      `Every visual variation of ${variantSets.length === 1 ? 'the component' : 'these component sets'}, organized by its variant properties.`
     );
 
-    const row = figma.createAutoLayout('HORIZONTAL', { name: 'variants-row', itemSpacing: 32, fills: [], counterAxisAlignItems: 'MIN' });
+    // variants-row — VERTICAL when stages stack, with FILL/HUG stages.
+    // Reference cards (badge / data-table) use one full-width stage per
+    // component set rather than wrapped horizontal tiles.
+    const row = figma.createAutoLayout('VERTICAL', { name: 'variants-row', itemSpacing: 24, fills: [] });
     inner.appendChild(row);
     row.layoutSizingHorizontal = 'FILL';
     row.layoutSizingVertical = 'HUG';
-    row.setBoundVariable('itemSpacing', V.space['400']);
-    row.layoutWrap = 'WRAP';
+    row.setBoundVariable('itemSpacing', V.space['300']);
 
     for (const e of variantSets) {
       const stage = figma.createAutoLayout('VERTICAL', { name: `stage-${e.node.name}`, itemSpacing: 24, fills: [] });
       row.appendChild(stage);
-      stage.layoutSizingHorizontal = 'HUG';
+      stage.layoutSizingHorizontal = 'FILL';
       stage.layoutSizingVertical = 'HUG';
       stage.setBoundVariable('itemSpacing', V.space['300']);
       stage.paddingTop = 32; stage.paddingBottom = 40; stage.paddingLeft = 40; stage.paddingRight = 40;
@@ -813,33 +820,54 @@ async function buildOne(CONFIG) {
     sectionIds.SUB_COMPONENTS = card.id;
     const inner = innerPad(card, 'VERTICAL', '400', '800');
     secHead(inner, '04', 'COMPOSITION', '· / sub-components',
-      'Sub-components',
-      'Internal building blocks used to compose this component. Reusable but not typically instanced standalone.'
+      'Sub-component sets',
+      `${subSets.length} sub-component set${subSets.length === 1 ? '' : 's'} used to compose this component. Reparented from their original page-level positions; reusable but not typically instanced standalone.`
     );
 
-    const row = figma.createAutoLayout('HORIZONTAL', { name: 'subcomp-row', itemSpacing: 32, fills: [], counterAxisAlignItems: 'MIN' });
-    inner.appendChild(row);
-    row.layoutSizingHorizontal = 'FILL';
-    row.layoutSizingVertical = 'HUG';
-    row.setBoundVariable('itemSpacing', V.space['400']);
-    row.layoutWrap = 'WRAP';
+    // subs-col — VERTICAL stack, gap 24. Stages are full-width FILL/HUG,
+    // each with a stage-head (name + sub-line) and the COMPONENT_SET below.
+    const col = figma.createAutoLayout('VERTICAL', { name: 'subs-col', itemSpacing: 24, fills: [] });
+    inner.appendChild(col);
+    col.layoutSizingHorizontal = 'FILL';
+    col.layoutSizingVertical = 'HUG';
+    col.setBoundVariable('itemSpacing', V.space['300']);
 
     for (const e of subSets) {
-      const stage = figma.createAutoLayout('VERTICAL', { name: `stage-${e.node.name}`, itemSpacing: 24, fills: [] });
-      row.appendChild(stage);
-      stage.layoutSizingHorizontal = 'HUG';
+      const stage = figma.createAutoLayout('VERTICAL', { name: `stage-${e.node.name}`, itemSpacing: 16, fills: [] });
+      col.appendChild(stage);
+      stage.layoutSizingHorizontal = 'FILL';
       stage.layoutSizingVertical = 'HUG';
-      stage.setBoundVariable('itemSpacing', V.space['300']);
+      stage.setBoundVariable('itemSpacing', V.space['200']);
       stage.paddingTop = 32; stage.paddingBottom = 40; stage.paddingLeft = 40; stage.paddingRight = 40;
       stage.fills = [bind(V.surface.subtle, COLORS.light)];
       for (const r of ['topLeftRadius','topRightRadius','bottomLeftRadius','bottomRightRadius']) stage.setBoundVariable(r, V.radius.lg);
 
-      const lbl = figma.createText();
-      lbl.fontName = { family: 'Inter', style: 'Bold' };
-      lbl.fontSize = 18;
-      lbl.characters = e.node.name;
-      lbl.fills = [bind(V.text.primary, COLORS.dark)];
-      stage.appendChild(lbl);
+      // stage-head: name (Geist Mono Medium 14) + sub-line (Inter Regular 13, FILL/HUG)
+      const head = figma.createAutoLayout('VERTICAL', { name: 'stage-head', itemSpacing: 8, fills: [] });
+      stage.appendChild(head);
+      head.layoutSizingHorizontal = 'FILL';
+      head.layoutSizingVertical = 'HUG';
+      head.setBoundVariable('itemSpacing', V.space['100']);
+
+      const nameLbl = figma.createText();
+      nameLbl.fontName = { family: 'Geist Mono', style: 'Medium' };
+      nameLbl.fontSize = 14;
+      nameLbl.characters = e.node.name;
+      nameLbl.fills = [bind(V.text.primary, COLORS.dark)];
+      head.appendChild(nameLbl);
+
+      const sub = figma.createText();
+      sub.fontName = { family: 'Inter', style: 'Regular' };
+      sub.fontSize = 13;
+      // Derive a tiny variant description from the set's children count
+      let variantCount = 0;
+      try { variantCount = (e.node.children || []).filter(c => c.type === 'COMPONENT').length; } catch (_) {}
+      sub.characters = variantCount > 0
+        ? `${variantCount} variant${variantCount === 1 ? '' : 's'}`
+        : 'Sub-component set';
+      sub.fills = [bind(V.text.secondary, COLORS.mid)];
+      head.appendChild(sub);
+      sub.layoutSizingHorizontal = 'FILL';
 
       try {
         stage.appendChild(e.node);
@@ -865,42 +893,82 @@ async function buildOne(CONFIG) {
     const inner = innerPad(card, 'VERTICAL', '400', '800');
     secHead(inner, '05', 'GUIDELINES', '· / usage',
       'When to use, when not to',
-      'Guidance from the component spec on appropriate usage.'
+      null
     );
 
-    const cols = figma.createAutoLayout('HORIZONTAL', { name: 'use-cols', itemSpacing: 32, fills: [], counterAxisAlignItems: 'MIN' });
+    // usage-row — HORIZONTAL, gap 24 (space/300), FILL/HUG.
+    const cols = figma.createAutoLayout('HORIZONTAL', { name: 'usage-row', itemSpacing: 24, fills: [], counterAxisAlignItems: 'MIN' });
     inner.appendChild(cols);
     cols.layoutSizingHorizontal = 'FILL';
     cols.layoutSizingVertical = 'HUG';
-    cols.setBoundVariable('itemSpacing', V.space['400']);
+    cols.setBoundVariable('itemSpacing', V.space['300']);
 
-    const makeCol = (kicker, body) => {
-      const col = figma.createAutoLayout('VERTICAL', { name: kicker, itemSpacing: 12, fills: [] });
+    // Each column: vertical, FILL/HUG, gap 16 (space/200), padding 32 (space/400),
+    // fill surface-subtle, radius container-lg. Header row has icon-circle + title.
+    const makeCol = (colName, glyph, glyphTone, title, body) => {
+      const col = figma.createAutoLayout('VERTICAL', { name: colName, itemSpacing: 16, fills: [] });
       cols.appendChild(col);
       col.layoutSizingHorizontal = 'FILL';
       col.layoutSizingVertical = 'HUG';
-      col.setBoundVariable('itemSpacing', V.space['150']);
-      col.paddingTop = 24; col.paddingBottom = 24; col.paddingLeft = 24; col.paddingRight = 24;
+      col.setBoundVariable('itemSpacing', V.space['200']);
+      col.paddingTop = 32; col.paddingBottom = 32; col.paddingLeft = 32; col.paddingRight = 32;
       col.fills = [bind(V.surface.subtle, COLORS.light)];
       for (const r of ['topLeftRadius','topRightRadius','bottomLeftRadius','bottomRightRadius']) col.setBoundVariable(r, V.radius.lg);
-      const k = figma.createText();
-      k.fontName = { family: 'Geist Mono', style: 'Medium' };
-      k.fontSize = 11;
-      k.characters = kicker;
-      k.letterSpacing = { unit: 'PERCENT', value: 8 };
-      k.fills = [bind(V.text.secondary, COLORS.mid)];
-      col.appendChild(k);
+
+      // col-head: HORIZONTAL, HUG/HUG, gap 12 (space/150), icon-circle + Inter Bold 20 title
+      const head = figma.createAutoLayout('HORIZONTAL', { name: 'col-head', itemSpacing: 12, counterAxisAlignItems: 'CENTER', fills: [] });
+      col.appendChild(head);
+      head.layoutSizingHorizontal = 'HUG';
+      head.layoutSizingVertical = 'HUG';
+      head.setBoundVariable('itemSpacing', V.space['150']);
+
+      // icon-circle: 28×28 FIXED, padding 6, full radius, fill bound to status surface
+      const icon = figma.createAutoLayout('HORIZONTAL', { name: 'icon-circle', itemSpacing: 0, counterAxisAlignItems: 'CENTER', primaryAxisAlignItems: 'CENTER', fills: [] });
+      head.appendChild(icon);
+      icon.resize(28, 28);
+      icon.layoutSizingHorizontal = 'FIXED';
+      icon.layoutSizingVertical = 'FIXED';
+      icon.paddingTop = 6; icon.paddingBottom = 6; icon.paddingLeft = 6; icon.paddingRight = 6;
+      for (const r of ['topLeftRadius','topRightRadius','bottomLeftRadius','bottomRightRadius']) icon.setBoundVariable(r, V.radius.full);
+      // Bind the circle fill to the appropriate success/error surface so it picks up mode flips
+      if (glyphTone === 'success') {
+        icon.fills = [bind(V.surface.successSubtle, COLORS.successSubtleC)];
+      } else {
+        icon.fills = [bind(V.surface.errorSubtle, COLORS.errorSubtleC)];
+      }
+      // Stroke matches the tone for crispness
+      icon.strokes = [bind(glyphTone === 'success' ? V.border.success : V.border.error,
+                            glyphTone === 'success' ? COLORS.success : COLORS.error)];
+      icon.strokeWeight = 1;
+
+      const glyphText = figma.createText();
+      glyphText.fontName = { family: 'Inter', style: 'Bold' };
+      glyphText.fontSize = 14;
+      glyphText.characters = glyph;
+      glyphText.fills = [bind(glyphTone === 'success' ? V.text.success : V.text.error,
+                              glyphTone === 'success' ? COLORS.success : COLORS.error)];
+      icon.appendChild(glyphText);
+
+      const ttl = figma.createText();
+      ttl.fontName = { family: 'Inter', style: 'Bold' };
+      ttl.fontSize = 20;
+      ttl.lineHeight = { unit: 'PIXELS', value: 28 };
+      ttl.characters = title;
+      ttl.fills = [bind(V.text.primary, COLORS.dark)];
+      head.appendChild(ttl);
+
+      // Body text — Inter Regular 16, lh 24, FILL/HUG
       const t = figma.createText();
       t.fontName = { family: 'Inter', style: 'Regular' };
-      t.fontSize = 18;
-      t.lineHeight = { unit: 'PIXELS', value: 28 };
+      t.fontSize = 16;
+      t.lineHeight = { unit: 'PIXELS', value: 24 };
       t.characters = body;
       t.fills = [bind(V.text.primary, COLORS.dark)];
       col.appendChild(t);
       t.layoutSizingHorizontal = 'FILL';
     };
-    if (wtu) makeCol('WHEN TO USE', wtu);
-    if (wnt) makeCol('WHEN NOT TO USE', wnt);
+    if (wtu) makeCol('When to use', '\u2713', 'success', 'When to use', wtu);
+    if (wnt) makeCol('When not to use', '\u2715', 'error', 'When not to use', wnt);
     return true;
   };
 
@@ -915,69 +983,87 @@ async function buildOne(CONFIG) {
     const inner = innerPad(card, 'VERTICAL', '400', '800');
     secHead(inner, '06', 'A11Y / WCAG', '· / accessibility',
       'Keyboard & screen reader',
-      'Keyboard interactions defined by the component spec.'
+      'How keyboard users and assistive technology interact with this component.'
     );
 
-    const table = figma.createAutoLayout('VERTICAL', { name: 'kbd-table', itemSpacing: 0, fills: [] });
+    // Table: VERTICAL, gap 0, no outer stroke/radius (rows carry their own bottom borders).
+    const table = figma.createAutoLayout('VERTICAL', { name: 'keyboard-table', itemSpacing: 0, fills: [] });
     inner.appendChild(table);
     table.layoutSizingHorizontal = 'FILL';
     table.layoutSizingVertical = 'HUG';
-    table.strokes = [bind(V.border.tertiary, COLORS.light)];
-    table.strokeWeight = 1;
-    for (const r of ['topLeftRadius','topRightRadius','bottomLeftRadius','bottomRightRadius']) table.setBoundVariable(r, V.radius.lg);
-    table.clipsContent = true;
 
-    // Header row
-    const headerRow = figma.createAutoLayout('HORIZONTAL', { name: 'kbd-head', itemSpacing: 16, fills: [] });
-    table.appendChild(headerRow);
-    headerRow.layoutSizingHorizontal = 'FILL';
-    headerRow.layoutSizingVertical = 'HUG';
-    headerRow.paddingTop = 16; headerRow.paddingBottom = 16; headerRow.paddingLeft = 24; headerRow.paddingRight = 24;
-    headerRow.setBoundVariable('itemSpacing', V.space['200']);
-    headerRow.fills = [bind(V.surface.subtle, COLORS.light)];
+    // thead — HORIZONTAL, FILL/HUG, gap 24 (space/300), padding [16, 24, 16, 24]
+    const thead = figma.createAutoLayout('HORIZONTAL', { name: 'thead', itemSpacing: 24, fills: [] });
+    table.appendChild(thead);
+    thead.layoutSizingHorizontal = 'FILL';
+    thead.layoutSizingVertical = 'HUG';
+    thead.paddingTop = 16; thead.paddingBottom = 16; thead.paddingLeft = 24; thead.paddingRight = 24;
+    thead.setBoundVariable('itemSpacing', V.space['300']);
+    thead.strokes = [bind(V.border.tertiary, COLORS.light)];
+    thead.strokeBottomWeight = 1; thead.strokeTopWeight = 0; thead.strokeLeftWeight = 0; thead.strokeRightWeight = 0;
+
     const headKey = figma.createText();
     headKey.fontName = { family: 'Geist Mono', style: 'Medium' };
     headKey.fontSize = 11;
     headKey.characters = 'KEY';
     headKey.letterSpacing = { unit: 'PERCENT', value: 8 };
     headKey.fills = [bind(V.text.secondary, COLORS.mid)];
-    headerRow.appendChild(headKey);
-    headKey.resize(280, headKey.height);
+    thead.appendChild(headKey);
+    headKey.resize(220, headKey.height);
     headKey.layoutSizingHorizontal = 'FIXED';
+
     const headAct = figma.createText();
     headAct.fontName = { family: 'Geist Mono', style: 'Medium' };
     headAct.fontSize = 11;
     headAct.characters = 'ACTION';
     headAct.letterSpacing = { unit: 'PERCENT', value: 8 };
     headAct.fills = [bind(V.text.secondary, COLORS.mid)];
-    headerRow.appendChild(headAct);
+    thead.appendChild(headAct);
     headAct.layoutSizingHorizontal = 'FILL';
 
+    // Rows
     for (const row of kbd) {
-      const r = figma.createAutoLayout('HORIZONTAL', { name: 'kbd-row', itemSpacing: 16, fills: [] });
-      table.appendChild(r);
-      r.layoutSizingHorizontal = 'FILL';
-      r.layoutSizingVertical = 'HUG';
-      r.paddingTop = 16; r.paddingBottom = 16; r.paddingLeft = 24; r.paddingRight = 24;
-      r.setBoundVariable('itemSpacing', V.space['200']);
-      r.strokes = [bind(V.border.tertiary, COLORS.light)];
-      r.strokeWeight = 1;
-      r.strokeTopWeight = 1; r.strokeRightWeight = 0; r.strokeBottomWeight = 0; r.strokeLeftWeight = 0;
+      const tr = figma.createAutoLayout('HORIZONTAL', { name: 'tr', itemSpacing: 24, fills: [], counterAxisAlignItems: 'CENTER' });
+      table.appendChild(tr);
+      tr.layoutSizingHorizontal = 'FILL';
+      tr.layoutSizingVertical = 'HUG';
+      tr.paddingTop = 16; tr.paddingBottom = 16; tr.paddingLeft = 24; tr.paddingRight = 24;
+      tr.setBoundVariable('itemSpacing', V.space['300']);
+      tr.strokes = [bind(V.border.tertiary, COLORS.light)];
+      tr.strokeBottomWeight = 1; tr.strokeTopWeight = 0; tr.strokeLeftWeight = 0; tr.strokeRightWeight = 0;
+
+      // key-col — FIXED 220w / HUG height, contains a kbd-pill
+      const keyCol = figma.createAutoLayout('HORIZONTAL', { name: 'key-col', itemSpacing: 8, fills: [] });
+      tr.appendChild(keyCol);
+      keyCol.resize(220, 25);
+      keyCol.layoutSizingHorizontal = 'FIXED';
+      keyCol.layoutSizingVertical = 'HUG';
+      keyCol.setBoundVariable('itemSpacing', V.space['100']);
+
+      const kbdPill = figma.createAutoLayout('HORIZONTAL', { name: 'kbd', itemSpacing: 0, counterAxisAlignItems: 'CENTER', fills: [] });
+      keyCol.appendChild(kbdPill);
+      kbdPill.layoutSizingHorizontal = 'HUG';
+      kbdPill.layoutSizingVertical = 'HUG';
+      kbdPill.paddingTop = 4; kbdPill.paddingBottom = 4; kbdPill.paddingLeft = 10; kbdPill.paddingRight = 10;
+      for (const r of ['topLeftRadius','topRightRadius','bottomLeftRadius','bottomRightRadius']) kbdPill.setBoundVariable(r, V.radius.sm);
+      kbdPill.fills = [bind(V.surface.subtle, COLORS.light)];
+      kbdPill.strokes = [bind(V.border.tertiary, COLORS.light)];
+      kbdPill.strokeWeight = 1;
+
       const keyT = figma.createText();
       keyT.fontName = { family: 'Geist Mono', style: 'Medium' };
-      keyT.fontSize = 14;
+      keyT.fontSize = 13;
       keyT.characters = row.key || '';
       keyT.fills = [bind(V.text.primary, COLORS.dark)];
-      r.appendChild(keyT);
-      keyT.resize(280, keyT.height);
-      keyT.layoutSizingHorizontal = 'FIXED';
+      kbdPill.appendChild(keyT);
+
       const actT = figma.createText();
       actT.fontName = { family: 'Inter', style: 'Regular' };
-      actT.fontSize = 16;
-      actT.lineHeight = { unit: 'PIXELS', value: 24 };
+      actT.fontSize = 15;
+      actT.lineHeight = { unit: 'PIXELS', value: 22 };
       actT.characters = row.action || '';
       actT.fills = [bind(V.text.primary, COLORS.dark)];
-      r.appendChild(actT);
+      tr.appendChild(actT);
       actT.layoutSizingHorizontal = 'FILL';
     }
     return true;
@@ -1115,10 +1201,13 @@ async function buildOne(CONFIG) {
     makeMetaCol('GENERATED', tsLocal);
     makeMetaCol('CSS', `uds/components/${cid}/${cid}.css`);
     makeMetaCol('SPEC JSON', `uds/components/${cid}/spec.json`);
-    const ownerD = CONFIG.json.owner && CONFIG.json.owner.designer ? CONFIG.json.owner.designer : 'Unassigned';
-    const ownerDev = CONFIG.json.owner && CONFIG.json.owner.developer ? CONFIG.json.owner.developer : 'Unassigned';
-    makeMetaCol('DESIGNER', ownerD);
-    makeMetaCol('DEVELOPER', ownerDev);
+    // Only render DESIGNER / DEVELOPER columns when the spec actually names
+    // someone — match reference cards that omit "Unassigned" entries to keep
+    // the meta-row tight.
+    const ownerD = CONFIG.json.owner && CONFIG.json.owner.designer ? CONFIG.json.owner.designer : null;
+    const ownerDev = CONFIG.json.owner && CONFIG.json.owner.developer ? CONFIG.json.owner.developer : null;
+    if (ownerD && ownerD !== 'Unassigned') makeMetaCol('DESIGNER', ownerD);
+    if (ownerDev && ownerDev !== 'Unassigned') makeMetaCol('DEVELOPER', ownerDev);
 
     // spacer
     const sp2 = figma.createAutoLayout('HORIZONTAL', { name: 'sp2', itemSpacing: 0, fills: [] });
