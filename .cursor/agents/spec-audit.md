@@ -3,7 +3,7 @@ name: spec-audit
 description: Audits per-component spec.json completeness across one or all UDS components. Reports gaps and recommends the highest-impact fields to fill in next. Read-only — never modifies files. Use when the user asks "what specs are incomplete?", "audit the X spec", "which components need spec work?", or before a release.
 model: inherit
 readonly: true
-lastUpdated: 2026-05-12
+lastUpdated: 2026-05-12T18:41:50Z
 ---
 
 # Spec Audit

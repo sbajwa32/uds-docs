@@ -1,7 +1,7 @@
 ---
 description: Classifies Figma-derived token and component changes by confidence and breaking-change risk before anything is applied.
 alwaysApply: true
-lastUpdated: 2026-04-30
+lastUpdated: 2026-05-12T18:41:50Z
 ---
 
 # UDS Figma Change Classification

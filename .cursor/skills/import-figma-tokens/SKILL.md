@@ -1,7 +1,7 @@
 ---
 name: import-figma-tokens
 description: Import UDS token changes from the UDS Tokens Figma file. Uses direct Figma Variables reads first and token ZIP exports only as fallback. Writes token CSS only after token-audit passes.
-lastUpdated: 2026-05-12
+lastUpdated: 2026-05-12T18:41:50Z
 ---
 
 # Import Figma Tokens
@@ -128,7 +128,7 @@ Only update snapshots after CSS and docs match the new token model.
 ### 8. Commit and push
 
 Before commit, complete the round-trip checklist in
-[`uds-master-preflight.mdc`](../../rules/uds-master-preflight.mdc) §"Phase 3".
+[`uds-master-preflight.mdc`](../../rules/uds-master-preflight.mdc) §"Phase 5".
 For token imports specifically: token changes are typically global (no per-component
 changelog updates needed unless a component CSS regressed), but if `uds/CHANGELOG.json`
 changes via `uds/CHANGELOG.globalNotes.json`, `sync-figma-release-notes` must run.

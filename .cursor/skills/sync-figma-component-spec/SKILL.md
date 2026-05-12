@@ -1,7 +1,7 @@
 ---
 name: sync-figma-component-spec
 description: Update a UDS component's per-component artifacts (spec.json, CSS, examples, impl.json, playground.js) from a deep Figma component inspection. Use for prompts like "sync Button from Figma" or after figma-component-inspector reports high-confidence changes.
-lastUpdated: 2026-05-12
+lastUpdated: 2026-05-12T18:41:50Z
 ---
 
 # Sync Figma Component Spec
@@ -213,7 +213,7 @@ If applying:
 10. Visual-check Examples, Code, Guidelines, and Playground on the affected
     component page.
 
-The Phase 3 finalize checklist in `.cursor/rules/uds-master-preflight.mdc` is
+The Phase 5 finalize checklist in `.cursor/rules/uds-master-preflight.mdc` is
 the canonical round-trip checklist; steps 4\u20139 above are this skill's
 specialization of it.
 

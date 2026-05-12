@@ -2,7 +2,7 @@
 name: figma-spec-gap
 description: Read-only agent that compares UDS Components Figma coverage against the doc site's component JSON specs, sidebar pages, figmaNodeId fields, and Storybook links. Use when asking "what specs are missing from Figma?", "which components need Figma links?", or as part of the broader UDS updated workflow.
 model: inherit
-lastUpdated: 2026-05-12
+lastUpdated: 2026-05-12T18:41:50Z
 ---
 
 # Figma Spec Gap

@@ -1,7 +1,7 @@
 ---
 name: sync-figma-release-notes
 description: Rebuild Release Notes frames in both UDS Figma files from the aggregated UDS CHANGELOG. Use during releases or after CHANGELOG changes that must be mirrored in Figma.
-lastUpdated: 2026-05-12
+lastUpdated: 2026-05-12T18:41:50Z
 ---
 
 # Sync Figma Release Notes
@@ -206,4 +206,4 @@ Report:
   stale.
 
 Before commit, complete the round-trip checklist in
-`.cursor/rules/uds-master-preflight.mdc` Phase 3.
+`.cursor/rules/uds-master-preflight.mdc` Phase 5.

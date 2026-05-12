@@ -2,7 +2,7 @@
 description: Checklist for implementing or updating a UDS component — ensures the per-component folder is whole and consistent across CSS, spec, examples, status, changelog, and playground.
 globs: ["uds-docs/**"]
 alwaysApply: false
-lastUpdated: 2026-05-08
+lastUpdated: 2026-05-12T18:41:50Z
 ---
 
 # UDS Component Completeness Checklist

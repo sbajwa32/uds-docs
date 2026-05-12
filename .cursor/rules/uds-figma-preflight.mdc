@@ -2,7 +2,7 @@
 description: Required preflight for any task that reads or writes UDS Figma files.
 globs: ["**/*"]
 alwaysApply: false
-lastUpdated: 2026-05-09
+lastUpdated: 2026-05-12T18:41:50Z
 ---
 
 # UDS Figma Preflight

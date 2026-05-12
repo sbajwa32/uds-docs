@@ -1,16 +1,16 @@
 ---
 description: Master workflow rule — enforces version bump FIRST, then changes, then finalize. Runs on every task that modifies uds-docs/.
 alwaysApply: true
-lastUpdated: 2026-05-12
+lastUpdated: 2026-05-12T18:41:50Z
 ---
 
 # UDS Master Workflow
 
-## BUMP FIRST — Change Second — Finalize Last
+## SYNC FIRST — Source-of-truth check — BUMP — Change — Finalize
 
-This is NOT a post-hoc checklist. It is a mandatory four-phase workflow.
+This is NOT a post-hoc checklist. It is a mandatory five-phase workflow.
 
-### Phase -1: BEFORE anything — verify sync state with origin
+### Phase 1: BEFORE anything — verify sync state with origin
 
 Before reading rules or starting work, confirm the local repo is current
 with `origin/main`. Cloud-agent edits to `.cursor/rules/`,
@@ -18,17 +18,22 @@ with `origin/main`. Cloud-agent edits to `.cursor/rules/`,
 to a local agent until pulled — which means the local agent can read a
 stale rule and act on outdated guidance without knowing.
 
-The `sessionStart` hook in `.cursor/hooks.json` runs this check
-automatically at the start of every session and prints a warning if the
-local is behind. If the hook didn't run (Cursor ran without hooks,
-hooks were disabled, or the warning is missing), run it manually:
+The `sessionStart` Cursor hook at `.cursor/hooks/sync-check.sh` runs
+this check automatically at the start of every session. It writes the
+canonical state file at `.cursor/state/sync-status.json` (always, even
+when in sync) AND best-effort emits an `additional_context` warning per
+Cursor's documented hook output schema.
+
+The state file is the source of truth — `additional_context` injection
+has had reported reliability issues for `sessionStart` hooks in past
+Cursor versions. So always read the file:
 
 ```bash
-git fetch --quiet origin && git status -sb
+cat .cursor/state/sync-status.json
 ```
 
-If `git status` shows `[behind N]`, STOP and pull before doing any other
-work:
+If `status` is `behind` or `diverged`, STOP and pull before any other
+work, using the `recommendedPull` value from the state file:
 
 - `git pull --ff-only origin main` if local has no diverging commits
 - `git pull --rebase origin main` if local has work to preserve
@@ -36,16 +41,24 @@ work:
 Then re-read any rule/skill/agent file you've already loaded in this
 session — your previous read may have been stale.
 
+If the hook didn't run for any reason (Cursor ran without hooks, the
+state file is missing, or its `writtenAt` timestamp is older than the
+session start), run it manually:
+
+```bash
+git fetch --quiet origin && git status -sb
+```
+
 The companion artifacts:
 - [`.cursor/TOOLCHAIN.md`](../TOOLCHAIN.md) — inventory of every rule,
-  skill, and subagent with `lastUpdated` per file. Use it for a
-  fast "what changed in the instruction layer since I last looked?"
-  scan.
+  skill, and subagent with ISO 8601 UTC `lastUpdated` per file. Use it
+  for a fast "what changed in the instruction layer since I last
+  looked?" scan.
 - [`uds-rule-discipline.mdc`](./uds-rule-discipline.mdc) — what to
   do AFTER editing a rule/skill/subagent (lastUpdated bump, TOOLCHAIN
-  row).
+  regenerate). Enforced by `scripts/audit-toolchain-currency.sh`.
 
-### Phase 0: BEFORE you start — is this even your call?
+### Phase 2: BEFORE you start — is this even your call?
 
 If the request is going to modify any file under **`uds-docs/uds/`**
 (tokens, component CSS, spec.json, examples, schemas, status.json,
@@ -62,7 +75,7 @@ edits.
 This check sits BEFORE the SITE bump on purpose — there's no point
 running `bump-site.sh` if the proposed change shouldn't happen at all.
 
-### Phase 1: BEFORE making any changes
+### Phase 3: BEFORE making any changes
 
 When you receive a request that will modify ANY file in `uds-docs/`, your FIRST action must be:
 
@@ -81,11 +94,11 @@ conversation STARTED, not the current date. It can be days or weeks stale.
 The bump script uses the system `date` command as the ONLY source of truth.
 NEVER guess, calculate, or remember dates.
 
-### Phase 2: Make the actual changes
+### Phase 4: Make the actual changes
 
 Now do whatever the user asked for. Edit CSS, HTML, JS, add components, etc.
 
-### Phase 3: Finalize — canonical component-update round-trip checklist
+### Phase 5: Finalize — canonical component-update round-trip checklist
 
 After all changes are complete, run THIS exact checklist. Every named
 Figma-sync skill (`sync-figma-component-spec`, `sync-figma-component-status`,
@@ -155,20 +168,28 @@ skill files; do them here.
 11. **Agent-toolchain bookkeeping** — if you edited any file under
     `.cursor/rules/`, `.cursor/skills/`, or `.cursor/agents/` (added,
     renamed, removed, or changed content):
-    - Bump that file's `lastUpdated:` in its YAML frontmatter to today's
-      date. Use `date +%Y-%m-%d` — never guess.
-    - Update the matching row in
-      [`.cursor/TOOLCHAIN.md`](../TOOLCHAIN.md) (date column, and
-      description column if the frontmatter description changed). If you
-      added a new rule/skill/subagent, add a new row in the right
-      section. If you removed one, delete the row.
+    - Bump that file's `lastUpdated:` in its YAML frontmatter to the
+      current ISO 8601 UTC timestamp. Use `date -u +%Y-%m-%dT%H:%M:%SZ`
+      — never guess. Format must match the precedent set by
+      `.cursor/figma/state/last-sync.json` `lastSuccessfulSync`.
+    - Run `bash scripts/regenerate-toolchain.sh` to deterministically
+      rebuild `.cursor/TOOLCHAIN.md` from frontmatter. Do NOT hand-edit
+      the index — your edits will be overwritten on the next regenerate.
     - If the change affected the file's purpose or description, mirror
       it in
       [`uds-docs/docs/pages/cursor-workflows.html`](../../uds-docs/docs/pages/cursor-workflows.html)
-      in the same commit. `scripts/audit-agent-docs-currency.sh` blocks
-      merge when a rule/skill/subagent file exists but isn't referenced
-      on the page (and the reverse). Internal-only artifacts that
-      intentionally aren't on the page belong in
+      in the same commit.
+
+    Two audits enforce this:
+
+    - `scripts/audit-toolchain-currency.sh` — fails if any file's
+      `lastUpdated` is older than its git mtime, if any file is missing
+      a row in `TOOLCHAIN.md`, or if any row date disagrees with the
+      file's frontmatter.
+    - `scripts/audit-agent-docs-currency.sh` — fails if a
+      rule/skill/subagent file exists but isn't referenced on
+      `cursor-workflows.html` (or the reverse). Internal-only artifacts
+      that intentionally aren't on the page belong in
       `scripts/audit-baseline.json`
       `audit-agent-docs-currency.toleratedFiles`.
 
@@ -187,7 +208,7 @@ By bumping FIRST, the version is already incremented before any edits begin.
 The changelog stub is waiting to be filled. These cannot be forgotten because
 they happen before the work, not after.
 
-The Phase 3 checklist additions (per-component changelog, aggregate, snapshot,
+The Phase 5 checklist additions (per-component changelog, aggregate, snapshot,
 Figma Release Notes) are now enforced by CI audits, not just discipline:
 
 - `scripts/audit-changelog-currency.sh` — fails if a component's source files
@@ -205,3 +226,8 @@ Figma Release Notes) are now enforced by CI audits, not just discipline:
   `uds-docs/docs/pages/cursor-workflows.html`, or vice-versa (the page
   references a deleted file). Baseline-grandfathered via
   `scripts/audit-baseline.json`.
+- `scripts/audit-toolchain-currency.sh` — fails if any
+  rule/skill/subagent file's frontmatter `lastUpdated:` is older
+  (date-only) than the file's git mtime, if any file is missing a
+  row in `.cursor/TOOLCHAIN.md`, or if any row's date doesn't match
+  the file's frontmatter exactly. Three checks bundled.

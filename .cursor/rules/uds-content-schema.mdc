@@ -1,7 +1,7 @@
 ---
 description: When editing per-component spec content, edit the spec.json INSIDE that component's folder — never re-introduce component spec content into index.html. New components require a new uds/components/<id>/spec.json file first.
 alwaysApply: true
-lastUpdated: 2026-05-08
+lastUpdated: 2026-05-12T18:41:50Z
 ---
 
 # UDS Content Schema

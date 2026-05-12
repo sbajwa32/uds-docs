@@ -2,7 +2,7 @@
 name: figma-token-audit
 description: Directly reads the UDS Tokens Figma Variables structure, validates it against the token architecture contract, diffs it against the last sync snapshot and CSS outputs, and reports changes. Read-only; requests ZIP exports only as fallback.
 model: inherit
-lastUpdated: 2026-05-07
+lastUpdated: 2026-05-12T18:41:50Z
 ---
 
 # Figma Token Audit

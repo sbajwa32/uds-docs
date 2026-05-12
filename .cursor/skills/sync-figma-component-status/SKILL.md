@@ -1,7 +1,7 @@
 ---
 name: sync-figma-component-status
 description: Sync UDS Components Figma stoplight page prefixes into per-component status.json files. Use after figma-inventory reports status mismatches.
-lastUpdated: 2026-05-12
+lastUpdated: 2026-05-12T18:41:50Z
 ---
 
 # Sync Figma Component Status
@@ -61,7 +61,7 @@ lifecycle state.
 12. Visual-check the Roadmap and sidebar status badges.
 13. Commit and push directly to `main`.
 
-The Phase 3 finalize checklist in `.cursor/rules/uds-master-preflight.mdc` is
+The Phase 5 finalize checklist in `.cursor/rules/uds-master-preflight.mdc` is
 the canonical round-trip checklist; steps 6\u201311 above are this skill's
 specialization of it.
 

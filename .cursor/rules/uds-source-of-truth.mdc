@@ -1,7 +1,7 @@
 ---
 description: Figma is the source of truth for everything under uds-docs/uds/ — tokens, component CSS, specs, examples, schemas, all of it. Agents must not autonomously modify those files in response to audit findings; surface findings as reports instead.
 alwaysApply: true
-lastUpdated: 2026-05-11
+lastUpdated: 2026-05-12T18:41:50Z
 ---
 
 # UDS Source of Truth

@@ -1,7 +1,7 @@
 ---
 name: uds-updated
 description: Orchestrate a full UDS Figma-to-docs sync from a simple prompt like "UDS updated" or "Figma updated". Reads Figma Tokens and Components, classifies changes, applies only high-confidence non-breaking updates, and falls back to dry-run/reporting for ambiguous or breaking changes.
-lastUpdated: 2026-05-08
+lastUpdated: 2026-05-12T18:41:50Z
 ---
 
 # UDS Updated

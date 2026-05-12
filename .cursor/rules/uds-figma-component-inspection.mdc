@@ -2,7 +2,7 @@
 description: Requires deep Figma node inspection for UDS Components; screenshots are supporting evidence only.
 globs: ["uds-docs/**", ".cursor/**"]
 alwaysApply: false
-lastUpdated: 2026-05-09
+lastUpdated: 2026-05-12T18:41:50Z
 ---
 
 # UDS Figma Component Inspection

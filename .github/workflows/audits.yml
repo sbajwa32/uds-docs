@@ -55,6 +55,9 @@ jobs:
       - name: Agent toolchain docs currency
         run: bash scripts/audit-agent-docs-currency.sh
 
+      - name: Toolchain currency (lastUpdated + TOOLCHAIN.md)
+        run: bash scripts/audit-toolchain-currency.sh
+
       # Round-trip checks — these compare against /tmp/baseline-data which
       # only exists in the cloud agent VM. Skip in CI but keep the script
       # available for human runs. (Round-trip drift is caught by the four

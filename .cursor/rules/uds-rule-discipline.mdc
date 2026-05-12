@@ -2,7 +2,7 @@
 description: Discipline that fires whenever you edit a Cursor rule, skill, or subagent file. Bump that file's `lastUpdated:` frontmatter and update the matching row in `.cursor/TOOLCHAIN.md` in the same commit. Mirrors the SITE_CHANGELOG discipline for the documentation site.
 alwaysApply: false
 globs: [".cursor/rules/**", ".cursor/skills/**", ".cursor/agents/**"]
-lastUpdated: 2026-05-12
+lastUpdated: 2026-05-12T18:41:50Z
 ---
 
 # Cursor Rule / Skill / Subagent Discipline
@@ -19,16 +19,22 @@ Every rule/skill/subagent file has a YAML frontmatter block:
 ---
 description: ...
 alwaysApply: ... or globs: [...]
-lastUpdated: YYYY-MM-DD
+lastUpdated: YYYY-MM-DDTHH:MM:SSZ
 ---
 ```
 
-When you edit the file, update `lastUpdated:` to today's date. Use the
-system `date` command — never guess:
+When you edit the file, update `lastUpdated:` to the current ISO 8601
+UTC timestamp. Use the system `date` command — never guess:
 
 ```bash
-date +%Y-%m-%d
+date -u +%Y-%m-%dT%H:%M:%SZ
 ```
+
+This format matches the precedent set by
+`.cursor/figma/state/last-sync.json` `lastSuccessfulSync` and is the
+canonical timestamp shape for "when did this happen" across the repo.
+The trailing `Z` indicates UTC explicitly so cloud-agent and local-agent
+edits sort unambiguously regardless of timezone.
 
 If the file is a brand new rule/skill/subagent and doesn't have
 frontmatter yet, add the full block. The required fields are:
@@ -42,23 +48,37 @@ frontmatter yet, add the full block. The required fields are:
 | `model:` | n/a | n/a | optional |
 | `lastUpdated:` | required | required | required |
 
-## 2. Update the matching row in `.cursor/TOOLCHAIN.md`
+## 2. Regenerate `.cursor/TOOLCHAIN.md`
+
+```bash
+bash scripts/regenerate-toolchain.sh
+```
 
 [`.cursor/TOOLCHAIN.md`](../TOOLCHAIN.md) is the index of every
-rule/skill/subagent in the repo, with one row per file. It mirrors the
-frontmatter so the agent can read it at session start to see what has
-changed in the instruction layer.
+rule/skill/subagent in the repo. **Do not hand-edit it** — the
+regenerator script overwrites the tables on every run from the
+frontmatter of the source files. Any manual edits to the tables will
+be lost.
 
-When you edit any of these files:
+The script handles every bookkeeping case automatically:
 
-- **Edited an existing file** — update the date column for that row.
-  Update the description column too if the frontmatter `description:`
-  changed.
-- **Added a new file** — add a new row in the right section (Rules,
-  Skills, or Subagents). Increment the section count in the section
-  heading (e.g. `## Rules (15)` → `## Rules (16)`).
-- **Removed a file** — delete the row. Decrement the section count.
-- **Renamed a file** — update the link target and the date.
+- **Edited an existing file** — its row's date column updates from
+  the new `lastUpdated:`; description column updates if you changed
+  the frontmatter `description:`.
+- **Added a new file** — a new row appears in the right section
+  (Rules, Skills, or Subagents). The section count in the heading
+  also updates (e.g. `## Rules (15)` → `## Rules (16)`).
+- **Removed a file** — its row disappears. The section count
+  decrements.
+- **Renamed a file** — the link target and date update.
+
+If you also want to re-stamp every file's `lastUpdated:` to the same
+moment (rare — typically only done after a deliberate "audit
+everything" pass), run:
+
+```bash
+bash scripts/seed-toolchain-timestamps.sh
+```
 
 ## Why this discipline exists
 
@@ -77,21 +97,44 @@ equivalent.
 
 ## Related rules and audits
 
-- [`uds-master-preflight.mdc`](./uds-master-preflight.mdc) Phase -1 —
+- [`uds-master-preflight.mdc`](./uds-master-preflight.mdc) Phase 1 —
   the sync-state check that ensures you're not editing on a stale
-  baseline.
-- [`uds-master-preflight.mdc`](./uds-master-preflight.mdc) Phase 3 step
-  11 — the user-facing
+  baseline. Reads `.cursor/state/sync-status.json` (written by the
+  `sessionStart` hook at `.cursor/hooks/sync-check.sh`).
+- [`uds-master-preflight.mdc`](./uds-master-preflight.mdc) Phase 5
+  step 11 — folds the `lastUpdated` bump, TOOLCHAIN regenerate, and
+  user-facing
   [`uds-docs/docs/pages/cursor-workflows.html`](../../uds-docs/docs/pages/cursor-workflows.html)
-  must also be updated when a rule/skill/subagent's purpose changes.
+  mirror into the canonical finalize checklist.
+
+## CI enforcement
+
+Two CI audits enforce this discipline. Both run on every PR + push to
+`main` via `.github/workflows/audits.yml`:
+
+- `scripts/audit-toolchain-currency.sh` — three checks bundled:
+  1. Every rule/skill/subagent file's frontmatter `lastUpdated:` is at
+     least as recent (date-only) as the file's git mtime. Catches
+     "edited a file but forgot to bump the date stamp."
+  2. Every rule/skill/subagent file has a row in
+     `.cursor/TOOLCHAIN.md`. Catches "added a new file but forgot the
+     index."
+  3. Every TOOLCHAIN row's date matches the source file's frontmatter
+     `lastUpdated:` exactly. Catches "bumped the file but forgot to
+     regenerate the index."
 - `scripts/audit-agent-docs-currency.sh` — blocks merge if a
   rule/skill/subagent file exists but isn't referenced on the
-  cursor-workflows page (or the reverse).
+  cursor-workflows page (or the reverse). Internal-only artifacts that
+  intentionally aren't on the page belong in
+  `scripts/audit-baseline.json`
+  `audit-agent-docs-currency.toleratedFiles`.
 
-## Not currently CI-enforced
+If `audit-toolchain-currency.sh` fails, the failure message includes the
+exact fix command per row. The most common one-shot remediation is:
 
-There is no audit script that fails CI when `lastUpdated:` or
-`TOOLCHAIN.md` is stale. Treat it the same as the SITE_CHANGELOG
-discipline: a non-negotiable post-edit step. If this becomes a recurring
-gap, add a `scripts/audit-toolchain-currency.sh` that diffs git mtime
-against `lastUpdated:` and `TOOLCHAIN.md` rows.
+```bash
+date -u +%Y-%m-%dT%H:%M:%SZ                                # check today's UTC stamp
+# edit your rule/skill/agent file's frontmatter lastUpdated to match
+bash scripts/regenerate-toolchain.sh                       # rebuild TOOLCHAIN.md
+bash scripts/audit-toolchain-currency.sh                   # confirm clean
+```

@@ -1,7 +1,7 @@
 ---
 name: link-figma-nodes
 description: Populate figmaNodeId and figmaPageNodeId fields in per-component spec.json files from canonical UDS Components Figma nodes. Use when Figma deep links are missing or stale.
-lastUpdated: 2026-05-12
+lastUpdated: 2026-05-12T18:41:50Z
 ---
 
 # Link Figma Nodes
@@ -116,7 +116,7 @@ Then:
    page deep-links to the correct node in Figma.
 8. Commit and push.
 
-The Phase 3 finalize checklist in `.cursor/rules/uds-master-preflight.mdc`
+The Phase 5 finalize checklist in `.cursor/rules/uds-master-preflight.mdc`
 is the canonical round-trip checklist; steps 2\u20137 above are this skill's
 specialization of it.
 
