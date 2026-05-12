@@ -30,8 +30,8 @@ Always work on the testbed first unless the user explicitly says "mainline". Tok
 ## Page wrapper anatomy
 
 ```
-udc-<id>-page (FRAME, 2800w, hug height, fill: surface-subtle)
-├── status-accent (RECTANGLE, 2800×8, status-tinted gradient — wrapper-level)
+udc-<id>-page (FRAME, 2800w, hug height, fill: page-subtle, radius: container-xl, clipsContent: true)
+├── status-accent (RECTANGLE, 2800×8, status-tinted gradient — wrapper-level, clipped by wrapper corners)
 ├── content (FRAME, FILL w, hug h, autolayout V, gap: space/1000, padding: space/800)
 │   ├── HEADER          (light card, taller padding)
 │   ├── ANATOMY         (light card)  ← optional, omit for placeholder pages
@@ -41,6 +41,13 @@ udc-<id>-page (FRAME, 2800w, hug height, fill: surface-subtle)
 │   ├── ACCESSIBILITY   (light card)  ← optional, requires accessibility.keyboard
 │   └── META            (light card, taller padding)
 ```
+
+The page wrapper itself is rounded (`uds/border/radius/container-xl`,
+matching the inner cards) and clips its content, so the
+`status-accent` strip at the top inherits the wrapper's rounded
+top-left and top-right corners. The wrapper has no stroke — the
+rounded silhouette against the Figma canvas background reads as
+"a single page document floating on the canvas."
 
 The page is positioned at `(0, 0)`. Component sets are reparented INTO the appropriate cards — never duplicated, never left at top level.
 
