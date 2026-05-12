@@ -1,0 +1,186 @@
+{
+  "schemaVersion": 1,
+  "snapshottedAt": "2026-05-12T19:20:00Z",
+  "snapshottedFrom": {
+    "fileKey": "1XJoUJgtNpw4R0IIT3VjoK",
+    "fileName": "UDS Components",
+    "pageId": "7481:14",
+    "pageName": "📐 _TEMPLATE { Component card }",
+    "wrapperFrameId": "7685:2",
+    "wrapperFrameName": "_template-component-card"
+  },
+  "purpose": "Structural snapshot of the canonical mainline _TEMPLATE page. Drives scripts/audit-figma-card-template.sh, which fails CI if .cursor/skills/figma-component-card/references/build-card.js stops emitting these values. The template page is a designer-authored visual reference (NOT a runtime input to the builder); this snapshot is how we keep the recipe and the reference honest with each other.",
+  "refresh": "When designers update the mainline _TEMPLATE page, run a fresh figma-component-card pre-flight read of node 7481:14 and update this snapshot. Then update the matching values in build-card.js so the audit passes again.",
+  "outerWrapper": {
+    "name": "_template-component-card",
+    "cornerRadius": 24,
+    "expectedTokenBinding": "V.radius.xl"
+  },
+  "statusAccent": {
+    "height": 8,
+    "type": "RECTANGLE"
+  },
+  "content": {
+    "layoutMode": "VERTICAL",
+    "itemSpacing": 80,
+    "expectedItemSpacingToken": "V.space['1000']",
+    "padding": [64, 64, 64, 64],
+    "expectedPaddingToken": "V.space['800']"
+  },
+  "sections": {
+    "HEADER": {
+      "cornerRadius": 24,
+      "expectedTokenBinding": "V.radius.xl",
+      "topAccent": { "height": 4 },
+      "inner": {
+        "layoutMode": "HORIZONTAL",
+        "itemSpacing": 48,
+        "expectedItemSpacingToken": "V.space['600']",
+        "padding": [80, 80, 80, 80],
+        "expectedPaddingToken": "V.space['1000']"
+      },
+      "leftCol": {
+        "itemSpacing": 32,
+        "expectedItemSpacingToken": "V.space['400']"
+      },
+      "title": { "fontSize": 112, "fontFamily": "Inter Bold", "letterSpacing": "-3%" },
+      "description": { "fontSize": 22, "fontFamily": "Inter Regular" },
+      "heroPreview": {
+        "width": 720,
+        "height": 380,
+        "padding": 56,
+        "cornerRadius": 16,
+        "expectedTokenBinding": "V.radius.lg"
+      }
+    },
+    "ANATOMY": {
+      "cornerRadius": 24,
+      "secHead": {
+        "title": "States",
+        "description": "Interaction states for the primary medium variant. Each state has its own visual treatment to communicate affordance."
+      },
+      "stateGrid": {
+        "layoutMode": "HORIZONTAL",
+        "itemSpacing": 16,
+        "expectedItemSpacingToken": "V.space['200']"
+      },
+      "stateCell": {
+        "cornerRadius": 12,
+        "expectedTokenBinding": "V.radius.md",
+        "padding": [48, 24, 24, 24]
+      }
+    },
+    "VARIANTS": {
+      "cornerRadius": 24,
+      "secHead": {
+        "title": "Variant matrix",
+        "description": "Each variant shows the full state matrix — destructive on/off, sizes, icon options, and interaction states."
+      },
+      "variantsRow": {
+        "layoutMode": "HORIZONTAL",
+        "itemSpacing": 32,
+        "expectedItemSpacingToken": "V.space['400']"
+      },
+      "stage": {
+        "cornerRadius": 12,
+        "expectedTokenBinding": "V.radius.md",
+        "padding": [32, 40, 40, 40],
+        "sizingHorizontal": "FIXED",
+        "sizingVertical": "HUG",
+        "sizingNotes": "Stage widths are computed at build time as floor((2544 - 32 * (n - 1)) / n) for n stages — even-split across the inner card width minus gaps. The mainline template's three placeholder stages of 827px each match this formula for n=3."
+      }
+    },
+    "SUB-COMPONENTS": {
+      "cornerRadius": 24,
+      "secHead": {
+        "title": "Component groups",
+        "description": "Sub-component sets that compose with the primary set — like button groups or input add-ons. Reparented in as their own stages."
+      },
+      "subsRow": {
+        "layoutMode": "HORIZONTAL",
+        "itemSpacing": 32,
+        "expectedItemSpacingToken": "V.space['400']"
+      },
+      "stage": {
+        "cornerRadius": 12,
+        "expectedTokenBinding": "V.radius.md",
+        "padding": [32, 40, 40, 40],
+        "sizingHorizontal": "FIXED",
+        "sizingVertical": "HUG"
+      }
+    },
+    "USAGE": {
+      "cornerRadius": 24,
+      "secHead": {
+        "title": "When to use, when not to",
+        "description": null
+      },
+      "usageRow": {
+        "layoutMode": "HORIZONTAL",
+        "itemSpacing": 24,
+        "expectedItemSpacingToken": "V.space['300']"
+      },
+      "col": {
+        "cornerRadius": 16,
+        "expectedTokenBinding": "V.radius.lg",
+        "padding": [32, 32, 32, 32]
+      }
+    },
+    "ACCESSIBILITY": {
+      "cornerRadius": 24,
+      "secHead": {
+        "title": "Keyboard & screen reader",
+        "description": "How keyboard users and assistive technology interact with this component."
+      },
+      "keyboardTable": {
+        "cornerRadius": 16,
+        "expectedTokenBinding": "V.radius.lg",
+        "clipsContent": true
+      }
+    },
+    "META": {
+      "cornerRadius": 24,
+      "title": "Where to go from here",
+      "titleFontSize": 36,
+      "inner": {
+        "layoutMode": "VERTICAL",
+        "itemSpacing": 40,
+        "expectedItemSpacingToken": "V.space['500']",
+        "padding": [80, 80, 80, 80],
+        "expectedPaddingToken": "V.space['1000']"
+      },
+      "linksRow": {
+        "layoutMode": "HORIZONTAL",
+        "itemSpacing": 24,
+        "expectedItemSpacingToken": "V.space['300']"
+      },
+      "linkCard": {
+        "cornerRadius": 16,
+        "expectedTokenBinding": "V.radius.lg",
+        "padding": [32, 32, 32, 32]
+      },
+      "metaRow": {
+        "layoutMode": "HORIZONTAL",
+        "itemSpacing": 40,
+        "expectedItemSpacingToken": "V.space['500']",
+        "columns": ["GENERATED", "CSS", "SPEC JSON", "DESIGNER (conditional, omit when 'Unassigned')", "DEVELOPER (conditional, omit when 'Unassigned')"]
+      },
+      "divider": {
+        "height": 1,
+        "fill": "border-inverse @ 8% opacity"
+      }
+    }
+  },
+  "knownDeferredFromBuilder": [
+    {
+      "drift": "Auto-discovery of state variants when primary is a single COMPONENT (not COMPONENT_SET) — see references/mainline-rollout-drift-report.md drift #11. The button mainline page lost ANATOMY and SUB-COMPONENTS sections because its primary is a top-level INSTANCE, not a COMPONENT_SET. Builder needs to handle COMPONENT-typed primaries.",
+      "deferredReason": "Behavior change requires a fresh testbed validation pass before rolling out; current PR scope is layout-recipe corrections only.",
+      "trackedIn": "follow-up PR — figma-component-card builder: handle non-COMPONENT_SET primaries"
+    },
+    {
+      "drift": "Stragglers logic preserves duplicate INSTANCEs of primary sets — see references/mainline-rollout-drift-report.md drift #12. Badge mainline page has a stranded udc-badge INSTANCE at y=3480.",
+      "deferredReason": "Removing duplicates is destructive; needs a designer-confirmed policy first.",
+      "trackedIn": "follow-up PR — figma-component-card builder: dedupe primary INSTANCEs"
+    }
+  ]
+}
