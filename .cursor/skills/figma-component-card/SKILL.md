@@ -12,12 +12,33 @@ Builds the canonical seven-section card layout on a UDS component page in Figma.
 You MUST load these BEFORE any `use_figma` call:
 
 - [`figma-use`](../../../plugins/cache/cursor-public/figma/3590366424deba5651026319b71b291d10004f1b/skills/figma-use/SKILL.md) — Plugin API rules (font preload, paint binding, layout sizing, atomic-failure semantics)
-- [`uds-figma-component-card.mdc`](../../rules/uds-figma-component-card.mdc) — the design specification this skill implements
+- [`uds-figma-component-card.mdc`](../../rules/uds-figma-component-card.mdc) — the design specification this skill implements (create mode)
+- [`uds-figma-component-card-update.mdc`](../../rules/uds-figma-component-card-update.mdc) — update-mode rule for any page that already has a `udc-<id>-page` frame
 - [`uds-figma-preflight.mdc`](../../rules/uds-figma-preflight.mdc) — read-only discovery first
 - [`uds-figma-write-safety.mdc`](../../rules/uds-figma-write-safety.mdc) — Figma writes are denied unless explicitly user-invoked, and require the standard write-summary report
 - [`uds-source-of-truth.mdc`](../../rules/uds-source-of-truth.mdc) — `uds-docs/uds/` is read-only for this skill
 
 This skill is the *implementation* of the rule; the rule is the *specification*. If the two ever drift, the rule wins and the skill must be updated.
+
+## Update mode vs create mode
+
+For ANY page that already has a `udc-<id>-page` frame, this skill defaults to **update mode** per [`uds-figma-component-card-update.mdc`](../../rules/uds-figma-component-card-update.mdc). The decision tree:
+
+| Condition | Mode |
+|---|---|
+| No `udc-<id>-page` frame exists on the page | **create** — full builder per the original card rule |
+| Frame exists, matches `📐 _TEMPLATE`, no new page content to absorb, all `spec.json` fields in sync | **no-op** — emit a write summary that says "no-op — already in sync"; do nothing else |
+| Frame exists, ANY drift (template, page content, or `spec.json`) | **update** — see below |
+
+Drift is detected against three sources:
+
+1. **Template diff** — the existing card's structure vs the current `📐 _TEMPLATE` page in the same file
+2. **Page-content diff** — the COMPONENTs / COMPONENT_SETs / INSTANCEs on the page (top-level + every descendant of the existing wrapper) vs what's actually placed inside the card sections
+3. **Spec.json diff** — the card's text content vs the current `uds-docs/uds/components/<id>/spec.json` and `status.json`
+
+On rebuild, the builder MUST first inventory the existing wrapper's full descendant tree (every COMPONENT_SET, COMPONENT, and INSTANCE) BEFORE destroying the wrapper, park those nodes at page level, then reparent them into the new card. Nothing may be lost or duplicated. If the builder's `droppedNodes` return field is non-empty, STOP and report — that's a critical failure.
+
+For no-op runs, still emit the standard Figma write summary with operation `no-op` so the rollout report is complete.
 
 ## Inputs
 
@@ -140,6 +161,7 @@ If any batch errors, the next batch starts from where it left off — don't rest
 ## See also
 
 - [`uds-figma-component-card.mdc`](../../rules/uds-figma-component-card.mdc) — design specification (the "what")
+- [`uds-figma-component-card-update.mdc`](../../rules/uds-figma-component-card-update.mdc) — update-mode rule (when to rebuild, how to preserve content)
 - [`figma-component-card-audit.md`](../../agents/figma-component-card-audit.md) — read-only verification subagent
 - [`figma-use`](../../../plugins/cache/cursor-public/figma/3590366424deba5651026319b71b291d10004f1b/skills/figma-use/SKILL.md) — Plugin API rules (mandatory pre-load before any `use_figma`)
 - [`uds-source-of-truth.mdc`](../../rules/uds-source-of-truth.mdc) — `uds-docs/uds/` is read-only for this skill

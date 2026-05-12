@@ -1,0 +1,179 @@
+# UDS Figma Component Card — Update Mode
+
+Companion to [`uds-figma-component-card.mdc`](./uds-figma-component-card.mdc). The
+card rule defines the canonical seven-section layout (HEADER → ANATOMY →
+VARIANTS → SUB-COMPONENTS → USAGE → ACCESSIBILITY → META) for every component
+page in the UDS Components Figma file. **This rule defines what to do when a
+card already exists on a page** — i.e., when the builder is being re-run for a
+rollout, a re-apply, an "is the card up to date?" check, or any repeat
+invocation that would otherwise tear down good work.
+
+## Why this rule exists
+
+Earlier rollouts treated every run as a blind rebuild. That worked for the
+pilot, but as cards age:
+
+- The `📐 _TEMPLATE` page evolves (new field, new section, restructured
+  eyebrow, new token bindings).
+- The page accumulates new content (additional component sets, more state
+  variants, new sub-components) that the prior card layout doesn't know about.
+- The component's `uds-docs/uds/components/<id>/spec.json` gets richer
+  (description rewrites, owner changes, new keyboard rows, additional
+  `whenToUse` text).
+
+A blind rebuild would either lose newly added page content or re-stamp a stale
+card. Update mode prevents both.
+
+## When to use this rule
+
+Default behavior for **any** repeat invocation of the card builder:
+
+- "Roll out the component card design across the library"
+- "Re-apply the card design to every in-progress component"
+- "Check if the cards are up to date"
+- "Update the figma page for X" when X already has a `udc-<id>-page` frame
+- Any second-or-later run of the [`figma-component-card`](../skills/figma-component-card/SKILL.md) skill on a given component
+
+The first time a card is built on a page, the original card rule applies
+(create mode). After that, this rule supplements it.
+
+## Decision tree (per page)
+
+For each component page in scope:
+
+1. **Inventory the page.** Walk every top-level node AND every descendant of
+   any existing `udc-<id>-page` frame. Capture every `COMPONENT`,
+   `COMPONENT_SET`, and `INSTANCE` so nothing can be lost.
+2. **Look for an existing card.** Find the top-level frame named
+   `udc-<id>-page`.
+3. **Decide:**
+
+   | Condition | Action |
+   |---|---|
+   | No `udc-<id>-page` frame exists | **Create mode** — run the full builder per the original card rule |
+   | Frame exists, matches current `📐 _TEMPLATE`, no new page content to absorb, all spec.json fields in sync | **No-op** — emit a write summary that says "no-op — already in sync"; do nothing else |
+   | Frame exists, ANY drift (template, page content, or spec.json) | **Update mode** — see below |
+
+## Three diff sources for drift detection
+
+A card is considered out of date if ANY of the following diverges from what
+the card currently shows:
+
+1. **Template diff** — compare the existing card's structure against the
+   current `📐 _TEMPLATE` page in the same Figma file. Look for: new
+   sections, removed sections, changed eyebrow text, new token bindings,
+   restructured rows, added/removed pills, etc. The template is the visual
+   source of truth (the card rule says so); if the template moved, the card
+   needs to follow.
+2. **Page-content diff** — compare the COMPONENTs, COMPONENT_SETs, and
+   INSTANCEs the page contains (top-level + everything nested inside the
+   existing `udc-<id>-page`) against what's actually represented inside the
+   card sections. New component sets that aren't yet placed in VARIANTS, new
+   underscored sub-components that aren't in SUB-COMPONENTS, additional state
+   variants of the primary set that aren't in ANATOMY — all signal drift.
+3. **Spec.json diff** — compare the card's text content against the current
+   `uds-docs/uds/components/<id>/spec.json` and `status.json`. Fields to
+   check: `title`, `description`, `whenToUse`, `whenNotToUse`,
+   `accessibility.keyboard[]`, `owner.designer`, `owner.developer`,
+   `dependencies.css[0]`, status pill label/colors. If any of those moved,
+   the card text is stale.
+
+If any of the three diffs reports a difference, run update mode. If all three
+match, the card is up-to-date and the builder no-ops.
+
+## Update mode — the no-content-loss guarantee
+
+Update mode is reasonably implemented as **"tear down the existing card
+frame, but only after inventorying every COMPONENT / COMPONENT_SET /
+INSTANCE it contains, then feed those node IDs into the builder's
+reparenting logic so nothing is lost."** Concretely:
+
+1. **Inventory before destroying.** The builder MUST walk the existing
+   `udc-<id>-page` frame's full descendant tree and collect every
+   `COMPONENT_SET` and `COMPONENT` (and any `INSTANCE` that should survive)
+   into a flat list of node IDs. Do this BEFORE moving any nodes or
+   removing any frames.
+2. **Park the inventoried nodes.** Reparent them to a temp position at page
+   level (e.g. `(5000, -5000)`) so they're not destroyed when the wrapper
+   is removed. `appendChild` preserves node identity, so library bindings,
+   variant references, and Code Connect mappings all survive.
+3. **Tear down the wrapper.** Only after every inventoried node is parked.
+4. **Rebuild the wrapper from scratch** using the latest template + spec
+   content.
+5. **Reparent the parked nodes back into the new card.** Place them in
+   the appropriate section (primary set → ANATOMY hero / first VARIANTS
+   slot, additional sets → VARIANTS, underscored sets → SUB-COMPONENTS).
+6. **Verify zero loss.** Compare the post-rebuild inventory against the
+   pre-teardown inventory. Every node in the pre-teardown list must be
+   accounted for inside the new card. If anything ended up in the builder's
+   `droppedNodes` return field, **STOP and report** — do not continue with
+   more components. Content loss is a critical failure, not a warning.
+7. **Verify zero duplication.** No COMPONENT_SET or COMPONENT ID should
+   appear twice on the page. If the inventory pass picked up a node both
+   from the page top level AND from inside the old wrapper (for example,
+   because a previous half-finished run left a copy), that's an error
+   condition — STOP and report rather than guessing which copy is canonical.
+
+## Per-component reporting
+
+Every update-mode run MUST emit the standard Figma write summary block from
+[`uds-figma-write-safety.mdc`](./uds-figma-write-safety.mdc), with the
+operation field set to `update` (not `create` or `rebuild`):
+
+```markdown
+## Figma write summary
+
+- File: UDS Components | UDS Components Testbed
+- File key: ...
+- Page: <emoji + component-id>
+- Node/frame: udc-<id>-page (root frame), plus content + 7 section cards
+- Operation: update
+- Old value: <brief structural description of the prior card; cite the drift source(s) — template, page-content, spec.json>
+- New value: <new wrapper dimensions and section list>
+- Component sets reparented: <list of IDs and their new parent cards>
+- Component sets duplicated/deleted: <should be empty — flag if not>
+- Inventory delta: <added / preserved / dropped counts>
+- Rollback note: existing component sets are reparented in place; revert by re-parenting back to page level and deleting the udc-<id>-page wrapper
+```
+
+For no-op runs, emit a write summary anyway with operation `no-op` and a one-line reason (e.g. "no template, page-content, or spec.json drift detected").
+
+## Interaction with the original card rule
+
+This rule **supplements** [`uds-figma-component-card.mdc`](./uds-figma-component-card.mdc),
+it does not replace it. Card structure, token bindings, eyebrow recipes, link
+cards, status colors, "don't renumber eyebrows" — all of that is governed by
+the original card rule. This rule only governs **whether to rebuild** and
+**how to preserve content during a rebuild**. When in doubt about layout or
+binding details, defer to the card rule.
+
+The skill ([`figma-component-card`](../skills/figma-component-card/SKILL.md))
+must call out update mode as the default behavior for any page that already
+has a `udc-<id>-page` frame, and must reference both rules.
+
+## What still applies
+
+- **Read-only on `uds-docs/uds/`** — see
+  [`uds-source-of-truth.mdc`](./uds-source-of-truth.mdc). Update mode reads
+  spec.json/status.json to detect drift, never writes them.
+- **Figma write safety** — every update-mode run is a Figma write and must
+  follow [`uds-figma-write-safety.mdc`](./uds-figma-write-safety.mdc),
+  including the standard write summary.
+- **Pre-flight first** — see
+  [`uds-figma-preflight.mdc`](./uds-figma-preflight.mdc). Inventory and diff
+  are read-only operations; they happen before any teardown.
+- **Status mismatch is not this rule's job** — if the Figma page-name
+  stoplight prefix disagrees with `status.json#current`, STOP and surface
+  it; that's a [`sync-figma-component-status`](../skills/sync-figma-component-status/SKILL.md) job.
+- **Library subscription** — `UDS Tokens` must be subscribed before any
+  rebuild, same as create mode.
+
+## See also
+
+- [`uds-figma-component-card.mdc`](./uds-figma-component-card.mdc) — the canonical card spec (create mode lives here)
+- [`.cursor/skills/figma-component-card/SKILL.md`](../skills/figma-component-card/SKILL.md) — executable recipe
+- [`.cursor/agents/figma-component-card-audit.md`](../agents/figma-component-card-audit.md) — read-only verification subagent
+- [`uds-figma-write-safety.mdc`](./uds-figma-write-safety.mdc) — Figma write discipline + required summary
+- [`uds-figma-preflight.mdc`](./uds-figma-preflight.mdc) — pre-flight discovery requirements
+- [`uds-source-of-truth.mdc`](./uds-source-of-truth.mdc) — `uds-docs/uds/` is read-only
+- [`uds-figma-change-classification.mdc`](./uds-figma-change-classification.mdc) — confidence/risk taxonomy used when classifying drift

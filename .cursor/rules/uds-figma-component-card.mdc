@@ -222,7 +222,7 @@ When a section is omitted, the eyebrow numbers stay in **rendering order**. So a
 2. **Discover.** Read the matching `_TEMPLATE` page in the Figma file FIRST (page name starts with `📐 _TEMPLATE`). If the template differs from this rule, the template wins — designers can override here without touching code.
 3. **Confirm tokens are subscribed.** `get_libraries` should show `UDS Tokens` in `libraries_added_to_file`. If not, ask the user to subscribe — don't auto-subscribe.
 4. **Read the JSON spec.** `uds-docs/uds/components/<id>/spec.json` and `status.json`. If `spec.json` doesn't exist, the page is a placeholder.
-5. **Inspect the page's existing nodes.** Find component sets, sub-components, the page-name prefix. Cross-check status with `status.json#current`.
+5. **Inspect the page's existing nodes.** Find component sets, sub-components, the page-name prefix. Cross-check status with `status.json#current`. **If a `udc-<id>-page` frame already exists, switch into update mode per [`uds-figma-component-card-update.mdc`](./uds-figma-component-card-update.mdc) — diff against template / page content / spec.json, inventory descendants before any teardown, no-op when in sync.**
 6. **Confirm the user-authorized write scope.** Per [`uds-figma-write-safety.mdc`](./uds-figma-write-safety.mdc), this skill only runs when the user has named the target (single component, batch, or library-wide). Do not invoke as a side effect of another task.
 7. **Run the builder.** Single `use_figma` call per component (per the skill).
 8. **Emit the Figma write summary.** Per [`uds-figma-write-safety.mdc`](./uds-figma-write-safety.mdc), every write produces a structured before/after report.
@@ -260,6 +260,7 @@ Once a component card is approved on the testbed and the audit passes:
 
 ## See also
 
+- [`uds-figma-component-card-update.mdc`](./uds-figma-component-card-update.mdc) — update-mode rule (when to rebuild an existing card, no-content-loss inventory, drift detection)
 - [`.cursor/skills/figma-component-card/SKILL.md`](../skills/figma-component-card/SKILL.md) — executable recipe and gotchas
 - [`.cursor/agents/figma-component-card-audit.md`](../agents/figma-component-card-audit.md) — read-only verification
 - [`uds-source-of-truth.mdc`](./uds-source-of-truth.mdc) — `uds-docs/uds/` is read-only for this skill
