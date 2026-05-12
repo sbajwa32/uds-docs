@@ -1,6 +1,7 @@
 ---
 description: Enforces site version bumping, SITE_CHANGELOG updates, and cache busting on every documentation site change.
 alwaysApply: true
+lastUpdated: 2026-05-08
 ---
 
 # UDS Site Changelog

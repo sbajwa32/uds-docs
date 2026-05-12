@@ -1,6 +1,7 @@
 ---
 name: sync-figma-component-status
 description: Sync UDS Components Figma stoplight page prefixes into per-component status.json files. Use after figma-inventory reports status mismatches.
+lastUpdated: 2026-05-12
 ---
 
 # Sync Figma Component Status

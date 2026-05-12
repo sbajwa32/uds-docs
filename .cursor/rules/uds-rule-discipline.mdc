@@ -1,0 +1,97 @@
+---
+description: Discipline that fires whenever you edit a Cursor rule, skill, or subagent file. Bump that file's `lastUpdated:` frontmatter and update the matching row in `.cursor/TOOLCHAIN.md` in the same commit. Mirrors the SITE_CHANGELOG discipline for the documentation site.
+alwaysApply: false
+globs: [".cursor/rules/**", ".cursor/skills/**", ".cursor/agents/**"]
+lastUpdated: 2026-05-12
+---
+
+# Cursor Rule / Skill / Subagent Discipline
+
+If you are editing any file under `.cursor/rules/`, `.cursor/skills/`, or
+`.cursor/agents/`, the change is not done until you have ALSO performed
+two bookkeeping steps:
+
+## 1. Bump `lastUpdated:` in the file's frontmatter
+
+Every rule/skill/subagent file has a YAML frontmatter block:
+
+```yaml
+---
+description: ...
+alwaysApply: ... or globs: [...]
+lastUpdated: YYYY-MM-DD
+---
+```
+
+When you edit the file, update `lastUpdated:` to today's date. Use the
+system `date` command — never guess:
+
+```bash
+date +%Y-%m-%d
+```
+
+If the file is a brand new rule/skill/subagent and doesn't have
+frontmatter yet, add the full block. The required fields are:
+
+| Field | Rules | Skills | Subagents |
+|---|---|---|---|
+| `description:` | required | required | required |
+| `name:` | n/a | required | required |
+| `alwaysApply:` | required | n/a | n/a |
+| `globs:` | optional (when `alwaysApply: false`) | n/a | n/a |
+| `model:` | n/a | n/a | optional |
+| `lastUpdated:` | required | required | required |
+
+## 2. Update the matching row in `.cursor/TOOLCHAIN.md`
+
+[`.cursor/TOOLCHAIN.md`](../TOOLCHAIN.md) is the index of every
+rule/skill/subagent in the repo, with one row per file. It mirrors the
+frontmatter so the agent can read it at session start to see what has
+changed in the instruction layer.
+
+When you edit any of these files:
+
+- **Edited an existing file** — update the date column for that row.
+  Update the description column too if the frontmatter `description:`
+  changed.
+- **Added a new file** — add a new row in the right section (Rules,
+  Skills, or Subagents). Increment the section count in the section
+  heading (e.g. `## Rules (15)` → `## Rules (16)`).
+- **Removed a file** — delete the row. Decrement the section count.
+- **Renamed a file** — update the link target and the date.
+
+## Why this discipline exists
+
+Without `lastUpdated:` and `TOOLCHAIN.md` discipline:
+
+- An agent reading a rule has no in-context way to tell whether the rule
+  is fresh or months old.
+- When two rules conflict, the agent has no temporal hint about which is
+  newer.
+- A cloud agent and a local agent can drift on the instruction layer
+  without either knowing.
+
+The same SITE_CHANGELOG and per-component `changelog.json` discipline
+exists for the documentation site. This is the agent-toolchain
+equivalent.
+
+## Related rules and audits
+
+- [`uds-master-preflight.mdc`](./uds-master-preflight.mdc) Phase -1 —
+  the sync-state check that ensures you're not editing on a stale
+  baseline.
+- [`uds-master-preflight.mdc`](./uds-master-preflight.mdc) Phase 3 step
+  11 — the user-facing
+  [`uds-docs/docs/pages/cursor-workflows.html`](../../uds-docs/docs/pages/cursor-workflows.html)
+  must also be updated when a rule/skill/subagent's purpose changes.
+- `scripts/audit-agent-docs-currency.sh` — blocks merge if a
+  rule/skill/subagent file exists but isn't referenced on the
+  cursor-workflows page (or the reverse).
+
+## Not currently CI-enforced
+
+There is no audit script that fails CI when `lastUpdated:` or
+`TOOLCHAIN.md` is stale. Treat it the same as the SITE_CHANGELOG
+discipline: a non-negotiable post-edit step. If this becomes a recurring
+gap, add a `scripts/audit-toolchain-currency.sh` that diffs git mtime
+against `lastUpdated:` and `TOOLCHAIN.md` rows.

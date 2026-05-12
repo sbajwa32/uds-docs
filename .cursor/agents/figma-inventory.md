@@ -2,6 +2,7 @@
 name: figma-inventory
 description: Read-only inventory of UDS Figma files. Lists versions, component pages, statuses, new/missing components, node fingerprints, and doc-site coverage. Use for "what changed in Figma?", "status sync", "new components", or the first phase of "UDS updated".
 model: inherit
+lastUpdated: 2026-05-12
 ---
 
 # Figma Inventory

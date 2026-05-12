@@ -2,6 +2,7 @@
 description: Canonical card layout for UDS Components Figma pages. Defines the seven-card structure, token bindings, and read-only contract against uds-docs/uds/components/<id>/spec.json. Loaded when the figma-component-card skill runs or the figma-component-card-audit subagent runs.
 alwaysApply: false
 globs: [".cursor/skills/figma-component-card/**", ".cursor/agents/figma-component-card-audit.md"]
+lastUpdated: 2026-05-12
 ---
 
 # UDS Figma Component Card

@@ -2,6 +2,7 @@
 description: Defines tracked Figma sync snapshots and when agents may update them.
 globs: [".cursor/figma/**"]
 alwaysApply: false
+lastUpdated: 2026-04-30
 ---
 
 # UDS Figma Sync State

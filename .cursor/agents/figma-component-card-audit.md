@@ -3,6 +3,7 @@ name: figma-component-card-audit
 description: Audits one or all UDS component pages in a Figma file against the canonical component-card spec. Verifies structure, token bindings, status pill, link cards, content match against uds-docs/uds/components/<id>/spec.json. Read-only — never modifies files. Use when the user asks "audit the figma component cards", "verify the button page in figma", "did the rollout work", or after any agent run that touched the component-card layout.
 model: inherit
 readonly: true
+lastUpdated: 2026-05-11
 ---
 
 # Figma Component Card Audit

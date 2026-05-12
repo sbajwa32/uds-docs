@@ -1,3 +1,10 @@
+---
+description: Update-mode companion to uds-figma-component-card.mdc. Defines what to do when the figma-component-card skill is re-run on a page that already has a `udc-<id>-page` frame — drift detection (template / page-content / spec.json), no-op when in sync, and the no-content-loss inventory-then-rebuild contract.
+alwaysApply: false
+globs: [".cursor/skills/figma-component-card/**", ".cursor/agents/figma-component-card-audit.md"]
+lastUpdated: 2026-05-12
+---
+
 # UDS Figma Component Card — Update Mode
 
 Companion to [`uds-figma-component-card.mdc`](./uds-figma-component-card.mdc). The

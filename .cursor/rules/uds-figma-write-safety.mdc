@@ -1,6 +1,7 @@
 ---
 description: Prevents accidental Figma mutations during UDS sync work. Read-only is the default; writes are explicitly scoped and summarized.
 alwaysApply: true
+lastUpdated: 2026-04-30
 ---
 
 # UDS Figma Write Safety

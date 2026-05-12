@@ -2,6 +2,7 @@
 name: figma-capability-check
 description: Read-only probe that reports what the current Figma integration can actually access for UDS Tokens and UDS Components. Use before relying on direct Variables reads, node-tree traversal, bound variables, or Figma writes.
 model: inherit
+lastUpdated: 2026-05-07
 ---
 
 # Figma Capability Check

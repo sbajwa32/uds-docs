@@ -1,6 +1,7 @@
 ---
 name: import-figma-tokens
 description: Import UDS token changes from the UDS Tokens Figma file. Uses direct Figma Variables reads first and token ZIP exports only as fallback. Writes token CSS only after token-audit passes.
+lastUpdated: 2026-05-12
 ---
 
 # Import Figma Tokens

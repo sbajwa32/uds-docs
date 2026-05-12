@@ -1,13 +1,49 @@
 ---
 description: Master workflow rule — enforces version bump FIRST, then changes, then finalize. Runs on every task that modifies uds-docs/.
 alwaysApply: true
+lastUpdated: 2026-05-12
 ---
 
 # UDS Master Workflow
 
 ## BUMP FIRST — Change Second — Finalize Last
 
-This is NOT a post-hoc checklist. It is a mandatory three-phase workflow.
+This is NOT a post-hoc checklist. It is a mandatory four-phase workflow.
+
+### Phase -1: BEFORE anything — verify sync state with origin
+
+Before reading rules or starting work, confirm the local repo is current
+with `origin/main`. Cloud-agent edits to `.cursor/rules/`,
+`.cursor/skills/`, or `.cursor/agents/` made on `main` will be invisible
+to a local agent until pulled — which means the local agent can read a
+stale rule and act on outdated guidance without knowing.
+
+The `sessionStart` hook in `.cursor/hooks.json` runs this check
+automatically at the start of every session and prints a warning if the
+local is behind. If the hook didn't run (Cursor ran without hooks,
+hooks were disabled, or the warning is missing), run it manually:
+
+```bash
+git fetch --quiet origin && git status -sb
+```
+
+If `git status` shows `[behind N]`, STOP and pull before doing any other
+work:
+
+- `git pull --ff-only origin main` if local has no diverging commits
+- `git pull --rebase origin main` if local has work to preserve
+
+Then re-read any rule/skill/agent file you've already loaded in this
+session — your previous read may have been stale.
+
+The companion artifacts:
+- [`.cursor/TOOLCHAIN.md`](../TOOLCHAIN.md) — inventory of every rule,
+  skill, and subagent with `lastUpdated` per file. Use it for a
+  fast "what changed in the instruction layer since I last looked?"
+  scan.
+- [`uds-rule-discipline.mdc`](./uds-rule-discipline.mdc) — what to
+  do AFTER editing a rule/skill/subagent (lastUpdated bump, TOOLCHAIN
+  row).
 
 ### Phase 0: BEFORE you start — is this even your call?
 
@@ -116,15 +152,28 @@ skill files; do them here.
     `<h1 class="sg-page-title" data-bind="title"></h1>` and
     `<p class="sg-page-desc" data-bind="description"></p>` placeholders.
     JS in `loadContent()` fills them from `spec.json`.
-11. **Agent-toolchain docs** — if you edited any file under
-    `.cursor/rules/`, `.cursor/skills/`, or `.cursor/agents/` (added a
-    rule/skill/subagent, renamed one, removed one, or changed a rule's
-    `description` field that affects its purpose), mirror the change in
-    [`uds-docs/docs/pages/cursor-workflows.html`](../../uds-docs/docs/pages/cursor-workflows.html)
-    in the same commit. `scripts/audit-agent-docs-currency.sh` blocks merge
-    when a rule/skill/subagent file exists but isn't referenced on the page
-    (and the reverse). Internal-only artifacts that intentionally aren't on
-    the page belong in `scripts/audit-baseline.json` `audit-agent-docs-currency.toleratedFiles`.
+11. **Agent-toolchain bookkeeping** — if you edited any file under
+    `.cursor/rules/`, `.cursor/skills/`, or `.cursor/agents/` (added,
+    renamed, removed, or changed content):
+    - Bump that file's `lastUpdated:` in its YAML frontmatter to today's
+      date. Use `date +%Y-%m-%d` — never guess.
+    - Update the matching row in
+      [`.cursor/TOOLCHAIN.md`](../TOOLCHAIN.md) (date column, and
+      description column if the frontmatter description changed). If you
+      added a new rule/skill/subagent, add a new row in the right
+      section. If you removed one, delete the row.
+    - If the change affected the file's purpose or description, mirror
+      it in
+      [`uds-docs/docs/pages/cursor-workflows.html`](../../uds-docs/docs/pages/cursor-workflows.html)
+      in the same commit. `scripts/audit-agent-docs-currency.sh` blocks
+      merge when a rule/skill/subagent file exists but isn't referenced
+      on the page (and the reverse). Internal-only artifacts that
+      intentionally aren't on the page belong in
+      `scripts/audit-baseline.json`
+      `audit-agent-docs-currency.toleratedFiles`.
+
+    See [`uds-rule-discipline.mdc`](./uds-rule-discipline.mdc) for the
+    standalone rule that auto-attaches when you edit any of these files.
 
 ## Why this order matters
 

@@ -1,6 +1,7 @@
 ---
 name: sync-figma-release-notes
 description: Rebuild Release Notes frames in both UDS Figma files from the aggregated UDS CHANGELOG. Use during releases or after CHANGELOG changes that must be mirrored in Figma.
+lastUpdated: 2026-05-12
 ---
 
 # Sync Figma Release Notes

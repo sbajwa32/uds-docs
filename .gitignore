@@ -8,8 +8,12 @@
 !.cursor/agents/**
 !.cursor/figma/
 !.cursor/figma/**
+!.cursor/hooks/
+!.cursor/hooks/**
 !.cursor/environment.json
+!.cursor/hooks.json
 !.cursor/desktop-preview.sh
+!.cursor/TOOLCHAIN.md
 
 # macOS
 .DS_Store

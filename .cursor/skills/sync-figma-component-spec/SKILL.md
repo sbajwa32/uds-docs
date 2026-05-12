@@ -1,6 +1,7 @@
 ---
 name: sync-figma-component-spec
 description: Update a UDS component's per-component artifacts (spec.json, CSS, examples, impl.json, playground.js) from a deep Figma component inspection. Use for prompts like "sync Button from Figma" or after figma-component-inspector reports high-confidence changes.
+lastUpdated: 2026-05-12
 ---
 
 # Sync Figma Component Spec

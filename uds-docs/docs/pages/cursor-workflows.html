@@ -432,7 +432,7 @@
   </tbody>
 </table>
 
-<h4 class="sg-subsection-title" style="margin-top:var(--uds-space-200);font-size:var(--uds-font-size-md);">Glob-scoped (7 rules)</h4>
+<h4 class="sg-subsection-title" style="margin-top:var(--uds-space-200);font-size:var(--uds-font-size-md);">Glob-scoped (9 rules)</h4>
 <p class="sg-subsection-desc">Loaded only when files matching the rule's glob are in the agent's context, or when a skill explicitly references the rule.</p>
 <table class="sg-gl-table" style="margin-bottom:var(--uds-space-300);">
   <thead><tr><th>Rule</th><th>What it does</th><th>Loads when…</th></tr></thead>
@@ -444,6 +444,8 @@
     <tr><td><a class="sg-gl-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/rules/uds-figma-sync-state.mdc" target="_blank" rel="noopener noreferrer"><code>uds-figma-sync-state</code></a></td><td>Defines tracked sync snapshots under <code>.cursor/figma/state/</code> and when agents may update them. Snapshots are only written after successful verified sync, never in dry-run mode.</td><td>editing <code>.cursor/figma/**</code></td></tr>
     <tr><td><a class="sg-gl-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/rules/uds-component-checklist.mdc" target="_blank" rel="noopener noreferrer"><code>uds-component-checklist</code></a></td><td>Required file list per component folder + pre-commit gate listing the audit scripts. Used by the <code>new-component</code> skill as its "what does a complete component look like" definition.</td><td>editing <code>uds-docs/**</code></td></tr>
     <tr><td><a class="sg-gl-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/rules/uds-figma-component-card.mdc" target="_blank" rel="noopener noreferrer"><code>uds-figma-component-card</code></a></td><td>Canonical seven-card layout for component pages in the UDS Components Figma file. Used by the <code>figma-component-card</code> skill (which writes the cards) and the <code>figma-component-card-audit</code> subagent (which verifies them).</td><td>editing <code>.cursor/skills/figma-component-card/**</code> or <code>.cursor/agents/figma-component-card-audit.md</code></td></tr>
+    <tr><td><a class="sg-gl-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/rules/uds-figma-component-card-update.mdc" target="_blank" rel="noopener noreferrer"><code>uds-figma-component-card-update</code></a></td><td>Update-mode companion to <code>uds-figma-component-card</code>. Defines what to do when the card builder is re-run on a page that already has a <code>udc-&lt;id&gt;-page</code> frame: drift detection (template / page content / <code>spec.json</code>), no-op when in sync, and the no-content-loss inventory-then-rebuild contract.</td><td>editing <code>.cursor/skills/figma-component-card/**</code> or <code>.cursor/agents/figma-component-card-audit.md</code></td></tr>
+    <tr><td><a class="sg-gl-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/rules/uds-rule-discipline.mdc" target="_blank" rel="noopener noreferrer"><code>uds-rule-discipline</code></a></td><td>Fires whenever you edit a rule, skill, or subagent file. Bump that file's <code>lastUpdated:</code> in its YAML frontmatter and update the matching row in <code>.cursor/TOOLCHAIN.md</code> in the same commit. The agent-toolchain equivalent of the SITE_CHANGELOG discipline.</td><td>editing <code>.cursor/rules/**</code>, <code>.cursor/skills/**</code>, or <code>.cursor/agents/**</code></td></tr>
   </tbody>
 </table>
 

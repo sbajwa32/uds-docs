@@ -1,6 +1,7 @@
 ---
 name: link-figma-nodes
 description: Populate figmaNodeId and figmaPageNodeId fields in per-component spec.json files from canonical UDS Components Figma nodes. Use when Figma deep links are missing or stale.
+lastUpdated: 2026-05-12
 ---
 
 # Link Figma Nodes

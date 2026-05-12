@@ -1,6 +1,7 @@
 ---
 name: new-component
 description: Scaffold a new UDS component end to end. Creates uds/components/<id>/ with all required files (CSS stub, spec.json, status.json, changelog.json, examples/, playground.js), bumps SITE, adds the sidebar link and placeholder data-page block. Triggers on phrases like "add a component", "scaffold a new component", "new component called X", "set up a new component for Y".
+lastUpdated: 2026-05-08
 ---
 
 # New Component Scaffold
