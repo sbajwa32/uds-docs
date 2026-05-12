@@ -116,6 +116,15 @@ skill files; do them here.
     `<h1 class="sg-page-title" data-bind="title"></h1>` and
     `<p class="sg-page-desc" data-bind="description"></p>` placeholders.
     JS in `loadContent()` fills them from `spec.json`.
+11. **Agent-toolchain docs** — if you edited any file under
+    `.cursor/rules/`, `.cursor/skills/`, or `.cursor/agents/` (added a
+    rule/skill/subagent, renamed one, removed one, or changed a rule's
+    `description` field that affects its purpose), mirror the change in
+    [`uds-docs/docs/pages/cursor-workflows.html`](../../uds-docs/docs/pages/cursor-workflows.html)
+    in the same commit. `scripts/audit-agent-docs-currency.sh` blocks merge
+    when a rule/skill/subagent file exists but isn't referenced on the page
+    (and the reverse). Internal-only artifacts that intentionally aren't on
+    the page belong in `scripts/audit-baseline.json` `audit-agent-docs-currency.toleratedFiles`.
 
 ## Why this order matters
 
@@ -142,3 +151,8 @@ Figma Release Notes) are now enforced by CI audits, not just discipline:
 - `scripts/audit-css-api-table.sh` — fails if the Code-tab API table in
   `index.html` is out of sync with the actual `udc-*` selectors in the
   component's CSS.
+- `scripts/audit-agent-docs-currency.sh` — fails if a rule/skill/subagent
+  file under `.cursor/` exists but isn't referenced on
+  `uds-docs/docs/pages/cursor-workflows.html`, or vice-versa (the page
+  references a deleted file). Baseline-grandfathered via
+  `scripts/audit-baseline.json`.

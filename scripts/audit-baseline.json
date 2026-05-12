@@ -21,5 +21,12 @@
     ],
     "baselineDate": "2026-05-12",
     "baselineNote": "Initial run of audit-css-api-table.sh against the post-PR1 state found pre-existing API-table drift across 10 components (some missing entries, some cross-component class references that are legitimate, some BEM sub-elements deliberately omitted). Backfilling all 10 is a separate sweep; for now they're tolerated and new drift fails."
+  },
+  "audit-agent-docs-currency": {
+    "_comment": "Tracks whether every .cursor/rules/*.mdc, .cursor/skills/*/SKILL.md, .cursor/agents/*.md is mentioned on uds-docs/docs/pages/cursor-workflows.html (and vice-versa). Pre-baseline commits are not enforced. Add file basenames to toleratedFiles for rules/skills/agents that intentionally do NOT appear on the docs page (e.g. internal-only or experimental). Update baseline only on a deliberate sweep that brings every file into the docs.",
+    "baseline": "1bea1a540f83c86cdd8e57ba790f233353bee3a9",
+    "baselineDate": "2026-05-12",
+    "baselineNote": "Set to PR1 merge commit. Initial pass after PR2 refreshed cursor-workflows.html to mirror all 14 rules, 8 skills, 7 subagents, 9 audits.",
+    "toleratedFiles": []
   }
 }

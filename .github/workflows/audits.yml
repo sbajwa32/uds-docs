@@ -52,6 +52,9 @@ jobs:
       - name: CSS API table consistency
         run: bash scripts/audit-css-api-table.sh
 
+      - name: Agent toolchain docs currency
+        run: bash scripts/audit-agent-docs-currency.sh
+
       # Round-trip checks — these compare against /tmp/baseline-data which
       # only exists in the cloud agent VM. Skip in CI but keep the script
       # available for human runs. (Round-trip drift is caught by the four
