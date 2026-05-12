@@ -15,10 +15,10 @@ export default {
         hl.push('  <div class="udc-nav-header__left">');
         hl.push('    <div class="udc-nav-logo"><span class="material-symbols-outlined" style="font-size:32px;color:var(--uds-color-icon-interactive);">apartment</span></div>');
         hl.push('    <div class="udc-nav-bento-wrapper">');
-        hl.push('      <button class="udc-nav-bento-button" aria-expanded="' + (s.showBento ? 'true' : 'false') + '">');
+        hl.push('      <button class="udc-nav-title-area" aria-expanded="' + (s.showBento ? 'true' : 'false') + '">');
         hl.push('        <span class="material-symbols-outlined" style="color:var(--uds-color-icon-interactive);">dashboard</span>');
         hl.push('        ' + appName);
-        hl.push('        <span class="material-symbols-outlined udc-nav-bento-button__chevron">keyboard_arrow_down</span>');
+        hl.push('        <span class="material-symbols-outlined udc-nav-title-area__chevron">keyboard_arrow_down</span>');
         hl.push('      </button>');
         if (s.showBento) {
           hl.push('      <div class="udc-nav-bento" data-open="true" style="position:relative;top:auto;">');
@@ -71,9 +71,9 @@ export default {
         rL.push('        <div className="udc-nav-logo"><span className="material-symbols-outlined">apartment</span><span className="udc-nav-logo__text">Boardroom</span></div>');
         if (s.showBento) {
           rL.push('        <div className="udc-nav-bento-wrapper" ref={bentoRef}>');
-          rL.push('          <button className="udc-nav-bento-button" aria-expanded={bentoOpen} onClick={() => setBentoOpen(!bentoOpen)}>');
+          rL.push('          <button className="udc-nav-title-area" aria-expanded={bentoOpen} onClick={() => setBentoOpen(!bentoOpen)}>');
           rL.push('            <span className="material-symbols-outlined">dashboard</span> Apps');
-          rL.push('            <span className="material-symbols-outlined udc-nav-bento-button__chevron">keyboard_arrow_down</span>');
+          rL.push('            <span className="material-symbols-outlined udc-nav-title-area__chevron">keyboard_arrow_down</span>');
           rL.push('          </button>');
           rL.push('        </div>');
         }

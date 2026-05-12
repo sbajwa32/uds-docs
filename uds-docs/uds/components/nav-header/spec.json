@@ -51,13 +51,13 @@
   ],
   "slots": [
     { "name": "brand",        "description": "Logo / brand mark on the far left. Figma binds this to surface/brand-bold." },
-    { "name": "bento",        "description": "App switcher trigger. Wraps icon + page title + chevron and expands the bento dropdown." },
+    { "name": "title-area",   "description": "Page-title pill that doubles as the app-switcher trigger. Wraps icon + page title + chevron and expands the bento dropdown. CSS: `.udc-nav-title-area`. Figma source: `_udc-nav-header_title-area` (5586:8858)." },
     { "name": "center",       "description": "Centered region — by default a search field. Hidden when showSearch=false." },
     { "name": "actions",      "description": "Right-side primary actions. By default the My Work pill; hidden when showMyWork=false." },
     { "name": "account",      "description": "Right-side account-actions pill containing three icon-only ghost buttons." },
-    { "name": "bento.tiles",  "description": "Row of nav tiles inside the bento dropdown (top of the panel)." },
-    { "name": "bento.list",   "description": "Main list of destinations inside the bento dropdown. Built on udc-list." },
-    { "name": "bento.footer", "description": "Footer row inside the bento dropdown (e.g. \"Customize menu\")." }
+    { "name": "bento.tiles",  "description": "Row of nav tiles inside the bento dropdown (top of the panel). CSS: `.udc-nav-bento__tiles`." },
+    { "name": "bento.list",   "description": "Main list of destinations inside the bento dropdown. CSS: `.udc-nav-bento__list`. Built on udc-list." },
+    { "name": "bento.footer", "description": "Footer row inside the bento dropdown (e.g. \"Customize menu\"). CSS: `.udc-nav-bento__footer`." }
   ],
   "states": [
     { "name": "default",    "description": "Bento dropdown closed; data-open absent on the wrapper; aria-expanded='false' on the trigger.", "hasVisual": true },
@@ -101,7 +101,7 @@
   },
   "knownIssues": [
     "Authoring errors (\"Component set for node has existing errors\") originate from the udc-badge component set (5794:7948) on the badge Figma page. They surface during deep inspection of nav-header because the My Work pill nests a udc-badge instance. The canonical udc-nav-header set (5684:11340) itself now reads cleanly. The 🔴 blocked status on the nav-header page persists for the remaining knownIssues entries below.",
-    "Figma sub-component set was renamed from `_udc-nav-header_bentobutton` to `_udc-nav-header_title-area` (id 5586:8858 preserved). The doc-site retains the `bento-button`/`bento-toggle`/`bento-dismiss` vocabulary because the canonical anatomy pins `Title Only=False`, which is the same pill anatomy as before. A future contract change could mirror the Figma renaming (e.g. a `title-area` slot + a `titleOnly` boolean prop). Until that design call lands, the doc-site terminology intentionally diverges.",
+    "Figma renamed the trigger sub-component `_udc-nav-header_bentobutton` → `_udc-nav-header_title-area` (id 5586:8858 preserved). The doc-site has mirrored the rename for the TRIGGER only: CSS class `.udc-nav-bento-button` → `.udc-nav-title-area` (plus `.udc-nav-title-area__chevron`), and the corresponding `bento` slot in this spec is now `title-area`. The DROPDOWN panel is still called `bento` in code (`.udc-nav-bento`, `.udc-nav-bento__tiles/__list/__footer`, JS function `initNavBento`, events `bento-toggle` / `bento-dismiss`) because Figma still names that component `_udc-nav-header_dropdown` and the doc-site convention is to refer to it as the bento dropdown.",
     "Figma's `_udc-nav-header_title-area` set exposes a `Title Only=True` variant (132×48, paragraph/xl-bold, no leading icon, no chevron, transparent pill chrome, radius 8). The doc-site canonical anatomy pins `Title Only=False` and does not expose this bare-title mode. Consider whether to surface a `titleOnly` boolean prop on the public nav-header API.",
     "Bento chevron color: Figma binds icon-primary (#171717), but nav-header.css uses --uds-color-icon-secondary (#a3a3a3). Pending design decision.",
     "Nav-tile font size in nav-header.css is hardcoded `10px`; Figma binds `font/size/sm` (12px). Both a token-usage violation and a sizing discrepancy.",

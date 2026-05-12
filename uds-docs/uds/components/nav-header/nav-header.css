@@ -5,8 +5,9 @@
    Sub-components:
      udc-nav-header       — Top header bar (3-column grid)
      udc-nav-logo         — Brand mark container
-     udc-nav-bento-button — Pill trigger for the bento dropdown
-     udc-nav-bento        — Dropdown panel (popover)
+     udc-nav-title-area   — Pill trigger that displays page title + opens bento dropdown
+                            (Figma: _udc-nav-header_title-area, was _udc-nav-header_bentobutton)
+     udc-nav-bento        — Dropdown panel (popover) — Figma _udc-nav-header_dropdown
      udc-nav-search       — Search bar
      udc-nav-mywork       — "My Work" action button
      udc-nav-account      — Account actions group
@@ -70,10 +71,12 @@
 }
 
 /* --------------------------------------------------------------------------
-   BENTO BUTTON — pill trigger for the bento dropdown
+   TITLE AREA — pill trigger that shows the page title and opens the bento
+   dropdown. Figma source: _udc-nav-header_title-area (renamed from
+   _udc-nav-header_bentobutton; same id 5586:8858; Title Only=False mode).
    Figma: surface-main bg, border-secondary, container-full radius, depth-100
    -------------------------------------------------------------------------- */
-.udc-nav-bento-button {
+.udc-nav-title-area {
   display: inline-flex;
   align-items: center;
   gap: var(--uds-space-150);
@@ -94,29 +97,29 @@
   color: var(--uds-color-text-primary);
 }
 
-.udc-nav-bento-button:hover {
+.udc-nav-title-area:hover {
   background: var(--uds-color-surface-interactive-subtle-hover);
 }
 
-.udc-nav-bento-button:focus-visible {
+.udc-nav-title-area:focus-visible {
   outline: 2px solid var(--uds-color-border-outline-focus-visible);
   outline-offset: -2px;
 }
 
-.udc-nav-bento-button .material-symbols-outlined {
+.udc-nav-title-area .material-symbols-outlined {
   font-size: 20px;
   line-height: 1;
   flex-shrink: 0;
 }
 
-.udc-nav-bento-button__chevron {
+.udc-nav-title-area__chevron {
   font-size: 20px;
   line-height: 1;
   color: var(--uds-color-icon-secondary);
   transition: transform 200ms ease;
 }
 
-.udc-nav-bento-button[aria-expanded="true"] .udc-nav-bento-button__chevron {
+.udc-nav-title-area[aria-expanded="true"] .udc-nav-title-area__chevron {
   transform: rotate(180deg);
 }
 

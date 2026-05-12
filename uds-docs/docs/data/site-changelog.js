@@ -680,6 +680,14 @@ export const SITE_CHANGELOG = [
         { type: 'added', text: 'Nav Header `knownIssues` now documents the Figma sub-component rename `_udc-nav-header_bentobutton` → `_udc-nav-header_title-area` (id 5586:8858 preserved; every variant / property / binding / layer preserved). The doc-site intentionally retains the `bento-button` / `bento-toggle` / `bento-dismiss` vocabulary because the canonical anatomy still pins `Title Only=False`, which is the same pill anatomy as before. A future contract change could mirror the Figma rename via a `title-area` slot + a `titleOnly` boolean prop on the nav-header public API.' },
         { type: 'added', text: 'Nav Header `knownIssues` now documents the `Title Only=True` variant on `_udc-nav-header_title-area` — 132×48, paragraph/xl-bold, no leading icon, no chevron, transparent pill chrome, radius 8. This is an existing Figma capability the doc-site canonical anatomy does not expose; surfacing it would mean a `titleOnly` boolean on the public nav-header API.' }
       ]
+    },
+    {
+      version: 'SITE 2026.05.12.3',
+      date: '2026-05-12',
+      changes: [
+        { type: 'changed', text: 'Nav Header trigger pill renamed in code to mirror the Figma sub-component rename `_udc-nav-header_bentobutton` → `_udc-nav-header_title-area` (id 5586:8858 preserved on the Figma side). CSS: `.udc-nav-bento-button` → `.udc-nav-title-area`, `.udc-nav-bento-button__chevron` → `.udc-nav-title-area__chevron` (in `uds/components/nav-header/nav-header.css`). JS: `nav-header.js` now queries `.udc-nav-title-area` instead of `.udc-nav-bento-button`; the orchestrator `uds/uds.js` is unchanged because it still keys off `.udc-nav-bento-wrapper` (the relative-position wrapper around trigger + dropdown). Examples (`default.html`, `bento-tiles.html`, `bento-dropdown.html`), `impl.json` reference HTML, and the playground render strings (HTML and React) all updated to emit the new class names. The available-classes reference table in `index.html` updated to surface `.udc-nav-title-area` and `.udc-nav-title-area__chevron` and clarify the role of `.udc-nav-bento-wrapper`. spec.json slot `bento` (the trigger) renamed to `title-area` with a description that pins it to Figma node 5586:8858.' },
+        { type: 'changed', text: 'Nav Header spec.json `knownIssues` entry about the rename rewritten to reflect that the rename has now been mirrored in code. The dropdown panel intentionally keeps the `bento` vocabulary in code (`.udc-nav-bento`, `.udc-nav-bento__tiles/__list/__footer`, JS function `initNavBento`, events `bento-toggle` / `bento-dismiss`, slot names `bento.tiles/.list/.footer`) because Figma still names that component `_udc-nav-header_dropdown` and the rename only affected the trigger sub-component, not the dropdown panel itself.' }
+      ]
     }
 ];
 

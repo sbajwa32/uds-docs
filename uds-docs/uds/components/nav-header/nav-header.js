@@ -6,7 +6,7 @@
     if (el._udsInit) return;
     el._udsInit = true;
 
-    var trigger = el.querySelector('.udc-nav-bento-button');
+    var trigger = el.querySelector('.udc-nav-title-area');
     var panel = el.querySelector('.udc-nav-bento');
     if (!trigger || !panel) return;
 

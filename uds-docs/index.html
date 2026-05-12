@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Poppins:wght@400;500;700&family=Roboto:wght@400;500;700&family=Lexend:wght@400;500;700&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
-  <link rel="stylesheet" href="./uds/uds.css?v=53" />
+  <link rel="stylesheet" href="./uds/uds.css?v=54" />
   <link rel="stylesheet" href="./docs/site.css?v=7" />
   <script>
     // ========================================================================
@@ -38,7 +38,7 @@
     // is the existing uds-docs/bump-site.sh preflight.
     // ========================================================================
     (function () {
-      var SITE_VERSION = '2026.05.12.2';
+      var SITE_VERSION = '2026.05.12.3';
       window.SITE_VERSION = SITE_VERSION;
 
       // ---- Part 1: monkey-patch fetch() for universal cache-busting ------
@@ -127,7 +127,7 @@
       </span>
     </button>
     <select class="sg-version-select" id="sg-version-dropdown" aria-label="UDS version"></select>
-    <span class="sg-brand-bar-build">SITE 2026.05.12.2</span>
+    <span class="sg-brand-bar-build">SITE 2026.05.12.3</span>
   </div>
 
   <!-- Pre-flight checklist dialog -->
@@ -611,16 +611,18 @@
               <tr><td><code>.udc-nav-header</code></td><td>Top header bar (3-column grid)</td></tr>
               <tr><td><code>.udc-nav-header__left / __center / __right</code></td><td>Grid sections</td></tr>
               <tr><td><code>.udc-nav-logo</code></td><td>Logo container</td></tr>
-              <tr><td><code>.udc-nav-bento-wrapper</code></td><td>Positioning context for bento dropdown</td></tr>
-              <tr><td><code>.udc-nav-bento-button</code></td><td>Pill trigger for the bento dropdown</td></tr>
-              <tr><td><code>.udc-nav-bento</code></td><td>Dropdown panel (<code>data-open="true"</code> to show)</td></tr>
-              <tr><td><code>.udc-nav-bento__tiles</code></td><td>Optional shortcut tile row</td></tr>
-              <tr><td><code>.udc-nav-bento__list</code></td><td>Main list inside bento</td></tr>
+              <tr><td><code>.udc-nav-bento-wrapper</code></td><td>Positioning context for the title-area trigger + bento dropdown</td></tr>
+              <tr><td><code>.udc-nav-title-area</code></td><td>Page-title pill that doubles as the bento dropdown trigger (Figma: _udc-nav-header_title-area)</td></tr>
+              <tr><td><code>.udc-nav-title-area__chevron</code></td><td>Chevron icon on the title-area trigger (rotates when aria-expanded=true)</td></tr>
+              <tr><td><code>.udc-nav-bento</code></td><td>Bento dropdown panel (<code>data-open="true"</code> to show)</td></tr>
+              <tr><td><code>.udc-nav-bento__tiles</code></td><td>Optional shortcut tile row inside the bento dropdown</td></tr>
+              <tr><td><code>.udc-nav-bento__list</code></td><td>Main destination list inside the bento dropdown</td></tr>
+              <tr><td><code>.udc-nav-bento__footer</code></td><td>Footer row inside the bento dropdown</td></tr>
               <tr><td><code>.udc-nav-tile</code></td><td>Compact tile shortcut</td></tr>
               <tr><td><code>.udc-nav-search</code></td><td>Search bar</td></tr>
               <tr><td><code>.udc-nav-mywork</code></td><td>"My Work" action button</td></tr>
               <tr><td><code>.udc-nav-account</code></td><td>Account actions group</td></tr>
-              <tr><td><code>aria-expanded</code></td><td>Bento button open state</td></tr>
+              <tr><td><code>aria-expanded</code></td><td>Title-area trigger open state</td></tr>
             </tbody>
           </table>
         </div>
@@ -1033,8 +1035,8 @@
 
   <script src="https://cdn.jsdelivr.net/npm/jszip@3/dist/jszip.min.js"></script>
   <script src="./material-icons.js?v=1"></script>
-  <script src="./uds/uds.js?v=31"></script>
-    <script type="module" src="./docs/app.js?v=116"></script>
+  <script src="./uds/uds.js?v=32"></script>
+    <script type="module" src="./docs/app.js?v=117"></script>
   <script type="module" src="./docs/modules/demo-builder/index.js?v=2"></script>
 
 </body>
