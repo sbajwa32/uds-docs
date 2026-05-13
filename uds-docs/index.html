@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Poppins:wght@400;500;700&family=Roboto:wght@400;500;700&family=Lexend:wght@400;500;700&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
-  <link rel="stylesheet" href="./uds/uds.css?v=56" />
+  <link rel="stylesheet" href="./uds/uds.css?v=57" />
   <link rel="stylesheet" href="./docs/site.css?v=7" />
   <script>
     // ========================================================================
@@ -38,7 +38,7 @@
     // is the existing uds-docs/bump-site.sh preflight.
     // ========================================================================
     (function () {
-      var SITE_VERSION = '2026.05.13.1';
+      var SITE_VERSION = '2026.05.13.2';
       window.SITE_VERSION = SITE_VERSION;
 
       // ---- Part 1: monkey-patch fetch() for universal cache-busting ------
@@ -127,7 +127,7 @@
       </span>
     </button>
     <select class="sg-version-select" id="sg-version-dropdown" aria-label="UDS version"></select>
-    <span class="sg-brand-bar-build">SITE 2026.05.13.1</span>
+    <span class="sg-brand-bar-build">SITE 2026.05.13.2</span>
   </div>
 
   <!-- Pre-flight checklist dialog -->
@@ -603,27 +603,19 @@
         <div data-tab-panel="examples" class="active" data-needs-fetch></div>
         <div data-tab-panel="code">
           <h3 class="sg-subsection-title">Import</h3>
-          <pre class="sg-playground-code" style="margin-bottom:24px;">@import url('./components/nav-header.css');
-@import url('./components/nav-vertical.css'); /* for .udc-nav-button in bento list */</pre>
+          <pre class="sg-playground-code" style="margin-bottom:24px;">@import url('./components/nav-header.css');</pre>
           <table class="sg-api-table">
             <thead><tr><th>Class / Attribute</th><th>Description</th></tr></thead>
             <tbody>
               <tr><td><code>.udc-nav-header</code></td><td>Top header bar (3-column grid)</td></tr>
               <tr><td><code>.udc-nav-header__left / __center / __right</code></td><td>Grid sections</td></tr>
               <tr><td><code>.udc-nav-logo</code></td><td>Logo container</td></tr>
-              <tr><td><code>.udc-nav-bento-wrapper</code></td><td>Positioning context for the title-area trigger + bento dropdown</td></tr>
-              <tr><td><code>.udc-nav-title-area</code></td><td>Page-title pill that doubles as the bento dropdown trigger (Figma: _udc-nav-header_title-area)</td></tr>
-              <tr><td><code>.udc-nav-title-area[data-title-only="true"]</code></td><td>Bare page-title mode (paragraph/xl-bold, no icon, no chevron, no pill chrome). Matches Figma `Title Only=True` variant.</td></tr>
-              <tr><td><code>.udc-nav-title-area__chevron</code></td><td>Chevron icon on the title-area trigger (rotates when aria-expanded=true)</td></tr>
-              <tr><td><code>.udc-nav-bento</code></td><td>Bento dropdown panel (<code>data-open="true"</code> to show)</td></tr>
-              <tr><td><code>.udc-nav-bento__tiles</code></td><td>Optional shortcut tile row inside the bento dropdown</td></tr>
-              <tr><td><code>.udc-nav-bento__list</code></td><td>Main destination list inside the bento dropdown</td></tr>
-              <tr><td><code>.udc-nav-bento__footer</code></td><td>Footer row inside the bento dropdown</td></tr>
-              <tr><td><code>.udc-nav-tile</code></td><td>Compact tile shortcut</td></tr>
+              <tr><td><code>.udc-nav-title-area</code></td><td>Page-title pill (icon + title + chevron). Figma source: <code>_udc-nav-header_title-area</code>. The chevron is decorative — no popover is wired into the canonical udc-nav-header contract.</td></tr>
+              <tr><td><code>.udc-nav-title-area[data-title-only="true"]</code></td><td>Bare page-title mode (paragraph/xl-bold, no icon, no chevron, no pill chrome). Matches Figma <code>Title Only=True</code> variant.</td></tr>
+              <tr><td><code>.udc-nav-title-area__chevron</code></td><td>Chevron icon on the title-area pill (visual affordance only)</td></tr>
               <tr><td><code>.udc-nav-search</code></td><td>Search bar</td></tr>
               <tr><td><code>.udc-nav-mywork</code></td><td>"My Work" action button</td></tr>
               <tr><td><code>.udc-nav-account</code></td><td>Account actions group</td></tr>
-              <tr><td><code>aria-expanded</code></td><td>Title-area trigger open state</td></tr>
             </tbody>
           </table>
         </div>
@@ -1036,7 +1028,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/jszip@3/dist/jszip.min.js"></script>
   <script src="./material-icons.js?v=1"></script>
-  <script src="./uds/uds.js?v=33"></script>
+  <script src="./uds/uds.js?v=34"></script>
     <script type="module" src="./docs/app.js?v=125"></script>
   <script type="module" src="./docs/modules/demo-builder/index.js?v=2"></script>
 

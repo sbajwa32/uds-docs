@@ -5,15 +5,17 @@
    Sub-components:
      udc-nav-header       — Top header bar (3-column grid)
      udc-nav-logo         — Brand mark container
-     udc-nav-title-area   — Pill trigger that displays page title + opens bento dropdown
-                            (Figma: _udc-nav-header_title-area, was _udc-nav-header_bentobutton)
-     udc-nav-bento        — Dropdown panel (popover) — Figma _udc-nav-header_dropdown
+     udc-nav-title-area   — Pill that displays the current page title
+                            (Figma: _udc-nav-header_title-area, Title Only=False|True)
      udc-nav-search       — Search bar
      udc-nav-mywork       — "My Work" action button
      udc-nav-account      — Account actions group
-     udc-nav-tile         — Compact shortcut tile (inside bento)
 
-   Note: The bento list reuses .udc-nav-button from nav-vertical.css.
+   The prior bento app-switcher (dropdown panel + tiles + footer + JS toggle)
+   was removed in UDS 0.3 after the canonical udc-nav-header Figma set
+   stopped nesting _udc-nav-header_dropdown. The standalone dropdown / nav-tile
+   sub-components still exist on the Figma nav-header page as orphans, but
+   they are no longer part of the canonical nav-header contract.
    ========================================================================== */
 
 /* --------------------------------------------------------------------------
@@ -71,9 +73,10 @@
 }
 
 /* --------------------------------------------------------------------------
-   TITLE AREA — pill trigger that shows the page title and opens the bento
-   dropdown. Figma source: _udc-nav-header_title-area (renamed from
-   _udc-nav-header_bentobutton; same id 5586:8858; Title Only=False mode).
+   TITLE AREA — pill that displays the current page title (icon + label +
+   chevron). Figma source: _udc-nav-header_title-area (5586:8858).
+   The chevron is currently decorative — the prior bento app-switcher was
+   removed and no popover is wired into the canonical contract.
    Figma: surface-main bg, border-secondary, container-full radius, depth-100
    -------------------------------------------------------------------------- */
 .udc-nav-title-area {
@@ -86,24 +89,13 @@
   border: 1px solid var(--uds-color-border-secondary);
   border-radius: var(--uds-border-radius-container-full);
   box-shadow: var(--uds-shadow-depth-100);
-  cursor: pointer;
   white-space: nowrap;
-  transition: background-color 120ms ease, border-color 120ms ease;
 
   font-family: var(--uds-font-family);
   font-size: var(--uds-font-size-base);
   font-weight: var(--uds-font-weight-bold);
   line-height: var(--uds-font-line-height-base);
   color: var(--uds-color-text-primary);
-}
-
-.udc-nav-title-area:hover {
-  background: var(--uds-color-surface-interactive-subtle-hover);
-}
-
-.udc-nav-title-area:focus-visible {
-  outline: 2px solid var(--uds-color-border-outline-focus-visible);
-  outline-offset: -2px;
 }
 
 .udc-nav-title-area .material-symbols-outlined {
@@ -116,11 +108,6 @@
   font-size: var(--uds-font-size-2xl);
   line-height: 1;
   color: var(--uds-color-icon-primary);
-  transition: transform 200ms ease;
-}
-
-.udc-nav-title-area[aria-expanded="true"] .udc-nav-title-area__chevron {
-  transform: rotate(180deg);
 }
 
 .udc-nav-title-area[data-title-only="true"] {
@@ -131,11 +118,6 @@
   border-radius: var(--uds-border-radius-input);
   font-size: var(--uds-font-size-xl);
   line-height: var(--uds-font-line-height-xl);
-  cursor: default;
-}
-
-.udc-nav-title-area[data-title-only="true"]:hover {
-  background: transparent;
 }
 
 .udc-nav-title-area[data-title-only="true"] .material-symbols-outlined,
@@ -236,112 +218,3 @@
   padding: var(--uds-space-075);
 }
 
-/* --------------------------------------------------------------------------
-   NAV BENTO — dropdown panel (popover)
-   Figma: surface-main bg, border-secondary, container-lg radius, depth-300
-   -------------------------------------------------------------------------- */
-.udc-nav-bento {
-  display: none;
-  flex-direction: column;
-  gap: 0;
-  padding: var(--uds-space-150) var(--uds-space-150) var(--uds-space-200);
-  width: 312px;
-  background: var(--uds-color-surface-main);
-  border: 1px solid var(--uds-color-border-secondary);
-  border-radius: var(--uds-border-radius-container-lg);
-  box-shadow: var(--uds-shadow-depth-300);
-  position: absolute;
-  top: 100%;
-  left: 0;
-  z-index: var(--uds-z-index-header);
-  box-sizing: border-box;
-}
-
-.udc-nav-bento[data-open="true"],
-.udc-nav-bento.open {
-  display: flex;
-}
-
-.udc-nav-bento__tiles {
-  display: flex;
-  gap: var(--uds-space-100);
-  padding: var(--uds-space-100) 0;
-  margin-bottom: var(--uds-space-100);
-}
-
-.udc-nav-bento__list {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-}
-
-.udc-nav-bento__footer {
-  padding: var(--uds-space-100) var(--uds-space-150);
-  font-family: var(--uds-font-family);
-  font-size: var(--uds-font-size-sm);
-  line-height: var(--uds-font-line-height-sm);
-  font-weight: var(--uds-font-weight-medium);
-  color: var(--uds-color-text-primary);
-  cursor: pointer;
-  text-decoration: none;
-}
-
-.udc-nav-bento__footer:hover {
-  text-decoration: underline;
-}
-
-/* --------------------------------------------------------------------------
-   NAV TILE — compact icon + label tile (used in bento tiles row)
-   -------------------------------------------------------------------------- */
-.udc-nav-tile {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: var(--uds-space-050);
-  padding: var(--uds-space-100);
-  border-radius: var(--uds-border-radius-input);
-  background: var(--uds-color-surface-interactive-none);
-  cursor: pointer;
-  min-width: 64px;
-  text-decoration: none;
-  transition: background-color 120ms ease, color 120ms ease;
-
-  font-family: var(--uds-font-family);
-  font-size: var(--uds-font-size-sm);
-  font-weight: var(--uds-font-weight-medium);
-  line-height: 1;
-  color: var(--uds-color-text-interactive);
-  text-align: center;
-}
-
-.udc-nav-tile .material-symbols-outlined {
-  font-size: var(--uds-font-size-2xl);
-  line-height: 1;
-  color: var(--uds-color-icon-interactive);
-  transition: color 120ms ease;
-}
-
-.udc-nav-tile:hover {
-  background: var(--uds-color-surface-interactive-subtle-hover);
-}
-
-.udc-nav-tile[aria-current="page"] {
-  background: var(--uds-color-surface-interactive-active);
-  color: var(--uds-color-text-inverse);
-}
-
-.udc-nav-tile[aria-current="page"] .material-symbols-outlined {
-  color: var(--uds-color-text-inverse);
-}
-
-.udc-nav-tile[aria-current="page"]:hover {
-  background: var(--uds-color-surface-interactive-hover);
-}
-
-/* --------------------------------------------------------------------------
-   WRAPPER — relative positioning context for bento dropdown
-   -------------------------------------------------------------------------- */
-.udc-nav-bento-wrapper {
-  position: relative;
-}

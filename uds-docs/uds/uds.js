@@ -13,11 +13,11 @@
      components/tile.js              ← toggle selected on click
      components/list.js              ← single selection, keyboard nav
      components/data-table.js        ← checkbox toggle-all, sort cycling
-     components/nav-header.js        ← bento dropdown toggle
      components/nav-vertical.js      ← sidebar nav selection, keyboard nav
 
    CSS-only components (no JS needed):
-     button, badge, divider, icon-wrapper, spacer, breadcrumb, radio
+     button, badge, divider, icon-wrapper, spacer, breadcrumb, radio,
+     nav-header (no interactive popover — title-area is a static pill)
 
    Usage:
      <script src="uds/uds.js"></script>
@@ -49,7 +49,6 @@
     'components/tile/tile.js',
     'components/list/list.js',
     'components/data-table/data-table.js',
-    'components/nav-header/nav-header.js',
     'components/nav-vertical/nav-vertical.js',
     'components/chip/chip.js',
     'components/search/search.js'
@@ -97,7 +96,6 @@
     if (UDS._initTextInput)    root.querySelectorAll('.udc-text-input').forEach(UDS._initTextInput);
     if (UDS._initTabs)         root.querySelectorAll('.udc-tabs').forEach(UDS._initTabs);
     if (UDS._initCheckbox)     root.querySelectorAll('.udc-checkbox').forEach(UDS._initCheckbox);
-    if (UDS._initNavBento)     root.querySelectorAll('.udc-nav-bento-wrapper').forEach(UDS._initNavBento);
     if (UDS._initNavVertical)  root.querySelectorAll('.udc-nav-vertical').forEach(UDS._initNavVertical);
     if (UDS._initDropdown)     root.querySelectorAll('.udc-dropdown').forEach(UDS._initDropdown);
     if (UDS._initNotification) root.querySelectorAll('.udc-notification').forEach(UDS._initNotification);

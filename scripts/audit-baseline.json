@@ -20,7 +20,7 @@
       "tabs"
     ],
     "baselineDate": "2026-05-12",
-    "baselineNote": "Initial run of audit-css-api-table.sh against the post-PR1 state found pre-existing API-table drift across 10 components (some missing entries, some cross-component class references that are legitimate, some BEM sub-elements deliberately omitted). Backfilling all 10 is a separate sweep; for now they're tolerated and new drift fails."
+    "baselineNote": "Initial run of audit-css-api-table.sh against the post-PR1 state found pre-existing API-table drift across 10 components (some missing entries, some cross-component class references that are legitimate, some BEM sub-elements deliberately omitted). Backfilling all 10 is a separate sweep; for now they're tolerated and new drift fails. nav-header stays tolerated even after the 2026-05-13 bento removal because the audit's belongs_to family-fallback logic for nav-* classes is imperfect (it doesn't recognize sibling subparts like .udc-nav-account / .udc-nav-logo / .udc-nav-search as belonging to nav-header). The rigorous coherence check for nav-header is audit-doc-internal-consistency.sh, which DOES work correctly. A follow-up to fix the belongs_to family-fallback in audit-css-api-table.sh (one-line change) is filed separately."
   },
   "audit-agent-docs-currency": {
     "_comment": "Tracks whether every .cursor/rules/*.mdc, .cursor/skills/*/SKILL.md, .cursor/agents/*.md is mentioned on uds-docs/docs/pages/cursor-workflows.html (and vice-versa). Pre-baseline commits are not enforced. Add file basenames to toleratedFiles for rules/skills/agents that intentionally do NOT appear on the docs page (e.g. internal-only or experimental). Update baseline only on a deliberate sweep that brings every file into the docs.",
@@ -41,10 +41,6 @@
       "data-table/event-undispatched/select-all",
       "dialog/event-undispatched/cancel",
       "dialog/event-undispatched/confirm",
-      "nav-header/event-undispatched/bento-dismiss",
-      "nav-header/event-undispatched/bento-toggle",
-      "nav-header/paired-missing/button-ghost",
-      "nav-header/token-missing/--uds-color-surface-page",
       "pagination/event-undispatched/page-change",
       "pagination/event-undispatched/page-size-change",
       "radio/css-orphan/.udc-radio__required",

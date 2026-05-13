@@ -2,20 +2,17 @@
   "$schema": "../../schemas/spec.schema.json",
   "component": "nav-header",
   "title": "Nav Header",
-  "description": "A horizontal navigation header that spans the top of the application. Contains the logo, app switcher (bento), primary navigation, and user actions.",
-  "whenToUse": "At the top of every authenticated page in the app shell. To house the brand mark, app switcher, and primary global actions.",
+  "description": "A horizontal navigation header that spans the top of the application. Contains the logo, page-title indicator, primary navigation (search), and user actions (My Work, account).",
+  "whenToUse": "At the top of every authenticated page in the app shell. To house the brand mark, current page title, and primary global actions.",
   "whenNotToUse": "On marketing or landing pages (use a simpler header). On mobile-only views, consider a collapsible pattern.",
   "acceptanceCriteria": [
     "Outer element uses <header role=\"banner\">.",
     "Inner content uses a 3-column grid (left, center, right) constrained to max-width 1440px.",
-    "Bento trigger exposes aria-expanded and aria-haspopup; activating it toggles the dropdown.",
-    "Bento dropdown closes on Escape (whether focus is on the trigger or inside the panel) and on outside click; on Escape, focus returns to the trigger.",
     "Icon-only ghost buttons in the account pill have aria-label.",
     "My Work badge announces meaning (e.g. \"N unread\") to screen readers, not just the bare number.",
     "When showSearch=false the centered search field is omitted and the layout remains balanced.",
     "When showMyWork=false the My Work pill is omitted from the right region.",
-    "When titleOnly=true the title-area renders as a bare paragraph/xl-bold page title with no bento trigger chrome (no icon, no chevron, no pill background, no shadow).",
-    "Inside the bento dropdown, sections (tiles / list / footer) are separated by `udc-divider-horizontal` rows with data-padding=\"sm\" to match Figma's `_udc-nav-header_dropdown` anatomy."
+    "When titleOnly=true the title-area renders as a bare paragraph/xl-bold page title with no pill chrome (no icon, no chevron, no pill background, no shadow)."
   ],
   "dependencies": {
     "css": [
@@ -42,44 +39,26 @@
       "name": "titleOnly",
       "type": "boolean",
       "default": false,
-      "description": "When true, the title-area renders as a bare page title (paragraph/xl-bold, no leading icon, no chevron, transparent pill chrome, radius 8). Use when the page does not need an app switcher. Markup: apply `data-title-only=\"true\"` to `.udc-nav-title-area`. Mirrors the Figma `Title Only=True` variant on the `_udc-nav-header_title-area` set (5586:8859)."
+      "description": "When true, the title-area renders as a bare page title (paragraph/xl-bold, no leading icon, no chevron, transparent pill chrome, radius 8). Markup: apply `data-title-only=\"true\"` to `.udc-nav-title-area`. Mirrors the Figma `Title Only=True` variant on the `_udc-nav-header_title-area` set (5586:8859)."
     }
   ],
-  "events": [
-    {
-      "name": "bento-toggle",
-      "description": "Fires when the bento (app switcher) dropdown opens or closes. The trigger button toggles aria-expanded; the wrapper toggles data-open.",
-      "payload": "{ open: boolean }"
-    },
-    {
-      "name": "bento-dismiss",
-      "description": "Fires when the bento dropdown closes due to Escape key or outside click.",
-      "payload": "{ reason: 'escape' | 'outside-click' }"
-    }
-  ],
+  "events": [],
   "slots": [
-    { "name": "brand",        "description": "Logo / brand mark on the far left. Figma binds this to surface/brand-bold." },
-    { "name": "title-area",   "description": "Page-title pill that doubles as the app-switcher trigger. Wraps icon + page title + chevron and expands the bento dropdown. CSS: `.udc-nav-title-area`. Figma source: `_udc-nav-header_title-area` (5586:8858)." },
+    { "name": "brand",        "description": "Logo / brand mark on the far left. Figma binds this to surface/brand-bold. Figma source: `_udc-nav-header_logo` (6403:39131) with `Outline: False | True` variants." },
+    { "name": "title-area",   "description": "Page-title pill displaying icon + page title + chevron, OR a bare page title (Title Only=True). CSS: `.udc-nav-title-area`. Figma source: `_udc-nav-header_title-area` (5586:8858)." },
     { "name": "center",       "description": "Centered region — by default a search field. Hidden when showSearch=false." },
     { "name": "actions",      "description": "Right-side primary actions. By default the My Work pill; hidden when showMyWork=false." },
-    { "name": "account",      "description": "Right-side account-actions pill containing three icon-only ghost buttons." },
-    { "name": "bento.tiles",  "description": "Row of nav tiles inside the bento dropdown (top of the panel). CSS: `.udc-nav-bento__tiles`." },
-    { "name": "bento.list",   "description": "Main list of destinations inside the bento dropdown. CSS: `.udc-nav-bento__list`. Built on udc-list." },
-    { "name": "bento.footer", "description": "Footer row inside the bento dropdown (e.g. \"Customize menu\"). CSS: `.udc-nav-bento__footer`." }
+    { "name": "account",      "description": "Right-side account-actions pill containing three icon-only ghost buttons." }
   ],
   "states": [
-    { "name": "default",     "description": "Bento dropdown closed; data-open absent on the wrapper; aria-expanded='false' on the trigger.", "hasVisual": true },
-    { "name": "bento-open",  "description": "Bento dropdown visible; data-open='true' on the wrapper; aria-expanded='true' on the trigger.", "hasVisual": true },
-    { "name": "title-only",  "description": "Title-area renders as a bare paragraph/xl-bold page title with no bento chrome. Toggled via `data-title-only=\"true\"` on `.udc-nav-title-area`. Mirrors Figma `Title Only=True` (5586:8859).", "hasVisual": true },
-    { "name": "not-applicable", "description": "Figma does not define hover / focus / disabled states at the header level. Those states are inherited from nested components (search, button-ghost, badge, list).", "hasVisual": false }
+    { "name": "default",     "description": "Default rendering of the header at full width.", "hasVisual": true },
+    { "name": "title-only",  "description": "Title-area renders as a bare paragraph/xl-bold page title with no pill chrome. Toggled via `data-title-only=\"true\"` on `.udc-nav-title-area`. Mirrors Figma `Title Only=True` (5586:8859).", "hasVisual": true },
+    { "name": "not-applicable", "description": "Figma does not define hover / focus / disabled states at the header level. Those states are inherited from nested components (search, button-ghost, badge).", "hasVisual": false }
   ],
   "contentGuidelines": null,
   "commonlyPairedWith": [
-    "search",
-    "button-ghost",
+    "text-input",
     "badge",
-    "divider",
-    "list",
     "icon-wrapper",
     "nav-vertical"
   ],
@@ -90,28 +69,30 @@
   "accessibility": {
     "keyboard": [
       { "key": "Tab",            "action": "Move focus through nav header items" },
-      { "key": "Enter / Space",  "action": "Activate focused button or link" },
-      { "key": "Escape",         "action": "Close the bento dropdown when open" }
+      { "key": "Enter / Space",  "action": "Activate focused button or link" }
     ],
     "screenReader": [
       { "trigger": "Page load",                          "announcement": "Outer container exposes role=\"banner\" so the header is identified as a landmark." },
-      { "trigger": "Focus moves to bento trigger",       "announcement": "Trigger exposes aria-haspopup and aria-expanded; expanded state is announced as the dropdown opens or closes." },
       { "trigger": "Focus moves to an icon-only button", "announcement": "Each icon-only ghost button in the account pill exposes an aria-label describing its action." },
       { "trigger": "My Work pill receives focus",        "announcement": "Badge count is exposed via accessible name (e.g. \"My Work, 5 unread\") rather than a bare number." }
     ],
     "wcag": [
-      { "criterion": "1.3.1", "level": "A",  "howMet": "Semantic <header> + landmark role; bento trigger is a real <button>; account actions are real buttons." },
+      { "criterion": "1.3.1", "level": "A",  "howMet": "Semantic <header> + landmark role; account actions are real buttons." },
       { "criterion": "1.4.3", "level": "AA", "howMet": "Text and meaningful icon contrast meets 4.5:1 (text) / 3:1 (non-text). Currently unverified — see knownIssues for divergences between Figma intent and CSS." },
       { "criterion": "2.1.1", "level": "A",  "howMet": "All interactive elements are keyboard-reachable in DOM order." },
-      { "criterion": "2.4.7", "level": "AA", "howMet": "Visible focus indicators on all focusable elements (bento trigger + sub-components)." },
-      { "criterion": "4.1.2", "level": "A",  "howMet": "Bento trigger exposes name/role/state; icon-only ghost buttons require aria-label." }
+      { "criterion": "2.4.7", "level": "AA", "howMet": "Visible focus indicators on all focusable elements (account pill icon-only buttons inherit from button-ghost)." },
+      { "criterion": "4.1.2", "level": "A",  "howMet": "Icon-only ghost buttons require aria-label; My Work badge exposes accessible-name count." }
     ],
     "contrast": []
   },
   "knownIssues": [
     "Authoring errors (\"Component set for node has existing errors\") originate from the udc-badge component set (5794:7948) on the badge Figma page. They surface during deep inspection of nav-header because the My Work pill nests a udc-badge instance. The canonical udc-nav-header set (5684:11340) itself reads cleanly. The 🔴 blocked status on the nav-header page persists until that upstream Figma issue is resolved on the badge page.",
-    "Logo glyph in examples/default.html is an `apartment` Material Symbol; Figma's canonical logo is a hand-drawn brand-mark vector in surface/brand-bold (#023674). Replicating the exact vector requires an SVG export from Figma, and the `surface/brand-bold` color is in a Figma collection that is not currently imported into the doc-site's semantic tokens. The doc-site falls back to a Material Symbol with --uds-color-icon-interactive until both gaps are closed.",
-    "Frame 31 max-width (1440) is bound in Figma to `content-container/max-width-nav-container` — a Figma collection that is NOT currently in the imported token collections. CSS bakes 1440 as a literal until the collection is added to the token import scope."
+    "Logo glyph in examples/default.html is an `apartment` Material Symbol; Figma's canonical logo is a hand-drawn brand-mark vector in `_udc-nav-header_logo` (6403:39131) with `Outline: False | True` variants (False = surface/brand-bold #023674; True = light fill). Replicating the exact vector requires an SVG export from Figma, and the `surface/brand-bold` color is in a Figma collection that is not currently imported into the doc-site's semantic tokens. The doc-site falls back to a Material Symbol with --uds-color-icon-interactive until both gaps are closed.",
+    "Logo `Outline=True` variant (light-fill brand vector at id 6403:39132) is defined in Figma but not exposed in docs. No prop to switch the logo to the inverse fill for use on dark surfaces; adding it requires a doc-side prop + a second SVG export. Deferred pending designer direction on whether this is a public contract or an internal-only variant.",
+    "New `_udc-nav-header_logo-pill` component exists in Figma as a 98×48 pill containing the brand vector + 'ResMan' text label (id 6399:13744). NOT wired into the canonical udc-nav-header Variant=Default tree — the canonical set still nests the simple 24×44 `_udc-nav-header_logo`. Treating as a design exploration; will not change the doc-side `.udc-nav-logo` chrome until the designer confirms whether the pill replaces the simple logo or coexists as a variant.",
+    "Frame 31 max-width (1440) is bound in Figma to `content-container/max-width-nav-container` — a Figma collection that is NOT currently in the imported token collections. CSS bakes 1440 as a literal until the collection is added to the token import scope.",
+    "Title-area chevron is decorative. The Figma `_udc-nav-header_title-area` Title Only=False variant renders a chevron next to the page title, but no popover/dropdown is wired into the canonical udc-nav-header tree (the prior bento app-switcher was removed in this round). The chevron currently serves as a visual affordance only; no interaction is documented in the canonical contract.",
+    "Standalone `_udc-nav-header_dropdown` (6019:32094) and `_udc-nav-header_nav-tile` (5498:2340) components still exist on the nav-header Figma page as orphans (not nested in any canonical component set). The bento app-switcher concept was removed from the canonical udc-nav-header but the sub-components were not yet deleted on the page. No doc-side surface for these orphans."
   ],
   "performance": null,
   "motion": null,
@@ -126,5 +107,5 @@
   "figmaNodeId": "5684:11340",
   "figmaPageNodeId": "5373-972",
   "storybookSlug": null,
-  "_legacyAccessibilityNotes": "Use <header role=\"banner\"> as the outer element. The bento button should have aria-expanded and aria-haspopup."
+  "_legacyAccessibilityNotes": "Use <header role=\"banner\"> as the outer element. Icon-only ghost buttons in the account pill require aria-label."
 }

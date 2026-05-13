@@ -302,16 +302,21 @@
         "Variant": ["Default"]
       },
       "nestedInstances": [
-        { "nodeId": "5684:11344", "name": "_udc-nav-header_logo",        "mainComponentName": "_udc-nav-header_logo",        "mainComponentNodeId": "6403:39130", "mainComponentSetNodeId": "6403:39131", "mainComponentVariantProperties": { "Outline": ["false", "true"] } },
-        { "nodeId": "5684:11345", "name": "_udc-nav-header_title-area",  "mainComponentName": "_udc-nav-header_title-area",  "mainComponentNodeId": "5505:7875", "mainComponentSetNodeId": "5586:8858",  "mainComponentVariantProperties": { "Variant": ["A"], "Title Only": ["false", "true"] } },
-        { "nodeId": "5684:11346", "name": "Search Box",                  "mainComponentName": "udc-search",                  "mainComponentNodeId": "5053:53" },
-        { "nodeId": "5684:11348", "name": "_udc-nav-header_mywork-button","mainComponentName": "_udc-nav-header_mywork-button","mainComponentNodeId": "6403:33941" },
-        { "nodeId": "5684:11349", "name": "_udc-nav-header_account-actions","mainComponentName": "_udc-nav-header_account-actions","mainComponentNodeId": "6403:34784" }
+        { "nodeId": "6403:39139", "name": "_udc-nav-header_logo",         "mainComponentName": "_udc-nav-header_logo",         "mainComponentNodeId": "6403:39130", "mainComponentSetNodeId": "6403:39131", "mainComponentVariantProperties": { "Outline": ["False", "True"] } },
+        { "nodeId": "5684:11345", "name": "_udc-nav-header_title-area",   "mainComponentName": "_udc-nav-header_title-area",   "mainComponentNodeId": "5505:7875",  "mainComponentSetNodeId": "5586:8858",  "mainComponentVariantProperties": { "Variant": ["A"], "Title Only": ["False", "True"] } },
+        { "nodeId": "5684:11346", "name": "Search Box",                   "mainComponentName": "udc-text-input",               "mainComponentNodeId": "5053:53",    "mainComponentSetNodeId": "5594:7264" },
+        { "nodeId": "6403:33942", "name": "_udc-nav-header_mywork-button","mainComponentName": "_udc-nav-header_mywork-button","mainComponentNodeId": "6403:33941" },
+        { "nodeId": "6403:34785", "name": "_udc-nav-header_account-actions","mainComponentName": "_udc-nav-header_account-actions","mainComponentNodeId": "6403:34784" }
+      ],
+      "orphanedPageComponents": [
+        { "nodeId": "6019:32094", "name": "_udc-nav-header_dropdown", "type": "COMPONENT", "note": "Former bento dropdown panel; no longer nested in the canonical udc-nav-header set as of 2026-05-13. Kept on the page as a design artifact." },
+        { "nodeId": "5498:2340", "name": "_udc-nav-header_nav-tile", "type": "COMPONENT", "note": "Former bento tile; no longer nested in the canonical udc-nav-header set as of 2026-05-13. Kept on the page as a design artifact." },
+        { "nodeId": "6399:13744", "name": "_udc-nav-header_logo-pill", "type": "COMPONENT", "note": "New 98x48 brand-vector + 'ResMan' text-label pill; NOT yet wired into the canonical udc-nav-header Variant=Default (which still nests the simple 24x44 _udc-nav-header_logo). Design exploration pending designer confirmation." }
       ],
       "tokenBindings": [],
       "fingerprint": {
-        "nodeTreeHash": "captured:2026-05-12:5373:972",
-        "variantHash": "captured:2026-05-12:5684:11340",
+        "nodeTreeHash": "captured:2026-05-13:5373:972",
+        "variantHash": "captured:2026-05-13:5684:11340",
         "tokenBindingHash": "captured-out-of-band:see-changelog"
       }
     },
