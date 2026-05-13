@@ -1,8 +1,8 @@
 ---
-description: Requires deep Figma node inspection for UDS Components; screenshots are supporting evidence only.
+description: Requires deep Figma node inspection for UDS Components; screenshots are supporting evidence only. Inspection is bidirectional — every doc-site artifact must be checked for a Figma counterpart, and every prior snapshot entry must be diffed against the new read.
 globs: ["uds-docs/**", ".cursor/**"]
 alwaysApply: false
-lastUpdated: 2026-05-12T18:41:50Z
+lastUpdated: 2026-05-13T17:54:48Z
 ---
 
 # UDS Figma Component Inspection
@@ -52,6 +52,59 @@ Figma, inspect the actual Figma node data:
    - `uds-docs/uds/components/<component>/<component>.css`
    - `uds-docs/uds/components/<component>/examples/*.html`
    - `uds-docs/uds/components/<component>/status.json` (the `current` field — replaces the legacy `COMPONENT_STATUS` table)
+
+## Bidirectional inspection — mandatory
+
+The comparison is NOT only "Figma → docs." Every inspection MUST also run
+two reverse passes, otherwise deletions and renames go undetected:
+
+### Doc-site surplus pass
+
+The inspector must enumerate every doc-side artifact for the component one
+by one and tag each as `attested` (a Figma counterpart was found),
+`unattested-by-figma` (no Figma counterpart, candidate for removal), or
+`infrastructure` (wrapper / positioning / support class with no expected
+Figma counterpart, e.g. `.udc-foo-wrapper`).
+
+Artifacts to enumerate:
+
+- every `spec.json` `slots[]` name
+- every `spec.json` `events[]` name
+- every `spec.json` `states[]` name
+- every `spec.json` `props[]` name
+- every `spec.json` `acceptanceCriteria[]` entry (semantic match — flag
+  criteria mentioning concepts no longer in Figma)
+- every `.udc-<id>*` selector defined in `<id>.css`
+- every entry in `examples/manifest.json`
+- every `<code>.udc-...</code>` row in the Code-tab `<table class="sg-api-table">`
+  inside `<div data-page="<id>">` in `uds-docs/index.html`
+- every `--uds-*` token group enumerated in `impl.json` `tokens`
+- every public function exported by `<id>.js` (and the matching
+  `'components/<id>/<id>.js'` loader entry in `uds-docs/uds/uds.js`
+  + the `UDS._init<Name>` call in `UDS.init`)
+- every control in `playground.js` `controls[]` and the corresponding
+  reference in `render()`
+
+Each `unattested-by-figma` entry is a finding with a `Confidence` /
+`Risk` / `Reason` / `Default action` shape per `uds-figma-change-classification.mdc`.
+
+### Snapshot delta pass
+
+Before the Figma traversal, the inspector MUST read the prior
+`.cursor/figma/state/components.snapshot.json` entry for the component (if
+one exists with non-`seed:*` fingerprints) and capture it as `priorSnapshot`.
+
+After the new traversal, diff the prior entry against the new read at
+these axes:
+
+- `nestedInstances[]` — entries removed (by `name`), entries added, entries
+  with the same `name` but a different `mainComponentNodeId`
+  (rename/replacement)
+- `variantProperties` keys removed, added, or whose enum-value set changed
+- `defaultVariantNodeId` change
+- `componentSetNodeId` / `pageNodeId` change (canonical-node move)
+
+Each delta is a finding with the same classification shape.
 
 ## Release changelog coverage
 
@@ -149,6 +202,28 @@ Any component inspection report must include:
 - Missing in JSON:
 - Missing in CSS/examples:
 
+## Doc-site surplus
+| Artifact | Kind | Tag | Confidence | Risk | Reason | Default action |
+|---|---|---|---|---|---|---|
+
+(One row per `spec.json` slot/event/state/prop/acceptanceCriterion, per
+`.udc-<id>*` CSS selector, per `examples/manifest.json` entry, per
+Code-tab API table row, per `impl.json` token group, per `<id>.js` public
+function, per `playground.js` control. Tag must be one of `attested`,
+`unattested-by-figma`, `infrastructure`. `unattested-by-figma` entries
+must have Confidence + Risk + Reason + Default action populated.)
+
+## Snapshot delta
+- Prior snapshot present: yes / no
+- Prior `nestedInstances` removed:
+- Prior `nestedInstances` added:
+- `nestedInstances` renamed (same `name`, different `mainComponentNodeId`):
+- `variantProperties` keys removed:
+- `variantProperties` keys added:
+- `variantProperties` enum value changes:
+- `defaultVariantNodeId` change:
+- `componentSetNodeId` / `pageNodeId` change:
+
 ## Confidence
 - Level: high | medium | low
 - Reason:
@@ -176,3 +251,8 @@ Stop and report instead of guessing when:
 - Do not invent component anatomy when layer names or nested instances are
   ambiguous.
 - Do not overwrite a non-null `figmaNodeId` without reporting old/new.
+- Do not omit the `Doc-site surplus` or `Snapshot delta` sections from the
+  report. An inspection without them is incomplete and silently hides
+  deletions and renames. If a section has no findings, say so explicitly
+  (`No surplus findings.` / `Prior snapshot present: no.`) — never leave
+  it blank or implicit.

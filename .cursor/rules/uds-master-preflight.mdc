@@ -1,7 +1,7 @@
 ---
 description: Master workflow rule — enforces version bump FIRST, then changes, then finalize. Runs on every task that modifies uds-docs/.
 alwaysApply: true
-lastUpdated: 2026-05-12T18:41:50Z
+lastUpdated: 2026-05-13T17:54:48Z
 ---
 
 # UDS Master Workflow
@@ -221,6 +221,18 @@ Figma Release Notes) are now enforced by CI audits, not just discipline:
 - `scripts/audit-css-api-table.sh` — fails if the Code-tab API table in
   `index.html` is out of sync with the actual `udc-*` selectors in the
   component's CSS.
+- `scripts/audit-doc-internal-consistency.sh` — per-component doc-side
+  coherence safety net (the partner of the `figma-component-inspector`'s
+  bidirectional Surplus pass). Five checks: orphan `.udc-<id>*` CSS
+  selectors absent from every example/impl/playground/API-table; spec
+  `events[]` not dispatched in `<id>.js` (DOM-native events
+  auto-excused); `impl.json` token refs missing from
+  `uds/tokens/*.css`; `commonlyPairedWith[]` refs missing from
+  `components.json`; orchestrator `COMPONENT_SCRIPTS` entries pointing
+  at missing files. Catches partial cleanups (e.g. you removed a CSS
+  rule but left the slot in `spec.json`). Tolerated findings are
+  enumerated in `scripts/audit-baseline.json`
+  `audit-doc-internal-consistency.toleratedFindings`; new drift fails.
 - `scripts/audit-agent-docs-currency.sh` — fails if a rule/skill/subagent
   file under `.cursor/` exists but isn't referenced on
   `uds-docs/docs/pages/cursor-workflows.html`, or vice-versa (the page

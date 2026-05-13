@@ -1,7 +1,7 @@
 ---
 name: uds-updated
-description: Orchestrate a full UDS Figma-to-docs sync from a simple prompt like "UDS updated" or "Figma updated". Reads Figma Tokens and Components, classifies changes, applies only high-confidence non-breaking updates, and falls back to dry-run/reporting for ambiguous or breaking changes.
-lastUpdated: 2026-05-12T18:41:50Z
+description: Orchestrate a full UDS Figma-to-docs sync from a simple prompt like "UDS updated" or "Figma updated". Reads Figma Tokens and Components, classifies changes (including surplus findings from the inspector's bidirectional pass that flag doc-side artifacts with no Figma counterpart), applies only high-confidence non-breaking updates, and falls back to dry-run/reporting for ambiguous, breaking, or removal changes.
+lastUpdated: 2026-05-13T17:54:48Z
 ---
 
 # UDS Updated
@@ -200,6 +200,11 @@ Ask before applying:
 - medium/low-confidence changes
 - any breaking change
 - any deletion/removal
+- **surplus findings flagged by the inspector** (`unattested-by-figma`
+  artifacts and `Snapshot delta` removals) — these are doc-side
+  artifacts with no Figma counterpart, classified per
+  `uds-figma-change-classification.mdc` and never auto-applied. Surface
+  them in the dry-run "Would remove" block and stop for user approval.
 - any component split/merge
 - any Figma write
 - any change that conflicts with current CSS implementation
@@ -277,6 +282,8 @@ Components: no changes | N safe changes | blocked
 Statuses: no changes | N changes | blocked
 New components: none | list
 Deleted/missing candidates: none | list, not applied
+Surplus removals proposed: none | list (per component, with confidence + risk)
+Snapshot deltas: none | list (per component: removed/renamed/added nestedInstances, variantProperty changes)
 Figma writes: none | list
 Docs deployed: yes/no
 
@@ -289,6 +296,11 @@ Docs deployed: yes/no
 ## Verification
 - ...
 ```
+
+The `Surplus removals proposed:` and `Snapshot deltas:` lines are
+mandatory. If both are empty for every component, state `none` on each
+line explicitly — do not omit either. Silent omission is the bug class
+that lets Figma deletions go undetected.
 
 ## Do not
 

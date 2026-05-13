@@ -52,11 +52,11 @@ the manual fallback when the hook hasn't run.
 | [`uds-figma-change-classification.mdc`](./rules/uds-figma-change-classification.mdc) | `2026-05-12T18:41:50Z` | Classifies Figma-derived token and component changes by confidence and breaking-change risk before anything is applied. |
 | [`uds-figma-component-card-update.mdc`](./rules/uds-figma-component-card-update.mdc) | `2026-05-12T18:41:50Z` | Update-mode companion to uds-figma-component-card.mdc. Defines what to do when the figma-component-card skill is re-run on a page that… |
 | [`uds-figma-component-card.mdc`](./rules/uds-figma-component-card.mdc) | `2026-05-12T18:41:50Z` | Canonical card layout for UDS Components Figma pages. Defines the seven-card structure, token bindings, and read-only contract against… |
-| [`uds-figma-component-inspection.mdc`](./rules/uds-figma-component-inspection.mdc) | `2026-05-12T18:41:50Z` | Requires deep Figma node inspection for UDS Components; screenshots are supporting evidence only. |
+| [`uds-figma-component-inspection.mdc`](./rules/uds-figma-component-inspection.mdc) | `2026-05-13T17:54:48Z` | Requires deep Figma node inspection for UDS Components; screenshots are supporting evidence only. Inspection is bidirectional — every… |
 | [`uds-figma-preflight.mdc`](./rules/uds-figma-preflight.mdc) | `2026-05-12T18:41:50Z` | Required preflight for any task that reads or writes UDS Figma files. |
 | [`uds-figma-sync-state.mdc`](./rules/uds-figma-sync-state.mdc) | `2026-05-12T18:41:50Z` | Defines tracked Figma sync snapshots and when agents may update them. |
 | [`uds-figma-write-safety.mdc`](./rules/uds-figma-write-safety.mdc) | `2026-05-12T18:41:50Z` | Prevents accidental Figma mutations during UDS sync work. Read-only is the default; writes are explicitly scoped and summarized. |
-| [`uds-master-preflight.mdc`](./rules/uds-master-preflight.mdc) | `2026-05-12T18:41:50Z` | Master workflow rule — enforces version bump FIRST, then changes, then finalize. Runs on every task that modifies uds-docs/. |
+| [`uds-master-preflight.mdc`](./rules/uds-master-preflight.mdc) | `2026-05-13T17:54:48Z` | Master workflow rule — enforces version bump FIRST, then changes, then finalize. Runs on every task that modifies uds-docs/. |
 | [`uds-release-workflow.mdc`](./rules/uds-release-workflow.mdc) | `2026-05-12T18:41:50Z` | UDS Design System release workflow -- detects Figma version bumps and guides the release process for the documentation site |
 | [`uds-rule-discipline.mdc`](./rules/uds-rule-discipline.mdc) | `2026-05-12T18:41:50Z` | Discipline that fires whenever you edit a Cursor rule, skill, or subagent file. Bump that file's `lastUpdated:` frontmatter and update the… |
 | [`uds-site-changelog.mdc`](./rules/uds-site-changelog.mdc) | `2026-05-12T18:41:50Z` | Enforces site version bumping, SITE_CHANGELOG updates, and cache busting on every documentation site change. |
@@ -72,10 +72,10 @@ the manual fallback when the hook hasn't run.
 | [`import-figma-tokens`](./skills/import-figma-tokens/SKILL.md) | `2026-05-12T18:41:50Z` | Import UDS token changes from the UDS Tokens Figma file. Uses direct Figma Variables reads first and token ZIP exports only as fallback.… |
 | [`link-figma-nodes`](./skills/link-figma-nodes/SKILL.md) | `2026-05-12T18:41:50Z` | Populate figmaNodeId and figmaPageNodeId fields in per-component spec.json files from canonical UDS Components Figma nodes. Use when Figma… |
 | [`new-component`](./skills/new-component/SKILL.md) | `2026-05-12T18:41:50Z` | Scaffold a new UDS component end to end. Creates uds/components/<id>/ with all required files (CSS stub, spec.json, status.json,… |
-| [`sync-figma-component-spec`](./skills/sync-figma-component-spec/SKILL.md) | `2026-05-12T18:41:50Z` | Update a UDS component's per-component artifacts (spec.json, CSS, examples, impl.json, playground.js) from a deep Figma component… |
+| [`sync-figma-component-spec`](./skills/sync-figma-component-spec/SKILL.md) | `2026-05-13T17:54:48Z` | Update a UDS component's per-component artifacts (spec.json, CSS, examples, impl.json, playground.js) from a deep Figma component… |
 | [`sync-figma-component-status`](./skills/sync-figma-component-status/SKILL.md) | `2026-05-12T18:41:50Z` | Sync UDS Components Figma stoplight page prefixes into per-component status.json files. Use after figma-inventory reports status mismatches. |
 | [`sync-figma-release-notes`](./skills/sync-figma-release-notes/SKILL.md) | `2026-05-12T18:41:50Z` | Rebuild Release Notes frames in both UDS Figma files from the aggregated UDS CHANGELOG. Use during releases or after CHANGELOG changes that… |
-| [`uds-updated`](./skills/uds-updated/SKILL.md) | `2026-05-12T18:41:50Z` | Orchestrate a full UDS Figma-to-docs sync from a simple prompt like "UDS updated" or "Figma updated". Reads Figma Tokens and Components,… |
+| [`uds-updated`](./skills/uds-updated/SKILL.md) | `2026-05-13T17:54:48Z` | Orchestrate a full UDS Figma-to-docs sync from a simple prompt like "UDS updated" or "Figma updated". Reads Figma Tokens and Components,… |
 
 ## Subagents (7)
 
@@ -83,7 +83,7 @@ the manual fallback when the hook hasn't run.
 |---|---|---|
 | [`figma-capability-check`](./agents/figma-capability-check.md) | `2026-05-12T18:41:50Z` | Read-only probe that reports what the current Figma integration can actually access for UDS Tokens and UDS Components. Use before relying… |
 | [`figma-component-card-audit`](./agents/figma-component-card-audit.md) | `2026-05-12T18:41:50Z` | Audits one or all UDS component pages in a Figma file against the canonical component-card spec. Verifies structure, token bindings, status… |
-| [`figma-component-inspector`](./agents/figma-component-inspector.md) | `2026-05-12T18:41:50Z` | Deep-inspects a single UDS component in the UDS Components Figma file by reading node trees, component sets, variants, layer details, token… |
+| [`figma-component-inspector`](./agents/figma-component-inspector.md) | `2026-05-13T17:54:48Z` | Deep-inspects a single UDS component in the UDS Components Figma file by reading node trees, component sets, variants, layer details, token… |
 | [`figma-inventory`](./agents/figma-inventory.md) | `2026-05-12T18:41:50Z` | Read-only inventory of UDS Figma files. Lists versions, component pages, statuses, new/missing components, node fingerprints, and doc-site… |
 | [`figma-spec-gap`](./agents/figma-spec-gap.md) | `2026-05-12T18:41:50Z` | Read-only agent that compares UDS Components Figma coverage against the doc site's component JSON specs, sidebar pages, figmaNodeId fields,… |
 | [`figma-token-audit`](./agents/figma-token-audit.md) | `2026-05-12T18:41:50Z` | Directly reads the UDS Tokens Figma Variables structure, validates it against the token architecture contract, diffs it against the last… |

@@ -52,6 +52,9 @@ jobs:
       - name: CSS API table consistency
         run: bash scripts/audit-css-api-table.sh
 
+      - name: Doc-internal consistency
+        run: bash scripts/audit-doc-internal-consistency.sh
+
       - name: Agent toolchain docs currency
         run: bash scripts/audit-agent-docs-currency.sh
 
