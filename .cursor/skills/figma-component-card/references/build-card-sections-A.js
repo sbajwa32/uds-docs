@@ -853,8 +853,14 @@ async function buildOne(CONFIG) {
   // return value. Eyebrow numbers stay assigned by section identity,
   // not by render order — so a page that omits SUB-COMPONENTS will
   // render `01 → 02 → 03 → 05 → 06 → 07` (skipping 04).
+  // HEADER must invoke its builder — `true` alone is just a flag in
+  // the dispatched payload. Comma operator runs the side-effecting
+  // build, then the literal `true` ends up in `dispatched.HEADER`.
+  // (Lost during the four-phase split refactor; restored here so the
+  // wrapper's first child is the HEADER card, matching the original
+  // single-file build-card.js behavior.)
   const dispatched = {
-    HEADER:   true,
+    HEADER:   (buildHeader(), true),
     ANATOMY:  buildAnatomy(),
     VARIANTS: buildVariants(),
   };
