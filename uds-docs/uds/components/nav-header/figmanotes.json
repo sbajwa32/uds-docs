@@ -1,0 +1,97 @@
+{
+  "$schema": "../../schemas/figmanotes.schema.json",
+  "notes": [
+    {
+      "id": "logo-pill-exploration",
+      "kind": "new-in-figma",
+      "title": "New logo-pill component in Figma — not used yet",
+      "summary": "The Figma file has a new component called _udc-nav-header_logo-pill (98×48) that pairs the brand vector with a 'ResMan' text label. The current nav-header is still using the older simple 24×44 logo without the label.",
+      "decisionNeeded": "Should the new logo-pill replace the simple logo, sit alongside it as a variant, or be left as a design exploration?",
+      "figmaRefs": [
+        { "name": "_udc-nav-header_logo-pill", "nodeId": "6399:13744" }
+      ],
+      "autoPruneWhen": "_udc-nav-header_logo-pill becomes a nested instance in the canonical udc-nav-header tree, or is deleted from the nav-header page.",
+      "raisedBy": "figma-component-inspector",
+      "raisedOn": "2026-05-13"
+    },
+    {
+      "id": "outline-true-variant",
+      "kind": "new-in-figma",
+      "title": "Logo has an Outline=True variant — not exposed in the docs",
+      "summary": "The _udc-nav-header_logo component set has two variants: Outline=False (the dark brand vector, currently used) and Outline=True (a light-fill version for dark surfaces). The doc-site only ships the dark variant; there's no prop or example for the light one.",
+      "decisionNeeded": "Is the light-fill variant part of the public contract (we add a prop + SVG export), or is it an internal-only variant we can ignore?",
+      "figmaRefs": [
+        { "name": "Outline=True", "nodeId": "6403:39132" },
+        { "name": "_udc-nav-header_logo (component set)", "nodeId": "6403:39131" }
+      ],
+      "autoPruneWhen": "spec.json adds a prop that toggles the logo variant, or the Outline=True variant is removed from the Figma component set.",
+      "raisedBy": "figma-component-inspector",
+      "raisedOn": "2026-05-13"
+    },
+    {
+      "id": "page-orphans-dropdown-and-tile",
+      "kind": "figma-orphan",
+      "title": "Old bento components still sit on the Figma page",
+      "summary": "_udc-nav-header_dropdown and _udc-nav-header_nav-tile are still on the nav-header Figma page but aren't used by the canonical udc-nav-header anymore (the bento app-switcher was removed). They're orphans — leftovers from the previous design.",
+      "decisionNeeded": "Should these be deleted from the Figma page to keep it clean, or are they being kept as reference for something?",
+      "figmaRefs": [
+        { "name": "_udc-nav-header_dropdown", "nodeId": "6019:32094" },
+        { "name": "_udc-nav-header_nav-tile", "nodeId": "5498:2340" }
+      ],
+      "autoPruneWhen": "Both _udc-nav-header_dropdown and _udc-nav-header_nav-tile are deleted from the Figma page.",
+      "raisedBy": "figma-component-inspector",
+      "raisedOn": "2026-05-13"
+    },
+    {
+      "id": "title-area-chevron-decorative",
+      "kind": "question",
+      "title": "Title-area chevron has no interaction — is that intended?",
+      "summary": "The title-area pill renders a downward chevron next to the page title. The previous design used it to open the bento app-switcher; that's gone now and no other popover is wired up. The chevron currently does nothing.",
+      "decisionNeeded": "Should the chevron be removed (it implies an interaction that doesn't exist), or is it intentional as a visual affordance for a future popover?",
+      "figmaRefs": [
+        { "name": "_udc-nav-header_title-area", "nodeId": "5586:8858" }
+      ],
+      "raisedBy": "figma-component-inspector",
+      "raisedOn": "2026-05-13"
+    },
+    {
+      "id": "logo-svg-export-gap",
+      "kind": "drift",
+      "title": "Doc example uses a Material Symbol instead of the brand logo",
+      "summary": "Figma's logo is a hand-drawn brand-mark vector in surface/brand-bold (#023674). The doc-site examples use the 'apartment' Material Symbol as a stand-in because we don't have an SVG export and the brand color isn't in our imported token collections yet.",
+      "decisionNeeded": "Want to commit to an SVG export + token import so the docs match Figma, or leave the Material Symbol as the doc stand-in indefinitely?",
+      "figmaRefs": [
+        { "name": "Outline=False", "nodeId": "6403:39130" }
+      ],
+      "autoPruneWhen": "The logo SVG is exported into the docs and the example HTML stops using the Material Symbol fallback.",
+      "raisedBy": "figma-component-inspector",
+      "raisedOn": "2026-05-13"
+    },
+    {
+      "id": "max-width-token-not-imported",
+      "kind": "drift",
+      "title": "Header max-width is hardcoded — Figma uses a token we don't import",
+      "summary": "The header's outer Frame 31 in Figma binds max-width (1440px) to content-container/max-width-nav-container, but that token collection isn't in our import scope. The CSS bakes 1440 as a literal until the collection is added.",
+      "decisionNeeded": "Add the content-container collection to the token import scope (which would touch the import-figma-tokens pipeline), or accept the literal as a deliberate exception?",
+      "figmaRefs": [
+        { "name": "udc-nav-header (component set)", "nodeId": "5684:11340" }
+      ],
+      "autoPruneWhen": "The content-container/max-width-nav-container token is imported into uds/tokens/*.css and nav-header.css consumes it.",
+      "raisedBy": "figma-component-inspector",
+      "raisedOn": "2026-05-13"
+    },
+    {
+      "id": "badge-upstream-errors",
+      "kind": "figma-orphan",
+      "title": "Authoring errors come from the badge page, not nav-header",
+      "summary": "When inspecting nav-header, Figma reports 'Component set for node has existing errors' messages. They actually originate from the udc-badge component set on the badge Figma page (the My Work pill nests a badge instance). The canonical udc-nav-header itself reads cleanly. The 🔴 status on the nav-header page in Figma will stay until the badge page errors are fixed.",
+      "decisionNeeded": "Schedule a fix-up on the badge page, or leave as-is for now? This isn't blocking docs.",
+      "figmaRefs": [
+        { "name": "udc-badge (component set)", "nodeId": "5794:7948" }
+      ],
+      "autoPruneWhen": "The udc-badge component set on the badge page no longer reports authoring errors.",
+      "raisedBy": "figma-component-inspector",
+      "raisedOn": "2026-05-13"
+    }
+  ]
+}

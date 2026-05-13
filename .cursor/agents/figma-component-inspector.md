@@ -1,8 +1,8 @@
 ---
 name: figma-component-inspector
-description: Deep-inspects a single UDS component in the UDS Components Figma file by reading node trees, component sets, variants, layer details, token bindings, nested instances, and doc-site parity. Bidirectional — reports both Figma-side gaps (mismatches, missing) and doc-site surplus (artifacts with no Figma counterpart), plus a snapshot delta against the prior captured state to surface deletions and renames. Read-only; never modifies files or Figma. Use when updating a component spec, investigating a component mismatch, or before syncing Figma component changes into docs.
+description: Deep-inspects a single UDS component in the UDS Components Figma file by reading node trees, component sets, variants, layer details, token bindings, nested instances, and doc-site parity. Bidirectional — reports both Figma-side gaps (mismatches, missing) and doc-site surplus (artifacts with no Figma counterpart), plus a snapshot delta against the prior captured state to surface deletions and renames. Open Figma findings that need designer attention are surfaced as structured entries in uds/components/<id>/figmanotes.json (not free-text in spec.json knownIssues), classified by `kind` so they auto-prune on the next inspection when resolved. Read-only; never modifies files or Figma. Use when updating a component spec, investigating a component mismatch, or before syncing Figma component changes into docs.
 model: inherit
-lastUpdated: 2026-05-13T17:54:48Z
+lastUpdated: 2026-05-13T20:34:33Z
 ---
 
 # Figma Component Inspector
@@ -41,6 +41,7 @@ Read (every file is mandatory unless explicitly marked optional):
 - `uds-docs/uds/components/<component>/impl.json`
 - `uds-docs/uds/components/<component>/playground.js`
 - `uds-docs/uds/components/<component>/status.json` (the `current` field; replaces the legacy `COMPONENT_STATUS` table)
+- `uds-docs/uds/components/<component>/figmanotes.json` if present (the prior open Figma notes for this component — used by §7c auto-prune)
 - `uds-docs/index.html` (only the chrome / data-page block / Code-tab `<table class="sg-api-table">` for the component)
 - `uds-docs/uds/uds.js` (the orchestrator's `COMPONENT_SCRIPTS` array + the `UDS._init<Name>` block in `UDS.init` — used by §7a surplus pass)
 - `.cursor/rules/uds-figma-component-inspection.mdc`
@@ -232,6 +233,63 @@ If `priorSnapshot` has `seed:*` fingerprints (i.e. never deep-captured),
 emit `Prior snapshot present: no (seed-only)` and skip the delta — but
 still emit the section header so the report shape stays uniform.
 
+### 7c. Figma Notes evaluation (auto-prune + propose-new)
+
+`uds-docs/uds/components/<id>/figmanotes.json` is the per-component log
+of open Figma findings that need designer attention. Schema:
+`uds-docs/uds/schemas/figmanotes.schema.json`. Each entry has a `kind`
+that drives the inspector's auto-prune behavior.
+
+For every entry in the existing `figmanotes.json`:
+
+| `kind` | Auto-prune when |
+|---|---|
+| `new-in-figma` | The referenced Figma node is now nested in the canonical component tree, OR the node no longer exists in Figma. |
+| `figma-orphan` | The referenced node no longer exists in Figma, OR has been re-attached to the canonical tree. |
+| `drift` | The Figma value and the code value now agree (per the inspector's token-binding / structural comparison). |
+| `question` | Never auto-prune. Manual resolution only. |
+
+For every doc-side surplus or snapshot-delta finding that the report
+already classifies as `needs review` or `do not apply` (i.e. surfaces
+but doesn't get applied), emit a corresponding entry for the
+`figmanotes.json` `notes[]` array in the §"Recommended updates" output:
+
+- pick `kind`:
+  - new Figma node that should arguably be in the canonical tree → `new-in-figma`
+  - node sitting unreferenced in Figma → `figma-orphan`
+  - measurable Figma↔code disagreement → `drift`
+  - subjective / can't auto-resolve → `question`
+- write a **plain-language** `title` and `summary`. The audience is a
+  designer or PM, not the agent itself. Avoid jargon like "canonical
+  contract", "unattested-by-figma", "variant matrix", "anatomy".
+  Reference Figma layer names inline when needed.
+- include a `decisionNeeded` when there's an open question; omit when
+  the note is purely informational.
+- always include `figmaRefs[]` with the node id and human-readable name
+  for any node mentioned in the note.
+- include an `autoPruneWhen` description in plain language describing
+  the condition; this is informational (the actual prune logic is in
+  the table above).
+- set `raisedBy: "figma-component-inspector"` and `raisedOn` to the ISO
+  date of the inspection (`YYYY-MM-DD`).
+- pick a stable `id` (kebab-case) that the next inspection can match to
+  decide "same note as before, skip re-adding" vs "new note, add it".
+
+Always emit the §"Figma Notes evaluation" section in the report even
+when there are no proposals — say `No new notes proposed.` explicitly.
+
+#### Note-writing style rules
+
+- Plain English over technical jargon. A teammate skimming a Slack
+  thread should understand it.
+- Concrete + concise. State what was observed in 1–3 sentences; then
+  ask the question. Don't lecture.
+- Reference Figma node IDs inside `figmaRefs[]`, not in the body text.
+- One concern per note. If two things are entangled, write two notes.
+- Don't write to `spec.json` `knownIssues` for Figma findings — that
+  field is for legitimate implementation notes (browser quirks,
+  screen-reader limitations). Figma findings go in `figmanotes.json`.
+
 ## Required output format
 
 ```markdown
@@ -308,6 +366,19 @@ state `No surplus findings.` explicitly — do not omit the section.)
 (If prior snapshot is absent or seed-only, state so explicitly — do not
 omit the section.)
 
+## Figma Notes evaluation
+
+### Auto-prune (existing notes resolved)
+| id | kind | reason resolved |
+|---|---|---|
+
+### Proposed new notes
+| id | kind | title | summary | decisionNeeded | figmaRefs |
+|---|---|---|---|---|---|
+
+(If both are empty, state `No changes to figmanotes.json proposed.`
+explicitly — do not omit the section.)
+
 ## Recommended updates
 ### Safe high-confidence updates
 ### Needs user review
@@ -346,7 +417,13 @@ docs pages by default.
 - Do not invent props, slots, states, or token bindings.
 - Do not recommend leaving a public implementation-ready component as
   scaffold-only. It needs Examples, Code, CSS, and spec coverage.
-- Do not omit the §"Doc-site surplus" or §"Snapshot delta" sections from
-  the report. An inspection without them silently hides deletions and
-  renames — exactly the bug class this contract exists to prevent. If
-  there are no findings, say so explicitly.
+- Do not omit the §"Doc-site surplus", §"Snapshot delta", or §"Figma
+  Notes evaluation" sections from the report. An inspection without
+  the first two silently hides deletions and renames; without the
+  third, the figmanotes.json file accumulates resolved entries
+  indefinitely and proposed-new findings get buried in free-text
+  knownIssues. If a section has no findings, say so explicitly.
+- Do not write Figma-side findings (questions, drift, exploration,
+  orphans) to `spec.json` `knownIssues`. That field is for legitimate
+  implementation notes (browser quirks, screen-reader limitations).
+  Figma findings belong in `figmanotes.json`.

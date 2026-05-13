@@ -227,6 +227,10 @@ async function navigate(pageId, tab) {
     switchTab(pageId, tab || defaultTab);
     document.querySelector('.sg-main').scrollTo(0, 0);
 
+    // Lazy-inject the Figma Notes tab when the component has open notes.
+    // No-op for non-component pages (early return on missing tablist).
+    initFigmaNotes(pageId);
+
     var stalePortal = document.getElementById('sg-sidebar-portal-tooltip');
     if (stalePortal) stalePortal.setAttribute('data-visible', 'false');
 }
@@ -596,6 +600,203 @@ function renderGuidelines(panel, d) {
       empty.innerHTML = '<p>No guidelines captured yet. This spec is in progress.</p>';
       panel.appendChild(empty);
     }
+}
+
+/* ------------------------------------------------------------------
+   FIGMA NOTES TAB
+   Open Figma findings raised by figma-component-inspector. Lazy-injected
+   per-component: the tab button + panel only appear when the component
+   has a non-empty figmanotes.json. Auto-prune happens upstream in the
+   inspector — when it re-runs and the underlying condition is resolved,
+   the corresponding note disappears from the JSON.
+
+   Tab order: inserted as position 4 of 6 (between Guidelines and
+   Changelog) since the notes are workflow context, not implementation.
+
+   No HTML changes per component. We only modify the existing
+   .sg-page-tabs strip in each <div data-page="<id>">.
+   ------------------------------------------------------------------ */
+var figmaNotesInited = {};
+var FIGMA_FILE_KEY = '1XJoUJgtNpw4R0IIT3VjoK'; // UDS Components
+
+var FIGMA_NOTE_KIND_LABEL = {
+    'new-in-figma':  'New in Figma',
+    'figma-orphan':  'Figma orphan',
+    'drift':         'Drift',
+    'question':      'Open question'
+};
+
+function initFigmaNotes(pageId) {
+    if (figmaNotesInited[pageId]) return;
+    figmaNotesInited[pageId] = true;
+
+    var page = document.querySelector('[data-page="' + pageId + '"]');
+    if (!page) return;
+    // Skip non-component pages (no tablist or no Changelog tab to anchor next to)
+    var tabstrip = page.querySelector('.sg-page-tabs');
+    if (!tabstrip) return;
+
+    versionsReady
+      .then(function () { return fetch(udsResolve('components/' + pageId + '/figmanotes.json')); })
+      .then(function (r) { if (!r.ok) throw new Error('no figmanotes'); return r.json(); })
+      .then(function (data) {
+        var notes = (data && Array.isArray(data.notes)) ? data.notes : [];
+        if (!notes.length) return;
+        injectFigmaNotesTab(page, pageId, notes);
+      })
+      .catch(function () { /* No figmanotes.json or empty — silently do nothing. */ });
+}
+
+function injectFigmaNotesTab(page, pageId, notes) {
+    var tabstrip = page.querySelector('.sg-page-tabs');
+    if (!tabstrip) return;
+    if (page.querySelector('.sg-page-tab[data-tab="figma-notes"]')) return; // idempotent
+
+    // Build the tab button. Insert after Guidelines (position 4) when present;
+    // otherwise append to the end.
+    var btn = document.createElement('button');
+    btn.setAttribute('role', 'tab');
+    btn.className = 'sg-page-tab';
+    btn.dataset.tab = 'figma-notes';
+    btn.setAttribute('aria-selected', 'false');
+    btn.setAttribute('tabindex', '-1');
+    btn.id = 'tab-' + pageId + '-figma-notes';
+    btn.setAttribute('aria-controls', 'panel-' + pageId + '-figma-notes');
+    btn.innerHTML = 'Figma Notes <span class="sg-page-tab__count" aria-label="' + notes.length + ' open notes">' + notes.length + '</span>';
+
+    var guidelines = tabstrip.querySelector('.sg-page-tab[data-tab="guidelines"], .sg-page-tab[data-tab="usage"]');
+    if (guidelines && guidelines.nextSibling) {
+      tabstrip.insertBefore(btn, guidelines.nextSibling);
+    } else {
+      tabstrip.appendChild(btn);
+    }
+
+    // Build the panel element and insert it into the data-page block. Place
+    // it next to the existing panels — order doesn't matter for the renderer
+    // (panels are selected by [data-tab-panel="..."]), but visually keep it
+    // grouped.
+    var panel = document.createElement('div');
+    panel.setAttribute('data-tab-panel', 'figma-notes');
+    panel.setAttribute('role', 'tabpanel');
+    panel.id = 'panel-' + pageId + '-figma-notes';
+    panel.setAttribute('aria-labelledby', btn.id);
+
+    // Insert the panel after the existing guidelines panel if present,
+    // otherwise at the end of the data-page block.
+    var glPanel = page.querySelector('[data-tab-panel="guidelines"], [data-tab-panel="usage"]');
+    if (glPanel && glPanel.nextSibling) {
+      page.insertBefore(panel, glPanel.nextSibling);
+    } else {
+      page.appendChild(panel);
+    }
+
+    renderFigmaNotes(panel, notes);
+
+    // If the user is already viewing the page and the current hash is
+    // ?tab=figma-notes (e.g. on a deep-link), activate this tab now.
+    var hash = window.location.hash || '';
+    if (hash.indexOf('tab=figma-notes') !== -1) {
+      switchTab(pageId, 'figma-notes');
+    }
+}
+
+function renderFigmaNotes(panel, notes) {
+    panel.innerHTML = '';
+
+    var intro = document.createElement('p');
+    intro.className = 'sg-figma-notes-intro';
+    intro.textContent = 'Open Figma findings the inspector surfaced. These resolve automatically on the next inspector run when the underlying condition is fixed.';
+    panel.appendChild(intro);
+
+    notes.forEach(function (note) {
+      panel.appendChild(buildFigmaNoteCard(note));
+    });
+}
+
+function buildFigmaNoteCard(note) {
+    var card = document.createElement('section');
+    card.className = 'sg-figma-note';
+    if (note.kind) card.setAttribute('data-kind', note.kind);
+
+    var header = document.createElement('header');
+    header.className = 'sg-figma-note__header';
+
+    var h = document.createElement('h3');
+    h.className = 'sg-figma-note__title';
+    h.textContent = note.title || '(untitled note)';
+    header.appendChild(h);
+
+    if (note.kind) {
+      var badge = document.createElement('span');
+      badge.className = 'sg-figma-note__kind';
+      badge.setAttribute('data-kind', note.kind);
+      badge.textContent = FIGMA_NOTE_KIND_LABEL[note.kind] || note.kind;
+      header.appendChild(badge);
+    }
+
+    card.appendChild(header);
+
+    if (note.summary) {
+      var p = document.createElement('p');
+      p.className = 'sg-figma-note__summary';
+      p.textContent = note.summary;
+      card.appendChild(p);
+    }
+
+    if (note.decisionNeeded) {
+      var dn = document.createElement('p');
+      dn.className = 'sg-figma-note__decision';
+      var dnLabel = document.createElement('strong');
+      dnLabel.textContent = 'Decision needed: ';
+      dn.appendChild(dnLabel);
+      dn.appendChild(document.createTextNode(note.decisionNeeded));
+      card.appendChild(dn);
+    }
+
+    if (Array.isArray(note.figmaRefs) && note.figmaRefs.length) {
+      var refs = document.createElement('ul');
+      refs.className = 'sg-figma-note__refs';
+      note.figmaRefs.forEach(function (ref) {
+        if (!ref || !ref.nodeId) return;
+        var li = document.createElement('li');
+        var a = document.createElement('a');
+        a.href = 'https://www.figma.com/design/' + FIGMA_FILE_KEY + '/?node-id=' + encodeURIComponent(ref.nodeId.replace(':', '-'));
+        a.target = '_blank';
+        a.rel = 'noopener noreferrer';
+        a.className = 'sg-figma-note__ref-link';
+        a.textContent = ref.name || ref.nodeId;
+        li.appendChild(a);
+        var idChip = document.createElement('span');
+        idChip.className = 'sg-figma-note__ref-id';
+        idChip.textContent = ref.nodeId;
+        li.appendChild(idChip);
+        refs.appendChild(li);
+      });
+      if (refs.children.length) card.appendChild(refs);
+    }
+
+    if (note.autoPruneWhen || note.raisedBy || note.raisedOn) {
+      var footer = document.createElement('footer');
+      footer.className = 'sg-figma-note__footer';
+      if (note.autoPruneWhen) {
+        var prune = document.createElement('p');
+        prune.className = 'sg-figma-note__prune';
+        var label = document.createElement('strong');
+        label.textContent = 'Auto-resolves when: ';
+        prune.appendChild(label);
+        prune.appendChild(document.createTextNode(note.autoPruneWhen));
+        footer.appendChild(prune);
+      }
+      var meta = document.createElement('p');
+      meta.className = 'sg-figma-note__meta';
+      var by = note.raisedBy || 'figma-component-inspector';
+      var on = note.raisedOn ? ' on ' + note.raisedOn : '';
+      meta.textContent = 'Raised by ' + by + on;
+      footer.appendChild(meta);
+      card.appendChild(footer);
+    }
+
+    return card;
 }
 
 // ----- Section builders -----

@@ -1,0 +1,66 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "UDS Component Figma Notes",
+  "description": "Per-component open Figma findings surfaced by the figma-component-inspector — design questions, drift, explorations, and orphans that need designer attention. Lives at uds/components/<id>/figmanotes.json. Auto-pruned by the inspector on subsequent runs when the underlying condition is resolved (except kind=question, which is manual-only).",
+  "type": "object",
+  "required": ["notes"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "notes": {
+      "type": "array",
+      "description": "List of open Figma notes for this component. Empty list (or missing file) means no open notes — the Figma Notes tab will not render.",
+      "items": {
+        "type": "object",
+        "required": ["id", "kind", "title", "summary", "raisedOn"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Stable kebab-case identifier for this note. Used by auto-prune to match the same note across inspector runs (so a note doesn't get added twice). Examples: 'logo-pill-exploration', 'outline-true-variant', 'page-orphans'."
+          },
+          "kind": {
+            "type": "string",
+            "enum": ["new-in-figma", "figma-orphan", "drift", "question"],
+            "description": "Category for the inspector's auto-prune logic. new-in-figma = new Figma node that isn't wired into the canonical component yet. figma-orphan = node sits in Figma but no longer attached to the canonical tree. drift = Figma value and code value disagree on something measurable. question = open question that doesn't fit the others; auto-prune does not apply."
+          },
+          "title": {
+            "type": "string",
+            "description": "One-line headline in plain language. No jargon ('canonical contract', 'unattested-by-figma', 'variant matrix'). Aim for what a designer would write to a teammate."
+          },
+          "summary": {
+            "type": "string",
+            "description": "1-3 plain sentences explaining what was observed and where. May reference layer names, but keep them inline rather than as separate fields."
+          },
+          "decisionNeeded": {
+            "type": "string",
+            "description": "Optional question to the designer / owner. Phrased as a question, e.g. 'Should the new logo replace the simple one, or sit alongside as a variant?' Omit if the note is purely informational."
+          },
+          "figmaRefs": {
+            "type": "array",
+            "description": "Figma nodes referenced by this note. Used to deep-link from the UI and (for kinds that auto-prune) to check resolution on subsequent inspector runs.",
+            "items": {
+              "type": "object",
+              "required": ["name", "nodeId"],
+              "properties": {
+                "name": { "type": "string", "description": "Human-readable layer / component name as it appears in Figma." },
+                "nodeId": { "type": "string", "description": "Figma node id, e.g. '6399:13744'. Used to construct the deep-link URL." }
+              }
+            }
+          },
+          "autoPruneWhen": {
+            "type": "string",
+            "description": "Optional plain-language description of the condition that should auto-resolve this note. Examples: 'logo-pill becomes a nested instance in udc-nav-header', 'orphan dropdown is deleted from the nav-header Figma page'. Informational — the actual prune logic is in the inspector by kind."
+          },
+          "raisedBy": {
+            "type": "string",
+            "description": "Which agent or human raised this note. Usually 'figma-component-inspector'. Defaults to 'figma-component-inspector' if omitted."
+          },
+          "raisedOn": {
+            "type": "string",
+            "description": "ISO 8601 date (YYYY-MM-DD) the note was first surfaced.",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+          }
+        }
+      }
+    }
+  }
+}

@@ -78,22 +78,14 @@
     ],
     "wcag": [
       { "criterion": "1.3.1", "level": "A",  "howMet": "Semantic <header> + landmark role; account actions are real buttons." },
-      { "criterion": "1.4.3", "level": "AA", "howMet": "Text and meaningful icon contrast meets 4.5:1 (text) / 3:1 (non-text). Currently unverified — see knownIssues for divergences between Figma intent and CSS." },
+      { "criterion": "1.4.3", "level": "AA", "howMet": "Text and meaningful icon contrast meets 4.5:1 (text) / 3:1 (non-text). Currently unverified — see Figma Notes for divergences between Figma intent and CSS." },
       { "criterion": "2.1.1", "level": "A",  "howMet": "All interactive elements are keyboard-reachable in DOM order." },
       { "criterion": "2.4.7", "level": "AA", "howMet": "Visible focus indicators on all focusable elements (account pill icon-only buttons inherit from button-ghost)." },
       { "criterion": "4.1.2", "level": "A",  "howMet": "Icon-only ghost buttons require aria-label; My Work badge exposes accessible-name count." }
     ],
     "contrast": []
   },
-  "knownIssues": [
-    "Authoring errors (\"Component set for node has existing errors\") originate from the udc-badge component set (5794:7948) on the badge Figma page. They surface during deep inspection of nav-header because the My Work pill nests a udc-badge instance. The canonical udc-nav-header set (5684:11340) itself reads cleanly. The 🔴 blocked status on the nav-header page persists until that upstream Figma issue is resolved on the badge page.",
-    "Logo glyph in examples/default.html is an `apartment` Material Symbol; Figma's canonical logo is a hand-drawn brand-mark vector in `_udc-nav-header_logo` (6403:39131) with `Outline: False | True` variants (False = surface/brand-bold #023674; True = light fill). Replicating the exact vector requires an SVG export from Figma, and the `surface/brand-bold` color is in a Figma collection that is not currently imported into the doc-site's semantic tokens. The doc-site falls back to a Material Symbol with --uds-color-icon-interactive until both gaps are closed.",
-    "Logo `Outline=True` variant (light-fill brand vector at id 6403:39132) is defined in Figma but not exposed in docs. No prop to switch the logo to the inverse fill for use on dark surfaces; adding it requires a doc-side prop + a second SVG export. Deferred pending designer direction on whether this is a public contract or an internal-only variant.",
-    "New `_udc-nav-header_logo-pill` component exists in Figma as a 98×48 pill containing the brand vector + 'ResMan' text label (id 6399:13744). NOT wired into the canonical udc-nav-header Variant=Default tree — the canonical set still nests the simple 24×44 `_udc-nav-header_logo`. Treating as a design exploration; will not change the doc-side `.udc-nav-logo` chrome until the designer confirms whether the pill replaces the simple logo or coexists as a variant.",
-    "Frame 31 max-width (1440) is bound in Figma to `content-container/max-width-nav-container` — a Figma collection that is NOT currently in the imported token collections. CSS bakes 1440 as a literal until the collection is added to the token import scope.",
-    "Title-area chevron is decorative. The Figma `_udc-nav-header_title-area` Title Only=False variant renders a chevron next to the page title, but no popover/dropdown is wired into the canonical udc-nav-header tree (the prior bento app-switcher was removed in this round). The chevron currently serves as a visual affordance only; no interaction is documented in the canonical contract.",
-    "Standalone `_udc-nav-header_dropdown` (6019:32094) and `_udc-nav-header_nav-tile` (5498:2340) components still exist on the nav-header Figma page as orphans (not nested in any canonical component set). The bento app-switcher concept was removed from the canonical udc-nav-header but the sub-components were not yet deleted on the page. No doc-side surface for these orphans."
-  ],
+  "knownIssues": [],
   "performance": null,
   "motion": null,
   "responsive": null,

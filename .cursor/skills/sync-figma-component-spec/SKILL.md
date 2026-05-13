@@ -1,7 +1,7 @@
 ---
 name: sync-figma-component-spec
-description: Update a UDS component's per-component artifacts (spec.json, CSS, examples, impl.json, playground.js) from a deep Figma component inspection. Bidirectional — consumes the inspector's `Doc-site surplus` + `Snapshot delta` sections to propose removals (deleted slots/events/states/CSS/JS/examples) as classified `potentially-breaking` or `destructive` findings that default to ask-user. Use for prompts like "sync Button from Figma" or after figma-component-inspector reports high-confidence changes.
-lastUpdated: 2026-05-13T17:54:48Z
+description: Update a UDS component's per-component artifacts (spec.json, CSS, examples, impl.json, playground.js, figmanotes.json) from a deep Figma component inspection. Bidirectional — consumes the inspector's `Doc-site surplus` + `Snapshot delta` sections to propose removals (deleted slots/events/states/CSS/JS/examples) as classified `potentially-breaking` or `destructive` findings that default to ask-user, AND consumes the inspector's `Figma Notes evaluation` section to update `figmanotes.json` (auto-prune resolved notes, add new ones). Use for prompts like "sync Button from Figma" or after figma-component-inspector reports high-confidence changes.
+lastUpdated: 2026-05-13T20:34:33Z
 ---
 
 # Sync Figma Component Spec
@@ -167,6 +167,31 @@ This step MUST run on every component sync. If the inspector report is
 missing the `Doc-site surplus` or `Snapshot delta` sections, the sync
 skill must stop and re-run the inspector — never silently skip.
 
+### 5.6. Build proposed figmanotes update (mandatory)
+
+Consume the inspector's `Figma Notes evaluation` section (see
+`.cursor/agents/figma-component-inspector.md` §7c). Produce:
+
+- **Auto-prune list** — note ids the inspector flagged as resolved. The
+  apply step removes them from `figmanotes.json` `notes[]`.
+- **Add list** — new notes the inspector proposed (with `id`, `kind`,
+  `title`, `summary`, `decisionNeeded`, `figmaRefs`, `autoPruneWhen`,
+  `raisedBy`, `raisedOn`). The apply step appends them.
+
+If the proposed-new note `id` is already in the existing
+`figmanotes.json`, treat it as a no-op (don't add duplicate). Re-emit
+the note in the dry-run report so the reviewer can confirm the existing
+one still applies.
+
+Auto-prune is `non-breaking` + high-confidence by definition (the
+condition is met) and auto-applies. Adding a new note is also
+`non-breaking` and auto-applies — surfacing a finding doesn't change
+the doc-site surface; it just makes the open question visible.
+
+If the inspector report is missing the `Figma Notes evaluation`
+section, the sync skill must stop and re-run the inspector — never
+silently skip.
+
 ### 6. Build proposed docs/code patch
 
 For `implementation-ready` components, also propose updates to:
@@ -222,6 +247,14 @@ If dry-run mode, output:
 removals, state `No removals proposed.` explicitly \u2014 do NOT omit the
 section, that's the silent-deletion bug class.)
 
+## Would update figmanotes.json (from step 5.6)
+- Auto-prune (resolved): id1, id2, ...   (or `none`)
+- Add new notes:        id3, id4, ...    (or `none`)
+
+(If both are empty, state `No figmanotes.json changes proposed.`
+explicitly. Auto-prune + new-add are non-breaking and apply
+automatically without confirmation.)
+
 ## Would re-tighten audits
 - scripts/audit-baseline.json: remove "<comp-id>" from <audit>.tolerated... (if applicable)
 
@@ -253,12 +286,17 @@ If applying:
 1. Run `bash uds-docs/bump-site.sh` before edits (preflight).
 2. For `implementation-ready` components, update files under
    `uds/components/<id>/` per the table in step 6 \u2014 spec.json, CSS,
-   examples, impl.json, playground.js \u2014 as applicable. Match Figma
-   bindings verbatim. Apply step 5.5 removals into the same files
-   (deletions, CSS-rule removals, manifest trims). If a removal touches
-   `uds-docs/uds/uds.js` (loader entry + `UDS.init` selector), edit it
-   in the same commit batch \u2014 it falls inside this skill's scope as
-   the loader manifest for per-component JS.
+   examples, impl.json, playground.js, figmanotes.json \u2014 as
+   applicable. Match Figma bindings verbatim. Apply step 5.5 removals
+   into the same files (deletions, CSS-rule removals, manifest trims).
+   Apply step 5.6 figmanotes updates: remove resolved notes from
+   `figmanotes.json` `notes[]`; append new notes. If `figmanotes.json`
+   doesn't exist yet and there are notes to add, create it from the
+   schema-conformant template. If it ends up empty after pruning,
+   delete the file (the doc-site UI hides the tab when 404). If a
+   removal touches `uds-docs/uds/uds.js` (loader entry + `UDS.init`
+   selector), edit it in the same commit batch \u2014 it falls inside
+   this skill's scope as the loader manifest for per-component JS.
 3. For `placeholder-only` components, update `knownIssues` and visible docs
    so the reason is explicit; do not add demo coverage or fabricate examples.
 4. Add a per-component `changelog.json` entry for THIS UDS version for each

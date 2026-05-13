@@ -2,6 +2,13 @@
 // Extracted from app.js during Phase 3c of the UDS repo restructure.
 // Exports: COMPLETENESS_FIELDS, SPEC_FIELD_LABELS
 
+// `knownIssues` was removed from this list on 2026-05-13. It was a weird
+// completeness signal (the component is "more complete" if it has
+// unresolved issues?) and is being deprecated in favor of figmanotes.json
+// for Figma-side findings (the bulk of what knownIssues was historically
+// used for). knownIssues stays in the schema for legitimate non-Figma
+// implementation notes (browser quirks, SR limitations) but doesn't count
+// toward the completeness score either way.
 export const COMPLETENESS_FIELDS = [
     'description', 'whenToUse', 'whenNotToUse',
     'acceptanceCriteria', 'dependencies.css',
@@ -9,7 +16,6 @@ export const COMPLETENESS_FIELDS = [
     'contentGuidelines', 'commonlyPairedWith', 'dosDonts',
     'accessibility.keyboard', 'accessibility.screenReader',
     'accessibility.wcag', 'accessibility.contrast',
-    'knownIssues',
     'visualHierarchy', 'densityBehavior',
     'owner', 'figmaNodeId', 'storybookSlug'
 ];
@@ -31,7 +37,6 @@ export const SPEC_FIELD_LABELS = {
     'accessibility.screenReader': 'Accessibility — screen reader',
     'accessibility.wcag': 'Accessibility — WCAG criteria',
     'accessibility.contrast': 'Accessibility — color contrast',
-    'knownIssues': 'Known issues',
     'visualHierarchy': 'Visual hierarchy',
     'densityBehavior': 'Density behavior',
     'owner': 'Owner (designer + developer)',
