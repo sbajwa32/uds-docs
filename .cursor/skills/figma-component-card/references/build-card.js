@@ -1,40 +1,12 @@
-// =====================================================================
-// UDS Figma Component Card Builder
-// =====================================================================
-//
-// Canonical builder for the seven-section component card layout, per
-// `.cursor/rules/uds-figma-component-card.mdc` and the update-mode rule
-// `.cursor/rules/uds-figma-component-card-update.mdc`. Copy this entire
-// file into the `code` parameter of `use_figma`, with the CONFIG block
-// (or BATCH array) at the top filled in for the target component(s).
-// The builder is a single atomic operation — if it fails, no changes
-// are made to the file and you can safely retry after fixing the cause.
-//
-// Required pre-flight (see SKILL.md):
-//   - UDS Tokens library subscribed to the file (`get_libraries`)
-//   - Spec JSON read from `uds-docs/uds/components/<id>/spec.json`,
-//     status from `uds-docs/uds/components/<id>/status.json`,
-//     both injected into CONFIG.json + CONFIG.statusJson
-//   - User-explicit invocation (no Figma writes without it; see
-//     `uds-figma-write-safety.mdc`)
-//   - Inter Bold/Semi Bold/Medium/Regular and Geist Mono Bold/Medium/Regular
-//     are loaded by this script automatically
-//
-// Returns: per component { pageId, componentId, status, outerFrameId,
-//   sectionIds, reparented, unreparented, droppedNodes, summary }.
-// =====================================================================
+// UDS Figma Component Card Builder. See SKILL.md and the rules
+// uds-figma-component-card.mdc / uds-figma-component-card-update.mdc.
+// Inject `const BATCH = [CONFIG, ...]` at the top before sending to
+// use_figma. CONFIG fields: pageId, componentId, componentTitle,
+// status, udsVersion, docsUrl, storybookUrl, json (spec.json),
+// statusJson (status.json). Returns per-component metadata + a
+// workspaceHandoff payload for build-workspace-card.js.
 
-// ----- BATCH CONFIG -----
-// Provide BATCH as an array of per-component CONFIG objects. Each CONFIG
-// supplies: pageId, componentId, componentTitle, status, udsVersion,
-// docsUrl, storybookUrl, json (parsed spec.json), statusJson (parsed
-// status.json). The builder loops the batch in a single use_figma call.
-//
-// const BATCH = [ { pageId:'…', componentId:'badge', … }, … ];
-//
-// For convenience when running a single component, set BATCH = [CONFIG].
-
-// ----- TOKEN KEY MAP (DO NOT EDIT — see token-map.json) -----
+// Token key map — see token-map.json. Do not edit by hand.
 const KEYS = {
   text: {
     primary:   'f5a3ae409e24defe81a3ccbeba0ab5e2c09979d1',
@@ -102,7 +74,6 @@ const KEYS = {
   },
 };
 
-// ----- STATUS → TOKEN GROUP MAP -----
 const STATUS_TOKENS = {
   'in-progress': { color: 'warning', label: 'IN PROGRESS' },
   'review':      { color: 'warning', label: 'IN REVIEW' },
@@ -111,7 +82,6 @@ const STATUS_TOKENS = {
   'placeholder': { color: 'tertiary',label: 'NOT STARTED' },
 };
 
-// ----- COLOR LITERALS (resolved default-mode values) -----
 const COLORS = {
   dark:        { r: 0.09, g: 0.09, b: 0.09 },
   mid:         { r: 0.4,  g: 0.4,  b: 0.4 },
@@ -128,11 +98,6 @@ const COLORS = {
   errorSubtleC: { r: 0.99, g: 0.95, b: 0.95 },
 };
 
-// =====================================================================
-// MAIN — load fonts + variables once, then loop the batch
-// =====================================================================
-
-// Preload all fonts up front (one preload per call regardless of batch size)
 for (const style of ['Bold', 'Semi Bold', 'Medium', 'Regular']) {
   await figma.loadFontAsync({ family: 'Inter', style });
 }
@@ -140,7 +105,6 @@ for (const style of ['Bold', 'Medium', 'Regular']) {
   await figma.loadFontAsync({ family: 'Geist Mono', style });
 }
 
-// Import all variables fresh (re-import per call — see gotchas.md)
 const V = {};
 const importGroup = async (groupKey) => {
   V[groupKey] = {};
@@ -155,16 +119,11 @@ await importGroup('icon');
 await importGroup('space');
 await importGroup('radius');
 
-// Helper: bind a paint to a variable, with a real default-mode color literal
 const bind = (variable, color) =>
   figma.variables.setBoundVariableForPaint({ type: 'SOLID', color }, 'color', variable);
-
 const bindOpacity = (variable, color, opacity) =>
   figma.variables.setBoundVariableForPaint({ type: 'SOLID', color, opacity }, 'color', variable);
 
-// =====================================================================
-// Per-component builder
-// =====================================================================
 async function buildOne(CONFIG) {
   const page = figma.root.children.find(p => p.id === CONFIG.pageId);
   if (!page) throw new Error(`Page ${CONFIG.pageId} not found`);
@@ -215,7 +174,9 @@ async function buildOne(CONFIG) {
 
   // -------- 1. INVENTORY (no-content-loss) --------
   const wrapperName = `udc-${CONFIG.componentId}-page`;
+  const workspaceName = `udc-${CONFIG.componentId}-workspace`;
   const existingWrapper = page.children.find(c => c.name === wrapperName);
+  const existingWorkspace = page.children.find(c => c.name === workspaceName);
 
   // Walk every descendant collecting preservable nodes (COMPONENT_SET / COMPONENT /
   // INSTANCE). We stop descending into ALL THREE types because:
@@ -247,8 +208,14 @@ async function buildOne(CONFIG) {
   if (existingWrapper) {
     for (const e of inventoryPreservable(existingWrapper)) addToInv(e, 'wrapper');
   }
+  // The existing workspace (if any) is intentionally NOT walked here. Its
+  // contents are owned by build-workspace-card.js, which has its own
+  // update-mode path that captures W01 slot contents by slot index and
+  // re-classifies W02/W03 contents into the rebuilt workspace. Walking
+  // into it from this script would strip nodes the workspace builder
+  // is about to preserve.
   for (const c of page.children) {
-    if (c === existingWrapper) continue;
+    if (c === existingWrapper || c === existingWorkspace) continue;
     if (c.type === 'COMPONENT_SET' || c.type === 'COMPONENT' || c.type === 'INSTANCE') {
       addToInv({ id: c.id, name: c.name, type: c.type }, 'top-level');
     } else {
@@ -341,9 +308,7 @@ async function buildOne(CONFIG) {
     try { existingWrapper.remove(); } catch (err) { /* already detached */ }
   }
 
-  // =====================================================================
   // 5. BUILD outer wrapper + status accent + content frame
-  // =====================================================================
   const outer = figma.createAutoLayout('VERTICAL', { name: wrapperName, itemSpacing: 0 });
   outer.x = 0; outer.y = 0;
   outer.resize(2800, 100);
@@ -381,10 +346,7 @@ async function buildOne(CONFIG) {
   content.setBoundVariable('itemSpacing', V.space['1000']);
   for (const k of ['paddingTop','paddingBottom','paddingLeft','paddingRight']) content.setBoundVariable(k, V.space['800']);
 
-  // =====================================================================
   // 6. SHARED CARD / EYEBROW HELPERS
-  // =====================================================================
-
   // eyebrow: renders [NUM | 1×bar | KICKER (+ optional sub-label)]
   const eyebrow = (parent, num, kicker, sublabel, opts) => {
     const isDark = opts && opts.dark;
@@ -548,9 +510,7 @@ async function buildOne(CONFIG) {
   const sectionIds = {};
   const reparented = []; // [{id, name, type, parent}]
 
-  // =====================================================================
   // 7a. HEADER (dark card, eyebrow 01)
-  // =====================================================================
   const buildHeader = () => {
     const card = darkCard(content, 'HEADER');
     sectionIds.HEADER = card.id;
@@ -687,9 +647,7 @@ async function buildOne(CONFIG) {
     hero.appendChild(cap);
   };
 
-  // =====================================================================
   // 7b. ANATOMY (light card, eyebrow 02) — omit if no state variants found
-  // =====================================================================
   const buildAnatomy = () => {
     const states = ['Default', 'Hover', 'Active', 'Disabled'];
     const have = states.filter(s => stateInstances[s]);
@@ -763,9 +721,7 @@ async function buildOne(CONFIG) {
     return true;
   };
 
-  // =====================================================================
   // 7c. VARIANTS (light card, eyebrow 03) — omit if no variant sets
-  // =====================================================================
   const buildVariants = () => {
     if (variantSets.length === 0) return false;
     const card = lightCard(content, 'VARIANTS');
@@ -828,9 +784,7 @@ async function buildOne(CONFIG) {
     return true;
   };
 
-  // =====================================================================
   // 7d. SUB-COMPONENTS (light card, eyebrow 04) — omit if no sub sets
-  // =====================================================================
   const buildSubComponents = () => {
     if (subSets.length === 0) return false;
     const card = lightCard(content, 'SUB-COMPONENTS');
@@ -908,9 +862,7 @@ async function buildOne(CONFIG) {
     return true;
   };
 
-  // =====================================================================
   // 7e. USAGE (light card, eyebrow 05)
-  // =====================================================================
   const buildUsage = () => {
     const wtu = CONFIG.json.whenToUse;
     const wnt = CONFIG.json.whenNotToUse;
@@ -999,9 +951,7 @@ async function buildOne(CONFIG) {
     return true;
   };
 
-  // =====================================================================
   // 7f. ACCESSIBILITY (light card, eyebrow 06)
-  // =====================================================================
   const buildAccessibility = () => {
     const kbd = CONFIG.json.accessibility && CONFIG.json.accessibility.keyboard;
     if (!kbd || kbd.length === 0) return false;
@@ -1102,9 +1052,7 @@ async function buildOne(CONFIG) {
     return true;
   };
 
-  // =====================================================================
   // 7g. META (dark card, eyebrow 07) — always rendered
-  // =====================================================================
   const buildMeta = () => {
     const card = darkCard(content, 'META');
     sectionIds.META = card.id;
@@ -1251,9 +1199,7 @@ async function buildOne(CONFIG) {
     statusPill(metaRow);
   };
 
-  // =====================================================================
   // 8. Section dispatch — render in fixed order; eyebrow numbers stay assigned
-  // =====================================================================
   buildHeader();
   buildAnatomy();
   buildVariants();
@@ -1262,22 +1208,19 @@ async function buildOne(CONFIG) {
   buildAccessibility();
   buildMeta();
 
-  // =====================================================================
-  // 9. Verify no inventoried node was lost. Anything still parked at
-  //    (5000, -5000) that isn't inside the wrapper is unreparented; move
-  //    it to a visible spot below the wrapper for designer review.
-  // =====================================================================
-  const unreparented = [];
-  // After the wrapper is built, get its height so we can place stragglers below.
-  const wrapperBottom = outer.height + 100;
-  let strayX = 0;
+  // 9. Categorize remaining inventory for build-workspace-card.js (phase 2).
+  //    Anything still parked that isn't inside the new component wrapper is
+  //    "unclassified" and belongs in the workspace card's W02 section. We
+  //    keep these parked at (5000, -5000) so the workspace builder can pick
+  //    them up by ID without scrubbing the page for stragglers.
+  const unclassifiedNodeIds = [];
   for (const e of allNodes) {
     const n = figma.getNodeById(e.id);
     if (!n) {
       droppedNodes.push({ id: e.id, name: e.name, reason: 'node disappeared during build' });
       continue;
     }
-    // Walk up: is the node now a descendant of the new wrapper?
+    // Is the node a descendant of the new component wrapper?
     let p = n.parent;
     let inside = false;
     while (p) {
@@ -1285,22 +1228,17 @@ async function buildOne(CONFIG) {
       p = p.parent;
     }
     if (!inside) {
-      // Move to page level, visible
-      try {
-        page.appendChild(n);
-        n.x = strayX;
-        n.y = wrapperBottom;
-        strayX += (n.width || 200) + 80;
-        unreparented.push({ id: e.id, name: e.name, type: e.type, reason: 'no auto-classification rule matched' });
-      } catch (err) {
-        droppedNodes.push({ id: e.id, name: e.name, reason: `move-stray failed: ${err.message}` });
-      }
+      // Leave parked at (5000, -5000) for the workspace builder to claim.
+      // (allNodes were placed there in step 3; nothing to do.)
+      unclassifiedNodeIds.push(e.id);
     }
   }
 
-  // Also resurface any ad-hoc top-level non-COMPONENT nodes (SECTIONs, FRAMEs,
-  // RECTANGLEs, etc.) so the report can flag them. They stay at page level.
-  const adhocPreserved = sectionLessTop.map(n => ({ ...n, reason: 'ad-hoc top-level node preserved for designer review' }));
+  // Top-level ad-hoc non-COMPONENT nodes (SECTIONs, FRAMEs, RECTANGLEs) that
+  // existed at page level outside any wrapper. These belong in the workspace
+  // card's W03 section. They stay at their original positions until the
+  // workspace builder reparents them.
+  const adhocFrameIds = sectionLessTop.map(n => n.id);
 
   return {
     pageId: page.id,
@@ -1318,15 +1256,17 @@ async function buildOne(CONFIG) {
     subSetIds: subSets.map(e => e.id),
     inventoryPreserved: Array.from(inventoryMap.values()),
     reparented,
-    unreparented,
-    adhocPreserved,
     droppedNodes,
+    // For build-workspace-card.js (phase 2):
+    workspaceHandoff: {
+      existingWorkspaceFrameId: existingWorkspace ? existingWorkspace.id : null,
+      unclassifiedNodeIds,
+      adhocFrameIds,
+    },
   };
 }
 
-// =====================================================================
 // Run the batch
-// =====================================================================
 const results = [];
 for (const cfg of BATCH) {
   try {
