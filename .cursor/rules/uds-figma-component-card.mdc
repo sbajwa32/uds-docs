@@ -2,19 +2,19 @@
 description: Canonical card layout for UDS Components Figma pages. Defines the seven-card structure, token bindings, and read-only contract against uds-docs/uds/components/<id>/spec.json. Loaded when the figma-component-card skill runs or the figma-component-card-audit subagent runs.
 alwaysApply: false
 globs: [".cursor/skills/figma-component-card/**", ".cursor/agents/figma-component-card-audit.md"]
-lastUpdated: 2026-05-12T18:41:50Z
+lastUpdated: 2026-05-12T19:49:37Z
 ---
 
 # UDS Figma Component Card
 
-Specification for the canvas layout used on every component page in the UDS Components Figma file (and its testbed). One frame per component, named `udc-<id>-page`, holding seven cards in a fixed order. The component sets, sub-components, and instance previews live INSIDE these cards — they are never loose top-level nodes.
+Specification for the canvas layout used on every component page in the `UDS Components` Figma file. One frame per component, named `udc-<id>-page`, holding seven cards in a fixed order. The component sets, sub-components, and instance previews live INSIDE these cards — they are never loose top-level nodes.
 
 ## Why this rule exists
 
 Component pages used to be a pile of unlabeled component sets sprawled at random positions. This rule defines the canonical "card" treatment so:
 - Every page reads the same way (same card order, same eyebrows, same status colors)
 - Future agents and skills produce identical output without re-deciding layout questions
-- A designer can edit the visual template once and every agent run picks it up
+- A designer-authored template documents the canonical layout in Figma so the recipe in the builder script always has a visual reference to be measured against
 - Token bindings are forced — no raw hex anywhere
 
 ## Direction of data flow (CRITICAL)
@@ -27,12 +27,11 @@ This rule covers **code → Figma** writes, opposite of most UDS sync work. The 
 
 If an audit finding suggests the spec or component CSS should change, surface it as a recommendation; do not edit `uds-docs/uds/`. The authorized write paths into `uds-docs/uds/` are the named Figma-sync skills (`import-figma-tokens`, `sync-figma-component-spec`, `sync-figma-component-status`, `link-figma-nodes`, `new-component`) — not this one.
 
-## File targets
+## File target
 
-- **Mainline:** `UDS Components` (file key `1XJoUJgtNpw4R0IIT3VjoK`) — write only after explicit user approval
-- **Testbed:** `UDS Components Testbed` / `UDS-Components-0.4-Testbed` (file key `HuQdX4txzccYX5GEnFnxAn`) — safe to iterate
+- **`UDS Components`** (file key `1XJoUJgtNpw4R0IIT3VjoK`) — the only Figma file this skill writes to. Per [`uds-figma-write-safety.mdc`](./uds-figma-write-safety.mdc), every write requires explicit user direction naming the component(s) to build.
 
-Always work on the testbed first unless the user explicitly says "mainline". Token bindings come from the `UDS Tokens` library (file key `iqKgR73ubUHpQTIcF7XGMy`); subscribe it to the file before binding anything.
+Token bindings come from the `UDS Tokens` library (file key `iqKgR73ubUHpQTIcF7XGMy`); subscribe it to the file before binding anything.
 
 ## Page wrapper anatomy
 
@@ -214,13 +213,13 @@ When a section is omitted, the eyebrow numbers stay in **rendering order**. So a
 - **Don't fake content.** Empty JSON fields → omitted card. Don't paste placeholder lorem ipsum just to fill a card.
 - **Don't hardcode component IDs in the rule or skill.** The skill must discover state variant ids by parsing the component-set children's `name` field for `State=...` patterns. The same logic must work across every component without code changes.
 - **Don't change the card order.** It's `HEADER → ANATOMY → VARIANTS → SUB-COMPONENTS → USAGE → ACCESSIBILITY → META`. Always.
-- **Don't put the new card layout into the mainline `UDS Components` Figma file** without the user explicitly saying "mainline".
+- **Don't run the builder against `UDS Components`** without explicit user direction naming the target component(s) per [`uds-figma-write-safety.mdc`](./uds-figma-write-safety.mdc).
 - **Don't bump the SITE version for changes confined to `.cursor/`.** This rule lives outside `uds-docs/`, so it does NOT trigger [`uds-master-preflight.mdc`](./uds-master-preflight.mdc) / [`uds-site-changelog.mdc`](./uds-site-changelog.mdc). The Figma builder script (if added under `.cursor/skills/figma-component-card/references/`) is also outside `uds-docs/`.
 
 ## Order of operations (every agent run)
 
 1. **Pre-flight per [`uds-figma-preflight.mdc`](./uds-figma-preflight.mdc).** Read-only inspection first.
-2. **Discover.** Read the matching `_TEMPLATE` page in the Figma file FIRST (page name starts with `📐 _TEMPLATE`). If the template differs from this rule, the template wins — designers can override here without touching code.
+2. **Discover.** The `📐 _TEMPLATE` page in the `UDS Components` file is the canonical visual reference for what cards should look like — it documents every section, slot, padding, radius, and design decision. The builder reproduces this layout from a hardcoded recipe in [`.cursor/skills/figma-component-card/references/build-card.js`](../skills/figma-component-card/references/build-card.js); **the template is NOT a runtime input** — `build-card.js` never opens the template page. If the rolled-out cards drift from the template, that's a recipe bug to fix in `build-card.js` (and ideally surfaced by `bash scripts/audit-figma-card-template.sh`, which compares the recipe to the snapshot at `.cursor/figma/state/card-template.snapshot.json`). See [`.cursor/skills/figma-component-card/references/card-rollout-drift-report.md`](../skills/figma-component-card/references/card-rollout-drift-report.md) for the prior rollout's drift catalog and the lesson behind this clarification.
 3. **Confirm tokens are subscribed.** `get_libraries` should show `UDS Tokens` in `libraries_added_to_file`. If not, ask the user to subscribe — don't auto-subscribe.
 4. **Read the JSON spec.** `uds-docs/uds/components/<id>/spec.json` and `status.json`. If `spec.json` doesn't exist, the page is a placeholder.
 5. **Inspect the page's existing nodes.** Find component sets, sub-components, the page-name prefix. Cross-check status with `status.json#current`. **If a `udc-<id>-page` frame already exists, switch into update mode per [`uds-figma-component-card-update.mdc`](./uds-figma-component-card-update.mdc) — diff against template / page content / spec.json, inventory descendants before any teardown, no-op when in sync.**
@@ -236,7 +235,7 @@ After every component card build (per [`uds-figma-write-safety.mdc`](./uds-figma
 ```markdown
 ## Figma write summary
 
-- File: UDS Components | UDS Components Testbed
+- File: UDS Components
 - File key: ...
 - Page: <emoji + component-id>
 - Node/frame: udc-<id>-page (root frame), plus content + 7 section cards
@@ -250,14 +249,15 @@ After every component card build (per [`uds-figma-write-safety.mdc`](./uds-figma
 
 For batch runs, return one summary block per component, plus a top-level batch summary with counts.
 
-## Mainline rollout protocol
+## Rollout protocol
 
-Once a component card is approved on the testbed and the audit passes:
+For every card build:
 
-1. Get user approval to push to mainline (`UDS Components`, file key `1XJoUJgtNpw4R0IIT3VjoK`)
-2. Re-run the builder targeting the mainline file key
-3. Re-run the audit on the mainline page
-4. Per [`uds-release-workflow.mdc`](./uds-release-workflow.mdc), if this changes how the spec is published, also update the version cover in the mainline file
+1. Confirm explicit user direction naming the target component(s) per [`uds-figma-write-safety.mdc`](./uds-figma-write-safety.mdc).
+2. Run `bash scripts/audit-figma-card-template.sh` to verify the recipe still matches the canonical `📐 _TEMPLATE` snapshot before any write.
+3. Run the builder targeting `UDS Components` (file key `1XJoUJgtNpw4R0IIT3VjoK`).
+4. Run the [`figma-component-card-audit`](../agents/figma-component-card-audit.md) subagent on the just-built page(s).
+5. Per [`uds-release-workflow.mdc`](./uds-release-workflow.mdc), if this changes how the spec is published, also update the version cover in the file.
 
 ## See also
 
