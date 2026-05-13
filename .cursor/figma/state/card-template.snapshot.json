@@ -9,8 +9,8 @@
     "wrapperFrameId": "7685:2",
     "wrapperFrameName": "_template-component-card"
   },
-  "purpose": "Structural snapshot of the canonical _TEMPLATE page in the UDS Components Figma file. Drives scripts/audit-figma-card-template.sh, which fails CI if .cursor/skills/figma-component-card/references/build-card.js stops emitting these values. The template page is a designer-authored visual reference (NOT a runtime input to the builder); this snapshot is how we keep the recipe and the reference honest with each other.",
-  "refresh": "When designers update the _TEMPLATE page, run a fresh figma-component-card pre-flight read of node 7481:14 and update this snapshot. Then update the matching values in build-card.js so the audit passes again.",
+  "purpose": "Structural snapshot of the canonical _TEMPLATE page in the UDS Components Figma file. Drives scripts/audit-figma-card-template.sh, which fails CI if any of the four phase scripts (build-card-inventory.js, build-card-sections-A.js, build-card-sections-B.js, build-workspace-card.js) stops emitting these values. The template page is a designer-authored visual reference (NOT a runtime input to the builder); this snapshot is how we keep the recipe and the reference honest with each other.",
+  "refresh": "When designers update the _TEMPLATE page, run a fresh figma-component-card pre-flight read of node 7481:14 and update this snapshot. Then update the matching values in the relevant phase script(s) so the audit passes again. Phase 1b-A owns outer wrapper + HEADER + ANATOMY + VARIANTS; phase 1b-B owns SUB-COMPONENTS + USAGE + ACCESSIBILITY + META.",
   "outerWrapper": {
     "name": "_template-component-card",
     "cornerRadius": 24,
@@ -173,14 +173,14 @@
   },
   "knownDeferredFromBuilder": [
     {
-      "drift": "Auto-discovery of state variants when primary is a single COMPONENT (not COMPONENT_SET) — see references/card-rollout-drift-report.md drift #11. The button page lost ANATOMY and SUB-COMPONENTS sections because its primary is a top-level INSTANCE, not a COMPONENT_SET. Builder needs to handle COMPONENT-typed primaries.",
-      "deferredReason": "Behavior change requires careful validation before the next rollout; current PR scope is layout-recipe corrections only.",
-      "trackedIn": "follow-up PR — figma-component-card builder: handle non-COMPONENT_SET primaries"
+      "drift": "Auto-discovery of state variants when primary is a single COMPONENT (not COMPONENT_SET) — see references/card-rollout-drift-report.md drift #11. The button page lost ANATOMY and SUB-COMPONENTS sections because its primary is a top-level INSTANCE, not a COMPONENT_SET. Phase 1a (build-card-inventory.js) needs to handle COMPONENT-typed primaries in its classifier.",
+      "deferredReason": "Behavior change requires careful validation before the next rollout; current PR scope is the four-phase architecture refactor only.",
+      "trackedIn": "follow-up PR — phase 1a classifier: handle non-COMPONENT_SET primaries"
     },
     {
-      "drift": "Stragglers logic preserves duplicate INSTANCEs of primary sets — see references/card-rollout-drift-report.md drift #12. Badge page has a stranded udc-badge INSTANCE at y=3480.",
+      "drift": "Stragglers logic preserves duplicate INSTANCEs of primary sets — see references/card-rollout-drift-report.md drift #12. Badge page has a stranded udc-badge INSTANCE at y=3480. After the four-phase split this is largely absorbed: the workspace card's W02 UNCLASSIFIED section now reparents these instances rather than leaving them stranded, but the deduplication question (whether the prior-build clone should be removed) still stands.",
       "deferredReason": "Removing duplicates is destructive; needs a designer-confirmed policy first.",
-      "trackedIn": "follow-up PR — figma-component-card builder: dedupe primary INSTANCEs"
+      "trackedIn": "follow-up PR — phase 1b-B cleanup: dedupe primary INSTANCEs"
     }
   ]
 }
