@@ -417,7 +417,7 @@
 <h3 class="sg-subsection-title" style="margin-top:var(--uds-space-500);">Active Rules</h3>
 <p class="sg-subsection-desc">14 rules, split by activation behavior.</p>
 
-<h4 class="sg-subsection-title" style="margin-top:var(--uds-space-200);font-size:var(--uds-font-size-md);">Always-on (7 rules)</h4>
+<h4 class="sg-subsection-title" style="margin-top:var(--uds-space-200);font-size:var(--uds-font-size-md);">Always-on (8 rules)</h4>
 <p class="sg-subsection-desc">Loaded into the agent's context on every task. These set the project's standing discipline.</p>
 <table class="sg-gl-table" style="margin-bottom:var(--uds-space-300);">
   <thead><tr><th>Rule</th><th>What it does</th></tr></thead>
@@ -429,6 +429,7 @@
     <tr><td><a class="sg-gl-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/rules/uds-release-workflow.mdc" target="_blank" rel="noopener noreferrer"><code>uds-release-workflow</code></a></td><td>Release workflow: Figma version detection, release questionnaire, automated steps (snapshot → status sync → changelog → token regen → Figma Release Notes → SITE bump). Mid-release additions also trigger the "Changelog Sync Rule" — when <code>uds/CHANGELOG.json</code> changes, Figma Release Notes must rebuild in both files.</td></tr>
     <tr><td><a class="sg-gl-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/rules/uds-figma-write-safety.mdc" target="_blank" rel="noopener noreferrer"><code>uds-figma-write-safety</code></a></td><td>Figma writes are denied by default. Allowed scopes: (1) Release Notes frames, (2) component status page-name prefixes when explicitly asked, (3) cover-page version text during a release. Every write must produce a "before / after / rollback" summary.</td></tr>
     <tr><td><a class="sg-gl-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/rules/uds-figma-change-classification.mdc" target="_blank" rel="noopener noreferrer"><code>uds-figma-change-classification</code></a></td><td>Every Figma-derived finding must have a confidence (high/medium/low), risk class (non-breaking / potentially-breaking / destructive / unknown), and a default action. Only high-confidence + non-breaking may auto-apply; everything else stops for user direction.</td></tr>
+    <tr><td><a class="sg-gl-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/rules/communication-style.mdc" target="_blank" rel="noopener noreferrer"><code>communication-style</code></a></td><td>Default chat tone for this repo: concise, plain language, no unnecessary jargon. Reserves technical voice for artifacts that need it &mdash; <code>SITE_CHANGELOG</code> entries, per-component <code>changelog.json</code>, commit messages, PR descriptions, Figma findings (per <code>uds-figma-change-classification</code>), audit output, JSON specs, and code. Defers to the existing content-shape rules; never overrides them.</td></tr>
   </tbody>
 </table>
 

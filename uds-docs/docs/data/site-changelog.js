@@ -819,6 +819,14 @@ export const SITE_CHANGELOG = [
         { type: 'added', text: 'Baseline tolerance entries in `scripts/audit-baseline.json`: new `audit-doc-internal-consistency` block with 14 pre-existing findings tolerated (per-component drift in `uds-docs/uds/` that requires Figma round-trips via `sync-figma-component-spec` to resolve, not autonomous edits — per `uds-source-of-truth.mdc`). The 4 nav-header entries (`event-undispatched/bento-dismiss`, `event-undispatched/bento-toggle`, `paired-missing/button-ghost`, `token-missing/--uds-color-surface-page`) will be resolved when the nav-header bento cleanup lands as the proof-of-fix for this workflow upgrade; at that point they must come off the list.' },
         { type: 'changed', text: '`.cursor/TOOLCHAIN.md` regenerated. 5 entries updated (`uds-figma-component-inspection.mdc`, `figma-component-inspector.md`, `sync-figma-component-spec/SKILL.md`, `uds-updated/SKILL.md`, `uds-master-preflight.mdc`). Total: 16 rules + 8 skills + 7 agents = 31 entries.' }
       ]
+    },
+    {
+      version: 'SITE 2026.05.14.1',
+      date: '2026-05-14',
+      changes: [
+        { type: 'added', text: 'New always-on workspace rule `.cursor/rules/communication-style.mdc` codifying default chat tone for this repo: agent responses stay concise and in plain language, while artifacts written into files (SITE_CHANGELOG entries, per-component `changelog.json`, commit messages, PR descriptions, Figma findings, audit output, JSON specs, code) keep the technical voice their context requires. Explicitly defers to `uds-site-changelog.mdc`, `uds-release-workflow.mdc`, `uds-figma-change-classification.mdc`, `uds-content-schema.mdc`, and `uds-master-preflight.mdc` so the existing content-shape contracts continue to govern artifact wording. Mirrored on `uds-docs/docs/pages/cursor-workflows.html` to keep `scripts/audit-agent-docs-currency.sh` green.' },
+        { type: 'changed', text: '`.cursor/TOOLCHAIN.md` regenerated to register the new `communication-style.mdc` rule row.' }
+      ]
     }
 ];
 

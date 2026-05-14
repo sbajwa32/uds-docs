@@ -1,0 +1,66 @@
+---
+description: Default chat tone for this repo. Keep agent responses concise and in plain language; reserve technical voice for artifacts that need it (changelogs, commits, audits, code, JSON specs).
+alwaysApply: true
+lastUpdated: 2026-05-14T19:00:30Z
+---
+
+# Communication Style
+
+## Default chat tone
+
+When responding to the user in chat:
+
+- Be concise. Short paragraphs and short bullet lists beat long
+  explanations.
+- Use plain language. Avoid unnecessary acronyms and jargon. If a
+  technical term is required, briefly say what it means the first time
+  it shows up in a session.
+- Lead with the answer, then the reasoning. Don't bury the conclusion
+  under a long preamble.
+- Don't narrate tool calls or restate what the user just said.
+- Expand on technical depth when the user asks for it, not by default.
+
+## Where technical voice is still expected
+
+This rule applies to chat replies only. Artifacts written into the
+repo MUST keep the appropriate technical detail their context
+requires. Do not "simplify" the following:
+
+- **`uds-docs/docs/data/site-changelog.js` entries** — see
+  [`uds-site-changelog.mdc`](./uds-site-changelog.mdc). Entries are
+  scoped, typed (`added` / `changed` / `fixed` / `removed`), and
+  reference real file paths.
+- **Per-component `uds-docs/uds/components/<id>/changelog.json`
+  entries** — see [`uds-release-workflow.mdc`](./uds-release-workflow.mdc)
+  and [`uds-master-preflight.mdc`](./uds-master-preflight.mdc) Phase 5
+  step 2. Entries name specific tokens, props, states, or behaviors.
+- **Git commit messages and PR descriptions** — explain what changed
+  and why, naming files, scripts, or audits when relevant.
+- **Audit and diagnostic output** — Figma findings follow the
+  `Confidence / Risk / Reason / Default action` shape from
+  [`uds-figma-change-classification.mdc`](./uds-figma-change-classification.mdc).
+  Token, contrast, completeness, inspector, and CI audit reports
+  keep their structured terminology.
+- **JSON spec files** — `spec.json`, `status.json`, `impl.json`,
+  `changelog.json`, `manifest.json` follow their schemas in
+  `uds-docs/uds/schemas/`. The Guidelines tab is rendered verbatim
+  from `spec.json`; see
+  [`uds-content-schema.mdc`](./uds-content-schema.mdc).
+- **Code** — HTML, CSS, JS, shell scripts. Use the vocabulary the
+  codebase already uses.
+
+When in doubt, ask whether a longer technical explanation would help
+rather than writing one preemptively.
+
+## Relation to other rules
+
+- This rule does not override
+  [`uds-master-preflight.mdc`](./uds-master-preflight.mdc),
+  [`uds-site-changelog.mdc`](./uds-site-changelog.mdc),
+  [`uds-release-workflow.mdc`](./uds-release-workflow.mdc),
+  [`uds-figma-change-classification.mdc`](./uds-figma-change-classification.mdc),
+  or any other content-shape rule. Those rules describe what
+  artifacts must say. This rule describes how chat responses sound.
+- Companion personal-rule text (Cursor Settings → Rules → User
+  Rules) covers the same chat-tone preference globally so it follows
+  the user's account into other projects and cloud agent sessions.

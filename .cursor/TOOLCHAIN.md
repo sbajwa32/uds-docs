@@ -43,10 +43,11 @@ The `Phase 1: Verify sync state` step in `uds-master-preflight.mdc` is
 the manual fallback when the hook hasn't run.
 
 
-## Rules (16)
+## Rules (17)
 
 | File | Last updated (UTC) | Description |
 |---|---|---|
+| [`communication-style.mdc`](./rules/communication-style.mdc) | `2026-05-14T19:00:30Z` | Default chat tone for this repo. Keep agent responses concise and in plain language; reserve technical voice for artifacts that need it… |
 | [`uds-component-checklist.mdc`](./rules/uds-component-checklist.mdc) | `2026-05-12T18:41:50Z` | Checklist for implementing or updating a UDS component — ensures the per-component folder is whole and consistent across CSS, spec,… |
 | [`uds-content-schema.mdc`](./rules/uds-content-schema.mdc) | `2026-05-12T18:41:50Z` | When editing per-component spec content, edit the spec.json INSIDE that component's folder — never re-introduce component spec content into… |
 | [`uds-figma-change-classification.mdc`](./rules/uds-figma-change-classification.mdc) | `2026-05-12T18:41:50Z` | Classifies Figma-derived token and component changes by confidence and breaking-change risk before anything is applied. |
