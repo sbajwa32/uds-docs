@@ -1,7 +1,7 @@
 ---
 description: Prevents accidental Figma mutations during UDS sync work. Read-only is the default; writes are explicitly scoped and summarized.
 alwaysApply: true
-lastUpdated: 2026-05-12T18:41:50Z
+lastUpdated: 2026-05-18T19:06:07Z
 ---
 
 # UDS Figma Write Safety
@@ -34,6 +34,28 @@ The only routine Figma write scopes are:
 3. **Cover-page version text**
    - Allowed only during a confirmed release workflow
    - Must report old text and new text
+
+4. **Component drafts on a `{Cursor}{Ignore}` page in `UDS Components`**
+   - Allowed only when the user explicitly invokes the
+     `generate-uds-figma-component` factory skill (or equivalent
+     prompt: "factory me an X", "generate a UDS component for Y") and
+     names the target component title.
+   - Target page MUST be a brand-new page in `UDS Components` whose
+     name contains `{Cursor}{Ignore}` — typically
+     `🟠 <Title> {Cursor}{Ignore}`. The `{Ignore}` marker takes the
+     page out of every UDS automation per
+     `.cursor/rules/uds-figma-preflight.mdc`; the `{Cursor}` label
+     tells designers it's a factory draft.
+   - Writes outside that page (other component pages, the cover, the
+     release-notes frame, `_support` / `📗 Cover` / `🎬 Demo` /
+     `🛝 Playground` pages) are NOT covered by this scope and still
+     require explicit per-target user direction.
+   - Designer accepts a draft by RENAMING the page (drop
+     `{Cursor}{Ignore}`, set the stoplight prefix). The factory must
+     not auto-rename — that's the acceptance gesture.
+   - If a `<Title> {Cursor}{Ignore}` page already exists for the same
+     component, the factory must inspect first and ask the user
+     before destroying / rebuilding any existing nodes.
 
 All other Figma writes require a direct user instruction that names the
 target object or operation.
@@ -71,4 +93,7 @@ sync.
 
 - `.cursor/rules/uds-figma-preflight.mdc`
 - `.cursor/rules/uds-figma-change-classification.mdc`
-- `.cursor/skills/sync-figma-release-notes/SKILL.md`
+- `.cursor/skills/sync-figma-release-notes/SKILL.md` — uses scope #1
+- `.cursor/skills/sync-figma-component-status/SKILL.md` — uses scope #2
+- `.cursor/skills/generate-uds-figma-component/SKILL.md` — uses scope #4
+  (component drafts on `{Cursor}{Ignore}` pages)

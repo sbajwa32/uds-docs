@@ -427,7 +427,7 @@
     <tr><td><a class="sg-gl-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/rules/uds-site-changelog.mdc" target="_blank" rel="noopener noreferrer"><code>uds-site-changelog</code></a></td><td>Enforces SITE version bump, <code>SITE_CHANGELOG</code> entry, and cache busting on every change under <code>uds-docs/</code>.</td></tr>
     <tr><td><a class="sg-gl-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/rules/uds-content-schema.mdc" target="_blank" rel="noopener noreferrer"><code>uds-content-schema</code></a></td><td>Component spec content lives in per-component <code>spec.json</code>, rendered by the Guidelines tab. Never re-introduce spec HTML into <code>index.html</code>.</td></tr>
     <tr><td><a class="sg-gl-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/rules/uds-release-workflow.mdc" target="_blank" rel="noopener noreferrer"><code>uds-release-workflow</code></a></td><td>Release workflow: Figma version detection, release questionnaire, automated steps (snapshot → status sync → changelog → token regen → Figma Release Notes → SITE bump). Mid-release additions also trigger the "Changelog Sync Rule" — when <code>uds/CHANGELOG.json</code> changes, Figma Release Notes must rebuild in both files.</td></tr>
-    <tr><td><a class="sg-gl-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/rules/uds-figma-write-safety.mdc" target="_blank" rel="noopener noreferrer"><code>uds-figma-write-safety</code></a></td><td>Figma writes are denied by default. Allowed scopes: (1) Release Notes frames, (2) component status page-name prefixes when explicitly asked, (3) cover-page version text during a release. Every write must produce a "before / after / rollback" summary.</td></tr>
+    <tr><td><a class="sg-gl-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/rules/uds-figma-write-safety.mdc" target="_blank" rel="noopener noreferrer"><code>uds-figma-write-safety</code></a></td><td>Figma writes are denied by default. Allowed scopes: (1) Release Notes frames, (2) component status page-name prefixes when explicitly asked, (3) cover-page version text during a release, (4) component drafts on a <code>{Cursor}{Ignore}</code> page in <code>UDS Components</code> when the user invokes <code>generate-uds-figma-component</code>. Every write must produce a "before / after / rollback" summary.</td></tr>
     <tr><td><a class="sg-gl-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/rules/uds-figma-change-classification.mdc" target="_blank" rel="noopener noreferrer"><code>uds-figma-change-classification</code></a></td><td>Every Figma-derived finding must have a confidence (high/medium/low), risk class (non-breaking / potentially-breaking / destructive / unknown), and a default action. Only high-confidence + non-breaking may auto-apply; everything else stops for user direction.</td></tr>
     <tr><td><a class="sg-gl-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/rules/communication-style.mdc" target="_blank" rel="noopener noreferrer"><code>communication-style</code></a></td><td>Default chat tone for this repo: concise, plain language, no unnecessary jargon. Reserves technical voice for artifacts that need it &mdash; <code>SITE_CHANGELOG</code> entries, per-component <code>changelog.json</code>, commit messages, PR descriptions, Figma findings (per <code>uds-figma-change-classification</code>), audit output, JSON specs, and code. Defers to the existing content-shape rules; never overrides them.</td></tr>
   </tbody>
@@ -451,9 +451,9 @@
 </table>
 
 <h3 class="sg-subsection-title" style="margin-top:var(--uds-space-400);">Active Skills</h3>
-<p class="sg-subsection-desc">8 skills, split into <strong>orchestrators</strong> (top-level, user-invokable, call other skills + subagents) and <strong>specialist sync skills</strong> (called by orchestrators OR directly by the user). All sync skills end their "Apply mode" by pointing at <code>uds-master-preflight.mdc</code> Phase 5 — the round-trip checklist lives in exactly one place.</p>
+<p class="sg-subsection-desc">9 skills, split into <strong>orchestrators</strong> (top-level, user-invokable, call other skills + subagents) and <strong>specialist sync skills</strong> (called by orchestrators OR directly by the user). All sync skills end their "Apply mode" by pointing at <code>uds-master-preflight.mdc</code> Phase 5 — the round-trip checklist lives in exactly one place.</p>
 
-<h4 class="sg-subsection-title" style="margin-top:var(--uds-space-200);font-size:var(--uds-font-size-md);">Orchestrators (2)</h4>
+<h4 class="sg-subsection-title" style="margin-top:var(--uds-space-200);font-size:var(--uds-font-size-md);">Orchestrators (3)</h4>
 <div class="sg-wf-card-grid">
   <div class="sg-wf-card">
     <h4><code>uds-updated</code></h4>
@@ -468,6 +468,13 @@
     <p><strong>Triggers:</strong> "build the Figma page for X," "regenerate the component cards," "apply the component card pilot to X."</p>
     <p><strong>Calls:</strong> <code>figma-capability-check</code>, <code>figma-component-inspector</code> (for verification), <code>figma-component-card-audit</code> (subagent that verifies card structure post-write).</p>
     <p><strong>File:</strong> <a class="sg-gl-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/skills/figma-component-card/SKILL.md" target="_blank" rel="noopener noreferrer"><code>.cursor/skills/figma-component-card/SKILL.md</code></a></p>
+  </div>
+  <div class="sg-wf-card">
+    <h4><code>generate-uds-figma-component</code></h4>
+    <p>UDS Component Factory. Drafts a token-bound UDS component set directly inside the UDS Components Figma file on a brand-new <code>🟠 &lt;Title&gt; {Cursor}{Ignore}</code> page. The <code>{Ignore}</code> marker takes the page out of every UDS automation; designer accepts by renaming the page (drop <code>{Cursor}{Ignore}</code>, set the stoplight prefix). Stops at Figma — never writes to <code>uds-docs/uds/</code>. Docs landing is a separate designer-initiated <code>uds-updated</code> run.</p>
+    <p><strong>Triggers:</strong> "generate a UDS component for X," "factory me an Avatar," "draft a new UDS component called Y," "build a UDS component for Z in Figma."</p>
+    <p><strong>Loads:</strong> <code>figma-use</code> + <code>figma-generate-library</code> (cached plugin skills) as mandatory prerequisites; uses the latter's state ledger, sequential-call rule, and Phase 3 component pattern. Writes only into write-safety scope #4 per <code>uds-figma-write-safety.mdc</code>.</p>
+    <p><strong>File:</strong> <a class="sg-gl-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/skills/generate-uds-figma-component/SKILL.md" target="_blank" rel="noopener noreferrer"><code>.cursor/skills/generate-uds-figma-component/SKILL.md</code></a></p>
   </div>
 </div>
 

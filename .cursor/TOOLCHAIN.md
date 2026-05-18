@@ -56,7 +56,7 @@ the manual fallback when the hook hasn't run.
 | [`uds-figma-component-inspection.mdc`](./rules/uds-figma-component-inspection.mdc) | `2026-05-13T17:54:48Z` | Requires deep Figma node inspection for UDS Components; screenshots are supporting evidence only. Inspection is bidirectional — every… |
 | [`uds-figma-preflight.mdc`](./rules/uds-figma-preflight.mdc) | `2026-05-12T18:41:50Z` | Required preflight for any task that reads or writes UDS Figma files. |
 | [`uds-figma-sync-state.mdc`](./rules/uds-figma-sync-state.mdc) | `2026-05-12T18:41:50Z` | Defines tracked Figma sync snapshots and when agents may update them. |
-| [`uds-figma-write-safety.mdc`](./rules/uds-figma-write-safety.mdc) | `2026-05-12T18:41:50Z` | Prevents accidental Figma mutations during UDS sync work. Read-only is the default; writes are explicitly scoped and summarized. |
+| [`uds-figma-write-safety.mdc`](./rules/uds-figma-write-safety.mdc) | `2026-05-18T19:06:07Z` | Prevents accidental Figma mutations during UDS sync work. Read-only is the default; writes are explicitly scoped and summarized. |
 | [`uds-master-preflight.mdc`](./rules/uds-master-preflight.mdc) | `2026-05-13T17:54:48Z` | Master workflow rule — enforces version bump FIRST, then changes, then finalize. Runs on every task that modifies uds-docs/. |
 | [`uds-release-workflow.mdc`](./rules/uds-release-workflow.mdc) | `2026-05-12T18:41:50Z` | UDS Design System release workflow -- detects Figma version bumps and guides the release process for the documentation site |
 | [`uds-rule-discipline.mdc`](./rules/uds-rule-discipline.mdc) | `2026-05-12T18:41:50Z` | Discipline that fires whenever you edit a Cursor rule, skill, or subagent file. Bump that file's `lastUpdated:` frontmatter and update the… |
@@ -65,11 +65,12 @@ the manual fallback when the hook hasn't run.
 | [`uds-token-architecture.mdc`](./rules/uds-token-architecture.mdc) | `2026-05-12T18:41:50Z` | Canonical UDS Tokens Figma variable architecture and CSS output contract. Direct Figma Variables reads are primary; ZIP exports are… |
 | [`uds-token-first-css.mdc`](./rules/uds-token-first-css.mdc) | `2026-05-12T18:41:50Z` | Enforces UDS token usage in all CSS — no hardcoded colors, spacing, fonts, or radii. |
 
-## Skills (8)
+## Skills (9)
 
 | Skill | Last updated (UTC) | Description |
 |---|---|---|
 | [`figma-component-card`](./skills/figma-component-card/SKILL.md) | `2026-05-13T19:04:48Z` | Build or update the canonical "component card" canvas layout on a UDS component page in Figma. Use when the user says "build/update the… |
+| [`generate-uds-figma-component`](./skills/generate-uds-figma-component/SKILL.md) | `2026-05-18T19:06:07Z` | UDS Component Factory. Drafts a token-bound UDS component set directly inside the UDS Components Figma file on a brand-new `🟠 <Title>… |
 | [`import-figma-tokens`](./skills/import-figma-tokens/SKILL.md) | `2026-05-12T18:41:50Z` | Import UDS token changes from the UDS Tokens Figma file. Uses direct Figma Variables reads first and token ZIP exports only as fallback.… |
 | [`link-figma-nodes`](./skills/link-figma-nodes/SKILL.md) | `2026-05-12T18:41:50Z` | Populate figmaNodeId and figmaPageNodeId fields in per-component spec.json files from canonical UDS Components Figma nodes. Use when Figma… |
 | [`new-component`](./skills/new-component/SKILL.md) | `2026-05-12T18:41:50Z` | Scaffold a new UDS component end to end. Creates uds/components/<id>/ with all required files (CSS stub, spec.json, status.json,… |
