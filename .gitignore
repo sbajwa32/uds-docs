@@ -1,4 +1,4 @@
-# Cursor IDE — keep settings/cache local, but track rules/skills/agents
+# Cursor IDE — keep settings/cache local, but track rules/skills/agents/plans
 .cursor/*
 !.cursor/rules/
 !.cursor/rules/**
@@ -10,6 +10,8 @@
 !.cursor/figma/**
 !.cursor/hooks/
 !.cursor/hooks/**
+!.cursor/plans/
+!.cursor/plans/**
 !.cursor/environment.json
 !.cursor/hooks.json
 !.cursor/desktop-preview.sh
