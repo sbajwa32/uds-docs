@@ -1,7 +1,7 @@
 ---
 name: generate-uds-figma-component
 description: UDS Component Factory. Drafts a token-bound UDS component set directly inside the UDS Components Figma file on a brand-new `🟠 <Title> {Cursor}{Ignore}` page. Use when the user says "generate a UDS component for X", "factory me an Avatar", "draft a new UDS component called Y", "build a UDS component for Z in Figma", or "use the component factory to start <Title>". Stops at Figma — never writes to `uds-docs/uds/`. Docs landing is the existing `uds-updated` skill, run later by the designer.
-lastUpdated: 2026-05-18T19:06:07Z
+lastUpdated: 2026-05-19T18:50:48Z
 ---
 
 # UDS Component Factory — Generate UDS Figma Component
@@ -147,29 +147,81 @@ Persist the proposed model to
 - **Purpose** — why this component exists.
 - **When to use** / **When not to use** — paired guidance.
 - **Anatomy** — root, label, icon/content slots, helper text, action
-  area, supporting parts.
+ area, supporting parts.
 - **Variant axes** — drawn from siblings where possible (size,
-  emphasis, tone, state, density, orientation, selection, validation).
-  Note that UDS does not have a standardized variant vocabulary
-  ([plan §12 risk](../../plans/uds-component-factory.md#12-open-risks))
-  — inherit the closest sibling's vocabulary rather than inventing
-  new axis names.
+ emphasis, tone, state, density, orientation, selection, validation).
+ Note that UDS does not have a standardized variant vocabulary
+ ([plan §12 risk](../../plans/uds-component-factory.md#12-open-risks))
+ — inherit the closest sibling's vocabulary rather than inventing
+ new axis names.
 - **State matrix** — default, hover, active/pressed, focus-visible,
-  disabled, selected, error, loading, empty, as appropriate.
+ disabled, selected, error, loading, empty, as appropriate.
 - **Accessibility plan** — keyboard, focus, screen reader, disabled /
-  loading / error behaviors.
+ loading / error behaviors.
 - **Token plan** — explicit role-to-token map, e.g.
-  `background.default = --uds-color-surface-interactive-default`. Every
-  visual property the component will bind belongs in this map. If a
-  needed token is missing from UDS Tokens, mark it `MISSING` and STOP
-  the model there — new tokens flow through the
-  [`import-figma-tokens`](../import-figma-tokens/SKILL.md) skill, NOT
-  through this factory.
+ `background.default = --uds-color-surface-interactive-default`. Every
+ visual property the component will bind belongs in this map. If a
+ needed token is missing from UDS Tokens, mark it `MISSING` and STOP
+ the model there — new tokens flow through the
+ [`import-figma-tokens`](../import-figma-tokens/SKILL.md) skill, NOT
+ through this factory.
+- **Inspector-editable properties** — enumerate every per-instance
+ variation point the component should expose. The factory MUST default
+ to exposing variation rather than burying it inside the variant
+ hierarchy where a designer has to dive multiple levels to edit it.
+ Four lists, every time, regardless of component type — even if a
+ list is empty, state that explicitly:
+   - **Variant axes (recap)** — the variant axes from above, restated
+     here so the property surface for the component is in one place.
+   - **TEXT properties** — every non-decorative text node a designer
+     would reasonably override per-instance (labels, descriptions,
+     titles, captions, counts, badge text, helper copy). Default rule:
+     every text node not bound to an icon glyph gets a TEXT property.
+     For each, list `propName`, `defaultValue`, and which node(s) the
+     property links to via `componentPropertyReferences = { characters: propName }`.
+   - **BOOLEAN properties** — every show/hide region (optional icons,
+     optional descriptions, dividers, dismiss affordances, helper
+     text, support indicators). For each, list `propName`,
+     `defaultValue`, and which node(s) the property toggles via
+     `componentPropertyReferences = { visible: propName }`.
+   - **INSTANCE_SWAP properties** — every nested instance a designer
+     would reasonably swap (icons, avatars, slot fillers, leading /
+     trailing adornments). For each, list `propName`, `defaultValue`
+     (a component key from the UDS Components Production or
+     Material Icons libraries), and which instance node the property
+     links to via `componentPropertyReferences = { mainComponent: propName }`.
+- **Container count axis (if the component is a container of N
+ repeating instances)** — if the component is a *container of N
+ repeating instances of the same sub-component* (stepper, breadcrumb,
+ tabs, pagination, carousel, avatar group, list, segmented control,
+ ...), specify a `count` variant axis with a range appropriate to the
+ component's UX. Derive the range from the component's nature plus
+ comparable patterns in production design systems (Material, Polaris,
+ Carbon, ...). Don't pick a global default — choose per-component,
+ justify the range in the model, and surface for designer approval.
+ Indicative ranges (not contracts):
+
+ | Pattern | Indicative range | Why |
+ |---|---|---|
+ | Stepper | 2–7 | <2 isn't a stepper; >7 is bad UX, use overflow |
+ | Breadcrumb | 2–5 | Deeper than 5 = use overflow menu |
+ | Tabs (horizontal) | 2–6 | More = vertical nav or overflow |
+ | Avatar group | 2–8 | Past 8, use "+N more" pill |
+ | Carousel | 3–10 | <3 isn't really a carousel |
+ | Pagination | 5–10 visible page buttons | Standard pattern |
+ | Segmented control | 2–5 | Past 5, use dropdown |
+ | List (open-ended) | not via variant — instance duplication | Don't fight the medium |
+
+ Each `count` variant pre-builds the layout with N child instances
+ and the terminal-position instance gets the correct terminal-state
+ variant baked in (e.g. `hasConnector=false` on the last step) so
+ the designer doesn't have to manually correct it after dropping in
+ the stepper.
 - **Sibling reuse** — components to reuse as nested instances
-  (`Button`, `Text Input`, `Card`, `Notification`, `Icon Wrapper`,
-  `Badge`, etc.).
+ (`Button`, `Text Input`, `Card`, `Notification`, `Icon Wrapper`,
+ `Badge`, etc.).
 - **Assumptions and acceptance criteria** — plain-language list the
-  designer can scan in under a minute.
+ designer can scan in under a minute.
 
 ### Approval gate (mandatory before Phase B)
 
@@ -243,6 +295,81 @@ and you can re-run after fixing the cause.
 - Use meaningful layer names that match the anatomy. Names like
   `Frame 12` are a layer-hygiene gate failure in Phase C.
 
+### B.2.5 — Wire inspector properties
+
+Every TEXT / BOOLEAN / INSTANCE_SWAP property the model enumerates in
+its "Inspector-editable properties" section MUST be registered on the
+component set and linked to the relevant nodes. Done after the
+component set is combined (so the property surface lives on the
+set, not on individual variants), and BEFORE the B.4 write summary.
+
+Plugin API recipe (per [`figma-use`](../../../plugins/cache/cursor-public/657/dd9335f17413d9185c6bc8426798b714ab1d29cb/skills/figma-use/SKILL.md)
+rule 15: re-capture node IDs from the state ledger, do not guess):
+
+```js
+// 1. Register each property on the component set.
+componentSet.addComponentProperty('label',        'TEXT',          'Step label');
+componentSet.addComponentProperty('description',  'TEXT',          'Optional description');
+componentSet.addComponentProperty('showDescription','BOOLEAN',      true);
+componentSet.addComponentProperty('leadingIcon',  'INSTANCE_SWAP', materialCheckComponentKey);
+
+// 2. Link the property to the node(s) it controls. The propName must
+//    match the registration. For variant-scoped components, walk each
+//    variant child of the set and link the equivalent node in each.
+for (const variant of componentSet.children) {
+  const label = variant.findOne(n => n.name === 'label');
+  label.componentPropertyReferences = { characters: 'label' };
+
+  const description = variant.findOne(n => n.name === 'description');
+  description.componentPropertyReferences = { characters: 'description' };
+
+  const labelGroup = variant.findOne(n => n.name === 'label-group');
+  // BOOLEAN visibility lives on the section the property hides, NOT
+  // on the parent containing it. The parent stays visible; the section
+  // toggles.
+  description.componentPropertyReferences = {
+    ...description.componentPropertyReferences,
+    visible: 'showDescription'
+  };
+
+  const icon = variant.findOne(n => n.name === 'leading-icon' && n.type === 'INSTANCE');
+  if (icon) icon.componentPropertyReferences = { mainComponent: 'leadingIcon' };
+}
+```
+
+Key rules:
+
+- **Property surface lives on the set, not the variant.** Variants
+  inherit from the set; per-variant registration causes inspector
+  panel noise and inconsistent property surfaces across variants.
+- **`propName` must be unique within the set.** Figma silently
+  prefixes the name with a hash on registration, but the *base name*
+  you pass to `addComponentProperty` is what designers see.
+- **Re-link in every variant.** When a component set is combined from
+  pre-existing variants, the child variants each carry their own node
+  trees. The property reference must be applied to the matching node
+  in each variant child, not just the first.
+- **Text-node `characters` property links override the baked-in text.**
+  If a variant has special baked-in text (e.g. the `complete` state
+  shows `✓` instead of a number), and you link a `stepNumber` TEXT
+  property to that node, the property value overrides the baked-in
+  `✓`. If you want a variant to keep baked-in text, either (a) skip
+  the property reference on that variant's node, or (b) split the
+  node into two — one bound to the property, one with the baked-in
+  glyph — and use BOOLEAN visibility to toggle which one shows.
+- **INSTANCE_SWAP default values are component KEYS, not IDs.** Use
+  the `componentKey` returned by `search_design_system` (it persists
+  across files); component `id` values are file-scoped.
+
+If the component is a container of repeating instances (per the
+"Container count axis" model section), build **one variant per
+count value**. Each variant pre-populates the correct number of
+child instances and the terminal-position instance(s) get the
+appropriate terminal-state variant set (e.g. `hasConnector=false`
+on the last step in a horizontal stepper). The designer should not
+have to manually fix anything about the terminal-position instance
+when they drop the parent component into a layout.
+
 ### B.3 — Token discipline
 
 - If a needed token is missing from UDS Tokens, STOP and ask. New
@@ -302,14 +429,27 @@ structured report with two sections.
 ### Tool-emitted gates (deterministic — counts, not opinions)
 
 - **Token bindings.** Raw color/fill/stroke values found: N. Unbound
-  corner radii: N at `<nodeIds>`. Unbound spacing: N at `<nodeIds>`.
-  Unbound typography: N.
+ corner radii: N at `<nodeIds>`. Unbound spacing: N at `<nodeIds>`.
+ Unbound typography: N.
 - **Variant matrix.** Generated variant axes and values vs. the
-  approved model. Match / mismatch report.
+ approved model. Match / mismatch report. For container-of-N
+ components, this includes the `count` variant axis — each enumerated
+ count value MUST be present as a variant.
+- **Property wiring.** Component properties registered on the set vs.
+ the approved model's "Inspector-editable properties" lists.
+ Match / mismatch per list (TEXT / BOOLEAN / INSTANCE_SWAP). For each
+ registered TEXT property, every variant in the set MUST have at
+ least one descendant node linking via
+ `componentPropertyReferences.characters`. Same for BOOLEAN
+ (`visible`) and INSTANCE_SWAP (`mainComponent`). Heuristic gap
+ detection: text nodes whose name suggests editable copy (`label`,
+ `description`, `title`, `caption`, `count`, `body`, `helper`, etc.)
+ lacking a `characters` reference are flagged as *candidate* gaps —
+ designer judges whether each is intentionally decorative.
 - **Layer hygiene.** Unnamed nodes: N. Generic names (`Frame N`,
-  `Rectangle N`): N. Orphan top-level nodes on the page: N.
+ `Rectangle N`): N. Orphan top-level nodes on the page: N.
 - **Auto-layout coverage.** Frames without auto-layout: N at
-  `<nodeIds>`.
+ `<nodeIds>`.
 
 If any tool-emitted gate fires with non-zero findings, the skill
 reports the issue and proposes a fix. Design-changing, destructive, or
