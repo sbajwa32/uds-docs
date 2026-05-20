@@ -16,6 +16,15 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          # `audit-toolchain-currency.sh` calls `git log -1 -- <file>` to find
+          # each rule/skill/agent file's actual last-commit date. The default
+          # shallow clone (depth 1) only knows about the head commit, which
+          # makes `git log -1 -- <any file>` return the head commit's date
+          # regardless of whether that commit touched the file — flagging
+          # every file as stale. Fetch full history so the audit can compute
+          # real mtimes.
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
