@@ -1,7 +1,7 @@
 ---
 name: generate-uds-figma-component
 description: UDS Component Factory. Drafts a token-bound UDS component set directly inside the UDS Components Figma file on a brand-new `🟠 <Title> {Cursor}{Ignore}` page. Use when the user says "generate a UDS component for X", "factory me an Avatar", "draft a new UDS component called Y", "build a UDS component for Z in Figma", or "use the component factory to start <Title>". Stops at Figma — never writes to `uds-docs/uds/`. Docs landing is the existing `uds-updated` skill, run later by the designer.
-lastUpdated: 2026-05-20T15:14:25Z
+lastUpdated: 2026-05-20T15:24:58Z
 ---
 
 # UDS Component Factory — Generate UDS Figma Component
@@ -197,6 +197,52 @@ Persist the proposed model to
  the model there — new tokens flow through the
  [`import-figma-tokens`](../import-figma-tokens/SKILL.md) skill, NOT
  through this factory.
+- **Typography binding strategy** — typography is one of the most
+ common places ad-hoc font choices leak past the design system, so
+ the factory has explicit defaults:
+   - **If the design system has bundled `TextStyle` objects**
+     (Figma's named text styles, e.g. `uds/text/label/base-medium`,
+     `uds/text/heading/h2`, `uds/text/paragraph/xl`), they are the
+     source of truth. Bind each text node via
+     `textNode.textStyleId = style.id` after importing the style
+     with `figma.importStyleByKeyAsync(STYLE_KEY)`. Bundled styles
+     handle `fontFamily`, `fontSize`, `fontStyle` (weight), and
+     `lineHeight` in one attachment, AND they automatically follow
+     the design system's font-family modes (Inter / Poppins /
+     Roboto / Lexend, etc.) and font-scale modes (smaller / default
+     / larger). One binding, four properties tracked.
+   - **If the design system has only individual font variables**
+     (no bundled styles), bind each of the four font properties
+     separately on every text node:
+     `setBoundVariable('fontFamily', familyVar)`,
+     `setBoundVariable('fontSize', sizeVar)`,
+     `setBoundVariable('fontStyle', weightVar)`, and
+     `setBoundVariable('lineHeight', lineHeightVar)`. Skipping any
+     one means that property silently escapes the design system —
+     a designer flipping the font-family mode will see partial
+     updates, not full theme switches.
+   - **Discover bundled styles via `search_design_system` with
+     `includeStyles: true`** in Phase A. The Phase A model must
+     enumerate either (a) the bundled style key per text role
+     (`indicator-number → uds/text/label/base-medium`) OR (b) the
+     four individual variable keys per text role, with rationale
+     for which strategy applies.
+   - **Color is bound separately.** Well-architected design system
+     `TextStyle` objects do NOT include color — color belongs to
+     the semantic-tokens layer because it varies by state, surface,
+     and theme. Bind text-color fills via the appropriate `text-*`
+     color variable independently of the text style. If the design
+     system's text styles happen to include color, surface that as
+     a finding for the designer; apply the style anyway and bind
+     a per-state color fill on top.
+   - **Font-loading prerequisite.** Before applying a bundled text
+     style or binding `fontFamily` / `fontStyle` to a multi-mode
+     variable, preload every font family + every weight the styles
+     and variables span (Inter Regular/Medium/Bold AND Poppins
+     Regular/Medium/Bold AND Roboto AND Lexend, etc.). Per
+     [`figma-use`](../../../plugins/cache/cursor-public/657/dd9335f17413d9185c6bc8426798b714ab1d29cb/skills/figma-use/SKILL.md)
+     rule 8 + the `FONT_FAMILY` gotcha: missing fonts cause silent
+     fallback or "missing font" placeholders.
 - **Inspector-editable properties** — enumerate every per-instance
  variation point the component should expose. The factory MUST default
  to exposing variation rather than burying it inside the variant
@@ -326,10 +372,16 @@ and you can re-run after fixing the cause.
   content unless a fixed dimension is part of the spec; padding axes
   use UDS spacing tokens, not raw pixels; flat structure preferred
   unless nesting is required.
-- Bind fills, strokes, type, spacing, and radius to UDS Tokens via the
-  role-to-token map from Phase A. Use the actual library variable
-  keys returned by `get_libraries` + `search_design_system` — never
-  hardcode hex values into bound paints.
+- Bind fills, strokes, **typography**, spacing, and radius to UDS
+  Tokens via the role-to-token map from Phase A. For typography
+  specifically: prefer bundled `textStyleId = style.id` when UDS has
+  the matching bundled text style; fall back to four individual
+  variable bindings (`fontFamily`, `fontSize`, `fontStyle`,
+  `lineHeight`) only when bundled styles are absent. Never hardcode
+  font names, sizes, weights, or line-heights as raw values.
+- Use the actual library variable / style keys returned by
+  `get_libraries` + `search_design_system` — never hardcode hex
+  values into bound paints.
 - Use existing UDS components as nested instances where the model says
   to (per Phase A "Sibling reuse").
 - Use meaningful layer names that match the anatomy. Names like
@@ -470,7 +522,14 @@ structured report with two sections.
 
 - **Token bindings.** Raw color/fill/stroke values found: N. Unbound
  corner radii: N at `<nodeIds>`. Unbound spacing: N at `<nodeIds>`.
- Unbound typography: N.
+- **Typography binding.** Every text node MUST have either a
+ `textStyleId` (bundled UDS text style) OR a complete set of four
+ font variable bindings (`fontFamily`, `fontSize`, `fontStyle`,
+ `lineHeight`). Text nodes with neither: N. Text nodes with partial
+ individual bindings (some but not all four): N. The Phase A model
+ decides which strategy applies; the file must follow it
+ consistently. Color binding is checked separately under "Token
+ bindings" since color is not part of typography styles.
 - **Variant matrix.** Generated variant axes and values vs. the
  approved model. Match / mismatch report. For container-of-N
  components, this includes the `count` variant axis — each enumerated
