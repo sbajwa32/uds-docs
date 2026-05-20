@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Poppins:wght@400;500;700&family=Roboto:wght@400;500;700&family=Lexend:wght@400;500;700&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
-  <link rel="stylesheet" href="./uds/uds.css?v=57" />
+  <link rel="stylesheet" href="./uds/uds.css?v=58" />
   <link rel="stylesheet" href="./docs/site.css?v=8" />
   <script>
     // ========================================================================
@@ -38,7 +38,7 @@
     // is the existing uds-docs/bump-site.sh preflight.
     // ========================================================================
     (function () {
-      var SITE_VERSION = '2026.05.20.2';
+      var SITE_VERSION = '2026.05.20.3';
       window.SITE_VERSION = SITE_VERSION;
 
       // ---- Part 1: monkey-patch fetch() for universal cache-busting ------
@@ -127,7 +127,7 @@
       </span>
     </button>
     <select class="sg-version-select" id="sg-version-dropdown" aria-label="UDS version"></select>
-    <span class="sg-brand-bar-build">SITE 2026.05.20.2</span>
+    <span class="sg-brand-bar-build">SITE 2026.05.20.3</span>
   </div>
 
   <!-- Pre-flight checklist dialog -->
@@ -319,7 +319,10 @@
       <a class="sg-sidebar-link" href="#/radio">Radio</a>
       <a class="sg-sidebar-link" href="#/dropdown">Dropdown</a>
       <a class="sg-sidebar-link" href="#/combobox">Combobox</a>
+      <a class="sg-sidebar-link" href="#/calendar">Calendar</a>
       <a class="sg-sidebar-link" href="#/date-picker">Date Picker</a>
+      <a class="sg-sidebar-link" href="#/time-picker">Time Picker</a>
+      <a class="sg-sidebar-link" href="#/date-time-picker">Date Time Picker</a>
       <a class="sg-sidebar-link" href="#/toggle">Toggle</a>
       <a class="sg-sidebar-link" href="#/search">Search</a>
 
@@ -928,12 +931,45 @@
         <div data-tab-panel="playground"></div>
       </div>
 
+      <div data-page="calendar">
+        <h1 class="sg-page-title" data-bind="title"></h1>
+        <p class="sg-page-desc" data-bind="description"></p>
+        <div class="sg-page-tabs" role="tablist"><button role="tab" class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button role="tab" class="sg-page-tab" data-tab="code">Code</button><button role="tab" class="sg-page-tab" data-tab="guidelines">Guidelines</button><button role="tab" class="sg-page-tab" data-tab="changelog">Changelog</button><button role="tab" class="sg-page-tab" data-tab="playground">Playground</button></div>
+        <div data-tab-panel="examples" class="active" data-needs-fetch></div>
+        <div data-tab-panel="code"><div class="sg-migration-block"><h3 class="sg-subsection-title">Deferred</h3><p class="sg-subsection-desc">No reference HTML is generated yet because no Figma component set exists to inspect. This prevents the docs from inventing API or markup before design is ready.</p></div></div>
+        <div data-tab-panel="guidelines"></div>
+        <div data-tab-panel="changelog"><p class="sg-changelog-empty">No changes recorded yet.</p></div>
+        <div data-tab-panel="playground"></div>
+      </div>
+
       <div data-page="date-picker">
         <h1 class="sg-page-title" data-bind="title"></h1>
         <p class="sg-page-desc" data-bind="description"></p>
         <div class="sg-page-tabs" role="tablist"><button role="tab" class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button role="tab" class="sg-page-tab" data-tab="code">Code</button><button role="tab" class="sg-page-tab" data-tab="guidelines">Guidelines</button><button role="tab" class="sg-page-tab" data-tab="changelog">Changelog</button><button role="tab" class="sg-page-tab" data-tab="playground">Playground</button></div>
         <div data-tab-panel="examples" class="active" data-needs-fetch></div>
         <div data-tab-panel="code"><div class="sg-migration-block"><h3 class="sg-subsection-title">Deferred</h3><p class="sg-subsection-desc">No reference HTML is generated yet because the Figma page does not contain a component set to inspect. This prevents the docs from inventing API or markup before design is ready.</p></div></div>
+        <div data-tab-panel="guidelines"></div>
+        <div data-tab-panel="changelog"><p class="sg-changelog-empty">No changes recorded yet.</p></div>
+        <div data-tab-panel="playground"></div>
+      </div>
+
+      <div data-page="time-picker">
+        <h1 class="sg-page-title" data-bind="title"></h1>
+        <p class="sg-page-desc" data-bind="description"></p>
+        <div class="sg-page-tabs" role="tablist"><button role="tab" class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button role="tab" class="sg-page-tab" data-tab="code">Code</button><button role="tab" class="sg-page-tab" data-tab="guidelines">Guidelines</button><button role="tab" class="sg-page-tab" data-tab="changelog">Changelog</button><button role="tab" class="sg-page-tab" data-tab="playground">Playground</button></div>
+        <div data-tab-panel="examples" class="active" data-needs-fetch></div>
+        <div data-tab-panel="code"><div class="sg-migration-block"><h3 class="sg-subsection-title">Deferred</h3><p class="sg-subsection-desc">No reference HTML is generated yet because no Figma component set exists to inspect. This prevents the docs from inventing API or markup before design is ready.</p></div></div>
+        <div data-tab-panel="guidelines"></div>
+        <div data-tab-panel="changelog"><p class="sg-changelog-empty">No changes recorded yet.</p></div>
+        <div data-tab-panel="playground"></div>
+      </div>
+
+      <div data-page="date-time-picker">
+        <h1 class="sg-page-title" data-bind="title"></h1>
+        <p class="sg-page-desc" data-bind="description"></p>
+        <div class="sg-page-tabs" role="tablist"><button role="tab" class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button><button role="tab" class="sg-page-tab" data-tab="code">Code</button><button role="tab" class="sg-page-tab" data-tab="guidelines">Guidelines</button><button role="tab" class="sg-page-tab" data-tab="changelog">Changelog</button><button role="tab" class="sg-page-tab" data-tab="playground">Playground</button></div>
+        <div data-tab-panel="examples" class="active" data-needs-fetch></div>
+        <div data-tab-panel="code"><div class="sg-migration-block"><h3 class="sg-subsection-title">Deferred</h3><p class="sg-subsection-desc">No reference HTML is generated yet because no Figma component set exists to inspect. This prevents the docs from inventing API or markup before design is ready.</p></div></div>
         <div data-tab-panel="guidelines"></div>
         <div data-tab-panel="changelog"><p class="sg-changelog-empty">No changes recorded yet.</p></div>
         <div data-tab-panel="playground"></div>
@@ -1035,7 +1071,7 @@
   <script src="https://cdn.jsdelivr.net/npm/jszip@3/dist/jszip.min.js"></script>
   <script src="./material-icons.js?v=1"></script>
   <script src="./uds/uds.js?v=34"></script>
-    <script type="module" src="./docs/app.js?v=129"></script>
+    <script type="module" src="./docs/app.js?v=130"></script>
   <script type="module" src="./docs/modules/demo-builder/index.js?v=2"></script>
 
 </body>

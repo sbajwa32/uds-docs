@@ -1,0 +1,57 @@
+{
+  "$schema": "../../schemas/spec.schema.json",
+  "component": "time-picker",
+  "title": "Time Picker",
+  "description": "A time picker lets users select a time of day, typically with hour and minute fields and an optional AM/PM toggle or 24-hour format.",
+  "whenToUse": "Use when capturing a specific time matters — scheduling, reminders, or any value tied to a clock.",
+  "whenNotToUse": "For approximate or freeform time text (e.g. \u201Cmorning\u201D), use Text Input. For combined date and time entry, use Date Time Picker.",
+  "acceptanceCriteria": [
+    "Figma component set exists and exposes variant properties",
+    "Examples and Code tabs are generated from inspected Figma structure",
+    "Component CSS uses UDS tokens only",
+    "Spec JSON reaches required minimum plus props/states/accessibility"
+  ],
+  "dependencies": {
+    "css": [
+      "uds/components/time-picker/time-picker.css"
+    ],
+    "js": []
+  },
+  "props": [],
+  "events": [],
+  "slots": [],
+  "states": [],
+  "contentGuidelines": null,
+  "commonlyPairedWith": [],
+  "dosDonts": {
+    "dos": [],
+    "donts": []
+  },
+  "accessibility": {
+    "keyboard": [
+      {
+        "key": "Tab",
+        "action": "Move focus to/from the component"
+      }
+    ],
+    "screenReader": [],
+    "wcag": [],
+    "contrast": []
+  },
+  "knownIssues": [
+    "Drafted ahead of design — no inspectable component set yet in Figma. Examples, CSS implementation, playground, and Demo Builder entry are intentionally deferred until the Figma component set is available."
+  ],
+  "performance": null,
+  "motion": null,
+  "responsive": null,
+  "visualHierarchy": null,
+  "densityBehavior": null,
+  "owner": {
+    "designer": "Unassigned",
+    "developer": "Unassigned"
+  },
+  "draft": false,
+  "figmaNodeId": null,
+  "figmaPageNodeId": null,
+  "storybookSlug": null
+}

@@ -248,6 +248,12 @@
           "text": "Figma variant matrix confirmed for primary/secondary/ghost buttons: destructive true/false, default/small sizes, default/hover/active/selected/disabled states, leading/trailing icons, icon-only, and horizontal/vertical button groups"
         }
       ],
+      "Calendar": [
+        {
+          "type": "added",
+          "text": "Placeholder page for month-view calendar component. Drafted as part of the date/time picker family; pending Figma design."
+        }
+      ],
       "Checkbox": [
         {
           "type": "changed",
@@ -282,6 +288,12 @@
         {
           "type": "added",
           "text": "Placeholder page for calendar date-entry component from Figma 0.3"
+        }
+      ],
+      "Date Time Picker": [
+        {
+          "type": "added",
+          "text": "Placeholder page for combined date + time entry component. Drafted as part of the date/time picker family; pending Figma design."
         }
       ],
       "Dialog": [
@@ -464,6 +476,12 @@
         {
           "type": "changed",
           "text": "Figma tile coverage confirmed: default/hover/focused/selected/disabled states"
+        }
+      ],
+      "Time Picker": [
+        {
+          "type": "added",
+          "text": "Placeholder page for time-of-day entry component. Drafted as part of the date/time picker family; pending Figma design."
         }
       ],
       "Toggle": [

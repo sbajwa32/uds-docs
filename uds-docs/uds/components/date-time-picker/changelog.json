@@ -1,0 +1,11 @@
+{
+  "$schema": "../../schemas/changelog.schema.json",
+  "addedIn": "0.3",
+  "entries": [
+    {
+      "version": "0.3",
+      "type": "added",
+      "text": "Placeholder page for combined date + time entry component. Drafted as part of the date/time picker family; pending Figma design."
+    }
+  ]
+}
