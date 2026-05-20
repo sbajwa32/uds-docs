@@ -1,7 +1,7 @@
 ---
 name: generate-uds-figma-component
 description: UDS Component Factory. Drafts a token-bound UDS component set directly inside the UDS Components Figma file on a brand-new `🟠 <Title> {Cursor}{Ignore}` page. Use when the user says "generate a UDS component for X", "factory me an Avatar", "draft a new UDS component called Y", "build a UDS component for Z in Figma", or "use the component factory to start <Title>". Stops at Figma — never writes to `uds-docs/uds/`. Docs landing is the existing `uds-updated` skill, run later by the designer.
-lastUpdated: 2026-05-19T18:50:48Z
+lastUpdated: 2026-05-20T15:14:25Z
 ---
 
 # UDS Component Factory — Generate UDS Figma Component
@@ -148,6 +148,38 @@ Persist the proposed model to
 - **When to use** / **When not to use** — paired guidance.
 - **Anatomy** — root, label, icon/content slots, helper text, action
  area, supporting parts.
+- **Subcomponent classification** — for every distinct Figma component
+ set the factory plans to build, declare exactly one of:
+   - **Main component** — the design unit a designer reaches for in
+     the library picker. Named `udc-<id>` (no underscore prefix).
+     Visible in the asset picker. When the designer later runs
+     [`uds-updated`](../uds-updated/SKILL.md), gets its own
+     `uds-docs/uds/components/<id>/` folder with `spec.json`,
+     `status.json`, `changelog.json`, examples, etc., and its own
+     entry in `uds-docs/uds/components.json`.
+   - **Subcomponent of `<parent>`** — a building block of a parent
+     component (`step` of Stepper, `card` of Carousel, `item` of
+     Breadcrumb, `avatar` of Avatar Group, `tab` of Tabs, `crumb` of
+     Breadcrumb, `option` of Segmented Control, ...). Named
+     `_udc-<parent>-<sub>` with a **leading underscore** so Figma
+     hides it from the asset picker (Figma's standard private-
+     component convention). Its anatomy, props, states, and
+     accessibility live inside the parent component's `spec.json`,
+     NOT a separate component entry. No standalone `status.json` /
+     `changelog.json` / Storybook story.
+
+   Default heuristic for "main vs subcomponent": if the component's
+   variant axes only make sense in the context of a parent (e.g.
+   `hasConnector` on a step is meaningless outside a stepper), or
+   if the component is unlikely to be useful when dropped standalone
+   into a layout (e.g. a single tab without its tab-list), it's a
+   subcomponent. When in doubt, default to subcomponent and surface
+   the question in the model for designer approval.
+
+   Multi-set components are common: most container-of-N patterns are
+   **two component sets** — one main (the container with `count` and
+   the orchestration variants) and one subcomponent (the per-item
+   building block).
 - **Variant axes** — drawn from siblings where possible (size,
  emphasis, tone, state, density, orientation, selection, validation).
  Note that UDS does not have a standardized variant vocabulary
@@ -280,8 +312,16 @@ and you can re-run after fixing the cause.
 
 ### B.2 — Build the component set
 
-- Create a component set named `udc-<componentId>` with clean variant
-  properties using the agreed vocabulary.
+- Create each component set with the name agreed in the model:
+  - **Main components:** `udc-<id>` (no underscore).
+  - **Subcomponents:** `_udc-<parent>-<sub>` with a **leading
+    underscore**. Figma's standard private-component convention
+    keeps the subcomponent out of the asset picker so designers
+    don't accidentally pick the building block instead of the
+    container. Parent components reference subcomponents via
+    component KEY (stable across files), so the underscore prefix
+    has no functional effect on parent → child instance binding.
+- Use clean variant properties using the agreed vocabulary.
 - Build variants and states with auto-layout. Defaults: containers hug
   content unless a fixed dimension is part of the spec; padding axes
   use UDS spacing tokens, not raw pixels; flat structure preferred
@@ -450,6 +490,12 @@ structured report with two sections.
  `Rectangle N`): N. Orphan top-level nodes on the page: N.
 - **Auto-layout coverage.** Frames without auto-layout: N at
  `<nodeIds>`.
+- **Subcomponent visibility.** Every component set the model
+ classified as a subcomponent must be named with a leading `_`.
+ Subcomponents named without `_`: N. Inversely, main components
+ named with a leading `_` (would be hidden from the picker by
+ mistake): N. The model's "Subcomponent classification" entry is
+ the source of truth — if the file disagrees, that's a gate failure.
 
 If any tool-emitted gate fires with non-zero findings, the skill
 reports the issue and proposes a fix. Design-changing, destructive, or
@@ -482,18 +528,29 @@ When the designer accepts the draft, factory's job is done. What
 happens next is NOT this skill's responsibility:
 
 - The designer renames the page in `UDS Components` to drop
-  `{Cursor}{Ignore}` and update the stoplight prefix to whatever
-  status they want (`🟠` in-progress, `🟡` review, `🟢` production).
+ `{Cursor}{Ignore}` and update the stoplight prefix to whatever
+ status they want (`🟠` in-progress, `🟡` review, `🟢` production).
 - When the designer is ready, they run
-  [`uds-updated`](../uds-updated/SKILL.md) (or equivalent prompt:
-  "UDS updated", "Figma updated", "sync UDS from Figma"). That
-  workflow handles `new-component` scaffold,
-  `sync-figma-component-spec`, `link-figma-nodes`, status sync,
-  changelog, cache-bust, commit, push.
+ [`uds-updated`](../uds-updated/SKILL.md) (or equivalent prompt:
+ "UDS updated", "Figma updated", "sync UDS from Figma"). That
+ workflow handles `new-component` scaffold,
+ `sync-figma-component-spec`, `link-figma-nodes`, status sync,
+ changelog, cache-bust, commit, push.
 - Optionally, the designer may run
-  [`figma-component-card`](../figma-component-card/SKILL.md) to build
-  the seven-section page layout in Figma. Independent of this
-  factory.
+ [`figma-component-card`](../figma-component-card/SKILL.md) to build
+ the seven-section page layout in Figma. Independent of this
+ factory.
+
+**Docs-side hint about subcomponents.** When the page contains a
+main component plus one or more `_`-prefixed subcomponents, the
+docs-side scaffold (`new-component` + `components.json` aggregator)
+should land **only** the main component — the subcomponent's anatomy,
+props, states, and accessibility live inside the parent's `spec.json`.
+The subcomponent does not get its own `uds-docs/uds/components/<sub>/`
+folder, its own `components.json` entry, its own `status.json`, its
+own `changelog.json`, or its own Storybook story. If `uds-updated`
+behaves as if a subcomponent were a peer, surface that as a finding;
+fix is in `uds-updated` / `new-component`, not here.
 
 The model proposal at `.cursor/state/component-factory/<componentId>.md`
 can be deleted once the component has landed in docs, or left in
