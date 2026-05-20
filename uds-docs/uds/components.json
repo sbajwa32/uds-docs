@@ -107,11 +107,6 @@
       "since": "0.2"
     },
     {
-      "id": "calendar",
-      "title": "Calendar",
-      "since": "0.3"
-    },
-    {
       "id": "combobox",
       "title": "Combobox",
       "since": "0.3"
@@ -124,11 +119,6 @@
     {
       "id": "date-picker",
       "title": "Date Picker",
-      "since": "0.3"
-    },
-    {
-      "id": "date-time-picker",
-      "title": "Date Time Picker",
       "since": "0.3"
     },
     {
@@ -149,11 +139,6 @@
     {
       "id": "text-area",
       "title": "Text Area",
-      "since": "0.3"
-    },
-    {
-      "id": "time-picker",
-      "title": "Time Picker",
       "since": "0.3"
     },
     {
