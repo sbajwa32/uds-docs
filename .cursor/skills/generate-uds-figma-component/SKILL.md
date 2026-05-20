@@ -1,7 +1,7 @@
 ---
 name: generate-uds-figma-component
 description: UDS Component Factory. Drafts a token-bound UDS component set directly inside the UDS Components Figma file on a brand-new `🟠 <Title> {Cursor}{Ignore}` page. Use when the user says "generate a UDS component for X", "factory me an Avatar", "draft a new UDS component called Y", "build a UDS component for Z in Figma", or "use the component factory to start <Title>". Stops at Figma — never writes to `uds-docs/uds/`. Docs landing is the existing `uds-updated` skill, run later by the designer.
-lastUpdated: 2026-05-20T15:24:58Z
+lastUpdated: 2026-05-20T15:40:13Z
 ---
 
 # UDS Component Factory — Generate UDS Figma Component
@@ -264,10 +264,42 @@ Persist the proposed model to
      `componentPropertyReferences = { visible: propName }`.
    - **INSTANCE_SWAP properties** — every nested instance a designer
      would reasonably swap (icons, avatars, slot fillers, leading /
-     trailing adornments). For each, list `propName`, `defaultValue`
-     (a component key from the UDS Components Production or
-     Material Icons libraries), and which instance node the property
-     links to via `componentPropertyReferences = { mainComponent: propName }`.
+     trailing adornments). When the design system or its subscribed
+     libraries provide a wrapper or primitive for a category, the
+     factory MUST nest that wrapper as the default INSTANCE_SWAP
+     component. Do NOT fall back to:
+       - Unicode characters or font-glyph text nodes (`✓`, `!`, `★`,
+         `→`, etc.) for icons — they don't follow size or color
+         tokens, they break across font-family modes, and they're
+         a code smell that signals the design system isn't being
+         honored.
+       - Raw library components used directly when an established
+         wrapper exists (e.g. a Material Icons component used
+         directly when UDS has `udc-icon-wrapper` as the
+         standardized icon container — the wrapper handles size
+         normalization and color binding; bypassing it leaks
+         ad-hoc sizing into the file).
+       - Inventing a new local pattern for something a published
+         primitive already covers.
+     For each property, list `propName`, `defaultValue` (the
+     component KEY of the appropriate wrapper / primitive — wrapper
+     KEY when one exists in the design system, raw library
+     component KEY only when no wrapper applies), and which
+     instance node the property links to via
+     `componentPropertyReferences = { mainComponent: propName }`.
+
+     **Per-variant defaults follow component anatomy and state
+     semantics**, not a single property-level default. For a
+     Stepper, the `complete` variant's icon slot defaults to the
+     wrapper containing `check`; the `error` variant defaults to
+     the wrapper containing `priority_high`; the `upcoming` /
+     `current` / `disabled` variants default to a hidden state or
+     a neutral icon, depending on the model's anatomy decision.
+     For a Notification, the `success` variant defaults to
+     `check_circle`, the `error` to `error`, the `warning` to
+     `warning_amber`, etc. State-specific defaults are baked into
+     each variant via `setProperties` during the Phase B build, not
+     hand-overridden by designers each time.
 - **Container count axis (if the component is a container of N
  repeating instances)** — if the component is a *container of N
  repeating instances of the same sub-component* (stepper, breadcrumb,
@@ -384,6 +416,15 @@ and you can re-run after fixing the cause.
   values into bound paints.
 - Use existing UDS components as nested instances where the model says
   to (per Phase A "Sibling reuse").
+- **For every icon slot the model enumerates, nest the appropriate
+  UDS wrapper component as an INSTANCE** (`udc-icon-wrapper` for
+  icons, etc.) — never a Unicode glyph in a TEXT node, never a raw
+  Material Icons component referenced directly. For each variant,
+  set the wrapper's swap property to the per-variant default the
+  model specifies (e.g. `check` for the Stepper's `complete` variant
+  indicator). Use `setProperties` on the variant's instance node
+  with the wrapper's swap-property full name to bake in the
+  per-state default.
 - Use meaningful layer names that match the anatomy. Names like
   `Frame 12` are a layer-hygiene gate failure in Phase C.
 
@@ -555,6 +596,16 @@ structured report with two sections.
  named with a leading `_` (would be hidden from the picker by
  mistake): N. The model's "Subcomponent classification" entry is
  the source of truth — if the file disagrees, that's a gate failure.
+- **Library reuse.** For every icon / avatar / swappable adornment
+ the model declared in its INSTANCE_SWAP list, the file must
+ contain an INSTANCE node of the agreed wrapper (or library
+ primitive) at the documented anatomy location. Heuristic gap
+ detection: text nodes whose `characters` is a single non-ASCII
+ glyph (Unicode code point > U+0080, or any single character that
+ isn't a digit / letter / common punctuation) when a wrapper
+ component for that category exists in the subscribed libraries
+ are flagged as candidate gaps. Designer judges whether each is
+ intentional decoration vs. a missed icon-wrapper instance.
 
 If any tool-emitted gate fires with non-zero findings, the skill
 reports the issue and proposes a fix. Design-changing, destructive, or
