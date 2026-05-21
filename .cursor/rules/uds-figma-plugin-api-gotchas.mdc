@@ -1,0 +1,183 @@
+---
+description: Plugin API gotchas learned from UDS factory and sync work. Local-file component identity, INSTANCE_SWAP default formats, hidden auto-layout fills, resize-vs-sizing-mode ordering. Auto-attaches to anything that calls `use_figma`.
+alwaysApply: false
+globs: ["**/*"]
+lastUpdated: 2026-05-21T16:08:00Z
+---
+
+# UDS Figma Plugin API Gotchas
+
+These are Plugin API truths that bit the `generate-uds-figma-component`
+factory build and would bite any other `use_figma` workflow the same way.
+They are not UDS-specific — they apply to every script the agent writes
+against the Figma Plugin API — but they were learned during UDS work,
+so this rule lives alongside the rest of the UDS toolchain. If they
+later get upstreamed into
+[`figma-use/references/gotchas.md`](../../../home/ubuntu/.cursor/plugins/cache/cursor-public/657/a742f0a700a7772ff5ed85f7c9fc1dad5afa9fcc/skills/figma-use/references/gotchas.md),
+this rule can drop them and become a pointer.
+
+## 1. Component identity is file-scope-dependent
+
+Components in the **same file** as the script (visible in
+`figma.root.children`) are LOCAL. Components in a **subscribed remote
+library** are REMOTE. Same word "component" in both cases, different
+resolution APIs. The two paths are not interchangeable.
+
+### Resolution
+
+| Where the component lives | API to get a reference | What `search_design_system` returns is useful for |
+|---|---|---|
+| Same file (LOCAL) | `await figma.getNodeByIdAsync('1234:567')` then pick `componentSet.children[0]` (or a specific variant by name) for `createInstance()` | Discovery of the node ID + the published KEY (which you won't use directly here) |
+| Subscribed remote library (REMOTE) | `await figma.importComponentByKeyAsync(componentKey)` | The component KEY to pass to `importComponentByKeyAsync` |
+
+`importComponentByKeyAsync` does NOT work on local components. The error
+text is `Component with key "<...>" not found` which reads like the key
+is wrong — actually the key is correct, the API is just the wrong one.
+
+### Wrong → correct
+
+```js
+// WRONG — udc-icon-wrapper lives in the SAME file (UDS Components)
+const iconWrapper = await figma.importComponentByKeyAsync('4ae9e6638c59062ad14115ff9631f20e86cca6fc');
+//                                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+//                                                           Throws: Component with key "..." not found
+
+// CORRECT — same-file components resolve by node ID
+const iconWrapperSet = await figma.getNodeByIdAsync('5745:4541');
+const iconWrapperDefault = iconWrapperSet.children[0];  // pick the default variant
+const instance = iconWrapperDefault.createInstance();
+```
+
+## 2. `INSTANCE_SWAP` default value format depends on the same scope
+
+`addComponentProperty(name, 'INSTANCE_SWAP', defaultValue)` accepts
+**different formats** depending on whether the swap target is local
+or remote:
+
+| Target | `defaultValue` format | Example |
+|---|---|---|
+| Local component (same file) | Node ID with colon | `'5657:6767'` |
+| Remote component (subscribed library) | Published component KEY | `'09f261dde3263fe70fe90028adf0b8f93ac19959'` |
+
+The error when you pass the wrong format is:
+
+```
+in addComponentProperty: Property value is incompatible with component property type
+```
+
+This error reads like the property type is wrong (it isn't) — actually
+the `defaultValue` format is just mis-scoped. Switch the format to
+match the target's file scope.
+
+### Wrong → correct (local target)
+
+```js
+// WRONG — local component, but passing the published KEY
+const iconKey = '09f261dde3263fe70fe90028adf0b8f93ac19959';
+fieldSet.addComponentProperty('leadingIcon', 'INSTANCE_SWAP', iconKey);
+// Throws: Property value is incompatible with component property type
+
+// CORRECT — local component, pass the node ID with colon
+const iconNodeId = '5657:6767';
+fieldSet.addComponentProperty('leadingIcon', 'INSTANCE_SWAP', iconNodeId);
+```
+
+### How to recover the right value
+
+```js
+// For local target: read the existing instance's mainComponent.id
+const instance = variant.findOne(n => n.name === 'icon-wrapper-instance' && n.type === 'INSTANCE');
+const mainComponent = await instance.getMainComponentAsync();
+const localNodeId = mainComponent.id;       // e.g. '5657:6767' — USE THIS
+const publishedKey = mainComponent.key;     // e.g. '09f...59' — NOT for local INSTANCE_SWAP
+```
+
+## 3. `figma.createAutoLayout()` ships with a hidden default white fill
+
+`figma.createAutoLayout()` and `figma.createFrame()` initialize the new
+node with `fills = [{ type: 'SOLID', color: { r: 1, g: 1, b: 1 } }]`
+by default. For visual containers that intentionally render a surface
+(card backgrounds, sheet bases), that's fine — bind the fill to a token.
+For **structural containers** that exist purely to hold children (slots,
+rows, anatomy wrappers, layout shells), this default white fill is
+invisible on a white page and silently breaks any "no raw colors"
+audit.
+
+### Rule
+
+Any auto-layout frame created with `figma.createAutoLayout()` /
+`figma.createFrame()` that doesn't intentionally render a surface MUST
+`node.fills = []` immediately after creation. Don't wait for the audit
+to find it.
+
+```js
+// WRONG — leaves a hidden white fill
+const slot = figma.createAutoLayout('HORIZONTAL', { name: 'leading-icon' });
+slot.visible = false;
+parent.appendChild(slot);
+// slot.fills is now [{ type: 'SOLID', color: { r: 1, g: 1, b: 1 } }]
+
+// CORRECT — structural container, clear the fill
+const slot = figma.createAutoLayout('HORIZONTAL', { name: 'leading-icon' });
+slot.fills = [];
+slot.visible = false;
+parent.appendChild(slot);
+```
+
+## 4. `resize()` forces FIXED on both axes — and ancestor sizes don't propagate within a single script
+
+Two related ordering bugs:
+
+### 4a. `resize(w, h)` overrides `primaryAxisSizingMode` and `counterAxisSizingMode`
+
+Setting auto-layout sizing modes before calling `resize()` looks like
+it works (the modes show as `'AUTO'` in subsequent reads), but the
+resize forces the dimensions to FIXED. The node won't HUG or FILL until
+you re-declare it.
+
+```js
+// LOOKS RIGHT, ISN'T
+const frame = figma.createAutoLayout('VERTICAL');
+frame.primaryAxisSizingMode = 'AUTO';   // hug vertically
+frame.resize(320, 80);                  // forces FIXED on both axes
+// children added later don't make the frame hug — it stays at 80px tall
+
+// CORRECT — declare sizing AFTER resize, OR after children are appended
+const frame = figma.createAutoLayout('VERTICAL');
+frame.resize(320, 80);
+for (const child of children) frame.appendChild(child);
+frame.layoutSizingVertical = 'HUG';     // now reflows to actual content height
+```
+
+### 4b. Size changes don't propagate to ancestors within one `use_figma` call
+
+A child mutation that should change a parent's hugged size doesn't
+update `parent.height` synchronously inside the same script. If your
+build needs the settled parent height for downstream layout
+(e.g. arranging variants in a grid based on actual heights), do the
+size mutation in one call and the dependent layout in a **subsequent**
+call. Reading `parent.height` immediately after the mutation returns
+the OLD value.
+
+```js
+// First use_figma call
+for (const wrapper of wrapperSet.children) {
+  wrapper.layoutSizingVertical = 'HUG';
+}
+// wrapper.height STILL reports the pre-HUG value here.
+
+// Second use_figma call (next script)
+// Now wrapper.height reflects the hugged content. Grid reflow can use it.
+```
+
+## Related
+
+- [`figma-use` skill (cached upstream)](../../../home/ubuntu/.cursor/plugins/cache/cursor-public/657/a742f0a700a7772ff5ed85f7c9fc1dad5afa9fcc/skills/figma-use/SKILL.md)
+  — base Plugin API rules. These gotchas should eventually upstream
+  into that skill's `references/gotchas.md`.
+- [`generate-uds-figma-component`](../skills/generate-uds-figma-component/SKILL.md)
+  — the factory skill that surfaced these. Phase B uses all four
+  patterns above.
+- [`uds-figma-factory-quality.mdc`](./uds-figma-factory-quality.mdc) —
+  the companion factory-quality rule (state design contract, audit
+  discipline, variant grid layout, etc.).

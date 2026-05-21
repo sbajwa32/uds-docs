@@ -1,0 +1,584 @@
+---
+description: Canonical UDS visual language extracted from existing component CSS. State constructions (Default/Hover/Active/Focus/Filled/Selected/Error/Disabled/Read-only/Loading), focus-ring patterns and when to use each, surface treatments, elevation/shadow scale, border-radius scale, density/sizing patterns, selection treatments. Component-specific overrides documented per state. Known inconsistencies between components surfaced for designer ratification. The factory and any new-component skill should bind state visuals to the constructions in this doc rather than re-deriving them.
+alwaysApply: false
+globs: ["**/*"]
+lastUpdated: 2026-05-21T16:30:00Z
+---
+
+# UDS Design Language
+
+This rule documents the **canonical visual constructions** that UDS uses for
+states (Default / Hover / Active / Focus / Filled / Selected / Error /
+Disabled / Read-only / Loading), surface treatments, elevation, border
+radius, density, and selection.
+
+The canon is **derived from the existing component CSS** under
+`uds-docs/uds/components/*/<id>.css`. Where components disagree, both
+patterns are documented and the disagreement is surfaced in the "Known
+inconsistencies" section at the bottom for designer ratification.
+
+This is the partner to:
+
+- [`uds-token-architecture.mdc`](./uds-token-architecture.mdc) — what
+  tokens exist (vocabulary).
+- [`uds-figma-factory-quality.mdc`](./uds-figma-factory-quality.mdc) —
+  process for how factory builds use them.
+- [`uds-figma-plugin-api-gotchas.mdc`](./uds-figma-plugin-api-gotchas.mdc)
+  — Plugin API specifics for `use_figma` work.
+
+This rule is the **how things look** layer. Tokens are the *what's
+available*, factory-quality is the *how to apply them mechanically*,
+this is the *what they should resolve to visually per state*.
+
+---
+
+## 1. Interaction states
+
+### 1.1 Default (rest)
+
+The neutral, non-interactive look. No pseudo-classes, no `[data-state]`,
+no `[aria-*]` attributes.
+
+| Element family | Background | Border | Text |
+|---|---|---|---|
+| Form field (text-input, dropdown, text-area, search) | `surface-main` | `border-primary` 1 px INSIDE | `text-primary` (value) / `text-secondary` (placeholder) |
+| Form control (checkbox, radio) | transparent inner | `border-primary` 1–2 px | `text-primary` (label) |
+| Button — primary | `surface-interactive-default` | `surface-interactive-default` 1 px | `text-inverse` |
+| Button — secondary | `surface-interactive-none` | `border-interactive` 1 px | `text-brand` |
+| Button — ghost | `surface-interactive-none` | transparent | `text-brand` |
+| Tile / card | `surface-main` | `border-primary` 1 px | `text-primary` |
+| Chip | `surface-interactive-none` | `border-primary` 1 px | `text-primary` |
+| Link | n/a (text) | n/a | `text-interactive`, underlined |
+| Tab | transparent | 2 px bottom transparent | `text-primary` |
+
+### 1.2 Hover
+
+Pointer is over the element, not yet committed.
+
+| Family | Treatment | Token(s) |
+|---|---|---|
+| Form field (text-input ↔ inconsistent, see §11) | — | (text-input has no hover today; dropdown/search use `surface-interactive-subtle-hover` background + `border-interactive`) |
+| Form field — dropdown trigger | bg → `surface-interactive-subtle-hover`, border → `border-interactive` | dropdown.css |
+| Form field — search field | bg → `surface-subtle` | search.css |
+| Form field — text-area | border → `border-outline-hover` | text-area.css |
+| Form control (checkbox, radio) | border → `border-interactive` | checkbox.css, radio.css |
+| Button — primary | bg → `surface-interactive-hover`, border → matching | button.css |
+| Button — secondary / ghost | bg → `surface-interactive-subtle-hover` (the `_btn-subtle-hover` var) | button.css |
+| Tile | bg → `surface-interactive-subtle` | tile.css |
+| Chip | bg → `surface-interactive-subtle-hover` | chip.css |
+| Tab (non-selected) | bg → `surface-interactive-subtle-hover`, text → `text-interactive` | tabs.css |
+| Tab (selected) | bg → `surface-interactive-subtle-hover`, bottom-border → `border-interactive-hover` | tabs.css |
+| Link | text → `text-interactive-hover` | link.css |
+| Dropdown menu item | bg → `surface-interactive-subtle-hover` | dropdown.css |
+| Trailing icon button inside a field | bg → `surface-interactive-subtle-hover` | text-input.css, dropdown.css, search.css |
+
+**Canonical hover for new form fields:** match dropdown's pattern —
+`bg → surface-interactive-subtle-hover, border → border-interactive`.
+This is the most explicit "this is interactive" signal in the system.
+
+### 1.3 Active / Pressed
+
+Mouse-down state. Short-lived; transitions back to Hover on mouse-up.
+
+| Family | Treatment | Token(s) |
+|---|---|---|
+| Button — primary | bg → `surface-interactive-active` | button.css |
+| Button — secondary / ghost | bg → `surface-interactive-subtle-active` | button.css |
+| Form field — dropdown trigger (also `data-open="true"`) | bg → `surface-interactive-subtle-active`, border → `border-interactive` | dropdown.css |
+| Chip | bg → `surface-interactive-subtle-active` | chip.css |
+| Dropdown menu item | bg → `surface-interactive-subtle-active` | dropdown.css |
+| Link | text → `text-interactive-active` (also used for `aria-current="page"`) | link.css |
+
+### 1.4 Focus (keyboard-only)
+
+**This is the most important state to get right** because it has three
+distinct constructions in the system and each has theme-safety
+implications. See §6 below for the focus-ring deep dive.
+
+Use `:focus-visible`, not `:focus` — the latter triggers on every click
+and produces visual noise. `:focus-visible` only fires for keyboard
+focus.
+
+---
+
+## 2. Validation states
+
+### 2.1 Error
+
+Recolors the relevant chrome to error red and bolds the label/value.
+
+| Element | Treatment |
+|---|---|
+| Field border (form field) | `border-error` 1 px |
+| Field text (text-input value when in error) | `text-error` |
+| Placeholder when in error | `text-error` |
+| Label | color → `text-error`, weight → `bold` |
+| Helper text | color → `text-error` |
+| Counter inside helper row | stays `text-secondary` (NOT recolored — text-input.css line 233) |
+| Leading icon | color → `icon-error` |
+| Required dot | already `icon-error`, stays |
+| Form control inner box (checkbox) | bg → `surface-interactive-red-subtle`, border → `border-error` |
+| Form control outer ring (radio) | border → `border-error` |
+| Radio dot when selected + error | bg → `icon-error` |
+| Label of a form control with error | color → `text-error`, weight → `bold` |
+| Focus ring on a field in error | stays blue (`outline-focus-visible`) — NOT recolored to red; matches text-input.css line 211 |
+| Focus ring on a search field in error | recolored to `border-error` — search.css deviates from text-input |
+
+### 2.2 Success / Warning / Info
+
+Used by `notification` and `badge`. Not used as a *state* of an
+interactive element today. Pattern:
+
+| Variant | Subtle background | Subtle text | Prominent background | Prominent text |
+|---|---|---|---|---|
+| Info | `surface-info-subtle` | `text-info` | `surface-info` | `text-inverse` |
+| Success | `surface-success-subtle` | `text-success` | `surface-success` | `text-inverse` |
+| Error | `surface-error-subtle` | `text-error` | `surface-error` | `text-inverse` |
+| Warning | `surface-warning-subtle` | `text-warning` | `surface-warning` | `text-inverse` |
+
+Icon family: `icon-{variant}` matches the text family.
+
+---
+
+## 3. Availability states
+
+### 3.1 Disabled
+
+Non-interactive. Pointer events blocked, cursor `not-allowed`.
+
+UDS has **three distinct disabled patterns** depending on the element
+family:
+
+| Pattern | When used | Treatment |
+|---|---|---|
+| **Filled-disabled** | Buttons (primary, secondary), form fields with a background | bg → `surface-interactive-disabled`, border → transparent OR `border-disabled` (inconsistent — see §11), text → `text-disabled-bold` |
+| **Outlined-disabled** | Form controls (checkbox, radio) | border → `border-disabled`, no bg change, label → `text-disabled` |
+| **Text-only-disabled** | Ghost button, link, tab, toggle label | text → `text-disabled`, `pointer-events: none`, `cursor: not-allowed` |
+| **Reduced-opacity-disabled** | Toggle | border → `border-disabled`, `opacity: 0.7` (the only place opacity is used for state — see §11) |
+
+Disabled text uses `text-disabled` for general copy and
+`text-disabled-bold` for the *value* of a form field (where the user's
+input was the entered text — needs slightly higher contrast to remain
+legible).
+
+### 3.2 Read-only
+
+Looks like a field but accepts no edits. Implemented inconsistently
+today (currently only partially supported in code; the Text Input
+draft in Figma is the first explicit treatment).
+
+**Canonical (proposed):**
+- Background → `surface-subtle` (tinted surface, theme-adaptive)
+- Border → `border-primary` 1 px (same as Default, keeps the field
+  shape legible)
+- Text → `text-primary` (full opacity, user can read the value)
+- No focus / hover rings on a read-only field
+- `<input readonly>` attribute on the underlying input
+
+Distinct from Disabled by:
+- Read-only keeps text at full primary color (you can read the value);
+  Disabled greys it.
+- Read-only keeps the visible border; Disabled drops it for the filled
+  treatment.
+- Read-only still allows text selection and copy; Disabled blocks all
+  interaction.
+
+### 3.3 Loading
+
+Not specified in UDS today. Components that need loading currently use
+Disabled as the closest approximation (see text-input.css known issues
+in `spec.json`). Deferred for designer ratification.
+
+---
+
+## 4. Selection states
+
+How "this is the chosen one" reads visually. Different elements use
+different conventions.
+
+| Element | Treatment | Tokens |
+|---|---|---|
+| Checkbox (checked) | inner box fills with `surface-interactive-default`; checkmark mask becomes visible via `icon-inverse` | checkbox.css |
+| Radio (selected) | outer ring stays, center dot fills with `icon-interactive`; label color → `text-interactive` | radio.css |
+| Toggle (checked) | `surface-interactive-default` bg + `border-interactive`; thumb slides right | toggle.css |
+| Tab (selected) | bottom border → `border-interactive`, text → `text-interactive` | tabs.css |
+| Tile (selected) | bg → `surface-info-subtle`, border → `border-interactive` thickened to 2 px | tile.css |
+| Chip (selected) | bg + border → `surface-interactive-active`; text → `text-inverse`; icons → `icon-inverse` | chip.css |
+| Dropdown menu item (selected) | bg → `surface-interactive-subtle-active`; text → `text-interactive`; weight → `bold` | dropdown.css |
+| Link (current-page, `aria-current="page"`) | text → `text-interactive-active` | link.css |
+| Button (selected, `aria-selected="true"` or `[data-selected]`) | primary stays at its base fill; secondary / ghost gain a focus-ring-like outer ring | button.css |
+
+**Pattern**: filled elements (chip, toggle, checkbox) go *more saturated*
+on selection (interactive-default or interactive-active bg). Outlined
+elements (tile, tabs, dropdown item, radio) gain a *colored marker*
+(border + tinted bg, or a dot, or a bottom underline) and recolor text
+to `text-interactive`.
+
+---
+
+## 5. Disabled-vs-Read-only quick reference
+
+Designers and engineers regularly confuse these. Use this table to
+disambiguate:
+
+| Question | Disabled | Read-only |
+|---|---|---|
+| User can read the value? | technically yes, but it's greyed | yes, full primary text |
+| User can copy the value? | usually not (cursor not-allowed) | yes |
+| User can focus the element? | no (skipped by Tab) | yes |
+| User can edit? | no | no |
+| Communicates "temporarily unavailable"? | yes | no — communicates "this is fixed information" |
+| Communicates "you can't change this"? | yes (because it's broken / not yet allowed) | yes (because the system owns it) |
+
+Common confusion: applying Disabled to "this field is auto-filled and
+shouldn't be edited" — that's Read-only. Disabled is for *the action
+isn't currently available* (e.g. "Save" button while form is invalid).
+
+---
+
+## 6. Focus ring construction (deep dive)
+
+UDS has **three distinct focus-ring constructions** in the existing
+CSS. They are not interchangeable.
+
+### 6.1 The three constructions
+
+#### A. `outline + outline-offset`  (THEME-SAFE, RECOMMENDED)
+
+```css
+outline:        2px solid var(--uds-color-border-outline-focus-visible);
+outline-offset: 1px;  /* or 2px, or var(--uds-space-050) for chunkier */
+```
+
+Used by: checkbox, radio, link, toggle, tabs, text-area, dropdown
+items, dialog close button, notification close button, all trailing
+icon buttons inside fields.
+
+**Why it works:** `outline-offset` is a *transparent* gap. It always
+matches whatever's behind the element in any theme. The ring color is
+the only colored thing.
+
+**When to use:** every new focus ring should use this construction
+unless there's a specific reason not to (see B and C below).
+
+#### B. `box-shadow` stacked with surface fill (THEME-FRAGILE if surface-white)
+
+```css
+box-shadow: 0 0 0 2px var(--uds-color-surface-main),
+            0 0 0 4px var(--uds-color-border-outline-focus-visible);
+```
+
+Used by: chip, search.
+
+**Why it can work:** the inner shadow's color matches the *surface*
+the element sits on. In any theme, `surface-main` adapts. The inner
+ring acts as a "gap" because it visually blends with the page bg.
+
+**Why it often fails:** if you bind the inner ring to `surface-white`
+instead of `surface-main`, it's white in every theme. In dark mode
+you get a visible white ring instead of a gap. This is the bug in
+button.css, text-input.css, and dropdown.css today (see §11).
+
+**When to use B over A:** when the element sits inside another bordered
+container that would clip an outline (the field's `overflow: hidden`
+breaks outline rendering). The stacked box-shadow doesn't get clipped.
+
+**Hard rule:** if you use construction B, the gap layer MUST be bound
+to `surface-main` (or whatever surface the element actually sits on),
+NOT `surface-white`. The current `surface-white` usage in button /
+text-input / dropdown is a documented bug in §11.
+
+#### C. `box-shadow` single ring, no gap
+
+```css
+box-shadow: 0 0 0 3px var(--uds-color-border-outline-focus-visible);
+```
+
+Used by: tile.
+
+**Why it works:** when the element is large and already has visual
+weight (a card or tile), a direct ring on the element reads cleanly
+without needing a gap to disambiguate.
+
+**When to use C over A and B:** rarely. Only when the element is a
+large container whose border or content would compete visually with a
+gapped ring.
+
+### 6.2 Decision tree
+
+```
+Is the element inside a clipped container (overflow:hidden)?
+├── Yes  → Use construction B (box-shadow) bound to surface-main
+└── No
+    │
+    Is the element a large card / tile?
+    ├── Yes → Use construction C (single ring, no gap)
+    └── No  → Use construction A (outline + offset)  ← default
+```
+
+### 6.3 In every construction
+
+- The ring color is `border-outline-focus-visible` (blue).
+- The ring is **2 px thick** for inline controls (links, buttons,
+  trailing icon buttons), checkboxes, radios.
+- The ring is **2 px thick** for form fields (text-input, dropdown,
+  text-area, search).
+- The ring is **3 px thick** for tiles (single-ring construction).
+- The gap (in A or B) is **1–2 px**.
+- The ring uses `:focus-visible`, not `:focus`. Always.
+- Error doesn't recolor the focus ring (it stays blue — see §2.1).
+
+---
+
+## 7. Surface treatments
+
+UDS distinguishes between **page surfaces** (the background canvas),
+**content surfaces** (cards, panels, modals), and **interactive
+surfaces** (anything that responds to pointer or keyboard).
+
+### 7.1 Page surfaces
+
+| Token | Usage |
+|---|---|
+| `--uds-color-surface-page-main` | The page background. Light: neutral-10. Dark: neutral-110. |
+| `--uds-color-surface-page-subtle` | A secondary page area (sidebar background, etc.). |
+| `--uds-color-surface-page-alt` | An alternate page area. |
+| `--uds-color-surface-page-bold` | A bolder page area (e.g. dark header on light page). |
+
+### 7.2 Content surfaces
+
+| Token | Usage |
+|---|---|
+| `--uds-color-surface-main` | The default surface for any contained content. Cards, panels, fields, tiles, tooltips. |
+| `--uds-color-surface-subtle` | A subtle tint on top of `surface-main`. Used for: dialog header, search hover, tile hover (via `surface-interactive-subtle`), read-only fields. |
+| `--uds-color-surface-alt` | An alternate surface tint. |
+| `--uds-color-surface-bold` / `-xbold` / `-xxbold` | Progressively bolder surfaces. |
+| `--uds-color-surface-inverse` | The contrast-surface (used by `text-inverse`-on-it). |
+| `--uds-color-surface-white` | LITERAL WHITE in every theme. Use sparingly — almost never the right token. Often confused with `surface-main`. |
+| `--uds-color-surface-black` | LITERAL BLACK in every theme. Same caveat. |
+
+### 7.3 Interactive surfaces
+
+| Token | Usage |
+|---|---|
+| `--uds-color-surface-interactive-none` | Transparent / nothing. Default for ghost buttons, dropdown items at rest. |
+| `--uds-color-surface-interactive-neutral` | A neutral interactive bg (dropdown trigger uses this). |
+| `--uds-color-surface-interactive-default` | The brand-saturated interactive color. Primary buttons, checkbox checked, toggle checked. |
+| `--uds-color-surface-interactive-hover` | Hover state of `interactive-default`. |
+| `--uds-color-surface-interactive-active` | Pressed state of `interactive-default`. Chip selected. |
+| `--uds-color-surface-interactive-disabled` | Disabled bg. Filled form fields, primary buttons. |
+| `--uds-color-surface-interactive-subtle` | A faint tint of the interactive color. Tile hover. |
+| `--uds-color-surface-interactive-subtle-hover` | Hover of `interactive-subtle`. Used by: secondary buttons, ghost buttons, chip, tab, dropdown item, search hover. |
+| `--uds-color-surface-interactive-subtle-active` | Pressed of `interactive-subtle`. Same family as above. |
+| `--uds-color-surface-interactive-red-*` | Destructive variants. Used by `[data-btn-color="danger"]` buttons and error treatments. |
+
+### 7.4 Status surfaces
+
+| Token | Usage |
+|---|---|
+| `--uds-color-surface-info` / `-subtle` | Info notifications and badges. |
+| `--uds-color-surface-success` / `-subtle` | Success notifications and badges. |
+| `--uds-color-surface-error` / `-subtle` | Error notifications, badges, and checkbox error inner box. |
+| `--uds-color-surface-warning` / `-subtle` | Warning notifications and badges. |
+
+---
+
+## 8. Elevation / shadow scale
+
+```
+toggle thumb        → --uds-shadow-depth-100   (lifted control)
+tooltip             → --uds-shadow-depth-300   (transient popover)
+dropdown menu       → --uds-shadow-depth-300   (transient popover)
+dialog              → --uds-shadow-depth-500   (modal / page-level)
+```
+
+| Token | Resolved (light theme) | Use when… |
+|---|---|---|
+| `--uds-shadow-depth-100` | `0 2px 8px rgba(0, 0, 0, 0.1)` | A small element is *lifted* off its surface. Toggle thumb. |
+| `--uds-shadow-depth-300` | `0 4px 12px rgba(0, 0, 0, 0.08)` | A transient overlay near its trigger. Tooltips, dropdowns, popovers, menus. |
+| `--uds-shadow-depth-500` | `0 10px 20px 2px rgba(0, 0, 0, 0.2)` | A modal that floats above the entire page. Dialogs, sheets. |
+| `--uds-shadow-bento` | `0 6px 16px 1px rgba(0, 0, 0, 0.16)` | Bento-style card grouping (specific to dashboard layouts). |
+
+Backdrop overlay (under modals): `--uds-overlay-backdrop` (`rgba(0,0,0,0.45)`).
+
+Do NOT bind elevation tokens to non-elevation effects. The shadow scale
+exists to communicate depth, not decoration.
+
+---
+
+## 9. Border radius scale
+
+| Token | Used for | Examples |
+|---|---|---|
+| `--uds-border-radius-input` | Form fields, buttons, list items, anything you can interact with that's not a chip | text-input field, dropdown trigger, button, dialog close button, tile |
+| `--uds-border-radius-input-full` | Fully-rounded form / button | (defined; not yet used in components I sampled) |
+| `--uds-border-radius-input-selected` | When a form item is selected (slightly larger radius to read as chunkier) | (defined; usage TBD) |
+| `--uds-border-radius-container-sm` | Small surfaces, focus halos on inline elements | notification, badge, link focus, tab focus |
+| `--uds-border-radius-container` | Medium surfaces, tooltips | tooltip, chip |
+| `--uds-border-radius-container-md` | Medium content cards | (defined; usage TBD) |
+| `--uds-border-radius-container-lg` | Larger content cards | (defined; usage TBD) |
+| `--uds-border-radius-container-xl` | Largest content cards | dialog (24 px) |
+| `--uds-border-radius-container-full` | Pills, circular elements | toggle control, toggle thumb |
+
+Pattern: form/button family uses `input`. Surface family uses
+`container-*` with the suffix indicating relative size.
+
+---
+
+## 10. Density / sizing patterns
+
+UDS supports two density tracks:
+
+| Track | Selector | Notable changes vs. default |
+|---|---|---|
+| Default (comfortable) | (none) | Full padding, base font size |
+| Small (`sm`) | `data-size="sm"` | Tighter vertical padding, same font size |
+
+### Per-component sm-vs-default deltas
+
+| Component | Default | Small |
+|---|---|---|
+| Button | `padding: var(--uds-space-150) var(--uds-space-200)` (12 × 16 px) | `padding: var(--uds-space-075) var(--uds-space-150)` (6 × 12 px) |
+| Tab | `padding: var(--uds-space-200) var(--uds-space-300)` (16 × 24 px) | `padding-top/bottom: var(--uds-space-100)` (8 px) |
+| Text input (proposed, Figma factory draft) | min-height 48 px, padding 6 px / 8 px, font `font-size-base` | min-height 36 px, padding 4 px / 6 px, font `font-size-sm` |
+| Badge | full padding, font-size-base | `padding: var(--uds-space-025) var(--uds-space-050)`, `font-size-xs` |
+
+There is no `lg` size in the canon today. New components that need it
+should ratify with the designer before adding.
+
+---
+
+## 11. Selection vs. checked vs. active — naming canon
+
+Three words that are often confused:
+
+| Term | Used by | What it means |
+|---|---|---|
+| **Checked** | checkbox, radio, toggle | Native HTML form-control selection state. Pair with `<input type="checkbox" checked>` / `aria-checked="true"`. |
+| **Selected** | tabs, dropdown items, chip, tile | Non-form-control selection state. Pair with `aria-selected="true"` or `data-selected="true"`. |
+| **Active** (as in current) | link, button (`[data-selected]`) | "This is the current page / current navigation target." Pair with `aria-current="page"` or `[data-selected]`. |
+| **Active** (as in pressed) | every button, every interactive control during `:active` | Mouse-down state. Brief, ends on mouse-up. |
+
+The two meanings of "Active" collide. When writing a spec or rule,
+prefer "Pressed" for the mouse-down meaning and "Current" for the
+selected-as-nav meaning. The CSS uses `:active` for pressed and
+`aria-current` for current.
+
+---
+
+## 12. Known inconsistencies (for designer ratification)
+
+These are real disagreements between components in the current CSS.
+Surfacing them here so the designer can ratify a canonical pattern.
+Until ratified, factory builds should default to the most theme-safe
+option and document the choice.
+
+### 12.1 Focus ring gap binding
+
+| Component | Gap binding | Theme-safe? |
+|---|---|---|
+| button | `surface-white` | ✗ (white in dark mode) |
+| text-input | `surface-white` | ✗ |
+| dropdown trigger | `surface-white` | ✗ |
+| chip | `surface-main` | ✓ |
+| search | `surface-main` | ✓ |
+
+**Canonical pattern proposed**: `surface-main`. Three components need
+updating to match. Cannot autonomously edit per
+[`uds-source-of-truth.mdc`](./uds-source-of-truth.mdc) — surface as a
+sync gap for the next Figma → code round trip.
+
+### 12.2 Hover treatment for form fields
+
+| Component | Hover treatment |
+|---|---|
+| text-input | (no hover state defined) |
+| dropdown trigger | bg → `surface-interactive-subtle-hover`, border → `border-interactive` |
+| search field | bg → `surface-subtle` (no border change) |
+| text-area | border → `border-outline-hover` (no bg change) |
+
+**Canonical pattern proposed**: text-area's `border-outline-hover` is
+the cleanest signal for a field hover. Bg-change variants compete
+visually with the focus state. Surface as a designer ratification
+question.
+
+### 12.3 Disabled border treatment
+
+| Component | Disabled border |
+|---|---|
+| button (primary) | `surface-interactive-disabled` (same as bg — invisible border) |
+| button (secondary) | `transparent` |
+| text-input | `transparent` |
+| dropdown trigger | `border-disabled` |
+| checkbox | `border-disabled` |
+| radio | `border-disabled` |
+| tile | `border-disabled` |
+
+**Canonical pattern proposed**: `border-disabled` for outlined elements
+(form controls), `transparent` for filled elements (filled disabled
+buttons, text-input filled disabled style). Two variants are
+legitimate — they communicate different things.
+
+### 12.4 Toggle's opacity for disabled
+
+Toggle uses `opacity: 0.7` for disabled. No other component does this.
+Either toggle is the only correct one and others should follow, or
+toggle is the outlier and should drop the opacity. Surface as designer
+ratification.
+
+### 12.5 Required dot color
+
+| Component | Required dot color |
+|---|---|
+| text-input | `icon-error` (red) |
+| dropdown | `icon-error` (red) |
+| checkbox | `icon-error` (red) |
+| radio | `icon-error` (red) |
+| tile | `text-error` (red) — different token, same family |
+
+Trivially inconsistent — text-error and icon-error resolve to the same
+red. Pick one for canon.
+
+---
+
+## 13. Cross-cutting decisions
+
+A few rules that apply across multiple sections above:
+
+- **Stroke alignment is `INSIDE` for form fields** so border thickness
+  doesn't affect outer dimensions. Form controls (checkbox, radio) use
+  default stroke alignment because they don't change size.
+- **Border weight stays at 1 px** through state transitions for most
+  components. Exceptions: tile thickens to 2 px when selected; tabs use
+  a 2 px bottom border for selection.
+- **The `:focus-visible` pseudo-class is the focus selector**, never
+  `:focus` (which fires on every click). All UDS components use
+  `:focus-visible`.
+- **Transitions are `120ms ease`** for color/border changes,
+  `200ms ease` for transforms (the dropdown chevron rotation,
+  the toggle thumb slide). Anything slower than 200 ms feels sluggish.
+- **Disabled elements have `pointer-events: none` AND `cursor:
+  not-allowed`**. Both are required: pointer-events blocks click,
+  cursor communicates the state to the user before they try.
+
+---
+
+## See also
+
+- [`uds-token-architecture.mdc`](./uds-token-architecture.mdc) — what
+  tokens exist. This rule references them.
+- [`uds-figma-factory-quality.mdc`](./uds-figma-factory-quality.mdc) —
+  factories must bind state visuals to *this* doc's constructions.
+- [`uds-figma-plugin-api-gotchas.mdc`](./uds-figma-plugin-api-gotchas.mdc)
+  — Plugin API specifics for translating these constructions into
+  Figma effects, fills, strokes.
+- [`uds-token-first-css.mdc`](./uds-token-first-css.mdc) — bans
+  hardcoded values in component CSS; designs in this doc resolve to
+  token bindings, never hex.
+- Component CSS files at
+  `uds-docs/uds/components/<id>/<id>.css` — the source data for the
+  canon in this rule. When a component disagrees with the canon, fix
+  via [`uds-source-of-truth.mdc`](./uds-source-of-truth.mdc)
+  authorized paths only (Figma round-trip), not autonomously.
+- Designer-facing version of this document:
+  [`uds-docs/docs/pages/design-language.html`](../../uds-docs/docs/pages/design-language.html).

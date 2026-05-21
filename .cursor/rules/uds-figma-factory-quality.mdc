@@ -1,0 +1,261 @@
+---
+description: Process quality rules for any factory-style Figma build (generate-uds-figma-component, new-component, future factories). State design contract (specify visuals not just tokens), mandatory machine-verified audits, variant grid layout reflects axis semantics, visible anatomy by default, dependency manifest before write. Design-system-agnostic — the specific UDS visual constructions live in uds-design-language.mdc.
+alwaysApply: false
+globs: [".cursor/skills/generate-uds-figma-component/**", ".cursor/skills/new-component/**", ".cursor/skills/figma-component-card/**"]
+lastUpdated: 2026-05-21T16:30:00Z
+---
+
+# Figma Factory Quality
+
+This rule applies to any skill that generates Figma components from
+scratch — currently
+[`generate-uds-figma-component`](../skills/generate-uds-figma-component/SKILL.md),
+[`new-component`](../skills/new-component/SKILL.md),
+[`figma-component-card`](../skills/figma-component-card/SKILL.md), and
+any future factory variants. It captures the **process quality gates**
+that emerge from designer feedback on factory runs — they're not
+obvious from the Plugin API alone, and they're not UDS-specific.
+
+These rules are component-agnostic AND design-system-agnostic. The
+specific UDS state constructions (what hover looks like, how focus
+rings layer, etc.) live in
+[`uds-design-language.mdc`](./uds-design-language.mdc). This rule is
+about the *process* of getting any factory build to a quality
+threshold; that rule is about the *output* a UDS factory build should
+resolve to.
+
+## 1. State design contract
+
+If the component has multiple **visual states** (Default / Hover /
+Focus / Filled / Error / Disabled / Read-only / Loading / Selected / …),
+Phase A's model MUST specify the **full visual treatment** of each
+state, not just its token-role mapping.
+
+### Token-role mapping alone is insufficient
+
+`State=Hover: border bound to outline-hover` is necessary but it
+doesn't tell the factory:
+
+- Is the border the **only** visual cue, or is there also an outer ring?
+- If a ring, what's the gap (px) and ring thickness (px), and which
+  surface variable acts as the gap layer?
+- What's the stroke alignment (`INSIDE` / `CENTER` / `OUTSIDE`)?
+- Does the border change thickness (e.g. 1 px → 2 px)?
+- How does the state's visual weight compare to its neighbors (Hover
+  should typically be *less* prominent than Focus, *more* than Default)?
+
+Without these, the factory will guess differently every run.
+
+### Required Phase A state row shape
+
+For every named state, the model must include a row with at least these
+columns:
+
+| Column | What it captures |
+|---|---|
+| State name | `Default`, `Hover`, `Focus`, `Filled`, `Selected`, `Error`, `Disabled`, `Read-only`, `Loading`, etc. |
+| Background | bound token (or "unchanged") |
+| Border color | bound token |
+| Border weight | px (1, 2, etc.) |
+| Stroke alignment | `INSIDE` / `CENTER` / `OUTSIDE` |
+| Effects | for each: type, spread (px), bound color variable, **and layering order** (which sits on top) |
+| Text fill | bound token (or "unchanged") |
+| Cursor | `pointer` / `not-allowed` / `default` |
+| Visual hierarchy note | how this state's prominence compares to its neighbors |
+
+The layering-order column is non-negotiable for any state that uses
+stacked effects (e.g. a focus ring with a gap layer). Two stacked drop
+shadows render differently depending on which is in front; specifying
+"spread=1 surface-main + spread=3 outline-focus" without saying which
+is on top is ambiguous.
+
+### Source the canonical visuals from the design language doc
+
+For UDS factory runs specifically: don't re-derive state visuals from
+scratch. Read
+[`uds-design-language.mdc`](./uds-design-language.mdc) (or the
+designer-facing
+[`uds-docs/docs/pages/design-language.html`](../../uds-docs/docs/pages/design-language.html))
+and bind the Phase A model to its canon. That doc was derived from
+every existing component CSS, with known inconsistencies surfaced
+explicitly — so the factory output stays in dialect with the system.
+
+If the design language doc doesn't cover the state the component
+needs (e.g. a brand new selection treatment), surface that as a
+Phase A question for the designer rather than inventing one.
+
+### Read the existing component's CSS as a sanity check
+
+When the factory is redesigning an *existing* UDS component,
+`uds-docs/uds/components/<id>/<id>.css` already encodes that
+component's specific construction. Compare it against the design
+language canon — if they agree, use the canon; if they disagree,
+surface the gap (it's likely a known inconsistency the design language
+doc lists, but might be a new one).
+
+## 2. Validation is machine-verified, not claimed
+
+The Phase C quality-gate report MUST run an audit script over the
+post-build state. Counts and claims (unbound paints, missing properties,
+variant mismatches) come from the script's return value, never from
+memory.
+
+### Minimum mandatory audit before Phase C report
+
+A read-only `use_figma` call that:
+
+1. Walks every variant of every component set the factory created.
+2. For every fill, stroke, and effect color on every descendant
+   (excluding nested instances of library components — those are
+   out of scope), reports whether the paint is bound to a variable.
+3. Returns a structured object with the count of unbound items and
+   their `{ ownerVariant, nodeId, nodeName, kind }`.
+
+The Phase C report's tool-emitted gates table is populated from that
+return value. If the audit hasn't run, the report can't be emitted.
+
+### Why this is non-negotiable
+
+The factory's first text-input run emitted a Phase C report claiming
+"0 raw colors" while 56 unbound white fills sat on every container
+slot. They were invisible on the white page and obvious only when the
+post-fix audit ran. "I think I did the right thing" is not a quality
+gate.
+
+## 3. Variant grid layout reflects the variant axis's semantic intent
+
+When the factory positions variants on the page (the visual grid a
+designer scans when opening the component page), the layout strategy
+depends on **what each variant axis means**.
+
+### Per-column packing for size axes
+
+If one variant axis varies a **size-related property** (height, density,
+padding scale, type ramp step), pack each column independently. Each
+column's variants stack at their own actual heights, so the SHORTER
+column visibly ends earlier than the TALLER column. The size
+differentiation reads at the column level, not just inside each cell.
+
+```
+sm column: variants at y = 0, 36, 72, 108, ...     (sm is 36px tall)
+md column: variants at y = 0, 48, 96, 144, ...     (md is 48px tall)
+```
+
+### Max-per-row packing for non-size axes
+
+If the variant axes are non-size (state, theme, emphasis, tone), then
+max-per-row alignment is fine. md/Default sits next to sm/Default at
+the same y, both in cells sized to the max height for that row.
+
+### Why this matters
+
+Max-per-row alignment across a Size axis makes md and sm columns
+visually equalize because the row cells are forced to the same height.
+The user-facing complaint from the first factory run was literally
+"the sm and md seem to be the same height" even though the inner field
+heights differed. Per-column packing eliminates that illusion.
+
+## 4. Variant grid defaults show the component's standard anatomy
+
+Visibility BOOLEAN defaults (`showLabel`, `showLeadingIcon`,
+`showCounter`, `optional`, etc.) double as:
+
+- **Per-instance defaults** — what designers get when they drop the
+  component out of the asset picker.
+- **Per-variant rendering** — what the variant grid on the component
+  page shows.
+
+For slots that are part of the component's **standard look** (leading
+icon on a text input, anchor button on a dropdown, label on any form
+input), default the BOOLEAN to `true`. The variant grid then renders
+the full anatomy at every state, designers see what the component does
+at a glance, and dropped instances arrive with the typical use already
+configured.
+
+For slots that are genuinely **optional adornments** (character
+counter, trailing clear button, optional indicator), default to
+`false`. Designers opt in when needed.
+
+### Anti-pattern
+
+Defaulting every `show*` BOOLEAN to `false` "to be conservative" makes
+the variant grid render a stripped-down skeleton of the component. A
+designer scanning the page sees seven near-identical empty fields and
+has to manually toggle every variant to discover the component's
+actual surface area. That's not conservative — it's hiding the design.
+
+## 5. Build the dependency manifest before any write
+
+Any factory build that nests other UDS components, binds tokens, or
+applies text/effect styles needs to resolve every reference upfront.
+Late-stage discovery wastes calls and creates ordering bugs.
+
+### Required Phase B.0 (read-only)
+
+A single `use_figma` call that returns one structured object containing:
+
+- **Local nested-component IDs** — every UDS primitive the build will
+  instantiate (e.g. `udc-icon-wrapper` set ID, default variant ID, key;
+  same for `udc-label`, `udc-button-ghost`, `udc-support_required-dot`,
+  etc.).
+- **Library variable KEYs** — every token the build will bind (color,
+  border, space, font, radius).
+- **Library style KEYs** — every text style and effect style the build
+  will apply.
+
+Stored in the model file at
+`.cursor/state/component-factory/<componentId>.md` under a
+`Dependencies` section, and re-imported at the top of every subsequent
+Phase B call.
+
+### Anti-pattern
+
+Discovering a new dependency in the middle of a Phase B build (e.g.
+realizing you need `border-tertiary` for Read-only after you've already
+combined the variants into a set) means an extra read call, an extra
+import call, and re-touching variants that should have been already
+done. The first factory run did this for icon-wrapper, label,
+button-ghost, and required-dot separately — four discovery calls that
+should have been one.
+
+### Why one upfront manifest works
+
+Variable keys, style keys, and component KEYs are stable for the
+duration of a factory run. Once collected, they can be passed as a
+constant map to every `use_figma` call:
+
+```js
+const DEPS = {
+  variables: { surfaceMain: '929a0f30897b12884c1848b5071f7ab3e0a31b72', ... },
+  textStyles: { labelBaseMedium: '13846140fda29ad416db52e33809812769cb8a8b', ... },
+  effectStyles: { /* ... */ },
+  components: { iconWrapperSetId: '5745:4541', iconWrapperDefaultId: '5657:6767', ... }
+};
+```
+
+Each Phase B call re-imports the variables/styles it needs by KEY
+and re-fetches local components by node ID. No script writes raw hex
+or hard-coded styling.
+
+## Related
+
+- [`uds-design-language.mdc`](./uds-design-language.mdc) — the
+  *output* the factory should produce when building UDS components.
+  Canonical state constructions, surface treatments, focus ring
+  patterns, elevation, radius, density, and known inconsistencies.
+  This rule (factory-quality) is the *process* layer; design-language
+  is the *visual canon* layer. Together they tell a factory build both
+  what to build and how to build it.
+- [`uds-figma-plugin-api-gotchas.mdc`](./uds-figma-plugin-api-gotchas.mdc)
+  — companion rule covering Plugin API specifics (local vs. remote
+  identity, INSTANCE_SWAP defaults, createAutoLayout fill default,
+  resize-vs-sizing-mode ordering).
+- [`generate-uds-figma-component`](../skills/generate-uds-figma-component/SKILL.md)
+  — the factory skill itself. Phases A / B / C reference these rules.
+- [`uds-figma-change-classification.mdc`](./uds-figma-change-classification.mdc)
+  — every factory-emitted finding follows the standard
+  Confidence / Risk / Reason / Default action shape.
+- [`uds-figma-write-safety.mdc`](./uds-figma-write-safety.mdc) — the
+  factory's writes are scope #4 (`{Cursor}{Ignore}` page only).
+- [`uds-source-of-truth.mdc`](./uds-source-of-truth.mdc) — the factory
+  stops at Figma; it never modifies anything under `uds-docs/uds/`.
