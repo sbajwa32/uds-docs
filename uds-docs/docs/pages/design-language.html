@@ -1,0 +1,795 @@
+        <h1 class="sg-page-title">Design Language</h1>
+        <p class="sg-page-desc">How UDS states actually look, beyond the token vocabulary. Every visual treatment on this page is derived from the existing component CSS — when components disagree, both patterns are documented and the disagreement is surfaced at the bottom for designer ratification.</p>
+
+<style>
+/* Page-local styles for the design-language page. Scoped via .sg-dl-* prefix. */
+
+.sg-dl-toc {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--uds-space-100);
+  margin: var(--uds-space-200) 0 var(--uds-space-400);
+  padding: var(--uds-space-200) var(--uds-space-250);
+  background: var(--uds-color-surface-subtle);
+  border: 1px solid var(--uds-color-border-secondary);
+  border-radius: var(--uds-border-radius-container-md);
+}
+.sg-dl-toc a {
+  font-family: var(--uds-font-family);
+  font-size: var(--uds-font-size-sm);
+  color: var(--uds-color-text-interactive);
+  text-decoration: none;
+  padding: var(--uds-space-050) var(--uds-space-100);
+  border-radius: var(--uds-border-radius-container-sm);
+  transition: background-color 120ms ease;
+}
+.sg-dl-toc a:hover {
+  background: var(--uds-color-surface-interactive-subtle-hover);
+  text-decoration: underline;
+}
+
+.sg-dl-section {
+  margin: var(--uds-space-400) 0;
+  padding: 0;
+}
+
+.sg-dl-section-heading {
+  font-family: var(--uds-font-family);
+  font-size: var(--uds-font-size-2xl);
+  font-weight: var(--uds-font-weight-bold);
+  color: var(--uds-color-text-primary);
+  margin: var(--uds-space-500) 0 var(--uds-space-150);
+  padding-bottom: var(--uds-space-100);
+  border-bottom: 1px solid var(--uds-color-border-secondary);
+}
+
+.sg-dl-subsection-heading {
+  font-family: var(--uds-font-family);
+  font-size: var(--uds-font-size-lg);
+  font-weight: var(--uds-font-weight-bold);
+  color: var(--uds-color-text-primary);
+  margin: var(--uds-space-300) 0 var(--uds-space-100);
+}
+
+.sg-dl-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: var(--uds-space-200) 0;
+  font-family: var(--uds-font-family);
+  font-size: var(--uds-font-size-sm);
+  background: var(--uds-color-surface-main);
+  border: 1px solid var(--uds-color-border-secondary);
+  border-radius: var(--uds-border-radius-container-md);
+  overflow: hidden;
+}
+.sg-dl-table thead {
+  background: var(--uds-color-surface-subtle);
+}
+.sg-dl-table th,
+.sg-dl-table td {
+  padding: var(--uds-space-100) var(--uds-space-150);
+  text-align: left;
+  border-bottom: 1px solid var(--uds-color-border-secondary);
+  color: var(--uds-color-text-primary);
+  vertical-align: top;
+}
+.sg-dl-table tbody tr:last-child th,
+.sg-dl-table tbody tr:last-child td {
+  border-bottom: none;
+}
+.sg-dl-table th {
+  font-weight: var(--uds-font-weight-bold);
+  font-size: var(--uds-font-size-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--uds-color-text-secondary);
+}
+.sg-dl-table code {
+  font-family: monospace;
+  font-size: 0.92em;
+  background: var(--uds-color-surface-subtle);
+  padding: 1px 5px;
+  border-radius: var(--uds-border-radius-container-sm);
+  color: var(--uds-color-text-primary);
+}
+.sg-dl-table tbody tr:hover {
+  background: var(--uds-color-surface-interactive-subtle-hover);
+}
+
+.sg-dl-callout {
+  margin: var(--uds-space-200) 0;
+  padding: var(--uds-space-150) var(--uds-space-200);
+  border-radius: var(--uds-border-radius-container-md);
+  font-family: var(--uds-font-family);
+  font-size: var(--uds-font-size-sm);
+  line-height: 1.55;
+}
+.sg-dl-callout--info {
+  background: var(--uds-color-surface-info-subtle);
+  border: 1px solid var(--uds-color-border-info);
+  border-left: 4px solid var(--uds-color-border-info);
+  color: var(--uds-color-text-primary);
+}
+.sg-dl-callout--warning {
+  background: var(--uds-color-surface-warning-subtle);
+  border: 1px solid var(--uds-color-border-warning);
+  border-left: 4px solid var(--uds-color-border-warning);
+  color: var(--uds-color-text-primary);
+}
+.sg-dl-callout--success {
+  background: var(--uds-color-surface-success-subtle);
+  border: 1px solid var(--uds-color-border-success);
+  border-left: 4px solid var(--uds-color-border-success);
+  color: var(--uds-color-text-primary);
+}
+.sg-dl-callout strong {
+  font-weight: var(--uds-font-weight-bold);
+}
+
+.sg-dl-code {
+  display: block;
+  padding: var(--uds-space-150) var(--uds-space-200);
+  background: var(--uds-color-surface-subtle);
+  border: 1px solid var(--uds-color-border-secondary);
+  border-radius: var(--uds-border-radius-container-sm);
+  font-family: monospace;
+  font-size: var(--uds-font-size-sm);
+  color: var(--uds-color-text-primary);
+  white-space: pre;
+  overflow-x: auto;
+  margin: var(--uds-space-100) 0 var(--uds-space-200);
+  line-height: 1.5;
+}
+
+.sg-dl-badge {
+  display: inline-block;
+  padding: 1px 8px;
+  font-family: var(--uds-font-family);
+  font-size: var(--uds-font-size-xs);
+  font-weight: var(--uds-font-weight-medium);
+  border-radius: var(--uds-border-radius-container-full);
+  margin-left: var(--uds-space-050);
+}
+.sg-dl-badge--safe {
+  background: var(--uds-color-surface-success-subtle);
+  color: var(--uds-color-text-success);
+}
+.sg-dl-badge--warn {
+  background: var(--uds-color-surface-warning-subtle);
+  color: var(--uds-color-text-warning);
+}
+.sg-dl-badge--bug {
+  background: var(--uds-color-surface-error-subtle);
+  color: var(--uds-color-text-error);
+}
+
+.sg-dl-tree {
+  display: block;
+  padding: var(--uds-space-150) var(--uds-space-200);
+  background: var(--uds-color-surface-subtle);
+  border-left: 3px solid var(--uds-color-border-interactive);
+  font-family: monospace;
+  font-size: var(--uds-font-size-sm);
+  color: var(--uds-color-text-primary);
+  white-space: pre;
+  line-height: 1.5;
+  margin: var(--uds-space-100) 0 var(--uds-space-200);
+}
+
+.sg-dl-decision-tree {
+  font-family: monospace;
+  font-size: var(--uds-font-size-sm);
+  color: var(--uds-color-text-primary);
+  white-space: pre;
+  line-height: 1.6;
+  margin: var(--uds-space-150) 0;
+  padding: var(--uds-space-200);
+  background: var(--uds-color-surface-info-subtle);
+  border: 1px solid var(--uds-color-border-info);
+  border-radius: var(--uds-border-radius-container-md);
+}
+
+.sg-dl-pattern-name {
+  font-weight: var(--uds-font-weight-bold);
+  color: var(--uds-color-text-primary);
+}
+</style>
+
+<div class="sg-dl-callout sg-dl-callout--info">
+  <strong>How to read this page.</strong> Each section starts with a short description, then a table mapping every component to how it implements that pattern. Disagreements between components are surfaced inline AND in the <a href="#inconsistencies">Known inconsistencies</a> section at the bottom. The source of truth for each row is the component's CSS file under <code>uds-docs/uds/components/&lt;id&gt;/&lt;id&gt;.css</code>.
+</div>
+
+<nav class="sg-dl-toc" aria-label="Design Language table of contents">
+  <a href="#interaction-states">1. Interaction states</a>
+  <a href="#validation-states">2. Validation states</a>
+  <a href="#availability-states">3. Availability states</a>
+  <a href="#selection-states">4. Selection states</a>
+  <a href="#disabled-vs-readonly">5. Disabled vs. Read-only</a>
+  <a href="#focus-ring">6. Focus ring construction</a>
+  <a href="#surface-treatments">7. Surface treatments</a>
+  <a href="#elevation">8. Elevation / shadow scale</a>
+  <a href="#radius">9. Border radius scale</a>
+  <a href="#density">10. Density / sizing</a>
+  <a href="#naming">11. Naming canon</a>
+  <a href="#inconsistencies">12. Known inconsistencies</a>
+</nav>
+
+<!-- ============================================================
+     1. INTERACTION STATES
+     ============================================================ -->
+<section class="sg-dl-section" id="interaction-states">
+
+<h2 class="sg-dl-section-heading">1. Interaction states</h2>
+<p class="sg-page-desc">How an element looks at rest, on pointer-over, on press, and with keyboard focus. Default is the baseline every other state is measured against.</p>
+
+<h3 class="sg-dl-subsection-heading">1.1 Default (rest)</h3>
+<p class="sg-page-desc">No pseudo-classes, no <code>[data-state]</code>, no <code>[aria-*]</code> attributes. This is the canvas every other state recolors.</p>
+
+<table class="sg-dl-table">
+  <thead>
+    <tr><th>Element family</th><th>Background</th><th>Border</th><th>Text</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Form field <span style="color:var(--uds-color-text-secondary);">(text-input, dropdown, text-area, search)</span></td><td><code>surface-main</code></td><td><code>border-primary</code> 1 px INSIDE</td><td><code>text-primary</code> value / <code>text-secondary</code> placeholder</td></tr>
+    <tr><td>Form control <span style="color:var(--uds-color-text-secondary);">(checkbox, radio)</span></td><td>transparent inner</td><td><code>border-primary</code> 1–2 px</td><td><code>text-primary</code> label</td></tr>
+    <tr><td>Button — primary</td><td><code>surface-interactive-default</code></td><td>same as bg, 1 px</td><td><code>text-inverse</code></td></tr>
+    <tr><td>Button — secondary</td><td><code>surface-interactive-none</code></td><td><code>border-interactive</code> 1 px</td><td><code>text-brand</code></td></tr>
+    <tr><td>Button — ghost</td><td><code>surface-interactive-none</code></td><td>transparent</td><td><code>text-brand</code></td></tr>
+    <tr><td>Tile / card</td><td><code>surface-main</code></td><td><code>border-primary</code> 1 px</td><td><code>text-primary</code></td></tr>
+    <tr><td>Chip</td><td><code>surface-interactive-none</code></td><td><code>border-primary</code> 1 px</td><td><code>text-primary</code></td></tr>
+    <tr><td>Link</td><td>n/a (text)</td><td>n/a</td><td><code>text-interactive</code>, underlined</td></tr>
+    <tr><td>Tab</td><td>transparent</td><td>2 px bottom transparent</td><td><code>text-primary</code></td></tr>
+  </tbody>
+</table>
+
+<h3 class="sg-dl-subsection-heading">1.2 Hover</h3>
+<p class="sg-page-desc">Pointer is over the element, not yet committed. UDS uses different hover signals per element family — there's no single canon. Below is the actual current state.</p>
+
+<table class="sg-dl-table">
+  <thead><tr><th>Element family</th><th>Treatment</th><th>Source</th></tr></thead>
+  <tbody>
+    <tr><td>Text input</td><td>none defined today <span class="sg-dl-badge sg-dl-badge--bug">gap</span></td><td>text-input.css</td></tr>
+    <tr><td>Dropdown trigger</td><td>bg → <code>surface-interactive-subtle-hover</code>, border → <code>border-interactive</code></td><td>dropdown.css</td></tr>
+    <tr><td>Search field</td><td>bg → <code>surface-subtle</code></td><td>search.css</td></tr>
+    <tr><td>Text area</td><td>border → <code>border-outline-hover</code></td><td>text-area.css</td></tr>
+    <tr><td>Checkbox, Radio</td><td>border → <code>border-interactive</code></td><td>checkbox.css, radio.css</td></tr>
+    <tr><td>Button — primary</td><td>bg → <code>surface-interactive-hover</code>, border matching</td><td>button.css</td></tr>
+    <tr><td>Button — secondary / ghost</td><td>bg → <code>surface-interactive-subtle-hover</code></td><td>button.css</td></tr>
+    <tr><td>Tile</td><td>bg → <code>surface-interactive-subtle</code></td><td>tile.css</td></tr>
+    <tr><td>Chip</td><td>bg → <code>surface-interactive-subtle-hover</code></td><td>chip.css</td></tr>
+    <tr><td>Tab (non-selected)</td><td>bg → <code>surface-interactive-subtle-hover</code>, text → <code>text-interactive</code></td><td>tabs.css</td></tr>
+    <tr><td>Tab (selected)</td><td>bg → <code>surface-interactive-subtle-hover</code>, bottom border → <code>border-interactive-hover</code></td><td>tabs.css</td></tr>
+    <tr><td>Link</td><td>text → <code>text-interactive-hover</code></td><td>link.css</td></tr>
+    <tr><td>Dropdown menu item</td><td>bg → <code>surface-interactive-subtle-hover</code></td><td>dropdown.css</td></tr>
+    <tr><td>Trailing icon button inside a field</td><td>bg → <code>surface-interactive-subtle-hover</code></td><td>text-input.css, dropdown.css, search.css</td></tr>
+  </tbody>
+</table>
+
+<div class="sg-dl-callout sg-dl-callout--warning">
+  <strong>Inconsistency.</strong> Four different form-field hover patterns currently coexist (text-input has none, dropdown changes bg+border, search changes bg only, text-area changes border only). See <a href="#inconsistencies">section 12.2</a> for a proposed canon.
+</div>
+
+<h3 class="sg-dl-subsection-heading">1.3 Active / Pressed</h3>
+<p class="sg-page-desc">Mouse-down state. Short-lived; transitions back to Hover when the user releases.</p>
+
+<table class="sg-dl-table">
+  <thead><tr><th>Element family</th><th>Treatment</th><th>Source</th></tr></thead>
+  <tbody>
+    <tr><td>Button — primary</td><td>bg → <code>surface-interactive-active</code></td><td>button.css</td></tr>
+    <tr><td>Button — secondary / ghost</td><td>bg → <code>surface-interactive-subtle-active</code></td><td>button.css</td></tr>
+    <tr><td>Dropdown trigger (also <code>data-open="true"</code>)</td><td>bg → <code>surface-interactive-subtle-active</code>, border → <code>border-interactive</code></td><td>dropdown.css</td></tr>
+    <tr><td>Chip</td><td>bg → <code>surface-interactive-subtle-active</code></td><td>chip.css</td></tr>
+    <tr><td>Dropdown menu item</td><td>bg → <code>surface-interactive-subtle-active</code></td><td>dropdown.css</td></tr>
+    <tr><td>Link <span style="color:var(--uds-color-text-secondary);">(also <code>aria-current="page"</code>)</span></td><td>text → <code>text-interactive-active</code></td><td>link.css</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sg-dl-subsection-heading">1.4 Focus (keyboard-only)</h3>
+<p class="sg-page-desc">The most important state to get right because UDS uses <strong>three</strong> distinct constructions, and each has theme-safety implications. See <a href="#focus-ring">section 6</a> for the full deep dive.</p>
+
+<div class="sg-dl-callout sg-dl-callout--info">
+  <strong>Rule:</strong> use <code>:focus-visible</code>, never <code>:focus</code>. The latter triggers on every click and produces visual noise. <code>:focus-visible</code> only fires on keyboard focus, which is when users actually need the ring.
+</div>
+
+</section>
+
+<!-- ============================================================
+     2. VALIDATION STATES
+     ============================================================ -->
+<section class="sg-dl-section" id="validation-states">
+
+<h2 class="sg-dl-section-heading">2. Validation states</h2>
+
+<h3 class="sg-dl-subsection-heading">2.1 Error</h3>
+<p class="sg-page-desc">Recolors the relevant chrome to error red and bolds the label and value.</p>
+
+<table class="sg-dl-table">
+  <thead><tr><th>Element</th><th>Treatment</th></tr></thead>
+  <tbody>
+    <tr><td>Field border (any form field)</td><td><code>border-error</code> 1 px</td></tr>
+    <tr><td>Field value text</td><td><code>text-error</code></td></tr>
+    <tr><td>Placeholder text</td><td><code>text-error</code></td></tr>
+    <tr><td>Label</td><td>color → <code>text-error</code>, font weight → <strong>bold</strong></td></tr>
+    <tr><td>Helper text</td><td><code>text-error</code></td></tr>
+    <tr><td>Counter inside helper row</td><td>stays <code>text-secondary</code> (NOT recolored)</td></tr>
+    <tr><td>Leading icon</td><td><code>icon-error</code></td></tr>
+    <tr><td>Required dot</td><td>already <code>icon-error</code>, no change</td></tr>
+    <tr><td>Checkbox inner box</td><td>bg → <code>surface-interactive-red-subtle</code>, border → <code>border-error</code></td></tr>
+    <tr><td>Radio outer ring</td><td>border → <code>border-error</code></td></tr>
+    <tr><td>Radio dot when selected + error</td><td>bg → <code>icon-error</code></td></tr>
+    <tr><td>Focus ring on a field in error</td><td>stays blue (<code>outline-focus-visible</code>) — text-input, dropdown, button</td></tr>
+    <tr><td>Focus ring on a <em>search</em> field in error</td><td>recolored to <code>border-error</code> — search deviates <span class="sg-dl-badge sg-dl-badge--warn">inconsistency</span></td></tr>
+  </tbody>
+</table>
+
+<h3 class="sg-dl-subsection-heading">2.2 Success / Warning / Info</h3>
+<p class="sg-page-desc">Used by <code>notification</code> and <code>badge</code>. Not used as a <em>state</em> of an interactive element today. Pattern is consistent across both:</p>
+
+<table class="sg-dl-table">
+  <thead>
+    <tr><th>Variant</th><th>Subtle background</th><th>Subtle text</th><th>Prominent background</th><th>Prominent text</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Info</td><td><code>surface-info-subtle</code></td><td><code>text-info</code></td><td><code>surface-info</code></td><td><code>text-inverse</code></td></tr>
+    <tr><td>Success</td><td><code>surface-success-subtle</code></td><td><code>text-success</code></td><td><code>surface-success</code></td><td><code>text-inverse</code></td></tr>
+    <tr><td>Error</td><td><code>surface-error-subtle</code></td><td><code>text-error</code></td><td><code>surface-error</code></td><td><code>text-inverse</code></td></tr>
+    <tr><td>Warning</td><td><code>surface-warning-subtle</code></td><td><code>text-warning</code></td><td><code>surface-warning</code></td><td><code>text-inverse</code></td></tr>
+  </tbody>
+</table>
+
+<p class="sg-page-desc">Icon family: <code>icon-{variant}</code> matches the text family in every case.</p>
+
+</section>
+
+<!-- ============================================================
+     3. AVAILABILITY STATES
+     ============================================================ -->
+<section class="sg-dl-section" id="availability-states">
+
+<h2 class="sg-dl-section-heading">3. Availability states</h2>
+
+<h3 class="sg-dl-subsection-heading">3.1 Disabled</h3>
+<p class="sg-page-desc">Non-interactive. Pointer events blocked, cursor <code>not-allowed</code>. UDS has <strong>three distinct disabled patterns</strong> depending on the element family.</p>
+
+<table class="sg-dl-table">
+  <thead><tr><th>Pattern</th><th>When used</th><th>Treatment</th></tr></thead>
+  <tbody>
+    <tr><td><span class="sg-dl-pattern-name">Filled-disabled</span></td><td>Primary / secondary buttons, form fields with a background</td><td>bg → <code>surface-interactive-disabled</code>, border → transparent OR <code>border-disabled</code> <span class="sg-dl-badge sg-dl-badge--warn">inconsistent</span>, text → <code>text-disabled-bold</code></td></tr>
+    <tr><td><span class="sg-dl-pattern-name">Outlined-disabled</span></td><td>Form controls (checkbox, radio)</td><td>border → <code>border-disabled</code>, no bg change, label → <code>text-disabled</code></td></tr>
+    <tr><td><span class="sg-dl-pattern-name">Text-only-disabled</span></td><td>Ghost button, link, tab, toggle label</td><td>text → <code>text-disabled</code>, <code>pointer-events: none</code>, <code>cursor: not-allowed</code></td></tr>
+    <tr><td><span class="sg-dl-pattern-name">Reduced-opacity-disabled</span></td><td>Toggle (only)</td><td>border → <code>border-disabled</code>, <code>opacity: 0.7</code> <span class="sg-dl-badge sg-dl-badge--bug">outlier</span></td></tr>
+  </tbody>
+</table>
+
+<div class="sg-dl-callout sg-dl-callout--info">
+  <strong>Disabled text token nuance:</strong> use <code>text-disabled</code> for general copy and <code>text-disabled-bold</code> for the <em>value</em> a user typed into a form field. The "-bold" variant has slightly higher contrast so a user's entered text stays legible even when greyed.
+</div>
+
+<h3 class="sg-dl-subsection-heading">3.2 Read-only</h3>
+<p class="sg-page-desc">Looks like a field but accepts no edits. Implemented inconsistently today — only partially supported in code. The Text Input draft in the Figma factory is the first explicit treatment.</p>
+
+<table class="sg-dl-table">
+  <thead><tr><th>Element</th><th>Canonical treatment <span class="sg-dl-badge sg-dl-badge--safe">proposed</span></th></tr></thead>
+  <tbody>
+    <tr><td>Background</td><td><code>surface-subtle</code> (tinted, theme-adaptive)</td></tr>
+    <tr><td>Border</td><td><code>border-primary</code> 1 px (same as Default — keeps field shape legible)</td></tr>
+    <tr><td>Text</td><td><code>text-primary</code> (full opacity, user can read the value)</td></tr>
+    <tr><td>Focus / hover</td><td>none on a read-only field</td></tr>
+    <tr><td>HTML attribute</td><td><code>readonly</code> on the underlying <code>&lt;input&gt;</code></td></tr>
+  </tbody>
+</table>
+
+<h3 class="sg-dl-subsection-heading">3.3 Loading</h3>
+<p class="sg-page-desc">Not specified in UDS today. Components that need it currently fall back to Disabled as the closest approximation (see text-input.css known issues). Deferred for designer ratification.</p>
+
+</section>
+
+<!-- ============================================================
+     4. SELECTION STATES
+     ============================================================ -->
+<section class="sg-dl-section" id="selection-states">
+
+<h2 class="sg-dl-section-heading">4. Selection states</h2>
+<p class="sg-page-desc">How "this is the chosen one" reads visually. Different elements use different conventions — there isn't one selection look in UDS.</p>
+
+<table class="sg-dl-table">
+  <thead><tr><th>Element</th><th>Treatment</th><th>Source</th></tr></thead>
+  <tbody>
+    <tr><td>Checkbox (<code>checked</code>)</td><td>inner box fills with <code>surface-interactive-default</code>; checkmark mask uses <code>icon-inverse</code></td><td>checkbox.css</td></tr>
+    <tr><td>Radio (<code>checked</code>)</td><td>outer ring stays; center dot fills with <code>icon-interactive</code>; label color → <code>text-interactive</code></td><td>radio.css</td></tr>
+    <tr><td>Toggle (<code>checked</code>)</td><td>bg → <code>surface-interactive-default</code> + <code>border-interactive</code>; thumb slides right</td><td>toggle.css</td></tr>
+    <tr><td>Tab (selected)</td><td>bottom border → <code>border-interactive</code>; text → <code>text-interactive</code></td><td>tabs.css</td></tr>
+    <tr><td>Tile (selected)</td><td>bg → <code>surface-info-subtle</code>; border → <code>border-interactive</code> thickened to 2 px</td><td>tile.css</td></tr>
+    <tr><td>Chip (selected)</td><td>bg + border → <code>surface-interactive-active</code>; text → <code>text-inverse</code>; icons → <code>icon-inverse</code></td><td>chip.css</td></tr>
+    <tr><td>Dropdown menu item (selected)</td><td>bg → <code>surface-interactive-subtle-active</code>; text → <code>text-interactive</code>; weight → <strong>bold</strong></td><td>dropdown.css</td></tr>
+    <tr><td>Link (<code>aria-current="page"</code>)</td><td>text → <code>text-interactive-active</code></td><td>link.css</td></tr>
+    <tr><td>Button (<code>aria-selected="true"</code> or <code>[data-selected]</code>)</td><td>primary keeps its base fill; secondary / ghost gain a focus-ring-like outer ring</td><td>button.css</td></tr>
+  </tbody>
+</table>
+
+<div class="sg-dl-callout sg-dl-callout--info">
+  <strong>Pattern.</strong> <em>Filled</em> elements (chip, toggle, checkbox) go <em>more saturated</em> on selection (<code>interactive-default</code> or <code>interactive-active</code> background). <em>Outlined</em> elements (tile, tabs, dropdown item, radio) gain a <em>colored marker</em> — border, dot, underline — and recolor text to <code>text-interactive</code>.
+</div>
+
+</section>
+
+<!-- ============================================================
+     5. DISABLED VS READ-ONLY
+     ============================================================ -->
+<section class="sg-dl-section" id="disabled-vs-readonly">
+
+<h2 class="sg-dl-section-heading">5. Disabled vs. Read-only — quick reference</h2>
+<p class="sg-page-desc">These two are regularly confused. Use this table to disambiguate.</p>
+
+<table class="sg-dl-table">
+  <thead><tr><th>Question</th><th>Disabled</th><th>Read-only</th></tr></thead>
+  <tbody>
+    <tr><td>User can read the value?</td><td>technically yes, but greyed</td><td>yes, full primary text</td></tr>
+    <tr><td>User can copy the value?</td><td>usually not (cursor not-allowed)</td><td>yes</td></tr>
+    <tr><td>User can focus the element?</td><td>no (skipped by Tab)</td><td>yes</td></tr>
+    <tr><td>User can edit?</td><td>no</td><td>no</td></tr>
+    <tr><td>Communicates "temporarily unavailable"?</td><td>yes</td><td>no — communicates "this is fixed information"</td></tr>
+    <tr><td>Communicates "you can't change this"?</td><td>yes (because it's broken / not yet allowed)</td><td>yes (because the system owns it)</td></tr>
+  </tbody>
+</table>
+
+<div class="sg-dl-callout sg-dl-callout--warning">
+  <strong>Common confusion.</strong> Applying Disabled to "this field is auto-filled and shouldn't be edited" — that's Read-only. Disabled is for <em>the action isn't currently available</em> (e.g. a "Save" button while the form is invalid).
+</div>
+
+</section>
+
+<!-- ============================================================
+     6. FOCUS RING (DEEP DIVE)
+     ============================================================ -->
+<section class="sg-dl-section" id="focus-ring">
+
+<h2 class="sg-dl-section-heading">6. Focus ring construction (deep dive)</h2>
+<p class="sg-page-desc">UDS has <strong>three distinct focus-ring constructions</strong>. They are not interchangeable. Pick by the rules below, not by aesthetic preference.</p>
+
+<h3 class="sg-dl-subsection-heading">6.1 Construction A — <code>outline + outline-offset</code> <span class="sg-dl-badge sg-dl-badge--safe">recommended default</span></h3>
+
+<code class="sg-dl-code">outline:        2px solid var(--uds-color-border-outline-focus-visible);
+outline-offset: 1px;  /* or 2px, or var(--uds-space-050) for chunkier */</code>
+
+<p class="sg-page-desc"><strong>Used by:</strong> checkbox, radio, link, toggle, tabs, text-area, dropdown items, dialog close button, notification close button, every trailing icon button inside a field.</p>
+
+<p class="sg-page-desc"><strong>Why it works:</strong> <code>outline-offset</code> creates a <em>transparent</em> gap. It matches whatever's behind the element in any theme automatically. The ring color is the only colored thing.</p>
+
+<p class="sg-page-desc"><strong>When to use:</strong> every new focus ring should use this construction unless there's a specific reason not to.</p>
+
+<h3 class="sg-dl-subsection-heading">6.2 Construction B — <code>box-shadow</code> stacked with surface fill</h3>
+
+<code class="sg-dl-code">box-shadow:
+  0 0 0 2px var(--uds-color-surface-main),
+  0 0 0 4px var(--uds-color-border-outline-focus-visible);</code>
+
+<p class="sg-page-desc"><strong>Used by:</strong> chip, search.</p>
+
+<p class="sg-page-desc"><strong>When the inner shadow is bound to <code>surface-main</code>:</strong> <span class="sg-dl-badge sg-dl-badge--safe">theme-safe</span> — the inner ring matches whatever surface the element sits on. In any theme it visually blends with the surrounding surface and reads as a gap.</p>
+
+<p class="sg-page-desc"><strong>When the inner shadow is bound to <code>surface-white</code>:</strong> <span class="sg-dl-badge sg-dl-badge--bug">theme-fragile</span> — <code>surface-white</code> is white in every theme. In dark mode you get a visible white ring instead of a gap. This is the bug in <code>button.css</code>, <code>text-input.css</code>, and <code>dropdown.css</code> today.</p>
+
+<p class="sg-page-desc"><strong>When to use B instead of A:</strong> when the element sits inside another bordered container that would clip an outline (the field's <code>overflow: hidden</code> breaks outline rendering). The stacked box-shadow doesn't get clipped.</p>
+
+<div class="sg-dl-callout sg-dl-callout--warning">
+  <strong>Hard rule:</strong> if you use construction B, the gap layer MUST be bound to <code>surface-main</code> (or whatever surface the element actually sits on), NEVER <code>surface-white</code>. The current <code>surface-white</code> usage in button, text-input, and dropdown is a documented bug — see <a href="#inconsistencies">section 12.1</a>.
+</div>
+
+<h3 class="sg-dl-subsection-heading">6.3 Construction C — <code>box-shadow</code> single ring, no gap</h3>
+
+<code class="sg-dl-code">box-shadow: 0 0 0 3px var(--uds-color-border-outline-focus-visible);</code>
+
+<p class="sg-page-desc"><strong>Used by:</strong> tile.</p>
+
+<p class="sg-page-desc"><strong>Why it works:</strong> when the element is a large card or tile with its own visual weight, a direct ring on the element reads cleanly without a gap to disambiguate from neighbors.</p>
+
+<p class="sg-page-desc"><strong>When to use:</strong> rarely. Only when the element is a large container whose border or content would compete visually with a gapped ring.</p>
+
+<h3 class="sg-dl-subsection-heading">6.4 Decision tree</h3>
+
+<div class="sg-dl-decision-tree">Is the element inside a clipped container (overflow:hidden)?
+├── Yes  → Use construction B (box-shadow stacked) bound to surface-main
+└── No
+    │
+    Is the element a large card / tile?
+    ├── Yes → Use construction C (single ring, no gap)
+    └── No  → Use construction A (outline + offset)  ← default</div>
+
+<h3 class="sg-dl-subsection-heading">6.5 Universal rules</h3>
+<ul style="font-family:var(--uds-font-family); font-size:var(--uds-font-size-base); color:var(--uds-color-text-primary); line-height:1.7; padding-left:24px; margin:var(--uds-space-150) 0;">
+  <li>The ring color is always <code>border-outline-focus-visible</code> (blue).</li>
+  <li>Ring is <strong>2 px thick</strong> for inline controls, form fields, and form controls.</li>
+  <li>Ring is <strong>3 px thick</strong> for tiles (single-ring construction).</li>
+  <li>Gap (in A or B) is <strong>1–2 px</strong>.</li>
+  <li>Uses <code>:focus-visible</code>, never <code>:focus</code>.</li>
+  <li>Error doesn't recolor the focus ring — it stays blue (search.css is the only exception today; see <a href="#inconsistencies">section 12</a>).</li>
+</ul>
+
+</section>
+
+<!-- ============================================================
+     7. SURFACE TREATMENTS
+     ============================================================ -->
+<section class="sg-dl-section" id="surface-treatments">
+
+<h2 class="sg-dl-section-heading">7. Surface treatments</h2>
+<p class="sg-page-desc">UDS distinguishes between page surfaces (the background canvas), content surfaces (cards, panels, modals), and interactive surfaces (anything that responds to pointer or keyboard).</p>
+
+<h3 class="sg-dl-subsection-heading">7.1 Page surfaces</h3>
+
+<table class="sg-dl-table">
+  <thead><tr><th>Token</th><th>Usage</th></tr></thead>
+  <tbody>
+    <tr><td><code>surface-page-main</code></td><td>The page background. Light: neutral-10. Dark: neutral-110.</td></tr>
+    <tr><td><code>surface-page-subtle</code></td><td>A secondary page area (sidebar, etc.).</td></tr>
+    <tr><td><code>surface-page-alt</code></td><td>An alternate page area.</td></tr>
+    <tr><td><code>surface-page-bold</code></td><td>A bolder page area (e.g. dark header on light page).</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sg-dl-subsection-heading">7.2 Content surfaces</h3>
+
+<table class="sg-dl-table">
+  <thead><tr><th>Token</th><th>Usage</th></tr></thead>
+  <tbody>
+    <tr><td><code>surface-main</code></td><td>Default surface for any contained content. Cards, panels, fields, tiles, tooltips.</td></tr>
+    <tr><td><code>surface-subtle</code></td><td>A subtle tint on top of <code>surface-main</code>. Used by: dialog header, search hover, tile hover, read-only fields.</td></tr>
+    <tr><td><code>surface-alt</code></td><td>An alternate surface tint.</td></tr>
+    <tr><td><code>surface-bold</code> / <code>-xbold</code> / <code>-xxbold</code></td><td>Progressively bolder surfaces.</td></tr>
+    <tr><td><code>surface-inverse</code></td><td>The contrast-surface — paired with <code>text-inverse</code>.</td></tr>
+    <tr><td><code>surface-white</code> <span class="sg-dl-badge sg-dl-badge--warn">caution</span></td><td>LITERAL WHITE in every theme. Almost never the right token; usually <code>surface-main</code> is what you want.</td></tr>
+    <tr><td><code>surface-black</code> <span class="sg-dl-badge sg-dl-badge--warn">caution</span></td><td>LITERAL BLACK in every theme. Same caveat.</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sg-dl-subsection-heading">7.3 Interactive surfaces</h3>
+
+<table class="sg-dl-table">
+  <thead><tr><th>Token</th><th>Usage</th></tr></thead>
+  <tbody>
+    <tr><td><code>surface-interactive-none</code></td><td>Transparent / nothing. Default for ghost buttons and dropdown items at rest.</td></tr>
+    <tr><td><code>surface-interactive-neutral</code></td><td>A neutral interactive bg (dropdown trigger).</td></tr>
+    <tr><td><code>surface-interactive-default</code></td><td>The brand-saturated interactive color. Primary buttons, checkbox checked, toggle checked.</td></tr>
+    <tr><td><code>surface-interactive-hover</code></td><td>Hover state of <code>interactive-default</code>.</td></tr>
+    <tr><td><code>surface-interactive-active</code></td><td>Pressed state of <code>interactive-default</code>. Chip selected.</td></tr>
+    <tr><td><code>surface-interactive-disabled</code></td><td>Disabled background. Filled form fields, primary buttons.</td></tr>
+    <tr><td><code>surface-interactive-subtle</code></td><td>A faint tint of the interactive color. Tile hover.</td></tr>
+    <tr><td><code>surface-interactive-subtle-hover</code></td><td>Hover of <code>interactive-subtle</code>. Used by secondary / ghost buttons, chip, tab, dropdown items, search hover, trailing icon buttons.</td></tr>
+    <tr><td><code>surface-interactive-subtle-active</code></td><td>Pressed of <code>interactive-subtle</code>.</td></tr>
+    <tr><td><code>surface-interactive-red-*</code></td><td>Destructive variants. Used by <code>[data-btn-color="danger"]</code> buttons and checkbox error inner box.</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sg-dl-subsection-heading">7.4 Status surfaces</h3>
+
+<table class="sg-dl-table">
+  <thead><tr><th>Token</th><th>Usage</th></tr></thead>
+  <tbody>
+    <tr><td><code>surface-info</code> / <code>-subtle</code></td><td>Info notifications and badges.</td></tr>
+    <tr><td><code>surface-success</code> / <code>-subtle</code></td><td>Success notifications and badges.</td></tr>
+    <tr><td><code>surface-error</code> / <code>-subtle</code></td><td>Error notifications, badges, checkbox error inner box.</td></tr>
+    <tr><td><code>surface-warning</code> / <code>-subtle</code></td><td>Warning notifications and badges.</td></tr>
+  </tbody>
+</table>
+
+</section>
+
+<!-- ============================================================
+     8. ELEVATION
+     ============================================================ -->
+<section class="sg-dl-section" id="elevation">
+
+<h2 class="sg-dl-section-heading">8. Elevation / shadow scale</h2>
+<p class="sg-page-desc">Three depth levels, plus a special bento variant for dashboards. Pick by the element's purpose, not its size.</p>
+
+<table class="sg-dl-table">
+  <thead><tr><th>Token</th><th>Resolved value (light theme)</th><th>Use when…</th><th>Live examples</th></tr></thead>
+  <tbody>
+    <tr><td><code>shadow-depth-100</code></td><td><code>0 2px 8px rgba(0, 0, 0, 0.1)</code></td><td>A small element is lifted off its surface</td><td>Toggle thumb</td></tr>
+    <tr><td><code>shadow-depth-300</code></td><td><code>0 4px 12px rgba(0, 0, 0, 0.08)</code></td><td>A transient overlay near its trigger</td><td>Tooltips, dropdown menus, popovers</td></tr>
+    <tr><td><code>shadow-depth-500</code></td><td><code>0 10px 20px 2px rgba(0, 0, 0, 0.2)</code></td><td>A modal that floats above the entire page</td><td>Dialogs, sheets</td></tr>
+    <tr><td><code>shadow-bento</code></td><td><code>0 6px 16px 1px rgba(0, 0, 0, 0.16)</code></td><td>Bento-style card grouping (dashboard layouts)</td><td>Dashboard cards</td></tr>
+  </tbody>
+</table>
+
+<p class="sg-page-desc">Backdrop overlay (under modals): <code>--uds-overlay-backdrop</code> resolves to <code>rgba(0, 0, 0, 0.45)</code>.</p>
+
+<div class="sg-dl-callout sg-dl-callout--warning">
+  <strong>Don't bind elevation tokens to non-elevation effects.</strong> The shadow scale exists to communicate depth, not decoration. A "drop shadow on a button to make it look fancy" is design noise — the scale ends at three deliberate levels.
+</div>
+
+</section>
+
+<!-- ============================================================
+     9. RADIUS
+     ============================================================ -->
+<section class="sg-dl-section" id="radius">
+
+<h2 class="sg-dl-section-heading">9. Border radius scale</h2>
+<p class="sg-page-desc">Two families: the <code>input</code> family (for things you interact with) and the <code>container</code> family (for surfaces holding content).</p>
+
+<table class="sg-dl-table">
+  <thead><tr><th>Token</th><th>Used for</th><th>Live examples</th></tr></thead>
+  <tbody>
+    <tr><td><code>border-radius-input</code></td><td>Form fields, buttons, list items, anything you can interact with that's not a chip</td><td>text-input field, dropdown trigger, button, dialog close, tile, dropdown menu items</td></tr>
+    <tr><td><code>border-radius-input-full</code></td><td>Fully-rounded form / button</td><td><em>defined; not yet used</em></td></tr>
+    <tr><td><code>border-radius-input-selected</code></td><td>When a form item is selected (chunkier)</td><td><em>defined; usage TBD</em></td></tr>
+    <tr><td><code>border-radius-container-sm</code></td><td>Small surfaces, focus halos on inline elements</td><td>notification, badge, link focus, tab focus</td></tr>
+    <tr><td><code>border-radius-container</code></td><td>Medium surfaces, tooltips</td><td>tooltip, chip</td></tr>
+    <tr><td><code>border-radius-container-md</code></td><td>Medium content cards</td><td><em>defined; usage TBD</em></td></tr>
+    <tr><td><code>border-radius-container-lg</code></td><td>Larger content cards</td><td><em>defined; usage TBD</em></td></tr>
+    <tr><td><code>border-radius-container-xl</code></td><td>Largest content cards</td><td>dialog (24 px)</td></tr>
+    <tr><td><code>border-radius-container-full</code></td><td>Pills, circular elements</td><td>toggle control, toggle thumb</td></tr>
+  </tbody>
+</table>
+
+<p class="sg-page-desc"><strong>Pattern:</strong> form/button family uses <code>input</code>. Surface family uses <code>container-*</code> with the suffix indicating relative size.</p>
+
+</section>
+
+<!-- ============================================================
+     10. DENSITY
+     ============================================================ -->
+<section class="sg-dl-section" id="density">
+
+<h2 class="sg-dl-section-heading">10. Density / sizing patterns</h2>
+<p class="sg-page-desc">UDS supports two density tracks: default (comfortable) and small.</p>
+
+<table class="sg-dl-table">
+  <thead><tr><th>Track</th><th>Selector</th><th>Notable changes vs. default</th></tr></thead>
+  <tbody>
+    <tr><td>Default (comfortable)</td><td>(none)</td><td>Full padding, base font size</td></tr>
+    <tr><td>Small (<code>sm</code>)</td><td><code>data-size="sm"</code></td><td>Tighter vertical padding, same font size</td></tr>
+  </tbody>
+</table>
+
+<h3 class="sg-dl-subsection-heading">10.1 Per-component sm-vs-default deltas</h3>
+
+<table class="sg-dl-table">
+  <thead><tr><th>Component</th><th>Default</th><th>Small</th></tr></thead>
+  <tbody>
+    <tr><td>Button</td><td><code>padding: space-150 space-200</code> (12 × 16 px)</td><td><code>padding: space-075 space-150</code> (6 × 12 px)</td></tr>
+    <tr><td>Tab</td><td><code>padding: space-200 space-300</code> (16 × 24 px)</td><td><code>padding-top/bottom: space-100</code> (8 px)</td></tr>
+    <tr><td>Text input <span style="color:var(--uds-color-text-secondary);">(factory draft proposal)</span></td><td>min-height 48 px, padding 6 × 8 px, <code>font-size-base</code></td><td>min-height 36 px, padding 4 × 6 px, <code>font-size-sm</code></td></tr>
+    <tr><td>Badge</td><td>full padding, <code>font-size-base</code></td><td><code>padding: space-025 space-050</code>, <code>font-size-xs</code></td></tr>
+  </tbody>
+</table>
+
+<div class="sg-dl-callout sg-dl-callout--info">
+  <strong>No <code>lg</code> size in the canon today.</strong> New components that need a larger size should ratify with the designer before adding.
+</div>
+
+</section>
+
+<!-- ============================================================
+     11. NAMING CANON
+     ============================================================ -->
+<section class="sg-dl-section" id="naming">
+
+<h2 class="sg-dl-section-heading">11. Selection vs. Checked vs. Active — naming canon</h2>
+<p class="sg-page-desc">Three words that are often confused. Use the right one for the right element.</p>
+
+<table class="sg-dl-table">
+  <thead><tr><th>Term</th><th>Used by</th><th>What it means</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Checked</strong></td><td>checkbox, radio, toggle</td><td>Native HTML form-control selection state. Pair with <code>&lt;input checked&gt;</code> / <code>aria-checked="true"</code>.</td></tr>
+    <tr><td><strong>Selected</strong></td><td>tabs, dropdown items, chip, tile</td><td>Non-form-control selection state. Pair with <code>aria-selected="true"</code> or <code>data-selected="true"</code>.</td></tr>
+    <tr><td><strong>Active</strong> (as in current)</td><td>link, button (<code>[data-selected]</code>)</td><td>"This is the current page / navigation target." Pair with <code>aria-current="page"</code>.</td></tr>
+    <tr><td><strong>Active</strong> (as in pressed)</td><td>every interactive control during <code>:active</code></td><td>Mouse-down state. Brief, ends on mouse-up.</td></tr>
+  </tbody>
+</table>
+
+<div class="sg-dl-callout sg-dl-callout--warning">
+  <strong>The two meanings of "Active" collide.</strong> When writing a spec or rule, prefer <strong>"Pressed"</strong> for the mouse-down meaning and <strong>"Current"</strong> for the selected-as-nav meaning. The CSS uses <code>:active</code> for pressed and <code>aria-current</code> for current.
+</div>
+
+</section>
+
+<!-- ============================================================
+     12. KNOWN INCONSISTENCIES
+     ============================================================ -->
+<section class="sg-dl-section" id="inconsistencies">
+
+<h2 class="sg-dl-section-heading">12. Known inconsistencies <span class="sg-dl-badge sg-dl-badge--warn">designer ratification</span></h2>
+<p class="sg-page-desc">These are real disagreements between components in the current CSS. Surfacing them here so the designer can ratify a canonical pattern. Until ratified, factory builds default to the most theme-safe option and document the choice.</p>
+
+<h3 class="sg-dl-subsection-heading">12.1 Focus ring gap binding</h3>
+
+<table class="sg-dl-table">
+  <thead><tr><th>Component</th><th>Gap binding</th><th>Theme-safe?</th></tr></thead>
+  <tbody>
+    <tr><td>button</td><td><code>surface-white</code></td><td><span class="sg-dl-badge sg-dl-badge--bug">no — white in dark mode</span></td></tr>
+    <tr><td>text-input</td><td><code>surface-white</code></td><td><span class="sg-dl-badge sg-dl-badge--bug">no</span></td></tr>
+    <tr><td>dropdown trigger</td><td><code>surface-white</code></td><td><span class="sg-dl-badge sg-dl-badge--bug">no</span></td></tr>
+    <tr><td>chip</td><td><code>surface-main</code></td><td><span class="sg-dl-badge sg-dl-badge--safe">yes</span></td></tr>
+    <tr><td>search</td><td><code>surface-main</code></td><td><span class="sg-dl-badge sg-dl-badge--safe">yes</span></td></tr>
+  </tbody>
+</table>
+
+<p class="sg-page-desc"><strong>Canonical pattern proposed:</strong> <code>surface-main</code>. Three components need updating to match. Cannot autonomously edit per <code>uds-source-of-truth.mdc</code> — surface as a sync gap for the next Figma → code round trip.</p>
+
+<h3 class="sg-dl-subsection-heading">12.2 Hover treatment for form fields</h3>
+
+<table class="sg-dl-table">
+  <thead><tr><th>Component</th><th>Hover treatment</th></tr></thead>
+  <tbody>
+    <tr><td>text-input</td><td>(no hover state defined)</td></tr>
+    <tr><td>dropdown trigger</td><td>bg → <code>surface-interactive-subtle-hover</code>, border → <code>border-interactive</code></td></tr>
+    <tr><td>search field</td><td>bg → <code>surface-subtle</code></td></tr>
+    <tr><td>text-area</td><td>border → <code>border-outline-hover</code></td></tr>
+  </tbody>
+</table>
+
+<p class="sg-page-desc"><strong>Canonical pattern proposed:</strong> text-area's <code>border-outline-hover</code> is the cleanest signal for a field hover. Bg-change variants compete visually with the focus state. Surface as a designer ratification question.</p>
+
+<h3 class="sg-dl-subsection-heading">12.3 Disabled border treatment</h3>
+
+<table class="sg-dl-table">
+  <thead><tr><th>Component</th><th>Disabled border</th></tr></thead>
+  <tbody>
+    <tr><td>button (primary)</td><td><code>surface-interactive-disabled</code> (same as bg — invisible border)</td></tr>
+    <tr><td>button (secondary)</td><td>transparent</td></tr>
+    <tr><td>text-input</td><td>transparent</td></tr>
+    <tr><td>dropdown trigger</td><td><code>border-disabled</code></td></tr>
+    <tr><td>checkbox</td><td><code>border-disabled</code></td></tr>
+    <tr><td>radio</td><td><code>border-disabled</code></td></tr>
+    <tr><td>tile</td><td><code>border-disabled</code></td></tr>
+  </tbody>
+</table>
+
+<p class="sg-page-desc"><strong>Canonical pattern proposed:</strong> <code>border-disabled</code> for outlined elements (form controls), transparent for filled elements (filled disabled buttons, text-input). Two variants are legitimate — they communicate different things.</p>
+
+<h3 class="sg-dl-subsection-heading">12.4 Toggle's opacity for disabled</h3>
+
+<p class="sg-page-desc">Toggle uses <code>opacity: 0.7</code> for disabled. No other component does this. Either toggle is the only correct one and others should follow, or toggle is the outlier and should drop the opacity. Surface as designer ratification.</p>
+
+<h3 class="sg-dl-subsection-heading">12.5 Required dot color token</h3>
+
+<table class="sg-dl-table">
+  <thead><tr><th>Component</th><th>Required dot color</th></tr></thead>
+  <tbody>
+    <tr><td>text-input</td><td><code>icon-error</code></td></tr>
+    <tr><td>dropdown</td><td><code>icon-error</code></td></tr>
+    <tr><td>checkbox</td><td><code>icon-error</code></td></tr>
+    <tr><td>radio</td><td><code>icon-error</code></td></tr>
+    <tr><td>tile</td><td><code>text-error</code></td></tr>
+  </tbody>
+</table>
+
+<p class="sg-page-desc">Trivially inconsistent — <code>text-error</code> and <code>icon-error</code> resolve to the same red. Pick one for canon.</p>
+
+</section>
+
+<!-- ============================================================
+     CROSS-CUTTING
+     ============================================================ -->
+<section class="sg-dl-section">
+
+<h2 class="sg-dl-section-heading">Cross-cutting decisions</h2>
+
+<ul style="font-family:var(--uds-font-family); font-size:var(--uds-font-size-base); color:var(--uds-color-text-primary); line-height:1.7; padding-left:24px; margin:var(--uds-space-150) 0;">
+  <li><strong>Stroke alignment is <code>INSIDE</code> for form fields</strong> so border thickness doesn't affect outer dimensions. Form controls (checkbox, radio) use default stroke alignment.</li>
+  <li><strong>Border weight stays at 1 px</strong> through state transitions for most components. Exceptions: tile thickens to 2 px when selected; tabs use a 2 px bottom border for selection.</li>
+  <li><strong>The <code>:focus-visible</code> pseudo-class is the focus selector</strong>, never <code>:focus</code> (which fires on every click). All UDS components use <code>:focus-visible</code>.</li>
+  <li><strong>Transitions are <code>120ms ease</code></strong> for color and border changes, <code>200ms ease</code> for transforms (the dropdown chevron rotation, the toggle thumb slide).</li>
+  <li><strong>Disabled elements have <code>pointer-events: none</code> AND <code>cursor: not-allowed</code>.</strong> Both are required: pointer-events blocks click, cursor communicates the state to the user before they try.</li>
+</ul>
+
+</section>
+
+<!-- ============================================================
+     RELATED
+     ============================================================ -->
+<section class="sg-dl-section">
+
+<h2 class="sg-dl-section-heading">Related</h2>
+
+<ul style="font-family:var(--uds-font-family); font-size:var(--uds-font-size-base); color:var(--uds-color-text-primary); line-height:1.7; padding-left:24px; margin:var(--uds-space-150) 0;">
+  <li><a class="sg-gl-link" href="#/semantic-colors"><code>Semantic Colors</code></a> — the underlying token vocabulary that the constructions here resolve to.</li>
+  <li><a class="sg-gl-link" href="#/spacing"><code>Spacing</code></a> — the space-* scale referenced in density patterns.</li>
+  <li><a class="sg-gl-link" href="#/text-styles"><code>Text Styles</code></a> — typography decisions that pair with these visual treatments.</li>
+  <li><a class="sg-gl-link" href="#/cursor-workflows"><code>Cursor Workflows</code></a> — agent-facing version of this page lives in <code>.cursor/rules/uds-design-language.mdc</code> with a row in the Glob-scoped rules table.</li>
+</ul>
+
+</section>
