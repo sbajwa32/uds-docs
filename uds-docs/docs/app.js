@@ -118,6 +118,53 @@ registerPageLoadHook('contrast-checker', async (page) => {
     }
 });
 
+// Wire up the Design Language page's in-page ToC: smooth scroll on click,
+// active-section highlighting via IntersectionObserver. The page fragment
+// loader uses `innerHTML = ...` which doesn't execute inline <script> tags,
+// so this lives here as a registered hook.
+registerPageLoadHook('design-language', (page) => {
+    const tocLinks = page.querySelectorAll('.sg-dl-toc a[href^="#"]');
+    if (!tocLinks.length) return;
+
+    // Smooth scroll on click, without touching the hash (so the SPA
+    // router stays out of it entirely).
+    tocLinks.forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const id = link.getAttribute('href').slice(1);
+        const target = page.querySelector('#' + CSS.escape(id));
+        if (!target) return;
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+
+    // Highlight the ToC item for whatever section is currently in view.
+    const sections = page.querySelectorAll('section.sg-dl-section[id]');
+    if (!sections.length || !('IntersectionObserver' in window)) return;
+    const linkById = {};
+    tocLinks.forEach(l => {
+      const id = l.getAttribute('href').slice(1);
+      linkById[id] = l;
+    });
+    const setActive = (id) => {
+      Object.values(linkById).forEach(l => l.classList.remove('active'));
+      const link = linkById[id];
+      if (link) link.classList.add('active');
+    };
+    let activeId = null;
+    const observer = new IntersectionObserver((entries) => {
+      // Find the first entry that's intersecting near the top of the viewport.
+      const visible = entries
+        .filter(e => e.isIntersecting)
+        .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+      if (visible.length && visible[0].target.id !== activeId) {
+        activeId = visible[0].target.id;
+        setActive(activeId);
+      }
+    }, { rootMargin: '-80px 0px -60% 0px', threshold: 0 });
+    sections.forEach(s => observer.observe(s));
+});
+
 const _fragmentLoadCache = {};
 
 async function loadPageFragment(pageId, page) {
@@ -247,6 +294,11 @@ document.querySelectorAll('.sg-sidebar-link[href^="#/"]').forEach(link => {
 });
 
 window.addEventListener('hashchange', () => {
+    // Only intercept SPA-route hashes (#/<page>) — let plain anchor hashes
+    // (#section-id) fall through to native scroll-to-anchor behavior so
+    // pages with in-page ToCs work without colliding with the router.
+    const hash = window.location.hash || '';
+    if (!hash.startsWith('#/')) return;
     const { pageId, tab } = parseHash();
     navigate(pageId, tab);
 });
@@ -2899,6 +2951,17 @@ function initAiAssistPage() {
 
 // initAiAssistPage() — DEFERRED to ai-assist page load hook (Phase 5)
 
-const { pageId, tab } = parseHash();
-navigate(pageId, tab);
+// Only treat the hash as a route if it's a route-form hash (#/<page>).
+// A plain anchor hash (#section-id) shouldn't route — it's an in-page
+// link on whatever page the user is already on (or the default).
+const _initHash = window.location.hash || '';
+if (_initHash.startsWith('#/')) {
+  const { pageId, tab } = parseHash();
+  navigate(pageId, tab);
+} else {
+  // No route hash → default to the changelog landing page.
+  // The browser's native scroll-to-anchor handles any in-page anchor.
+  navigate('changelog', null);
+}
+
 
