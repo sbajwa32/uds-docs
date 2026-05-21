@@ -1,7 +1,7 @@
 ---
 name: generate-uds-figma-component
 description: UDS Component Factory. Drafts a token-bound UDS component set directly inside the UDS Components Figma file on a brand-new `🟠 <Title> {Cursor}{Ignore}` page. Use when the user says "generate a UDS component for X", "factory me an Avatar", "draft a new UDS component called Y", "build a UDS component for Z in Figma", or "use the component factory to start <Title>". Stops at Figma — never writes to `uds-docs/uds/`. Docs landing is the existing `uds-updated` skill, run later by the designer.
-lastUpdated: 2026-05-20T15:40:13Z
+lastUpdated: 2026-05-21T15:07:22Z
 ---
 
 # UDS Component Factory — Generate UDS Figma Component
@@ -140,6 +140,28 @@ sibling specs are larger, read only the sections you need (`anatomy`,
 - [`uds-token-architecture.mdc`](../../rules/uds-token-architecture.mdc)
   — token-role contract (which token role binds to which CSS variable
   family).
+
+### Discovery sweep (run before drafting the model)
+
+Run `search_design_system` against the UDS Tokens library across **both
+publishable artifact categories** before writing the Token plan or any
+binding decision:
+
+- **Variables** (`includeVariables: true`) — color, border, space, font,
+  font-scale, etc. These fill the Token plan section.
+- **Styles** (`includeStyles: true`) — covers BOTH Text Styles *and*
+  Effect Styles, but you have to query each style family explicitly:
+  - Text Styles — `uds/text`, `label`, `heading`, `paragraph`, etc.
+  - Effect Styles — `uds/effect`, `elevation`, `shadow`, `depth`, `blur`.
+
+A typography-keyword sweep alone will NOT return Effect Styles, even
+though both flow through the same `includeStyles` flag. If the
+component's anatomy has any shadow, blur, or surface elevation, an
+Effect Style query is mandatory; missing it leads to hardcoded
+`node.effects = [...]` literals, which is the same anti-pattern as
+inventing token variables (prohibited by Phase B.3). Effect Styles
+bind via `await node.setEffectStyleIdAsync(style.id)`, the same way
+bundled Text Styles bind via `setTextStyleIdAsync`.
 
 Persist the proposed model to
 `.cursor/state/component-factory/<componentId>.md`. Sections:
