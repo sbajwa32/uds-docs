@@ -1,23 +1,28 @@
 ---
-description: Quality rules for any UDS factory-style Figma build (generate-uds-figma-component, new-component, future factories). State design contract, mandatory machine-verified audits, variant grid layout, visible anatomy by default, dependency manifest before write.
+description: Process quality rules for any factory-style Figma build (generate-uds-figma-component, new-component, future factories). State design contract (specify visuals not just tokens), mandatory machine-verified audits, variant grid layout reflects axis semantics, visible anatomy by default, dependency manifest before write. Design-system-agnostic — the specific UDS visual constructions live in uds-design-language.mdc.
 alwaysApply: false
 globs: [".cursor/skills/generate-uds-figma-component/**", ".cursor/skills/new-component/**", ".cursor/skills/figma-component-card/**"]
-lastUpdated: 2026-05-21T16:08:00Z
+lastUpdated: 2026-05-21T16:30:00Z
 ---
 
-# UDS Figma Factory Quality
+# Figma Factory Quality
 
 This rule applies to any skill that generates Figma components from
 scratch — currently
 [`generate-uds-figma-component`](../skills/generate-uds-figma-component/SKILL.md),
 [`new-component`](../skills/new-component/SKILL.md),
 [`figma-component-card`](../skills/figma-component-card/SKILL.md), and
-any future factory variants. It captures the quality gates that aren't
-obvious from the Plugin API alone — they emerge from designer feedback
-on the first few factory runs.
+any future factory variants. It captures the **process quality gates**
+that emerge from designer feedback on factory runs — they're not
+obvious from the Plugin API alone, and they're not UDS-specific.
 
-These rules are component-agnostic. They apply equally to a Text Input,
-Stepper, Avatar, or anything else the factory builds.
+These rules are component-agnostic AND design-system-agnostic. The
+specific UDS state constructions (what hover looks like, how focus
+rings layer, etc.) live in
+[`uds-design-language.mdc`](./uds-design-language.mdc). This rule is
+about the *process* of getting any factory build to a quality
+threshold; that rule is about the *output* a UDS factory build should
+resolve to.
 
 ## 1. State design contract
 
@@ -46,32 +51,47 @@ Without these, the factory will guess differently every run.
 For every named state, the model must include a row with at least these
 columns:
 
-| State | Border color | Border weight | Stroke alignment | Effects (gap layer + ring layer) | Background | Text fill | Visual hierarchy note |
-|---|---|---|---|---|---|---|---|
+| Column | What it captures |
+|---|---|
+| State name | `Default`, `Hover`, `Focus`, `Filled`, `Selected`, `Error`, `Disabled`, `Read-only`, `Loading`, etc. |
+| Background | bound token (or "unchanged") |
+| Border color | bound token |
+| Border weight | px (1, 2, etc.) |
+| Stroke alignment | `INSIDE` / `CENTER` / `OUTSIDE` |
+| Effects | for each: type, spread (px), bound color variable, **and layering order** (which sits on top) |
+| Text fill | bound token (or "unchanged") |
+| Cursor | `pointer` / `not-allowed` / `default` |
+| Visual hierarchy note | how this state's prominence compares to its neighbors |
 
-For each effect entry, name both the spread (px) and the bound variable
-explicitly. Example for a focus ring matching the existing UDS CSS
-pattern `box-shadow: 0 0 0 1px surface-white, 0 0 0 3px outline-focus`:
+The layering-order column is non-negotiable for any state that uses
+stacked effects (e.g. a focus ring with a gap layer). Two stacked drop
+shadows render differently depending on which is in front; specifying
+"spread=1 surface-main + spread=3 outline-focus" without saying which
+is on top is ambiguous.
 
-```
-Focus:
-  border = border-primary, 1px, INSIDE
-  effects:
-    - DROP_SHADOW, spread=1, bound color = surface-white   (acts as 1px gap)
-    - DROP_SHADOW, spread=3, bound color = outline-focus-visible  (3-1 = 2px visible blue ring)
-  background = surface-main
-  text fill = text-primary
-  visual hierarchy = "more prominent than Hover, less than Error+Focus"
-```
+### Source the canonical visuals from the design language doc
 
-### Read the existing component's CSS at Phase A
+For UDS factory runs specifically: don't re-derive state visuals from
+scratch. Read
+[`uds-design-language.mdc`](./uds-design-language.mdc) (or the
+designer-facing
+[`uds-docs/docs/pages/design-language.html`](../../uds-docs/docs/pages/design-language.html))
+and bind the Phase A model to its canon. That doc was derived from
+every existing component CSS, with known inconsistencies surfaced
+explicitly — so the factory output stays in dialect with the system.
 
-When redesigning an existing component, `uds-docs/uds/components/<id>/<id>.css`
-already encodes UDS's design language for that component (focus ring
-construction, hover treatment, disabled mechanics). Extract the state
-patterns from CSS into the model rather than re-deriving them — it
-captures decisions the team has already made and keeps the new draft
-in dialect with the existing system.
+If the design language doc doesn't cover the state the component
+needs (e.g. a brand new selection treatment), surface that as a
+Phase A question for the designer rather than inventing one.
+
+### Read the existing component's CSS as a sanity check
+
+When the factory is redesigning an *existing* UDS component,
+`uds-docs/uds/components/<id>/<id>.css` already encodes that
+component's specific construction. Compare it against the design
+language canon — if they agree, use the canon; if they disagree,
+surface the gap (it's likely a known inconsistency the design language
+doc lists, but might be a new one).
 
 ## 2. Validation is machine-verified, not claimed
 
@@ -219,6 +239,13 @@ or hard-coded styling.
 
 ## Related
 
+- [`uds-design-language.mdc`](./uds-design-language.mdc) — the
+  *output* the factory should produce when building UDS components.
+  Canonical state constructions, surface treatments, focus ring
+  patterns, elevation, radius, density, and known inconsistencies.
+  This rule (factory-quality) is the *process* layer; design-language
+  is the *visual canon* layer. Together they tell a factory build both
+  what to build and how to build it.
 - [`uds-figma-plugin-api-gotchas.mdc`](./uds-figma-plugin-api-gotchas.mdc)
   — companion rule covering Plugin API specifics (local vs. remote
   identity, INSTANCE_SWAP defaults, createAutoLayout fill default,
