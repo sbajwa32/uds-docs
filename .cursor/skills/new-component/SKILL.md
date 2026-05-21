@@ -1,15 +1,19 @@
 ---
 name: new-component
 description: Scaffold a new UDS component end to end. Creates uds/components/<id>/ with all required files (CSS stub, spec.json, status.json, changelog.json, examples/, playground.js), bumps SITE, adds the sidebar link and placeholder data-page block. Triggers on phrases like "add a component", "scaffold a new component", "new component called X", "set up a new component for Y".
-lastUpdated: 2026-05-12T18:41:50Z
+lastUpdated: 2026-05-21T18:15:30Z
 ---
 
 # New Component Scaffold
 
-Walks the [How to Contribute](../../uds-docs/index.html) workflow steps 4-5
-mechanically. After the skill finishes, the component appears in the
-sidebar with a "Spec X/22" pill in red (placeholder status), ready for the
-designer to flesh out the spec and visual examples.
+Scaffolds a new UDS component end-to-end: creates the
+`uds/components/<id>/` folder with every required file (CSS stub,
+`spec.json`, `status.json`, `changelog.json`, `examples/`,
+`playground.js`, `impl.json`), bumps SITE, and wires the sidebar link
+plus the `<div data-page>` placeholder block into `index.html`. After the
+skill finishes, the component appears in the sidebar with a "Spec X/22"
+pill in red (placeholder status), ready for the designer to flesh out
+the spec and visual examples.
 
 ## Step 1 — Collect required inputs from the user
 
@@ -280,4 +284,3 @@ Then report to the user:
 - [`uds/schemas/spec.schema.json`](../../../uds-docs/uds/schemas/spec.schema.json) — canonical spec field list
 - [`uds-content-schema.mdc`](../../rules/uds-content-schema.mdc) — JSON-only spec editing rule
 - [`uds-component-checklist.mdc`](../../rules/uds-component-checklist.mdc) — what "complete" means
-- [How to Contribute](../../../uds-docs/index.html) page (`#/contribute`) — full contributor workflow on the docs site
