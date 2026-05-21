@@ -1,21 +1,21 @@
 ---
-description: Canonical UDS visual language extracted from existing component CSS. State constructions (Default/Hover/Active/Focus/Filled/Selected/Error/Disabled/Read-only/Loading), focus-ring patterns and when to use each, surface treatments, elevation/shadow scale, border-radius scale, density/sizing patterns, selection treatments. Component-specific overrides documented per state. Known inconsistencies between components surfaced for designer ratification. The factory and any new-component skill should bind state visuals to the constructions in this doc rather than re-deriving them.
+description: How every UDS component handles each state, extracted from existing component CSS. State constructions (Default/Hover/Active/Focus/Filled/Selected/Error/Disabled/Read-only/Loading), focus-ring patterns and when to use each, surface treatments, elevation/shadow scale, border-radius scale, density/sizing patterns, selection treatments. Component-specific overrides documented per state. Differences between components flagged for designer review. The factory and any new-component skill should bind state visuals to the constructions in this doc rather than re-deriving them.
 alwaysApply: false
 globs: ["**/*"]
-lastUpdated: 2026-05-21T16:30:00Z
+lastUpdated: 2026-05-21T18:24:08Z
 ---
 
 # UDS Design Language
 
-This rule documents the **canonical visual constructions** that UDS uses for
+This rule documents the **standard visual constructions** that UDS uses for
 states (Default / Hover / Active / Focus / Filled / Selected / Error /
 Disabled / Read-only / Loading), surface treatments, elevation, border
 radius, density, and selection.
 
-The canon is **derived from the existing component CSS** under
+The standards here are **derived from the existing component CSS** under
 `uds-docs/uds/components/*/<id>.css`. Where components disagree, both
-patterns are documented and the disagreement is surfaced in the "Known
-inconsistencies" section at the bottom for designer ratification.
+patterns are documented and the disagreement is listed in the "Known
+inconsistencies" section at the bottom for designer review.
 
 This is the partner to:
 
@@ -72,7 +72,7 @@ Pointer is over the element, not yet committed.
 | Dropdown menu item | bg → `surface-interactive-subtle-hover` | dropdown.css |
 | Trailing icon button inside a field | bg → `surface-interactive-subtle-hover` | text-input.css, dropdown.css, search.css |
 
-**Canonical hover for new form fields:** match dropdown's pattern —
+**Standard hover for new form fields:** match dropdown's pattern —
 `bg → surface-interactive-subtle-hover, border → border-interactive`.
 This is the most explicit "this is interactive" signal in the system.
 
@@ -167,7 +167,7 @@ Looks like a field but accepts no edits. Implemented inconsistently
 today (currently only partially supported in code; the Text Input
 draft in Figma is the first explicit treatment).
 
-**Canonical (proposed):**
+**Recommended treatment (proposed):**
 - Background → `surface-subtle` (tinted surface, theme-adaptive)
 - Border → `border-primary` 1 px (same as Default, keeps the field
   shape legible)
@@ -187,7 +187,7 @@ Distinct from Disabled by:
 
 Not specified in UDS today. Components that need loading currently use
 Disabled as the closest approximation (see text-input.css known issues
-in `spec.json`). Deferred for designer ratification.
+in `spec.json`). Deferred &mdash; waiting on designer review.
 
 ---
 
@@ -443,12 +443,12 @@ UDS supports two density tracks:
 | Text input (proposed, Figma factory draft) | min-height 48 px, padding 6 px / 8 px, font `font-size-base` | min-height 36 px, padding 4 px / 6 px, font `font-size-sm` |
 | Badge | full padding, font-size-base | `padding: var(--uds-space-025) var(--uds-space-050)`, `font-size-xs` |
 
-There is no `lg` size in the canon today. New components that need it
-should ratify with the designer before adding.
+There is no `lg` size in UDS today. New components that need a bigger
+size should check with the designer before adding one.
 
 ---
 
-## 11. Selection vs. checked vs. active — naming canon
+## 11. Selection vs. checked vs. active — naming guidance
 
 Three words that are often confused:
 
@@ -466,12 +466,12 @@ selected-as-nav meaning. The CSS uses `:active` for pressed and
 
 ---
 
-## 12. Known inconsistencies (for designer ratification)
+## 12. Known inconsistencies (for designer review)
 
 These are real disagreements between components in the current CSS.
-Surfacing them here so the designer can ratify a canonical pattern.
-Until ratified, factory builds should default to the most theme-safe
-option and document the choice.
+They are listed here so the designer can pick a standard pattern. Until
+they do, factory builds default to whichever option is the safest across
+themes and document the choice.
 
 ### 12.1 Focus ring gap binding
 
@@ -483,9 +483,10 @@ option and document the choice.
 | chip | `surface-main` | ✓ |
 | search | `surface-main` | ✓ |
 
-**Canonical pattern proposed**: `surface-main`. Three components need
+**Suggested fix**: bind the gap to `surface-main` everywhere. Three
+components need
 updating to match. Cannot autonomously edit per
-[`uds-source-of-truth.mdc`](./uds-source-of-truth.mdc) — surface as a
+[`uds-source-of-truth.mdc`](./uds-source-of-truth.mdc) — flag it as a
 sync gap for the next Figma → code round trip.
 
 ### 12.2 Hover treatment for form fields
@@ -497,10 +498,9 @@ sync gap for the next Figma → code round trip.
 | search field | bg → `surface-subtle` (no border change) |
 | text-area | border → `border-outline-hover` (no bg change) |
 
-**Canonical pattern proposed**: text-area's `border-outline-hover` is
-the cleanest signal for a field hover. Bg-change variants compete
-visually with the focus state. Surface as a designer ratification
-question.
+**Suggested fix**: use text-area's `border-outline-hover` everywhere.
+It reads as hover without competing visually with the focus ring.
+Designer review.
 
 ### 12.3 Disabled border treatment
 
@@ -514,17 +514,16 @@ question.
 | radio | `border-disabled` |
 | tile | `border-disabled` |
 
-**Canonical pattern proposed**: `border-disabled` for outlined elements
-(form controls), `transparent` for filled elements (filled disabled
-buttons, text-input filled disabled style). Two variants are
-legitimate — they communicate different things.
+**Suggested fix**: use `border-disabled` on outlined elements (form
+controls) and `transparent` on filled elements (filled disabled
+buttons, text-input filled disabled style). Both treatments are
+fine — they communicate slightly different things about disabled.
 
 ### 12.4 Toggle's opacity for disabled
 
 Toggle uses `opacity: 0.7` for disabled. No other component does this.
 Either toggle is the only correct one and others should follow, or
-toggle is the outlier and should drop the opacity. Surface as designer
-ratification.
+toggle is the outlier and should drop the opacity. Designer review.
 
 ### 12.5 Required dot color
 
@@ -537,7 +536,7 @@ ratification.
 | tile | `text-error` (red) — different token, same family |
 
 Trivially inconsistent — text-error and icon-error resolve to the same
-red. Pick one for canon.
+red. Pick one and use it everywhere.
 
 ---
 
@@ -577,7 +576,7 @@ A few rules that apply across multiple sections above:
   token bindings, never hex.
 - Component CSS files at
   `uds-docs/uds/components/<id>/<id>.css` — the source data for the
-  canon in this rule. When a component disagrees with the canon, fix
+  standards in this rule. When a component disagrees with the standard, fix
   via [`uds-source-of-truth.mdc`](./uds-source-of-truth.mdc)
   authorized paths only (Figma round-trip), not autonomously.
 - Designer-facing version of this document:
