@@ -62,14 +62,19 @@ for comp_dir in "$COMPONENTS_DIR"/*/; do
   # Source files = everything in the component folder except changelog.json
   # itself. We pass them all to git log so any commit touching any of them
   # counts.
+  # $comp_dir already ends in '/' (from the */ glob on the for-loop line), so
+  # paths are built as "${comp_dir}<basename>" — adding a literal '/' would
+  # produce a double-slash path that git tolerates but `grep -Fxq` against
+  # `git diff-tree`'s canonical single-slash output cannot match (see the
+  # changelog_path check below).
   src_paths=(
-    "$comp_dir$comp_id.css"
-    "$comp_dir$comp_id.js"
-    "$comp_dir/spec.json"
-    "$comp_dir/status.json"
-    "$comp_dir/impl.json"
-    "$comp_dir/playground.js"
-    "$comp_dir/examples"
+    "${comp_dir}${comp_id}.css"
+    "${comp_dir}${comp_id}.js"
+    "${comp_dir}spec.json"
+    "${comp_dir}status.json"
+    "${comp_dir}impl.json"
+    "${comp_dir}playground.js"
+    "${comp_dir}examples"
   )
   # Only keep paths that actually exist (some components have no JS).
   existing_src=()
@@ -78,7 +83,7 @@ for comp_dir in "$COMPONENTS_DIR"/*/; do
   done
   [ ${#existing_src[@]} -gt 0 ] || continue
 
-  changelog_path="$comp_dir/changelog.json"
+  changelog_path="${comp_dir}changelog.json"
   [ -f "$changelog_path" ] || continue
 
   # Find all commits after the baseline that touched any source file.
