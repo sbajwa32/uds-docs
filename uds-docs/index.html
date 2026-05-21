@@ -12,7 +12,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Poppins:wght@400;500;700&family=Roboto:wght@400;500;700&family=Lexend:wght@400;500;700&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
   <link rel="stylesheet" href="./uds/uds.css?v=57" />
-  <link rel="stylesheet" href="./docs/site.css?v=8" />
+  <link rel="stylesheet" href="./docs/site.css?v=9" />
   <script>
     // ========================================================================
     // Universal site cache-bypass — runs BEFORE the type="module" script so
@@ -38,7 +38,7 @@
     // is the existing uds-docs/bump-site.sh preflight.
     // ========================================================================
     (function () {
-      var SITE_VERSION = '2026.05.21.4';
+      var SITE_VERSION = '2026.05.21.5';
       window.SITE_VERSION = SITE_VERSION;
 
       // ---- Part 1: monkey-patch fetch() for universal cache-busting ------
@@ -100,12 +100,6 @@
     <span class="sg-brand-bar-title">UDS</span>
     <span class="sg-brand-bar-subtitle">Urban Design System</span>
     <span class="udc-tooltip-wrapper">
-      <button class="sg-preflight-btn" aria-label="Pre-flight checklist" onclick="document.getElementById('sg-preflight-backdrop').setAttribute('data-open','true');UDS.init();">
-        <span class="material-symbols-outlined">checklist</span>
-      </button>
-      <span class="udc-tooltip" role="tooltip" data-position="bottom">Pre-flight checklist</span>
-    </span>
-    <span class="udc-tooltip-wrapper">
       <button class="sg-demo-btn" aria-label="Build Demo" onclick="document.getElementById('sg-demo-backdrop').setAttribute('data-open','true');if(window.UDS)UDS.init();if(window.initDemoDialog)initDemoDialog();">
         <span class="material-symbols-outlined">construction</span>
       </button>
@@ -127,69 +121,7 @@
       </span>
     </button>
     <select class="sg-version-select" id="sg-version-dropdown" aria-label="UDS version"></select>
-    <span class="sg-brand-bar-build">SITE 2026.05.21.4</span>
-  </div>
-
-  <!-- Pre-flight checklist dialog -->
-  <div class="udc-dialog-backdrop" id="sg-preflight-backdrop" data-open="false">
-    <div class="udc-dialog sg-preflight-dialog" role="dialog" aria-modal="true" aria-labelledby="sg-preflight-title">
-      <div class="udc-dialog__header">
-        <h2 class="udc-dialog__title" id="sg-preflight-title">Pre-Flight Checklist</h2>
-        <button class="udc-dialog__close" aria-label="Close"><span class="material-symbols-outlined">close</span></button>
-      </div>
-      <div class="udc-dialog__body">
-        <p style="color:var(--uds-color-text-secondary);margin-bottom:var(--uds-space-200);">These rules must be followed before completing any task that modifies the UDS documentation site.</p>
-
-        <h3>1. Site Changelog</h3>
-        <div class="sg-rule-file">uds-site-changelog.mdc</div>
-        <ul>
-          <li>Bump <code>SITE YYYY.MM.DD.N</code> in index.html</li>
-          <li>Add/update entry in <code>SITE_CHANGELOG</code> array in app.js</li>
-          <li>Increment <code>?v=N</code> cache params on CSS/JS script tags</li>
-        </ul>
-
-        <h3>2. Token-First CSS</h3>
-        <div class="sg-rule-file">uds-token-first-css.mdc</div>
-        <ul>
-          <li>No hardcoded hex colors, rgb(), or rgba() — use <code>var(--uds-color-*)</code></li>
-          <li>No hardcoded px for font-size, spacing, radius — use <code>var(--uds-*)</code> tokens</li>
-          <li>No hardcoded font-family — use <code>var(--uds-font-family)</code></li>
-          <li>Shadows use <code>var(--uds-shadow-*)</code> tokens</li>
-        </ul>
-
-        <h3>3. Component Checklist</h3>
-        <div class="sg-rule-file">uds-component-checklist.mdc</div>
-        <ul>
-          <li>CSS: <code>:hover</code>, <code>:focus-visible</code>, disabled states</li>
-          <li>JS (when interactive): IIFE pattern, <code>_udsInit</code> guard, keyboard handlers</li>
-          <li>Registered in <code>uds.js</code> orchestrator</li>
-          <li>PLAYGROUNDS, IMPL_DATA, COMPONENT_STATUS, FIGMA_LINKS entries in <code>app.js</code></li>
-          <li>CHANGELOG entry under <code>category: "components"</code></li>
-          <li>CSS + JS files added to download ZIP array</li>
-        </ul>
-
-        <h3>4. Content Schema (spec source of truth)</h3>
-        <div class="sg-rule-file">uds-content-schema.mdc</div>
-        <ul>
-          <li>Per-component spec lives in <code>content/&lt;component&gt;.json</code></li>
-          <li>Edit the JSON, NEVER re-introduce spec HTML into <code>index.html</code></li>
-          <li>Empty fields are auto-hidden by the renderer — no placeholder text needed</li>
-          <li>Required minimum: <code>component, title, description, whenToUse, dependencies, accessibility.keyboard, owner</code></li>
-          <li>Aim for 80%+ spec completeness before marking Production Ready</li>
-        </ul>
-
-        <h3>5. Release Workflow</h3>
-        <div class="sg-rule-file">uds-release-workflow.mdc</div>
-        <ul>
-          <li>If UDS <code>CHANGELOG</code> was modified, sync Figma release notes IMMEDIATELY</li>
-          <li>Rebuild Release Notes in both UDS Tokens and UDS Components files</li>
-          <li>Never defer — do it before completing the task</li>
-        </ul>
-      </div>
-      <div class="udc-dialog__footer">
-        <button class="udc-button-primary" onclick="this.closest('.udc-dialog-backdrop').setAttribute('data-open','false');">Done</button>
-      </div>
-    </div>
+    <span class="sg-brand-bar-build">SITE 2026.05.21.5</span>
   </div>
 
   <!-- Token search modal -->
@@ -1024,7 +956,7 @@
   <script src="https://cdn.jsdelivr.net/npm/jszip@3/dist/jszip.min.js"></script>
   <script src="./material-icons.js?v=1"></script>
   <script src="./uds/uds.js?v=34"></script>
-    <script type="module" src="./docs/app.js?v=133"></script>
+    <script type="module" src="./docs/app.js?v=134"></script>
   <script type="module" src="./docs/modules/demo-builder/index.js?v=2"></script>
 
 </body>
