@@ -52,26 +52,6 @@ body {
   font-size: var(--uds-font-size-xs); font-weight: var(--uds-font-weight-regular); opacity: 0.95;
   padding-left: var(--uds-space-150); border-left: 1px solid rgba(255,255,255,0.25);
 }
-.sg-preflight-btn {
-  display: inline-flex; align-items: center; justify-content: center;
-  width: 28px; height: 28px; margin-left: var(--uds-space-100);
-  border: none; border-radius: var(--uds-border-radius-container-sm);
-  background: rgba(255,255,255,0.1); color: var(--uds-color-text-inverse);
-  cursor: pointer; opacity: 0.6; transition: opacity 120ms, background 120ms;
-  -webkit-appearance: none; appearance: none; padding: 0; flex-shrink: 0;
-}
-.sg-preflight-btn:hover { opacity: 1; background: rgba(255,255,255,0.2); }
-.sg-preflight-btn .material-symbols-outlined { font-size: 18px; line-height: 1; }
-
-.sg-preflight-dialog { max-width: 640px; width: calc(100vw - 48px); }
-.sg-preflight-dialog .udc-dialog__body { font-family: var(--uds-font-family); font-size: var(--uds-font-size-base); line-height: 1.7; }
-.sg-preflight-dialog h3 { font-size: var(--uds-font-size-lg); font-weight: var(--uds-font-weight-bold); margin: var(--uds-space-300) 0 var(--uds-space-100); color: var(--uds-color-text-primary); }
-.sg-preflight-dialog h3:first-child { margin-top: 0; }
-.sg-preflight-dialog ul { margin: 0 0 var(--uds-space-100); padding-left: var(--uds-space-250); }
-.sg-preflight-dialog li { margin-bottom: var(--uds-space-050); color: var(--uds-color-text-secondary); }
-.sg-preflight-dialog li code { font-size: var(--uds-font-size-sm); background: var(--uds-color-surface-subtle); padding: 1px 5px; border-radius: 3px; }
-.sg-preflight-dialog .sg-rule-file { font-size: var(--uds-font-size-sm); color: var(--uds-color-text-interactive); margin-bottom: var(--uds-space-050); font-weight: var(--uds-font-weight-medium); }
-
 /* Demo builder */
 .sg-demo-btn {
   display: inline-flex; align-items: center; justify-content: center;
@@ -1586,9 +1566,8 @@ code.sg-inline-code { font-family: 'SF Mono', 'Fira Code', monospace; font-size:
 .sg-archive-banner__exit:hover {
   text-decoration: underline;
 }
-/* In archive view, dim the demo/preflight buttons explicitly even if their
+/* In archive view, dim the demo button explicitly even if its
    tooltip-wrapper got hidden via initVersionDropdown — defense in depth. */
-[data-archive-view] .sg-preflight-btn,
 [data-archive-view] .sg-demo-btn {
   opacity: 0.4;
   pointer-events: none;
