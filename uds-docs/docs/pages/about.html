@@ -50,10 +50,10 @@
                   <h3 class="sg-lifecycle__title">Propose</h3>
                   <span class="sg-lifecycle__owner" data-role="any"><span class="material-symbols-outlined">person</span>Anyone</span>
                 </div>
-                <p class="sg-lifecycle__desc">A need is identified — designer, developer, or PM files an entry on the <a class="sg-gl-link" href="#/roadmap">Roadmap</a> with rationale.</p>
+                <p class="sg-lifecycle__desc">A need is identified — designer, developer, or PM starts a Figma page for the component with the red Exploration prefix and notes what problem it solves. See the <a class="sg-gl-link" href="#/design-process">Design Process</a> page for the full stoplight flow.</p>
                 <div class="sg-lifecycle__meta">
-                  <span class="sg-lifecycle__loc"><span class="material-symbols-outlined">map</span>Roadmap</span>
-                  <span class="sg-roadmap-tag" data-status="proposed">Proposed</span>
+                  <span class="sg-lifecycle__loc"><span class="material-symbols-outlined">design_services</span>Figma — UDS Components (Red)</span>
+                  <span class="sg-lifecycle__tag" data-status="proposed">Proposed</span>
                 </div>
               </div>
             </li>
@@ -68,7 +68,7 @@
                 <p class="sg-lifecycle__desc">Designer builds variants and states in the UDS Components Figma file. Page name gets the orange dot prefix while in progress.</p>
                 <div class="sg-lifecycle__meta">
                   <span class="sg-lifecycle__loc"><span class="material-symbols-outlined">design_services</span>Figma — UDS Components</span>
-                  <span class="sg-roadmap-tag" data-status="in-progress">In Progress</span>
+                  <span class="sg-lifecycle__tag" data-status="in-progress">In Progress</span>
                 </div>
               </div>
             </li>
@@ -83,7 +83,7 @@
                 <p class="sg-lifecycle__desc">Designer writes the structured spec in <code>uds/components/&lt;id&gt;/spec.json</code> — description, when-to-use, props, events, slots, states, accessibility. The Guidelines tab on the doc site auto-renders from this file. Use the <a class="sg-gl-link" href="#/cursor-workflows"><code>new-component</code> skill</a> to scaffold.</p>
                 <div class="sg-lifecycle__meta">
                   <span class="sg-lifecycle__loc"><span class="material-symbols-outlined">data_object</span>uds/components/&lt;id&gt;/spec.json</span>
-                  <span class="sg-roadmap-tag" data-status="in-progress">Spec building</span>
+                  <span class="sg-lifecycle__tag" data-status="in-progress">Spec building</span>
                 </div>
               </div>
             </li>
@@ -98,7 +98,7 @@
                 <p class="sg-lifecycle__desc">Developer implements the spec 1:1 as a framework-agnostic web component in Storybook. Acceptance criteria from the JSON drive the work.</p>
                 <div class="sg-lifecycle__meta">
                   <span class="sg-lifecycle__loc"><span class="material-symbols-outlined">auto_awesome</span>Storybook</span>
-                  <span class="sg-roadmap-tag" data-status="in-progress">In Review</span>
+                  <span class="sg-lifecycle__tag" data-status="in-progress">In Review</span>
                 </div>
               </div>
             </li>
@@ -113,7 +113,7 @@
                 <p class="sg-lifecycle__desc">Spec audit (run the <a class="sg-gl-link" href="#/cursor-workflows"><code>spec-audit</code> subagent</a>), accessibility review, visual review against Figma. Status moves to Production Ready, doc site bumps the UDS version, Figma release notes are updated.</p>
                 <div class="sg-lifecycle__meta">
                   <span class="sg-lifecycle__loc"><span class="material-symbols-outlined">verified</span>Doc site + Figma + Storybook</span>
-                  <span class="sg-roadmap-tag" data-status="done">Production Ready</span>
+                  <span class="sg-lifecycle__tag" data-status="done">Production Ready</span>
                 </div>
               </div>
             </li>
@@ -128,7 +128,7 @@
                 <p class="sg-lifecycle__desc">Product apps install <code>uds-core</code> for tokens and register the Storybook web components. The component appears in real products. Bug reports and enhancement requests flow back via the <strong>Report Issue</strong> button on each component page.</p>
                 <div class="sg-lifecycle__meta">
                   <span class="sg-lifecycle__loc"><span class="material-symbols-outlined">rocket_launch</span>Production apps</span>
-                  <span class="sg-roadmap-tag" data-status="done">Live</span>
+                  <span class="sg-lifecycle__tag" data-status="done">Live</span>
                 </div>
               </div>
             </li>

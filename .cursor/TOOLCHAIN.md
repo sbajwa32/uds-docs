@@ -78,7 +78,7 @@ the manual fallback when the hook hasn't run.
 | [`link-figma-nodes`](./skills/link-figma-nodes/SKILL.md) | `2026-05-12T18:41:50Z` | Populate figmaNodeId and figmaPageNodeId fields in per-component spec.json files from canonical UDS Components Figma nodes. Use when Figma… |
 | [`new-component`](./skills/new-component/SKILL.md) | `2026-05-21T18:15:30Z` | Scaffold a new UDS component end to end. Creates uds/components/<id>/ with all required files (CSS stub, spec.json, status.json,… |
 | [`sync-figma-component-spec`](./skills/sync-figma-component-spec/SKILL.md) | `2026-05-13T20:34:33Z` | Update a UDS component's per-component artifacts (spec.json, CSS, examples, impl.json, playground.js, figmanotes.json) from a deep Figma… |
-| [`sync-figma-component-status`](./skills/sync-figma-component-status/SKILL.md) | `2026-05-12T18:41:50Z` | Sync UDS Components Figma stoplight page prefixes into per-component status.json files. Use after figma-inventory reports status mismatches. |
+| [`sync-figma-component-status`](./skills/sync-figma-component-status/SKILL.md) | `2026-05-21T19:06:12Z` | Sync UDS Components Figma stoplight page prefixes into per-component status.json files. Use after figma-inventory reports status mismatches. |
 | [`sync-figma-release-notes`](./skills/sync-figma-release-notes/SKILL.md) | `2026-05-12T18:41:50Z` | Rebuild Release Notes frames in both UDS Figma files from the aggregated UDS CHANGELOG. Use during releases or after CHANGELOG changes that… |
 | [`uds-updated`](./skills/uds-updated/SKILL.md) | `2026-05-13T17:54:48Z` | Orchestrate a full UDS Figma-to-docs sync from a simple prompt like "UDS updated" or "Figma updated". Reads Figma Tokens and Components,… |
 
