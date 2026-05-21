@@ -48,12 +48,12 @@ const THEMES = [
 ];
 
 // Representative page set — one of each kind: changelog (data-heavy),
-// roadmap (component status pills), button (accent buttons), data-table
-// (rich data), nav-header (chrome), token-page (semantic-colors fragment),
-// archive-view (?uds=0.2 path).
+// about (component lifecycle status pills), button (accent buttons),
+// data-table (rich data), nav-header (chrome), token-page (semantic-colors
+// fragment), archive-view (?uds=0.2 path).
 const PAGES = [
   ['changelog',         `${SERVER_URL}#/changelog`],
-  ['roadmap',           `${SERVER_URL}#/roadmap`],
+  ['about',             `${SERVER_URL}#/about`],
   ['button',            `${SERVER_URL}#/button`],
   ['data-table',        `${SERVER_URL}#/data-table`],
   ['nav-header',        `${SERVER_URL}#/nav-header`],
