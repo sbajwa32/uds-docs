@@ -2681,9 +2681,9 @@ function initVersionDropdown() {
 
     if (isViewingHistorical()) {
       // Hide interactive features that the archive may not carry —
-      // playground/demo-builder/preflight aren't ported to historical
-      // snapshots since they're docs-site features, not UDS data.
-      document.querySelectorAll('.sg-preflight-btn, .sg-demo-btn').forEach(function (btn) {
+      // the demo-builder button isn't ported to historical snapshots
+      // since it's a docs-site feature, not UDS data.
+      document.querySelectorAll('.sg-demo-btn').forEach(function (btn) {
         var wrap = btn.closest('.udc-tooltip-wrapper');
         if (wrap) wrap.style.display = 'none';
       });
