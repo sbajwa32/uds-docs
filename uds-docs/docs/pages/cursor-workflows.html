@@ -575,7 +575,7 @@
 
 <p class="sg-subsection-desc"><strong>Add an Audit</strong> — create <code>scripts/audit-&lt;name&gt;.sh</code> following the patterns of the existing audits (exit non-zero with a clear "FAIL — &lt;reason&gt;" line on the failure path; emit "OK — &lt;summary&gt;" on success). Wire it into the <code>audits</code> job in <code>.github/workflows/audits.yml</code>. If the audit needs grandfathering, extend <code>scripts/audit-baseline.json</code>. <strong>Add a row to this page's Audits table.</strong></p>
 
-<p class="sg-subsection-desc">All four kinds live in the repo and ship with anyone who clones it. The <a class="sg-gl-link" href="#/contribute">How to Contribute</a> page covers when to reach for which.</p>
+<p class="sg-subsection-desc">All four kinds live in the repo and ship with anyone who clones it.</p>
 
 <h3 class="sg-subsection-title" style="margin-top:var(--uds-space-400);">Why this matters for designers</h3>
 <p class="sg-subsection-desc">A designer doesn't need to memorize how to scaffold a component, audit specs, sync changelogs, run a release, or update the doc-site chrome. Saying "sync the bento dropdown from Figma," "audit our specs," or "scaffold a new tooltip component" is enough — Cursor picks the right skill or subagent based on the description, the rules guarantee the version bump / per-component changelog / aggregate / snapshot / Figma Release Notes / cache-bust all land, and the CI audits hard-fail if anything is silently skipped. Less ceremony, fewer mistakes, more time on actual design.</p>
