@@ -880,6 +880,16 @@ export const SITE_CHANGELOG = [
         { type: 'added', text: 'Mirrored `uds-design-language.mdc` row in `cursor-workflows.html` Glob-scoped table (count 11 → 12). `globs: ["**/*"]` so it auto-attaches on every task — designers reaching for state constructions and agents building components both pick it up.' },
         { type: 'changed', text: 'SITE bumped 2026.05.21.1 → 2026.05.21.2. `app.js?v=` bumped 130 → 131 because `docs/data/site-changelog.js` changed (`uds-site-changelog.mdc` cache-bust requirement).' }
       ]
+    },
+    {
+      version: 'SITE 2026.05.21.3',
+      date: '2026-05-21',
+      changes: [
+        { type: 'fixed', text: 'SPA router (`docs/app.js`) no longer hijacks in-page anchor links. Previously, any hash that didn\'t start with `#/` (e.g. `#interaction-states` ToC links inside `design-language.html`) got parsed as a page id, missed the page lookup, and bounced the user back to the fallback page. Now the `hashchange` handler and the initial-load handler both gate on `hash.startsWith("#/")` — non-route hashes fall through to native browser scroll-to-anchor. Any future page with an in-page ToC works without colliding with the router.' },
+        { type: 'changed', text: 'Redesigned `uds-docs/docs/pages/design-language.html` to be designer-friendly instead of agent-reference-shaped. Two-column layout with a sticky ToC sidebar on the left (with active-section highlighting via IntersectionObserver in a new `registerPageLoadHook("design-language", ...)`) and main content on the right. Each state (Default / Hover / Focus / Pressed / Error / Info / Success / Warning / Disabled / Read-only / Loading / Checked / Selected) is now a **card with a LIVE preview** of real UDS components in that state plus a row of `.sg-dl-chip` token references (small colored swatches + monospace name + role label). The focus-ring deep dive now shows the three constructions (outline+offset, stacked box-shadow, single-ring) side-by-side with live previews. Elevation has a live-shadow tile grid. Border radius has a live-radius tile grid. Density has side-by-side small-vs-default button live previews. Forced-state CSS (`.sg-dl-force-hover`, `.sg-dl-force-focus`, `.sg-dl-force-readonly`) lets the page show states that can\'t render statically. All previews are real components inheriting from `uds.css` — token changes flow into the page automatically. The dense reference tables are still there for sections where the table IS the clearest format (Disabled vs Read-only comparison, Naming canon, Known inconsistencies), but every token name on the page now has a colored swatch next to it.' },
+        { type: 'added', text: 'New page-load hook `registerPageLoadHook("design-language", ...)` in `docs/app.js`: (1) wires smooth-scroll click handlers on every ToC link so `<a href="#section">` scrolls without polluting the hash, (2) sets up an `IntersectionObserver` that highlights the ToC item for whatever section is currently in view as the user scrolls. Inline JS in fragment HTML doesn\'t execute (the page loader uses `page.innerHTML = html`), so anything page-specific must register via this hook.' },
+        { type: 'changed', text: 'SITE bumped 2026.05.21.2 → 2026.05.21.3. `app.js?v=` bumped 131 → 132 because `docs/app.js` changed (added the page-load hook + the router non-route-hash bypass).' }
+      ]
     }
 ];
 
