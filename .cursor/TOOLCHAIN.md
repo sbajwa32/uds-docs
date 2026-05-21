@@ -43,7 +43,7 @@ The `Phase 1: Verify sync state` step in `uds-master-preflight.mdc` is
 the manual fallback when the hook hasn't run.
 
 
-## Rules (17)
+## Rules (19)
 
 | File | Last updated (UTC) | Description |
 |---|---|---|
@@ -52,8 +52,10 @@ the manual fallback when the hook hasn't run.
 | [`uds-content-schema.mdc`](./rules/uds-content-schema.mdc) | `2026-05-12T18:41:50Z` | When editing per-component spec content, edit the spec.json INSIDE that component's folder — never re-introduce component spec content into… |
 | [`uds-figma-change-classification.mdc`](./rules/uds-figma-change-classification.mdc) | `2026-05-12T18:41:50Z` | Classifies Figma-derived token and component changes by confidence and breaking-change risk before anything is applied. |
 | [`uds-figma-component-card-update.mdc`](./rules/uds-figma-component-card-update.mdc) | `2026-05-12T19:49:37Z` | Update-mode companion to uds-figma-component-card.mdc. Defines what to do when the figma-component-card skill is re-run on a page that… |
-| [`uds-figma-component-card.mdc`](./rules/uds-figma-component-card.mdc) | `2026-05-12T19:49:37Z` | Canonical card layout for UDS Components Figma pages. Defines the seven-card structure, token bindings, and read-only contract against… |
+| [`uds-figma-component-card.mdc`](./rules/uds-figma-component-card.mdc) | `2026-05-21T16:08:00Z` | Canonical card layout for UDS Components Figma pages. Defines the seven-card structure, token bindings, and read-only contract against… |
 | [`uds-figma-component-inspection.mdc`](./rules/uds-figma-component-inspection.mdc) | `2026-05-13T17:54:48Z` | Requires deep Figma node inspection for UDS Components; screenshots are supporting evidence only. Inspection is bidirectional — every… |
+| [`uds-figma-factory-quality.mdc`](./rules/uds-figma-factory-quality.mdc) | `2026-05-21T16:08:00Z` | Quality rules for any UDS factory-style Figma build (generate-uds-figma-component, new-component, future factories). State design contract,… |
+| [`uds-figma-plugin-api-gotchas.mdc`](./rules/uds-figma-plugin-api-gotchas.mdc) | `2026-05-21T16:08:00Z` | Plugin API gotchas learned from UDS factory and sync work. Local-file component identity, INSTANCE_SWAP default formats, hidden auto-layout… |
 | [`uds-figma-preflight.mdc`](./rules/uds-figma-preflight.mdc) | `2026-05-12T18:41:50Z` | Required preflight for any task that reads or writes UDS Figma files. |
 | [`uds-figma-sync-state.mdc`](./rules/uds-figma-sync-state.mdc) | `2026-05-12T18:41:50Z` | Defines tracked Figma sync snapshots and when agents may update them. |
 | [`uds-figma-write-safety.mdc`](./rules/uds-figma-write-safety.mdc) | `2026-05-18T19:06:07Z` | Prevents accidental Figma mutations during UDS sync work. Read-only is the default; writes are explicitly scoped and summarized. |
