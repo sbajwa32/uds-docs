@@ -38,7 +38,7 @@
     // is the existing uds-docs/bump-site.sh preflight.
     // ========================================================================
     (function () {
-      var SITE_VERSION = '2026.05.21.7';
+      var SITE_VERSION = '2026.05.21.8';
       window.SITE_VERSION = SITE_VERSION;
 
       // ---- Part 1: monkey-patch fetch() for universal cache-busting ------
@@ -121,7 +121,7 @@
       </span>
     </button>
     <select class="sg-version-select" id="sg-version-dropdown" aria-label="UDS version"></select>
-    <span class="sg-brand-bar-build">SITE 2026.05.21.7</span>
+    <span class="sg-brand-bar-build">SITE 2026.05.21.8</span>
   </div>
 
   <!-- Token search modal -->
@@ -291,7 +291,6 @@
 
       <span class="sg-sidebar-heading">Reference</span>
       <a class="sg-sidebar-link" href="#/about">About UDS</a>
-      <a class="sg-sidebar-link" href="#/contribute">How to Contribute</a>
       <a class="sg-sidebar-link" href="#/design-process">Design Process</a>
       <a class="sg-sidebar-link" href="#/design-language">Design Language</a>
       <a class="sg-sidebar-link" href="#/cursor-workflows">Cursor Workflows</a>
@@ -925,17 +924,12 @@
       <div data-page="about" data-page-fragment></div>
 
       <!-- =================================================================
-           REFERENCE — How to Contribute
-           ================================================================= -->
-      <div data-page="contribute" data-page-fragment></div>
-
-      <!-- =================================================================
            REFERENCE — Design Process (discussion)
            ================================================================= -->
       <div data-page="design-process" data-page-fragment></div>
 
       <!-- =================================================================
-           REFERENCE — Design Language (canonical state constructions, surface
+           REFERENCE — Design Language (state constructions, surface
            treatments, elevation, radius, density)
            ================================================================= -->
       <div data-page="design-language" data-page-fragment></div>
@@ -956,7 +950,7 @@
   <script src="https://cdn.jsdelivr.net/npm/jszip@3/dist/jszip.min.js"></script>
   <script src="./material-icons.js?v=1"></script>
   <script src="./uds/uds.js?v=34"></script>
-    <script type="module" src="./docs/app.js?v=136"></script>
+    <script type="module" src="./docs/app.js?v=137"></script>
   <script type="module" src="./docs/modules/demo-builder/index.js?v=2"></script>
 
 </body>
