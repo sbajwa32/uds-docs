@@ -890,6 +890,14 @@ export const SITE_CHANGELOG = [
         { type: 'changed', text: 'Updated `uds-docs/docs/pages/getting-started.html` — dropped the trailing "see the Migration Guides" link sentence at the end of section "2. Components — Storybook web components (recommended)" so the placeholder note no longer references a removed page. Surrounding copy (the Storybook placeholder paragraph) is preserved verbatim.' },
         { type: 'changed', text: 'SITE bumped 2026.05.21.2 → 2026.05.21.3. `app.js?v=` bumped 131 → 132 because `docs/data/site-changelog.js` changed (per `uds-site-changelog.mdc` — `app.js` imports `site-changelog.js` as an ES module). `uds.css?v=`, `uds.js?v=`, `site.css?v=`, and `demo-builder/index.js?v=` are unchanged (no underlying file changed).' }
       ]
+    },
+    {
+      version: 'SITE 2026.05.21.4',
+      date: '2026-05-21',
+      changes: [
+        { type: 'removed', text: 'Deleted `uds-docs/docs/pages/faq.html` (FAQ page — 10 collapsible Q/A blocks covering theming, tokens, components, versioning, AI agents, and recipes-vs-demo-builder). Sidebar link `<a href="#/faq">FAQ</a>` removed from the Reference group in `uds-docs/index.html`, and the matching `<div data-page="faq" data-page-fragment></div>` placeholder block (plus its REFERENCE banner comment) removed from `<main>`. The page had drifted from current truth — it referenced `content/<component>.json` (legacy pre-restructure path; spec lives at `uds-docs/uds/components/<id>/spec.json` now) and `uds-design-system.mdc` (the downloadable Cursor rule, removed in an earlier cleanup). Topics still relevant to consumers are already covered in dedicated pages: theming on the appearance bar itself, versioning on the Changelog page header, token sourcing in `cursor-workflows.html`, AI consumption on `ai-assist`, and reporting bugs via the per-component Report Issue button. Nothing else in the live site linked to `#/faq` (only the page itself plus the now-removed sidebar entry and placeholder).' },
+        { type: 'changed', text: 'SITE bumped 2026.05.21.3 → 2026.05.21.4. `app.js?v=` bumped 132 → 133 because `docs/data/site-changelog.js` changed (per `uds-site-changelog.mdc` — `app.js` imports `site-changelog.js` as an ES module). `uds.css?v=`, `uds.js?v=`, `site.css?v=`, and `demo-builder/index.js?v=` are unchanged (no underlying file changed).' }
+      ]
     }
 ];
 
