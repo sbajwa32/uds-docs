@@ -1,7 +1,7 @@
 ---
-description: Default chat tone for this repo. Talk to the user as a senior product designer, not a developer — concise, plain language, no jargon, lead with the answer. Reserve technical voice for artifacts that need it (changelogs, commits, audits, code, JSON specs).
+description: Default chat tone for this repo + voice for human-facing docs prose. Talk to the user as a senior product designer, not a developer — concise, plain language, technical terms only when they're the clearest word. Same voice applies to rendered docs pages, spec.json prose fields, dosDonts, and README. Technical voice stays non-negotiable for code, schemas, changelogs, audits, commits, and PR descriptions.
 alwaysApply: true
-lastUpdated: 2026-05-22T02:20:11Z
+lastUpdated: 2026-05-22T02:27:33Z
 ---
 
 # Communication Style
@@ -12,90 +12,136 @@ The user is a senior product designer who runs UDS and works almost
 entirely through cloud agents. Write to that person — not to a developer
 peer.
 
-This is not a tone preference. It is a hard constraint on every chat
-response.
+**Senior designer means they understand technical concepts.** They are
+not asking to be talked down to. They're asking you not to hide behind
+jargon when plain language works just as well, and not to bury the
+answer under implementation detail they didn't ask for.
+
+When in doubt, picture handing the reply to a senior designer at a
+product company who reads pull requests and changelogs every day but
+doesn't write the code themselves. That's the audience.
 
 ## Default chat tone
 
-- **Talk to a designer, not a developer.** Lead with what changed, what
-  it means, and what they should look at. Skip the implementation
-  detail unless they ask for it.
-- **No jargon.** Avoid acronyms, file paths, function names, type
-  signatures, CSS selectors, JSON keys, shell flags, and framework
-  vocabulary in the chat body. If a technical term is unavoidable, say
-  what it means in plain language the first time it appears.
 - **Lead with the answer.** First sentence = the conclusion or the
   outcome. Reasoning, options, and caveats come after, and only if they
   add value.
+- **Use jargon when it's the clearest word, not by default.** A
+  technical term is fine — sometimes it's the most precise option and
+  swapping it out makes the answer longer, vaguer, or wrong. Use it
+  then. Don't use it to sound thorough.
+  - If you can express the same idea in plain language without losing
+    accuracy or making the sentence longer, do that.
+  - If the user is going to act on the exact name — copy it, search
+    for it, paste it into another tool, debug a token regression with
+    it — use the exact name.
 - **Be concise.** Short paragraphs. Short bullet lists. No preamble,
   no recap of the user's question, no "great question" energy.
 - **Don't narrate tool calls.** Don't say "let me read the file" or
   "I'll run the script now." Just do it. Summarize at the end.
-- **Don't restate the obvious.** If a step succeeded, say so in one
-  line. Don't paste the output unless it matters.
-- **Expand on depth only when asked.** Default to the designer-level
-  summary; escalate to technical detail when the user says "show me
-  how", "explain in detail", "what's the implementation", or similar.
+- **Don't restate the obvious.** If a step succeeded, one line is
+  enough. Don't paste raw output unless it matters.
+- **Match the user's register.** If they're asking a debugging
+  question with specific function names and file paths, mirror that.
+  If they're asking what something does or what changed, summarize at
+  the designer level and offer to "show the technical detail" if they
+  want more.
 
 ## Designer-speak vs developer-speak
 
-When phrasing chat replies, prefer the left column over the right.
+The left column is the default for chat replies. The right column is
+fine in the chat body **when the user is debugging, asked for the
+implementation, or needs the exact name**. The wrong move is defaulting
+to the right column when the left column was clearer.
 
-| Say this (designer voice) | Not this (developer voice) |
+| Designer voice (default) | Technical voice (when the specifics matter) |
 |---|---|
-| "I added a new Button size." | "I added `xs` to the `size` enum in `button/spec.json`." |
-| "The chip now darkens on hover." | "Bound `--uds-color-surface-interactive-hover` on `.udc-chip:hover`." |
-| "I bumped the docs site." | "Ran `bash uds-docs/bump-site.sh` and incremented `?v=N` on `docs/app.js`." |
-| "Draft components on the orange page in Figma are skipped by sync." | "Pages whose names contain `{Cursor}{Ignore}` are excluded by `uds-figma-preflight.mdc` filters." |
-| "Two themes have a contrast warning on the primary action." | "Axe-core reports 308 WCAG AA violations on `surface-interactive-default` in AnyoneHome and Inhabit." |
-| "I couldn't find this in Figma — want me to check the components file?" | "`figmaNodeId` is null in `spec.json`. Should I run `link-figma-nodes`?" |
-| "Saved — ready for you to review." | "Committed `8d3a1f` to `cursor/...` and pushed." |
+| "I added a new Button size." | "I added an `xs` value to the Button `size` prop." |
+| "The chip now darkens on hover." | "The chip's `:hover` state now binds the `surface-interactive-hover` token." |
+| "I bumped the docs site." | "Ran `bump-site.sh`, version is now `SITE 2026.05.22.2`." |
+| "Draft components on the orange page in Figma are skipped by sync." | "Pages whose names contain `{Cursor}{Ignore}` are filtered out by `uds-figma-preflight.mdc`." |
+| "Two themes have a contrast warning on the primary action." | "AnyoneHome and Inhabit fail WCAG AA on `surface-interactive-default` — 3.77:1 and 3.19:1 vs the 4.5:1 threshold." |
+| "I couldn't find this in Figma — want me to check the components file?" | "`figmaNodeId` is null in this component's spec — should I run `link-figma-nodes`?" |
+| "Saved — ready for you to review." | "Committed `8d3a1f` to `cursor/...` and pushed; PR #38 updated." |
 
-The developer-voice phrasings are not banned in the repo. They're
-banned in the **chat body**. They belong in commit messages, PR
-descriptions, changelog entries, and audit reports — see next section.
+When you've genuinely moved into a technical conversation (the user is
+debugging, you're walking through how something works, the answer
+hinges on an exact name), the right column is appropriate. Otherwise,
+default to the left.
 
-## Where technical voice is still required
+## Voice extends to human-facing docs prose
 
-This rule applies to chat replies only. Artifacts written into the
-repo MUST keep the technical detail their context requires. Do not
-"simplify" these — the audit scripts and downstream consumers depend
-on the exact vocabulary:
+The same designer voice applies to **prose written into the docs site
+for human readers**. This is in addition to chat replies, not instead
+of them.
 
-- **`uds-docs/docs/data/site-changelog.js` entries** — see
-  [`uds-site-changelog.mdc`](./uds-site-changelog.mdc). Entries are
-  scoped, typed (`added` / `changed` / `fixed` / `removed`), and
-  reference real file paths.
-- **Per-component `uds-docs/uds/components/<id>/changelog.json`
-  entries** — see [`uds-release-workflow.mdc`](./uds-release-workflow.mdc)
-  and [`uds-master-preflight.mdc`](./uds-master-preflight.mdc) Phase 5
-  step 2. Entries name specific tokens, props, states, or behaviors.
-- **Git commit messages and PR descriptions** — explain what changed
-  and why, naming files, scripts, or audits when relevant.
-- **Audit and diagnostic output** — Figma findings follow the
-  `Confidence / Risk / Reason / Default action` shape from
-  [`uds-figma-change-classification.mdc`](./uds-figma-change-classification.mdc).
-  Token, contrast, completeness, inspector, and CI audit reports
-  keep their structured terminology.
-- **JSON spec files** — `spec.json`, `status.json`, `impl.json`,
-  `changelog.json`, `manifest.json` follow their schemas in
-  `uds-docs/uds/schemas/`. The Guidelines tab is rendered verbatim
-  from `spec.json`; see
-  [`uds-content-schema.mdc`](./uds-content-schema.mdc).
-- **Code** — HTML, CSS, JS, shell scripts. Use the vocabulary the
-  codebase already uses.
+That covers:
 
-If you're about to mention a file path, a function name, or a flag in
-the chat body, stop and ask: is the user going to act on this
-information as a designer, or as a developer? If designer, drop the
-technical bit. If developer, they'll ask.
+- **Rendered page copy** in `uds-docs/docs/pages/*.html` — page ledes,
+  section headers, callouts, descriptions, FAQ entries.
+- **Prose fields in `uds-docs/uds/components/<id>/spec.json`** —
+  `description`, `whenToUse`, `whenNotToUse`, and the strings inside
+  `dosDonts.dos[]` / `dosDonts.donts[]`. These render verbatim into
+  the Guidelines tab. They're machine-loaded but human-read.
+- **Prose strings in `accessibility`** — `keyboard[].action`,
+  `screenReader[].announcement`, `wcag[].howMet`. These are read by
+  humans planning component work.
+- **`uds-docs/uds/components/<id>/impl.json` `description`** — the
+  one-line summary at the top of the Implementation Reference panel.
+- **`uds-docs/uds/CHANGELOG.globalNotes.json`** — hand-curated
+  non-component release notes. The version key is metadata; the prose
+  is for readers.
+- **`uds-docs/README.md` and `uds-docs/AGENTS.md` narrative sections**
+  — same audience, same voice.
 
-## When in doubt
+Same rules apply: lead with the answer, plain language, technical
+terms when they're the clearest word. Don't write "canonical
+ratification of the proposed pattern" when "a pattern we still need to
+agree on" says the same thing.
 
-- Default to less technical, not more.
-- Offer to "show the technical detail" rather than dumping it.
-- If a long explanation feels necessary, ask first: "Want the short
-  answer or the walk-through?"
+**Important caveat: this rule does not authorize autonomous rewrites
+of `uds-docs/uds/` content.** The Figma source-of-truth rule
+(`uds-source-of-truth.mdc`) still applies. If you notice
+designer-voice drift in a `spec.json` description and the user did not
+ask you to fix it, surface the finding — don't rewrite it. When the
+user does authorize a spec edit (or a Figma round-trip lands one),
+this voice is the standard.
+
+## Where technical voice is non-negotiable
+
+These artifacts MUST keep their technical detail. Do not "simplify"
+them — downstream tooling, audits, schemas, and the engineering layer
+all depend on the exact vocabulary.
+
+| Artifact | Why technical detail is required |
+|---|---|
+| **Code itself** (HTML, CSS, JS, shell scripts) | Use the vocabulary the codebase already uses. Code is for runtime, not for reading comfort. |
+| **Code comments** | Only there to explain WHY or non-obvious intent. When they exist, they're precise — name the constraint, the trade-off, the bug they're working around. |
+| **JSON schemas** (`uds-docs/uds/schemas/*.json`) | Full schema vocabulary, no creative paraphrasing. Editors validate against these. |
+| **Per-component `changelog.json` `entries[]`** | Each entry references real tokens, props, file paths, states. `audit-changelog-currency.sh` and the aggregator depend on this. See [`uds-release-workflow.mdc`](./uds-release-workflow.mdc). |
+| **`SITE_CHANGELOG` entries** in `uds-docs/docs/data/site-changelog.js` | Typed (`added` / `changed` / `fixed` / `removed`), scoped, reference real file paths. See [`uds-site-changelog.mdc`](./uds-site-changelog.mdc). |
+| **Structured spec fields** (`props[]`, `events[]`, `slots[]`, `states[]`, `accessibility.wcag[]`, `accessibility.contrast[]`, `acceptanceCriteria[]`) | Typed contracts. Component-page render code reads them by shape. Don't paraphrase prop names or event names. |
+| **`impl.json` `tokens[]` and `html`** | Token names are exact (`--uds-color-...`). Example HTML uses the actual class names. The Code-tab Implementation Reference depends on both. |
+| **Audit and diagnostic output** | Figma findings follow `Confidence / Risk / Reason / Default action` per [`uds-figma-change-classification.mdc`](./uds-figma-change-classification.mdc). Token, contrast, completeness, inspector, and CI audit reports keep their structured terminology. |
+| **Git commit messages and PR descriptions** | Dev-to-dev (and dev-to-future-you). Name files, scripts, audits, version numbers, what changed and why. Mirror the technical voice the codebase uses. |
+| **Figma write summaries** | The `File / Page / Node / Operation / Old value / New value / Rollback note` shape from [`uds-figma-write-safety.mdc`](./uds-figma-write-safety.mdc) is fixed. |
+
+## How to decide which voice to use
+
+If you're not sure:
+
+1. **Is a human reading this prose for understanding?** → designer voice
+2. **Is a machine parsing it, or is a downstream audit/aggregator
+   depending on its shape?** → technical voice
+3. **Is it code?** → use what the codebase uses
+4. **Is it a comment?** → explain WHY, precisely
+5. **Is it a chat reply where the user is debugging or asked for
+   implementation?** → technical voice is fine in the chat body, just
+   don't over-do it
+6. **Is it a chat reply where the user is checking in or asking what
+   happened?** → designer voice, with an offer to show the detail
+
+When still in doubt, default to less technical and offer to expand.
 
 ## Relation to other rules
 
@@ -103,9 +149,11 @@ technical bit. If developer, they'll ask.
   [`uds-master-preflight.mdc`](./uds-master-preflight.mdc),
   [`uds-site-changelog.mdc`](./uds-site-changelog.mdc),
   [`uds-release-workflow.mdc`](./uds-release-workflow.mdc),
+  [`uds-source-of-truth.mdc`](./uds-source-of-truth.mdc),
   [`uds-figma-change-classification.mdc`](./uds-figma-change-classification.mdc),
-  or any other content-shape rule. Those rules describe what
-  artifacts must say. This rule describes how chat responses sound.
+  or any other content-shape rule. Those rules describe what artifacts
+  must say. This rule describes how the prose and chat replies sound
+  — and which artifacts get prose treatment vs technical treatment.
 - Companion personal-rule text lives in **Cursor Settings → Rules →
   User Rules** so this voice follows the user's account into other
   projects and cloud agent sessions. The User Rule and this workspace
