@@ -2821,10 +2821,221 @@ function initAllChangelogs() {
     });
 }
 
-// Run the changelog renderers AFTER the changelog page fragment loads,
-// since their target slots (#sg-global-changelog, #sg-site-changelog) are
-// inside the fragment HTML.
-registerPageLoadHook('changelog', function () {
+// Wire up the Changelog page's toolbar (search + type chips + UDS component
+// filter) and version-jump rail. Each tab panel has its own .sg-cl-page
+// wrapper with its own toolbar and rail; init each independently. The
+// renderers (renderGlobalChangelog / renderSiteChangelog) dispatch a
+// 'sg-cl-rendered' CustomEvent on the stream container after they finish so
+// init can rebuild the component filter and rail when fresh data lands.
+function initChangelogPage(page) {
+    if (!page) return;
+    page.querySelectorAll('.sg-cl-page').forEach(initChangelogTab);
+}
+
+function initChangelogTab(root) {
+    if (root.dataset.changelogInited === 'true') return;
+    root.dataset.changelogInited = 'true';
+
+    var search = root.querySelector('[data-cl-search]');
+    var typeChips = Array.prototype.slice.call(root.querySelectorAll('[data-cl-type-chips] [data-cl-type]'));
+    var componentFilterMount = root.querySelector('[data-cl-component-filter]');
+    var stream = root.querySelector('.sg-cl-stream');
+    var rail = root.querySelector('[data-cl-rail]');
+    if (!stream || !rail) return;
+
+    var componentChips = [];
+    var state = {
+      activeTypes: new Set(typeChips.map(function (c) { return c.getAttribute('data-cl-type'); })),
+      activeComps: new Set(),
+      query: ''
+    };
+
+    function recomputeActiveTypes() {
+      state.activeTypes = new Set(typeChips
+        .filter(function (c) { return c.getAttribute('aria-pressed') === 'true'; })
+        .map(function (c) { return c.getAttribute('data-cl-type'); }));
+    }
+    function recomputeActiveComps() {
+      state.activeComps = new Set(componentChips
+        .filter(function (c) { return c.getAttribute('aria-pressed') === 'true'; })
+        .map(function (c) { return c.getAttribute('data-cl-comp'); }));
+    }
+
+    function applyFilter() {
+      var q = state.query;
+      var activeTypes = state.activeTypes;
+      // Component filter: when every chip is pressed (default), no filter.
+      // When any chip is unpressed, the filter is active and only items whose
+      // component is in activeComps are shown. If all chips are unpressed,
+      // every component-tagged item is hidden — that's the user explicitly
+      // saying "none of these," which is intentional.
+      var compFilterActive = componentChips.length > 0 &&
+        componentChips.some(function (c) { return c.getAttribute('aria-pressed') === 'false'; });
+
+      stream.querySelectorAll('.sg-cl-item').forEach(function (item) {
+        var visible = true;
+        if (!activeTypes.has(item.getAttribute('data-cl-type'))) visible = false;
+        if (visible && compFilterActive) {
+          var comps = (item.getAttribute('data-cl-comp') || '').split(' ').filter(Boolean);
+          if (!comps.length) {
+            // Items without a component (e.g. SITE entries, UDS global notes)
+            // pass the component filter when it's narrowing on UDS-tab
+            // components — the filter is meant to narrow component sections,
+            // not hide globals.
+            visible = true;
+          } else {
+            visible = comps.some(function (c) { return state.activeComps.has(c); });
+          }
+        }
+        if (visible && q) {
+          var text = item.getAttribute('data-cl-text') || '';
+          if (text.indexOf(q) === -1) visible = false;
+        }
+        item.hidden = !visible;
+      });
+
+      // Cascade visibility from items up to their containers. Process leaves
+      // (.sg-cl-comp / .sg-cl-bump / .sg-cl-release-section) before parents
+      // (.sg-cl-day / .sg-cl-release).
+      stream.querySelectorAll('.sg-cl-comp, .sg-cl-bump, .sg-cl-release-section').forEach(function (block) {
+        block.hidden = !block.querySelector('.sg-cl-item:not([hidden])');
+      });
+      stream.querySelectorAll('.sg-cl-day').forEach(function (block) {
+        block.hidden = !block.querySelector('.sg-cl-bump:not([hidden])');
+      });
+      stream.querySelectorAll('.sg-cl-release').forEach(function (block) {
+        block.hidden = !block.querySelector('.sg-cl-release-section:not([hidden])');
+      });
+
+      rebuildRail();
+    }
+
+    var railObserver = null;
+    function rebuildRail() {
+      rail.innerHTML = '';
+      var sections = stream.querySelectorAll('.sg-cl-day:not([hidden]), .sg-cl-release:not([hidden])');
+      if (!sections.length) {
+        if (railObserver) { railObserver.disconnect(); railObserver = null; }
+        return;
+      }
+      var heading = document.createElement('div');
+      heading.className = 'sg-cl-rail-heading';
+      heading.textContent = root.getAttribute('data-cl-tab') === 'site' ? 'Jump to date' : 'Jump to release';
+      rail.appendChild(heading);
+
+      var list = document.createElement('ul');
+      list.className = 'sg-cl-rail-list';
+      sections.forEach(function (section) {
+        var li = document.createElement('li');
+        var a = document.createElement('a');
+        a.className = 'sg-cl-rail-link';
+        a.href = '#' + section.id;
+        var titleEl = section.querySelector('.sg-cl-day-title, .sg-cl-release-title');
+        a.textContent = titleEl ? titleEl.textContent : section.id;
+        var metaEl = section.querySelector('.sg-cl-day-meta, .sg-cl-release-meta');
+        if (metaEl) {
+          var meta = document.createElement('span');
+          meta.className = 'sg-cl-rail-link-meta';
+          meta.textContent = metaEl.textContent.replace(/\s+/g, ' ').trim();
+          a.appendChild(meta);
+        }
+        a.addEventListener('click', function (e) {
+          e.preventDefault();
+          section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+        li.appendChild(a);
+        list.appendChild(li);
+      });
+      rail.appendChild(list);
+
+      // IntersectionObserver active highlight as the user scrolls.
+      if (railObserver) railObserver.disconnect();
+      if (!('IntersectionObserver' in window)) return;
+      railObserver = new IntersectionObserver(function (entries) {
+        var visible = entries.filter(function (e) { return e.isIntersecting; })
+          .sort(function (a, b) { return a.boundingClientRect.top - b.boundingClientRect.top; });
+        if (!visible.length) return;
+        var topId = visible[0].target.id;
+        rail.querySelectorAll('.sg-cl-rail-link').forEach(function (l) {
+          if (l.getAttribute('href') === '#' + topId) l.setAttribute('aria-current', 'true');
+          else l.removeAttribute('aria-current');
+        });
+      }, { rootMargin: '-80px 0px -60% 0px', threshold: 0 });
+      sections.forEach(function (s) { railObserver.observe(s); });
+    }
+
+    function rebuildComponentFilter() {
+      if (!componentFilterMount) return;
+      var compNames = Array.prototype.slice.call(stream.querySelectorAll('.sg-cl-comp[data-cl-comp]'))
+        .map(function (el) { return el.getAttribute('data-cl-comp'); })
+        .filter(function (n, i, arr) { return n && arr.indexOf(n) === i; })
+        .sort();
+      componentFilterMount.innerHTML = '';
+      componentChips = [];
+      if (!compNames.length) return;
+
+      var heading = document.createElement('div');
+      heading.className = 'sg-cl-rail-heading';
+      heading.textContent = 'Filter by component';
+      componentFilterMount.appendChild(heading);
+      var chips = document.createElement('div');
+      chips.className = 'sg-cl-chips';
+      chips.setAttribute('role', 'group');
+      chips.setAttribute('aria-label', 'Filter by component');
+      compNames.forEach(function (n) {
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'sg-cl-chip';
+        btn.setAttribute('data-cl-comp', n);
+        btn.setAttribute('aria-pressed', 'true');
+        btn.textContent = n;
+        btn.addEventListener('click', function () {
+          var pressed = btn.getAttribute('aria-pressed') === 'true';
+          btn.setAttribute('aria-pressed', pressed ? 'false' : 'true');
+          recomputeActiveComps();
+          applyFilter();
+        });
+        chips.appendChild(btn);
+        componentChips.push(btn);
+      });
+      componentFilterMount.appendChild(chips);
+      recomputeActiveComps();
+    }
+
+    typeChips.forEach(function (chip) {
+      chip.addEventListener('click', function () {
+        var pressed = chip.getAttribute('aria-pressed') === 'true';
+        chip.setAttribute('aria-pressed', pressed ? 'false' : 'true');
+        recomputeActiveTypes();
+        applyFilter();
+      });
+    });
+
+    if (search) {
+      search.addEventListener('input', function () {
+        state.query = (search.value || '').toLowerCase().trim();
+        applyFilter();
+      });
+    }
+
+    // The renderers fire 'sg-cl-rendered' on the stream after innerHTML is
+    // populated. Rebuild the component-filter chips and the rail then.
+    stream.addEventListener('sg-cl-rendered', function () {
+      rebuildComponentFilter();
+      applyFilter();
+    });
+
+    // First-time application in case the render already ran (idempotent).
+    rebuildComponentFilter();
+    applyFilter();
+}
+
+// Run the changelog renderers AFTER the changelog page fragment loads, since
+// their target slots (#sg-global-changelog, #sg-site-changelog) are inside
+// the fragment HTML. Init the toolbar + rail FIRST so the listeners are
+// already in place when the renderers dispatch 'sg-cl-rendered'.
+registerPageLoadHook('changelog', function (page) {
+    initChangelogPage(page);
     renderGlobalChangelog();
     renderSiteChangelog();
 });
