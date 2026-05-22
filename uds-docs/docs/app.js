@@ -1971,6 +1971,15 @@ var TYPE_LABELS = {
     deprecated: 'Deprecated', removed: 'Removed'
 };
 
+// Escape angle brackets in changelog entry text so literal <select>, <details>,
+// <a href>, <button>, etc. inside an entry render as text rather than as live
+// HTML elements. Leave & alone so existing &mdash; / &rarr; / &middot; entities
+// still resolve. Then convert backticks to <code>.
+function escapeChangelogText(s) {
+    var escaped = String(s).replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    return escaped.replace(/`([^`]+)`/g, '<code>$1</code>');
+}
+
 function renderChangeItems(parent, entries, type) {
     entries.forEach(function (entry) {
       var item = document.createElement('div');
@@ -1983,7 +1992,7 @@ function renderChangeItems(parent, entries, type) {
           compLabels += '<span class="udc-badge sg-cl-component" data-variant="secondary" data-prominent="true" data-size="sm">' + c + '</span>';
         });
       }
-      item.innerHTML = prefix + compLabels + entry.text;
+      item.innerHTML = prefix + compLabels + escapeChangelogText(entry.text);
       parent.appendChild(item);
     });
 }
