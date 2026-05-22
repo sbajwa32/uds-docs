@@ -1,7 +1,7 @@
 ---
 name: generate-uds-figma-component
 description: UDS Component Factory. Drafts a token-bound UDS component set directly inside the UDS Components Figma file on a brand-new `🟠 <Title> {Cursor}{Ignore}` page. Use when the user says "generate a UDS component for X", "factory me an Avatar", "draft a new UDS component called Y", "build a UDS component for Z in Figma", or "use the component factory to start <Title>". Stops at Figma — never writes to `uds-docs/uds/`. Docs landing is the existing `uds-updated` skill, run later by the designer.
-lastUpdated: 2026-05-22T18:39:47Z
+lastUpdated: 2026-05-22T19:10:35Z
 ---
 
 # UDS Component Factory — Generate UDS Figma Component
@@ -69,6 +69,13 @@ under. If any of them is unread in the current session, read them now:
 - [`uds-master-preflight.mdc`](../../rules/uds-master-preflight.mdc)
   Phase 5 — round-trip checklist that applies if a follow-on edit
   touches anything under `uds-docs/`.
+- [`uds-naming-conventions.mdc`](../../rules/uds-naming-conventions.mdc)
+  — the design-system-level naming framework. Source of truth for
+  every state name (sections 1, 6), variant axis name (sections 3,
+  4, 6), size step (section 2), region name (section 5), casing
+  rule (section 7), and component / subcomponent name (sections 8,
+  9). The factory picks names from this framework rather than
+  inheriting whatever the closest sibling happens to use.
 
 ## Inputs
 
@@ -202,14 +209,23 @@ Persist the proposed model to
    **two component sets** — one main (the container with `count` and
    the orchestration variants) and one subcomponent (the per-item
    building block).
-- **Variant axes** — drawn from siblings where possible (size,
- emphasis, tone, state, density, orientation, selection, validation).
- Note that UDS does not have a standardized variant vocabulary
- ([plan §12 risk](../../plans/uds-component-factory.md#12-open-risks))
- — inherit the closest sibling's vocabulary rather than inventing
- new axis names.
-- **State matrix** — default, hover, active/pressed, focus-visible,
- disabled, selected, error, loading, empty, as appropriate.
+- **Variant axes** — pick axis names and values from
+ [`uds-naming-conventions.mdc`](../../rules/uds-naming-conventions.mdc).
+ Section 2 covers Size (`Small` / `Medium` / `Large`), section 3
+ covers Tone (`Info` / `Success` / `Warning` / `Error` /
+ `Neutral`), section 4 covers Emphasis (either Primary / Secondary
+ / Tertiary OR Bold / Default / Subtle depending on the
+ component), section 6 covers when something is a variant vs a
+ state vs a property, section 7 covers Title Case in Figma. Don't
+ inherit a sibling's name if the sibling disagrees with the
+ framework — the framework wins.
+- **State matrix** — pick state names from section 1 of
+ [`uds-naming-conventions.mdc`](../../rules/uds-naming-conventions.mdc).
+ The eight standard states are Default, Hover, Pressed, Focus,
+ Selected, Disabled, Loading, Error, plus the conditional Empty
+ and Read-only when applicable. The reserved-words distinction
+ between Selected, Checked (form controls), and Current
+ (navigation) is in the same section.
 - **Accessibility plan** — keyboard, focus, screen reader, disabled /
  loading / error behaviors.
 - **Token plan** — explicit role-to-token map, e.g.
@@ -421,7 +437,13 @@ and you can re-run after fixing the cause.
     container. Parent components reference subcomponents via
     component KEY (stable across files), so the underscore prefix
     has no functional effect on parent → child instance binding.
-- Use clean variant properties using the agreed vocabulary.
+- Variant property names and values follow
+  [`uds-naming-conventions.mdc`](../../rules/uds-naming-conventions.mdc)
+  exactly — Title Case in Figma (section 7), canonical state /
+  variant / size / tone / emphasis names from sections 1-4. If the
+  Phase A model picked a name that doesn't appear in the framework
+  for a category the framework covers, fix it before this step
+  rather than encoding the drift into Figma.
 - Build variants and states with auto-layout. Defaults: containers hug
   content unless a fixed dimension is part of the spec; **every used
   spacing property is bound per side** (see below); flat structure

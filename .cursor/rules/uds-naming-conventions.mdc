@@ -1,0 +1,465 @@
+---
+description: The design-system-level naming framework for UDS. Locks the canonical vocabulary for states, sizes, tones, emphasis, parts of a component, the state-vs-variant-vs-property meta-rule, casing and word choice, component names, subcomponents, and lifecycle status. Designer-voiced, concept-first. Companion to uds-design-language.mdc — design-language covers *how things look* per state, this rule covers *what we call them*. Factory, new-component, and the spec sync skills should pick names from this framework instead of guessing from siblings.
+alwaysApply: false
+globs: ["**/*"]
+lastUpdated: 2026-05-22T19:10:35Z
+---
+
+# UDS Naming Framework
+
+How we name things across UDS. This rule is the vocabulary contract.
+Its partner — [`uds-design-language.mdc`](./uds-design-language.mdc) —
+covers *how* each state, surface, and elevation looks. This one covers
+*what we call them*.
+
+The framework is opinionated by design. Each category has one
+recommended answer. Picking names by hand for every new component is
+how a design system drifts.
+
+When a skill is unsure what to call something — a new state, a new
+prop, a new region of a component — it should land on this rule first
+and pick from the canonical vocabulary. Inventing a new word is a
+last resort and gets flagged for designer review.
+
+---
+
+## 1. States
+
+The canonical interaction states every component should think about
+when it's designed and documented.
+
+**The eight standard states**, every component reaches for these
+names when applicable:
+
+| Name | What it means |
+|---|---|
+| **Default** | The resting state. No interaction in progress. |
+| **Hover** | Pointer is over the component, not yet clicked. |
+| **Pressed** | Mouse-down or finger-down. Briefly. |
+| **Focus** | Keyboard focus is on the component. |
+| **Selected** | This is the chosen one in a group of equivalent options. |
+| **Disabled** | Interaction temporarily unavailable. |
+| **Loading** | Waiting for something to finish. |
+| **Error** | Validation failed or something went wrong. |
+
+**Two conditional states**, only used when the component supports them:
+
+| Name | What it means |
+|---|---|
+| **Empty** | The component has nothing to display yet — empty table, empty dropdown, empty search results. |
+| **Read-only** | The user can see the value but can't change it. The system owns it. |
+
+**Two reserved words** that should not get mixed up with "Selected":
+
+| Name | What it means | Use it for |
+|---|---|---|
+| **Checked** | The on/off state of a form control. | Checkbox, Radio, Toggle. |
+| **Current** | The active page or section in navigation. | Nav links, breadcrumbs, the current page in pagination. |
+
+Do not call a toggle's on-state "Selected". Do not call the current
+nav item "Selected" or "Active". The distinction matters because
+"Selected" already means *one chosen item among equivalent options* —
+which is what a dropdown option, a chip, or a tab is. A toggle is on
+or off, not chosen. A nav link is the current page, not chosen.
+
+This split mirrors what the web platform already calls these things,
+so what designers write on a Figma variant and what shows up in code
+agree.
+
+### Why these eight
+
+Material, Carbon, and Polaris all converge on this set with minor
+wording differences. Our own Design Language doc already drew the
+Pressed-vs-Checked-vs-Selected-vs-Current line in section 11 — this
+rule names the same distinction at the spec level.
+
+---
+
+## 2. Sizes
+
+A single three-step scale: **Small**, **Medium**, **Large**.
+
+- In Figma: `Small` / `Medium` / `Large` on the variant property.
+- In code: `sm` / `md` / `lg` on the data attribute.
+- The default size is `Medium`. Most components only need Small and
+ Medium; Large is for components that need to read at scale (page-
+ level callouts, large modals, large list rows).
+
+### When a component is not on this scale
+
+Some components measure something else entirely. Don't shoehorn those
+into Small / Medium / Large.
+
+- **Icon container** — measures pixels (16, 20, 24, 32, 48, 64). The
+ property is called `Icon size`, not `Size`.
+- **Spacer** — measures spacing-scale steps (050, 100, 150, …, 600).
+ The property is called `Spacer size`, not `Size`.
+
+The word "Size" is reserved for the perceptual Small / Medium / Large
+scale. If a component measures something different, give the property
+a different name so the framework's `Size = sm | md | lg` rule keeps
+its meaning.
+
+### Density is its own dimension
+
+A data table has a density axis (`default`, `compact`) — that's how
+much vertical room each row uses, not how big the component itself
+is. Density and Size are different things and can co-exist on the
+same component.
+
+---
+
+## 3. Tone and status
+
+The vocabulary for intent — what a piece of information is signaling
+to the user.
+
+**Four core tones**:
+
+| Tone | What it signals |
+|---|---|
+| **Info** | Neutral information. No action required. |
+| **Success** | Something completed correctly. |
+| **Warning** | Something needs attention but isn't broken. |
+| **Error** | Validation failed, an action was rejected, or something is broken. |
+
+**One optional tone**, used by components that need a no-opinion
+default:
+
+| Tone | What it signals |
+|---|---|
+| **Neutral** | This is here but it isn't making a tonal claim. |
+
+No "Danger" as a tone. If the meaning is destructive, that's still
+Error tonally — pair it with a separate emphasis decision (a Bold
+Error button reads as destructive without needing a new tone name).
+
+### Why no "Brand" or "Discovery" tone yet
+
+We don't have a component today that needs to signal "this is a
+brand-flavored callout" distinct from "this is general information."
+If we do later, add a sixth tone then — don't pre-empt one now.
+
+---
+
+## 4. Emphasis
+
+How loud the component reads. UDS uses two emphasis scales depending
+on what the component is doing.
+
+### When ranking importance against peers
+
+Components that compete for user attention against siblings — buttons,
+calls to action, action menus — use a three-step rank:
+
+- **Primary** — the most important action on the page.
+- **Secondary** — the supporting action.
+- **Tertiary** — present but quiet; rarely the user's first choice.
+
+**Ghost** stays as an acceptable shorthand for Tertiary on buttons —
+it's a well-understood term across component libraries — but Tertiary
+is the canonical name in the spec.
+
+### When tuning loudness against surroundings
+
+Components that aren't ranking against peers but need to be more or
+less loud than the surface they sit on — badges, notifications, tags,
+status pills — use:
+
+- **Bold** — high contrast against the surface.
+- **Default** — the standard treatment.
+- **Subtle** — low contrast, recedes into the surface.
+
+### How to decide which scale to use
+
+Ask: *is this component making a hierarchical claim against its
+peers, or just tuning loudness against its surroundings?*
+
+- "Primary success badge" doesn't read well — Bold / Default / Subtle.
+- "Bold submit button" doesn't read well — Primary / Secondary / Tertiary.
+
+---
+
+## 5. Parts of a component
+
+What we call the regions and adornments inside a component.
+
+### Horizontal flanks (icons, prefixes, suffixes around text)
+
+- **Leading** — the side the eye reaches first. (Left in left-to-right
+ languages, right in right-to-left.)
+- **Trailing** — the side the eye reaches last.
+
+Used for: leading icon, trailing icon, leading element, trailing
+element. Don't use Left / Right — those break in right-to-left
+languages. Don't mix Start / End in with Leading / Trailing — pick
+one and stay consistent. UDS uses Leading / Trailing.
+
+### Vertical stacks (regions on top of each other)
+
+- **Header** — the top region.
+- **Body** — the main content.
+- **Footer** — the bottom region.
+
+Used for: dialog, drawer, card, data table, anything with a stacked
+structure. Don't use Top / Middle / Bottom — those describe position,
+not role.
+
+### Single content region
+
+If a component has one obvious place for content — a button's label,
+a badge's text, a chip's text — call the region **Content**, or leave
+it unnamed entirely. Don't invent a name where the convention is
+"there's just one place text goes."
+
+### Components with more than three regions
+
+A few components have a richer anatomy that doesn't fit either
+pattern — Nav Header has five distinct slots (brand, title area,
+center, actions, account). Those components are allowed to name their
+regions descriptively, as long as the names are consistent within the
+component.
+
+The rule is *consistency within the component*, not *forced fit*.
+
+---
+
+## 6. State vs Variant vs Property
+
+The most common naming argument on a UDS spec is "is this thing a
+state, a variant, or a property?" The framework answers it with a
+single litmus test.
+
+### The three buckets
+
+- **State** — something that changes about the component in response
+ to user interaction or system status. The user *causes* the change
+ (or the system does, e.g. validation rejecting input).
+- **Variant** — a fundamentally different look-and-feel of the
+ component that the designer picks up front. The variant changes
+ *what kind* of component this is.
+- **Property** — something configured per use that doesn't change
+ what kind of component this is. The text on a button. Whether to
+ show a leading icon. Which icon.
+
+### The litmus test
+
+Ask in this order:
+
+1. *Could a user trigger this change by interacting with the
+ component?* → state.
+2. *Does picking this change what role the component is playing on
+ the page?* → variant.
+3. Otherwise → property.
+
+### How this resolves common confusions
+
+- **Disabled** is a state. (User can't trigger the change, but the
+ system does — same bucket.)
+- **Loading** is a state. (Same reason.)
+- **Size** is a property. (Picking Medium vs Large doesn't change
+ what kind of component this is.)
+- **Primary vs Secondary vs Tertiary** is a variant. (Picking Primary
+ vs Tertiary changes what role the button is playing.)
+- **Info vs Success vs Warning vs Error** is a variant. (Picking
+ Success vs Error changes what role the badge is playing.)
+- **Leading icon** is a property. (Whether the icon is there, and
+ which icon, doesn't change what kind of component this is.)
+- **Checked** on a toggle is a state. (User triggers the change by
+ clicking it.)
+
+### When a concept legitimately fits two buckets
+
+The same idea ("disabled") really does fit in different buckets at
+different times. A button disabled because the user's form is invalid
+is a state. A button disabled because the feature isn't released yet
+is closer to a fixed property of that specific instance. The litmus
+test gives a defensible answer for each case — don't try to force one
+universal answer.
+
+---
+
+## 7. Casing and word choice
+
+Three small rules cover every name in the framework.
+
+### In Figma
+
+Title Case for everything a designer sees in the variant panel:
+
+- Variant property names — `Size`, `Variant`, `Tone`.
+- Variant property values — `Small`, `Medium`, `Large`; `Primary`,
+ `Secondary`, `Tertiary`; `Hover`, `Pressed`, `Disabled`.
+- State names on a States variant property — `Default`, `Hover`,
+ `Pressed`, `Focus`.
+
+Reading `hover` in a variant panel feels under-set, like an
+unfinished label. Title Case is what Figma's own asset picker does
+and what designers expect.
+
+### In code
+
+Lowercase with hyphens between words for the same names when they
+land on HTML or CSS:
+
+- `data-size="small"`, `data-state="hover"`, `data-tone="success"`.
+
+The rule: take the Figma name, lowercase it, hyphenate any spaces.
+"Read-only" stays as `read-only`; "Loading" becomes `loading`.
+
+### For actions and events
+
+Present tense, single word where possible.
+
+- `click`, `change`, `focus`, `blur`, `open`, `close`, `submit`.
+- Not `clicked`, `changed`, `opened`.
+
+This matches every JavaScript event name on the web platform.
+Past-tense event names ("clicked") read as "tell me about something
+that happened" rather than "when this happens, do something" — the
+latter is what an event handler actually does.
+
+---
+
+## 8. Component naming
+
+How we name a whole component.
+
+### Designer-facing title
+
+Title Case with spaces between words:
+
+- `Text Input`, `Text Area`, `Data Table`, `Nav Header`, `Icon
+ Wrapper`, `Combo Box`.
+
+Match how the component is named in plain English, not how it's
+written in code. Material's component pages are "Date Picker", not
+"DatePicker"; "Bottom Sheet", not "BottomSheet". UDS follows the
+same convention.
+
+### Code-facing id
+
+Lowercase, hyphenated:
+
+- `text-input`, `text-area`, `data-table`, `nav-header`,
+ `icon-wrapper`, `combo-box`.
+
+One word per concept, no abbreviations unless they're universally
+understood — "nav" is fine, "btn" is not, "lbl" is not.
+
+### One component or a family?
+
+A button with three emphasis variants — Primary, Secondary, Tertiary
+— is one component called Button. A text input and a text area are
+two components because their underlying behavior is different (single
+line vs multi-line); their layouts, key handling, and accessibility
+expectations diverge enough that one component covering both would
+hide more than it reveals.
+
+The rule: components are distinguished by *underlying behavior*, not
+visual difference. Visual differences are variants and properties.
+
+---
+
+## 9. Subcomponents
+
+When a piece of a component only exists in the context of its parent
+— a tab inside Tabs, a step inside Stepper, a crumb inside Breadcrumb,
+an option inside Dropdown — it's a **subcomponent**, and:
+
+- In Figma, the subcomponent set is named with the parent prefix:
+ `Stepper / Step`, `Breadcrumb / Crumb`, `Dropdown / Option`,
+ `Tabs / Tab`. The slash signals "this belongs to that parent."
+- A designer in the asset picker should only see the parent
+ (`Stepper`) as a top-level entry. The subcomponent (`Step`) is
+ reachable inside the parent's anatomy but not picked directly.
+- The subcomponent does not get its own page in the docs site, its
+ own status, or its own changelog. Its anatomy, props, states, and
+ accessibility live inside the parent component's spec.
+
+### The litmus test
+
+*Would a designer ever drop this thing into a layout on its own,
+without its parent around it?*
+
+- A single Tab without a Tab list — meaningless. Subcomponent.
+- A single Step without a Stepper — meaningless. Subcomponent.
+- A single Card without a Card grid — fine. Card is a component, not
+ a subcomponent. Cards are dropped into layouts on their own all the
+ time.
+
+When in doubt, default to subcomponent and surface the question for
+designer review. The cost of mis-classifying a real component as a
+subcomponent is low (we promote it later). The cost of mis-
+classifying a subcomponent as a component is a noisier asset picker
+forever.
+
+---
+
+## 10. Lifecycle status
+
+Our existing stoplight vocabulary, pulled into this framework by
+reference so designers find the full naming picture in one place.
+
+| Status | What it means |
+|---|---|
+| **Placeholder** | Exists in name only. No design or code yet. |
+| **Blocked** | Work has started but is waiting on something. |
+| **In Progress** | Actively being designed or built. |
+| **Review** | Design is settled, in review with stakeholders. |
+| **Production** | Shipped and supported. |
+| **Deprecated** | Being retired. Do not use for new work. |
+
+These are reflected on the Figma page-name stoplights (🟠 🟡 🟢 ⚫)
+and on the status badge on every component page in the docs site.
+Source of truth for the current status of any component is its
+`status.json` file under `uds-docs/uds/components/<id>/`. See
+[`uds-component-checklist.mdc`](./uds-component-checklist.mdc) for
+the per-component file contract.
+
+---
+
+## How this rule is used
+
+The skills that build or update components should pick names from
+the framework rather than guessing from siblings or inventing new
+words:
+
+- [`generate-uds-figma-component`](../skills/generate-uds-figma-component/SKILL.md)
+ — the factory's "agreed vocabulary" *is* this framework. Phase A's
+ state matrix and variant axes draw from sections 1, 4, and 6.
+ Phase B's variant property names and values follow section 7's
+ casing rule.
+- [`new-component`](../skills/new-component/SKILL.md) — when
+ scaffolding a fresh `spec.json`, populate `states[]` with the
+ names from section 1, not free-form text.
+- [`sync-figma-component-spec`](../skills/sync-figma-component-spec/SKILL.md)
+ — when migrating an existing component's spec to match a fresh
+ Figma read, prefer the framework's names over preserving legacy
+ inconsistent names. Renames are classified per
+ [`uds-figma-change-classification.mdc`](./uds-figma-change-classification.mdc).
+- [`spec-audit`](../agents/spec-audit.md) — completeness scoring
+ stays the same, but a future enhancement can flag specs whose
+ state / variant / property names don't match the framework.
+
+## How this rule relates to others
+
+| Rule | Relationship |
+|---|---|
+| [`uds-design-language.mdc`](./uds-design-language.mdc) | The visual partner. Design Language tells you *how* Pressed looks; this rule tells you it's called *Pressed*, not *Active*. Section 11 of Design Language is the original Pressed/Checked/Selected/Current distinction — this rule extends it from the visual layer to the spec-naming layer. |
+| [`uds-content-schema.mdc`](./uds-content-schema.mdc) | The schema contract. Lists the fields (`states[]`, `props[]`, `events[]`, etc.) — this rule provides the canonical values for those fields. |
+| [`uds-component-checklist.mdc`](./uds-component-checklist.mdc) | The completeness contract. Lists what files a component needs — this rule provides the vocabulary the spec inside them should use. |
+| [`uds-figma-factory-quality.mdc`](./uds-figma-factory-quality.mdc) | The factory-build quality gates. Process is there; vocabulary is here. |
+
+## Out of scope
+
+- **Backfilling existing component specs** to match the framework.
+ Each component picks up the new names the next time it gets touched
+ by a Figma → docs sync. This rule establishes the framework; the
+ sync skills migrate names component-by-component on schedule.
+- **Renaming existing CSS classes or data attributes** under
+ `uds-docs/uds/components/<id>/<id>.css`. Code under that path
+ follows Figma per [`uds-source-of-truth.mdc`](./uds-source-of-truth.mdc),
+ so any rename routes through a designer-led round trip.
+- **Hard-enforcing the vocabulary in `spec.schema.json`**. Possible
+ follow-up once existing specs have caught up.

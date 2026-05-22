@@ -1,7 +1,7 @@
 ---
 name: new-component
 description: Scaffold a new UDS component end to end. Creates uds/components/<id>/ with all required files (CSS stub, spec.json, status.json, changelog.json, examples/, playground.js), bumps SITE, adds the sidebar link and placeholder data-page block. Triggers on phrases like "add a component", "scaffold a new component", "new component called X", "set up a new component for Y".
-lastUpdated: 2026-05-21T18:15:30Z
+lastUpdated: 2026-05-22T19:10:35Z
 ---
 
 # New Component Scaffold
@@ -14,6 +14,29 @@ plus the `<div data-page>` placeholder block into `index.html`. After the
 skill finishes, the component appears in the sidebar with a "Spec X/22"
 pill in red (placeholder status), ready for the designer to flesh out
 the spec and visual examples.
+
+## Naming source of truth
+
+Every name written into `spec.json` — `component`, `title`, slot
+names, state names, prop names, variant values, event names — comes
+from [`uds-naming-conventions.mdc`](../../rules/uds-naming-conventions.mdc),
+not from this skill's prose or from sibling specs. Specifically:
+
+- **`component`** — kebab-case (section 8 of the naming framework).
+- **`title`** — Title Case with spaces (section 8).
+- **`states[]`** — the eight standard state names plus the two
+ conditional ones (section 1). Reserve Checked for form controls
+ and Current for navigation (also section 1).
+- **`props[]`** for size — `sm` / `md` / `lg`, only on components
+ that are genuinely on the perceptual size scale (section 2).
+- **`props[]`** for tone, emphasis, slot regions — match sections
+ 3, 4, and 5.
+- **`events[]`** — present tense, single word where possible
+ (section 7).
+
+When this skill fills the template with placeholders, the placeholders
+should look like the framework's vocabulary so the designer's first
+real edit is "add the details," not "rename half of these."
 
 ## Step 1 — Collect required inputs from the user
 
