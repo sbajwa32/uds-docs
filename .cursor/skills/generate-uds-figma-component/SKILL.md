@@ -1,7 +1,7 @@
 ---
 name: generate-uds-figma-component
 description: UDS Component Factory. Drafts a token-bound UDS component set directly inside the UDS Components Figma file on a brand-new `🟠 <Title> {Cursor}{Ignore}` page. Use when the user says "generate a UDS component for X", "factory me an Avatar", "draft a new UDS component called Y", "build a UDS component for Z in Figma", or "use the component factory to start <Title>". Stops at Figma — never writes to `uds-docs/uds/`. Docs landing is the existing `uds-updated` skill, run later by the designer.
-lastUpdated: 2026-05-21T15:07:22Z
+lastUpdated: 2026-05-22T18:39:47Z
 ---
 
 # UDS Component Factory — Generate UDS Figma Component
@@ -423,11 +423,43 @@ and you can re-run after fixing the cause.
     has no functional effect on parent → child instance binding.
 - Use clean variant properties using the agreed vocabulary.
 - Build variants and states with auto-layout. Defaults: containers hug
-  content unless a fixed dimension is part of the spec; padding axes
-  use UDS spacing tokens, not raw pixels; flat structure preferred
-  unless nesting is required.
-- Bind fills, strokes, **typography**, spacing, and radius to UDS
-  Tokens via the role-to-token map from Phase A. For typography
+  content unless a fixed dimension is part of the spec; **every used
+  spacing property is bound per side** (see below); flat structure
+  preferred unless nesting is required.
+- **Per-side spacing binding (all five properties).** The Plugin API
+  has no `paddingHorizontal` / `paddingVertical` shorthand — auto-layout
+  exposes `paddingTop`, `paddingBottom`, `paddingLeft`, `paddingRight`,
+  and `itemSpacing` as five independent bindable properties. Bind all
+  five per `setBoundVariable('paddingTop', spaceVar)`, never assign
+  `node.paddingTop = 8` directly. The requirement is *every side
+  bound*, not *every side equal* — a pill that legitimately wants
+  `paddingLeft = uds-space-200` (16px) and `paddingRight = uds-space-150`
+  (12px) is fine; what's not fine is pairing those bound horizontal
+  values with raw `paddingTop = 8` and `paddingBottom = 8` literals.
+  When the real component does want the same value on both sides of an
+  axis, pass the same `uds-space-100` variable to both sides — that's
+  still five `setBoundVariable` calls. Helper functions that wrap
+  padding configuration MUST take all five properties (or a
+  `{ top, right, bottom, left, gap }` object); the two-axis helper
+  signature `(h, v)` is an anti-pattern — it binds whichever pair the
+  helper takes and leaves the other pair as raw pixel literals. See
+  [`uds-figma-plugin-api-gotchas.mdc`](../../rules/uds-figma-plugin-api-gotchas.mdc)
+  §5 for the underlying API truth and the silent-failure mode.
+- **Effect-style binding (never raw effects literals).** For every
+  drop shadow, blur, or other elevation visual the model specifies,
+  bind via `await node.setEffectStyleIdAsync(effectStyle.id)` after
+  `await figma.importStyleByKeyAsync(EFFECT_STYLE_KEY)`. Never write
+  `node.effects = [{ type: 'DROP_SHADOW', ... }]` even if the literal
+  values exactly match the design system's depth scale — raw effect
+  literals escape every "is this bound to a token?" check, and
+  factory runs that copy depth values from inspection rather than
+  binding the style routinely ship visually-shadowed nodes whose
+  values don't match any depth step at all. See
+  [`uds-figma-plugin-api-gotchas.mdc`](../../rules/uds-figma-plugin-api-gotchas.mdc)
+  §6 for the wrong/correct contract and audit signature.
+- Bind fills, strokes, **typography**, spacing (per the per-side rule
+  above), radius, **and effects** (per the effect-style rule above)
+  to UDS Tokens via the role-to-token map from Phase A. For typography
   specifically: prefer bundled `textStyleId = style.id` when UDS has
   the matching bundled text style; fall back to four individual
   variable bindings (`fontFamily`, `fontSize`, `fontStyle`,
@@ -584,7 +616,33 @@ structured report with two sections.
 ### Tool-emitted gates (deterministic — counts, not opinions)
 
 - **Token bindings.** Raw color/fill/stroke values found: N. Unbound
- corner radii: N at `<nodeIds>`. Unbound spacing: N at `<nodeIds>`.
+ corner radii: N at `<nodeIds>`.
+- **Per-side spacing bindings.** Every auto-layout frame the factory
+ created MUST have all five spacing properties (`paddingTop`,
+ `paddingBottom`, `paddingLeft`, `paddingRight`, `itemSpacing`) bound
+ to a `uds-space` variable when that property has a non-zero value.
+ Per-side counts:
+ - Frames with unbound `paddingTop`: N at `<nodeIds>`.
+ - Frames with unbound `paddingBottom`: N at `<nodeIds>`.
+ - Frames with unbound `paddingLeft`: N at `<nodeIds>`.
+ - Frames with unbound `paddingRight`: N at `<nodeIds>`.
+ - Frames with unbound `itemSpacing` (gap > 0): N at `<nodeIds>`.
+
+ The five must be reported separately. A combined "unbound spacing"
+ count hides the most common asymmetry — horizontal pair bound,
+ vertical pair stranded as raw pixels — which renders correctly in
+ the default density mode and only breaks under
+ `[data-density="comfortable"]`. See
+ [`uds-figma-plugin-api-gotchas.mdc`](../../rules/uds-figma-plugin-api-gotchas.mdc)
+ §5.
+- **Effect-style bindings.** Every node where `effects.length > 0`
+ MUST have `effectStyleId !== ''`. Nodes with raw `effects = [...]`
+ literals and no effect style attached: N at `<nodeIds>`. This is a
+ separate gate from "Token bindings" because the visual output looks
+ right even when the binding is missing — the gate must check
+ `effectStyleId` directly, not infer from `effects.length`. See
+ [`uds-figma-plugin-api-gotchas.mdc`](../../rules/uds-figma-plugin-api-gotchas.mdc)
+ §6.
 - **Typography binding.** Every text node MUST have either a
  `textStyleId` (bundled UDS text style) OR a complete set of four
  font variable bindings (`fontFamily`, `fontSize`, `fontStyle`,
@@ -608,6 +666,18 @@ structured report with two sections.
  `description`, `title`, `caption`, `count`, `body`, `helper`, etc.)
  lacking a `characters` reference are flagged as *candidate* gaps —
  designer judges whether each is intentionally decorative.
+- **Per-variant INSTANCE_SWAP defaults.** For every component property
+ of type `INSTANCE_SWAP` registered on the set, walk every variant
+ and compare its current swap target against the per-variant default
+ the Phase A model specified for that variant. Variants still holding
+ the factory's universal default (when the model said otherwise): N
+ at `<variantIds>`. This catches "every icon shipped as the same
+ placeholder" — the technical wiring (property exists, real wrapper
+ default) is correct but the per-variant differentiation
+ (`complete → check`, `error → priority_high`, etc.) was never baked
+ in via `setProperties`. The model file under
+ `.cursor/state/component-factory/<componentId>.md` is the source of
+ truth for "what each variant should default to."
 - **Layer hygiene.** Unnamed nodes: N. Generic names (`Frame N`,
  `Rectangle N`): N. Orphan top-level nodes on the page: N.
 - **Auto-layout coverage.** Frames without auto-layout: N at
@@ -645,7 +715,7 @@ token-creating fixes require explicit approval before applying.
 
 The factory job is complete when:
 
-- All four tool-emitted gates report zero findings, AND
+- Every tool-emitted gate above reports zero findings, AND
 - The human-judged gates have been written into a designer-facing
   prompt block (one paragraph per gate; no decision required to
   finish — the designer reads them as part of acceptance).
