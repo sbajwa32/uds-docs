@@ -960,6 +960,16 @@ export const SITE_CHANGELOG = [
         { type: 'changed', text: '`AGENTS.md` repo-layout tree &mdash; dropped `roadmap.html` and a stale `how-to-contribute.html` entry from the `docs/pages/` listing (neither file exists on disk).' },
         { type: 'changed', text: 'SITE bumped 2026.05.21.8 &rarr; 2026.05.21.9. `app.js?v=` bumped 137 &rarr; 138 because `docs/app.js` and the imported `docs/data/site-changelog.js` both changed. `site.css?v=` bumped 9 &rarr; 10 because `docs/site.css` changed. `uds.css?v=`, `uds.js?v=`, and `demo-builder/index.js?v=` unchanged (no underlying file changed).' }
       ]
+    },
+    {
+      version: 'SITE 2026.05.22.1',
+      date: '2026-05-22',
+      changes: [
+        { type: 'changed', text: '`.cursor/rules/communication-style.mdc` &mdash; rewrote the rule to make "talk to the user as a senior product designer, not a developer" the explicit audience contract instead of a soft preference. Added a new Audience section that names the constraint; expanded the Default chat tone section with hard rules on no-jargon, no-tool-call-narration, no-restate-the-obvious, and escalate-on-request-only; added a Designer-speak vs developer-speak comparison table with seven before/after rows covering Button size changes, hover bindings, site bumps, Figma `{Cursor}{Ignore}` pages, contrast audits, missing `figmaNodeId`, and commit/push reporting. The "Where technical voice is still required" carve-out (changelog entries, commits, audits, JSON specs, code) is preserved verbatim &mdash; this is a chat-tone rule, not an artifact-tone rule. Frontmatter `description:` and `lastUpdated:` bumped to match (`2026-05-22T02:20:11Z`).' },
+        { type: 'changed', text: '`uds-docs/docs/pages/cursor-workflows.html` &mdash; updated the `communication-style` row description to mirror the rewritten rule (designer-not-developer framing, designer-speak vs developer-speak table, file-path / function-name / CSS-selector / JSON-key suppression in chat body, pairs with the User Rule in Cursor Settings so the same voice follows the user across every project).' },
+        { type: 'changed', text: '`.cursor/TOOLCHAIN.md` regenerated via `bash scripts/regenerate-toolchain.sh` to pick up the new `communication-style` `lastUpdated` and `description:`. Counts unchanged (20 rules + 9 skills + 7 agents = 36 entries).' },
+        { type: 'changed', text: 'SITE bumped 2026.05.21.9 &rarr; 2026.05.22.1 (rolled over to a new day, counter reset to `.1` per `bump-site.sh`). `app.js?v=` bumped 138 &rarr; 139 because `docs/data/site-changelog.js` changed and `docs/app.js` imports it (per `uds-site-changelog.mdc`). `site.css?v=`, `uds.css?v=`, `uds.js?v=`, and `demo-builder/index.js?v=` unchanged. `cursor-workflows.html` is lazy-fetched as a page fragment via `fetch-versioned.js`, which cache-busts per fetch &mdash; no manual `?v=` bump needed.' }
+      ]
     }
 ];
 

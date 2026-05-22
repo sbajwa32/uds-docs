@@ -47,7 +47,7 @@ the manual fallback when the hook hasn't run.
 
 | File | Last updated (UTC) | Description |
 |---|---|---|
-| [`communication-style.mdc`](./rules/communication-style.mdc) | `2026-05-14T19:00:30Z` | Default chat tone for this repo. Keep agent responses concise and in plain language; reserve technical voice for artifacts that need it… |
+| [`communication-style.mdc`](./rules/communication-style.mdc) | `2026-05-22T02:20:11Z` | Default chat tone for this repo. Talk to the user as a senior product designer, not a developer — concise, plain language, no jargon, lead… |
 | [`uds-component-checklist.mdc`](./rules/uds-component-checklist.mdc) | `2026-05-12T18:41:50Z` | Checklist for implementing or updating a UDS component — ensures the per-component folder is whole and consistent across CSS, spec,… |
 | [`uds-content-schema.mdc`](./rules/uds-content-schema.mdc) | `2026-05-12T18:41:50Z` | When editing per-component spec content, edit the spec.json INSIDE that component's folder — never re-introduce component spec content into… |
 | [`uds-design-language.mdc`](./rules/uds-design-language.mdc) | `2026-05-21T18:24:08Z` | How every UDS component handles each state, extracted from existing component CSS. State constructions… |

@@ -1,30 +1,66 @@
 ---
-description: Default chat tone for this repo. Keep agent responses concise and in plain language; reserve technical voice for artifacts that need it (changelogs, commits, audits, code, JSON specs).
+description: Default chat tone for this repo. Talk to the user as a senior product designer, not a developer — concise, plain language, no jargon, lead with the answer. Reserve technical voice for artifacts that need it (changelogs, commits, audits, code, JSON specs).
 alwaysApply: true
-lastUpdated: 2026-05-14T19:00:30Z
+lastUpdated: 2026-05-22T02:20:11Z
 ---
 
 # Communication Style
 
+## Audience
+
+The user is a senior product designer who runs UDS and works almost
+entirely through cloud agents. Write to that person — not to a developer
+peer.
+
+This is not a tone preference. It is a hard constraint on every chat
+response.
+
 ## Default chat tone
 
-When responding to the user in chat:
+- **Talk to a designer, not a developer.** Lead with what changed, what
+  it means, and what they should look at. Skip the implementation
+  detail unless they ask for it.
+- **No jargon.** Avoid acronyms, file paths, function names, type
+  signatures, CSS selectors, JSON keys, shell flags, and framework
+  vocabulary in the chat body. If a technical term is unavoidable, say
+  what it means in plain language the first time it appears.
+- **Lead with the answer.** First sentence = the conclusion or the
+  outcome. Reasoning, options, and caveats come after, and only if they
+  add value.
+- **Be concise.** Short paragraphs. Short bullet lists. No preamble,
+  no recap of the user's question, no "great question" energy.
+- **Don't narrate tool calls.** Don't say "let me read the file" or
+  "I'll run the script now." Just do it. Summarize at the end.
+- **Don't restate the obvious.** If a step succeeded, say so in one
+  line. Don't paste the output unless it matters.
+- **Expand on depth only when asked.** Default to the designer-level
+  summary; escalate to technical detail when the user says "show me
+  how", "explain in detail", "what's the implementation", or similar.
 
-- Be concise. Short paragraphs and short bullet lists beat long
-  explanations.
-- Use plain language. Avoid unnecessary acronyms and jargon. If a
-  technical term is required, briefly say what it means the first time
-  it shows up in a session.
-- Lead with the answer, then the reasoning. Don't bury the conclusion
-  under a long preamble.
-- Don't narrate tool calls or restate what the user just said.
-- Expand on technical depth when the user asks for it, not by default.
+## Designer-speak vs developer-speak
 
-## Where technical voice is still expected
+When phrasing chat replies, prefer the left column over the right.
+
+| Say this (designer voice) | Not this (developer voice) |
+|---|---|
+| "I added a new Button size." | "I added `xs` to the `size` enum in `button/spec.json`." |
+| "The chip now darkens on hover." | "Bound `--uds-color-surface-interactive-hover` on `.udc-chip:hover`." |
+| "I bumped the docs site." | "Ran `bash uds-docs/bump-site.sh` and incremented `?v=N` on `docs/app.js`." |
+| "Draft components on the orange page in Figma are skipped by sync." | "Pages whose names contain `{Cursor}{Ignore}` are excluded by `uds-figma-preflight.mdc` filters." |
+| "Two themes have a contrast warning on the primary action." | "Axe-core reports 308 WCAG AA violations on `surface-interactive-default` in AnyoneHome and Inhabit." |
+| "I couldn't find this in Figma — want me to check the components file?" | "`figmaNodeId` is null in `spec.json`. Should I run `link-figma-nodes`?" |
+| "Saved — ready for you to review." | "Committed `8d3a1f` to `cursor/...` and pushed." |
+
+The developer-voice phrasings are not banned in the repo. They're
+banned in the **chat body**. They belong in commit messages, PR
+descriptions, changelog entries, and audit reports — see next section.
+
+## Where technical voice is still required
 
 This rule applies to chat replies only. Artifacts written into the
-repo MUST keep the appropriate technical detail their context
-requires. Do not "simplify" the following:
+repo MUST keep the technical detail their context requires. Do not
+"simplify" these — the audit scripts and downstream consumers depend
+on the exact vocabulary:
 
 - **`uds-docs/docs/data/site-changelog.js` entries** — see
   [`uds-site-changelog.mdc`](./uds-site-changelog.mdc). Entries are
@@ -49,8 +85,17 @@ requires. Do not "simplify" the following:
 - **Code** — HTML, CSS, JS, shell scripts. Use the vocabulary the
   codebase already uses.
 
-When in doubt, ask whether a longer technical explanation would help
-rather than writing one preemptively.
+If you're about to mention a file path, a function name, or a flag in
+the chat body, stop and ask: is the user going to act on this
+information as a designer, or as a developer? If designer, drop the
+technical bit. If developer, they'll ask.
+
+## When in doubt
+
+- Default to less technical, not more.
+- Offer to "show the technical detail" rather than dumping it.
+- If a long explanation feels necessary, ask first: "Want the short
+  answer or the walk-through?"
 
 ## Relation to other rules
 
@@ -61,6 +106,7 @@ rather than writing one preemptively.
   [`uds-figma-change-classification.mdc`](./uds-figma-change-classification.mdc),
   or any other content-shape rule. Those rules describe what
   artifacts must say. This rule describes how chat responses sound.
-- Companion personal-rule text (Cursor Settings → Rules → User
-  Rules) covers the same chat-tone preference globally so it follows
-  the user's account into other projects and cloud agent sessions.
+- Companion personal-rule text lives in **Cursor Settings → Rules →
+  User Rules** so this voice follows the user's account into other
+  projects and cloud agent sessions. The User Rule and this workspace
+  rule must stay in sync; if you update one, update the other.
