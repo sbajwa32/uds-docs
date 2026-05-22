@@ -302,83 +302,76 @@ export const SITE_CHANGELOG = [
       version: 'SITE 2026.04.21.1',
       date: '2026-04-21',
       changes: [
-        { type: 'changed', text: 'Site reshape Phase 1: pivoting to design-to-engineering handoff spec. Storybook will now handle framework-specific (React/Vue) component implementations.' },
-        { type: 'removed', text: 'All React/Vue code generation stripped from Playgrounds, Code tabs, Implementation Reference, and Demo Builder. Doc site now shows vanilla HTML/CSS/JS only.' },
-        { type: 'removed', text: 'Framework selector bar removed from component pages (CODE_TAB_CONFIGS, buildFrameworkBar, currentFramework, setFramework, getReactBehavior, getVueBehavior)' },
+        { type: 'changed', text: 'Pivoted to a design-to-engineering handoff spec — Storybook will handle React/Vue component implementations going forward.' },
+        { type: 'removed', text: 'All React/Vue code generation stripped from Playgrounds, Code tabs, Implementation Reference, and Demo Builder. The doc site shows vanilla HTML/CSS/JS only now.' },
+        { type: 'removed', text: 'Framework selector bar removed from component pages.' },
         { type: 'removed', text: 'Demo Builder simplified to vanilla HTML only. Vite ZIP scaffolds for React/Vue removed.' },
-        { type: 'removed', text: 'versions/0.1/ snapshot directory deleted — fresh start for next release' }
+        { type: 'removed', text: 'Old versions/0.1/ snapshot deleted — fresh start for the next release.' }
       ]
     },
     {
       version: 'SITE 2026.04.21.2',
       date: '2026-04-21',
       changes: [
-        { type: 'changed', text: 'Site reshape Phase 2: per-component spec content moved from hand-coded HTML to JSON files (content/*.json) with schema and client-side renderer.' },
-        { type: 'added', text: 'content/schema.json — JSON schema for per-component spec data (description, props, events, slots, states, accessibility, owner, etc.)' },
-        { type: 'added', text: 'content/<component>.json — 21 initial JSON files populated from existing Usage content and IMPL_DATA' },
-        { type: 'added', text: 'Guidelines tab (renamed from Usage) rendered by renderGuidelines() from JSON. Empty sections are hidden automatically.' },
-        { type: 'added', text: 'Spec completeness indicator: "Spec X/Y" pill next to each component title + colored dot in sidebar (green ≥80%, yellow 50–80%, red <50%)' }
+        { type: 'changed', text: 'Per-component spec content moved from hand-coded HTML into JSON files (content/*.json) with a schema and a client-side renderer.' },
+        { type: 'added', text: 'content/schema.json — JSON schema for per-component spec data (description, props, events, slots, states, accessibility, owner).' },
+        { type: 'added', text: 'content/<component>.json — 21 initial files populated from existing Usage content.' },
+        { type: 'added', text: 'Guidelines tab (renamed from Usage) renders from JSON. Empty sections are hidden automatically.' },
+        { type: 'added', text: 'Spec completeness indicator: "Spec X/Y" pill next to each component title plus a colored dot in the sidebar (green ≥80%, yellow 50–80%, red <50%).' }
       ]
     },
     {
       version: 'SITE 2026.04.28.1',
       date: '2026-04-28',
       changes: [
-        { type: 'added', text: 'Site reshape Phase 3: component page header enhancements.' },
-        { type: 'added', text: '"View in Storybook" button on every component page (placeholder URL until Storybook is live)' },
-        { type: 'added', text: '"Report Issue" button — opens a GitHub issue template prefilled with component context' },
-        { type: 'added', text: '"Not production-ready" banner appears on any component whose status is not "production"' },
-        { type: 'added', text: '"Last updated" collapsible box at the top of every component page showing the last 1-2 changelog entries with type pills (added/changed/fixed/removed)' },
-        { type: 'added', text: '"Example only" banner at the top of Examples / Code / Playground tab panels — reinforces that the doc site is reference, Storybook is production' },
-        { type: 'changed', text: 'Figma button now reads "Figma (variant)" when a per-variant node ID is present in the JSON content' }
+        { type: 'added', text: '"View in Storybook" button on every component page (placeholder URL until Storybook is live).' },
+        { type: 'added', text: '"Report Issue" button — opens a GitHub issue template prefilled with component context.' },
+        { type: 'added', text: '"Not production-ready" banner on any component whose status is not Production.' },
+        { type: 'added', text: '"Last updated" collapsible box at the top of every component page showing the last few changelog entries.' },
+        { type: 'added', text: '"Example only" banner on Examples / Code / Playground tabs — reminder that this site is reference, Storybook is production.' },
+        { type: 'changed', text: 'Figma button now reads "Figma (variant)" when a per-variant node ID is present in the spec.' }
       ]
     },
     {
       version: 'SITE 2026.04.28.2',
       date: '2026-04-28',
       changes: [
-        { type: 'added', text: 'Site reshape Phase 4: 8 new pages and reorganized sidebar.' },
-        { type: 'added', text: 'Composition Recipes page — curated multi-component patterns (Modal form, Searchable data table, Settings panel, App shell)' },
-        { type: 'added', text: 'Layout Templates page — starter page structures (App shell, Settings, Data browsing, Marketing landing)' },
-        { type: 'added', text: 'Glossary page — UDS terminology reference (15+ definitions)' },
-        { type: 'added', text: 'FAQ page — 10 placeholder Q&A covering theming, tokens, requests, versioning' },
-        { type: 'added', text: 'How to Contribute page — 9-step workflow for designers proposing new components, plus draft and editing guidance' },
-        { type: 'added', text: 'Roadmap page — Foundation prerequisites, auto-rendered components table from COMPONENT_STATUS, and site-feature roadmap' },
-        { type: 'added', text: 'Platform Support page — browser compatibility, performance baseline, web component lifecycle, SSR notes (replaces per-component Browser Compat / Performance sections)' },
-        { type: 'added', text: 'Migration Guides page — per-version upgrade notes, starting with 0.1 → 0.2' },
-        { type: 'changed', text: 'Sidebar reorganized: existing groups + new Patterns and Reference groups at the bottom' }
+        { type: 'added', text: 'Composition Recipes page — curated multi-component patterns (Modal form, Searchable data table, Settings panel, App shell).' },
+        { type: 'added', text: 'Layout Templates page — starter page structures (App shell, Settings, Data browsing, Marketing landing).' },
+        { type: 'added', text: 'Glossary page — UDS terminology reference.' },
+        { type: 'added', text: 'FAQ page covering theming, tokens, requests, and versioning.' },
+        { type: 'added', text: 'How to Contribute page — workflow for designers proposing new components, plus draft and editing guidance.' },
+        { type: 'added', text: 'Roadmap page — foundation prerequisites, auto-rendered components table, and site-feature roadmap.' },
+        { type: 'added', text: 'Platform Support page — browser compatibility, performance baseline, web component lifecycle, SSR notes.' },
+        { type: 'added', text: 'Migration Guides page — per-version upgrade notes, starting with 0.1 → 0.2.' },
+        { type: 'changed', text: 'Sidebar reorganized to add Patterns and Reference groups at the bottom.' }
       ]
     },
     {
       version: 'SITE 2026.04.28.3',
       date: '2026-04-28',
       changes: [
-        { type: 'added', text: 'Site reshape Phase 5: token search, draft mode, and realistic data examples.' },
-        { type: 'added', text: 'Token search modal — open with / or Cmd/Ctrl+K. Indexes every --uds-* custom property, fuzzy-matches name+value, click a result to copy var(--name) to the clipboard.' },
-        { type: 'added', text: 'Draft mode — set "draft": true in content/<component>.json to hide a component from production. Append ?draft=1 to any URL to view drafts with a DRAFT watermark.' },
-        { type: 'added', text: 'Realistic data examples on data-consuming components (Data Table, List, Dropdown, Search, Breadcrumb): tiny / large / long-content / empty / loading-state previews showing how the component handles real-world content.' }
+        { type: 'added', text: 'Token search modal — open with / or Cmd/Ctrl+K. Indexes every --uds-* token, fuzzy-matches name and value, click a result to copy var(--name) to the clipboard.' },
+        { type: 'added', text: 'Draft mode — set "draft": true on a component\'s spec to hide it from production. Append ?draft=1 to any URL to view drafts with a watermark.' },
+        { type: 'added', text: 'Realistic-data examples on data-consuming components (Data Table, List, Dropdown, Search, Breadcrumb) — tiny / large / long-content / empty / loading-state previews so you can see how each component handles real content.' }
       ]
     },
     {
       version: 'SITE 2026.04.28.4',
       date: '2026-04-28',
       changes: [
-        { type: 'changed', text: 'Site reshape Phase 6: AI context, Cursor rules, pre-flight, and Getting Started updated for the doc-site-as-spec model.' },
-        { type: 'changed', text: 'ai-context.json: dropped framework_rules.react/vue and per-component react/vue snippets. Added storybookUrl, exampleOnlyNote, specSourceOfTruth (links to per-component JSON), and tokenArchitecture/criticalRules now point at Storybook for production component code.' },
-        { type: 'changed', text: 'uds-design-system.mdc: removed Framework Detection, React/Vue boilerplate, and React/Vue compliance items. Added Storybook reference, "for production code use Storybook" guidance, and "When You Need More Detail" section pointing to per-component JSON spec.' },
-        { type: 'changed', text: 'AI Assist page: removed Framework Patterns tab. Updated Rules tab to "For Production Code". Updated machine-readable summary block to describe the two-layer architecture (tokens + Storybook components).' },
-        { type: 'removed', text: 'Cursor rule uds-framework-code-quality.mdc — banned React/Vue patterns no longer apply.' },
-        { type: 'added', text: 'Cursor rule uds-content-schema.mdc — enforces JSON-driven spec editing (never re-introduce component HTML to index.html).' },
-        { type: 'changed', text: 'Cursor rules uds-master-preflight, uds-component-checklist, uds-site-changelog, uds-token-first-css, uds-release-workflow: paths updated from uds-prototype/ to uds-docs/. Component checklist rewritten around JSON content, vanilla-only playgrounds, and Guidelines tab being JSON-rendered.' },
-        { type: 'changed', text: 'Pre-flight dialog: replaced "Sample Code Standards" section with "Content Schema" section.' },
-        { type: 'changed', text: 'Getting Started page: rewrote Setup section as "Two Layers" (tokens + Storybook web components). Removed React/Vue per-framework setup. Updated tab descriptions to mention Guidelines tab and realistic data examples. Added token search shortcut hint.' }
+        { type: 'changed', text: 'AI context, Cursor rules, pre-flight, and Getting Started updated for the doc-site-as-spec model — every reference to React/Vue boilerplate now points at Storybook for production code.' },
+        { type: 'removed', text: 'Cursor rule uds-framework-code-quality.mdc — the banned React/Vue patterns it covered no longer apply.' },
+        { type: 'added', text: 'New Cursor rule uds-content-schema.mdc — enforces JSON-driven spec editing so component HTML stays out of index.html.' },
+        { type: 'changed', text: 'Pre-flight dialog: "Sample Code Standards" section replaced with "Content Schema".' },
+        { type: 'changed', text: 'Getting Started rewritten around the two-layer architecture (tokens + Storybook web components). Per-framework setup, React/Vue snippets, and the Framework Patterns tab are gone.' }
       ]
     },
     {
       version: 'SITE 2026.04.28.5',
       date: '2026-04-28',
       changes: [
-        { type: 'changed', text: 'Site reshape Phase 7 (final cleanup): uds/package.json description rewritten to reflect tokens-only scope (with pointer to Storybook for components). Stale "(React/Vue)" labels removed from remaining headings and copy. End of the reshape — site has fully pivoted to the design-to-engineering handoff spec model.' }
+        { type: 'changed', text: 'Final cleanup of the design-spec pivot: uds/package.json description now reflects the tokens-only scope (with a pointer to Storybook for components), and the stale "(React/Vue)" labels left in headings and copy are gone.' }
       ]
     },
     {
@@ -421,18 +414,17 @@ export const SITE_CHANGELOG = [
       version: 'SITE 2026.04.29.4',
       date: '2026-04-29',
       changes: [
-        { type: 'fixed', text: 'Audit fix #3: corrected non-existent token reference in uds-design-system.mdc and 6 places in index.html — `--uds-color-border-default` → `--uds-color-border-primary` (the actual token name in semantic.css). Borders that were silently rendering with no `var()` fallback now render correctly.' },
-        { type: 'fixed', text: 'Audit fix #4: IMPL_DATA.button HTML used `data-icon-position="leading"` (not a real attribute). Replaced with the actual `data-leading-icon` and added an icon-only variant. Copy-paste from Implementation Reference no longer produces broken icon spacing.' },
-        { type: 'fixed', text: 'Audit fix #5: added `?v=1` cache-bust query param to `material-icons.js` script tag, aligning with the SITE cache discipline.' },
-        { type: 'fixed', text: 'Audit fix #6: Roadmap site-features list — Token search status changed from In Progress to Shipped (it shipped in SITE 2026.04.28.3).' },
-        { type: 'fixed', text: 'Audit fix #7: demo-builder.js header comment rewritten — no longer claims React/Vue live previews.' },
-        { type: 'fixed', text: 'Audit fix #8: text-styles demo inline script no longer hardcodes `#6b7280` — now uses `var(--uds-color-text-secondary)` and `var(--uds-font-size-xs)`. Dogfooding fix.' },
-        { type: 'changed', text: 'Audit fix #10: Demo Builder header tooltip clarified — "Build a multi-component HTML demo".' },
-        { type: 'added', text: 'Audit fix #11: Spec X/22 pill on every component page is now an interactive button. Click it to open a popover that lists exactly which fields are filled vs missing (with friendly labels for all 22 fields), explains what motion/responsive deferral means, and links the user to the matching content/<component>.json.' },
-        { type: 'changed', text: 'Audit fix #18: removed static Guidelines HTML from all 21 component pages — every `<div data-tab-panel="guidelines">` is now empty in source. Guidelines tab content is rendered exclusively by `renderGuidelines()` from `content/<component>.json`. Aligns with the uds-content-schema.mdc rule.' },
-        { type: 'removed', text: 'Audit fix #19: stripped 21 dead `react: function () {…}` and 21 dead `vue: function () {…}` properties from IMPL_DATA (~114 lines). Nothing read these — `buildImplSection` only ever called `data.html()`.' },
-        { type: 'changed', text: 'Audit fix #20 (partial): removed 12 trivial dead `var reactCode = X.join("\\n")` / `var vueCode = …` assignments from PLAYGROUNDS render functions. ~25 more references remain inside inline string-builder declarations with embedded JS function expressions; those need a JS-parser-aware tool to remove safely and are deferred.' },
-        { type: 'changed', text: 'Audit fix #21: removed `cssFile` field from all 21 IMPL_DATA entries. The Implementation Reference styles tab now reads the CSS path from `content/<component>.json` `dependencies.css[0]` via `loadContent()`. Single source of truth for CSS dependencies — JSON wins.' }
+        { type: 'fixed', text: 'Corrected a non-existent border token reference (`--uds-color-border-default`) to the real token (`--uds-color-border-primary`) in the Cursor rule and six places in index.html. Borders that had been silently failing now render.' },
+        { type: 'fixed', text: 'Button Implementation Reference markup used a non-existent `data-icon-position="leading"` attribute; switched to the real `data-leading-icon` and added an icon-only variant. Copy-pasting from Code tab now produces correct icon spacing.' },
+        { type: 'fixed', text: 'Added the standard `?v=` cache-bust to the material-icons.js script tag, lining up with the rest of the site\'s cache discipline.' },
+        { type: 'fixed', text: 'Roadmap site-features list: Token search marked Shipped (it landed earlier the same week).' },
+        { type: 'fixed', text: 'Demo Builder header comment in demo-builder.js no longer claims React/Vue live previews.' },
+        { type: 'fixed', text: 'Text-styles demo no longer hardcodes a hex color — now uses the secondary-text and xs-size tokens. Dogfooding fix.' },
+        { type: 'changed', text: 'Demo Builder header tooltip clarified to "Build a multi-component HTML demo".' },
+        { type: 'added', text: 'Spec X/22 pill on each component page is now a clickable popover that lists exactly which fields are filled and which are missing, explains what the deferred motion/responsive fields are, and links to the source spec file.' },
+        { type: 'changed', text: 'Removed all leftover static Guidelines HTML from component pages. The Guidelines tab is now rendered exclusively from each component\'s spec JSON, matching the uds-content-schema rule.' },
+        { type: 'removed', text: 'Stripped ~114 lines of dead `react: function () {}` and `vue: function () {}` properties from the Implementation Reference data — nothing read them once the design-spec pivot landed.' },
+        { type: 'changed', text: 'Removed the per-component `cssFile` field; the Implementation Reference now reads each component\'s CSS path from its spec JSON, so there\'s a single source of truth.' }
       ]
     },
     {
@@ -448,9 +440,9 @@ export const SITE_CHANGELOG = [
       version: 'SITE 2026.04.29.6',
       date: '2026-04-29',
       changes: [
-        { type: 'changed', text: 'Spec audit follow-up — populated 9 component spec JSONs (`content/badge.json`, `divider.json`, `icon-wrapper.json`, `spacer.json`, `button.json`, `text-input.json`, `dropdown.json`, `data-table.json`, `dialog.json`) with `props`, `events`, `slots`, `states`, `acceptanceCriteria`, `accessibility.keyboard`, `accessibility.screenReader`, `accessibility.wcag`, `dosDonts`, `commonlyPairedWith`, `contentGuidelines`, `visualHierarchy`, and `densityBehavior` derived from existing CSS implementations and rendered examples. Average completeness across these 9 went from 22% → 80%+; the four decorative primitives now explicitly document their non-interactive a11y model so screen-reader audits can verify coverage. The Dropdown spec also flags the `add_circle_outline` default leading-icon as a known issue per the visual inspection report.' },
-        { type: 'fixed', text: '`renderGuidelines()` HTML-injection bug — `sectionProse()`, the `Acceptance Criteria` checklist, and `<code>` cells for prop/event/slot/state names all used `innerHTML` with unescaped user content. As soon as a spec mentioned literal HTML element names (e.g. `<input>`, `<button>`), the renderer parsed them as real elements (the Text Input acceptance-criteria list was actually rendering an empty input field inline). Now uses `textContent` for prose and the existing `esc()` helper for code-cell names.' },
-        { type: 'fixed', text: '`uds-docs/bump-site.sh`: replaced BSD-only `sed -i \'\'` with portable `sed -i.bak` + cleanup so the preflight bump script works the same on macOS and Linux Cloud Agent VMs. Removed the matching warning from `AGENTS.md`.' }
+        { type: 'changed', text: 'Spec audit follow-up: filled in nine component specs (badge, divider, icon-wrapper, spacer, button, text-input, dropdown, data-table, dialog) with props, events, slots, states, accessibility, do/don\'ts, and commonly-paired-with — derived from the existing CSS and examples. Average completeness across the nine jumped from 22% to 80%+, and the four decorative primitives now document their non-interactive a11y model explicitly so screen-reader audits can verify coverage.' },
+        { type: 'fixed', text: 'Guidelines tab no longer parses literal HTML tag names as live elements. Spec prose, the Acceptance Criteria checklist, and the prop/event/slot code cells all switched from innerHTML to textContent + the existing escape helper, so a spec that mentions `<input>` or `<button>` no longer ended up rendering one inline.' },
+        { type: 'fixed', text: 'bump-site.sh now uses portable sed flags so it works on both macOS and Linux Cloud Agent VMs.' }
       ]
     },
     {
