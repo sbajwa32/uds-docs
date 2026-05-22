@@ -1,7 +1,7 @@
 ---
 description: Default chat tone for this repo + voice for human-facing docs prose. Talk to the user as a senior product designer, not a developer — concise, plain language, technical terms only when they're the clearest word. Same voice applies to rendered docs pages, spec.json prose fields, dosDonts, and README. Technical voice stays non-negotiable for code, schemas, changelogs, audits, commits, and PR descriptions.
 alwaysApply: true
-lastUpdated: 2026-05-22T02:27:33Z
+lastUpdated: 2026-05-22T02:47:48Z
 ---
 
 # Communication Style
@@ -94,6 +94,10 @@ That covers:
 - **`uds-docs/README.md` and `uds-docs/AGENTS.md` narrative sections**
   — same audience, same voice.
 
+**Not in scope: anything under `.cursor/`** (rules, skills, agents).
+Those are agent-consumed instructions — see the technical-voice table
+below.
+
 Same rules apply: lead with the answer, plain language, technical
 terms when they're the clearest word. Don't write "canonical
 ratification of the proposed pattern" when "a pattern we still need to
@@ -117,6 +121,7 @@ all depend on the exact vocabulary.
 |---|---|
 | **Code itself** (HTML, CSS, JS, shell scripts) | Use the vocabulary the codebase already uses. Code is for runtime, not for reading comfort. |
 | **Code comments** | Only there to explain WHY or non-obvious intent. When they exist, they're precise — name the constraint, the trade-off, the bug they're working around. |
+| **`.cursor/rules/*.mdc`, `.cursor/skills/*/SKILL.md`, `.cursor/agents/*.md`** | Agent-consumed instructions. The agent needs the exact file paths, schema field names, script names, and command flags to execute. Use the vocabulary the agent will encounter at runtime. Plain-language rationale wrapping is fine, but the operational detail must stay precise. |
 | **JSON schemas** (`uds-docs/uds/schemas/*.json`) | Full schema vocabulary, no creative paraphrasing. Editors validate against these. |
 | **Per-component `changelog.json` `entries[]`** | Each entry references real tokens, props, file paths, states. `audit-changelog-currency.sh` and the aggregator depend on this. See [`uds-release-workflow.mdc`](./uds-release-workflow.mdc). |
 | **`SITE_CHANGELOG` entries** in `uds-docs/docs/data/site-changelog.js` | Typed (`added` / `changed` / `fixed` / `removed`), scoped, reference real file paths. See [`uds-site-changelog.mdc`](./uds-site-changelog.mdc). |

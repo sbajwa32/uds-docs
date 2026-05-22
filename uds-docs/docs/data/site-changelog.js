@@ -984,6 +984,16 @@ export const SITE_CHANGELOG = [
         { type: 'changed', text: '`.cursor/TOOLCHAIN.md` regenerated via `bash scripts/regenerate-toolchain.sh` to pick up the new `communication-style` `lastUpdated` and `description:`. Counts unchanged (20 rules + 9 skills + 7 agents = 36 entries).' },
         { type: 'changed', text: 'SITE bumped 2026.05.22.1 &rarr; 2026.05.22.2 (same day, counter incremented per `bump-site.sh`). `app.js?v=` bumped 139 &rarr; 140 because `docs/data/site-changelog.js` changed again. `site.css?v=`, `uds.css?v=`, `uds.js?v=`, and `demo-builder/index.js?v=` unchanged. `cursor-workflows.html` cache-busts via the runtime fetch helper.' }
       ]
+    },
+    {
+      version: 'SITE 2026.05.22.3',
+      date: '2026-05-22',
+      changes: [
+        { type: 'added', text: '`.cursor/rules/communication-style.mdc` &mdash; closed a gap surfaced during self-review of this branch. A literal-minded agent reading the "Voice extends to human-facing docs prose" section could plausibly extend it to `.cursor/rules/*.mdc`, `.cursor/skills/*/SKILL.md`, or `.cursor/agents/*.md` because those are markdown files humans review &mdash; and then start softening the operational detail (file paths, schema field names, script names, command flags) that future agents need verbatim to execute. Fix: (1) added a "Not in scope: anything under `.cursor/`" callout inside the human-facing-prose section that explicitly punts these files to the technical-voice table; (2) added a new row to the "Where technical voice is non-negotiable" table for `.cursor/rules/*.mdc`, `.cursor/skills/*/SKILL.md`, `.cursor/agents/*.md` with the reason: "Agent-consumed instructions. The agent needs the exact file paths, schema field names, script names, and command flags to execute. Use the vocabulary the agent will encounter at runtime. Plain-language rationale wrapping is fine, but the operational detail must stay precise." Frontmatter `lastUpdated:` bumped to `2026-05-22T02:47:48Z`.' },
+        { type: 'changed', text: '`uds-docs/docs/pages/cursor-workflows.html` &mdash; appended "and the `.cursor/` rule/skill/agent files themselves (agents need the exact file paths and script names to execute)" to the enumeration of non-negotiable technical-voice artifacts in the `communication-style` row, mirroring the rule update.' },
+        { type: 'changed', text: '`.cursor/TOOLCHAIN.md` regenerated. Counts unchanged (20 rules + 9 skills + 7 agents = 36 entries).' },
+        { type: 'changed', text: 'SITE bumped 2026.05.22.2 &rarr; 2026.05.22.3. `app.js?v=` bumped 140 &rarr; 141 because `docs/data/site-changelog.js` changed. Other cache-bust params unchanged.' }
+      ]
     }
 ];
 
