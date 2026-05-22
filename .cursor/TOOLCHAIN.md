@@ -47,10 +47,10 @@ the manual fallback when the hook hasn't run.
 
 | File | Last updated (UTC) | Description |
 |---|---|---|
-| [`communication-style.mdc`](./rules/communication-style.mdc) | `2026-05-14T19:00:30Z` | Default chat tone for this repo. Keep agent responses concise and in plain language; reserve technical voice for artifacts that need it… |
+| [`communication-style.mdc`](./rules/communication-style.mdc) | `2026-05-22T02:52:24Z` | Default chat tone for this repo + voice for human-facing docs prose. Talk to the user as a senior product designer, not a developer —… |
 | [`uds-component-checklist.mdc`](./rules/uds-component-checklist.mdc) | `2026-05-12T18:41:50Z` | Checklist for implementing or updating a UDS component — ensures the per-component folder is whole and consistent across CSS, spec,… |
 | [`uds-content-schema.mdc`](./rules/uds-content-schema.mdc) | `2026-05-12T18:41:50Z` | When editing per-component spec content, edit the spec.json INSIDE that component's folder — never re-introduce component spec content into… |
-| [`uds-design-language.mdc`](./rules/uds-design-language.mdc) | `2026-05-21T16:30:00Z` | Canonical UDS visual language extracted from existing component CSS. State constructions… |
+| [`uds-design-language.mdc`](./rules/uds-design-language.mdc) | `2026-05-21T18:24:08Z` | How every UDS component handles each state, extracted from existing component CSS. State constructions… |
 | [`uds-figma-change-classification.mdc`](./rules/uds-figma-change-classification.mdc) | `2026-05-12T18:41:50Z` | Classifies Figma-derived token and component changes by confidence and breaking-change risk before anything is applied. |
 | [`uds-figma-component-card-update.mdc`](./rules/uds-figma-component-card-update.mdc) | `2026-05-12T19:49:37Z` | Update-mode companion to uds-figma-component-card.mdc. Defines what to do when the figma-component-card skill is re-run on a page that… |
 | [`uds-figma-component-card.mdc`](./rules/uds-figma-component-card.mdc) | `2026-05-21T16:08:00Z` | Canonical card layout for UDS Components Figma pages. Defines the seven-card structure, token bindings, and read-only contract against… |
@@ -78,7 +78,7 @@ the manual fallback when the hook hasn't run.
 | [`link-figma-nodes`](./skills/link-figma-nodes/SKILL.md) | `2026-05-12T18:41:50Z` | Populate figmaNodeId and figmaPageNodeId fields in per-component spec.json files from canonical UDS Components Figma nodes. Use when Figma… |
 | [`new-component`](./skills/new-component/SKILL.md) | `2026-05-21T18:15:30Z` | Scaffold a new UDS component end to end. Creates uds/components/<id>/ with all required files (CSS stub, spec.json, status.json,… |
 | [`sync-figma-component-spec`](./skills/sync-figma-component-spec/SKILL.md) | `2026-05-13T20:34:33Z` | Update a UDS component's per-component artifacts (spec.json, CSS, examples, impl.json, playground.js, figmanotes.json) from a deep Figma… |
-| [`sync-figma-component-status`](./skills/sync-figma-component-status/SKILL.md) | `2026-05-12T18:41:50Z` | Sync UDS Components Figma stoplight page prefixes into per-component status.json files. Use after figma-inventory reports status mismatches. |
+| [`sync-figma-component-status`](./skills/sync-figma-component-status/SKILL.md) | `2026-05-21T19:06:12Z` | Sync UDS Components Figma stoplight page prefixes into per-component status.json files. Use after figma-inventory reports status mismatches. |
 | [`sync-figma-release-notes`](./skills/sync-figma-release-notes/SKILL.md) | `2026-05-12T18:41:50Z` | Rebuild Release Notes frames in both UDS Figma files from the aggregated UDS CHANGELOG. Use during releases or after CHANGELOG changes that… |
 | [`uds-updated`](./skills/uds-updated/SKILL.md) | `2026-05-13T17:54:48Z` | Orchestrate a full UDS Figma-to-docs sync from a simple prompt like "UDS updated" or "Figma updated". Reads Figma Tokens and Components,… |
 

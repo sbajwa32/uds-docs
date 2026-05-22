@@ -2551,42 +2551,6 @@ function renderRealisticData() {
     });
 }
 
-// Render the Roadmap > Components table from COMPONENT_STATUS.
-function renderRoadmapComponents() {
-    var slot = document.getElementById('sg-roadmap-components');
-    if (!slot || typeof COMPONENT_STATUS === 'undefined') return;
-
-    // Map stoplight status -> roadmap status tag
-    var statusToTag = {
-      'placeholder': 'proposed',
-      'blocked':     'proposed',
-      'in-progress': 'in-progress',
-      'review':      'in-progress',
-      'production':  'done',
-      'deprecated':  'done'
-    };
-
-    var ids = Object.keys(COMPONENT_STATUS).sort();
-    var html = '<table class="sg-roadmap-comp-table"><thead><tr>' +
-               '<th>Component</th><th>Status</th><th>Since</th><th>Spec</th>' +
-               '</tr></thead><tbody>';
-    ids.forEach(function (id) {
-      var info = COMPONENT_STATUS[id];
-      var meta = STATUS_LABELS[info.status] || { label: info.status };
-      var tagStatus = statusToTag[info.status] || 'proposed';
-      var score = completenessScores[id];
-      var scoreLabel = score ? score.filled + '/' + score.total : '—';
-      html += '<tr>' +
-              '<td><a href="#/' + id + '">' + (id.charAt(0).toUpperCase() + id.slice(1).replace(/-/g, ' ')) + '</a></td>' +
-              '<td><span class="sg-roadmap-tag" data-status="' + tagStatus + '">' + meta.label + '</span></td>' +
-              '<td>' + (info.since || '—') + '</td>' +
-              '<td>' + scoreLabel + '</td>' +
-              '</tr>';
-    });
-    html += '</tbody></table>';
-    slot.innerHTML = html;
-}
-
 // Add an "Example only" banner to the top of every code-bearing tab panel.
 function renderExampleOnlyBanners() {
     var bannerHTML = '<span class="material-symbols-outlined">code_blocks</span><span><strong>Example only.</strong> All code on this page is reference. Production components live in Storybook.</span>';
@@ -2743,10 +2707,6 @@ registerPageLoadHook('changelog', function () {
     renderSiteChangelog();
 });
 
-registerPageLoadHook('roadmap', function () {
-    componentsReady.then(renderRoadmapComponents);
-});
-
 // AI Assist page initialization (download buttons etc.) — runs once after
 // the fragment loads.
 registerPageLoadHook('ai-assist', function () {
@@ -2865,7 +2825,6 @@ componentsReady.then(function () {
   renderComponentHeaderExtras();
   preloadAllContent();
   applyDraftMode();
-  // renderRoadmapComponents() — DEFERRED to roadmap page load hook (Phase 5)
 });
 
 function initAiAssistPage() {

@@ -1,5 +1,5 @@
         <h1 class="sg-page-title">Design Language</h1>
-        <p class="sg-page-desc">How UDS states actually look. Every preview below is derived from real component CSS — when components disagree, both patterns are shown and the disagreement is surfaced for ratification.</p>
+        <p class="sg-page-desc">How UDS components look in each state. Every preview on this page is a real component &mdash; the colors come from the same tokens as production. Where components disagree on the same state, both are shown so we can pick one.</p>
 
 <style>
 /* ============================================================
@@ -92,17 +92,7 @@
 .sg-dl-section:first-of-type { margin-top: 0; }
 
 .sg-dl-section-header {
-  display: flex;
-  align-items: baseline;
-  gap: var(--uds-space-150);
-  margin: 0 0 var(--uds-space-150);
-  padding-bottom: var(--uds-space-100);
-  border-bottom: 1px solid var(--uds-color-border-secondary);
-}
-.sg-dl-section-num {
-  font-family: monospace;
-  font-size: var(--uds-font-size-md);
-  color: var(--uds-color-text-secondary);
+  margin: 0 0 var(--uds-space-100);
 }
 .sg-dl-section-title {
   font-family: var(--uds-font-family);
@@ -110,6 +100,7 @@
   font-weight: var(--uds-font-weight-bold);
   color: var(--uds-color-text-primary);
   margin: 0;
+  line-height: 1.2;
 }
 .sg-dl-section-lede {
   font-family: var(--uds-font-family);
@@ -151,7 +142,6 @@
 .sg-dl-state-card-tag {
   font-size: var(--uds-font-size-xs);
   color: var(--uds-color-text-secondary);
-  font-family: monospace;
 }
 
 /* Live preview area inside a state card */
@@ -164,12 +154,9 @@
   border-radius: var(--uds-border-radius-container-sm);
   align-items: stretch;
 }
+/* (legacy class kept for any straggling occurrences; visually neutral) */
 .sg-dl-preview-label {
-  font-size: var(--uds-font-size-xs);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--uds-color-text-secondary);
-  font-weight: var(--uds-font-weight-bold);
+  display: none;
 }
 
 /* Token chip row — replaces dense tables in state cards */
@@ -462,11 +449,9 @@
 .sg-dl-preview .udc-button-ghost { max-width: fit-content; }
 </style>
 
-<!-- Header meta -->
+<!-- Header meta — one line, designer-friendly -->
 <div class="sg-dl-meta">
-  <span class="sg-dl-meta-stat"><span class="material-symbols-outlined" style="font-size:18px;color:var(--uds-color-icon-secondary);">database</span> Derived from <strong>16 component CSS files</strong></span>
-  <span class="sg-dl-meta-stat"><span class="material-symbols-outlined" style="font-size:18px;color:var(--uds-color-icon-secondary);">tune</span> <strong>5 known inconsistencies</strong> surfaced for ratification</span>
-  <span class="sg-dl-meta-stat"><span class="material-symbols-outlined" style="font-size:18px;color:var(--uds-color-icon-secondary);">code</span> Agent canon: <code style="font-family:monospace;">.cursor/rules/uds-design-language.mdc</code></span>
+  <span class="sg-dl-meta-stat"><span class="material-symbols-outlined" style="font-size:18px;color:var(--uds-color-icon-secondary);">lightbulb</span> Reflects how every UDS component handles state today. Five differences between components are flagged at the bottom for us to talk through.</span>
 </div>
 
 <!-- Two-column layout: sticky ToC + main content -->
@@ -486,7 +471,7 @@
       <li><a href="#elevation">8. Elevation</a></li>
       <li><a href="#radius">9. Border radius</a></li>
       <li><a href="#density">10. Density / sizing</a></li>
-      <li><a href="#naming">11. Naming canon</a></li>
+      <li><a href="#naming">11. Naming guidance</a></li>
       <li><a href="#inconsistencies">12. Known inconsistencies</a></li>
     </ul>
   </aside>
@@ -499,7 +484,6 @@
      ============================================================ -->
 <section class="sg-dl-section" id="interaction-states">
   <header class="sg-dl-section-header">
-    <span class="sg-dl-section-num">01</span>
     <h2 class="sg-dl-section-title">Interaction states</h2>
   </header>
   <p class="sg-dl-section-lede">Four states an interactive element moves through: at rest, pointer-over, pressed, and keyboard-focused. Each preview below is a real UDS component rendered in that state.</p>
@@ -603,7 +587,6 @@
      ============================================================ -->
 <section class="sg-dl-section" id="validation-states">
   <header class="sg-dl-section-header">
-    <span class="sg-dl-section-num">02</span>
     <h2 class="sg-dl-section-title">Validation states</h2>
   </header>
   <p class="sg-dl-section-lede">How fields, notifications, and badges communicate success, warning, error, and info.</p>
@@ -709,7 +692,6 @@
      ============================================================ -->
 <section class="sg-dl-section" id="availability-states">
   <header class="sg-dl-section-header">
-    <span class="sg-dl-section-num">03</span>
     <h2 class="sg-dl-section-title">Availability states</h2>
   </header>
   <p class="sg-dl-section-lede">Disabled means "you can't act here right now." Read-only means "this value is what it is." They look different on purpose.</p>
@@ -748,7 +730,7 @@
         <span class="sg-dl-state-card-tag">value is fixed</span>
       </div>
       <div class="sg-dl-preview">
-        <span class="sg-dl-preview-label">Live preview (proposed canon)</span>
+        <span class="sg-dl-preview-label">Live preview (proposed)</span>
         <div class="udc-text-input">
           <label class="udc-text-input__label">Property name</label>
           <div class="udc-text-input__field sg-dl-force-readonly">
@@ -773,7 +755,7 @@
       <div class="sg-dl-preview">
         <span class="sg-dl-preview-label">Status</span>
         <p style="font-size:var(--uds-font-size-sm);color:var(--uds-color-text-secondary);margin:0;line-height:1.55;">Not specified in UDS today. Components that need a loading look currently fall back to Disabled as the closest approximation.</p>
-        <p style="font-size:var(--uds-font-size-xs);color:var(--uds-color-text-secondary);margin:0;line-height:1.55;"><span class="sg-dl-badge sg-dl-badge--warn">deferred</span> Pending designer ratification.</p>
+        <p style="font-size:var(--uds-font-size-xs);color:var(--uds-color-text-secondary);margin:0;line-height:1.55;"><span class="sg-dl-badge sg-dl-badge--warn">deferred</span> Waiting on designer review.</p>
       </div>
     </div>
 
@@ -785,7 +767,6 @@
      ============================================================ -->
 <section class="sg-dl-section" id="selection-states">
   <header class="sg-dl-section-header">
-    <span class="sg-dl-section-num">04</span>
     <h2 class="sg-dl-section-title">Selection states</h2>
   </header>
   <p class="sg-dl-section-lede">How "this is the chosen one" reads visually. Filled elements (chip, toggle, checkbox) go more saturated. Outlined elements (tile, tab, radio) gain a colored marker and recolor text to <code style="font-family:monospace;">text-interactive</code>.</p>
@@ -854,7 +835,6 @@
      ============================================================ -->
 <section class="sg-dl-section" id="disabled-vs-readonly">
   <header class="sg-dl-section-header">
-    <span class="sg-dl-section-num">05</span>
     <h2 class="sg-dl-section-title">Disabled vs Read-only — quick reference</h2>
   </header>
   <p class="sg-dl-section-lede">Confusing these two is the most common spec-writing mistake. Use this table.</p>
@@ -882,7 +862,6 @@
      ============================================================ -->
 <section class="sg-dl-section" id="focus-ring">
   <header class="sg-dl-section-header">
-    <span class="sg-dl-section-num">06</span>
     <h2 class="sg-dl-section-title">Focus ring construction</h2>
   </header>
   <p class="sg-dl-section-lede">UDS has three focus-ring constructions in the current CSS. They're not interchangeable &mdash; pick one by the rules below, not by aesthetic preference.</p>
@@ -950,7 +929,6 @@
      ============================================================ -->
 <section class="sg-dl-section" id="surface-treatments">
   <header class="sg-dl-section-header">
-    <span class="sg-dl-section-num">07</span>
     <h2 class="sg-dl-section-title">Surface treatments</h2>
   </header>
   <p class="sg-dl-section-lede">Page surfaces, content surfaces, interactive surfaces, status surfaces. Full chip set with resolved colors. For the full token reference see <a href="#/semantic-colors" style="color:var(--uds-color-text-interactive);">Semantic Colors</a>.</p>
@@ -1001,7 +979,6 @@
      ============================================================ -->
 <section class="sg-dl-section" id="elevation">
   <header class="sg-dl-section-header">
-    <span class="sg-dl-section-num">08</span>
     <h2 class="sg-dl-section-title">Elevation / shadow scale</h2>
   </header>
   <p class="sg-dl-section-lede">Three depth levels plus a bento variant for dashboards. Pick by purpose, not by size. Live preview of each shadow below.</p>
@@ -1034,7 +1011,6 @@
      ============================================================ -->
 <section class="sg-dl-section" id="radius">
   <header class="sg-dl-section-header">
-    <span class="sg-dl-section-num">09</span>
     <h2 class="sg-dl-section-title">Border radius scale</h2>
   </header>
   <p class="sg-dl-section-lede">Two families: <code style="font-family:monospace;">input</code> for things you interact with, <code style="font-family:monospace;">container</code> for surfaces holding content.</p>
@@ -1066,7 +1042,6 @@
      ============================================================ -->
 <section class="sg-dl-section" id="density">
   <header class="sg-dl-section-header">
-    <span class="sg-dl-section-num">10</span>
     <h2 class="sg-dl-section-title">Density / sizing</h2>
   </header>
   <p class="sg-dl-section-lede">Two density tracks: default (comfortable) and small (filter rows, dense forms). Side-by-side live preview.</p>
@@ -1092,17 +1067,16 @@
 
   <div class="sg-dl-callout sg-dl-callout--info">
     <span class="sg-dl-callout-icon material-symbols-outlined">info</span>
-    <span><strong>No <code>lg</code> size in the canon today.</strong> Components that need a hero size should ratify with the designer before adding.</span>
+    <span><strong>No <code>lg</code> size in UDS yet.</strong> Components that need a bigger size should check with the designer before adding one.</span>
   </div>
 </section>
 
 <!-- ============================================================
-     11. NAMING CANON
+     11. NAMING GUIDANCE
      ============================================================ -->
 <section class="sg-dl-section" id="naming">
   <header class="sg-dl-section-header">
-    <span class="sg-dl-section-num">11</span>
-    <h2 class="sg-dl-section-title">Checked vs Selected vs Active &mdash; naming canon</h2>
+    <h2 class="sg-dl-section-title">Checked vs Selected vs Active &mdash; naming guidance</h2>
   </header>
   <p class="sg-dl-section-lede">Three words that get confused. Use the right one for the right element.</p>
 
@@ -1127,10 +1101,9 @@
      ============================================================ -->
 <section class="sg-dl-section" id="inconsistencies">
   <header class="sg-dl-section-header">
-    <span class="sg-dl-section-num">12</span>
-    <h2 class="sg-dl-section-title">Known inconsistencies <span class="sg-dl-badge sg-dl-badge--warn" style="margin-left:var(--uds-space-100);">designer ratification</span></h2>
+    <h2 class="sg-dl-section-title">Known inconsistencies <span class="sg-dl-badge sg-dl-badge--warn" style="margin-left:var(--uds-space-100);">needs review</span></h2>
   </header>
-  <p class="sg-dl-section-lede">Five real disagreements between components in the current CSS. Surfacing them for ratification. Until ratified, factory builds default to the most theme-safe option.</p>
+  <p class="sg-dl-section-lede">Five places where components disagree with each other today. Each one needs a quick decision from the designer. Until that happens, new components default to whichever option is the safest across themes.</p>
 
   <h3 style="font-family:var(--uds-font-family);font-size:var(--uds-font-size-lg);font-weight:var(--uds-font-weight-bold);color:var(--uds-color-text-primary);margin:var(--uds-space-200) 0 var(--uds-space-100);">12.1 Focus ring gap binding</h3>
 
@@ -1144,7 +1117,7 @@
       <tr><td>search</td><td><span class="sg-dl-inline-chip"><span class="sg-dl-chip-swatch" style="background:var(--uds-color-surface-main)"></span>surface-main</span></td><td><span class="sg-dl-badge sg-dl-badge--safe">yes</span></td></tr>
     </tbody>
   </table>
-  <p style="font-family:var(--uds-font-family);font-size:var(--uds-font-size-sm);color:var(--uds-color-text-secondary);margin:0 0 var(--uds-space-200);"><strong>Canonical pattern proposed:</strong> <span class="sg-dl-inline-chip"><span class="sg-dl-chip-swatch" style="background:var(--uds-color-surface-main)"></span>surface-main</span>. Three components need updating. Cannot autonomously edit per <code>uds-source-of-truth.mdc</code>.</p>
+  <p style="font-family:var(--uds-font-family);font-size:var(--uds-font-size-sm);color:var(--uds-color-text-secondary);margin:0 0 var(--uds-space-200);"><strong>Suggested fix:</strong> bind the gap to <span class="sg-dl-inline-chip"><span class="sg-dl-chip-swatch" style="background:var(--uds-color-surface-main)"></span>surface-main</span> everywhere. Three components need a small CSS update.</p>
 
   <h3 style="font-family:var(--uds-font-family);font-size:var(--uds-font-size-lg);font-weight:var(--uds-font-weight-bold);color:var(--uds-color-text-primary);margin:var(--uds-space-300) 0 var(--uds-space-100);">12.2 Hover treatment for form fields</h3>
 
@@ -1157,7 +1130,7 @@
       <tr><td>text-area</td><td>border → <span class="sg-dl-inline-chip"><span class="sg-dl-chip-swatch" style="background:var(--uds-color-border-outline-hover)"></span>border-outline-hover</span></td></tr>
     </tbody>
   </table>
-  <p style="font-family:var(--uds-font-family);font-size:var(--uds-font-size-sm);color:var(--uds-color-text-secondary);margin:0 0 var(--uds-space-200);"><strong>Canonical pattern proposed:</strong> text-area's <span class="sg-dl-inline-chip"><span class="sg-dl-chip-swatch" style="background:var(--uds-color-border-outline-hover)"></span>border-outline-hover</span> &mdash; the cleanest signal that doesn't compete visually with the focus state.</p>
+  <p style="font-family:var(--uds-font-family);font-size:var(--uds-font-size-sm);color:var(--uds-color-text-secondary);margin:0 0 var(--uds-space-200);"><strong>Suggested fix:</strong> use text-area's <span class="sg-dl-inline-chip"><span class="sg-dl-chip-swatch" style="background:var(--uds-color-border-outline-hover)"></span>border-outline-hover</span> everywhere. It reads as hover without competing with the focus ring.</p>
 
   <h3 style="font-family:var(--uds-font-family);font-size:var(--uds-font-size-lg);font-weight:var(--uds-font-weight-bold);color:var(--uds-color-text-primary);margin:var(--uds-space-300) 0 var(--uds-space-100);">12.3 Disabled border treatment</h3>
 
@@ -1169,10 +1142,10 @@
       <tr><td>dropdown, checkbox, radio, tile</td><td><span class="sg-dl-inline-chip"><span class="sg-dl-chip-swatch" style="background:var(--uds-color-border-disabled)"></span>border-disabled</span></td></tr>
     </tbody>
   </table>
-  <p style="font-family:var(--uds-font-family);font-size:var(--uds-font-size-sm);color:var(--uds-color-text-secondary);margin:0 0 var(--uds-space-200);"><strong>Canonical pattern proposed:</strong> <code>border-disabled</code> for outlined elements (form controls), transparent for filled elements. Two variants are legitimate &mdash; they communicate different things.</p>
+  <p style="font-family:var(--uds-font-family);font-size:var(--uds-font-size-sm);color:var(--uds-color-text-secondary);margin:0 0 var(--uds-space-200);"><strong>Suggested fix:</strong> use <code>border-disabled</code> on outlined elements (form controls) and transparent on filled ones. Both treatments are fine &mdash; they say slightly different things about disabled.</p>
 
   <h3 style="font-family:var(--uds-font-family);font-size:var(--uds-font-size-lg);font-weight:var(--uds-font-weight-bold);color:var(--uds-color-text-primary);margin:var(--uds-space-300) 0 var(--uds-space-100);">12.4 Toggle's <code>opacity: 0.7</code> for disabled</h3>
-  <p style="font-family:var(--uds-font-family);font-size:var(--uds-font-size-sm);color:var(--uds-color-text-secondary);margin:0 0 var(--uds-space-200);">Toggle is the only component using opacity for disabled. Outlier &mdash; either everyone else should follow, or toggle should drop it. Surface as ratification question.</p>
+  <p style="font-family:var(--uds-font-family);font-size:var(--uds-font-size-sm);color:var(--uds-color-text-secondary);margin:0 0 var(--uds-space-200);">Toggle is the only component that drops opacity for disabled. Either everyone else should match it, or toggle should drop the opacity. Designer call.</p>
 
   <h3 style="font-family:var(--uds-font-family);font-size:var(--uds-font-size-lg);font-weight:var(--uds-font-weight-bold);color:var(--uds-color-text-primary);margin:var(--uds-space-300) 0 var(--uds-space-100);">12.5 Required dot color token</h3>
   <table class="sg-dl-table">
@@ -1182,7 +1155,7 @@
       <tr><td>tile</td><td><code>text-error</code></td></tr>
     </tbody>
   </table>
-  <p style="font-family:var(--uds-font-family);font-size:var(--uds-font-size-sm);color:var(--uds-color-text-secondary);margin:0 0 var(--uds-space-200);">Both resolve to the same red. Pick one for canon.</p>
+  <p style="font-family:var(--uds-font-family);font-size:var(--uds-font-size-sm);color:var(--uds-color-text-secondary);margin:0 0 var(--uds-space-200);">Both resolve to the same red. Pick one and use it everywhere.</p>
 
 </section>
 
@@ -1191,8 +1164,7 @@
      ============================================================ -->
 <section class="sg-dl-section">
   <header class="sg-dl-section-header">
-    <span class="sg-dl-section-num">★</span>
-    <h2 class="sg-dl-section-title">Cross-cutting</h2>
+    <h2 class="sg-dl-section-title">A few rules that apply across the board</h2>
   </header>
   <ul style="font-family:var(--uds-font-family);font-size:var(--uds-font-size-base);color:var(--uds-color-text-primary);line-height:1.7;padding-left:var(--uds-space-250);margin:var(--uds-space-100) 0;">
     <li><strong>Stroke alignment is <code>INSIDE</code> for form fields</strong> so border weight doesn't affect outer dimensions.</li>
@@ -1207,7 +1179,7 @@
     <li><a href="#/semantic-colors" style="color:var(--uds-color-text-interactive);">Semantic Colors</a> &mdash; the full token vocabulary the constructions here resolve to.</li>
     <li><a href="#/spacing" style="color:var(--uds-color-text-interactive);">Spacing</a> &mdash; the <code>space-*</code> scale referenced in density patterns.</li>
     <li><a href="#/text-styles" style="color:var(--uds-color-text-interactive);">Text Styles</a> &mdash; typography decisions that pair with these visual treatments.</li>
-    <li><a href="#/cursor-workflows" style="color:var(--uds-color-text-interactive);">Cursor Workflows</a> &mdash; agent-facing canon lives in <code>.cursor/rules/uds-design-language.mdc</code>.</li>
+    <li><a href="#/cursor-workflows" style="color:var(--uds-color-text-interactive);">Cursor Workflows</a> &mdash; the same content for AI agents lives in <code>.cursor/rules/uds-design-language.mdc</code>.</li>
   </ul>
 </section>
 
