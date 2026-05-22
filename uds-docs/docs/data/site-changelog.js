@@ -456,22 +456,22 @@ export const SITE_CHANGELOG = [
       version: 'SITE 2026.05.06.2',
       date: '2026-05-06',
       changes: [
-        { type: 'changed', text: 'Figma workflows now treat any Figma page whose name contains `{Ignore}` as out of scope. The preflight rule, inventory/spec-gap/component-inspector agents, status-sync and `UDS updated` skills skip those pages for version detection, component inventory, status sync, new/deleted component detection, deep inspection, and snapshot fingerprints; the Cursor Workflows page documents the convention.' }
+        { type: 'changed', text: 'Figma workflows now treat any Figma page whose name contains `{Ignore}` as out of scope — every read-only inspector and every sync skill skips those pages. The convention is documented on the Cursor Workflows page.' }
       ]
     },
     {
       version: 'SITE 2026.05.07.1',
       date: '2026-05-07',
       changes: [
-        { type: 'changed', text: 'Figma workflow docs now distinguish read-only behavior from execution-level readonly mode. Figma capability, inventory, token audit, component inspector, and spec-gap agents no longer set `readonly: true` in frontmatter; they remain read-only by instruction but must run with MCP-enabled tool access so Cloud Agents can actually read Figma files.' }
+        { type: 'changed', text: 'Figma read-only agents no longer set `readonly: true` in their frontmatter. They\'re still read-only by instruction, but Cloud Agents need MCP tool access to actually read Figma files.' }
       ]
     },
     {
       version: 'SITE 2026.05.07.2',
       date: '2026-05-07',
       changes: [
-        { type: 'added', text: 'UDS 0.3 release sync from Figma — archived UDS 0.2 under `versions/0.2/`, bumped root `UDS_VERSION` to 0.3, added semantic token `--uds-color-icon-destructive`, scaffolded 8 public Figma component pages (`combobox`, `date-picker`, `data-view`, `label`, `link`, `pagination`, `text-area`, `toggle`), linked Spacer to its `_support` Figma component node, and left internal support pages (`checkbox-control`, `input`, `slot`) out of public docs.' },
-        { type: 'fixed', text: '`release.sh` and `bump.sh` now use portable `sed -i.bak` on Linux and macOS. `bump.sh` also updates `version.txt` and inline `SITE_VERSION` so release bumps do not leave auto-reload metadata stale.' }
+        { type: 'added', text: 'UDS 0.3 release sync from Figma — archived 0.2 under versions/0.2/, added the `--uds-color-icon-destructive` semantic token, and scaffolded eight public Figma component pages (combobox, date-picker, data-view, label, link, pagination, text-area, toggle). Internal support pages stayed out of public docs.' },
+        { type: 'fixed', text: 'release.sh and bump.sh now use portable sed flags on macOS and Linux. bump.sh also keeps version.txt and the inline SITE_VERSION in sync so release bumps don\'t leave the auto-reload metadata stale.' }
       ]
     },
     {
