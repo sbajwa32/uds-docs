@@ -994,6 +994,15 @@ export const SITE_CHANGELOG = [
         { type: 'changed', text: '`.cursor/TOOLCHAIN.md` regenerated. Counts unchanged (20 rules + 9 skills + 7 agents = 36 entries).' },
         { type: 'changed', text: 'SITE bumped 2026.05.22.2 &rarr; 2026.05.22.3. `app.js?v=` bumped 140 &rarr; 141 because `docs/data/site-changelog.js` changed. Other cache-bust params unchanged.' }
       ]
+    },
+    {
+      version: 'SITE 2026.05.22.4',
+      date: '2026-05-22',
+      changes: [
+        { type: 'fixed', text: '`.cursor/rules/communication-style.mdc` &mdash; two consistency nits caught during a final read-through of this branch. (1) Section heading on line 50 said `## Designer-speak vs developer-speak` but the actual table columns inside it were already labeled "Designer voice" and "Technical voice (when the specifics matter)" &mdash; the old "developer-speak" framing had leaked through the heading. Retitled to `## Designer voice vs technical voice` so the section title, the column labels, and the rest of the rule prose all use the same vocabulary. (2) The "I bumped the docs site" / right-column example row hardcoded `"Ran bump-site.sh, version is now SITE 2026.05.22.2"`, which would either drift out of date on every SITE bump or invite future agents to "helpfully" keep it current (creating churn). Made it version-agnostic: `"Ran bump-site.sh, SITE counter incremented."` &mdash; still demonstrates the technical voice without baking in a specific version that decays. Frontmatter `lastUpdated:` bumped to `2026-05-22T02:52:24Z`.' },
+        { type: 'changed', text: '`.cursor/TOOLCHAIN.md` regenerated. Counts unchanged.' },
+        { type: 'changed', text: 'SITE bumped 2026.05.22.3 &rarr; 2026.05.22.4. `app.js?v=` bumped 141 &rarr; 142 because `docs/data/site-changelog.js` changed. Other cache-bust params unchanged.' }
+      ]
     }
 ];
 
