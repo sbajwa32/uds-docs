@@ -2,7 +2,7 @@
 description: Plugin API gotchas learned from UDS factory and sync work. Local-file component identity, INSTANCE_SWAP default formats, hidden auto-layout fills, resize-vs-sizing-mode ordering, per-side padding binding, effect-style binding. Auto-attaches to anything that calls `use_figma`.
 alwaysApply: false
 globs: ["**/*"]
-lastUpdated: 2026-05-22T18:25:26Z
+lastUpdated: 2026-05-22T18:39:47Z
 ---
 
 # UDS Figma Plugin API Gotchas
@@ -191,9 +191,17 @@ that escape every "is this bound to a token?" check.
 
 The error mode is silent: visually the frame still renders correctly
 in the default density mode, and the bound horizontal axes look fine
-on inspection. The asymmetry only surfaces when the design system flips
-density (`[data-density="comfortable"]` re-resolves every space token)
-or when a code-gen tool reports the resolved values per axis.
+on inspection. The unbound vertical pair only surfaces when the design
+system flips density (`[data-density="comfortable"]` re-resolves every
+space token but leaves the raw `8` literals stranded) or when a code-gen
+tool reports the resolved values per axis.
+
+This is purely a question of **binding state across sides**, not value
+symmetry across sides. A pill that legitimately wants `paddingLeft = 16`
+and `paddingRight = 12` (different values per side because the leading
+icon and trailing chevron need different breathing room) is fine — the
+fix is "every side bound to its own appropriate space variable," not
+"every side bound to the same space variable."
 
 ### Wrong → correct
 
@@ -219,9 +227,12 @@ pill.setBoundVariable('itemSpacing',   spaceVar150);  // 12px
 Any factory helper that wraps padding configuration MUST accept all
 five properties (or accept a `{ top, right, bottom, left, gap }`
 object). Two-axis helpers (`setPadding(node, h, v)`) are an
-anti-pattern — they will silently re-introduce the asymmetry. If the
-real component is symmetric on a given axis, pass the same variable
-to both sides; that's still five `setBoundVariable` calls.
+anti-pattern — they bind whichever pair the helper takes (the `h`
+arguments to `paddingLeft` and `paddingRight`) and leave the other
+pair as raw pixel literals. If the real component happens to want the
+same value on both sides of a given axis, pass the same variable to
+both sides; that's still five `setBoundVariable` calls. The
+requirement is "every side bound," not "every side equal."
 
 ## 6. Effects must bind via `setEffectStyleIdAsync`, never `node.effects = [...]`
 

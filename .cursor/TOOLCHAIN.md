@@ -56,7 +56,7 @@ the manual fallback when the hook hasn't run.
 | [`uds-figma-component-card.mdc`](./rules/uds-figma-component-card.mdc) | `2026-05-21T16:08:00Z` | Canonical card layout for UDS Components Figma pages. Defines the seven-card structure, token bindings, and read-only contract against… |
 | [`uds-figma-component-inspection.mdc`](./rules/uds-figma-component-inspection.mdc) | `2026-05-13T17:54:48Z` | Requires deep Figma node inspection for UDS Components; screenshots are supporting evidence only. Inspection is bidirectional — every… |
 | [`uds-figma-factory-quality.mdc`](./rules/uds-figma-factory-quality.mdc) | `2026-05-22T18:25:26Z` | Process quality rules for any factory-style Figma build (generate-uds-figma-component, new-component, future factories). State design… |
-| [`uds-figma-plugin-api-gotchas.mdc`](./rules/uds-figma-plugin-api-gotchas.mdc) | `2026-05-22T18:25:26Z` | Plugin API gotchas learned from UDS factory and sync work. Local-file component identity, INSTANCE_SWAP default formats, hidden auto-layout… |
+| [`uds-figma-plugin-api-gotchas.mdc`](./rules/uds-figma-plugin-api-gotchas.mdc) | `2026-05-22T18:39:47Z` | Plugin API gotchas learned from UDS factory and sync work. Local-file component identity, INSTANCE_SWAP default formats, hidden auto-layout… |
 | [`uds-figma-preflight.mdc`](./rules/uds-figma-preflight.mdc) | `2026-05-12T18:41:50Z` | Required preflight for any task that reads or writes UDS Figma files. |
 | [`uds-figma-sync-state.mdc`](./rules/uds-figma-sync-state.mdc) | `2026-05-12T18:41:50Z` | Defines tracked Figma sync snapshots and when agents may update them. |
 | [`uds-figma-write-safety.mdc`](./rules/uds-figma-write-safety.mdc) | `2026-05-18T19:06:07Z` | Prevents accidental Figma mutations during UDS sync work. Read-only is the default; writes are explicitly scoped and summarized. |
@@ -73,7 +73,7 @@ the manual fallback when the hook hasn't run.
 | Skill | Last updated (UTC) | Description |
 |---|---|---|
 | [`figma-component-card`](./skills/figma-component-card/SKILL.md) | `2026-05-13T19:04:48Z` | Build or update the canonical "component card" canvas layout on a UDS component page in Figma. Use when the user says "build/update the… |
-| [`generate-uds-figma-component`](./skills/generate-uds-figma-component/SKILL.md) | `2026-05-22T18:25:26Z` | UDS Component Factory. Drafts a token-bound UDS component set directly inside the UDS Components Figma file on a brand-new `🟠 <Title>… |
+| [`generate-uds-figma-component`](./skills/generate-uds-figma-component/SKILL.md) | `2026-05-22T18:39:47Z` | UDS Component Factory. Drafts a token-bound UDS component set directly inside the UDS Components Figma file on a brand-new `🟠 <Title>… |
 | [`import-figma-tokens`](./skills/import-figma-tokens/SKILL.md) | `2026-05-12T18:41:50Z` | Import UDS token changes from the UDS Tokens Figma file. Uses direct Figma Variables reads first and token ZIP exports only as fallback.… |
 | [`link-figma-nodes`](./skills/link-figma-nodes/SKILL.md) | `2026-05-12T18:41:50Z` | Populate figmaNodeId and figmaPageNodeId fields in per-component spec.json files from canonical UDS Components Figma nodes. Use when Figma… |
 | [`new-component`](./skills/new-component/SKILL.md) | `2026-05-21T18:15:30Z` | Scaffold a new UDS component end to end. Creates uds/components/<id>/ with all required files (CSS stub, spec.json, status.json,… |

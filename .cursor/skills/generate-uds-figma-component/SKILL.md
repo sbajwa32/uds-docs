@@ -1,7 +1,7 @@
 ---
 name: generate-uds-figma-component
 description: UDS Component Factory. Drafts a token-bound UDS component set directly inside the UDS Components Figma file on a brand-new `🟠 <Title> {Cursor}{Ignore}` page. Use when the user says "generate a UDS component for X", "factory me an Avatar", "draft a new UDS component called Y", "build a UDS component for Z in Figma", or "use the component factory to start <Title>". Stops at Figma — never writes to `uds-docs/uds/`. Docs landing is the existing `uds-updated` skill, run later by the designer.
-lastUpdated: 2026-05-22T18:25:26Z
+lastUpdated: 2026-05-22T18:39:47Z
 ---
 
 # UDS Component Factory — Generate UDS Figma Component
@@ -431,13 +431,18 @@ and you can re-run after fixing the cause.
   exposes `paddingTop`, `paddingBottom`, `paddingLeft`, `paddingRight`,
   and `itemSpacing` as five independent bindable properties. Bind all
   five per `setBoundVariable('paddingTop', spaceVar)`, never assign
-  `node.paddingTop = 8` directly. Even when the value is symmetric
-  (e.g. an 8px square pad), pass the same `uds-space-100` variable to
-  both sides — that's still five `setBoundVariable` calls. Helper
-  functions that wrap padding configuration MUST take all five
-  properties (or a `{ top, right, bottom, left, gap }` object); the
-  two-axis helper signature `(h, v)` is an anti-pattern that silently
-  re-introduces axis asymmetry. See
+  `node.paddingTop = 8` directly. The requirement is *every side
+  bound*, not *every side equal* — a pill that legitimately wants
+  `paddingLeft = uds-space-200` (16px) and `paddingRight = uds-space-150`
+  (12px) is fine; what's not fine is pairing those bound horizontal
+  values with raw `paddingTop = 8` and `paddingBottom = 8` literals.
+  When the real component does want the same value on both sides of an
+  axis, pass the same `uds-space-100` variable to both sides — that's
+  still five `setBoundVariable` calls. Helper functions that wrap
+  padding configuration MUST take all five properties (or a
+  `{ top, right, bottom, left, gap }` object); the two-axis helper
+  signature `(h, v)` is an anti-pattern — it binds whichever pair the
+  helper takes and leaves the other pair as raw pixel literals. See
   [`uds-figma-plugin-api-gotchas.mdc`](../../rules/uds-figma-plugin-api-gotchas.mdc)
   §5 for the underlying API truth and the silent-failure mode.
 - **Effect-style binding (never raw effects literals).** For every
