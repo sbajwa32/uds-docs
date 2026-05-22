@@ -1329,13 +1329,13 @@
 
         <article class="sg-cw-card">
           <header class="sg-cw-card-head"><code class="sg-cw-card-name">uds-figma-plugin-api-gotchas</code><span class="sg-cw-pill sg-cw-pill--scoped">Loads on any task</span></header>
-          <p class="sg-cw-card-body">Plugin-API gotchas that bit the component factory once and would bite any other Figma write the same way: same-file vs library component identity, INSTANCE_SWAP defaults, hidden white auto-layout fills, resize-axis quirks, and the within-call propagation limits.</p>
+          <p class="sg-cw-card-body">Plugin-API gotchas that bit the component factory once and would bite any other Figma write the same way: same-file vs library component identity, INSTANCE_SWAP defaults, hidden white auto-layout fills, resize-axis quirks, within-call propagation limits, all five auto-layout spacing properties needing to be bound (not just the two CSS-style horizontal/vertical pair &mdash; "every side bound" is the rule, not "every side equal"), and effects binding via <code>setEffectStyleIdAsync</code> rather than raw <code>node.effects</code> literals (which render fine but escape every bound-check audit).</p>
           <footer class="sg-cw-card-foot"><a class="sg-cw-card-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/rules/uds-figma-plugin-api-gotchas.mdc" target="_blank" rel="noopener noreferrer">Open file<span class="material-symbols-outlined">open_in_new</span></a></footer>
         </article>
 
         <article class="sg-cw-card">
           <header class="sg-cw-card-head"><code class="sg-cw-card-name">uds-figma-factory-quality</code><span class="sg-cw-pill sg-cw-pill--scoped">Loads on factory skills</span></header>
-          <p class="sg-cw-card-body">Process gates for any factory-style Figma build: full state design contract up front, machine-verified audit, variant grid that reflects axis semantics, sensible visibility defaults, and a Phase B.0 dependency manifest before any write.</p>
+          <p class="sg-cw-card-body">Process gates for any factory-style Figma build: full state design contract up front; a machine-verified Phase C audit that must report unbound paints, per-side spacing bindings (all five auto-layout properties), effect-style bindings (every node where <code>effects.length &gt; 0</code>), and per-variant <code>INSTANCE_SWAP</code> defaults vs. the model's plan; a variant grid that reflects axis semantics; sensible visibility defaults; and a Phase B.0 dependency manifest before any write.</p>
           <footer class="sg-cw-card-foot"><a class="sg-cw-card-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/rules/uds-figma-factory-quality.mdc" target="_blank" rel="noopener noreferrer">Open file<span class="material-symbols-outlined">open_in_new</span></a></footer>
         </article>
 
