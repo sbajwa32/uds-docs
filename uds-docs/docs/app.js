@@ -109,7 +109,7 @@ function registerPageLoadHook(pageId, fn) {
 // Lazy-load the Contrast Checker module on first navigation to its page.
 registerPageLoadHook('contrast-checker', async (page) => {
     try {
-      const mod = await import('./modules/contrast-checker/index.js');
+      const mod = await import('./modules/contrast-checker/index.js?v=2');
       if (mod && typeof mod.initContrastChecker === 'function') {
         mod.initContrastChecker(page);
       }
