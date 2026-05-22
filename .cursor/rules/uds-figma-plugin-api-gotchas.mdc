@@ -1,8 +1,8 @@
 ---
-description: Plugin API gotchas learned from UDS factory and sync work. Local-file component identity, INSTANCE_SWAP default formats, hidden auto-layout fills, resize-vs-sizing-mode ordering. Auto-attaches to anything that calls `use_figma`.
+description: Plugin API gotchas learned from UDS factory and sync work. Local-file component identity, INSTANCE_SWAP default formats, hidden auto-layout fills, resize-vs-sizing-mode ordering, per-side padding binding, effect-style binding. Auto-attaches to anything that calls `use_figma`.
 alwaysApply: false
 globs: ["**/*"]
-lastUpdated: 2026-05-21T16:08:00Z
+lastUpdated: 2026-05-22T18:25:26Z
 ---
 
 # UDS Figma Plugin API Gotchas
@@ -170,13 +170,118 @@ for (const wrapper of wrapperSet.children) {
 // Now wrapper.height reflects the hugged content. Grid reflow can use it.
 ```
 
+## 5. Auto-layout has FIVE bindable spacing properties, not two
+
+Auto-layout frames in the Plugin API expose five independent spacing
+properties, each individually bindable to a `uds-space` variable:
+
+- `paddingTop`
+- `paddingBottom`
+- `paddingLeft`
+- `paddingRight`
+- `itemSpacing`
+
+There is no `paddingHorizontal` / `paddingVertical` shorthand on the
+Plugin API. CSS shorthand and Tailwind utility classes (`px-4 py-2`,
+`padding: 8px 16px`) train the eye to think in horizontal/vertical
+pairs; the Plugin API is per-side. A factory or sync script that
+binds `paddingLeft` and `paddingRight` and forgets the vertical pair
+ships a node where the top and bottom paddings are raw pixel literals
+that escape every "is this bound to a token?" check.
+
+The error mode is silent: visually the frame still renders correctly
+in the default density mode, and the bound horizontal axes look fine
+on inspection. The asymmetry only surfaces when the design system flips
+density (`[data-density="comfortable"]` re-resolves every space token)
+or when a code-gen tool reports the resolved values per axis.
+
+### Wrong → correct
+
+```js
+// WRONG — two of the five spacing properties bound, the rest stranded
+const pill = figma.createAutoLayout('HORIZONTAL', { name: 'pill' });
+pill.setBoundVariable('paddingLeft',  spaceVar200);
+pill.setBoundVariable('paddingRight', spaceVar150);
+pill.paddingTop = 8;       // raw literal — silently bypasses density
+pill.paddingBottom = 8;    // raw literal — silently bypasses density
+pill.itemSpacing = 12;     // raw literal — silently bypasses density
+
+// CORRECT — every used spacing property bound to a uds-space variable
+pill.setBoundVariable('paddingLeft',   spaceVar200);  // 16px
+pill.setBoundVariable('paddingRight',  spaceVar150);  // 12px
+pill.setBoundVariable('paddingTop',    spaceVar100);  //  8px
+pill.setBoundVariable('paddingBottom', spaceVar100);  //  8px
+pill.setBoundVariable('itemSpacing',   spaceVar150);  // 12px
+```
+
+### Helper signature contract
+
+Any factory helper that wraps padding configuration MUST accept all
+five properties (or accept a `{ top, right, bottom, left, gap }`
+object). Two-axis helpers (`setPadding(node, h, v)`) are an
+anti-pattern — they will silently re-introduce the asymmetry. If the
+real component is symmetric on a given axis, pass the same variable
+to both sides; that's still five `setBoundVariable` calls.
+
+## 6. Effects must bind via `setEffectStyleIdAsync`, never `node.effects = [...]`
+
+The same shape of problem as fills: `node.effects` accepts a literal
+array of effect objects, and writing
+`node.effects = [{ type: 'DROP_SHADOW', color: ..., offset: ..., radius: ..., spread: ... }]`
+produces a visually-shadowed node that escapes every "is this bound to
+a token?" check. The right path is
+`await node.setEffectStyleIdAsync(style.id)` after
+`await figma.importStyleByKeyAsync(EFFECT_STYLE_KEY)`.
+
+The error mode is silent: the visual output is a shadow; an audit that
+only checks `effects.length > 0` won't tell you whether `effectStyleId`
+is set. And — like the padding asymmetry — the literal values in the
+script may not even match the design system's depth values, but
+nothing fails because the bytes that hit Figma are technically valid
+effect data.
+
+### Wrong → correct
+
+```js
+// WRONG — raw effects literal, even if numerically right
+node.effects = [{
+  type: 'DROP_SHADOW',
+  color: { r: 0, g: 0, b: 0, a: 0.1 },
+  offset: { x: 0, y: 2 },
+  radius: 8,
+  spread: 0,
+  visible: true,
+  blendMode: 'NORMAL'
+}];
+// node.effectStyleId is still '' — audit can't see this is "depth-100"
+
+// CORRECT — bind to the design system's depth-100 effect style
+const depth100 = await figma.importStyleByKeyAsync(DEPS.effectStyles.depth100);
+await node.setEffectStyleIdAsync(depth100.id);
+// node.effectStyleId now holds the style ID — audit passes, and a
+// designer flipping the depth scale sees this node update with the rest.
+```
+
+### Audit signature
+
+A factory or sync audit that wants to flag unbound effects MUST check
+both:
+
+- `node.effects.length > 0` (there's a visible effect at all), AND
+- `node.effectStyleId === ''` (no effect style attached)
+
+Either condition alone is insufficient. Nodes with no effects are
+trivially "bound" in the vacuous sense; nodes with a style attached
+but custom effect overrides on top should be flagged as a separate
+"effect style overridden" finding.
+
 ## Related
 
 - [`figma-use` skill (cached upstream)](../../../home/ubuntu/.cursor/plugins/cache/cursor-public/657/a742f0a700a7772ff5ed85f7c9fc1dad5afa9fcc/skills/figma-use/SKILL.md)
   — base Plugin API rules. These gotchas should eventually upstream
   into that skill's `references/gotchas.md`.
 - [`generate-uds-figma-component`](../skills/generate-uds-figma-component/SKILL.md)
-  — the factory skill that surfaced these. Phase B uses all four
+  — the factory skill that surfaced these. Phase B uses all six
   patterns above.
 - [`uds-figma-factory-quality.mdc`](./uds-figma-factory-quality.mdc) —
   the companion factory-quality rule (state design contract, audit

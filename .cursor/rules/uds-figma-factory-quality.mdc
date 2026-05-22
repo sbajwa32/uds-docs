@@ -2,7 +2,7 @@
 description: Process quality rules for any factory-style Figma build (generate-uds-figma-component, new-component, future factories). State design contract (specify visuals not just tokens), mandatory machine-verified audits, variant grid layout reflects axis semantics, visible anatomy by default, dependency manifest before write. Design-system-agnostic — the specific UDS visual constructions live in uds-design-language.mdc.
 alwaysApply: false
 globs: [".cursor/skills/generate-uds-figma-component/**", ".cursor/skills/new-component/**", ".cursor/skills/figma-component-card/**"]
-lastUpdated: 2026-05-21T16:30:00Z
+lastUpdated: 2026-05-22T18:25:26Z
 ---
 
 # Figma Factory Quality
@@ -108,8 +108,36 @@ A read-only `use_figma` call that:
 2. For every fill, stroke, and effect color on every descendant
    (excluding nested instances of library components — those are
    out of scope), reports whether the paint is bound to a variable.
-3. Returns a structured object with the count of unbound items and
-   their `{ ownerVariant, nodeId, nodeName, kind }`.
+3. **Per-side spacing audit (all five properties).** For every
+   auto-layout frame the factory created, report whether each of
+   `paddingTop`, `paddingBottom`, `paddingLeft`, `paddingRight`, and
+   `itemSpacing` is bound to a `uds-space` variable or carries a raw
+   numeric value. Per-side, not per-axis pair. See
+   [`uds-figma-plugin-api-gotchas.mdc`](./uds-figma-plugin-api-gotchas.mdc)
+   §5 for the underlying API truth — there is no `paddingHorizontal`
+   in the Plugin API; a script can bind the horizontal pair and
+   silently leave the vertical pair as raw pixels.
+4. **Effect-style binding audit.** For every node where
+   `effects.length > 0`, report whether `effectStyleId` is set. Both
+   conditions matter: an unbound `effects = [...]` literal renders
+   visually but escapes any check that only looks at `effects.length`.
+   See
+   [`uds-figma-plugin-api-gotchas.mdc`](./uds-figma-plugin-api-gotchas.mdc)
+   §6 for the audit signature.
+5. **Per-variant INSTANCE_SWAP defaults audit.** For every component
+   property registered with type `INSTANCE_SWAP`, walk every variant
+   in the set and report which one(s) still hold the factory's
+   universal default rather than the per-variant default the model
+   specified. This catches the "every icon shipped as the same
+   placeholder" failure mode where the technical wiring (component
+   property exists, INSTANCE_SWAP type, default points at a real
+   wrapper) is correct but the per-variant semantic differentiation
+   (Stepper `complete` → `check`, `error` → `priority_high`) was
+   never baked in via `setProperties` per variant. The model file
+   under `.cursor/state/component-factory/<componentId>.md` is the
+   source of truth for "what each variant should default to."
+6. Returns a structured object with the count of unbound items and
+   their `{ ownerVariant, nodeId, nodeName, kind }` per check.
 
 The Phase C report's tool-emitted gates table is populated from that
 return value. If the audit hasn't run, the report can't be emitted.
@@ -121,6 +149,20 @@ The factory's first text-input run emitted a Phase C report claiming
 slot. They were invisible on the white page and obvious only when the
 post-fix audit ran. "I think I did the right thing" is not a quality
 gate.
+
+The same shape of failure repeated on the Nav Header factory run
+(2026-05-22): the Phase C report passed the existing gates while
+shipping (a) every auto-layout frame's vertical padding as raw `8px` /
+`12px` literals despite horizontal padding being correctly bound to
+`uds-space-200` / `uds-space-150`, (b) every elevated surface as a
+raw `node.effects = [...]` literal whose values didn't even match
+the design system's `depth-100` and `depth-300` effect styles, and
+(c) every nested icon-wrapper instance defaulted to the same
+factory placeholder (`add_circle_outline`) including the title-area
+chevron-slot, the search-icon, and every page-menu row — none of which
+had been re-defaulted per the Phase A model's per-variant icon plan.
+Checks 3, 4, and 5 above exist to make those three specific failure
+modes machine-detectable rather than designer-detectable.
 
 ## 3. Variant grid layout reflects the variant axis's semantic intent
 
