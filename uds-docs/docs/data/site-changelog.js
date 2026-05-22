@@ -517,90 +517,85 @@ export const SITE_CHANGELOG = [
       version: 'SITE 2026.05.08.1',
       date: '2026-05-08',
       changes: [
-        { type: 'fixed', text: 'UDS 0.3 verification audit (re-read Figma directly): filled in 16 missing `figmaNodeId` values on `content/*.json` for components with canonical component-set nodes in Figma (`badge`, `breadcrumb`, `checkbox`, `chip`, `dialog`, `divider`, `dropdown`, `list`, `nav-header`, `nav-vertical`, `notification`, `radio`, `search`, `tabs`, `tile`, `icon-wrapper`). The "View in Figma" button on these component pages now deep-links to the actual component-set instead of falling back to the page-level node. `button` left null because Figma has 5 sibling component-sets with no single canonical one; `data-table`, `text-input`, and `tooltip` left null because their Figma pages have no top-level component-set. Updated `.cursor/figma/state/last-sync.json` with audit notes and current `siteVersion`.' }
+        { type: 'fixed', text: 'UDS 0.3 verification pass: filled in figmaNodeId for sixteen components that previously fell back to a page-level link. The "View in Figma" button on those component pages now deep-links to the actual component set. button, data-table, text-input, and tooltip are intentionally still null — Figma has no single canonical set for those.' }
       ]
     },
     {
       version: 'SITE 2026.05.08.2',
       date: '2026-05-08',
       changes: [
-        { type: 'fixed', text: 'Sidebar component tooltip — initial attempt at fix using `z-index: 9999` (superseded by the proper portal-to-body fix in 2026.05.08.3, since `.sg-sidebar`\'s sticky stacking context bound the tooltip\'s z-index regardless of value).' },
-        { type: 'changed', text: 'Status segmented bar now uses stoplight-mapped semantic surface tokens for the current step instead of a single interactive blue: ⚫ Not Started → `surface-bold`, 🔴 Blocked → `surface-error`, 🟠 In Progress → `surface-warning`, 🟡 In Review → `surface-warning-subtle`, 🟢 Production → `surface-success`. Completed steps show a subtle "passed-through" treatment.' },
-        { type: 'changed', text: 'Spec segmented bar now uses success/warning semantic colors: filled segments are `surface-success` (the field is done), unfilled segments are `surface-warning-subtle` (still needs work). Same colors apply to the mini bars in the sidebar tooltip.' },
-        { type: 'fixed', text: 'Demo Builder: removed orphan `udc-nav-logo__text` class reference left behind from when nav-header was refactored to icon-only logo.' },
-        { type: 'added', text: '`uds-docs/scripts/audit-demo-builder.sh` polices Demo Builder drift. It checks (a) every implementable component (one whose `content/<id>.json` `knownIssues` does not contain "no inspectable component set yet") is in both `DEMO_COMPONENTS` and `DEMO_TEMPLATES`, and (b) every `udc-*` class used in `demo-builder.js` is defined in some `uds/components/*.css` file. Wired into the `uds-updated` skill verification step and AGENTS.md.' }
+        { type: 'changed', text: 'Status segmented bar on each component page now uses stoplight-mapped surface tokens — black for Not Started, red for Blocked, orange for In Progress, yellow for In Review, green for Production. Completed steps render as a subtle "passed-through" treatment.' },
+        { type: 'changed', text: 'Spec segmented bar uses surface-success for filled segments and surface-warning-subtle for unfilled. The same colors apply to the mini bars inside the sidebar tooltip.' },
+        { type: 'fixed', text: 'Demo Builder: removed an orphan udc-nav-logo__text reference left over from the icon-only logo refactor.' },
+        { type: 'added', text: 'New scripts/audit-demo-builder.sh polices drift between the Demo Builder and the rest of the site — every implementable component is in the demo data, and every udc-* class the Demo Builder emits is defined somewhere in uds/components/*.css. Wired into the uds-updated skill\'s verification step.' }
       ]
     },
     {
       version: 'SITE 2026.05.08.3',
       date: '2026-05-08',
       changes: [
-        { type: 'added', text: 'New UDS layer tokens (`uds-docs/uds/tokens/layers.css`) define a clean 10-step z-index scale: `--uds-z-index-base` (1), `-sticky` (10), `-decoration` (20), `-dropdown` (30), `-header` (40), `-overlay` (50), `-modal` (60), `-popover` (70), `-tooltip` (80), `-toast` (90), `-skip-link` (100). Tooltips intentionally sit above modals because a tooltip can be triggered from a button inside a modal.' },
-        { type: 'changed', text: 'Replaced every hardcoded z-index across the codebase (`9999`, `10000`, `1000`, `200`, `100`, `50`, `2`, `1`) with the new layer tokens. No more ad-hoc values.' },
-        { type: 'fixed', text: 'Sidebar component tooltip is now PORTALED to `<body>` instead of being a child of the sidebar link. `.sg-sidebar` has `position: sticky` which creates a stacking context per CSS spec — even with `position: fixed` and high z-index, a child of the sidebar gets stacked relative to the sidebar\'s context and ends up painted under `.sg-main`. Portaling sidesteps both the stacking context and the `overflow:auto` clipping issue. Tooltip also auto-hides on sidebar scroll.' }
+        { type: 'added', text: 'New layer tokens in uds/tokens/layers.css define a 10-step z-index scale (base / sticky / decoration / dropdown / header / overlay / modal / popover / tooltip / toast / skip-link). Tooltips intentionally sit above modals because a tooltip can be triggered from a button inside a modal.' },
+        { type: 'changed', text: 'Every hardcoded z-index across the codebase replaced with the new layer tokens. No more ad-hoc values.' },
+        { type: 'fixed', text: 'Sidebar component tooltip is now portaled to body so the sidebar\'s sticky stacking context can\'t paint it under the main content. It also auto-hides when the sidebar scrolls.' }
       ]
     },
     {
       version: 'SITE 2026.05.08.4',
       date: '2026-05-08',
       changes: [
-        { type: 'fixed', text: 'Sidebar tooltip was rendering off-screen after the portal-to-body refactor. The portal element had `data-position="right"`, and `.udc-tooltip[data-position="right"]` has CSS specificity (0,2,0) while `.sg-sidebar-portal-tooltip` is only (0,1,0) — so the variant\'s `left: calc(100% + 8px)` won and positioned the tooltip past the viewport edge instead of at `left: 268px`. Removed `data-position` from the portal element.' }
+        { type: 'fixed', text: 'Sidebar tooltip was rendering off-screen after the portal refactor — the portal element inherited a high-specificity right-position rule from `.udc-tooltip[data-position="right"]`. Dropped data-position on the portaled tooltip; it now positions correctly.' }
       ]
     },
     {
       version: 'SITE 2026.05.08.5',
       date: '2026-05-08',
       changes: [
-        { type: 'fixed', text: 'Component-name pills on the changelog page were rendering as empty rectangles. The `udc-badge[data-variant="secondary"]` rule paired `surface-bold` (`#d4d4d4` light gray in light mode) with `text-inverse` (`#f5f5f5` near-white in light mode) — contrast ~1.07:1, basically invisible. Switched the rule to use `text-primary` instead of `text-inverse` (contrast jumps to ~9.7:1 in light mode and ~10:1 in dark mode). The `secondary` variant is a NEUTRAL prominent badge, not a high-saturation one — its surface stays light/medium gray and needs dark text, not white. The colored variants (info/success/error/warning) still use `text-inverse` because their surfaces are saturated dark enough for white text.' },
-        { type: 'fixed', text: 'SITE_CHANGELOG entries were appearing in the wrong order on the Changelog page. AGENTS.md incorrectly told agents "newest entries go FIRST in the array (the renderer reverses for display)" — but the renderer does `slice().reverse()` and iterates from index 0, so the LAST entry in the array becomes the TOP of the displayed list. AGENTS.md now correctly says "append new entries to the END (newest go LAST)", and the four 2026.05.08.* entries have been reordered to be strictly chronological.' }
+        { type: 'fixed', text: 'Component-name pills on the changelog page were rendering as nearly-empty rectangles. The secondary badge variant was pairing surface-bold with text-inverse (white-on-light-gray, ~1:1 contrast). Swapped to text-primary; contrast jumps past 9.7:1 on both themes. The colored badge variants (info/success/error/warning) still use text-inverse — their surfaces are saturated enough for white text.' },
+        { type: 'fixed', text: 'SITE_CHANGELOG entries were appearing in the wrong order. AGENTS.md was telling agents to put newest entries first in the array, but the renderer reverses on display — so newest needs to be last. Fixed AGENTS.md and reordered the four 2026.05.08.* entries chronologically.' }
       ]
     },
     {
       version: 'SITE 2026.05.08.6',
       date: '2026-05-08',
       changes: [
-        { type: 'changed', text: 'Demo Builder previews are no longer static. Every Build now seeds a small RNG and rolls fresh content from realistic property-management data pools (30+ tenant names, 17 properties, weighted statuses, primary actions, lease/payment/notification messages, etc.) plus per-component state variation (which tab is selected, which radio is checked, sort direction, pagination current page, search query state, dropdown filled vs placeholder, occasional input error, occasional disabled tab, varying tile/list/nav-vertical item counts, randomized notification badge unread count, etc.). Layout structure stays unchanged — header on top, breadcrumb after, filter bar above table, form section after table — only contents and per-component states vary.' },
-        { type: 'added', text: 'Preview overlay toolbar now has a "Refresh data" button (next to "Save HTML" and "Close") that re-rolls the iframe contents in place with a new random seed for the same selected components. Doesn\'t pollute build history, doesn\'t reload the overlay, just swaps `iframe.srcdoc` so scroll position resets cleanly.' },
-        { type: 'added', text: 'Toolbar buttons now have Material Symbol icons (`refresh`, `download`, `close`) for clearer affordance.' }
+        { type: 'changed', text: 'Demo Builder previews are no longer static. Every Build seeds a small RNG and rolls fresh content from realistic property-management data pools — tenant names, properties, lease and payment messages — plus per-component state variation (which tab is selected, which radio is checked, sort direction, pagination, search-query state, occasional error, occasional disabled item, varying item counts). Layout structure stays the same; only the contents and states vary.' },
+        { type: 'added', text: 'Preview overlay toolbar gets a "Refresh data" button that re-rolls the iframe contents in place with a new seed. Doesn\'t pollute build history; just swaps the iframe srcdoc so scroll position resets cleanly.' },
+        { type: 'added', text: 'Toolbar buttons get Material Symbol icons (refresh, download, close) for clearer affordance.' }
       ]
     },
     {
       version: 'SITE 2026.05.08.7',
       date: '2026-05-08',
       changes: [
-        { type: 'fixed', text: 'Demo Builder `nav-header` template was a stripped-down version of the canonical example shown on the Nav Header component page — just a logo and two icon-only ghost buttons floating in a mostly-empty bar, missing the bento brand dropdown, the center search slot, and the My Work / account cluster, so the header looked unbalanced compared to its own component spec. Rewrote the template to match the canonical pattern: `__left` now has logo + `udc-nav-bento-wrapper` (brand button + bento dropdown list, brand picked from `Boardroom`/`Tenant360`/`PropertyOS`/`LeasePro`/`Holdings`); `__center` has `udc-nav-search` with the AI sparkle icon and rotating placeholder; `__right` has `udc-nav-mywork` with a randomized count badge plus a `udc-nav-account` cluster (notifications, sometimes settings, account_circle).' }
+        { type: 'fixed', text: 'Demo Builder\'s nav-header template was missing the bento brand dropdown, the center search slot, and the My Work / account cluster — just a logo and two ghost buttons in an empty bar. Rewrote the template to match the canonical pattern shown on the Nav Header component page.' }
       ]
     },
     {
       version: 'SITE 2026.05.09.1',
       date: '2026-05-09',
       changes: [
-        { type: 'changed', text: 'Phase 13 cleanup: the `FIGMA_LINKS` global table is gone from `app.js`. Page-level Figma deep-link IDs now live alongside variant-level IDs in each `uds/components/<id>/spec.json` as the new `figmaPageNodeId` field. The renderer reads variant first, page-level fallback second — same UX, no more drift surface.' },
-        { type: 'changed', text: 'Phase 13 cleanup: the `COMPONENT_STATUS` global table is gone from `app.js`. The map is now built at boot from `uds/components.json` (newly added — single source of truth for which components exist) plus each per-component `status.json`. A `componentsReady` promise gates the bootstrap; render functions that walk components now `await` it. New script `scripts/aggregate-components.sh` regenerates `components.json` and runs automatically as part of the migration tooling.' },
-        { type: 'added', text: 'New manifest file `uds/components.json` lists every component in the current UDS release in display order (earliest version first, alphabetical tiebreak). Schema at `uds/schemas/components-manifest.schema.json`.' },
-        { type: 'changed', text: 'Phase 13 cleanup: the `IMPL_DATA` and `JS_FUNC_TO_FILE` global tables are gone from `app.js`. The Code tab\'s "Implementation Reference" panel now reads from per-component `uds/components/<id>/impl.json` files. Each impl.json carries `jsFunc`, `jsFile`, `tokens` (categorized CSS custom property lists), and `html` (the ZIP-download body as a plain string). New schema at `uds/schemas/impl.schema.json`. As a side benefit, the Behavior tab no longer 404s — `JS_FUNC_TO_FILE` had stale pre-Phase-6 paths.' },
-        { type: 'changed', text: 'Phase 13 cleanup: the `PLAYGROUNDS` global table (~98kb of inline literal in `app.js`) is gone. Each component\'s playground config now lives in `uds/components/<id>/playground.js` as an ES module default export. `initPlayground()` is async and dynamically imports the module on first tab click, caches it for re-clicks. Eight playground.js files that reference the `esc()` helper now `import { esc } from \'../../../docs/helpers/esc.js\'` — a new shared helper extracted from app.js. Net effect: app.js shrinks from ~5,200 lines to ~2,980 lines (-43%), and per-component playground configs are co-located with the rest of each component\'s data.' }
+        { type: 'changed', text: 'Per-component file restructure: the long-running global tables in app.js (FIGMA_LINKS, COMPONENT_STATUS, IMPL_DATA, JS_FUNC_TO_FILE, the ~98 KB PLAYGROUNDS literal) are gone. Each component now owns its own files in uds/components/<id>/ — spec.json (with figmaNodeId and figmaPageNodeId), status.json, impl.json, and playground.js as a dynamically-imported ES module. New manifest at uds/components.json drives the boot map; aggregate-components.sh regenerates it. Net effect: app.js shrinks from ~5,200 to ~2,980 lines, and every component\'s data is co-located.' },
+        { type: 'added', text: 'New manifest uds/components.json lists every component in the current release in display order (earliest version first, alphabetical tiebreak). Schema lives next to it.' },
+        { type: 'fixed', text: 'Behavior tab no longer 404s — JS_FUNC_TO_FILE had stale pre-restructure paths. Now reads from each component\'s impl.json.' }
       ]
     },
     {
       version: 'SITE 2026.05.09.2',
       date: '2026-05-09',
       changes: [
-        { type: 'added', text: 'Phase 14: version-aware UDS data routing. Selecting a historical UDS version from the version dropdown in the header no longer navigates to a frozen full-site snapshot — it now sets `?uds=X.Y` on the URL and the modern docs site renders the archive by reading data through `udsResolve()`. Bug fixes to docs-site UI now flow automatically to historical views; only the UDS data itself is frozen per release.' },
-        { type: 'changed', text: 'Phase 14: `versions/0.2/` retroactively converted from the old frozen-full-site shape to UDS-only (`versions/0.2/uds/<components, schemas, tokens, components.json, version.json, CHANGELOG.json>`). Per-component folders generated from the original frozen `content/<id>.json` + parsed `app.js` (COMPONENT_STATUS, FIGMA_LINKS, CHANGELOG). `index.html`, `app.js`, `demo-builder.js`, `bump-site.sh`, `material-icons.js`, `ai-context.json`, `content/`, etc. removed — only UDS data survives. Disk savings: ~2 MB per archived version going forward.' },
-        { type: 'added', text: 'New `udsResolve(path)` helper in `docs/helpers/uds-path.js` returns a fetchable URL for any UDS data path (e.g. `components/button/spec.json`) routed through the viewing version. Also: `viewingVersion()`, `isViewingHistorical()`, `currentVersion()` accessors. Every UDS-data fetch in app.js + demo-builder example-fetcher routes through `udsResolve()` and gates on `versionsReady` so the routing is settled before fetching.' },
-        { type: 'added', text: 'New script `scripts/convert-archive.sh` (one-time use per legacy archive) reads the frozen full-site files, splits them into per-component folders, and removes the no-longer-needed full-site copy. Idempotent (sentinel: `<archive>/uds/components.json`).' },
-        { type: 'added', text: 'Archive-view banner appears at the top of every page when `?uds=X.Y` is present. Tells the user which archive they\'re viewing and offers a one-click return to live. Dimmed Pre-flight + Build Demo buttons in archive view (interactive features only run against live UDS).' },
-        { type: 'added', text: 'Playground tab is hidden in archive view (historical snapshots don\'t carry `playground.js` modules — interactive playgrounds only render against live UDS data).' }
+        { type: 'added', text: 'Version-aware UDS data routing. Selecting a historical UDS version from the version dropdown no longer navigates to a frozen full-site snapshot; it sets ?uds=X.Y on the URL and the live docs site re-renders the archive. Bug fixes to docs UI now flow automatically to historical views; only the UDS data itself is frozen per release.' },
+        { type: 'changed', text: 'Old versions/0.2/ snapshot retroactively converted to UDS-only — every component, schema, and token, plus the components manifest and version.json. The frozen index.html / app.js / etc. are gone. ~2 MB saved per archived version going forward.' },
+        { type: 'added', text: 'New udsResolve(path) helper in docs/helpers/uds-path.js returns a fetchable URL routed through the viewing version. Sibling helpers viewingVersion(), isViewingHistorical(), and currentVersion() let any module check the routing state.' },
+        { type: 'added', text: 'Archive-view banner appears at the top of every page when ?uds=X.Y is set. One-click return to live. Pre-flight and Build Demo buttons dim in archive view since they only run against the live UDS.' },
+        { type: 'added', text: 'Playground tab is hidden in archive view — historical snapshots don\'t carry playground.js modules.' }
       ]
     },
     {
       version: 'SITE 2026.05.09.3',
       date: '2026-05-09',
       changes: [
-        { type: 'changed', text: 'Phase 15a: extracted Token Search modal into `docs/modules/token-search/index.js` as a self-contained ES module (~267 lines). Exports `initTokenSearch()`, `openTokenSearch()`, `closeTokenSearch()`. Wired up via a single import in `app.js`. The placeholder folder created back in Phase 4 is now real — finishes Phase 4b.' },
-        { type: 'changed', text: 'Phase 15b: extracted Playground engine into `docs/modules/playground/index.js` as a factory module (~181 lines). `createPlaygroundEngine(ctx)` returns `{ initPlayground, refreshPlaygrounds, loadPlaygroundConfig }` and takes its DOM helper deps (`buildCopyButton`, `buildIconPicker`, impl-section helpers, `udsResolve`) via a context object — keeps the engine decoupled without forcing extraction of every transitive helper. Finishes Phase 4c. The placeholder folder created back in Phase 4 is now real.' },
-        { type: 'fixed', text: 'Net effect on `app.js`: 3,037 → 2,671 lines (-12% from Phase 14, -49% from the original baseline of 5,228 lines). The router/tab-switcher/theme-bar/render-helpers core is now what dominates `app.js`; everything self-contained has been extracted to its own module.' }
+        { type: 'changed', text: 'Token Search modal extracted from app.js into docs/modules/token-search/. Self-contained ES module wired up via a single import.' },
+        { type: 'changed', text: 'Playground engine extracted from app.js into docs/modules/playground/ as a factory module. createPlaygroundEngine(ctx) takes its DOM helper deps via a context object so the engine stays decoupled without forcing extraction of every transitive helper.' }
       ]
     },
     {
