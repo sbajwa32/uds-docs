@@ -27,9 +27,7 @@ uds-docs/                              # Repo root
 │   │   ├── changelog.html
 │   │   ├── getting-started.html
 │   │   ├── ai-assist.html
-│   │   ├── how-to-contribute.html
 │   │   ├── cursor-workflows.html
-│   │   ├── roadmap.html
 │   │   └── tokens/{semantic-colors,primitive-colors,text-styles,spacing}.html
 │   ├── modules/
 │   │   ├── demo-builder/              # 9 ES modules: rng, data-pools,

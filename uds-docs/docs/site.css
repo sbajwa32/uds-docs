@@ -323,7 +323,7 @@ body {
 .sg-recent-full:hover { text-decoration: underline; }
 
 /* =====================================================================
-   Reference pages (About UDS, Glossary, FAQ, Contribute, Roadmap, Platform, Migration)
+   Reference pages (About UDS)
    ===================================================================== */
 
 /* About UDS — section-level rhythm */
@@ -569,29 +569,16 @@ body {
 .sg-contribute-steps a { color: var(--uds-color-text-interactive); text-decoration: none; }
 .sg-contribute-steps a:hover { text-decoration: underline; }
 
-.sg-roadmap-list, .sg-platform-list { padding-left: var(--uds-space-300); font-family: var(--uds-font-family); font-size: var(--uds-font-size-sm); color: var(--uds-color-text-secondary); line-height: 1.7; margin: 0; }
-.sg-roadmap-list li, .sg-platform-list li { margin-bottom: var(--uds-space-100); }
-.sg-roadmap-list strong, .sg-platform-list strong { color: var(--uds-color-text-primary); font-weight: var(--uds-font-weight-bold); }
-.sg-roadmap-list code, .sg-platform-list code { font-family: monospace; font-size: 0.9em; background: var(--uds-color-surface-alt); padding: 1px 6px; border-radius: var(--uds-border-radius-container-sm); }
-
-.sg-roadmap-tag {
+.sg-lifecycle__tag {
   display: inline-block; margin-left: var(--uds-space-100);
   padding: 1px 8px; font-size: var(--uds-font-size-xs);
   font-weight: var(--uds-font-weight-bold); text-transform: uppercase; letter-spacing: 0.04em;
   border-radius: var(--uds-border-radius-container-full);
   vertical-align: middle;
 }
-.sg-roadmap-tag[data-status="proposed"]    { background: var(--uds-color-surface-info-subtle); color: var(--uds-color-text-info); border: 1px solid var(--uds-color-border-info); }
-.sg-roadmap-tag[data-status="in-progress"] { background: var(--uds-color-surface-warning-subtle); color: var(--uds-color-text-warning); border: 1px solid var(--uds-color-border-warning); }
-.sg-roadmap-tag[data-status="approved"]    { background: var(--uds-color-surface-info-subtle); color: var(--uds-color-text-interactive); border: 1px solid var(--uds-color-border-interactive); }
-.sg-roadmap-tag[data-status="done"]        { background: var(--uds-color-surface-success-subtle); color: var(--uds-color-text-success); border: 1px solid var(--uds-color-border-success); }
-
-.sg-roadmap-comp-table { width: 100%; border-collapse: collapse; font-family: var(--uds-font-family); font-size: var(--uds-font-size-sm); }
-.sg-roadmap-comp-table thead tr { background: var(--uds-color-surface-subtle); }
-.sg-roadmap-comp-table th { text-align: left; padding: var(--uds-space-100) var(--uds-space-150); font-weight: var(--uds-font-weight-bold); color: var(--uds-color-text-primary); border-bottom: 1px solid var(--uds-color-border-primary); font-size: var(--uds-font-size-xs); text-transform: uppercase; letter-spacing: 0.05em; }
-.sg-roadmap-comp-table td { padding: var(--uds-space-100) var(--uds-space-150); border-bottom: 1px solid var(--uds-color-border-secondary); color: var(--uds-color-text-secondary); }
-.sg-roadmap-comp-table a { color: var(--uds-color-text-interactive); text-decoration: none; }
-.sg-roadmap-comp-table a:hover { text-decoration: underline; }
+.sg-lifecycle__tag[data-status="proposed"]    { background: var(--uds-color-surface-info-subtle); color: var(--uds-color-text-info); border: 1px solid var(--uds-color-border-info); }
+.sg-lifecycle__tag[data-status="in-progress"] { background: var(--uds-color-surface-warning-subtle); color: var(--uds-color-text-warning); border: 1px solid var(--uds-color-border-warning); }
+.sg-lifecycle__tag[data-status="done"]        { background: var(--uds-color-surface-success-subtle); color: var(--uds-color-text-success); border: 1px solid var(--uds-color-border-success); }
 
 .sg-migration-block {
   padding: var(--uds-space-300);

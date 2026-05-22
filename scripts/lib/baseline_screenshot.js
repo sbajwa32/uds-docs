@@ -12,9 +12,7 @@ const PAGES = [
   '#/changelog',
   '#/getting-started',
   '#/ai-assist',
-  '#/how-to-contribute',
   '#/cursor-workflows',
-  '#/roadmap',
   '#/semantic-colors',
   '#/primitive-colors',
   '#/text-styles',
@@ -52,7 +50,7 @@ const PAGES = [
 
 function nameFor(hash) {
   const id = hash.replace('#/', '');
-  if (['changelog','getting-started','ai-assist','how-to-contribute','cursor-workflows','roadmap'].includes(id)) {
+  if (['changelog','getting-started','ai-assist','cursor-workflows'].includes(id)) {
     return id;
   }
   if (['semantic-colors','primitive-colors','text-styles','spacing'].includes(id)) {
