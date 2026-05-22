@@ -1,581 +1,1669 @@
-        <h1 class="sg-page-title" data-bind="title"></h1>
-        <p class="sg-page-desc" data-bind="description"></p>
+        <h1 class="sg-page-title">Cursor Workflows</h1>
+        <p class="sg-page-desc">This site asks Cursor to do most of the design-system housekeeping &mdash; bumping versions, syncing Figma, writing changelogs, rebuilding release notes. You type a plain-English prompt; Cursor picks the right tool. This page is the map: what's in the toolbox, what each tool does, and which prompts trigger what.</p>
 
 <style>
-/* Local styles for the workflow diagrams + grouped layouts on this page. */
-.sg-wf-chain {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-  margin: var(--uds-space-200) 0 var(--uds-space-400);
-}
-.sg-wf-step {
-  display: grid;
-  grid-template-columns: 48px 1fr;
-  gap: var(--uds-space-200);
-  padding: var(--uds-space-200) var(--uds-space-300);
-  border: 1px solid var(--uds-color-border-secondary);
-  border-radius: var(--uds-border-radius-container-md);
-  background: var(--uds-color-surface-main);
-}
-.sg-wf-step-num {
-  width: 32px;
-  height: 32px;
-  display: flex;
+/* =====================================================================
+   Cursor Workflows page — page-local styles, .sg-cw-* prefix
+   ===================================================================== */
+
+/* Section spacing */
+.sg-cw-section { margin: 0 0 var(--uds-space-500); }
+.sg-cw-section:first-of-type { margin-top: var(--uds-space-200); }
+.sg-cw-section + .sg-cw-section { margin-top: var(--uds-space-500); }
+
+.sg-cw-eyebrow {
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
-  background: var(--uds-color-surface-interactive-active);
-  color: var(--uds-color-text-inverse);
+  gap: var(--uds-space-075);
+  padding: 2px 10px 2px 8px;
+  margin-bottom: var(--uds-space-100);
+  background: var(--uds-color-surface-subtle);
+  border: 1px solid var(--uds-color-border-secondary);
   border-radius: var(--uds-border-radius-container-full);
   font-family: var(--uds-font-family);
-  font-size: var(--uds-font-size-sm);
-  font-weight: var(--uds-font-weight-bold);
-  flex-shrink: 0;
-}
-.sg-wf-step-body { display: flex; flex-direction: column; gap: var(--uds-space-050); }
-.sg-wf-step-title {
-  font-family: var(--uds-font-family);
-  font-size: var(--uds-font-size-md);
-  font-weight: var(--uds-font-weight-bold);
-  color: var(--uds-color-text-primary);
-}
-.sg-wf-step-title code {
-  font-family: monospace;
-  font-size: 0.92em;
-  background: var(--uds-color-surface-subtle);
-  padding: 1px 6px;
-  border-radius: var(--uds-border-radius-container-sm);
-}
-.sg-wf-step-desc {
-  font-family: var(--uds-font-family);
-  font-size: var(--uds-font-size-sm);
-  color: var(--uds-color-text-secondary);
-  line-height: 1.5;
-}
-.sg-wf-step-touches {
-  font-family: var(--uds-font-family);
   font-size: var(--uds-font-size-xs);
+  font-weight: var(--uds-font-weight-bold);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
   color: var(--uds-color-text-secondary);
-  margin-top: var(--uds-space-050);
-  padding-top: var(--uds-space-075);
-  border-top: 1px dashed var(--uds-color-border-secondary);
 }
-.sg-wf-step-touches code {
-  font-family: monospace;
-  font-size: 0.95em;
-  background: var(--uds-color-surface-subtle);
-  padding: 0 4px;
-  border-radius: var(--uds-border-radius-container-sm);
-}
-.sg-wf-arrow {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 28px;
-  font-size: 20px;
-  color: var(--uds-color-icon-secondary);
-  line-height: 1;
-}
-.sg-wf-summary {
-  margin-top: var(--uds-space-200);
-  padding: var(--uds-space-200) var(--uds-space-300);
-  border: 1px solid var(--uds-color-border-secondary);
-  border-radius: var(--uds-border-radius-container-md);
-  background: var(--uds-color-surface-subtle);
-  font-family: var(--uds-font-family);
-  font-size: var(--uds-font-size-sm);
-  color: var(--uds-color-text-secondary);
-  line-height: 1.6;
-}
-.sg-wf-summary strong { color: var(--uds-color-text-primary); }
-.sg-wf-summary code {
-  font-family: monospace;
-  font-size: 0.95em;
-  background: var(--uds-color-surface-main);
-  padding: 1px 6px;
-  border-radius: var(--uds-border-radius-container-sm);
-}
-.sg-wf-card-grid {
+.sg-cw-eyebrow .material-symbols-outlined { font-size: 14px; }
+
+/* =====================================================================
+   QUICK START — "Say this, get that" prompt cards
+   ===================================================================== */
+.sg-cw-prompts {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: var(--uds-space-200);
-  margin: var(--uds-space-200) 0 var(--uds-space-300);
+  margin: var(--uds-space-200) 0 0;
 }
-.sg-wf-card {
-  padding: var(--uds-space-300);
+.sg-cw-prompt {
+  display: flex;
+  flex-direction: column;
+  gap: var(--uds-space-150);
+  padding: var(--uds-space-250);
+  background: var(--uds-color-surface-main);
   border: 1px solid var(--uds-color-border-secondary);
   border-radius: var(--uds-border-radius-container-md);
-  background: var(--uds-color-surface-subtle);
-}
-.sg-wf-card h4 {
   font-family: var(--uds-font-family);
-  font-size: var(--uds-font-size-md);
+  transition: border-color 120ms ease, box-shadow 120ms ease, transform 120ms ease;
+}
+.sg-cw-prompt:hover {
+  border-color: var(--uds-color-border-interactive);
+  box-shadow: var(--uds-shadow-depth-100);
+}
+.sg-cw-prompt-say {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--uds-space-100);
+  padding: var(--uds-space-100) var(--uds-space-150);
+  background: var(--uds-color-surface-subtle);
+  border-radius: var(--uds-border-radius-container-sm);
+  font-size: var(--uds-font-size-sm);
   font-weight: var(--uds-font-weight-bold);
   color: var(--uds-color-text-primary);
-  margin: 0 0 var(--uds-space-100);
+  line-height: 1.4;
 }
-.sg-wf-card h4 code {
+.sg-cw-prompt-say .material-symbols-outlined {
+  font-size: 18px;
+  color: var(--uds-color-icon-secondary);
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.sg-cw-prompt-body {
+  font-size: var(--uds-font-size-sm);
+  color: var(--uds-color-text-secondary);
+  line-height: 1.55;
+  flex: 1;
+}
+.sg-cw-prompt-body strong {
+  display: block;
+  color: var(--uds-color-text-primary);
+  font-weight: var(--uds-font-weight-bold);
+  margin-bottom: 4px;
+}
+.sg-cw-prompt-uses {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding-top: var(--uds-space-100);
+  border-top: 1px dashed var(--uds-color-border-secondary);
+  font-size: var(--uds-font-size-xs);
+  color: var(--uds-color-text-secondary);
+}
+.sg-cw-prompt-uses-label {
+  font-weight: var(--uds-font-weight-bold);
+  color: var(--uds-color-text-secondary);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.sg-cw-prompt-uses a,
+.sg-cw-prompt-uses code {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  background: var(--uds-color-surface-subtle);
+  border: 1px solid var(--uds-color-border-secondary);
+  border-radius: var(--uds-border-radius-container-full);
   font-family: monospace;
   font-size: 0.92em;
+  color: var(--uds-color-text-interactive);
+  text-decoration: none;
+}
+.sg-cw-prompt-uses a:hover {
+  background: var(--uds-color-surface-interactive-subtle-hover);
+  border-color: var(--uds-color-border-interactive);
+}
+
+/* =====================================================================
+   CONCEPT PRIMER — Rule / Skill / Subagent / Audit cards
+   ===================================================================== */
+.sg-cw-concepts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--uds-space-200);
+  margin: var(--uds-space-200) 0 0;
+}
+.sg-cw-concept {
+  display: flex;
+  flex-direction: column;
+  gap: var(--uds-space-100);
+  padding: var(--uds-space-250);
   background: var(--uds-color-surface-main);
-  padding: 1px 6px;
+  border: 1px solid var(--uds-color-border-secondary);
+  border-radius: var(--uds-border-radius-container-md);
+  font-family: var(--uds-font-family);
+  position: relative;
+}
+.sg-cw-concept::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 3px;
+  border-radius: var(--uds-border-radius-container-md) var(--uds-border-radius-container-md) 0 0;
+}
+.sg-cw-concept[data-type="rule"]::before     { background: var(--uds-color-surface-info); }
+.sg-cw-concept[data-type="skill"]::before    { background: var(--uds-color-surface-success); }
+.sg-cw-concept[data-type="subagent"]::before { background: var(--uds-color-surface-warning); }
+.sg-cw-concept[data-type="audit"]::before    { background: var(--uds-color-surface-error); }
+
+.sg-cw-concept-icon {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border-radius: var(--uds-border-radius-container-sm);
 }
-.sg-wf-card p {
+.sg-cw-concept[data-type="rule"]     .sg-cw-concept-icon { background: var(--uds-color-surface-info-subtle);    color: var(--uds-color-icon-info); }
+.sg-cw-concept[data-type="skill"]    .sg-cw-concept-icon { background: var(--uds-color-surface-success-subtle); color: var(--uds-color-icon-success); }
+.sg-cw-concept[data-type="subagent"] .sg-cw-concept-icon { background: var(--uds-color-surface-warning-subtle); color: var(--uds-color-icon-warning); }
+.sg-cw-concept[data-type="audit"]    .sg-cw-concept-icon { background: var(--uds-color-surface-error-subtle);   color: var(--uds-color-icon-error); }
+.sg-cw-concept-icon .material-symbols-outlined { font-size: 22px; }
+
+.sg-cw-concept-name {
+  font-size: var(--uds-font-size-lg);
+  font-weight: var(--uds-font-weight-bold);
+  color: var(--uds-color-text-primary);
+  margin: var(--uds-space-050) 0 0;
+}
+.sg-cw-concept-body {
+  font-size: var(--uds-font-size-sm);
+  color: var(--uds-color-text-secondary);
+  line-height: 1.5;
+  margin: 0;
+}
+.sg-cw-concept-analogy {
+  font-size: var(--uds-font-size-sm);
+  font-style: italic;
+  color: var(--uds-color-text-secondary);
+  margin: 0;
+  padding: var(--uds-space-075) 0 0;
+  border-top: 1px dashed var(--uds-color-border-secondary);
+}
+.sg-cw-concept-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  font-size: var(--uds-font-size-xs);
+  color: var(--uds-color-text-secondary);
+  margin-top: auto;
+  padding-top: var(--uds-space-100);
+}
+.sg-cw-concept-meta code {
+  font-family: monospace;
+  font-size: 0.92em;
+  background: var(--uds-color-surface-subtle);
+  padding: 1px 6px;
+  border-radius: var(--uds-border-radius-container-sm);
+  color: var(--uds-color-text-primary);
+}
+.sg-cw-concept-count {
+  margin-left: auto;
+  padding: 1px 8px;
+  background: var(--uds-color-surface-subtle);
+  border: 1px solid var(--uds-color-border-secondary);
+  border-radius: var(--uds-border-radius-container-full);
+  font-weight: var(--uds-font-weight-bold);
+  color: var(--uds-color-text-primary);
+}
+
+/* =====================================================================
+   WORKFLOWS TAB — workflow cards with step strip
+   ===================================================================== */
+.sg-cw-workflow {
+  display: flex;
+  flex-direction: column;
+  gap: var(--uds-space-200);
+  padding: var(--uds-space-300);
+  background: var(--uds-color-surface-main);
+  border: 1px solid var(--uds-color-border-secondary);
+  border-radius: var(--uds-border-radius-container-md);
+  margin: 0 0 var(--uds-space-250);
   font-family: var(--uds-font-family);
+  scroll-margin-top: var(--uds-space-200);
+}
+
+.sg-cw-workflow-header {
+  display: grid;
+  grid-template-columns: 48px 1fr auto;
+  gap: var(--uds-space-200);
+  align-items: center;
+}
+.sg-cw-workflow-num {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--uds-color-surface-interactive-default);
+  color: var(--uds-color-text-inverse);
+  border-radius: var(--uds-border-radius-container-full);
+  font-size: var(--uds-font-size-lg);
+  font-weight: var(--uds-font-weight-bold);
+}
+.sg-cw-workflow-titles { min-width: 0; }
+.sg-cw-workflow-name {
+  font-size: var(--uds-font-size-xl);
+  font-weight: var(--uds-font-weight-bold);
+  color: var(--uds-color-text-primary);
+  margin: 0;
+  line-height: 1.25;
+}
+.sg-cw-workflow-summary {
+  font-size: var(--uds-font-size-sm);
+  color: var(--uds-color-text-secondary);
+  margin: 4px 0 0;
+  line-height: 1.5;
+}
+.sg-cw-workflow-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--uds-space-100);
+  align-items: center;
+}
+.sg-cw-workflow-stat {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  background: var(--uds-color-surface-subtle);
+  border: 1px solid var(--uds-color-border-secondary);
+  border-radius: var(--uds-border-radius-container-full);
+  font-size: var(--uds-font-size-xs);
+  color: var(--uds-color-text-secondary);
+  white-space: nowrap;
+}
+.sg-cw-workflow-stat strong {
+  color: var(--uds-color-text-primary);
+  font-weight: var(--uds-font-weight-bold);
+}
+
+.sg-cw-workflow-triggers {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding: var(--uds-space-100) var(--uds-space-150);
+  background: var(--uds-color-surface-subtle);
+  border-radius: var(--uds-border-radius-container-sm);
+  font-size: var(--uds-font-size-xs);
+  color: var(--uds-color-text-secondary);
+}
+.sg-cw-workflow-triggers-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: var(--uds-font-weight-bold);
+  color: var(--uds-color-text-secondary);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.sg-cw-workflow-triggers-label .material-symbols-outlined { font-size: 14px; }
+.sg-cw-trigger {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  background: var(--uds-color-surface-main);
+  border: 1px solid var(--uds-color-border-secondary);
+  border-radius: var(--uds-border-radius-container-full);
+  font-family: monospace;
+  font-size: var(--uds-font-size-xs);
+  color: var(--uds-color-text-primary);
+}
+
+/* Step strip — compact, scannable step list */
+.sg-cw-steps {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  counter-reset: cw-step;
+}
+.sg-cw-step {
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  gap: var(--uds-space-150);
+  padding: var(--uds-space-150) 0;
+  position: relative;
+}
+.sg-cw-step + .sg-cw-step {
+  border-top: 1px solid var(--uds-color-border-secondary);
+}
+.sg-cw-step-num {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--uds-color-surface-subtle);
+  border: 1px solid var(--uds-color-border-secondary);
+  border-radius: var(--uds-border-radius-container-full);
+  font-size: var(--uds-font-size-xs);
+  font-weight: var(--uds-font-weight-bold);
+  color: var(--uds-color-text-secondary);
+  margin-top: 2px;
+}
+.sg-cw-step-body { min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+.sg-cw-step-title {
+  font-size: var(--uds-font-size-sm);
+  font-weight: var(--uds-font-weight-bold);
+  color: var(--uds-color-text-primary);
+  margin: 0;
+  line-height: 1.4;
+}
+.sg-cw-step-desc {
+  font-size: var(--uds-font-size-sm);
+  color: var(--uds-color-text-secondary);
+  line-height: 1.55;
+  margin: 0;
+}
+.sg-cw-step-uses {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 4px;
+}
+.sg-cw-step-uses code {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 6px;
+  background: var(--uds-color-surface-subtle);
+  border: 1px solid var(--uds-color-border-secondary);
+  border-radius: var(--uds-border-radius-container-sm);
+  font-family: monospace;
+  font-size: var(--uds-font-size-xs);
+  color: var(--uds-color-text-primary);
+}
+
+/* Workflow footer — collapsible "what it touches" + audits-gating row */
+.sg-cw-workflow-footer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--uds-space-100);
+}
+.sg-cw-workflow-audits {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding: var(--uds-space-100) var(--uds-space-150);
+  background: var(--uds-color-surface-error-subtle);
+  border: 1px solid var(--uds-color-border-error);
+  border-radius: var(--uds-border-radius-container-sm);
+  font-size: var(--uds-font-size-xs);
+  color: var(--uds-color-text-error);
+}
+.sg-cw-workflow-audits-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: var(--uds-font-weight-bold);
+  color: var(--uds-color-text-error);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.sg-cw-workflow-audits-label .material-symbols-outlined { font-size: 14px; }
+.sg-cw-workflow-audits code {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 6px;
+  background: var(--uds-color-surface-main);
+  border: 1px solid var(--uds-color-border-error);
+  border-radius: var(--uds-border-radius-container-sm);
+  font-family: monospace;
+  font-size: var(--uds-font-size-xs);
+  color: var(--uds-color-text-error);
+}
+
+.sg-cw-details {
+  margin: 0;
+  padding: 0;
+  background: var(--uds-color-surface-subtle);
+  border-radius: var(--uds-border-radius-container-sm);
+}
+.sg-cw-details > summary {
+  list-style: none;
+  cursor: pointer;
+  padding: var(--uds-space-100) var(--uds-space-150);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--uds-font-size-xs);
+  font-weight: var(--uds-font-weight-bold);
+  color: var(--uds-color-text-secondary);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  user-select: none;
+  border-radius: var(--uds-border-radius-container-sm);
+}
+.sg-cw-details > summary::-webkit-details-marker { display: none; }
+.sg-cw-details > summary::before {
+  content: "+";
+  font-family: monospace;
+  font-size: var(--uds-font-size-sm);
+  width: 14px;
+  text-align: center;
+  color: var(--uds-color-icon-secondary);
+}
+.sg-cw-details[open] > summary::before { content: "−"; }
+.sg-cw-details > summary:hover {
+  background: var(--uds-color-surface-interactive-subtle-hover);
+  color: var(--uds-color-text-primary);
+}
+.sg-cw-details-body {
+  padding: var(--uds-space-100) var(--uds-space-150) var(--uds-space-150);
   font-size: var(--uds-font-size-sm);
   color: var(--uds-color-text-secondary);
   line-height: 1.6;
-  margin: 0 0 var(--uds-space-100);
 }
-.sg-wf-card p:last-child { margin-bottom: 0; }
-.sg-wf-card code {
+.sg-cw-details-body code {
   font-family: monospace;
   font-size: 0.92em;
   background: var(--uds-color-surface-main);
+  padding: 1px 5px;
+  border-radius: var(--uds-border-radius-container-sm);
+  color: var(--uds-color-text-primary);
+}
+.sg-cw-details-body strong { color: var(--uds-color-text-primary); }
+
+/* =====================================================================
+   ARTIFACT CARDS — rules / skills / subagents / audits
+   ===================================================================== */
+.sg-cw-group {
+  margin: 0 0 var(--uds-space-400);
+}
+.sg-cw-group-header {
+  display: flex;
+  align-items: baseline;
+  gap: var(--uds-space-100);
+  margin: 0 0 var(--uds-space-100);
+}
+.sg-cw-group-name {
+  font-family: var(--uds-font-family);
+  font-size: var(--uds-font-size-lg);
+  font-weight: var(--uds-font-weight-bold);
+  color: var(--uds-color-text-primary);
+  margin: 0;
+}
+.sg-cw-group-count {
+  padding: 2px 8px;
+  background: var(--uds-color-surface-subtle);
+  border: 1px solid var(--uds-color-border-secondary);
+  border-radius: var(--uds-border-radius-container-full);
+  font-size: var(--uds-font-size-xs);
+  font-weight: var(--uds-font-weight-bold);
+  color: var(--uds-color-text-secondary);
+}
+.sg-cw-group-desc {
+  font-family: var(--uds-font-family);
+  font-size: var(--uds-font-size-sm);
+  color: var(--uds-color-text-secondary);
+  line-height: 1.55;
+  margin: 0 0 var(--uds-space-200);
+}
+
+.sg-cw-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: var(--uds-space-150);
+}
+.sg-cw-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--uds-space-075);
+  padding: var(--uds-space-200);
+  background: var(--uds-color-surface-main);
+  border: 1px solid var(--uds-color-border-secondary);
+  border-radius: var(--uds-border-radius-container-md);
+  font-family: var(--uds-font-family);
+  transition: border-color 120ms ease, box-shadow 120ms ease;
+}
+.sg-cw-card:hover {
+  border-color: var(--uds-color-border-interactive);
+  box-shadow: var(--uds-shadow-depth-100);
+}
+.sg-cw-card-head {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--uds-space-100);
+  flex-wrap: wrap;
+}
+.sg-cw-card-name {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-family: monospace;
+  font-size: var(--uds-font-size-sm);
+  font-weight: var(--uds-font-weight-bold);
+  color: var(--uds-color-text-primary);
+  margin: 0;
+  word-break: break-word;
+}
+.sg-cw-card-body {
+  font-size: var(--uds-font-size-sm);
+  color: var(--uds-color-text-secondary);
+  line-height: 1.55;
+  margin: 0;
+  flex: 1;
+}
+.sg-cw-card-body code {
+  font-family: monospace;
+  font-size: 0.92em;
+  background: var(--uds-color-surface-subtle);
+  padding: 1px 5px;
+  border-radius: var(--uds-border-radius-container-sm);
+  color: var(--uds-color-text-primary);
+}
+.sg-cw-card-body strong { color: var(--uds-color-text-primary); }
+.sg-cw-card-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-top: var(--uds-space-075);
+  padding-top: var(--uds-space-075);
+  border-top: 1px dashed var(--uds-color-border-secondary);
+  font-size: var(--uds-font-size-xs);
+  color: var(--uds-color-text-secondary);
+}
+.sg-cw-card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--uds-color-text-interactive);
+  text-decoration: none;
+  font-weight: var(--uds-font-weight-medium);
+  margin-left: auto;
+}
+.sg-cw-card-link:hover { text-decoration: underline; }
+.sg-cw-card-link .material-symbols-outlined { font-size: 14px; }
+
+/* Pills — small status badges */
+.sg-cw-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: var(--uds-border-radius-container-full);
+  font-size: var(--uds-font-size-xs);
+  font-weight: var(--uds-font-weight-bold);
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+.sg-cw-pill .material-symbols-outlined { font-size: 12px; }
+.sg-cw-pill--always   { background: var(--uds-color-surface-info-subtle);    color: var(--uds-color-text-info);    border: 1px solid var(--uds-color-border-info); }
+.sg-cw-pill--scoped   { background: var(--uds-color-surface-subtle);         color: var(--uds-color-text-secondary); border: 1px solid var(--uds-color-border-secondary); }
+.sg-cw-pill--blocks   { background: var(--uds-color-surface-error-subtle);   color: var(--uds-color-text-error);   border: 1px solid var(--uds-color-border-error); }
+.sg-cw-pill--grand    { background: var(--uds-color-surface-warning-subtle); color: var(--uds-color-text-warning); border: 1px solid var(--uds-color-border-warning); }
+.sg-cw-pill--ok       { background: var(--uds-color-surface-success-subtle); color: var(--uds-color-text-success); border: 1px solid var(--uds-color-border-success); }
+.sg-cw-pill--readonly { background: var(--uds-color-surface-info-subtle);    color: var(--uds-color-text-info);    border: 1px solid var(--uds-color-border-info); }
+.sg-cw-pill--orch     { background: var(--uds-color-surface-warning-subtle); color: var(--uds-color-text-warning); border: 1px solid var(--uds-color-border-warning); }
+.sg-cw-pill--sync     { background: var(--uds-color-surface-info-subtle);    color: var(--uds-color-text-info);    border: 1px solid var(--uds-color-border-info); }
+
+.sg-cw-scope {
+  font-family: monospace;
+  font-size: 0.92em;
+  background: var(--uds-color-surface-subtle);
   padding: 1px 6px;
   border-radius: var(--uds-border-radius-container-sm);
+  color: var(--uds-color-text-primary);
+}
+
+/* Triggers chip cloud on skill cards */
+.sg-cw-triggers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: var(--uds-space-050);
+}
+.sg-cw-triggers-label {
+  font-size: var(--uds-font-size-xs);
+  font-weight: var(--uds-font-weight-bold);
+  color: var(--uds-color-text-secondary);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-right: 4px;
+}
+.sg-cw-triggers .sg-cw-trigger {
+  background: var(--uds-color-surface-subtle);
+  font-size: 11px;
+  padding: 2px 8px;
+}
+
+/* =====================================================================
+   ADD-NEW TAB — recipe cards
+   ===================================================================== */
+.sg-cw-recipes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--uds-space-200);
+}
+.sg-cw-recipe {
+  padding: var(--uds-space-250);
+  background: var(--uds-color-surface-main);
+  border: 1px solid var(--uds-color-border-secondary);
+  border-radius: var(--uds-border-radius-container-md);
+  font-family: var(--uds-font-family);
+  display: flex;
+  flex-direction: column;
+  gap: var(--uds-space-100);
+}
+.sg-cw-recipe h4 {
+  display: flex;
+  align-items: center;
+  gap: var(--uds-space-100);
+  font-size: var(--uds-font-size-md);
+  font-weight: var(--uds-font-weight-bold);
+  color: var(--uds-color-text-primary);
+  margin: 0 0 var(--uds-space-050);
+}
+.sg-cw-recipe h4 .material-symbols-outlined { font-size: 22px; color: var(--uds-color-icon-secondary); }
+.sg-cw-recipe ol {
+  margin: 0;
+  padding-left: 22px;
+  font-size: var(--uds-font-size-sm);
+  color: var(--uds-color-text-secondary);
+  line-height: 1.55;
+}
+.sg-cw-recipe ol li { margin-bottom: 6px; }
+.sg-cw-recipe ol li:last-child { margin-bottom: 0; }
+.sg-cw-recipe code {
+  font-family: monospace;
+  font-size: 0.92em;
+  background: var(--uds-color-surface-subtle);
+  padding: 1px 5px;
+  border-radius: var(--uds-border-radius-container-sm);
+  color: var(--uds-color-text-primary);
+}
+
+/* =====================================================================
+   FINAL CALLOUT — "why this matters"
+   ===================================================================== */
+.sg-cw-callout {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--uds-space-200);
+  padding: var(--uds-space-300);
+  background: var(--uds-color-surface-info-subtle);
+  border: 1px solid var(--uds-color-border-info);
+  border-left: 4px solid var(--uds-color-border-info);
+  border-radius: var(--uds-border-radius-container-md);
+  margin: var(--uds-space-400) 0 0;
+  font-family: var(--uds-font-family);
+}
+.sg-cw-callout .material-symbols-outlined {
+  flex-shrink: 0;
+  font-size: 28px;
+  color: var(--uds-color-icon-info);
+}
+.sg-cw-callout-body {
+  flex: 1;
+}
+.sg-cw-callout-title {
+  font-size: var(--uds-font-size-md);
+  font-weight: var(--uds-font-weight-bold);
+  color: var(--uds-color-text-primary);
+  margin: 0 0 var(--uds-space-075);
+}
+.sg-cw-callout-text {
+  font-size: var(--uds-font-size-sm);
+  color: var(--uds-color-text-secondary);
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Responsive: stack workflow header on narrow screens */
+@media (max-width: 720px) {
+  .sg-cw-workflow-header {
+    grid-template-columns: 40px 1fr;
+  }
+  .sg-cw-workflow-stats {
+    grid-column: 1 / -1;
+    margin-top: var(--uds-space-100);
+  }
 }
 </style>
 
-<h3 class="sg-subsection-title">Overview</h3>
-<p class="sg-subsection-desc">Four kinds of guidance, ordered from "always on" to "called only when needed" to "enforced by CI":</p>
-<table class="sg-gl-table" style="margin-bottom:var(--uds-space-400);">
-  <thead><tr><th>Type</th><th>What it is</th><th>Lives in</th></tr></thead>
-  <tbody>
-    <tr>
-      <td><strong>Rule</strong></td>
-      <td>Standing instruction. Always on (or scoped by file globs). The agent reads it on every relevant task.<br/><em>Analogy: "Always wear a seatbelt."</em></td>
-      <td><code>.cursor/rules/*.mdc</code></td>
-    </tr>
-    <tr>
-      <td><strong>Skill</strong></td>
-      <td>How-to procedure. Loaded on demand when the task description matches. The agent itself follows the steps.<br/><em>Analogy: "How to change a tire — read the manual when you need it."</em></td>
-      <td><code>.cursor/skills/&lt;name&gt;/SKILL.md</code></td>
-    </tr>
-    <tr>
-      <td><strong>Subagent</strong></td>
-      <td>Specialist contractor. A new agent spawned in its own context, does its work, returns a result, then disappears.<br/><em>Analogy: "Call the mechanic."</em></td>
-      <td><code>.cursor/agents/&lt;name&gt;.md</code></td>
-    </tr>
-    <tr>
-      <td><strong>Audit</strong></td>
-      <td>Bash script invoked by CI on every PR + push to <code>main</code>. Failing audits block merge. Catches the failure modes the rules describe but humans / agents skip.<br/><em>Analogy: "The MOT inspection — if the seatbelt's missing, the car doesn't pass."</em></td>
-      <td><code>scripts/audit-*.sh</code></td>
-    </tr>
-  </tbody>
-</table>
+<!-- =====================================================================
+     QUICK START — "Say this, get that"
+     ===================================================================== -->
+<section class="sg-cw-section">
+  <span class="sg-cw-eyebrow">
+    <span class="material-symbols-outlined">bolt</span>
+    Quick start
+  </span>
+  <h3 class="sg-subsection-title">Say this &mdash; get that</h3>
+  <p class="sg-subsection-desc">The most common prompts and what they trigger. Type them in Cursor chat &mdash; you don't need to memorize skill names or workflows.</p>
 
-<h3 class="sg-subsection-title" style="margin-top:var(--uds-space-400);">Workflow diagrams</h3>
-<p class="sg-subsection-desc">Four end-to-end workflows the agent toolchain supports. Each shows the order of steps, what each step touches, and which skills / subagents / rules / audits are involved. The orchestrator skills (<code>uds-updated</code>, <code>figma-component-card</code>) tie multiple steps together; the specialist sync skills can also be invoked individually.</p>
+  <div class="sg-cw-prompts">
+    <article class="sg-cw-prompt">
+      <div class="sg-cw-prompt-say"><span class="material-symbols-outlined">chat</span>"UDS updated"</div>
+      <p class="sg-cw-prompt-body"><strong>Bring the docs site up to a new Figma release.</strong>Reads both Figma files, applies safe updates, asks before anything risky, and rebuilds the release notes in Figma.</p>
+      <div class="sg-cw-prompt-uses">
+        <span class="sg-cw-prompt-uses-label">Uses</span>
+        <a href="#wf-release">Workflow&nbsp;1</a>
+        <code>uds-updated</code>
+      </div>
+    </article>
 
-<h4 class="sg-subsection-title" style="margin-top:var(--uds-space-300);font-size:var(--uds-font-size-md);">1. UDS version release (Figma X.Y → docs site)</h4>
-<p class="sg-subsection-desc">Triggered when Figma's <code>UDS Version: X.Y</code> page bumps and the user confirms a release. Orchestrated by <code>uds-updated</code> or the release questionnaire in <code>uds-release-workflow.mdc</code>.</p>
+    <article class="sg-cw-prompt">
+      <div class="sg-cw-prompt-say"><span class="material-symbols-outlined">chat</span>"Sync nav-header from Figma"</div>
+      <p class="sg-cw-prompt-body"><strong>Pull one component's latest Figma into the docs.</strong>Deep-inspects the Figma component, updates the spec / CSS / examples, writes a per-component changelog entry, rebuilds Figma release notes.</p>
+      <div class="sg-cw-prompt-uses">
+        <span class="sg-cw-prompt-uses-label">Uses</span>
+        <a href="#wf-component-sync">Workflow&nbsp;2</a>
+        <code>sync-figma-component-spec</code>
+      </div>
+    </article>
 
-<div class="sg-wf-chain">
-  <div class="sg-wf-step">
-    <div class="sg-wf-step-num">1</div>
-    <div class="sg-wf-step-body">
-      <div class="sg-wf-step-title">Preflight — <code>figma-capability-check</code> + <code>figma-inventory</code></div>
-      <div class="sg-wf-step-desc">Confirms Figma MCP can read pages / Variables / node trees / bound variables, then walks both UDS files page-by-page to find the version bump, status changes, new components, and renamed/moved components.</div>
-      <div class="sg-wf-step-touches"><strong>Reads:</strong> both Figma files, <code>uds/version.json</code>, <code>uds/components.json</code>, every <code>status.json</code>. <strong>Writes:</strong> nothing.</div>
+    <article class="sg-cw-prompt">
+      <div class="sg-cw-prompt-say"><span class="material-symbols-outlined">chat</span>"Add a tooltip component"</div>
+      <p class="sg-cw-prompt-body"><strong>Scaffold a brand-new component end to end.</strong>Creates the folder, every required file, the sidebar link, the docs-page placeholder, and a starter changelog entry.</p>
+      <div class="sg-cw-prompt-uses">
+        <span class="sg-cw-prompt-uses-label">Uses</span>
+        <a href="#wf-new-component">Workflow&nbsp;3</a>
+        <code>new-component</code>
+      </div>
+    </article>
+
+    <article class="sg-cw-prompt">
+      <div class="sg-cw-prompt-say"><span class="material-symbols-outlined">chat</span>"Build the Figma page for Button"</div>
+      <p class="sg-cw-prompt-body"><strong>Generate the canonical seven-card component canvas in Figma.</strong>Builds Header / Anatomy / Variants / Sub-components / Usage / Accessibility / Meta cards from the spec data, all token-bound.</p>
+      <div class="sg-cw-prompt-uses">
+        <span class="sg-cw-prompt-uses-label">Uses</span>
+        <code>figma-component-card</code>
+      </div>
+    </article>
+
+    <article class="sg-cw-prompt">
+      <div class="sg-cw-prompt-say"><span class="material-symbols-outlined">chat</span>"Factory me an Avatar"</div>
+      <p class="sg-cw-prompt-body"><strong>Draft a new UDS component directly in Figma.</strong>Builds a token-bound component set on a brand-new draft page. You accept it by renaming the page; the docs site catches up on the next "UDS updated."</p>
+      <div class="sg-cw-prompt-uses">
+        <span class="sg-cw-prompt-uses-label">Uses</span>
+        <code>generate-uds-figma-component</code>
+      </div>
+    </article>
+
+    <article class="sg-cw-prompt">
+      <div class="sg-cw-prompt-say"><span class="material-symbols-outlined">chat</span>"Audit our specs"</div>
+      <p class="sg-cw-prompt-body"><strong>See which components have the most spec gaps.</strong>Returns a completeness report &mdash; same scoring as the "Spec X/22" pill &mdash; with the three highest-impact fields to fill in next per component.</p>
+      <div class="sg-cw-prompt-uses">
+        <span class="sg-cw-prompt-uses-label">Uses</span>
+        <code>spec-audit</code>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- =====================================================================
+     CONCEPT PRIMER — Rule / Skill / Subagent / Audit
+     ===================================================================== -->
+<section class="sg-cw-section">
+  <span class="sg-cw-eyebrow">
+    <span class="material-symbols-outlined">map</span>
+    Concept primer
+  </span>
+  <h3 class="sg-subsection-title">What's in the toolbox</h3>
+  <p class="sg-subsection-desc">Four kinds of guidance, ordered from always-on background discipline to called-on-demand specialists to enforced-by-CI safety nets. Each kind lives in its own folder and plays a different role.</p>
+
+  <div class="sg-cw-concepts">
+    <article class="sg-cw-concept" data-type="rule">
+      <div class="sg-cw-concept-icon"><span class="material-symbols-outlined">policy</span></div>
+      <h4 class="sg-cw-concept-name">Rule</h4>
+      <p class="sg-cw-concept-body">A standing instruction Cursor reads on every relevant task. Sets the project's discipline.</p>
+      <p class="sg-cw-concept-analogy">Like "always wear a seatbelt."</p>
+      <div class="sg-cw-concept-meta">
+        <code>.cursor/rules/</code>
+        <span class="sg-cw-concept-count">20</span>
+      </div>
+    </article>
+
+    <article class="sg-cw-concept" data-type="skill">
+      <div class="sg-cw-concept-icon"><span class="material-symbols-outlined">menu_book</span></div>
+      <h4 class="sg-cw-concept-name">Skill</h4>
+      <p class="sg-cw-concept-body">A how-to procedure Cursor loads on demand when your prompt matches. Cursor itself follows the steps.</p>
+      <p class="sg-cw-concept-analogy">Like "how to change a tire &mdash; read the manual when you need it."</p>
+      <div class="sg-cw-concept-meta">
+        <code>.cursor/skills/</code>
+        <span class="sg-cw-concept-count">9</span>
+      </div>
+    </article>
+
+    <article class="sg-cw-concept" data-type="subagent">
+      <div class="sg-cw-concept-icon"><span class="material-symbols-outlined">support_agent</span></div>
+      <h4 class="sg-cw-concept-name">Subagent</h4>
+      <p class="sg-cw-concept-body">A specialist contractor. Spawns in its own context, does its job, returns one structured report, then disappears.</p>
+      <p class="sg-cw-concept-analogy">Like "call the mechanic."</p>
+      <div class="sg-cw-concept-meta">
+        <code>.cursor/agents/</code>
+        <span class="sg-cw-concept-count">7</span>
+      </div>
+    </article>
+
+    <article class="sg-cw-concept" data-type="audit">
+      <div class="sg-cw-concept-icon"><span class="material-symbols-outlined">verified</span></div>
+      <h4 class="sg-cw-concept-name">CI Audit</h4>
+      <p class="sg-cw-concept-body">A bash script that runs on every PR. Failing audits block merge. Catches the failure modes humans and agents skip.</p>
+      <p class="sg-cw-concept-analogy">Like the MOT inspection.</p>
+      <div class="sg-cw-concept-meta">
+        <code>scripts/audit-*.sh</code>
+        <span class="sg-cw-concept-count">13</span>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- =====================================================================
+     TABBED CATALOG
+     ===================================================================== -->
+<section class="sg-cw-section">
+  <span class="sg-cw-eyebrow">
+    <span class="material-symbols-outlined">explore</span>
+    Catalog
+  </span>
+  <h3 class="sg-subsection-title">The whole toolchain</h3>
+  <p class="sg-subsection-desc">Browse by category. Workflows show the end-to-end flows Cursor stitches together. The other tabs list every rule, skill, subagent, and audit individually.</p>
+
+  <div class="sg-page-tabs" role="tablist" style="margin-top:var(--uds-space-200);">
+    <button role="tab" class="sg-page-tab" data-tab="workflows" aria-selected="true">Workflows</button>
+    <button role="tab" class="sg-page-tab" data-tab="rules" aria-selected="false">Rules</button>
+    <button role="tab" class="sg-page-tab" data-tab="skills" aria-selected="false">Skills</button>
+    <button role="tab" class="sg-page-tab" data-tab="subagents" aria-selected="false">Subagents</button>
+    <button role="tab" class="sg-page-tab" data-tab="audits" aria-selected="false">CI Audits</button>
+    <button role="tab" class="sg-page-tab" data-tab="add" aria-selected="false">Add your own</button>
+  </div>
+
+  <!-- ===================================================================
+       WORKFLOWS TAB
+       =================================================================== -->
+  <div data-tab-panel="workflows" class="active">
+    <p class="sg-subsection-desc" style="margin-bottom:var(--uds-space-250);">Four end-to-end flows the toolchain supports, from biggest scope (a new UDS release) to smallest (one component fix). Orchestrator skills tie multiple steps together; the specialist skills inside can also be invoked on their own.</p>
+
+    <!-- WORKFLOW 1: UDS release -->
+    <article id="wf-release" class="sg-cw-workflow">
+      <header class="sg-cw-workflow-header">
+        <span class="sg-cw-workflow-num">1</span>
+        <div class="sg-cw-workflow-titles">
+          <h4 class="sg-cw-workflow-name">UDS version release</h4>
+          <p class="sg-cw-workflow-summary">Figma <code style="font-family:monospace;font-size:0.92em;">UDS Version: X.Y</code> page bumps and the user confirms a release. The biggest flow &mdash; touches every Figma file, every changed component, both release-note frames, and the SITE build.</p>
+        </div>
+        <div class="sg-cw-workflow-stats">
+          <span class="sg-cw-workflow-stat"><strong>8</strong> steps</span>
+          <span class="sg-cw-workflow-stat"><strong>11</strong> audits gate it</span>
+        </div>
+      </header>
+
+      <div class="sg-cw-workflow-triggers">
+        <span class="sg-cw-workflow-triggers-label"><span class="material-symbols-outlined">chat</span>Triggers</span>
+        <span class="sg-cw-trigger">"UDS updated"</span>
+        <span class="sg-cw-trigger">"Figma updated"</span>
+        <span class="sg-cw-trigger">"sync UDS from Figma"</span>
+      </div>
+
+      <ol class="sg-cw-steps">
+        <li class="sg-cw-step">
+          <span class="sg-cw-step-num">1</span>
+          <div class="sg-cw-step-body">
+            <h5 class="sg-cw-step-title">Preflight</h5>
+            <p class="sg-cw-step-desc">Confirms Figma is readable, then walks both files to find the version bump, status changes, new components, and renamed components.</p>
+            <div class="sg-cw-step-uses"><code>figma-capability-check</code><code>figma-inventory</code></div>
+          </div>
+        </li>
+        <li class="sg-cw-step">
+          <span class="sg-cw-step-num">2</span>
+          <div class="sg-cw-step-body">
+            <h5 class="sg-cw-step-title">Token audit</h5>
+            <p class="sg-cw-step-desc">Direct read of every Figma Variable. Reports added / removed / renamed tokens, value changes per mode, and alias-graph validity.</p>
+            <div class="sg-cw-step-uses"><code>figma-token-audit</code></div>
+          </div>
+        </li>
+        <li class="sg-cw-step">
+          <span class="sg-cw-step-num">3</span>
+          <div class="sg-cw-step-body">
+            <h5 class="sg-cw-step-title">Component inspections</h5>
+            <p class="sg-cw-step-desc">For each changed component: a deep node-tree, variant-matrix, token-binding, and accessibility read &mdash; compared against the docs-site spec.</p>
+            <div class="sg-cw-step-uses"><code>figma-component-inspector</code></div>
+          </div>
+        </li>
+        <li class="sg-cw-step">
+          <span class="sg-cw-step-num">4</span>
+          <div class="sg-cw-step-body">
+            <h5 class="sg-cw-step-title">Snapshot release</h5>
+            <p class="sg-cw-step-desc">Archives the current <code>uds/</code> folder into <code>versions/&lt;old&gt;/uds/</code>, bumps <code>uds/version.json</code>, refreshes manifests.</p>
+            <div class="sg-cw-step-uses"><code>release.sh</code></div>
+          </div>
+        </li>
+        <li class="sg-cw-step">
+          <span class="sg-cw-step-num">5</span>
+          <div class="sg-cw-step-body">
+            <h5 class="sg-cw-step-title">Apply safe changes</h5>
+            <p class="sg-cw-step-desc">High-confidence non-breaking changes apply automatically. Anything risky stops for explicit user confirmation.</p>
+            <div class="sg-cw-step-uses"><code>import-figma-tokens</code><code>sync-figma-component-spec</code><code>sync-figma-component-status</code><code>link-figma-nodes</code><code>new-component</code></div>
+          </div>
+        </li>
+        <li class="sg-cw-step">
+          <span class="sg-cw-step-num">6</span>
+          <div class="sg-cw-step-body">
+            <h5 class="sg-cw-step-title">Re-audit</h5>
+            <p class="sg-cw-step-desc">Rebuilds the aggregated changelog and component manifest, then re-runs the multi-theme contrast scan to catch any regression from the token import.</p>
+            <div class="sg-cw-step-uses"><code>aggregate-changelog.sh</code><code>aggregate-components.sh</code><code>audit-theme-contrast.sh</code></div>
+          </div>
+        </li>
+        <li class="sg-cw-step">
+          <span class="sg-cw-step-num">7</span>
+          <div class="sg-cw-step-body">
+            <h5 class="sg-cw-step-title">Figma release notes</h5>
+            <p class="sg-cw-step-desc">Rebuilds the <code>Release Notes</code> frame on the current version page in BOTH Figma files. The two files always end up with identical text.</p>
+            <div class="sg-cw-step-uses"><code>sync-figma-release-notes</code></div>
+          </div>
+        </li>
+        <li class="sg-cw-step">
+          <span class="sg-cw-step-num">8</span>
+          <div class="sg-cw-step-body">
+            <h5 class="sg-cw-step-title">SITE bump &amp; deploy</h5>
+            <p class="sg-cw-step-desc">Bumps the SITE build counter, appends the SITE changelog entry, cache-busts what changed, pushes to <code>main</code>. GitHub Actions deploys to GH Pages.</p>
+            <div class="sg-cw-step-uses"><code>bump-site.sh</code></div>
+          </div>
+        </li>
+      </ol>
+
+      <div class="sg-cw-workflow-footer">
+        <div class="sg-cw-workflow-audits">
+          <span class="sg-cw-workflow-audits-label"><span class="material-symbols-outlined">verified_user</span>Audits that gate the merge</span>
+          <code>audit-component-completeness</code><code>audit-placeholders</code><code>audit-token-usage</code><code>audit-demo-coverage</code><code>audit-changelog-currency</code><code>audit-aggregate-currency</code><code>audit-figma-sync-state-currency</code><code>audit-css-api-table</code><code>audit-doc-internal-consistency</code><code>audit-agent-docs-currency</code><code>audit-theme-contrast</code>
+        </div>
+        <details class="sg-cw-details">
+          <summary>What gets touched, end to end</summary>
+          <div class="sg-cw-details-body">
+            Every file under <code>uds/components/&lt;id&gt;/</code> for the changed components, all <code>uds/tokens/*.css</code>, <code>uds/CHANGELOG.json</code>, <code>uds/components.json</code>, <code>uds/version.json</code>, <code>versions.json</code> plus a new <code>versions/&lt;old&gt;/uds/</code> snapshot, <code>.cursor/figma/state/</code> snapshot files, the <strong>Release Notes</strong> frame in BOTH Figma files, <code>uds-docs/index.html</code>, <code>uds-docs/version.txt</code>, <code>uds-docs/docs/data/site-changelog.js</code>.
+          </div>
+        </details>
+      </div>
+    </article>
+
+    <!-- WORKFLOW 2: Mid-release component sync -->
+    <article id="wf-component-sync" class="sg-cw-workflow">
+      <header class="sg-cw-workflow-header">
+        <span class="sg-cw-workflow-num">2</span>
+        <div class="sg-cw-workflow-titles">
+          <h4 class="sg-cw-workflow-name">Mid-release component sync</h4>
+          <p class="sg-cw-workflow-summary">One or a few components get a fresh Figma read between releases. No version bump &mdash; just the changed components, their changelog entries, and a Figma release-notes refresh.</p>
+        </div>
+        <div class="sg-cw-workflow-stats">
+          <span class="sg-cw-workflow-stat"><strong>6</strong> steps</span>
+          <span class="sg-cw-workflow-stat"><strong>4</strong> audits gate it</span>
+        </div>
+      </header>
+
+      <div class="sg-cw-workflow-triggers">
+        <span class="sg-cw-workflow-triggers-label"><span class="material-symbols-outlined">chat</span>Triggers</span>
+        <span class="sg-cw-trigger">"sync nav-header from Figma"</span>
+        <span class="sg-cw-trigger">"&lt;component&gt; renamed in Figma"</span>
+      </div>
+
+      <ol class="sg-cw-steps">
+        <li class="sg-cw-step">
+          <span class="sg-cw-step-num">1</span>
+          <div class="sg-cw-step-body">
+            <h5 class="sg-cw-step-title">Deep inspect</h5>
+            <p class="sg-cw-step-desc">Locates the canonical Figma component set, walks the node tree, captures variants and token bindings, classifies every finding by confidence and risk.</p>
+            <div class="sg-cw-step-uses"><code>figma-component-inspector</code></div>
+          </div>
+        </li>
+        <li class="sg-cw-step">
+          <span class="sg-cw-step-num">2</span>
+          <div class="sg-cw-step-body">
+            <h5 class="sg-cw-step-title">Apply spec sync</h5>
+            <p class="sg-cw-step-desc">Updates the spec, CSS, examples, impl, and playground for every high-confidence non-breaking finding. Stops on anything risky.</p>
+            <div class="sg-cw-step-uses"><code>sync-figma-component-spec</code></div>
+          </div>
+        </li>
+        <li class="sg-cw-step">
+          <span class="sg-cw-step-num">3</span>
+          <div class="sg-cw-step-body">
+            <h5 class="sg-cw-step-title">Per-component changelog</h5>
+            <p class="sg-cw-step-desc">Adds an entry to that component's <code>changelog.json</code> for the current UDS version, then runs the aggregator to refresh the global changelog.</p>
+            <div class="sg-cw-step-uses"><code>aggregate-changelog.sh</code></div>
+          </div>
+        </li>
+        <li class="sg-cw-step">
+          <span class="sg-cw-step-num">4</span>
+          <div class="sg-cw-step-body">
+            <h5 class="sg-cw-step-title">Update sync-state snapshot</h5>
+            <p class="sg-cw-step-desc">Records the captured Figma node IDs, variant matrix, and nested instances so the next sync can diff against this run.</p>
+            <div class="sg-cw-step-uses"><code>.cursor/figma/state/</code></div>
+          </div>
+        </li>
+        <li class="sg-cw-step">
+          <span class="sg-cw-step-num">5</span>
+          <div class="sg-cw-step-body">
+            <h5 class="sg-cw-step-title">Figma release notes</h5>
+            <p class="sg-cw-step-desc">Mandatory whenever the global changelog changes &mdash; rebuilds the <code>Release Notes</code> frame on the current version page in both Figma files.</p>
+            <div class="sg-cw-step-uses"><code>sync-figma-release-notes</code></div>
+          </div>
+        </li>
+        <li class="sg-cw-step">
+          <span class="sg-cw-step-num">6</span>
+          <div class="sg-cw-step-body">
+            <h5 class="sg-cw-step-title">SITE bump &amp; deploy</h5>
+            <p class="sg-cw-step-desc">Bumps the SITE build counter, appends a SITE changelog entry describing the sync, cache-busts what changed.</p>
+            <div class="sg-cw-step-uses"><code>bump-site.sh</code></div>
+          </div>
+        </li>
+      </ol>
+
+      <div class="sg-cw-workflow-footer">
+        <div class="sg-cw-workflow-audits">
+          <span class="sg-cw-workflow-audits-label"><span class="material-symbols-outlined">verified_user</span>Audits that hard-fail if any step is skipped</span>
+          <code>audit-changelog-currency</code><code>audit-aggregate-currency</code><code>audit-figma-sync-state-currency</code><code>audit-css-api-table</code>
+        </div>
+        <details class="sg-cw-details">
+          <summary>What gets touched, end to end</summary>
+          <div class="sg-cw-details-body">
+            The one or few <code>uds/components/&lt;id&gt;/</code> folders being synced, <code>uds/CHANGELOG.json</code>, <code>.cursor/figma/state/components.snapshot.json</code> + <code>last-sync.json</code>, the <strong>Release Notes</strong> frames in BOTH Figma files, <code>uds-docs/index.html</code>, <code>uds-docs/version.txt</code>, <code>uds-docs/docs/data/site-changelog.js</code>.
+          </div>
+        </details>
+      </div>
+    </article>
+
+    <!-- WORKFLOW 3: New component -->
+    <article id="wf-new-component" class="sg-cw-workflow">
+      <header class="sg-cw-workflow-header">
+        <span class="sg-cw-workflow-num">3</span>
+        <div class="sg-cw-workflow-titles">
+          <h4 class="sg-cw-workflow-name">Add a new component</h4>
+          <p class="sg-cw-workflow-summary">Scaffold a brand-new component on the docs site &mdash; folder, files, sidebar link, page placeholder, starter changelog entry. The component starts at <em>placeholder</em> status; the spec fills in over time.</p>
+        </div>
+        <div class="sg-cw-workflow-stats">
+          <span class="sg-cw-workflow-stat"><strong>4</strong> steps</span>
+        </div>
+      </header>
+
+      <div class="sg-cw-workflow-triggers">
+        <span class="sg-cw-workflow-triggers-label"><span class="material-symbols-outlined">chat</span>Triggers</span>
+        <span class="sg-cw-trigger">"add a tooltip component"</span>
+        <span class="sg-cw-trigger">"scaffold a new pagination component"</span>
+        <span class="sg-cw-trigger">"new component called X"</span>
+      </div>
+
+      <ol class="sg-cw-steps">
+        <li class="sg-cw-step">
+          <span class="sg-cw-step-num">1</span>
+          <div class="sg-cw-step-body">
+            <h5 class="sg-cw-step-title">Scaffold the folder</h5>
+            <p class="sg-cw-step-desc">Creates the new <code>uds/components/&lt;id&gt;/</code> folder with every required file: CSS stub, spec.json, status.json, changelog.json with the initial "added" entry, impl.json, playground.js, examples/.</p>
+            <div class="sg-cw-step-uses"><code>new-component</code></div>
+          </div>
+        </li>
+        <li class="sg-cw-step">
+          <span class="sg-cw-step-num">2</span>
+          <div class="sg-cw-step-body">
+            <h5 class="sg-cw-step-title">Wire into the docs site</h5>
+            <p class="sg-cw-step-desc">Adds the sidebar link, the page placeholder, the component CSS import, and (if interactive) the JS registration.</p>
+          </div>
+        </li>
+        <li class="sg-cw-step">
+          <span class="sg-cw-step-num">3</span>
+          <div class="sg-cw-step-body">
+            <h5 class="sg-cw-step-title">Refresh manifests</h5>
+            <p class="sg-cw-step-desc">Aggregates the new component into <code>components.json</code> and folds its starter changelog entry into <code>CHANGELOG.json</code>.</p>
+            <div class="sg-cw-step-uses"><code>aggregate-components.sh</code><code>aggregate-changelog.sh</code></div>
+          </div>
+        </li>
+        <li class="sg-cw-step">
+          <span class="sg-cw-step-num">4</span>
+          <div class="sg-cw-step-body">
+            <h5 class="sg-cw-step-title">SITE bump &amp; deploy</h5>
+            <p class="sg-cw-step-desc">Bumps the SITE build counter, appends a SITE changelog entry announcing the new component, cache-busts the docs stylesheet and app bundle.</p>
+            <div class="sg-cw-step-uses"><code>bump-site.sh</code></div>
+          </div>
+        </li>
+      </ol>
+
+      <div class="sg-cw-workflow-footer">
+        <details class="sg-cw-details">
+          <summary>What gets touched, end to end</summary>
+          <div class="sg-cw-details-body">
+            A brand-new <code>uds/components/&lt;id&gt;/</code> folder, <code>uds/uds.css</code>, optionally <code>uds/uds.js</code>, <code>uds/components.json</code>, <code>uds/CHANGELOG.json</code>, <code>uds-docs/index.html</code>, <code>uds-docs/version.txt</code>, <code>uds-docs/docs/data/site-changelog.js</code>. Status starts at <em>placeholder</em>; spec completeness rises as the designer fills in fields. No Figma release-notes sync needed unless the addition lands as part of a UDS release.
+          </div>
+        </details>
+      </div>
+    </article>
+
+    <!-- WORKFLOW 4: Single component edit -->
+    <article id="wf-component-edit" class="sg-cw-workflow">
+      <header class="sg-cw-workflow-header">
+        <span class="sg-cw-workflow-num">4</span>
+        <div class="sg-cw-workflow-titles">
+          <h4 class="sg-cw-workflow-name">Single component edit</h4>
+          <p class="sg-cw-workflow-summary">Smallest scope &mdash; one component's CSS, examples, or playground gets adjusted. Often a Figma-comment follow-up or an a11y review fix. Per-component changelog is still mandatory.</p>
+        </div>
+        <div class="sg-cw-workflow-stats">
+          <span class="sg-cw-workflow-stat"><strong>4</strong> steps</span>
+        </div>
+      </header>
+
+      <div class="sg-cw-workflow-triggers">
+        <span class="sg-cw-workflow-triggers-label"><span class="material-symbols-outlined">chat</span>Triggers</span>
+        <span class="sg-cw-trigger">"fix the bento chevron color"</span>
+        <span class="sg-cw-trigger">"tighten button padding"</span>
+      </div>
+
+      <ol class="sg-cw-steps">
+        <li class="sg-cw-step">
+          <span class="sg-cw-step-num">1</span>
+          <div class="sg-cw-step-body">
+            <h5 class="sg-cw-step-title">Source-of-truth check</h5>
+            <p class="sg-cw-step-desc">Any edit under <code>uds-docs/uds/</code> has to come from Figma (or revert toward Figma parity). Cursor cites the Figma read first; it won't apply an audit-detected "fix" on its own.</p>
+            <div class="sg-cw-step-uses"><code>uds-source-of-truth</code></div>
+          </div>
+        </li>
+        <li class="sg-cw-step">
+          <span class="sg-cw-step-num">2</span>
+          <div class="sg-cw-step-body">
+            <h5 class="sg-cw-step-title">Edit the file</h5>
+            <p class="sg-cw-step-desc">Change only the targeted file in <code>uds/components/&lt;id&gt;/</code>. Token-first CSS only &mdash; no raw hex / sizes / spacing.</p>
+          </div>
+        </li>
+        <li class="sg-cw-step">
+          <span class="sg-cw-step-num">3</span>
+          <div class="sg-cw-step-body">
+            <h5 class="sg-cw-step-title">Per-component changelog</h5>
+            <p class="sg-cw-step-desc">Adds an entry to that component's <code>changelog.json</code> describing the fix; the aggregator picks it up.</p>
+            <div class="sg-cw-step-uses"><code>aggregate-changelog.sh</code></div>
+          </div>
+        </li>
+        <li class="sg-cw-step">
+          <span class="sg-cw-step-num">4</span>
+          <div class="sg-cw-step-body">
+            <h5 class="sg-cw-step-title">SITE bump &amp; deploy</h5>
+            <p class="sg-cw-step-desc">Bumps the SITE build counter. If the global changelog actually changed, Figma release notes rebuild too.</p>
+            <div class="sg-cw-step-uses"><code>bump-site.sh</code><code>sync-figma-release-notes</code></div>
+          </div>
+        </li>
+      </ol>
+
+      <div class="sg-cw-workflow-footer">
+        <details class="sg-cw-details">
+          <summary>What gets touched, end to end</summary>
+          <div class="sg-cw-details-body">
+            One source file under <code>uds/components/&lt;id&gt;/</code>, that component's <code>changelog.json</code>, <code>uds/CHANGELOG.json</code>, plus the SITE trio (<code>version.txt</code>, <code>index.html</code>, <code>site-changelog.js</code>). Skip the per-component changelog entry and <code>audit-changelog-currency</code> blocks the merge.
+          </div>
+        </details>
+      </div>
+    </article>
+  </div>
+
+  <!-- ===================================================================
+       RULES TAB
+       =================================================================== -->
+  <div data-tab-panel="rules">
+    <p class="sg-subsection-desc" style="margin-bottom:var(--uds-space-300);">20 rules total &mdash; 8 always-on (loaded into Cursor's context on every task) and 12 glob-scoped (loaded only when files matching the rule's glob are in context, or when a skill explicitly references the rule).</p>
+
+    <!-- ALWAYS-ON RULES -->
+    <div class="sg-cw-group">
+      <header class="sg-cw-group-header">
+        <h4 class="sg-cw-group-name">Always-on</h4>
+        <span class="sg-cw-group-count">8</span>
+      </header>
+      <p class="sg-cw-group-desc">Loaded on every task. These set the project's standing discipline.</p>
+
+      <div class="sg-cw-cards">
+        <article class="sg-cw-card">
+          <header class="sg-cw-card-head"><code class="sg-cw-card-name">uds-source-of-truth</code><span class="sg-cw-pill sg-cw-pill--always"><span class="material-symbols-outlined">visibility</span>Always on</span></header>
+          <p class="sg-cw-card-body">The hardest rule: <code>uds-docs/uds/</code> is Figma's source of truth. Cursor won't edit anything in there in response to audit findings or "obvious fixes" &mdash; only the named Figma-sync skills (or an explicit user-directed revert) may write there.</p>
+          <footer class="sg-cw-card-foot"><a class="sg-cw-card-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/rules/uds-source-of-truth.mdc" target="_blank" rel="noopener noreferrer">Open file<span class="material-symbols-outlined">open_in_new</span></a></footer>
+        </article>
+
+        <article class="sg-cw-card">
+          <header class="sg-cw-card-head"><code class="sg-cw-card-name">uds-master-preflight</code><span class="sg-cw-pill sg-cw-pill--always"><span class="material-symbols-outlined">visibility</span>Always on</span></header>
+          <p class="sg-cw-card-body">The five-phase workflow every change has to follow: <em>sync first → source-of-truth check → bump → change → finalize</em>. Phase 5 holds the canonical round-trip checklist every Figma-sync skill points back at.</p>
+          <footer class="sg-cw-card-foot"><a class="sg-cw-card-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/rules/uds-master-preflight.mdc" target="_blank" rel="noopener noreferrer">Open file<span class="material-symbols-outlined">open_in_new</span></a></footer>
+        </article>
+
+        <article class="sg-cw-card">
+          <header class="sg-cw-card-head"><code class="sg-cw-card-name">uds-site-changelog</code><span class="sg-cw-pill sg-cw-pill--always"><span class="material-symbols-outlined">visibility</span>Always on</span></header>
+          <p class="sg-cw-card-body">Every change under <code>uds-docs/</code> bumps the SITE version, adds a <code>SITE_CHANGELOG</code> entry, and cache-busts whatever files changed. No exceptions.</p>
+          <footer class="sg-cw-card-foot"><a class="sg-cw-card-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/rules/uds-site-changelog.mdc" target="_blank" rel="noopener noreferrer">Open file<span class="material-symbols-outlined">open_in_new</span></a></footer>
+        </article>
+
+        <article class="sg-cw-card">
+          <header class="sg-cw-card-head"><code class="sg-cw-card-name">uds-content-schema</code><span class="sg-cw-pill sg-cw-pill--always"><span class="material-symbols-outlined">visibility</span>Always on</span></header>
+          <p class="sg-cw-card-body">Component spec content lives in per-component <code>spec.json</code> and gets rendered by the Guidelines tab. Never re-introduce spec HTML into <code>index.html</code>.</p>
+          <footer class="sg-cw-card-foot"><a class="sg-cw-card-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/rules/uds-content-schema.mdc" target="_blank" rel="noopener noreferrer">Open file<span class="material-symbols-outlined">open_in_new</span></a></footer>
+        </article>
+
+        <article class="sg-cw-card">
+          <header class="sg-cw-card-head"><code class="sg-cw-card-name">uds-release-workflow</code><span class="sg-cw-pill sg-cw-pill--always"><span class="material-symbols-outlined">visibility</span>Always on</span></header>
+          <p class="sg-cw-card-body">The release questionnaire and automated release steps &mdash; snapshot, status sync, changelog, token regen, Figma release notes, SITE bump. The Changelog Sync Rule also fires whenever the global changelog changes mid-release.</p>
+          <footer class="sg-cw-card-foot"><a class="sg-cw-card-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/rules/uds-release-workflow.mdc" target="_blank" rel="noopener noreferrer">Open file<span class="material-symbols-outlined">open_in_new</span></a></footer>
+        </article>
+
+        <article class="sg-cw-card">
+          <header class="sg-cw-card-head"><code class="sg-cw-card-name">uds-figma-write-safety</code><span class="sg-cw-pill sg-cw-pill--always"><span class="material-symbols-outlined">visibility</span>Always on</span></header>
+          <p class="sg-cw-card-body">Figma writes are denied by default. Only four scopes ever apply: release-notes frames, status page prefixes, cover-page version text, and component drafts on a <code>{Cursor}{Ignore}</code> page. Every write produces a before / after / rollback summary.</p>
+          <footer class="sg-cw-card-foot"><a class="sg-cw-card-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/rules/uds-figma-write-safety.mdc" target="_blank" rel="noopener noreferrer">Open file<span class="material-symbols-outlined">open_in_new</span></a></footer>
+        </article>
+
+        <article class="sg-cw-card">
+          <header class="sg-cw-card-head"><code class="sg-cw-card-name">uds-figma-change-classification</code><span class="sg-cw-pill sg-cw-pill--always"><span class="material-symbols-outlined">visibility</span>Always on</span></header>
+          <p class="sg-cw-card-body">Every finding pulled from Figma has to land with a confidence (high / medium / low), a risk class (non-breaking / potentially-breaking / destructive), and a default action. Only high-confidence + non-breaking auto-applies; everything else asks.</p>
+          <footer class="sg-cw-card-foot"><a class="sg-cw-card-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/rules/uds-figma-change-classification.mdc" target="_blank" rel="noopener noreferrer">Open file<span class="material-symbols-outlined">open_in_new</span></a></footer>
+        </article>
+
+        <article class="sg-cw-card">
+          <header class="sg-cw-card-head"><code class="sg-cw-card-name">communication-style</code><span class="sg-cw-pill sg-cw-pill--always"><span class="material-symbols-outlined">visibility</span>Always on</span></header>
+          <p class="sg-cw-card-body">How Cursor should talk to you and write docs prose. Default tone: senior designer, not developer &mdash; concise, plain language, jargon only when it's the clearest word. Technical voice stays non-negotiable for code, schemas, audits, commits, PR descriptions, and the <code>.cursor/</code> files themselves.</p>
+          <footer class="sg-cw-card-foot"><a class="sg-cw-card-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/rules/communication-style.mdc" target="_blank" rel="noopener noreferrer">Open file<span class="material-symbols-outlined">open_in_new</span></a></footer>
+        </article>
+      </div>
+    </div>
+
+    <!-- GLOB-SCOPED RULES -->
+    <div class="sg-cw-group">
+      <header class="sg-cw-group-header">
+        <h4 class="sg-cw-group-name">Glob-scoped</h4>
+        <span class="sg-cw-group-count">12</span>
+      </header>
+      <p class="sg-cw-group-desc">Loaded only when files matching the rule's glob are in context, or when a skill explicitly references the rule.</p>
+
+      <div class="sg-cw-cards">
+        <article class="sg-cw-card">
+          <header class="sg-cw-card-head"><code class="sg-cw-card-name">uds-token-first-css</code><span class="sg-cw-pill sg-cw-pill--scoped">Loads on <span class="sg-cw-scope">uds/**/*.css</span></span></header>
+          <p class="sg-cw-card-body">Bans hardcoded colors, spacing, fonts, and radii. Use <code>var(--uds-*)</code>.</p>
+          <footer class="sg-cw-card-foot"><a class="sg-cw-card-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/rules/uds-token-first-css.mdc" target="_blank" rel="noopener noreferrer">Open file<span class="material-symbols-outlined">open_in_new</span></a></footer>
+        </article>
+
+        <article class="sg-cw-card">
+          <header class="sg-cw-card-head"><code class="sg-cw-card-name">uds-token-architecture</code><span class="sg-cw-pill sg-cw-pill--scoped">Loads on <span class="sg-cw-scope">uds/tokens/**/*.css</span></span></header>
+          <p class="sg-cw-card-body">The canonical token architecture and CSS output contract. Direct Figma Variables reads are primary; ZIP exports are fallback only. Also defines the required <code>figma-token-audit</code> report shape.</p>
+          <footer class="sg-cw-card-foot"><a class="sg-cw-card-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/rules/uds-token-architecture.mdc" target="_blank" rel="noopener noreferrer">Open file<span class="material-symbols-outlined">open_in_new</span></a></footer>
+        </article>
+
+        <article class="sg-cw-card">
+          <header class="sg-cw-card-head"><code class="sg-cw-card-name">uds-figma-preflight</code><span class="sg-cw-pill sg-cw-pill--scoped">Loads on any task</span></header>
+          <p class="sg-cw-card-body">Required preflight for any Figma read or write. Owns the canonical Figma file-keys table and the stoplight → status mapping; other rules cross-reference these.</p>
+          <footer class="sg-cw-card-foot"><a class="sg-cw-card-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/rules/uds-figma-preflight.mdc" target="_blank" rel="noopener noreferrer">Open file<span class="material-symbols-outlined">open_in_new</span></a></footer>
+        </article>
+
+        <article class="sg-cw-card">
+          <header class="sg-cw-card-head"><code class="sg-cw-card-name">uds-figma-component-inspection</code><span class="sg-cw-pill sg-cw-pill--scoped">Loads on <span class="sg-cw-scope">uds-docs/**</span></span></header>
+          <p class="sg-cw-card-body">Prevents screenshot-based guessing. Requires a node-tree + variant + token-binding + nested-instance + accessibility read before any component spec update. Bidirectional &mdash; also enumerates doc-side artifacts and diffs against the last snapshot so deletions and renames can't go silent.</p>
+          <footer class="sg-cw-card-foot"><a class="sg-cw-card-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/rules/uds-figma-component-inspection.mdc" target="_blank" rel="noopener noreferrer">Open file<span class="material-symbols-outlined">open_in_new</span></a></footer>
+        </article>
+
+        <article class="sg-cw-card">
+          <header class="sg-cw-card-head"><code class="sg-cw-card-name">uds-figma-sync-state</code><span class="sg-cw-pill sg-cw-pill--scoped">Loads on <span class="sg-cw-scope">.cursor/figma/**</span></span></header>
+          <p class="sg-cw-card-body">Defines what counts as a valid sync snapshot under <code>.cursor/figma/state/</code> and when an agent may update one. Snapshots only get written after a successful verified sync &mdash; never in dry-run mode.</p>
+          <footer class="sg-cw-card-foot"><a class="sg-cw-card-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/rules/uds-figma-sync-state.mdc" target="_blank" rel="noopener noreferrer">Open file<span class="material-symbols-outlined">open_in_new</span></a></footer>
+        </article>
+
+        <article class="sg-cw-card">
+          <header class="sg-cw-card-head"><code class="sg-cw-card-name">uds-component-checklist</code><span class="sg-cw-pill sg-cw-pill--scoped">Loads on <span class="sg-cw-scope">uds-docs/**</span></span></header>
+          <p class="sg-cw-card-body">The required file list per component folder plus the pre-commit gate of audit scripts. The <code>new-component</code> skill uses this as its "what does complete look like" definition.</p>
+          <footer class="sg-cw-card-foot"><a class="sg-cw-card-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/rules/uds-component-checklist.mdc" target="_blank" rel="noopener noreferrer">Open file<span class="material-symbols-outlined">open_in_new</span></a></footer>
+        </article>
+
+        <article class="sg-cw-card">
+          <header class="sg-cw-card-head"><code class="sg-cw-card-name">uds-figma-component-card</code><span class="sg-cw-pill sg-cw-pill--scoped">Loads on card-skill files</span></header>
+          <p class="sg-cw-card-body">The canonical seven-card layout for component pages in the UDS Components Figma file. Used by the card-builder skill and its audit subagent.</p>
+          <footer class="sg-cw-card-foot"><a class="sg-cw-card-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/rules/uds-figma-component-card.mdc" target="_blank" rel="noopener noreferrer">Open file<span class="material-symbols-outlined">open_in_new</span></a></footer>
+        </article>
+
+        <article class="sg-cw-card">
+          <header class="sg-cw-card-head"><code class="sg-cw-card-name">uds-figma-component-card-update</code><span class="sg-cw-pill sg-cw-pill--scoped">Loads on card-skill files</span></header>
+          <p class="sg-cw-card-body">Update-mode companion to the card layout rule. Defines drift detection, no-op when in sync, and the no-content-loss inventory-then-rebuild contract when the builder is re-run on an existing page.</p>
+          <footer class="sg-cw-card-foot"><a class="sg-cw-card-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/rules/uds-figma-component-card-update.mdc" target="_blank" rel="noopener noreferrer">Open file<span class="material-symbols-outlined">open_in_new</span></a></footer>
+        </article>
+
+        <article class="sg-cw-card">
+          <header class="sg-cw-card-head"><code class="sg-cw-card-name">uds-rule-discipline</code><span class="sg-cw-pill sg-cw-pill--scoped">Loads on <span class="sg-cw-scope">.cursor/**</span></span></header>
+          <p class="sg-cw-card-body">Fires whenever you edit a rule, skill, or subagent file. Bump that file's <code>lastUpdated:</code> in its YAML frontmatter and refresh the matching row in <code>.cursor/TOOLCHAIN.md</code> in the same commit. The toolchain equivalent of the SITE changelog discipline.</p>
+          <footer class="sg-cw-card-foot"><a class="sg-cw-card-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/rules/uds-rule-discipline.mdc" target="_blank" rel="noopener noreferrer">Open file<span class="material-symbols-outlined">open_in_new</span></a></footer>
+        </article>
+
+        <article class="sg-cw-card">
+          <header class="sg-cw-card-head"><code class="sg-cw-card-name">uds-figma-plugin-api-gotchas</code><span class="sg-cw-pill sg-cw-pill--scoped">Loads on any task</span></header>
+          <p class="sg-cw-card-body">Plugin-API gotchas that bit the component factory once and would bite any other Figma write the same way: same-file vs library component identity, INSTANCE_SWAP defaults, hidden white auto-layout fills, resize-axis quirks, and the within-call propagation limits.</p>
+          <footer class="sg-cw-card-foot"><a class="sg-cw-card-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/rules/uds-figma-plugin-api-gotchas.mdc" target="_blank" rel="noopener noreferrer">Open file<span class="material-symbols-outlined">open_in_new</span></a></footer>
+        </article>
+
+        <article class="sg-cw-card">
+          <header class="sg-cw-card-head"><code class="sg-cw-card-name">uds-figma-factory-quality</code><span class="sg-cw-pill sg-cw-pill--scoped">Loads on factory skills</span></header>
+          <p class="sg-cw-card-body">Process gates for any factory-style Figma build: full state design contract up front, machine-verified audit, variant grid that reflects axis semantics, sensible visibility defaults, and a Phase B.0 dependency manifest before any write.</p>
+          <footer class="sg-cw-card-foot"><a class="sg-cw-card-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/rules/uds-figma-factory-quality.mdc" target="_blank" rel="noopener noreferrer">Open file<span class="material-symbols-outlined">open_in_new</span></a></footer>
+        </article>
+
+        <article class="sg-cw-card">
+          <header class="sg-cw-card-head"><code class="sg-cw-card-name">uds-design-language</code><span class="sg-cw-pill sg-cw-pill--scoped">Loads on any task</span></header>
+          <p class="sg-cw-card-body">How every UDS component handles each state &mdash; interaction, validation, availability, selection. Covers focus-ring constructions, surface treatment scale, elevation, radius, density, and the Checked-vs-Selected-vs-Active naming. Factory builds source state visuals from this rule rather than re-deriving them.</p>
+          <footer class="sg-cw-card-foot"><a class="sg-cw-card-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/rules/uds-design-language.mdc" target="_blank" rel="noopener noreferrer">Open file<span class="material-symbols-outlined">open_in_new</span></a></footer>
+        </article>
+      </div>
     </div>
   </div>
-  <div class="sg-wf-arrow">↓</div>
-  <div class="sg-wf-step">
-    <div class="sg-wf-step-num">2</div>
-    <div class="sg-wf-step-body">
-      <div class="sg-wf-step-title">Token audit — <code>figma-token-audit</code></div>
-      <div class="sg-wf-step-desc">Direct Variables read of the UDS Tokens file. Reports added / removed / renamed tokens, value changes per mode, alias-graph validity, and whether ZIP fallback is needed. Architecture validated against <code>uds-token-architecture.mdc</code>.</div>
-      <div class="sg-wf-step-touches"><strong>Reads:</strong> UDS Tokens Figma, <code>uds/tokens/*.css</code>, <code>tokens.snapshot.json</code>. <strong>Writes:</strong> nothing.</div>
+
+  <!-- ===================================================================
+       SKILLS TAB
+       =================================================================== -->
+  <div data-tab-panel="skills">
+    <p class="sg-subsection-desc" style="margin-bottom:var(--uds-space-300);">9 skills total &mdash; 3 orchestrators that stitch multiple steps together, and 6 specialist sync skills that orchestrators call (and that you can also invoke directly). Every sync skill ends by pointing at <code>uds-master-preflight</code> Phase 5 &mdash; the round-trip checklist lives in exactly one place.</p>
+
+    <!-- ORCHESTRATORS -->
+    <div class="sg-cw-group">
+      <header class="sg-cw-group-header">
+        <h4 class="sg-cw-group-name">Orchestrators</h4>
+        <span class="sg-cw-group-count">3</span>
+      </header>
+      <p class="sg-cw-group-desc">Top-level skills you invoke directly. They call other skills and subagents in sequence.</p>
+
+      <div class="sg-cw-cards">
+        <article class="sg-cw-card">
+          <header class="sg-cw-card-head"><code class="sg-cw-card-name">uds-updated</code><span class="sg-cw-pill sg-cw-pill--orch">Orchestrator</span></header>
+          <p class="sg-cw-card-body">End-to-end Figma → docs sync. Reads both Figma files, classifies findings (including surplus findings for doc-side artifacts with no Figma counterpart), applies high-confidence non-breaking changes, falls back to dry-run for everything else.</p>
+          <div class="sg-cw-triggers"><span class="sg-cw-triggers-label">Try</span><span class="sg-cw-trigger">"UDS updated"</span><span class="sg-cw-trigger">"Figma updated"</span><span class="sg-cw-trigger">"sync UDS from Figma"</span></div>
+          <footer class="sg-cw-card-foot"><a class="sg-cw-card-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/skills/uds-updated/SKILL.md" target="_blank" rel="noopener noreferrer">Open file<span class="material-symbols-outlined">open_in_new</span></a></footer>
+        </article>
+
+        <article class="sg-cw-card">
+          <header class="sg-cw-card-head"><code class="sg-cw-card-name">figma-component-card</code><span class="sg-cw-pill sg-cw-pill--orch">Orchestrator</span></header>
+          <p class="sg-cw-card-body">Builds the canonical seven-card layout on a UDS Components Figma page from <code>spec.json</code> data. Direction of data flow is code → Figma (opposite of every other Figma-sync skill).</p>
+          <div class="sg-cw-triggers"><span class="sg-cw-triggers-label">Try</span><span class="sg-cw-trigger">"build the Figma page for X"</span><span class="sg-cw-trigger">"regenerate the component cards"</span></div>
+          <footer class="sg-cw-card-foot"><a class="sg-cw-card-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/skills/figma-component-card/SKILL.md" target="_blank" rel="noopener noreferrer">Open file<span class="material-symbols-outlined">open_in_new</span></a></footer>
+        </article>
+
+        <article class="sg-cw-card">
+          <header class="sg-cw-card-head"><code class="sg-cw-card-name">generate-uds-figma-component</code><span class="sg-cw-pill sg-cw-pill--orch">Orchestrator</span></header>
+          <p class="sg-cw-card-body">UDS Component Factory. Drafts a token-bound UDS component set directly inside Figma on a brand-new <code>🟠 &lt;Title&gt; {Cursor}{Ignore}</code> page. The <code>{Ignore}</code> marker takes the page out of every automation; the designer accepts by renaming the page. Stops at Figma &mdash; docs landing happens later via <code>uds-updated</code>.</p>
+          <div class="sg-cw-triggers"><span class="sg-cw-triggers-label">Try</span><span class="sg-cw-trigger">"factory me an Avatar"</span><span class="sg-cw-trigger">"generate a UDS component for X"</span></div>
+          <footer class="sg-cw-card-foot"><a class="sg-cw-card-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/skills/generate-uds-figma-component/SKILL.md" target="_blank" rel="noopener noreferrer">Open file<span class="material-symbols-outlined">open_in_new</span></a></footer>
+        </article>
+      </div>
+    </div>
+
+    <!-- SPECIALIST SKILLS -->
+    <div class="sg-cw-group">
+      <header class="sg-cw-group-header">
+        <h4 class="sg-cw-group-name">Specialist sync skills</h4>
+        <span class="sg-cw-group-count">6</span>
+      </header>
+      <p class="sg-cw-group-desc">Called by orchestrators &mdash; or you can invoke them directly when you want just one piece of the flow.</p>
+
+      <div class="sg-cw-cards">
+        <article class="sg-cw-card">
+          <header class="sg-cw-card-head"><code class="sg-cw-card-name">new-component</code><span class="sg-cw-pill sg-cw-pill--sync">Sync skill</span></header>
+          <p class="sg-cw-card-body">Scaffolds a brand-new <code>uds/components/&lt;id&gt;/</code> folder end to end with every required file, the sidebar link, the page placeholder, and the SITE bump.</p>
+          <div class="sg-cw-triggers"><span class="sg-cw-triggers-label">Try</span><span class="sg-cw-trigger">"add a component"</span><span class="sg-cw-trigger">"scaffold a new component called X"</span></div>
+          <footer class="sg-cw-card-foot"><a class="sg-cw-card-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/skills/new-component/SKILL.md" target="_blank" rel="noopener noreferrer">Open file<span class="material-symbols-outlined">open_in_new</span></a></footer>
+        </article>
+
+        <article class="sg-cw-card">
+          <header class="sg-cw-card-head"><code class="sg-cw-card-name">import-figma-tokens</code><span class="sg-cw-pill sg-cw-pill--sync">Sync skill</span></header>
+          <p class="sg-cw-card-body">Regenerates the token CSS from a direct Figma Variables read. ZIP exports are fallback only. Updates the tokens snapshot and the last-sync marker.</p>
+          <div class="sg-cw-triggers"><span class="sg-cw-triggers-label">Try</span><span class="sg-cw-trigger">"import tokens from Figma"</span></div>
+          <footer class="sg-cw-card-foot"><a class="sg-cw-card-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/skills/import-figma-tokens/SKILL.md" target="_blank" rel="noopener noreferrer">Open file<span class="material-symbols-outlined">open_in_new</span></a></footer>
+        </article>
+
+        <article class="sg-cw-card">
+          <header class="sg-cw-card-head"><code class="sg-cw-card-name">sync-figma-component-spec</code><span class="sg-cw-pill sg-cw-pill--sync">Sync skill</span></header>
+          <p class="sg-cw-card-body">Updates one component's per-component files (spec, CSS, examples, impl, playground, figma notes) from a component-inspector report. Bidirectional &mdash; consumes the inspector's surplus + snapshot delta sections to propose removals as classified findings; the figma-notes section also auto-prunes resolved entries and adds new ones for open questions.</p>
+          <div class="sg-cw-triggers"><span class="sg-cw-triggers-label">Try</span><span class="sg-cw-trigger">"sync &lt;component&gt; from Figma"</span></div>
+          <footer class="sg-cw-card-foot"><a class="sg-cw-card-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/skills/sync-figma-component-spec/SKILL.md" target="_blank" rel="noopener noreferrer">Open file<span class="material-symbols-outlined">open_in_new</span></a></footer>
+        </article>
+
+        <article class="sg-cw-card">
+          <header class="sg-cw-card-head"><code class="sg-cw-card-name">sync-figma-component-status</code><span class="sg-cw-pill sg-cw-pill--sync">Sync skill</span></header>
+          <p class="sg-cw-card-body">Edits a component's <code>status.json</code> to match Figma's stoplight page prefix. Adds a per-component changelog entry. Backward moves from <em>review</em> or <em>production</em> ask before applying.</p>
+          <div class="sg-cw-triggers"><span class="sg-cw-triggers-label">Try</span><span class="sg-cw-trigger">"sync component status"</span></div>
+          <footer class="sg-cw-card-foot"><a class="sg-cw-card-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/skills/sync-figma-component-status/SKILL.md" target="_blank" rel="noopener noreferrer">Open file<span class="material-symbols-outlined">open_in_new</span></a></footer>
+        </article>
+
+        <article class="sg-cw-card">
+          <header class="sg-cw-card-head"><code class="sg-cw-card-name">link-figma-nodes</code><span class="sg-cw-pill sg-cw-pill--sync">Sync skill</span></header>
+          <p class="sg-cw-card-body">Populates <code>figmaNodeId</code> and <code>figmaPageNodeId</code> in <code>spec.json</code> from canonical Figma component-set and page nodes. Overwriting a non-null link asks first.</p>
+          <div class="sg-cw-triggers"><span class="sg-cw-triggers-label">Try</span><span class="sg-cw-trigger">"populate missing figmaNodeId fields"</span><span class="sg-cw-trigger">"link X to Figma"</span></div>
+          <footer class="sg-cw-card-foot"><a class="sg-cw-card-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/skills/link-figma-nodes/SKILL.md" target="_blank" rel="noopener noreferrer">Open file<span class="material-symbols-outlined">open_in_new</span></a></footer>
+        </article>
+
+        <article class="sg-cw-card">
+          <header class="sg-cw-card-head"><code class="sg-cw-card-name">sync-figma-release-notes</code><span class="sg-cw-pill sg-cw-pill--sync">Sync skill</span></header>
+          <p class="sg-cw-card-body">Rebuilds the <code>Release Notes</code> frame on the current version page in both UDS Tokens and UDS Components Figma files from <code>uds/CHANGELOG.json</code>. The two files always end up identical.</p>
+          <div class="sg-cw-triggers"><span class="sg-cw-triggers-label">Try</span><span class="sg-cw-trigger">"rebuild Figma release notes"</span></div>
+          <footer class="sg-cw-card-foot"><a class="sg-cw-card-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/skills/sync-figma-release-notes/SKILL.md" target="_blank" rel="noopener noreferrer">Open file<span class="material-symbols-outlined">open_in_new</span></a></footer>
+        </article>
+      </div>
     </div>
   </div>
-  <div class="sg-wf-arrow">↓</div>
-  <div class="sg-wf-step">
-    <div class="sg-wf-step-num">3</div>
-    <div class="sg-wf-step-body">
-      <div class="sg-wf-step-title">Component inspections — <code>figma-component-inspector</code> (one per changed component)</div>
-      <div class="sg-wf-step-desc">For each component the inventory flagged as changed, performs a deep node-tree + variant-matrix + token-binding + nested-instance + accessibility read. Compares against the per-component <code>spec.json</code> / <code>&lt;id&gt;.css</code> / <code>examples/*.html</code> / <code>impl.json</code> / <code>playground.js</code>.</div>
-      <div class="sg-wf-step-touches"><strong>Reads:</strong> UDS Components Figma, every <code>uds/components/&lt;id&gt;/</code> file. <strong>Writes:</strong> nothing.</div>
+
+  <!-- ===================================================================
+       SUBAGENTS TAB
+       =================================================================== -->
+  <div data-tab-panel="subagents">
+    <p class="sg-subsection-desc" style="margin-bottom:var(--uds-space-300);">7 subagents, all read-only. Each spawns in its own isolated context window, does its job, returns one structured report, then disappears. That keeps noisy intermediate work out of the main conversation.</p>
+
+    <div class="sg-cw-cards">
+      <article class="sg-cw-card">
+        <header class="sg-cw-card-head"><code class="sg-cw-card-name">figma-capability-check</code><span class="sg-cw-pill sg-cw-pill--readonly"><span class="material-symbols-outlined">lock</span>Read-only</span></header>
+        <p class="sg-cw-card-body">Probes the Figma integration: which API tools work, what's actually readable. Returns a capability report covering pages, Variables, aliases, node trees, bound variables, and release-notes write support.</p>
+        <footer class="sg-cw-card-foot">Run first in any Figma workflow.<a class="sg-cw-card-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/agents/figma-capability-check.md" target="_blank" rel="noopener noreferrer">Open file<span class="material-symbols-outlined">open_in_new</span></a></footer>
+      </article>
+
+      <article class="sg-cw-card">
+        <header class="sg-cw-card-head"><code class="sg-cw-card-name">figma-token-audit</code><span class="sg-cw-pill sg-cw-pill--readonly"><span class="material-symbols-outlined">lock</span>Read-only</span></header>
+        <p class="sg-cw-card-body">Reads UDS Tokens Variables directly, validates the architecture, diffs against the last snapshot, reports added / removed / renamed tokens and value changes per mode.</p>
+        <footer class="sg-cw-card-foot">Called by <code>uds-updated</code>, <code>import-figma-tokens</code>.<a class="sg-cw-card-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/agents/figma-token-audit.md" target="_blank" rel="noopener noreferrer">Open file<span class="material-symbols-outlined">open_in_new</span></a></footer>
+      </article>
+
+      <article class="sg-cw-card">
+        <header class="sg-cw-card-head"><code class="sg-cw-card-name">figma-inventory</code><span class="sg-cw-pill sg-cw-pill--readonly"><span class="material-symbols-outlined">lock</span>Read-only</span></header>
+        <p class="sg-cw-card-body">Lists every Figma version, component page, status, component fingerprint. Spots new components, missing components, renamed components, and status mismatches against the docs site.</p>
+        <footer class="sg-cw-card-foot">Called by <code>uds-updated</code>, release flow.<a class="sg-cw-card-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/agents/figma-inventory.md" target="_blank" rel="noopener noreferrer">Open file<span class="material-symbols-outlined">open_in_new</span></a></footer>
+      </article>
+
+      <article class="sg-cw-card">
+        <header class="sg-cw-card-head"><code class="sg-cw-card-name">figma-component-inspector</code><span class="sg-cw-pill sg-cw-pill--readonly"><span class="material-symbols-outlined">lock</span>Read-only</span></header>
+        <p class="sg-cw-card-body">Deep-inspects one component end to end. Returns the variant matrix, anatomy, token bindings, hardcoded values, accessibility implications, doc-site mismatches, doc-site surplus, snapshot delta, and a Figma-notes evaluation. All three structured sections are mandatory.</p>
+        <footer class="sg-cw-card-foot">Called by <code>uds-updated</code>, <code>sync-figma-component-spec</code>.<a class="sg-cw-card-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/agents/figma-component-inspector.md" target="_blank" rel="noopener noreferrer">Open file<span class="material-symbols-outlined">open_in_new</span></a></footer>
+      </article>
+
+      <article class="sg-cw-card">
+        <header class="sg-cw-card-head"><code class="sg-cw-card-name">figma-spec-gap</code><span class="sg-cw-pill sg-cw-pill--readonly"><span class="material-symbols-outlined">lock</span>Read-only</span></header>
+        <p class="sg-cw-card-body">Compares Figma coverage against the docs site &mdash; missing docs, missing components, stale titles, status mismatches, new-component candidates.</p>
+        <footer class="sg-cw-card-foot">Standalone audit; <code>link-figma-nodes</code> preflight.<a class="sg-cw-card-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/agents/figma-spec-gap.md" target="_blank" rel="noopener noreferrer">Open file<span class="material-symbols-outlined">open_in_new</span></a></footer>
+      </article>
+
+      <article class="sg-cw-card">
+        <header class="sg-cw-card-head"><code class="sg-cw-card-name">figma-component-card-audit</code><span class="sg-cw-pill sg-cw-pill--readonly"><span class="material-symbols-outlined">lock</span>Read-only</span></header>
+        <p class="sg-cw-card-body">Audits one (or all) UDS Components Figma component pages against the canonical card layout. Checks structure, token bindings, status pill, link cards, and content match against the spec.</p>
+        <footer class="sg-cw-card-foot">Runs after <code>figma-component-card</code>.<a class="sg-cw-card-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/agents/figma-component-card-audit.md" target="_blank" rel="noopener noreferrer">Open file<span class="material-symbols-outlined">open_in_new</span></a></footer>
+      </article>
+
+      <article class="sg-cw-card">
+        <header class="sg-cw-card-head"><code class="sg-cw-card-name">spec-audit</code><span class="sg-cw-pill sg-cw-pill--readonly"><span class="material-symbols-outlined">lock</span>Read-only</span></header>
+        <p class="sg-cw-card-body">Scores spec completeness per component out of 22 &mdash; same scoring as the "Spec X/22" pill on each component page &mdash; and recommends the three highest-impact fields to fill in next.</p>
+        <footer class="sg-cw-card-foot">Standalone; pre-release readiness check.<a class="sg-cw-card-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/agents/spec-audit.md" target="_blank" rel="noopener noreferrer">Open file<span class="material-symbols-outlined">open_in_new</span></a></footer>
+      </article>
     </div>
   </div>
-  <div class="sg-wf-arrow">↓</div>
-  <div class="sg-wf-step">
-    <div class="sg-wf-step-num">4</div>
-    <div class="sg-wf-step-body">
-      <div class="sg-wf-step-title">Snapshot release — <code>release.sh &lt;new&gt;</code></div>
-      <div class="sg-wf-step-desc">Archives the current <code>uds/</code> into <code>versions/&lt;old&gt;/uds/</code>; bumps <code>uds/version.json</code>; updates <code>versions.json</code>; runs <code>aggregate-changelog.sh</code> and <code>aggregate-components.sh</code>.</div>
-      <div class="sg-wf-step-touches"><strong>Writes:</strong> <code>versions/&lt;old&gt;/uds/</code>, <code>uds/version.json</code>, <code>versions.json</code>, <code>uds/CHANGELOG.json</code>, <code>uds/components.json</code>.</div>
+
+  <!-- ===================================================================
+       AUDITS TAB
+       =================================================================== -->
+  <div data-tab-panel="audits">
+    <p class="sg-subsection-desc" style="margin-bottom:var(--uds-space-300);">13 bash audits in <code>scripts/audit-*.sh</code>, wired into <code>.github/workflows/audits.yml</code>. They run on every PR and every push to <code>main</code>. Failing audits block merge. Three of them grandfather pre-existing drift via <code>scripts/audit-baseline.json</code>.</p>
+
+    <!-- PRE-EXISTING AUDITS -->
+    <div class="sg-cw-group">
+      <header class="sg-cw-group-header">
+        <h4 class="sg-cw-group-name">Pre-existing audits</h4>
+        <span class="sg-cw-group-count">4</span>
+      </header>
+      <p class="sg-cw-group-desc">Lived on the repo from early on. Catch the most basic completeness and convention violations.</p>
+
+      <div class="sg-cw-cards">
+        <article class="sg-cw-card">
+          <header class="sg-cw-card-head"><code class="sg-cw-card-name">audit-component-completeness</code><span class="sg-cw-pill sg-cw-pill--blocks"><span class="material-symbols-outlined">block</span>Blocks merge</span></header>
+          <p class="sg-cw-card-body">Every <code>uds/components/&lt;id&gt;/</code> folder has the required minimum files: CSS, schema-valid <code>spec.json</code>, <code>status.json</code>, <code>changelog.json</code>, <code>impl.json</code>, <code>playground.js</code>, <code>examples/manifest.json</code>, at least one example HTML.</p>
+        </article>
+
+        <article class="sg-cw-card">
+          <header class="sg-cw-card-head"><code class="sg-cw-card-name">audit-placeholders</code><span class="sg-cw-pill sg-cw-pill--blocks"><span class="material-symbols-outlined">block</span>Blocks merge</span></header>
+          <p class="sg-cw-card-body">Every <code>{{token}}</code> referenced in any example HTML is declared in <code>placeholder-vocabulary.json</code>. Keeps Demo Builder substitution deterministic.</p>
+        </article>
+
+        <article class="sg-cw-card">
+          <header class="sg-cw-card-head"><code class="sg-cw-card-name">audit-token-usage</code><span class="sg-cw-pill sg-cw-pill--blocks"><span class="material-symbols-outlined">block</span>Blocks merge</span></header>
+          <p class="sg-cw-card-body">Every per-component CSS file uses <code>--uds-*</code> tokens. Flags hardcoded hex values.</p>
+        </article>
+
+        <article class="sg-cw-card">
+          <header class="sg-cw-card-head"><code class="sg-cw-card-name">audit-demo-coverage</code><span class="sg-cw-pill sg-cw-pill--blocks"><span class="material-symbols-outlined">block</span>Blocks merge</span></header>
+          <p class="sg-cw-card-body">Every implementation-ready component has at least one example with <code>demoWeight &gt; 0</code> so the Demo Builder always has something to render.</p>
+        </article>
+      </div>
+    </div>
+
+    <!-- PR2 + PR3 AUDITS -->
+    <div class="sg-cw-group">
+      <header class="sg-cw-group-header">
+        <h4 class="sg-cw-group-name">Drift-detection audits</h4>
+        <span class="sg-cw-group-count">7</span>
+      </header>
+      <p class="sg-cw-group-desc">Introduced to hard-block the failure modes that produced the nav-header changelog, page-chrome, and sync-state issues. Each fails CI when its specific class of drift appears.</p>
+
+      <div class="sg-cw-cards">
+        <article class="sg-cw-card">
+          <header class="sg-cw-card-head"><code class="sg-cw-card-name">audit-changelog-currency</code><span class="sg-cw-pill sg-cw-pill--grand"><span class="material-symbols-outlined">history</span>Grandfathered</span></header>
+          <p class="sg-cw-card-body">For each component, fails if any commit after the baseline SHA touched source files (CSS / JS / spec / examples / impl / playground / status) without a matching <code>changelog.json</code> entry. Exempts commits whose message contains <code>[no-changelog: &lt;reason&gt;]</code>.</p>
+        </article>
+
+        <article class="sg-cw-card">
+          <header class="sg-cw-card-head"><code class="sg-cw-card-name">audit-aggregate-currency</code><span class="sg-cw-pill sg-cw-pill--blocks"><span class="material-symbols-outlined">block</span>Blocks merge</span></header>
+          <p class="sg-cw-card-body">Re-runs the aggregators into temp files and diffs against the committed <code>uds/CHANGELOG.json</code> and <code>uds/components.json</code>. Catches "edited per-component, forgot to aggregate."</p>
+        </article>
+
+        <article class="sg-cw-card">
+          <header class="sg-cw-card-head"><code class="sg-cw-card-name">audit-figma-sync-state-currency</code><span class="sg-cw-pill sg-cw-pill--blocks"><span class="material-symbols-outlined">block</span>Blocks merge</span></header>
+          <p class="sg-cw-card-body">State-based check that each <code>spec.json</code> <code>figmaNodeId</code> and <code>figmaPageNodeId</code> matches the <code>components.snapshot.json</code> <code>componentSetNodeId</code> and <code>pageNodeId</code>.</p>
+        </article>
+
+        <article class="sg-cw-card">
+          <header class="sg-cw-card-head"><code class="sg-cw-card-name">audit-css-api-table</code><span class="sg-cw-pill sg-cw-pill--grand"><span class="material-symbols-outlined">history</span>Grandfathered</span></header>
+          <p class="sg-cw-card-body">For each component, regex-extracts <code>udc-*</code> selectors from the CSS and the codes from the hardcoded API table in <code>index.html</code>. Fails on either-direction drift. 10 components with pre-existing drift are tolerated via baseline; new drift fails.</p>
+        </article>
+
+        <article class="sg-cw-card">
+          <header class="sg-cw-card-head"><code class="sg-cw-card-name">audit-doc-internal-consistency</code><span class="sg-cw-pill sg-cw-pill--grand"><span class="material-symbols-outlined">history</span>Grandfathered</span></header>
+          <p class="sg-cw-card-body">Per-component doc-side coherence safety net &mdash; the partner of the inspector's surplus pass. Five checks: orphan CSS selectors, undispatched spec events, missing impl token refs, missing component pair refs, and orchestrator script entries pointing at missing files. Catches what partial cleanups leave behind.</p>
+        </article>
+
+        <article class="sg-cw-card">
+          <header class="sg-cw-card-head"><code class="sg-cw-card-name">audit-agent-docs-currency</code><span class="sg-cw-pill sg-cw-pill--grand"><span class="material-symbols-outlined">history</span>Grandfathered</span></header>
+          <p class="sg-cw-card-body">Compares the files under <code>.cursor/rules/</code>, <code>.cursor/skills/</code>, <code>.cursor/agents/</code> against the references on THIS docs page. Catches "added / renamed / removed a rule, skill, or agent without updating the docs."</p>
+        </article>
+
+        <article class="sg-cw-card">
+          <header class="sg-cw-card-head"><code class="sg-cw-card-name">audit-toolchain-currency</code><span class="sg-cw-pill sg-cw-pill--blocks"><span class="material-symbols-outlined">block</span>Blocks merge</span></header>
+          <p class="sg-cw-card-body">Three bundled checks: every rule / skill / subagent file's frontmatter <code>lastUpdated:</code> is newer than its git mtime; every file has a row in <code>.cursor/TOOLCHAIN.md</code>; every row's date matches the file's frontmatter.</p>
+        </article>
+
+        <article class="sg-cw-card">
+          <header class="sg-cw-card-head"><code class="sg-cw-card-name">audit-figma-card-template</code><span class="sg-cw-pill sg-cw-pill--blocks"><span class="material-symbols-outlined">block</span>Blocks merge</span></header>
+          <p class="sg-cw-card-body">Verifies the component-card template constants used by the card builder skill stay in sync with the canonical layout rule.</p>
+        </article>
+      </div>
+    </div>
+
+    <!-- THEME CONTRAST -->
+    <div class="sg-cw-group">
+      <header class="sg-cw-group-header">
+        <h4 class="sg-cw-group-name">Accessibility audit</h4>
+        <span class="sg-cw-group-count">1</span>
+      </header>
+      <p class="sg-cw-group-desc">Heavier than the static audits (needs Node + headless Chrome), so it runs in its own CI job.</p>
+
+      <div class="sg-cw-cards">
+        <article class="sg-cw-card">
+          <header class="sg-cw-card-head"><code class="sg-cw-card-name">audit-theme-contrast</code><span class="sg-cw-pill sg-cw-pill--blocks"><span class="material-symbols-outlined">block</span>Blocks merge</span></header>
+          <p class="sg-cw-card-body">Multi-theme axe-core scan across 6 theme combinations × 7 representative pages = 42 page-theme combos. Detects WCAG AA contrast violations and a handful of ARIA issues. <strong>Diagnostic, not authority</strong> &mdash; a failing contrast is a Figma-side design conversation per <code>uds-source-of-truth</code>, never a license for Cursor to bump tokens.</p>
+        </article>
+      </div>
+    </div>
+
+    <div class="sg-cw-group">
+      <header class="sg-cw-group-header">
+        <h4 class="sg-cw-group-name">Baselines and exemptions</h4>
+      </header>
+      <p class="sg-cw-group-desc"><code>scripts/audit-baseline.json</code> is the single config file for any audit that grandfathers pre-existing drift. It holds:</p>
+      <ul style="font-size:var(--uds-font-size-sm);color:var(--uds-color-text-secondary);line-height:1.6;padding-left:var(--uds-space-300);margin-top:var(--uds-space-100);">
+        <li><strong><code>audit-changelog-currency</code></strong> &mdash; a <code>baseline</code> SHA. Commits before this SHA aren't checked. Update only on a deliberate sweep that backfills changelogs.</li>
+        <li><strong><code>audit-css-api-table</code></strong> &mdash; a <code>toleratedComponents</code> array. Components in this list are exempted from the Code-tab table check. Add or remove only with explicit user direction.</li>
+        <li><strong><code>audit-doc-internal-consistency</code></strong> &mdash; a <code>toleratedFindings</code> array of literal <code>comp/check/identifier</code> strings, plus <code>toleratedComponents</code> for whole-component skips. The goal is to drain the list as components get cleaned up.</li>
+        <li><strong><code>audit-agent-docs-currency</code></strong> &mdash; a <code>baseline</code> SHA and an optional <code>toleratedFiles</code> array for internal-only rules / skills / agents that intentionally don't appear on this docs page.</li>
+      </ul>
     </div>
   </div>
-  <div class="sg-wf-arrow">↓</div>
-  <div class="sg-wf-step">
-    <div class="sg-wf-step-num">5</div>
-    <div class="sg-wf-step-body">
-      <div class="sg-wf-step-title">Apply changes — <code>sync-figma-component-status</code>, <code>sync-figma-component-spec</code>, <code>link-figma-nodes</code>, <code>import-figma-tokens</code>, <code>new-component</code></div>
-      <div class="sg-wf-step-desc">High-confidence changes apply per <code>uds-figma-change-classification.mdc</code>. Each skill writes per-component changelog entries + updates <code>.cursor/figma/state/components.snapshot.json</code>. Token import regenerates token CSS from direct Variables reads (ZIPs are fallback only).</div>
-      <div class="sg-wf-step-touches"><strong>Writes:</strong> <code>uds/components/&lt;id&gt;/{spec,status,changelog,impl}.json</code>, <code>&lt;id&gt;.css</code>, <code>&lt;id&gt;.js</code>, <code>examples/*</code>, <code>playground.js</code>; <code>uds/tokens/*.css</code>; <code>.cursor/figma/state/*.json</code>.</div>
+
+  <!-- ===================================================================
+       ADD-YOUR-OWN TAB
+       =================================================================== -->
+  <div data-tab-panel="add">
+    <p class="sg-subsection-desc" style="margin-bottom:var(--uds-space-300);">All four kinds live in the repo and ship with anyone who clones it. Add one when the discipline you're following keeps getting forgotten &mdash; rules for standing instructions, skills for repeatable procedures, subagents for context-isolated work, audits for the safety net.</p>
+
+    <div class="sg-cw-recipes">
+      <article class="sg-cw-recipe">
+        <h4><span class="material-symbols-outlined">policy</span>Add a Rule</h4>
+        <ol>
+          <li>Drop a <code>.mdc</code> file in <code>.cursor/rules/</code> with YAML frontmatter (<code>description</code>, <code>alwaysApply: true</code> OR <code>globs: [...]</code>) and the rule body in markdown.</li>
+          <li>Use rules for standing instructions and project conventions &mdash; "always do X," "never use Y."</li>
+          <li>Add a card to this page's <strong>Rules</strong> tab. <code>audit-agent-docs-currency</code> blocks the merge otherwise.</li>
+        </ol>
+      </article>
+
+      <article class="sg-cw-recipe">
+        <h4><span class="material-symbols-outlined">menu_book</span>Add a Skill</h4>
+        <ol>
+          <li>Create <code>.cursor/skills/&lt;name&gt;/SKILL.md</code> with frontmatter (<code>name</code>, <code>description</code>) and a step-by-step procedure. Optionally add <code>scripts/</code>, <code>references/</code>, or <code>assets/</code> subfolders.</li>
+          <li>Use skills for repeatable, well-defined procedures Cursor can carry out itself &mdash; "scaffold X," "sync Y."</li>
+          <li>Every sync skill should end with a pointer to <code>uds-master-preflight</code> Phase 5.</li>
+          <li>Add a card to this page's <strong>Skills</strong> tab.</li>
+        </ol>
+      </article>
+
+      <article class="sg-cw-recipe">
+        <h4><span class="material-symbols-outlined">support_agent</span>Add a Subagent</h4>
+        <ol>
+          <li>Create <code>.cursor/agents/&lt;name&gt;.md</code> with frontmatter (<code>name</code>, <code>description</code>, optionally <code>readonly: true</code>, <code>model</code>).</li>
+          <li>Use subagents for tasks that benefit from context isolation &mdash; long research, parallel work, read-only audits.</li>
+          <li>Add a card to this page's <strong>Subagents</strong> tab.</li>
+        </ol>
+      </article>
+
+      <article class="sg-cw-recipe">
+        <h4><span class="material-symbols-outlined">verified</span>Add an Audit</h4>
+        <ol>
+          <li>Create <code>scripts/audit-&lt;name&gt;.sh</code> following the patterns of existing audits &mdash; exit non-zero with a clear "FAIL &mdash; &lt;reason&gt;" line on failure; emit "OK &mdash; &lt;summary&gt;" on success.</li>
+          <li>Wire it into the <code>audits</code> job in <code>.github/workflows/audits.yml</code>.</li>
+          <li>If the audit needs grandfathering, extend <code>scripts/audit-baseline.json</code>.</li>
+          <li>Add a card to this page's <strong>CI Audits</strong> tab.</li>
+        </ol>
+      </article>
     </div>
   </div>
-  <div class="sg-wf-arrow">↓</div>
-  <div class="sg-wf-step">
-    <div class="sg-wf-step-num">6</div>
-    <div class="sg-wf-step-body">
-      <div class="sg-wf-step-title">Aggregate + re-audit — <code>aggregate-changelog.sh</code>, <code>aggregate-components.sh</code>, <code>audit-theme-contrast.sh</code></div>
-      <div class="sg-wf-step-desc">Rebuilds <code>uds/CHANGELOG.json</code> and <code>uds/components.json</code> from per-component files; runs the 6-theme contrast audit to catch any regression in the token-import.</div>
-      <div class="sg-wf-step-touches"><strong>Writes:</strong> <code>uds/CHANGELOG.json</code>, <code>uds/components.json</code>. <strong>Reads:</strong> all per-component files + token CSS.</div>
-    </div>
-  </div>
-  <div class="sg-wf-arrow">↓</div>
-  <div class="sg-wf-step">
-    <div class="sg-wf-step-num">7</div>
-    <div class="sg-wf-step-body">
-      <div class="sg-wf-step-title">Figma Release Notes sync — <code>sync-figma-release-notes</code></div>
-      <div class="sg-wf-step-desc">Removes the existing <code>Release Notes</code> frame on the <code>UDS Version: X.Y</code> page in both UDS Tokens and UDS Components Figma files and rebuilds from the aggregated <code>uds/CHANGELOG.json</code>. Both files must end up with identical text.</div>
-      <div class="sg-wf-step-touches"><strong>Writes:</strong> Release Notes frame in BOTH Figma files. <strong>Allowed write scope #1</strong> per <code>uds-figma-write-safety.mdc</code>.</div>
-    </div>
-  </div>
-  <div class="sg-wf-arrow">↓</div>
-  <div class="sg-wf-step">
-    <div class="sg-wf-step-num">8</div>
-    <div class="sg-wf-step-body">
-      <div class="sg-wf-step-title">SITE bump + commit + push — <code>bump-site.sh</code></div>
-      <div class="sg-wf-step-desc">Bumps <code>version.txt</code> + inline <code>SITE_VERSION</code> + display string. Appends a <code>SITE_CHANGELOG</code> entry. Cache-busts <code>uds.css?v=</code>, <code>uds.js?v=</code>, <code>app.js?v=</code> for the files that changed. Pushes to <code>main</code>; GitHub Actions deploys to GH Pages.</div>
-      <div class="sg-wf-step-touches"><strong>Writes:</strong> <code>uds-docs/version.txt</code>, <code>uds-docs/index.html</code>, <code>uds-docs/docs/data/site-changelog.js</code>.</div>
-    </div>
+</section>
+
+<!-- =====================================================================
+     FINAL CALLOUT — Why this matters for designers
+     ===================================================================== -->
+<div class="sg-cw-callout">
+  <span class="material-symbols-outlined">stars</span>
+  <div class="sg-cw-callout-body">
+    <p class="sg-cw-callout-title">You don't have to memorize any of this</p>
+    <p class="sg-cw-callout-text">Saying "sync the bento dropdown from Figma," "audit our specs," or "scaffold a new tooltip component" is enough. Cursor picks the right skill or subagent based on the description, the rules guarantee the version bump / per-component changelog / aggregate / snapshot / Figma release notes / cache-bust all land, and the CI audits hard-fail if anything is silently skipped. Less ceremony, fewer mistakes, more time on actual design.</p>
   </div>
 </div>
-
-<div class="sg-wf-summary">
-  <strong>End-to-end this workflow touches:</strong>
-  every file under <code>uds/components/&lt;id&gt;/</code> for changed components, all <code>uds/tokens/*.css</code>, <code>uds/CHANGELOG.json</code>, <code>uds/components.json</code>, <code>uds/version.json</code>, <code>versions.json</code> + a new <code>versions/&lt;old&gt;/uds/</code> snapshot, <code>.cursor/figma/state/{components,tokens}.snapshot.json</code>, <code>.cursor/figma/state/last-sync.json</code>, the <code>Release Notes</code> frames in BOTH Figma files, <code>uds-docs/index.html</code>, <code>uds-docs/version.txt</code>, <code>uds-docs/docs/data/site-changelog.js</code>.
-  <br/><br/>
-  <strong>Audits that gate the merge:</strong>
-  <code>audit-component-completeness</code>, <code>audit-placeholders</code>, <code>audit-token-usage</code>, <code>audit-demo-coverage</code>, <code>audit-changelog-currency</code>, <code>audit-aggregate-currency</code>, <code>audit-figma-sync-state-currency</code>, <code>audit-css-api-table</code>, <code>audit-doc-internal-consistency</code>, <code>audit-agent-docs-currency</code>, <code>audit-theme-contrast</code> (after token regen).
-</div>
-
-<h4 class="sg-subsection-title" style="margin-top:var(--uds-space-400);font-size:var(--uds-font-size-md);">2. Mid-release component sync (e.g. "sync nav-header from Figma")</h4>
-<p class="sg-subsection-desc">No version bump — one or a few components get a fresh Figma read and the doc-site catches up. Triggered by a prompt like "sync nav-header from Figma" or "the title-area component renamed in Figma." The failure modes addressed by PR2's new audits all live in this loop.</p>
-
-<div class="sg-wf-chain">
-  <div class="sg-wf-step">
-    <div class="sg-wf-step-num">1</div>
-    <div class="sg-wf-step-body">
-      <div class="sg-wf-step-title">Preflight + deep inspect — <code>figma-component-inspector</code></div>
-      <div class="sg-wf-step-desc">Per <code>uds-figma-component-inspection.mdc</code>: locate canonical component set, walk node tree, extract variant matrix + token bindings + nested instances, classify findings per <code>uds-figma-change-classification.mdc</code>. Screenshots are supporting evidence only.</div>
-      <div class="sg-wf-step-touches"><strong>Reads:</strong> UDS Components Figma; <code>uds/components/&lt;id&gt;/*</code>; <code>.cursor/figma/state/components.snapshot.json</code>. <strong>Writes:</strong> nothing.</div>
-    </div>
-  </div>
-  <div class="sg-wf-arrow">↓</div>
-  <div class="sg-wf-step">
-    <div class="sg-wf-step-num">2</div>
-    <div class="sg-wf-step-body">
-      <div class="sg-wf-step-title">Apply spec sync — <code>sync-figma-component-spec</code> (apply mode)</div>
-      <div class="sg-wf-step-desc">For each high-confidence non-breaking finding: update <code>spec.json</code> (props, events, slots, states, accessibility, knownIssues, figmaNodeId), <code>&lt;id&gt;.css</code> (token bindings, drift fixes), <code>examples/*.html</code> (markup that matches the canonical anatomy), <code>impl.json</code> (Code-tab reference data), <code>playground.js</code> (controls + render). Potentially-breaking changes stop for explicit user direction.</div>
-      <div class="sg-wf-step-touches"><strong>Writes:</strong> every <code>uds/components/&lt;id&gt;/</code> file that the spec touches.</div>
-    </div>
-  </div>
-  <div class="sg-wf-arrow">↓</div>
-  <div class="sg-wf-step">
-    <div class="sg-wf-step-num">3</div>
-    <div class="sg-wf-step-body">
-      <div class="sg-wf-step-title">Per-component changelog + aggregate</div>
-      <div class="sg-wf-step-desc">Add an <code>entries[]</code> item to <code>uds/components/&lt;id&gt;/changelog.json</code> for the current UDS version — one entry per logical change (figmaNodeId fix, spec sync, rename, drift fix, etc.). Run <code>aggregate-changelog.sh</code>. <code>audit-changelog-currency</code> will fail CI if this step is skipped; <code>audit-aggregate-currency</code> will fail if you skip the aggregate.</div>
-      <div class="sg-wf-step-touches"><strong>Writes:</strong> <code>uds/components/&lt;id&gt;/changelog.json</code>, <code>uds/CHANGELOG.json</code>.</div>
-    </div>
-  </div>
-  <div class="sg-wf-arrow">↓</div>
-  <div class="sg-wf-step">
-    <div class="sg-wf-step-num">4</div>
-    <div class="sg-wf-step-body">
-      <div class="sg-wf-step-title">Update Figma sync-state snapshot</div>
-      <div class="sg-wf-step-desc">Record the captured Figma node IDs, variant matrix, nested instances, and fingerprint into <code>.cursor/figma/state/components.snapshot.json</code>. Bump <code>last-sync.json</code> <code>lastSuccessfulSync</code> and recompute <code>components.snapshotChecksum</code>. <code>audit-figma-sync-state-currency</code> blocks merge if <code>spec.json</code>'s <code>figmaNodeId</code> doesn't match the snapshot's <code>componentSetNodeId</code>.</div>
-      <div class="sg-wf-step-touches"><strong>Writes:</strong> <code>.cursor/figma/state/components.snapshot.json</code>, <code>last-sync.json</code>.</div>
-    </div>
-  </div>
-  <div class="sg-wf-arrow">↓</div>
-  <div class="sg-wf-step">
-    <div class="sg-wf-step-num">5</div>
-    <div class="sg-wf-step-body">
-      <div class="sg-wf-step-title">Figma Release Notes sync — <code>sync-figma-release-notes</code></div>
-      <div class="sg-wf-step-desc"><code>uds-release-workflow.mdc</code> "Changelog Sync Rule" mandates this whenever <code>uds/CHANGELOG.json</code> changes, even mid-release. Rebuilds the Release Notes frame on the current <code>UDS Version: X.Y</code> page in both Figma files.</div>
-      <div class="sg-wf-step-touches"><strong>Writes:</strong> Release Notes frame in BOTH Figma files.</div>
-    </div>
-  </div>
-  <div class="sg-wf-arrow">↓</div>
-  <div class="sg-wf-step">
-    <div class="sg-wf-step-num">6</div>
-    <div class="sg-wf-step-body">
-      <div class="sg-wf-step-title">SITE bump + commit + push</div>
-      <div class="sg-wf-step-desc"><code>bump-site.sh</code>, append <code>SITE_CHANGELOG</code> entry describing the sync, bump cache-busters (<code>uds.css?v=</code> if component CSS changed; <code>uds.js?v=</code> if component JS changed; <code>app.js?v=</code> if the imported <code>site-changelog.js</code> changed). Push to <code>main</code>.</div>
-      <div class="sg-wf-step-touches"><strong>Writes:</strong> <code>version.txt</code>, <code>index.html</code>, <code>site-changelog.js</code>.</div>
-    </div>
-  </div>
-</div>
-
-<div class="sg-wf-summary">
-  <strong>End-to-end this workflow touches:</strong>
-  one or a few <code>uds/components/&lt;id&gt;/</code> folders (the components being synced), <code>uds/CHANGELOG.json</code>, <code>.cursor/figma/state/components.snapshot.json</code>, <code>.cursor/figma/state/last-sync.json</code>, the Release Notes frames in BOTH Figma files, <code>uds-docs/index.html</code>, <code>uds-docs/version.txt</code>, <code>uds-docs/docs/data/site-changelog.js</code>.
-  <br/><br/>
-  <strong>The four PR2 audits</strong> (<code>audit-changelog-currency</code>, <code>audit-aggregate-currency</code>, <code>audit-figma-sync-state-currency</code>, <code>audit-css-api-table</code>) all hard-fail if any of these steps is skipped or partially completed.
-</div>
-
-<h4 class="sg-subsection-title" style="margin-top:var(--uds-space-400);font-size:var(--uds-font-size-md);">3. Adding a new component</h4>
-<p class="sg-subsection-desc">Triggered by prompts like "add a tooltip component," "scaffold a new pagination component." The <code>new-component</code> skill handles the scaffold end to end.</p>
-
-<div class="sg-wf-chain">
-  <div class="sg-wf-step">
-    <div class="sg-wf-step-num">1</div>
-    <div class="sg-wf-step-body">
-      <div class="sg-wf-step-title">Scaffold — <code>new-component</code> skill</div>
-      <div class="sg-wf-step-desc">Creates <code>uds/components/&lt;id&gt;/</code> with the required minimum files: <code>&lt;id&gt;.css</code> (empty token-first stub), <code>spec.json</code> (~6/22 completeness fields filled), <code>status.json</code> (initial status, usually <code>placeholder</code> or <code>blocked</code>), <code>changelog.json</code> (with a <code>{ version: "&lt;current UDS&gt;", type: "added" }</code> entry), <code>impl.json</code>, <code>playground.js</code> default-export stub, <code>examples/manifest.json</code> + one example HTML file.</div>
-      <div class="sg-wf-step-touches"><strong>Writes:</strong> the entire new <code>uds/components/&lt;id&gt;/</code> folder.</div>
-    </div>
-  </div>
-  <div class="sg-wf-arrow">↓</div>
-  <div class="sg-wf-step">
-    <div class="sg-wf-step-num">2</div>
-    <div class="sg-wf-step-body">
-      <div class="sg-wf-step-title">Wire into the docs site</div>
-      <div class="sg-wf-step-desc">Adds the sidebar link in <code>index.html</code> under the right group; adds a placeholder <code>&lt;div data-page="&lt;id&gt;" data-page-fragment&gt;&lt;/div&gt;</code> OR an inline component page block with empty <code>data-bind="title"</code> / <code>data-bind="description"</code> placeholders (per the Phase 19 page-chrome refactor). Includes the component's CSS import in <code>uds/uds.css</code>; if interactive, registers the JS in <code>uds/uds.js</code> <code>COMPONENT_SCRIPTS</code> and the init selector.</div>
-      <div class="sg-wf-step-touches"><strong>Writes:</strong> <code>uds-docs/index.html</code>, <code>uds/uds.css</code>, <code>uds/uds.js</code> (if interactive).</div>
-    </div>
-  </div>
-  <div class="sg-wf-arrow">↓</div>
-  <div class="sg-wf-step">
-    <div class="sg-wf-step-num">3</div>
-    <div class="sg-wf-step-body">
-      <div class="sg-wf-step-title">Refresh manifest + aggregated changelog</div>
-      <div class="sg-wf-step-desc">Runs <code>aggregate-components.sh</code> to add the new component to <code>uds/components.json</code>. Runs <code>aggregate-changelog.sh</code> to fold the component's initial <code>"added"</code> entry into <code>uds/CHANGELOG.json</code>.</div>
-      <div class="sg-wf-step-touches"><strong>Writes:</strong> <code>uds/components.json</code>, <code>uds/CHANGELOG.json</code>.</div>
-    </div>
-  </div>
-  <div class="sg-wf-arrow">↓</div>
-  <div class="sg-wf-step">
-    <div class="sg-wf-step-num">4</div>
-    <div class="sg-wf-step-body">
-      <div class="sg-wf-step-title">SITE bump + commit + push</div>
-      <div class="sg-wf-step-desc"><code>bump-site.sh</code> + <code>SITE_CHANGELOG</code> entry announcing the new component + cache-bust <code>uds.css?v=</code> (because the new component's CSS is imported) and <code>app.js?v=</code> (because <code>site-changelog.js</code> changed). Push to <code>main</code>.</div>
-      <div class="sg-wf-step-touches"><strong>Writes:</strong> <code>version.txt</code>, <code>index.html</code>, <code>site-changelog.js</code>.</div>
-    </div>
-  </div>
-</div>
-
-<div class="sg-wf-summary">
-  <strong>End-to-end this workflow touches:</strong>
-  a brand-new <code>uds/components/&lt;id&gt;/</code> folder + <code>uds/uds.css</code> + (optionally) <code>uds/uds.js</code> + <code>uds/components.json</code> + <code>uds/CHANGELOG.json</code> + <code>uds-docs/index.html</code> + <code>uds-docs/version.txt</code> + <code>uds-docs/docs/data/site-changelog.js</code>.
-  <br/><br/>
-  Status starts at <code>placeholder</code> or <code>blocked</code>; spec completeness rises over time as the designer fills in fields. No Figma Release Notes sync is required unless this component's addition lands as part of a UDS version bump.
-</div>
-
-<h4 class="sg-subsection-title" style="margin-top:var(--uds-space-400);font-size:var(--uds-font-size-md);">4. Single component edit (e.g. "fix the bento chevron color")</h4>
-<p class="sg-subsection-desc">Smallest scope — one component's CSS, examples, or playground gets adjusted (often as a follow-up to a Figma comment or an a11y review). The round-trip checklist still applies because per-component <code>changelog.json</code> is mandatory.</p>
-
-<div class="sg-wf-chain">
-  <div class="sg-wf-step">
-    <div class="sg-wf-step-num">1</div>
-    <div class="sg-wf-step-body">
-      <div class="sg-wf-step-title">Source-of-truth check</div>
-      <div class="sg-wf-step-desc"><code>uds-source-of-truth.mdc</code>: any edit under <code>uds-docs/uds/</code> must be sourced from Figma (or be a revert toward Figma parity). Cite the Figma read the edit is based on; never apply an audit-detected "fix" autonomously.</div>
-      <div class="sg-wf-step-touches"><strong>Reads:</strong> the Figma source (UDS Components or UDS Tokens). <strong>Writes:</strong> nothing yet.</div>
-    </div>
-  </div>
-  <div class="sg-wf-arrow">↓</div>
-  <div class="sg-wf-step">
-    <div class="sg-wf-step-num">2</div>
-    <div class="sg-wf-step-body">
-      <div class="sg-wf-step-title">Edit the source file</div>
-      <div class="sg-wf-step-desc">Change exactly the targeted file in <code>uds/components/&lt;id&gt;/</code>. Token-first CSS only — no hardcoded colors / fonts / spacing (<code>audit-token-usage</code> enforces). If the edit changes CSS class names, the <code>&lt;table class="sg-api-table"&gt;</code> in <code>index.html</code> for that component must also update (<code>audit-css-api-table</code> enforces).</div>
-      <div class="sg-wf-step-touches"><strong>Writes:</strong> one file under <code>uds/components/&lt;id&gt;/</code>; potentially <code>index.html</code>.</div>
-    </div>
-  </div>
-  <div class="sg-wf-arrow">↓</div>
-  <div class="sg-wf-step">
-    <div class="sg-wf-step-num">3</div>
-    <div class="sg-wf-step-body">
-      <div class="sg-wf-step-title">Per-component changelog + aggregate</div>
-      <div class="sg-wf-step-desc">Same as workflow 2 step 3 — add an <code>entries[]</code> item describing the fix, run <code>aggregate-changelog.sh</code>. The only exemption is a pure revert toward Figma parity — include <code>[no-changelog: revert toward Figma parity]</code> in the commit message and the audit will skip.</div>
-      <div class="sg-wf-step-touches"><strong>Writes:</strong> <code>uds/components/&lt;id&gt;/changelog.json</code>, <code>uds/CHANGELOG.json</code>.</div>
-    </div>
-  </div>
-  <div class="sg-wf-arrow">↓</div>
-  <div class="sg-wf-step">
-    <div class="sg-wf-step-num">4</div>
-    <div class="sg-wf-step-body">
-      <div class="sg-wf-step-title">SITE bump + commit + push</div>
-      <div class="sg-wf-step-desc">Same SITE flow as the larger workflows. The Figma Release Notes sync (workflow 2 step 5) only runs if <code>uds/CHANGELOG.json</code> actually changed — for a small fix that's still yes.</div>
-      <div class="sg-wf-step-touches"><strong>Writes:</strong> <code>version.txt</code>, <code>index.html</code>, <code>site-changelog.js</code>.</div>
-    </div>
-  </div>
-</div>
-
-<div class="sg-wf-summary">
-  <strong>End-to-end this workflow touches:</strong>
-  one source file under <code>uds/components/&lt;id&gt;/</code> + that component's <code>changelog.json</code> + <code>uds/CHANGELOG.json</code> + the SITE trio (<code>version.txt</code>, <code>index.html</code>, <code>site-changelog.js</code>). If you skip the per-component changelog entry, <code>audit-changelog-currency</code> blocks the merge.
-</div>
-
-<h3 class="sg-subsection-title" style="margin-top:var(--uds-space-500);">Active Rules</h3>
-<p class="sg-subsection-desc">14 rules, split by activation behavior.</p>
-
-<h4 class="sg-subsection-title" style="margin-top:var(--uds-space-200);font-size:var(--uds-font-size-md);">Always-on (8 rules)</h4>
-<p class="sg-subsection-desc">Loaded into the agent's context on every task. These set the project's standing discipline.</p>
-<table class="sg-gl-table" style="margin-bottom:var(--uds-space-300);">
-  <thead><tr><th>Rule</th><th>What it does</th></tr></thead>
-  <tbody>
-    <tr><td><a class="sg-gl-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/rules/uds-source-of-truth.mdc" target="_blank" rel="noopener noreferrer"><code>uds-source-of-truth</code></a></td><td>The hardest rule: <code>uds-docs/uds/</code> is Figma's source of truth. Agents must not autonomously modify anything under that path in response to audit findings, a11y issues, or "obvious-looking" fixes. Only the named Figma-sync skills + explicit user-directed reverts may write there.</td></tr>
-    <tr><td><a class="sg-gl-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/rules/uds-master-preflight.mdc" target="_blank" rel="noopener noreferrer"><code>uds-master-preflight</code></a></td><td>Five-phase workflow: <em>Sync first (Phase 1) → source-of-truth check (Phase 2) → bump (Phase 3) → change (Phase 4) → finalize (Phase 5).</em> Phase 5 contains the canonical "component update round-trip" checklist that every Figma-sync skill points at.</td></tr>
-    <tr><td><a class="sg-gl-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/rules/uds-site-changelog.mdc" target="_blank" rel="noopener noreferrer"><code>uds-site-changelog</code></a></td><td>Enforces SITE version bump, <code>SITE_CHANGELOG</code> entry, and cache busting on every change under <code>uds-docs/</code>.</td></tr>
-    <tr><td><a class="sg-gl-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/rules/uds-content-schema.mdc" target="_blank" rel="noopener noreferrer"><code>uds-content-schema</code></a></td><td>Component spec content lives in per-component <code>spec.json</code>, rendered by the Guidelines tab. Never re-introduce spec HTML into <code>index.html</code>.</td></tr>
-    <tr><td><a class="sg-gl-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/rules/uds-release-workflow.mdc" target="_blank" rel="noopener noreferrer"><code>uds-release-workflow</code></a></td><td>Release workflow: Figma version detection, release questionnaire, automated steps (snapshot → status sync → changelog → token regen → Figma Release Notes → SITE bump). Mid-release additions also trigger the "Changelog Sync Rule" — when <code>uds/CHANGELOG.json</code> changes, Figma Release Notes must rebuild in both files.</td></tr>
-    <tr><td><a class="sg-gl-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/rules/uds-figma-write-safety.mdc" target="_blank" rel="noopener noreferrer"><code>uds-figma-write-safety</code></a></td><td>Figma writes are denied by default. Allowed scopes: (1) Release Notes frames, (2) component status page-name prefixes when explicitly asked, (3) cover-page version text during a release, (4) component drafts on a <code>{Cursor}{Ignore}</code> page in <code>UDS Components</code> when the user invokes <code>generate-uds-figma-component</code>. Every write must produce a "before / after / rollback" summary.</td></tr>
-    <tr><td><a class="sg-gl-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/rules/uds-figma-change-classification.mdc" target="_blank" rel="noopener noreferrer"><code>uds-figma-change-classification</code></a></td><td>Every Figma-derived finding must have a confidence (high/medium/low), risk class (non-breaking / potentially-breaking / destructive / unknown), and a default action. Only high-confidence + non-breaking may auto-apply; everything else stops for user direction.</td></tr>
-    <tr><td><a class="sg-gl-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/rules/communication-style.mdc" target="_blank" rel="noopener noreferrer"><code>communication-style</code></a></td><td>Default chat tone for this repo + voice for human-facing docs prose. Talk to the user as a senior product designer, not a developer &mdash; concise, plain language, technical terms when they're the clearest word (not by default, not for show). Includes a designer-voice vs technical-voice table that explicitly notes when the technical version is the right call (debugging, exact-name lookups, the user asked for implementation detail). Same voice applies to rendered docs pages (<code>docs/pages/*.html</code>), <code>spec.json</code> prose fields (<code>description</code>, <code>whenToUse</code>, <code>whenNotToUse</code>, <code>dosDonts</code>, accessibility strings), <code>impl.json</code> descriptions, <code>CHANGELOG.globalNotes.json</code>, and README narrative &mdash; without authorizing autonomous rewrites of <code>uds-docs/uds/</code> content (Figma source-of-truth still gates that). Technical voice is non-negotiable for code, code comments, JSON schemas, structured spec fields (<code>props</code>, <code>events</code>, <code>slots</code>, <code>states</code>, etc.), per-component <code>changelog.json</code> entries, <code>SITE_CHANGELOG</code> entries, audit output, Figma write summaries, commits, PR descriptions, and the <code>.cursor/</code> rule/skill/agent files themselves (agents need the exact file paths and script names to execute) &mdash; downstream tooling and audits depend on the exact vocabulary. Pairs with the User Rule in Cursor Settings so the same voice follows the user across every project.</td></tr>
-  </tbody>
-</table>
-
-<h4 class="sg-subsection-title" style="margin-top:var(--uds-space-200);font-size:var(--uds-font-size-md);">Glob-scoped (12 rules)</h4>
-<p class="sg-subsection-desc">Loaded only when files matching the rule's glob are in the agent's context, or when a skill explicitly references the rule.</p>
-<table class="sg-gl-table" style="margin-bottom:var(--uds-space-300);">
-  <thead><tr><th>Rule</th><th>What it does</th><th>Loads when…</th></tr></thead>
-  <tbody>
-    <tr><td><a class="sg-gl-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/rules/uds-token-first-css.mdc" target="_blank" rel="noopener noreferrer"><code>uds-token-first-css</code></a></td><td>Bans hardcoded colors / spacing / fonts / radii. Use <code>var(--uds-*)</code>.</td><td>editing <code>uds/**/*.css</code> or <code>index.html</code></td></tr>
-    <tr><td><a class="sg-gl-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/rules/uds-token-architecture.mdc" target="_blank" rel="noopener noreferrer"><code>uds-token-architecture</code></a></td><td>Canonical UDS Tokens Figma variable architecture and CSS output contract. Direct Variables first; ZIP fallback only. Also documents the required <code>figma-token-audit</code> report contract.</td><td>editing <code>uds/tokens/**/*.css</code>, <code>app.js</code>, or <code>index.html</code></td></tr>
-    <tr><td><a class="sg-gl-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/rules/uds-figma-preflight.mdc" target="_blank" rel="noopener noreferrer"><code>uds-figma-preflight</code></a></td><td>Required preflight for any Figma read or write. Owns the canonical Figma file keys table and the stoplight → status mapping. Other rules cross-reference these.</td><td>any task (glob <code>**/*</code>)</td></tr>
-    <tr><td><a class="sg-gl-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/rules/uds-figma-component-inspection.mdc" target="_blank" rel="noopener noreferrer"><code>uds-figma-component-inspection</code></a></td><td>Prevents screenshot-based guessing. Required node-tree + variant + token-binding + nested-instance + accessibility inspection before any component spec update. Bidirectional &mdash; every inspection must also enumerate doc-side artifacts (spec slots/events/states, CSS selectors, examples, impl/playground refs, orchestrator loader entries) and tag each as <code>attested</code> / <code>unattested-by-figma</code> / <code>infrastructure</code>, plus diff against the prior <code>components.snapshot.json</code> entry so deletions and renames cannot go silent. Owns the "Release changelog coverage" contract.</td><td>editing <code>uds-docs/**</code> or <code>.cursor/**</code></td></tr>
-    <tr><td><a class="sg-gl-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/rules/uds-figma-sync-state.mdc" target="_blank" rel="noopener noreferrer"><code>uds-figma-sync-state</code></a></td><td>Defines tracked sync snapshots under <code>.cursor/figma/state/</code> and when agents may update them. Snapshots are only written after successful verified sync, never in dry-run mode.</td><td>editing <code>.cursor/figma/**</code></td></tr>
-    <tr><td><a class="sg-gl-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/rules/uds-component-checklist.mdc" target="_blank" rel="noopener noreferrer"><code>uds-component-checklist</code></a></td><td>Required file list per component folder + pre-commit gate listing the audit scripts. Used by the <code>new-component</code> skill as its "what does a complete component look like" definition.</td><td>editing <code>uds-docs/**</code></td></tr>
-    <tr><td><a class="sg-gl-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/rules/uds-figma-component-card.mdc" target="_blank" rel="noopener noreferrer"><code>uds-figma-component-card</code></a></td><td>Canonical seven-card layout for component pages in the UDS Components Figma file. Used by the <code>figma-component-card</code> skill (which writes the cards) and the <code>figma-component-card-audit</code> subagent (which verifies them).</td><td>editing <code>.cursor/skills/figma-component-card/**</code> or <code>.cursor/agents/figma-component-card-audit.md</code></td></tr>
-    <tr><td><a class="sg-gl-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/rules/uds-figma-component-card-update.mdc" target="_blank" rel="noopener noreferrer"><code>uds-figma-component-card-update</code></a></td><td>Update-mode companion to <code>uds-figma-component-card</code>. Defines what to do when the card builder is re-run on a page that already has a <code>udc-&lt;id&gt;-page</code> frame: drift detection (template / page content / <code>spec.json</code>), no-op when in sync, and the no-content-loss inventory-then-rebuild contract.</td><td>editing <code>.cursor/skills/figma-component-card/**</code> or <code>.cursor/agents/figma-component-card-audit.md</code></td></tr>
-    <tr><td><a class="sg-gl-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/rules/uds-rule-discipline.mdc" target="_blank" rel="noopener noreferrer"><code>uds-rule-discipline</code></a></td><td>Fires whenever you edit a rule, skill, or subagent file. Bump that file's <code>lastUpdated:</code> in its YAML frontmatter and update the matching row in <code>.cursor/TOOLCHAIN.md</code> in the same commit. The agent-toolchain equivalent of the SITE_CHANGELOG discipline.</td><td>editing <code>.cursor/rules/**</code>, <code>.cursor/skills/**</code>, or <code>.cursor/agents/**</code></td></tr>
-    <tr><td><a class="sg-gl-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/rules/uds-figma-plugin-api-gotchas.mdc" target="_blank" rel="noopener noreferrer"><code>uds-figma-plugin-api-gotchas</code></a></td><td>Plugin API gotchas that bit the UDS component factory and would bite any other <code>use_figma</code> script the same way: (1) same-file (local) vs. subscribed-library (remote) components resolve through different APIs &mdash; <code>importComponentByKeyAsync</code> doesn't work on local components, use <code>getNodeByIdAsync</code> instead; (2) <code>addComponentProperty(name, 'INSTANCE_SWAP', defaultValue)</code> for a local target takes the node ID with colon, not the published KEY; (3) <code>figma.createAutoLayout()</code> / <code>figma.createFrame()</code> ship with a hidden white SOLID fill that breaks "no raw colors" audits invisibly; (4) <code>resize()</code> forces both axes to FIXED, and child size changes don't propagate to ancestors within a single <code>use_figma</code> call &mdash; dependent layout must happen in a subsequent call.</td><td>any task (glob <code>**/*</code>)</td></tr>
-    <tr><td><a class="sg-gl-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/rules/uds-figma-factory-quality.mdc" target="_blank" rel="noopener noreferrer"><code>uds-figma-factory-quality</code></a></td><td>Process quality gates for any factory-style Figma build (currently <code>generate-uds-figma-component</code>, <code>new-component</code>, <code>figma-component-card</code>) &mdash; design-system-agnostic. The five gates: (1) state design contract &mdash; Phase A specifies each state's full visual treatment including effect layering order, not just token-role mapping; (2) Phase C audit is machine-verified, never claimed from memory; (3) variant grid layout reflects axis semantics (per-column packing for SIZE axes); (4) visibility BOOLEAN defaults render the component's standard anatomy; (5) Phase B.0 dependency manifest before any write. Source the actual UDS state constructions from <code>uds-design-language.mdc</code> &mdash; this rule is the process, that rule is the standard.</td><td>editing <code>.cursor/skills/generate-uds-figma-component/**</code>, <code>.cursor/skills/new-component/**</code>, or <code>.cursor/skills/figma-component-card/**</code></td></tr>
-    <tr><td><a class="sg-gl-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/rules/uds-design-language.mdc" target="_blank" rel="noopener noreferrer"><code>uds-design-language</code></a></td><td>How every UDS component handles each state, derived from the existing component CSS. Covers interaction states (Default / Hover / Active / Focus), validation states (Error / Success / Warning), availability states (Disabled / Read-only / Loading), and selection states (Checked / Selected / Active). Includes the three focus-ring constructions and when to use each (outline+offset vs. stacked box-shadow vs. single-ring), the surface treatment scale (page / content / interactive / status), the elevation scale (depth-100/300/500), the border radius scale (input vs. container families), density patterns (sm vs. default), and naming guidance for Checked vs. Selected vs. Active. Per-component disagreements are listed in a "Known inconsistencies" section for designer review. Designer-facing copy lives at <code>uds-docs/docs/pages/design-language.html</code>; the same content for AI agents is in this rule. Factory builds bind state visuals to constructions here rather than re-deriving them.</td><td>any task (glob <code>**/*</code>)</td></tr>
-  </tbody>
-</table>
-
-<h3 class="sg-subsection-title" style="margin-top:var(--uds-space-400);">Active Skills</h3>
-<p class="sg-subsection-desc">9 skills, split into <strong>orchestrators</strong> (top-level, user-invokable, call other skills + subagents) and <strong>specialist sync skills</strong> (called by orchestrators OR directly by the user). All sync skills end their "Apply mode" by pointing at <code>uds-master-preflight.mdc</code> Phase 5 — the round-trip checklist lives in exactly one place.</p>
-
-<h4 class="sg-subsection-title" style="margin-top:var(--uds-space-200);font-size:var(--uds-font-size-md);">Orchestrators (3)</h4>
-<div class="sg-wf-card-grid">
-  <div class="sg-wf-card">
-    <h4><code>uds-updated</code></h4>
-    <p>End-to-end Figma → docs sync. Reads both Figma files, classifies findings (including surplus findings from the inspector's bidirectional pass that flag doc-side artifacts with no Figma counterpart), applies high-confidence non-breaking changes, falls back to dry-run / reporting for everything else. Surplus removals and snapshot deltas are surfaced in the output explicitly &mdash; <code>Surplus removals proposed:</code> and <code>Snapshot deltas:</code> are mandatory lines, so deletions can no longer go silent.</p>
-    <p><strong>Triggers:</strong> "UDS updated," "Figma updated," "sync UDS from Figma."</p>
-    <p><strong>Calls:</strong> <code>figma-capability-check</code> → <code>figma-inventory</code> + <code>figma-token-audit</code> → <code>figma-component-inspector</code> (per component) → <code>import-figma-tokens</code> + <code>sync-figma-component-spec</code> + <code>sync-figma-component-status</code> + <code>link-figma-nodes</code> + <code>new-component</code> (as applicable) → <code>sync-figma-release-notes</code>.</p>
-    <p><strong>File:</strong> <a class="sg-gl-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/skills/uds-updated/SKILL.md" target="_blank" rel="noopener noreferrer"><code>.cursor/skills/uds-updated/SKILL.md</code></a></p>
-  </div>
-  <div class="sg-wf-card">
-    <h4><code>figma-component-card</code></h4>
-    <p>Builds the canonical seven-card layout on a UDS Components Figma page from <code>uds/components/&lt;id&gt;/spec.json</code> data. Direction of data flow is code → Figma (opposite of every other Figma-sync skill).</p>
-    <p><strong>Triggers:</strong> "build the Figma page for X," "regenerate the component cards," "apply the component card pilot to X."</p>
-    <p><strong>Calls:</strong> <code>figma-capability-check</code>, <code>figma-component-inspector</code> (for verification), <code>figma-component-card-audit</code> (subagent that verifies card structure post-write).</p>
-    <p><strong>File:</strong> <a class="sg-gl-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/skills/figma-component-card/SKILL.md" target="_blank" rel="noopener noreferrer"><code>.cursor/skills/figma-component-card/SKILL.md</code></a></p>
-  </div>
-  <div class="sg-wf-card">
-    <h4><code>generate-uds-figma-component</code></h4>
-    <p>UDS Component Factory. Drafts a token-bound UDS component set directly inside the UDS Components Figma file on a brand-new <code>🟠 &lt;Title&gt; {Cursor}{Ignore}</code> page. The <code>{Ignore}</code> marker takes the page out of every UDS automation; designer accepts by renaming the page (drop <code>{Cursor}{Ignore}</code>, set the stoplight prefix). Stops at Figma — never writes to <code>uds-docs/uds/</code>. Docs landing is a separate designer-initiated <code>uds-updated</code> run.</p>
-    <p><strong>Triggers:</strong> "generate a UDS component for X," "factory me an Avatar," "draft a new UDS component called Y," "build a UDS component for Z in Figma."</p>
-    <p><strong>Loads:</strong> <code>figma-use</code> + <code>figma-generate-library</code> (cached plugin skills) as mandatory prerequisites; uses the latter's state ledger, sequential-call rule, and Phase 3 component pattern. Writes only into write-safety scope #4 per <code>uds-figma-write-safety.mdc</code>.</p>
-    <p><strong>File:</strong> <a class="sg-gl-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/skills/generate-uds-figma-component/SKILL.md" target="_blank" rel="noopener noreferrer"><code>.cursor/skills/generate-uds-figma-component/SKILL.md</code></a></p>
-  </div>
-</div>
-
-<h4 class="sg-subsection-title" style="margin-top:var(--uds-space-200);font-size:var(--uds-font-size-md);">Specialist sync skills (6)</h4>
-<table class="sg-gl-table" style="margin-bottom:var(--uds-space-300);">
-  <thead><tr><th>Skill</th><th>What it does</th><th>Triggers / called by</th></tr></thead>
-  <tbody>
-    <tr><td><a class="sg-gl-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/skills/new-component/SKILL.md" target="_blank" rel="noopener noreferrer"><code>new-component</code></a></td><td>Scaffolds a new <code>uds/components/&lt;id&gt;/</code> folder end to end with the required-minimum files, sidebar link, page placeholder, and SITE bump.</td><td>"add a component," "scaffold a new component called X," "set up a new component for Y"</td></tr>
-    <tr><td><a class="sg-gl-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/skills/import-figma-tokens/SKILL.md" target="_blank" rel="noopener noreferrer"><code>import-figma-tokens</code></a></td><td>Regenerates <code>uds/tokens/*.css</code> from a direct Figma Variables read. ZIP exports are fallback only. Updates <code>tokens.snapshot.json</code> + <code>last-sync.json</code>.</td><td>called by <code>uds-updated</code>; "import tokens from Figma"</td></tr>
-    <tr><td><a class="sg-gl-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/skills/sync-figma-component-spec/SKILL.md" target="_blank" rel="noopener noreferrer"><code>sync-figma-component-spec</code></a></td><td>Updates a component's per-component files (<code>spec.json</code>, CSS, examples, <code>impl.json</code>, <code>playground.js</code>, <code>figmanotes.json</code>) from a <code>figma-component-inspector</code> report. Bidirectional &mdash; step 5.5 consumes the inspector's <code>Doc-site surplus</code> and <code>Snapshot delta</code> sections to propose REMOVALS for spec slots/events/states/CSS/examples/JS that have no Figma counterpart, with the full <code>Confidence/Risk/Reason/Default-action</code> finding shape per row. Step 5.6 consumes the inspector's <code>Figma Notes evaluation</code> to auto-prune resolved entries from <code>figmanotes.json</code> and add new ones for open design questions. Removals are <code>potentially-breaking</code> or <code>destructive</code> and never auto-apply &mdash; explicit user confirmation required. Figmanotes auto-prune + add are <code>non-breaking</code> and apply automatically. Adds a per-component changelog entry and updates the components snapshot.</td><td>called by <code>uds-updated</code>; "sync &lt;component&gt; from Figma"</td></tr>
-    <tr><td><a class="sg-gl-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/skills/sync-figma-component-status/SKILL.md" target="_blank" rel="noopener noreferrer"><code>sync-figma-component-status</code></a></td><td>Edits <code>uds/components/&lt;id&gt;/status.json</code> <code>current</code> field to match Figma's stoplight page-name prefix. Adds a per-component changelog entry. Backward moves from <code>review</code> / <code>production</code> require confirmation.</td><td>called by <code>uds-updated</code> after <code>figma-inventory</code> reports status mismatches</td></tr>
-    <tr><td><a class="sg-gl-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/skills/link-figma-nodes/SKILL.md" target="_blank" rel="noopener noreferrer"><code>link-figma-nodes</code></a></td><td>Populates <code>figmaNodeId</code> and <code>figmaPageNodeId</code> in <code>uds/components/&lt;id&gt;/spec.json</code> from canonical Figma component-set / page nodes. Overwriting a non-null link requires confirmation.</td><td>"populate missing figmaNodeId fields," "link &lt;component&gt; to Figma"</td></tr>
-    <tr><td><a class="sg-gl-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/skills/sync-figma-release-notes/SKILL.md" target="_blank" rel="noopener noreferrer"><code>sync-figma-release-notes</code></a></td><td>Rebuilds the <code>Release Notes</code> frame on the current <code>UDS Version: X.Y</code> page in both UDS Tokens and UDS Components Figma files from <code>uds/CHANGELOG.json</code>. Both files must end up with identical text.</td><td>called by <code>uds-updated</code> + by <code>uds-release-workflow.mdc</code> "Changelog Sync Rule" whenever <code>uds/CHANGELOG.json</code> changes</td></tr>
-  </tbody>
-</table>
-
-<h3 class="sg-subsection-title" style="margin-top:var(--uds-space-400);">Active Subagents</h3>
-<p class="sg-subsection-desc">7 subagents, all read-only. Each spawns in its own isolated context window and returns a single structured report. They keep noisy intermediate work out of the main conversation.</p>
-<table class="sg-gl-table" style="margin-bottom:var(--uds-space-300);">
-  <thead><tr><th>Subagent</th><th>What it reads</th><th>Returns</th><th>Typically called by</th></tr></thead>
-  <tbody>
-    <tr><td><a class="sg-gl-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/agents/figma-capability-check.md" target="_blank" rel="noopener noreferrer"><code>figma-capability-check</code></a></td><td>Both UDS Figma files and the available Figma MCP tool surface.</td><td>Read/write capability report: pages, Variables, aliases, node trees, bound variables, Release Notes write support.</td><td>any Figma workflow, run first</td></tr>
-    <tr><td><a class="sg-gl-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/agents/figma-token-audit.md" target="_blank" rel="noopener noreferrer"><code>figma-token-audit</code></a></td><td>UDS Tokens Variables, the tokens snapshot, generated <code>uds/tokens/*.css</code>.</td><td>Architecture check + structure diff + value diff + missing/deleted-token classification + confidence + ZIP fallback status.</td><td><code>uds-updated</code>, <code>import-figma-tokens</code></td></tr>
-    <tr><td><a class="sg-gl-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/agents/figma-inventory.md" target="_blank" rel="noopener noreferrer"><code>figma-inventory</code></a></td><td>Both Figma files, <code>uds/version.json</code>, <code>uds/components.json</code>, every <code>status.json</code>, every <code>spec.json</code> <code>figmaNodeId</code> + <code>figmaPageNodeId</code>, the components snapshot.</td><td>Version/status comparison, new/missing/moved component candidates, changed fingerprints, deep-inspection queue.</td><td><code>uds-updated</code>, release workflow</td></tr>
-    <tr><td><a class="sg-gl-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/agents/figma-component-inspector.md" target="_blank" rel="noopener noreferrer"><code>figma-component-inspector</code></a></td><td>One component: page, node tree, component sets, variants, layers, nested instances, auto-layout, token bindings; the component's per-component files; the prior <code>components.snapshot.json</code> entry; <code>uds-docs/uds/uds.js</code> orchestrator; the prior <code>figmanotes.json</code> if present.</td><td>Deep component report: variant matrix, anatomy, token bindings, hardcoded values, accessibility implications, doc-site mismatches, <strong>doc-site surplus</strong> (artifacts with no Figma counterpart), <strong>snapshot delta</strong> (removed/renamed nested instances + variant changes vs prior snapshot), <strong>Figma Notes evaluation</strong> (auto-prune resolved notes, propose new ones for open design questions, classified by <code>kind</code>: new-in-figma / figma-orphan / drift / question). All three structured sections are mandatory and may not be omitted.</td><td><code>uds-updated</code>, <code>sync-figma-component-spec</code>, mid-release component sync</td></tr>
-    <tr><td><a class="sg-gl-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/agents/figma-spec-gap.md" target="_blank" rel="noopener noreferrer"><code>figma-spec-gap</code></a></td><td>Figma component coverage, per-component <code>spec.json</code>, sidebar + <code>data-page</code> sections in <code>index.html</code>, per-component <code>status.json</code>.</td><td>Missing docs / components / node links, stale titles, status mismatches, new-component candidates.</td><td>standalone audit; <code>link-figma-nodes</code> preflight</td></tr>
-    <tr><td><a class="sg-gl-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/agents/figma-component-card-audit.md" target="_blank" rel="noopener noreferrer"><code>figma-component-card-audit</code></a></td><td>One (or all) UDS Components Figma component pages, against the canonical card-card layout in <code>uds-figma-component-card.mdc</code> and the component's <code>spec.json</code>.</td><td>Per-page audit report: card structure, token bindings, status pill, link cards, content match.</td><td>after <code>figma-component-card</code> writes; "audit the Figma component cards"</td></tr>
-    <tr><td><a class="sg-gl-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/agents/spec-audit.md" target="_blank" rel="noopener noreferrer"><code>spec-audit</code></a></td><td>Per-component <code>spec.json</code> files (enumerated via <code>uds/components.json</code>); <code>spec.schema.json</code>; <code>completeness-fields.js</code>.</td><td>Completeness score per component (filled / 22), required-minimum gaps, top-3 recommended next fields. Same scoring as the "Spec X/22" pill on each component page.</td><td>standalone audit; pre-release readiness check</td></tr>
-  </tbody>
-</table>
-
-<h3 class="sg-subsection-title" style="margin-top:var(--uds-space-400);">CI Audits</h3>
-<p class="sg-subsection-desc">9 bash audits in <code>scripts/audit-*.sh</code>, wired into <code>.github/workflows/audits.yml</code>. Run on every PR + push to <code>main</code>. Failing audits block merge. Two of them grandfather pre-existing drift via <code>scripts/audit-baseline.json</code> — see "Baselines and exemptions" below.</p>
-
-<h4 class="sg-subsection-title" style="margin-top:var(--uds-space-200);font-size:var(--uds-font-size-md);">Pre-existing audits (4)</h4>
-<table class="sg-gl-table" style="margin-bottom:var(--uds-space-300);">
-  <thead><tr><th>Audit</th><th>What it enforces</th></tr></thead>
-  <tbody>
-    <tr><td><code>audit-component-completeness.sh</code></td><td>Each <code>uds/components/&lt;id&gt;/</code> folder has the required minimum files: CSS, <code>spec.json</code> (schema-valid), <code>status.json</code>, <code>changelog.json</code>, <code>impl.json</code>, <code>playground.js</code>, <code>examples/manifest.json</code>, ≥1 example HTML.</td></tr>
-    <tr><td><code>audit-placeholders.sh</code></td><td>Every <code>{{token}}</code> referenced in any <code>examples/*.html</code> is declared in <code>uds/schemas/placeholder-vocabulary.json</code>. Keeps Demo Builder substitution deterministic.</td></tr>
-    <tr><td><code>audit-token-usage.sh</code></td><td>Every per-component CSS file under <code>uds/components/&lt;id&gt;/</code> uses <code>--uds-*</code> tokens; flags hardcoded color hex values. (Doesn't catch hardcoded font sizes / spacing — those are caught indirectly by the inspector pass.)</td></tr>
-    <tr><td><code>audit-demo-coverage.sh</code></td><td>Every implementation-ready component has at least one example with <code>demoWeight &gt; 0</code> so the Demo Builder always has something to render.</td></tr>
-  </tbody>
-</table>
-
-<h4 class="sg-subsection-title" style="margin-top:var(--uds-space-200);font-size:var(--uds-font-size-md);">PR2 + PR3 audits (5)</h4>
-<p class="sg-subsection-desc">Introduced to hard-block the failure modes that produced the nav-header changelog / page-chrome / sync-state issues. Each fails CI when its specific class of drift appears.</p>
-<table class="sg-gl-table" style="margin-bottom:var(--uds-space-300);">
-  <thead><tr><th>Audit</th><th>What it enforces</th><th>Grandfathered?</th></tr></thead>
-  <tbody>
-    <tr><td><code>audit-changelog-currency.sh</code></td><td>For each component, fails if any commit after the baseline SHA touched source files (CSS / JS / spec / examples / impl / playground / status) without a matching <code>changelog.json</code> entry. Exempts commits whose message contains <code>[no-changelog: &lt;reason&gt;]</code>.</td><td>Yes — baseline = PR1 merge commit. Pre-baseline state tolerated.</td></tr>
-    <tr><td><code>audit-aggregate-currency.sh</code></td><td>Re-runs <code>aggregate-changelog.sh</code> and <code>aggregate-components.sh</code> into temp files; diffs against the committed <code>uds/CHANGELOG.json</code> and <code>uds/components.json</code>. Catches "edited per-component, forgot to aggregate."</td><td>No — must always pass.</td></tr>
-    <tr><td><code>audit-figma-sync-state-currency.sh</code></td><td>State-based check that each <code>spec.json</code> <code>figmaNodeId</code> + <code>figmaPageNodeId</code> matches <code>.cursor/figma/state/components.snapshot.json</code> <code>componentSetNodeId</code> + <code>pageNodeId</code>.</td><td>No — caught 4 real pre-existing mismatches in PR2; all fixed.</td></tr>
-    <tr><td><code>audit-css-api-table.sh</code></td><td>For each component, regex-extracts <code>udc-*</code> selectors from <code>&lt;id&gt;.css</code> and codes from the hardcoded <code>&lt;table class="sg-api-table"&gt;</code> in <code>index.html</code>; fails on either-direction drift.</td><td>Yes — 10 components with pre-existing drift tolerated via <code>audit-baseline.json</code> <code>toleratedComponents</code>. New drift fails.</td></tr>
-    <tr><td><code>audit-doc-internal-consistency.sh</code></td><td>Per-component doc-side coherence check (the safety net for partial cleanups). Five checks: orphan <code>.udc-&lt;id&gt;*</code> CSS selectors absent from any example/impl/playground/API-table; spec <code>events[]</code> not dispatched in <code>&lt;id&gt;.js</code> (DOM-native events auto-excused); <code>impl.json</code> token refs that don't exist in <code>uds/tokens/*.css</code>; <code>commonlyPairedWith[]</code> refs that don't exist in <code>components.json</code>; orchestrator <code>COMPONENT_SCRIPTS</code> entries pointing at missing files. The primary deletion detector is the <code>figma-component-inspector</code> surplus pass; this audit catches what partial cleanups leave behind.</td><td>Yes — 14 pre-existing findings tolerated via <code>audit-baseline.json</code> <code>toleratedFindings</code>. New drift fails.</td></tr>
-    <tr><td><code>audit-agent-docs-currency.sh</code></td><td>Compares the file list under <code>.cursor/rules/</code>, <code>.cursor/skills/</code>, <code>.cursor/agents/</code> against the references on THIS docs page. Catches "added/renamed/removed a rule/skill/agent without updating the docs."</td><td>Yes — same baseline-SHA mechanism as <code>audit-changelog-currency</code>.</td></tr>
-  </tbody>
-</table>
-
-<h4 class="sg-subsection-title" style="margin-top:var(--uds-space-200);font-size:var(--uds-font-size-md);">Theme-contrast audit (separate CI job)</h4>
-<table class="sg-gl-table" style="margin-bottom:var(--uds-space-300);">
-  <thead><tr><th>Audit</th><th>What it enforces</th></tr></thead>
-  <tbody>
-    <tr><td><code>audit-theme-contrast.sh</code></td><td>Multi-theme axe-core scan across 6 theme combinations × 7 representative pages = 42 page-theme combos. Detects WCAG AA contrast violations and a handful of ARIA issues (<code>aria-allowed-attr</code>, <code>aria-required-children</code>). Heavier than the static audits (needs Node + headless Chrome), so runs in its own <code>theme-contrast</code> job. <strong>Diagnostic, not authority</strong> — failing contrast is a Figma-side design conversation per <code>uds-source-of-truth.mdc</code>, not a license for an agent to bump tokens.</td></tr>
-  </tbody>
-</table>
-
-<h4 class="sg-subsection-title" style="margin-top:var(--uds-space-200);font-size:var(--uds-font-size-md);">Baselines and exemptions</h4>
-<p class="sg-subsection-desc"><code>scripts/audit-baseline.json</code> is the single config file for any audit that needs to grandfather pre-existing drift. It holds:</p>
-<ul class="sg-subsection-desc" style="margin-left:var(--uds-space-300);">
-  <li><strong><code>audit-changelog-currency</code></strong> — a <code>baseline</code> SHA. Commits before this SHA are not checked. Update only on a deliberate sweep that backfills changelogs.</li>
-  <li><strong><code>audit-css-api-table</code></strong> — a <code>toleratedComponents</code> array. Components in this list are exempted from the Code-tab table check. Add/remove only with explicit user direction.</li>
-  <li><strong><code>audit-doc-internal-consistency</code></strong> — a <code>toleratedFindings</code> array of literal <code>comp/check/identifier</code> strings (or <code>comp/check/</code> prefix to allow an entire check on one component), plus <code>toleratedComponents</code> for whole-component skips. Add/remove only with explicit user direction; the goal is to drain the list as components are cleaned up.</li>
-  <li><strong><code>audit-agent-docs-currency</code></strong> — a <code>baseline</code> SHA and an optional <code>toleratedFiles</code> array for internal-only rules / skills / agents that don't need to appear on this docs page.</li>
-</ul>
-
-<h3 class="sg-subsection-title" style="margin-top:var(--uds-space-400);">How to invoke</h3>
-<table class="sg-gl-table" style="margin-bottom:var(--uds-space-300);">
-  <thead><tr><th>Type</th><th>Auto-trigger</th><th>Manual</th></tr></thead>
-  <tbody>
-    <tr><td><strong>Rule</strong></td><td>Always on (or scoped by globs). No invocation needed — the agent reads it on every relevant task.</td><td>n/a — rules are passive guidance.</td></tr>
-    <tr><td><strong>Skill</strong></td><td>The agent loads it automatically when the task description matches the skill's <code>description</code> field.</td><td>Type <code>/skill-name</code> in chat to force it.</td></tr>
-    <tr><td><strong>Subagent</strong></td><td>The agent delegates automatically when the task description matches.</td><td>Type <code>/subagent-name</code>, or say "use the &lt;name&gt; subagent to…"</td></tr>
-    <tr><td><strong>Audit</strong></td><td>Runs automatically on every PR + push to <code>main</code> via <code>.github/workflows/audits.yml</code>.</td><td><code>bash scripts/audit-&lt;name&gt;.sh</code> locally to check before pushing.</td></tr>
-  </tbody>
-</table>
-
-<h3 class="sg-subsection-title" style="margin-top:var(--uds-space-400);">How to add new ones</h3>
-
-<p class="sg-subsection-desc"><strong>Add a Rule</strong> — drop a <code>.mdc</code> file in <code>.cursor/rules/</code> with YAML frontmatter (<code>description</code>, <code>alwaysApply: true</code> OR <code>globs: [...]</code>) and the rule body in markdown. Use rules for standing instructions and project conventions ("always do X," "never use Y"). <strong>Add a row to this page's Rules tables.</strong> <code>audit-agent-docs-currency.sh</code> blocks the merge otherwise.</p>
-
-<p class="sg-subsection-desc"><strong>Add a Skill</strong> — create <code>.cursor/skills/&lt;name&gt;/SKILL.md</code> with frontmatter (<code>name</code>, <code>description</code>) and a step-by-step procedure. Optionally add <code>scripts/</code>, <code>references/</code>, or <code>assets/</code> subfolders. Use skills for repeatable, well-defined procedures the agent can carry out itself ("scaffold X," "sync Y"). Every sync skill should end with a one-line pointer to <code>uds-master-preflight.mdc</code> Phase 5 (the canonical round-trip checklist). <strong>Add a card or row to this page's Skills section.</strong></p>
-
-<p class="sg-subsection-desc"><strong>Add a Subagent</strong> — create <code>.cursor/agents/&lt;name&gt;.md</code> with frontmatter (<code>name</code>, <code>description</code>, optionally <code>readonly: true</code>, <code>model</code>). Use subagents for tasks that benefit from context isolation: long research, parallel work, read-only audits. <strong>Add a row to this page's Subagents table.</strong></p>
-
-<p class="sg-subsection-desc"><strong>Add an Audit</strong> — create <code>scripts/audit-&lt;name&gt;.sh</code> following the patterns of the existing audits (exit non-zero with a clear "FAIL — &lt;reason&gt;" line on the failure path; emit "OK — &lt;summary&gt;" on success). Wire it into the <code>audits</code> job in <code>.github/workflows/audits.yml</code>. If the audit needs grandfathering, extend <code>scripts/audit-baseline.json</code>. <strong>Add a row to this page's Audits table.</strong></p>
-
-<p class="sg-subsection-desc">All four kinds live in the repo and ship with anyone who clones it.</p>
-
-<h3 class="sg-subsection-title" style="margin-top:var(--uds-space-400);">Why this matters for designers</h3>
-<p class="sg-subsection-desc">A designer doesn't need to memorize how to scaffold a component, audit specs, sync changelogs, run a release, or update the doc-site chrome. Saying "sync the bento dropdown from Figma," "audit our specs," or "scaffold a new tooltip component" is enough — Cursor picks the right skill or subagent based on the description, the rules guarantee the version bump / per-component changelog / aggregate / snapshot / Figma Release Notes / cache-bust all land, and the CI audits hard-fail if anything is silently skipped. Less ceremony, fewer mistakes, more time on actual design.</p>
