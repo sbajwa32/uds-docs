@@ -11,6 +11,56 @@ on:
     branches: [main]
 
 jobs:
+  # Detect whether this PR/push touched any file that can plausibly affect
+  # rendered contrast on the seven pages the theme-contrast audit visits
+  # (#/changelog, #/about, #/button, #/data-table, #/nav-header,
+  # #/semantic-colors, ?uds=0.2#/changelog). The contrast audit is the
+  # slowest job in this workflow (Chrome + 42 page navigations across 6
+  # themes), and the vast majority of PRs land in paths that cannot shift
+  # a contrast ratio — site-changelog text, .cursor/ rules, AGENTS.md,
+  # version.txt, schemas, manifest JSON. Those PRs skip the contrast job
+  # via the `theme-contrast` job's `if:` gate below. The static `audits`
+  # job is unaffected and runs on every PR + push.
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      contrast: ${{ steps.filter.outputs.contrast }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Detect contrast-affecting paths
+        id: filter
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            contrast:
+              # Token CSS — drives every rendered color
+              - 'uds-docs/uds/tokens/**'
+              # All component artifacts (CSS, examples, spec, impl, playground, JS) —
+              # render into the audited Button / Data Table / Nav Header pages and
+              # indirectly into the About / Changelog pages via badges/statuses.
+              - 'uds-docs/uds/components/**'
+              # Master orchestrators that load tokens + components
+              - 'uds-docs/uds/uds.css'
+              - 'uds-docs/uds/uds.js'
+              # Site rendering layer — chrome CSS, SPA renderers, theme switcher,
+              # page partials. Any of these can shift what's in the DOM or what
+              # foreground/background classes get applied.
+              - 'uds-docs/docs/site.css'
+              - 'uds-docs/docs/app.js'
+              - 'uds-docs/docs/modules/**'
+              - 'uds-docs/docs/helpers/**'
+              - 'uds-docs/docs/pages/**'
+              # SPA shell — sidebar, data-page placeholders, theme switcher init,
+              # initial data-theme attribute
+              - 'uds-docs/index.html'
+              # Archived snapshot loaded by the archive-changelog test
+              - 'uds-docs/versions/**'
+              # The audit script and its host workflow itself
+              - 'scripts/audit-theme-contrast.sh'
+              - 'scripts/lib/audit_theme_contrast.js'
+              - '.github/workflows/audits.yml'
+
   audits:
     runs-on: ubuntu-latest
     steps:
@@ -84,6 +134,13 @@ jobs:
     # aria-required-children violations exist on the representative page
     # set. Heavier than the static audits (needs Node + Chrome) so it runs
     # in its own job for parallelism.
+    #
+    # Gated on the `changes` job's path filter: skips when the PR/push
+    # only touches files that cannot affect rendered contrast (changelog
+    # text, .cursor/ rules, version.txt, manifest JSON, etc.). See the
+    # `changes` job above for the full include list.
+    needs: changes
+    if: needs.changes.outputs.contrast == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
