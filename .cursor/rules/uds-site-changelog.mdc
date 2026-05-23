@@ -1,7 +1,7 @@
 ---
-description: Enforces site version bumping, SITE_CHANGELOG updates, and cache busting on every documentation site change.
+description: Enforces site version bumping, SITE_CHANGELOG updates, cache busting, and the voice/length contract for SITE_CHANGELOG entries on every documentation site change.
 alwaysApply: true
-lastUpdated: 2026-05-12T18:41:50Z
+lastUpdated: 2026-05-22T20:35:09Z
 ---
 
 # UDS Site Changelog
@@ -57,6 +57,60 @@ Write the new SITE version number (just the `YYYY.MM.DD.N` part, no `SITE` prefi
 
 ### c. Update the inline SITE_VERSION in `index.html`:
 Find the `var SITE_VERSION = '...'` string in the inline `<script>` block in `<head>` and update it to match the new version.
+
+## 4. Voice and length
+
+SITE_CHANGELOG entries appear on the live Changelog page. They are read
+by humans, not by audits. Write them the way the early entries did —
+short, descriptive, designer-readable.
+
+### Audience
+
+The reader is a senior product designer. Technically literate — they
+understand tokens, components, file structure, the difference between a
+CSS class and a JS function. They are not asking to be talked down to.
+They are also not reading the changelog to debug code; they are reading
+it to know what shipped.
+
+### Test for whether to use a technical term
+
+Use the term when the reader will need the exact name to act on it —
+copy a token, find a file, debug a regression, search the codebase.
+Skip it when it is decoration. If the same idea fits in plain language
+without losing accuracy or making the sentence longer, use plain
+language. This is the same test [`communication-style.mdc`](./communication-style.mdc)
+uses for chat replies; it applies to written entries too.
+
+### Length and shape
+
+- **Most entries are 1–3 sentences.** Substantial changes (component
+  rewritten, page redesigned, multi-system restructure) can run a few
+  more, but if you are past one short paragraph you are narrating
+  implementation, not the change.
+- **Lead with what changed**, not the steps you took to change it.
+- **File paths and function names are fine when they orient** — not
+  required, not the point.
+- **No line numbers** (`lines 102-107`). Files change; line numbers go
+  stale immediately.
+- **No internal phase terminology** (`Phase 13 restructure`,
+  `RUN_ID nav-header-...`, "the proof-of-fix for X workflow"). The
+  reader does not have that context.
+- **No `?v=N` cache-bust enumeration.** One line per version covering
+  all bumped query params is plenty; if nothing was bumped, omit the
+  line entirely.
+- **No merge-resolution narratives.** "Merged with main; both branches
+  bumped to .5; resolved to .6." is a commit-message detail, not a
+  changelog entry.
+- **Exact tag names go in backticks** (`` `<select>` ``). The renderer
+  escapes literal `<` / `>` in entry text so they show as text — but
+  backticks render as `<code>` and read better.
+
+If the change is genuinely big, write a one-line summary as the entry
+and put the implementation detail in the per-component
+`changelog.json`, the PR description, or the commit message. Those
+artifacts have technical voice non-negotiable per
+[`communication-style.mdc`](./communication-style.mdc) §"Where
+technical voice is non-negotiable".
 
 ## Exceptions
 

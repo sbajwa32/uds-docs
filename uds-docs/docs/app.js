@@ -1970,56 +1970,95 @@ var TYPE_LABELS = {
     added: 'Added', changed: 'Changed', fixed: 'Fixed',
     deprecated: 'Deprecated', removed: 'Removed'
 };
+var CHANGELOG_TYPE_ORDER = ['added', 'changed', 'fixed', 'deprecated', 'removed'];
 
+// Escape angle brackets in changelog entry text so literal <select>, <details>,
+// <a href>, <button>, etc. inside an entry render as text rather than as live
+// HTML elements. Leave & alone so existing &mdash; / &rarr; / &middot; entities
+// still resolve. Then convert backticks to <code>.
+function escapeChangelogText(s) {
+    var escaped = String(s).replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    return escaped.replace(/`([^`]+)`/g, '<code>$1</code>');
+}
+
+// Strip HTML, entities, and backticks for filter/search use.
+function changelogPlainText(s) {
+    var escaped = escapeChangelogText(s);
+    return escaped
+      .replace(/<[^>]+>/g, ' ')
+      .replace(/&[a-z]+;|&#\d+;/gi, ' ')
+      .replace(/`/g, '')
+      .toLowerCase();
+}
+
+// Render a list of typed entries into a parent element. Each entry becomes a
+// .sg-cl-item with data-cl-type / data-cl-text / data-cl-comp attributes for
+// the toolbar filter logic in Phase 3c. The leading colored dot is the
+// .sg-cl-item::before pseudo (already styled in site.css); the .sg-cl-type
+// label is small lowercase, not the old ALL-CAPS prefix.
 function renderChangeItems(parent, entries, type) {
     entries.forEach(function (entry) {
       var item = document.createElement('div');
       item.className = 'sg-cl-item sg-cl-item--' + type;
-      var prefix = '<span class="sg-cl-type sg-cl-type--' + type + '">' + (TYPE_LABELS[type] || type) + ':</span> ';
+      item.setAttribute('data-cl-type', type);
+      item.setAttribute('data-cl-text', changelogPlainText(entry.text));
+      var prefix = '<span class="sg-cl-type sg-cl-type--' + type + '">' + (TYPE_LABELS[type] || type) + '</span> ';
       var compLabels = '';
       if (entry.component) {
         var comps = Array.isArray(entry.component) ? entry.component : [entry.component];
         comps.forEach(function (c) {
           compLabels += '<span class="udc-badge sg-cl-component" data-variant="secondary" data-prominent="true" data-size="sm">' + c + '</span>';
         });
+        item.setAttribute('data-cl-comp', comps.join(' '));
       }
-      item.innerHTML = prefix + compLabels + entry.text;
+      item.innerHTML = prefix + compLabels + escapeChangelogText(entry.text);
       parent.appendChild(item);
     });
 }
 
-function renderCategorySection(parent, categoryTitle, changes, typeOrder) {
-    var grouped = {};
-    changes.forEach(function (c) {
-      if (!grouped[c.type]) grouped[c.type] = [];
-      grouped[c.type].push(c);
-    });
-
-    var hasEntries = false;
-    typeOrder.forEach(function (type) { if (grouped[type]) hasEntries = true; });
-    if (!hasEntries) return;
-
-    var catGroup = document.createElement('div');
-    catGroup.className = 'sg-cl-group';
-    var catTitle = document.createElement('div');
-    catTitle.className = 'sg-cl-group-title sg-cl-group-title--added';
-    catTitle.textContent = categoryTitle;
-    catGroup.appendChild(catTitle);
-
-    typeOrder.forEach(function (type) {
-      if (!grouped[type]) return;
-      if (categoryTitle) {
-        renderChangeItems(catGroup, grouped[type], type);
-      }
-    });
-
-    parent.appendChild(catGroup);
+// Format a YYYY-MM-DD date string as "Friday, May 22, 2026". Returns the raw
+// string if it can't be parsed.
+function formatChangelogDate(iso) {
+    if (!iso) return '';
+    var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso);
+    if (!m) return iso;
+    var d = new Date(Date.UTC(+m[1], +m[2] - 1, +m[3]));
+    if (isNaN(d.getTime())) return iso;
+    try {
+      return d.toLocaleDateString(undefined, {
+        weekday: 'long', month: 'long', day: 'numeric', year: 'numeric',
+        timeZone: 'UTC'
+      });
+    } catch (_) {
+      return iso;
+    }
 }
 
-// Phase 8: fetch the aggregated changelog from uds/CHANGELOG.json (built
-// by scripts/aggregate-changelog.sh from per-component changelog.json files
-// + uds/CHANGELOG.globalNotes.json) instead of reading from the in-memory
-// CHANGELOG table. Per-component changelog.json files are the source of truth.
+// Slugify an arbitrary string (date, version) for use as a section id.
+function changelogSectionId(prefix, raw) {
+    return prefix + '-' + String(raw).replace(/[^A-Za-z0-9._-]+/g, '-').replace(/^-+|-+$/g, '');
+}
+
+// Pluralize "N change" / "N changes".
+function changeCountLabel(n) {
+    return n + ' ' + (n === 1 ? 'change' : 'changes');
+}
+
+// Group a list of releases by `release.date` (YYYY-MM-DD). Order of releases
+// inside each date group is preserved (callers pass already-reversed SITE bumps
+// so the newest counter renders first within the day).
+function groupReleasesByDate(releases) {
+    var byDate = {};
+    var order = [];
+    releases.forEach(function (release) {
+      var d = release.date || 'undated';
+      if (!byDate[d]) { byDate[d] = []; order.push(d); }
+      byDate[d].push(release);
+    });
+    return order.map(function (d) { return { date: d, releases: byDate[d] }; });
+}
+
+// Render the UDS tab — one .sg-cl-release card per UDS semver release.
 async function renderGlobalChangelog() {
     var container = document.getElementById('sg-global-changelog');
     if (!container) return;
@@ -2038,95 +2077,178 @@ async function renderGlobalChangelog() {
     }
 
     container.innerHTML = '';
-    var typeOrder = ['added', 'changed', 'fixed', 'deprecated', 'removed'];
 
     releases.slice().reverse().forEach(function (release) {
-      var section = document.createElement('div');
-      section.className = 'sg-cl-version';
+      var totalCount = 0;
+      if (release.globalNotes) totalCount += release.globalNotes.length;
+      var components = release.byComponent || {};
+      Object.keys(components).forEach(function (n) { totalCount += components[n].length; });
 
-      var header = document.createElement('div');
-      header.className = 'sg-cl-header';
-      header.innerHTML = '<span class="sg-cl-ver-num">' + release.version + '</span>' +
-        '<span class="sg-cl-ver-date">' + (release.date || '') + '</span>';
-      section.appendChild(header);
+      var card = document.createElement('article');
+      card.className = 'sg-cl-release';
+      card.setAttribute('data-cl-release', release.version);
+      card.id = changelogSectionId('cl-release', release.version);
 
-      // Global (non-component) notes — group by type within the section
+      var header = document.createElement('header');
+      header.className = 'sg-cl-release-header';
+      var title = document.createElement('h3');
+      title.className = 'sg-cl-release-title';
+      title.textContent = 'UDS ' + release.version;
+      header.appendChild(title);
+      var meta = document.createElement('div');
+      meta.className = 'sg-cl-release-meta';
+      if (release.date) {
+        var date = document.createElement('span');
+        date.className = 'sg-cl-release-date';
+        date.textContent = release.date;
+        meta.appendChild(date);
+      }
+      var count = document.createElement('span');
+      count.className = 'sg-cl-release-count';
+      count.textContent = changeCountLabel(totalCount);
+      meta.appendChild(count);
+      header.appendChild(meta);
+      card.appendChild(header);
+
+      var body = document.createElement('div');
+      body.className = 'sg-cl-release-body';
+
+      // Global (non-component) notes
       if (release.globalNotes && release.globalNotes.length) {
-        var notesGroup = document.createElement('div');
-        notesGroup.className = 'sg-cl-group';
-        var notesGroupTitle = document.createElement('div');
-        notesGroupTitle.className = 'sg-cl-group-title sg-cl-group-title--added';
-        notesGroupTitle.textContent = 'Release Notes';
-        notesGroup.appendChild(notesGroupTitle);
-        typeOrder.forEach(function (type) {
+        var notesSection = document.createElement('section');
+        notesSection.className = 'sg-cl-release-section';
+        notesSection.setAttribute('data-cl-section', 'globalnotes');
+        var notesTitle = document.createElement('h4');
+        notesTitle.className = 'sg-cl-release-section-title';
+        notesTitle.textContent = 'Release notes';
+        notesSection.appendChild(notesTitle);
+        var notesList = document.createElement('div');
+        notesList.className = 'sg-cl-item-list';
+        CHANGELOG_TYPE_ORDER.forEach(function (type) {
           var ofType = release.globalNotes.filter(function (e) { return e.type === type; });
-          if (ofType.length) renderChangeItems(notesGroup, ofType, type);
+          if (ofType.length) renderChangeItems(notesList, ofType, type);
         });
-        section.appendChild(notesGroup);
+        notesSection.appendChild(notesList);
+        body.appendChild(notesSection);
       }
 
-      // Per-component sections
-      var components = release.byComponent || {};
+      // Per-component
       var compNames = Object.keys(components);
       if (compNames.length) {
-        var compsGroup = document.createElement('div');
-        compsGroup.className = 'sg-cl-group';
-        var compsGroupTitle = document.createElement('div');
-        compsGroupTitle.className = 'sg-cl-group-title sg-cl-group-title--added';
-        compsGroupTitle.textContent = 'Components';
-        compsGroup.appendChild(compsGroupTitle);
+        var compsSection = document.createElement('section');
+        compsSection.className = 'sg-cl-release-section';
+        compsSection.setAttribute('data-cl-section', 'components');
+        var compsTitle = document.createElement('h4');
+        compsTitle.className = 'sg-cl-release-section-title';
+        compsTitle.textContent = 'Components';
+        compsSection.appendChild(compsTitle);
 
         compNames.forEach(function (name) {
-          var entries = components[name];
-          // Inject the component name as a "pill" prefix on each entry
-          var entriesWithComp = entries.map(function (e) {
+          var entries = components[name].map(function (e) {
             return { type: e.type, text: e.text, component: name };
           });
-          // Group by type within this component
-          typeOrder.forEach(function (type) {
-            var ofType = entriesWithComp.filter(function (e) { return e.type === type; });
-            if (ofType.length) renderChangeItems(compsGroup, ofType, type);
+          var compBlock = document.createElement('div');
+          compBlock.className = 'sg-cl-comp';
+          compBlock.setAttribute('data-cl-comp', name);
+          var compName = document.createElement('h5');
+          compName.className = 'sg-cl-comp-name';
+          compName.textContent = name;
+          compBlock.appendChild(compName);
+          var compList = document.createElement('div');
+          compList.className = 'sg-cl-item-list';
+          CHANGELOG_TYPE_ORDER.forEach(function (type) {
+            var ofType = entries.filter(function (e) { return e.type === type; });
+            if (ofType.length) renderChangeItems(compList, ofType, type);
           });
+          compBlock.appendChild(compList);
+          compsSection.appendChild(compBlock);
         });
 
-        section.appendChild(compsGroup);
+        body.appendChild(compsSection);
       }
 
-      container.appendChild(section);
+      card.appendChild(body);
+      container.appendChild(card);
     });
+
+    // Tell Phase 3c the stream has changed.
+    container.dispatchEvent(new CustomEvent('sg-cl-rendered', { bubbles: true }));
 }
 
-// Legacy entry point preserved for back-compat. Wraps the renderer above.
-
+// Render the SITE tab — one .sg-cl-day card per calendar date, with SITE
+// counter sub-sections (.sg-cl-bump) inside each day card. The full SITE
+// versioning is preserved; the day grouping is purely visual.
 function renderSiteChangelog() {
     var container = document.getElementById('sg-site-changelog');
     if (!container) return;
     container.innerHTML = '';
 
-    SITE_CHANGELOG.slice().reverse().forEach(function (release) {
-      var section = document.createElement('div');
-      section.className = 'sg-cl-version';
+    var groups = groupReleasesByDate(SITE_CHANGELOG.slice().reverse());
 
-      var header = document.createElement('div');
-      header.className = 'sg-cl-header';
-      header.innerHTML = '<span class="sg-cl-ver-num" style="font-size:var(--uds-font-size-xl)">' + release.version + '</span>' +
-        '<span class="sg-cl-ver-date">' + release.date + '</span>';
-      section.appendChild(header);
+    groups.forEach(function (group) {
+      var dayCount = 0;
+      group.releases.forEach(function (r) { dayCount += (r.changes || []).length; });
 
-      var typeOrder = ['added', 'changed', 'fixed', 'deprecated', 'removed'];
-      var grouped = {};
-      release.changes.forEach(function (c) {
-        if (!grouped[c.type]) grouped[c.type] = [];
-        grouped[c.type].push(c);
+      var card = document.createElement('article');
+      card.className = 'sg-cl-day';
+      card.setAttribute('data-cl-day', group.date);
+      card.id = changelogSectionId('cl-day', group.date);
+
+      var header = document.createElement('header');
+      header.className = 'sg-cl-day-header';
+      var title = document.createElement('h3');
+      title.className = 'sg-cl-day-title';
+      title.textContent = formatChangelogDate(group.date);
+      header.appendChild(title);
+      var meta = document.createElement('div');
+      meta.className = 'sg-cl-day-meta';
+      var bumpsCount = group.releases.length;
+      if (bumpsCount > 1) {
+        var bumpsPill = document.createElement('span');
+        bumpsPill.className = 'sg-cl-day-count';
+        bumpsPill.textContent = bumpsCount + ' bumps';
+        meta.appendChild(bumpsPill);
+      }
+      var changesPill = document.createElement('span');
+      changesPill.className = 'sg-cl-day-count';
+      changesPill.textContent = changeCountLabel(dayCount);
+      meta.appendChild(changesPill);
+      header.appendChild(meta);
+      card.appendChild(header);
+
+      var bumps = document.createElement('div');
+      bumps.className = 'sg-cl-bumps';
+
+      group.releases.forEach(function (release) {
+        var bump = document.createElement('section');
+        bump.className = 'sg-cl-bump';
+        bump.setAttribute('data-cl-bump', release.version);
+
+        var label = document.createElement('div');
+        label.className = 'sg-cl-bump-label';
+        label.textContent = release.version;
+        bump.appendChild(label);
+
+        var list = document.createElement('div');
+        list.className = 'sg-cl-item-list';
+        var grouped = {};
+        (release.changes || []).forEach(function (c) {
+          if (!grouped[c.type]) grouped[c.type] = [];
+          grouped[c.type].push(c);
+        });
+        CHANGELOG_TYPE_ORDER.forEach(function (type) {
+          if (grouped[type]) renderChangeItems(list, grouped[type], type);
+        });
+        bump.appendChild(list);
+        bumps.appendChild(bump);
       });
 
-      typeOrder.forEach(function (type) {
-        if (!grouped[type]) return;
-        renderChangeItems(section, grouped[type], type);
-      });
-
-      container.appendChild(section);
+      card.appendChild(bumps);
+      container.appendChild(card);
     });
+
+    // Tell Phase 3c the stream has changed.
+    container.dispatchEvent(new CustomEvent('sg-cl-rendered', { bubbles: true }));
 }
 
 // Phase 8: read per-component history from uds/components/<id>/changelog.json.
@@ -2699,10 +2821,221 @@ function initAllChangelogs() {
     });
 }
 
-// Run the changelog renderers AFTER the changelog page fragment loads,
-// since their target slots (#sg-global-changelog, #sg-site-changelog) are
-// inside the fragment HTML.
-registerPageLoadHook('changelog', function () {
+// Wire up the Changelog page's toolbar (search + type chips + UDS component
+// filter) and version-jump rail. Each tab panel has its own .sg-cl-page
+// wrapper with its own toolbar and rail; init each independently. The
+// renderers (renderGlobalChangelog / renderSiteChangelog) dispatch a
+// 'sg-cl-rendered' CustomEvent on the stream container after they finish so
+// init can rebuild the component filter and rail when fresh data lands.
+function initChangelogPage(page) {
+    if (!page) return;
+    page.querySelectorAll('.sg-cl-page').forEach(initChangelogTab);
+}
+
+function initChangelogTab(root) {
+    if (root.dataset.changelogInited === 'true') return;
+    root.dataset.changelogInited = 'true';
+
+    var search = root.querySelector('[data-cl-search]');
+    var typeChips = Array.prototype.slice.call(root.querySelectorAll('[data-cl-type-chips] [data-cl-type]'));
+    var componentFilterMount = root.querySelector('[data-cl-component-filter]');
+    var stream = root.querySelector('.sg-cl-stream');
+    var rail = root.querySelector('[data-cl-rail]');
+    if (!stream || !rail) return;
+
+    var componentChips = [];
+    var state = {
+      activeTypes: new Set(typeChips.map(function (c) { return c.getAttribute('data-cl-type'); })),
+      activeComps: new Set(),
+      query: ''
+    };
+
+    function recomputeActiveTypes() {
+      state.activeTypes = new Set(typeChips
+        .filter(function (c) { return c.getAttribute('aria-pressed') === 'true'; })
+        .map(function (c) { return c.getAttribute('data-cl-type'); }));
+    }
+    function recomputeActiveComps() {
+      state.activeComps = new Set(componentChips
+        .filter(function (c) { return c.getAttribute('aria-pressed') === 'true'; })
+        .map(function (c) { return c.getAttribute('data-cl-comp'); }));
+    }
+
+    function applyFilter() {
+      var q = state.query;
+      var activeTypes = state.activeTypes;
+      // Component filter: when every chip is pressed (default), no filter.
+      // When any chip is unpressed, the filter is active and only items whose
+      // component is in activeComps are shown. If all chips are unpressed,
+      // every component-tagged item is hidden — that's the user explicitly
+      // saying "none of these," which is intentional.
+      var compFilterActive = componentChips.length > 0 &&
+        componentChips.some(function (c) { return c.getAttribute('aria-pressed') === 'false'; });
+
+      stream.querySelectorAll('.sg-cl-item').forEach(function (item) {
+        var visible = true;
+        if (!activeTypes.has(item.getAttribute('data-cl-type'))) visible = false;
+        if (visible && compFilterActive) {
+          var comps = (item.getAttribute('data-cl-comp') || '').split(' ').filter(Boolean);
+          if (!comps.length) {
+            // Items without a component (e.g. SITE entries, UDS global notes)
+            // pass the component filter when it's narrowing on UDS-tab
+            // components — the filter is meant to narrow component sections,
+            // not hide globals.
+            visible = true;
+          } else {
+            visible = comps.some(function (c) { return state.activeComps.has(c); });
+          }
+        }
+        if (visible && q) {
+          var text = item.getAttribute('data-cl-text') || '';
+          if (text.indexOf(q) === -1) visible = false;
+        }
+        item.hidden = !visible;
+      });
+
+      // Cascade visibility from items up to their containers. Process leaves
+      // (.sg-cl-comp / .sg-cl-bump / .sg-cl-release-section) before parents
+      // (.sg-cl-day / .sg-cl-release).
+      stream.querySelectorAll('.sg-cl-comp, .sg-cl-bump, .sg-cl-release-section').forEach(function (block) {
+        block.hidden = !block.querySelector('.sg-cl-item:not([hidden])');
+      });
+      stream.querySelectorAll('.sg-cl-day').forEach(function (block) {
+        block.hidden = !block.querySelector('.sg-cl-bump:not([hidden])');
+      });
+      stream.querySelectorAll('.sg-cl-release').forEach(function (block) {
+        block.hidden = !block.querySelector('.sg-cl-release-section:not([hidden])');
+      });
+
+      rebuildRail();
+    }
+
+    var railObserver = null;
+    function rebuildRail() {
+      rail.innerHTML = '';
+      var sections = stream.querySelectorAll('.sg-cl-day:not([hidden]), .sg-cl-release:not([hidden])');
+      if (!sections.length) {
+        if (railObserver) { railObserver.disconnect(); railObserver = null; }
+        return;
+      }
+      var heading = document.createElement('div');
+      heading.className = 'sg-cl-rail-heading';
+      heading.textContent = root.getAttribute('data-cl-tab') === 'site' ? 'Jump to date' : 'Jump to release';
+      rail.appendChild(heading);
+
+      var list = document.createElement('ul');
+      list.className = 'sg-cl-rail-list';
+      sections.forEach(function (section) {
+        var li = document.createElement('li');
+        var a = document.createElement('a');
+        a.className = 'sg-cl-rail-link';
+        a.href = '#' + section.id;
+        var titleEl = section.querySelector('.sg-cl-day-title, .sg-cl-release-title');
+        a.textContent = titleEl ? titleEl.textContent : section.id;
+        var metaEl = section.querySelector('.sg-cl-day-meta, .sg-cl-release-meta');
+        if (metaEl) {
+          var meta = document.createElement('span');
+          meta.className = 'sg-cl-rail-link-meta';
+          meta.textContent = metaEl.textContent.replace(/\s+/g, ' ').trim();
+          a.appendChild(meta);
+        }
+        a.addEventListener('click', function (e) {
+          e.preventDefault();
+          section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+        li.appendChild(a);
+        list.appendChild(li);
+      });
+      rail.appendChild(list);
+
+      // IntersectionObserver active highlight as the user scrolls.
+      if (railObserver) railObserver.disconnect();
+      if (!('IntersectionObserver' in window)) return;
+      railObserver = new IntersectionObserver(function (entries) {
+        var visible = entries.filter(function (e) { return e.isIntersecting; })
+          .sort(function (a, b) { return a.boundingClientRect.top - b.boundingClientRect.top; });
+        if (!visible.length) return;
+        var topId = visible[0].target.id;
+        rail.querySelectorAll('.sg-cl-rail-link').forEach(function (l) {
+          if (l.getAttribute('href') === '#' + topId) l.setAttribute('aria-current', 'true');
+          else l.removeAttribute('aria-current');
+        });
+      }, { rootMargin: '-80px 0px -60% 0px', threshold: 0 });
+      sections.forEach(function (s) { railObserver.observe(s); });
+    }
+
+    function rebuildComponentFilter() {
+      if (!componentFilterMount) return;
+      var compNames = Array.prototype.slice.call(stream.querySelectorAll('.sg-cl-comp[data-cl-comp]'))
+        .map(function (el) { return el.getAttribute('data-cl-comp'); })
+        .filter(function (n, i, arr) { return n && arr.indexOf(n) === i; })
+        .sort();
+      componentFilterMount.innerHTML = '';
+      componentChips = [];
+      if (!compNames.length) return;
+
+      var heading = document.createElement('div');
+      heading.className = 'sg-cl-rail-heading';
+      heading.textContent = 'Filter by component';
+      componentFilterMount.appendChild(heading);
+      var chips = document.createElement('div');
+      chips.className = 'sg-cl-chips';
+      chips.setAttribute('role', 'group');
+      chips.setAttribute('aria-label', 'Filter by component');
+      compNames.forEach(function (n) {
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'sg-cl-chip';
+        btn.setAttribute('data-cl-comp', n);
+        btn.setAttribute('aria-pressed', 'true');
+        btn.textContent = n;
+        btn.addEventListener('click', function () {
+          var pressed = btn.getAttribute('aria-pressed') === 'true';
+          btn.setAttribute('aria-pressed', pressed ? 'false' : 'true');
+          recomputeActiveComps();
+          applyFilter();
+        });
+        chips.appendChild(btn);
+        componentChips.push(btn);
+      });
+      componentFilterMount.appendChild(chips);
+      recomputeActiveComps();
+    }
+
+    typeChips.forEach(function (chip) {
+      chip.addEventListener('click', function () {
+        var pressed = chip.getAttribute('aria-pressed') === 'true';
+        chip.setAttribute('aria-pressed', pressed ? 'false' : 'true');
+        recomputeActiveTypes();
+        applyFilter();
+      });
+    });
+
+    if (search) {
+      search.addEventListener('input', function () {
+        state.query = (search.value || '').toLowerCase().trim();
+        applyFilter();
+      });
+    }
+
+    // The renderers fire 'sg-cl-rendered' on the stream after innerHTML is
+    // populated. Rebuild the component-filter chips and the rail then.
+    stream.addEventListener('sg-cl-rendered', function () {
+      rebuildComponentFilter();
+      applyFilter();
+    });
+
+    // First-time application in case the render already ran (idempotent).
+    rebuildComponentFilter();
+    applyFilter();
+}
+
+// Run the changelog renderers AFTER the changelog page fragment loads, since
+// their target slots (#sg-global-changelog, #sg-site-changelog) are inside
+// the fragment HTML. Init the toolbar + rail FIRST so the listeners are
+// already in place when the renderers dispatch 'sg-cl-rendered'.
+registerPageLoadHook('changelog', function (page) {
+    initChangelogPage(page);
     renderGlobalChangelog();
     renderSiteChangelog();
 });
