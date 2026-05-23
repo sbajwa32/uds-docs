@@ -43,7 +43,7 @@ The `Phase 1: Verify sync state` step in `uds-master-preflight.mdc` is
 the manual fallback when the hook hasn't run.
 
 
-## Rules (20)
+## Rules (21)
 
 | File | Last updated (UTC) | Description |
 |---|---|---|
@@ -61,6 +61,7 @@ the manual fallback when the hook hasn't run.
 | [`uds-figma-sync-state.mdc`](./rules/uds-figma-sync-state.mdc) | `2026-05-12T18:41:50Z` | Defines tracked Figma sync snapshots and when agents may update them. |
 | [`uds-figma-write-safety.mdc`](./rules/uds-figma-write-safety.mdc) | `2026-05-18T19:06:07Z` | Prevents accidental Figma mutations during UDS sync work. Read-only is the default; writes are explicitly scoped and summarized. |
 | [`uds-master-preflight.mdc`](./rules/uds-master-preflight.mdc) | `2026-05-13T17:54:48Z` | Master workflow rule — enforces version bump FIRST, then changes, then finalize. Runs on every task that modifies uds-docs/. |
+| [`uds-naming-conventions.mdc`](./rules/uds-naming-conventions.mdc) | `2026-05-22T19:10:35Z` | The design-system-level naming framework for UDS. Locks the canonical vocabulary for states, sizes, tones, emphasis, parts of a component,… |
 | [`uds-release-workflow.mdc`](./rules/uds-release-workflow.mdc) | `2026-05-12T18:41:50Z` | UDS Design System release workflow -- detects Figma version bumps and guides the release process for the documentation site |
 | [`uds-rule-discipline.mdc`](./rules/uds-rule-discipline.mdc) | `2026-05-12T18:41:50Z` | Discipline that fires whenever you edit a Cursor rule, skill, or subagent file. Bump that file's `lastUpdated:` frontmatter and update the… |
 | [`uds-site-changelog.mdc`](./rules/uds-site-changelog.mdc) | `2026-05-22T20:35:09Z` | Enforces site version bumping, SITE_CHANGELOG updates, cache busting, and the voice/length contract for SITE_CHANGELOG entries on every… |
@@ -73,10 +74,10 @@ the manual fallback when the hook hasn't run.
 | Skill | Last updated (UTC) | Description |
 |---|---|---|
 | [`figma-component-card`](./skills/figma-component-card/SKILL.md) | `2026-05-13T19:04:48Z` | Build or update the canonical "component card" canvas layout on a UDS component page in Figma. Use when the user says "build/update the… |
-| [`generate-uds-figma-component`](./skills/generate-uds-figma-component/SKILL.md) | `2026-05-22T18:39:47Z` | UDS Component Factory. Drafts a token-bound UDS component set directly inside the UDS Components Figma file on a brand-new `🟠 <Title>… |
+| [`generate-uds-figma-component`](./skills/generate-uds-figma-component/SKILL.md) | `2026-05-22T19:10:35Z` | UDS Component Factory. Drafts a token-bound UDS component set directly inside the UDS Components Figma file on a brand-new `🟠 <Title>… |
 | [`import-figma-tokens`](./skills/import-figma-tokens/SKILL.md) | `2026-05-12T18:41:50Z` | Import UDS token changes from the UDS Tokens Figma file. Uses direct Figma Variables reads first and token ZIP exports only as fallback.… |
 | [`link-figma-nodes`](./skills/link-figma-nodes/SKILL.md) | `2026-05-12T18:41:50Z` | Populate figmaNodeId and figmaPageNodeId fields in per-component spec.json files from canonical UDS Components Figma nodes. Use when Figma… |
-| [`new-component`](./skills/new-component/SKILL.md) | `2026-05-21T18:15:30Z` | Scaffold a new UDS component end to end. Creates uds/components/<id>/ with all required files (CSS stub, spec.json, status.json,… |
+| [`new-component`](./skills/new-component/SKILL.md) | `2026-05-22T19:10:35Z` | Scaffold a new UDS component end to end. Creates uds/components/<id>/ with all required files (CSS stub, spec.json, status.json,… |
 | [`sync-figma-component-spec`](./skills/sync-figma-component-spec/SKILL.md) | `2026-05-13T20:34:33Z` | Update a UDS component's per-component artifacts (spec.json, CSS, examples, impl.json, playground.js, figmanotes.json) from a deep Figma… |
 | [`sync-figma-component-status`](./skills/sync-figma-component-status/SKILL.md) | `2026-05-21T19:06:12Z` | Sync UDS Components Figma stoplight page prefixes into per-component status.json files. Use after figma-inventory reports status mismatches. |
 | [`sync-figma-release-notes`](./skills/sync-figma-release-notes/SKILL.md) | `2026-05-12T18:41:50Z` | Rebuild Release Notes frames in both UDS Figma files from the aggregated UDS CHANGELOG. Use during releases or after CHANGELOG changes that… |
