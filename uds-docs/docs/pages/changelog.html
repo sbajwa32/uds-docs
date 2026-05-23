@@ -4,6 +4,50 @@
           <button role="tab" class="sg-page-tab" data-tab="uds" aria-selected="true">UDS</button>
           <button role="tab" class="sg-page-tab" data-tab="site">Site</button>
         </div>
-        <div data-tab-panel="uds" class="active"><div id="sg-global-changelog"></div></div>
-        <div data-tab-panel="site"><div id="sg-site-changelog"></div></div>
-      
+
+        <!-- UDS tab -->
+        <div data-tab-panel="uds" class="active">
+          <div class="sg-cl-page" data-cl-tab="uds">
+            <aside class="sg-cl-rail" data-cl-rail aria-label="Jump to release"></aside>
+            <div class="sg-cl-main">
+              <div class="sg-cl-toolbar" role="region" aria-label="Filter changelog">
+                <label class="sg-cl-search-wrap">
+                  <span class="material-symbols-outlined sg-cl-search-icon" aria-hidden="true">search</span>
+                  <input class="sg-cl-search" type="search" placeholder="Search changes" data-cl-search aria-label="Search changes" />
+                </label>
+                <div class="sg-cl-chips" data-cl-type-chips role="group" aria-label="Filter by type">
+                  <button type="button" class="sg-cl-chip sg-cl-chip--added" data-cl-type="added" aria-pressed="true">added</button>
+                  <button type="button" class="sg-cl-chip sg-cl-chip--changed" data-cl-type="changed" aria-pressed="true">changed</button>
+                  <button type="button" class="sg-cl-chip sg-cl-chip--fixed" data-cl-type="fixed" aria-pressed="true">fixed</button>
+                  <button type="button" class="sg-cl-chip sg-cl-chip--deprecated" data-cl-type="deprecated" aria-pressed="true">deprecated</button>
+                  <button type="button" class="sg-cl-chip sg-cl-chip--removed" data-cl-type="removed" aria-pressed="true">removed</button>
+                </div>
+                <div class="sg-cl-component-filter" data-cl-component-filter></div>
+              </div>
+              <div class="sg-cl-stream" id="sg-global-changelog"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SITE tab -->
+        <div data-tab-panel="site">
+          <div class="sg-cl-page" data-cl-tab="site">
+            <aside class="sg-cl-rail" data-cl-rail aria-label="Jump to date"></aside>
+            <div class="sg-cl-main">
+              <div class="sg-cl-toolbar" role="region" aria-label="Filter site changelog">
+                <label class="sg-cl-search-wrap">
+                  <span class="material-symbols-outlined sg-cl-search-icon" aria-hidden="true">search</span>
+                  <input class="sg-cl-search" type="search" placeholder="Search changes" data-cl-search aria-label="Search site changes" />
+                </label>
+                <div class="sg-cl-chips" data-cl-type-chips role="group" aria-label="Filter by type">
+                  <button type="button" class="sg-cl-chip sg-cl-chip--added" data-cl-type="added" aria-pressed="true">added</button>
+                  <button type="button" class="sg-cl-chip sg-cl-chip--changed" data-cl-type="changed" aria-pressed="true">changed</button>
+                  <button type="button" class="sg-cl-chip sg-cl-chip--fixed" data-cl-type="fixed" aria-pressed="true">fixed</button>
+                  <button type="button" class="sg-cl-chip sg-cl-chip--deprecated" data-cl-type="deprecated" aria-pressed="true">deprecated</button>
+                  <button type="button" class="sg-cl-chip sg-cl-chip--removed" data-cl-type="removed" aria-pressed="true">removed</button>
+                </div>
+              </div>
+              <div class="sg-cl-stream" id="sg-site-changelog"></div>
+            </div>
+          </div>
+        </div>

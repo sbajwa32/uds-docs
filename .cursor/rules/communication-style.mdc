@@ -1,7 +1,7 @@
 ---
-description: Default chat tone for this repo + voice for human-facing docs prose. Talk to the user as a senior product designer, not a developer — concise, plain language, technical terms only when they're the clearest word. Same voice applies to rendered docs pages, spec.json prose fields, dosDonts, and README. Technical voice stays non-negotiable for code, schemas, changelogs, audits, commits, and PR descriptions.
+description: Default chat tone for this repo + voice for human-facing docs prose. Talk to the user as a senior product designer, not a developer — concise, plain language, technical terms only when they're the clearest word. Same voice applies to rendered docs pages, spec.json prose fields, dosDonts, README, and SITE_CHANGELOG entries (which render on the live Changelog page). Technical voice stays non-negotiable for code, schemas, per-component changelogs, audits, commits, and PR descriptions.
 alwaysApply: true
-lastUpdated: 2026-05-22T02:52:24Z
+lastUpdated: 2026-05-22T20:35:09Z
 ---
 
 # Communication Style
@@ -91,6 +91,13 @@ That covers:
 - **`uds-docs/uds/CHANGELOG.globalNotes.json`** — hand-curated
   non-component release notes. The version key is metadata; the prose
   is for readers.
+- **`uds-docs/docs/data/site-changelog.js` `SITE_CHANGELOG` entries** —
+  the typed fields (`version`, `date`, `type`) are structured metadata,
+  but the `text` is prose that renders directly on the live Changelog
+  page. Designer voice. Per-component `changelog.json` is different —
+  it stays technical voice (audits depend on it). See
+  [`uds-site-changelog.mdc`](./uds-site-changelog.mdc) §"Voice and
+  length" for the full contract.
 - **`uds-docs/README.md` and `uds-docs/AGENTS.md` narrative sections**
   — same audience, same voice.
 
@@ -123,8 +130,7 @@ all depend on the exact vocabulary.
 | **Code comments** | Only there to explain WHY or non-obvious intent. When they exist, they're precise — name the constraint, the trade-off, the bug they're working around. |
 | **`.cursor/rules/*.mdc`, `.cursor/skills/*/SKILL.md`, `.cursor/agents/*.md`** | Agent-consumed instructions. The agent needs the exact file paths, schema field names, script names, and command flags to execute. Use the vocabulary the agent will encounter at runtime. Plain-language rationale wrapping is fine, but the operational detail must stay precise. |
 | **JSON schemas** (`uds-docs/uds/schemas/*.json`) | Full schema vocabulary, no creative paraphrasing. Editors validate against these. |
-| **Per-component `changelog.json` `entries[]`** | Each entry references real tokens, props, file paths, states. `audit-changelog-currency.sh` and the aggregator depend on this. See [`uds-release-workflow.mdc`](./uds-release-workflow.mdc). |
-| **`SITE_CHANGELOG` entries** in `uds-docs/docs/data/site-changelog.js` | Typed (`added` / `changed` / `fixed` / `removed`), scoped, reference real file paths. See [`uds-site-changelog.mdc`](./uds-site-changelog.mdc). |
+| **Per-component `changelog.json` `entries[]`** | Each entry references real tokens, props, file paths, states. `audit-changelog-currency.sh` and the aggregator depend on this. SITE_CHANGELOG is different — it's prose that renders on the live page and uses designer voice. See [`uds-release-workflow.mdc`](./uds-release-workflow.mdc). |
 | **Structured spec fields** (`props[]`, `events[]`, `slots[]`, `states[]`, `accessibility.wcag[]`, `accessibility.contrast[]`, `acceptanceCriteria[]`) | Typed contracts. Component-page render code reads them by shape. Don't paraphrase prop names or event names. |
 | **`impl.json` `tokens[]` and `html`** | Token names are exact (`--uds-color-...`). Example HTML uses the actual class names. The Code-tab Implementation Reference depends on both. |
 | **Audit and diagnostic output** | Figma findings follow `Confidence / Risk / Reason / Default action` per [`uds-figma-change-classification.mdc`](./uds-figma-change-classification.mdc). Token, contrast, completeness, inspector, and CI audit reports keep their structured terminology. |
