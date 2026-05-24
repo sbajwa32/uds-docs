@@ -52,7 +52,7 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 UDS_DOCS = REPO_ROOT / "uds-docs"
 COMPONENTS_DIR = UDS_DOCS / "uds" / "components"
 TOKENS_DIR = UDS_DOCS / "uds" / "tokens"
-INDEX_HTML = UDS_DOCS / "index.html"
+API_DATA_DIR = UDS_DOCS / "data" / "component-api"
 ORCHESTRATOR_JS = UDS_DOCS / "uds" / "uds.js"
 COMPONENTS_JSON = UDS_DOCS / "uds" / "components.json"
 BASELINE_CONFIG = REPO_ROOT / "scripts" / "audit-baseline.json"
@@ -188,31 +188,32 @@ def selector_appears_in(haystacks: Iterable[str], selector: str) -> bool:
 
 
 # ---------------------------------------------------------------------------
-# Code-tab API table extraction (mirrors audit-css-api-table.sh logic)
+# Code-tab API data extraction
+#
+# Pre-migration the API table content lived inline in `index.html` as
+# <table class="sg-api-table"> blocks. Chunk 07 of the Next.js
+# migration extracted that into typed TS data files; Chunk 15 (this
+# file's update) repointed both audits at the new files so the
+# `index.html` deletion in Chunk 17 doesn't break the audit.
 # ---------------------------------------------------------------------------
 
 
-def extract_api_table_for(html_text: str, comp_id: str) -> str:
-    """Return the inner text of `<table class="sg-api-table">` inside
-    `<div data-page="<comp_id>">` in index.html. Empty string if no
-    block / no table.
+def extract_api_data_text_for(comp_id: str) -> str:
+    """Return the text of the `cssClasses` array in
+    uds-docs/data/component-api/<id>.ts. Empty string if no file or no
+    cssClasses array (e.g. raw-HTML fallback components).
+
+    The audit uses `selector_appears_in` on this text to detect whether
+    a given CSS selector is referenced in the API data, so returning
+    the raw TS array text is sufficient — no need to parse out
+    individual entries.
     """
-    page_re = re.compile(
-        r'<div data-page="'
-        + re.escape(comp_id)
-        + r'"[^>]*>(.*?)(?=<div data-page="[^"]+"|</main>|<!-- *FOUNDATIONS|<!-- *END)',
-        re.DOTALL,
-    )
-    m = page_re.search(html_text)
-    if not m:
+    api_path = API_DATA_DIR / f"{comp_id}.ts"
+    if not api_path.exists():
         return ""
-    block = m.group(1)
-    t = re.search(
-        r'<table[^>]*class="[^"]*sg-api-table[^"]*"[^>]*>(.*?)</table>',
-        block,
-        re.DOTALL,
-    )
-    return t.group(1) if t else ""
+    text = api_path.read_text()
+    m = re.search(r"cssClasses\s*:\s*\[(.*?)\]", text, re.DOTALL)
+    return m.group(1) if m else ""
 
 
 # ---------------------------------------------------------------------------
@@ -485,7 +486,6 @@ def main() -> None:
     else:
         target_ids = sorted(p.name for p in COMPONENTS_DIR.iterdir() if p.is_dir())
 
-    html_text = INDEX_HTML.read_text() if INDEX_HTML.exists() else ""
     defined_tokens = build_defined_token_set()
     known_components = load_known_components()
 
@@ -496,7 +496,7 @@ def main() -> None:
         if cid in tolerated_components:
             skipped_components.append(cid)
             continue
-        api_table_text = extract_api_table_for(html_text, cid)
+        api_table_text = extract_api_data_text_for(cid)
         comp_findings = audit_component(
             cid,
             api_table_text=api_table_text,
