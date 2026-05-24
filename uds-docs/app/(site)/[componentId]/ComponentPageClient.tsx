@@ -35,6 +35,7 @@ import { ComponentHeader } from './ComponentHeader';
 import { GuidelinesTab } from './GuidelinesTab';
 import { CodeTab } from './CodeTab';
 import { ChangelogTab } from './ChangelogTab';
+import { ExamplesTab } from './ExamplesTab';
 
 type TabKey = 'examples' | 'code' | 'guidelines' | 'figma-notes' | 'changelog' | 'playground';
 
@@ -146,9 +147,7 @@ export function ComponentPageClient({ componentId }: { componentId: string }) {
       </SgPageTabs>
 
       <div hidden={activeTab !== 'examples'}>
-        <p className="sg-changelog-empty">
-          Examples renderer lands in Chunk 08 of the docs Next.js migration.
-        </p>
+        <ExamplesTab componentId={componentId} />
       </div>
       <div hidden={activeTab !== 'code'}>
         <CodeTab componentId={componentId} />
