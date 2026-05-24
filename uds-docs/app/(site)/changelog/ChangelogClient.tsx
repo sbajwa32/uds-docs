@@ -41,12 +41,18 @@ function inlineCode(text: string): React.ReactNode {
 }
 
 function ChangeItems({ entries }: { entries: ChangelogNote[] }) {
+  // Class names match the legacy site exactly so the CSS in
+  // styles/pages/legacy.css (.sg-cl-item, .sg-cl-type, .sg-cl-item::before)
+  // applies — including the colored dot before each item and the
+  // type-color tinting.
   return (
-    <ul className="sg-cl-items">
+    <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
       {entries.map((entry, idx) => (
         <li key={idx} className={`sg-cl-item sg-cl-item--${entry.type}`}>
-          <span className={`sg-cl-tag sg-cl-tag--${entry.type}`}>{entry.type}</span>
-          <span className="sg-cl-text">{inlineCode(entry.text)}</span>
+          <span className={`sg-cl-type sg-cl-type--${entry.type}`}>
+            {entry.type}
+          </span>{' '}
+          {inlineCode(entry.text)}
         </li>
       ))}
     </ul>

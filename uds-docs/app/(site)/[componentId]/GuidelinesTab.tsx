@@ -282,10 +282,10 @@ function DosDontsSection({
   return (
     <div className="sg-gl-section">
       <SectionTitle>Do&apos;s &amp; don&apos;ts</SectionTitle>
-      <div className="sg-do-dont-grid">
+      <div className="sg-gl-dodont sg-gl-dodont-cols">
         {dos.length > 0 ? (
-          <div className="sg-do-dont sg-do-dont--do">
-            <h4 className="sg-do-dont-title">Do</h4>
+          <div className="sg-gl-dodont-col sg-gl-do">
+            <h4 className="sg-gl-subhead">Do</h4>
             <ul>
               {dos.map((d, i) => (
                 <li key={i}>{d}</li>
@@ -294,8 +294,8 @@ function DosDontsSection({
           </div>
         ) : null}
         {donts.length > 0 ? (
-          <div className="sg-do-dont sg-do-dont--dont">
-            <h4 className="sg-do-dont-title">Don&apos;t</h4>
+          <div className="sg-gl-dodont-col sg-gl-dont">
+            <h4 className="sg-gl-subhead">Don&apos;t</h4>
             <ul>
               {donts.map((d, i) => (
                 <li key={i}>{d}</li>
