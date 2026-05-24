@@ -1,0 +1,28 @@
+{
+  "name": "uds-docs",
+  "version": "0.0.0",
+  "private": true,
+  "description": "UDS documentation site (Next.js rebuild). The vanilla site at index.html + docs/ ships in parallel until Chunk 17.",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "postbuild": "node scripts/postbuild-copy.mjs",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@mdx-js/loader": "^3.1.0",
+    "@mdx-js/react": "^3.1.0",
+    "@next/mdx": "^15.5.4",
+    "@types/mdx": "^2.0.13",
+    "next": "^15.5.4",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.18.0",
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.1.0",
+    "typescript": "^5.7.0"
+  }
+}
