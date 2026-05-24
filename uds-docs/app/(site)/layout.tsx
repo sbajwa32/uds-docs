@@ -1,5 +1,10 @@
 import type { ReactNode } from 'react';
 
+// Bulk legacy page content styles (sg-about-*, sg-cl-*, sg-token-*, etc.).
+// Imported here so every page in the (site) group gets them. See file header
+// for the migration rationale; per-page split happens in a later cleanup chunk.
+import '../../styles/pages/legacy.css';
+
 import { SgSkipLink } from '@/components/site/SgSkipLink';
 import { SgShell } from '@/components/site/SgSidebar';
 import { SgMain } from '@/components/site/SgMain';
