@@ -2,6 +2,7 @@ import { SgHeader, SgBrandBar, SgThemeBar } from './SgHeader';
 import { TokenSearch } from './TokenSearch';
 import { DemoBuilder } from './DemoBuilder';
 import { VersionDropdown } from './VersionDropdown';
+import { SITE_CHANGELOG } from '@/data/site-changelog';
 
 // Site-wide header for the Next.js shell. Composes the Chunk 04 chrome
 // primitives and populates the SgBrandBar slots:
@@ -13,10 +14,9 @@ import { VersionDropdown } from './VersionDropdown';
 //     button and the modal markup.
 //   - versionDropdown → <VersionDropdown /> (Chunk 14) — populates from
 //     versions.json, switching versions updates `?uds=` client-side.
-//
-// The build-label slot is intentionally left empty: the SITE-versioning
-// apparatus is being deleted in Chunk 17 and there's no UDS-equivalent label
-// that fits in the brand bar.
+
+const latestSiteChange = SITE_CHANGELOG[SITE_CHANGELOG.length - 1];
+const SITE_BUILD_LABEL = latestSiteChange?.version ?? 'SITE';
 
 export function SiteHeader() {
   return (
@@ -25,6 +25,7 @@ export function SiteHeader() {
         demoButton={<DemoBuilder />}
         searchTrigger={<TokenSearch />}
         versionDropdown={<VersionDropdown />}
+        buildLabel={SITE_BUILD_LABEL}
       />
       <SgThemeBar />
     </SgHeader>
