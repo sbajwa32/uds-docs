@@ -1516,6 +1516,14 @@ code.sg-inline-code { font-family: 'SF Mono', 'Fira Code', monospace; font-size:
 }
 .sg-cl-rail-list { list-style: none; margin: 0; padding: 0; }
 .sg-cl-rail-link {
+  /* Reset for <button>; legacy used <a>. Both render the same now. */
+  appearance: none;
+  background: transparent;
+  border: 0;
+  font: inherit;
+  text-align: left;
+  width: 100%;
+
   display: block;
   padding: var(--uds-space-050) var(--uds-space-100);
   margin: var(--uds-space-025) 0;

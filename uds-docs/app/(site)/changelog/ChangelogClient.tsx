@@ -263,7 +263,8 @@ function ChangelogToolbar({
           className="sg-cl-search"
           type="search"
           value={query}
-          placeholder="Search changelog"
+          placeholder="Search changes"
+          aria-label={activeTab === 'site' ? 'Search site changes' : 'Search changes'}
           onChange={(e) => onQueryChange(e.target.value)}
         />
       </label>
@@ -282,7 +283,12 @@ function ChangelogToolbar({
       </div>
       {activeTab === 'uds' && components.length > 0 ? (
         <div className="sg-cl-component-filter">
-          <div className="sg-cl-chips" aria-label="Component filters">
+          <div className="sg-cl-rail-heading">Filter by component</div>
+          <div
+            className="sg-cl-chips"
+            role="group"
+            aria-label="Filter by component"
+          >
             {components.map((component) => {
               const active = selectedComponents.size === 0 || selectedComponents.has(component);
               return (
@@ -308,15 +314,18 @@ function ChangelogRail({
   items,
   activeId,
   onActivate,
+  scope,
 }: {
   items: RailItem[];
   activeId: string | null;
   onActivate: (id: string) => void;
+  scope: 'uds' | 'site';
 }) {
   if (!items.length) return null;
+  const heading = scope === 'site' ? 'Jump to date' : 'Jump to release';
   return (
-    <nav className="sg-cl-rail" aria-label="Changelog sections">
-      <h2 className="sg-cl-rail-heading">Jump to</h2>
+    <nav className="sg-cl-rail" aria-label={heading}>
+      <h2 className="sg-cl-rail-heading">{heading}</h2>
       <ol className="sg-cl-rail-list">
         {items.map((item) => (
           <li key={item.id}>
@@ -428,11 +437,17 @@ export function ChangelogClient({
 
   const railItems = useMemo<RailItem[]>(() => {
     if (activeTab === 'uds') {
-      return filteredUds.map((release) => ({
-        id: slug('cl-release', release.version),
-        label: `UDS ${release.version}`,
-        meta: release.date,
-      }));
+      return filteredUds.map((release) => {
+        const totalCount =
+          (release.globalNotes?.length ?? 0) +
+          Object.values(release.byComponent || {}).reduce((n, entries) => n + entries.length, 0);
+        const dateAndCount = [release.date, changeCountLabel(totalCount)].filter(Boolean).join(' ');
+        return {
+          id: slug('cl-release', release.version),
+          label: `UDS ${release.version}`,
+          meta: dateAndCount,
+        };
+      });
     }
     return groupSiteByDate(filteredSite).map((group) => ({
       id: slug('cl-day', group.date),
@@ -504,7 +519,12 @@ export function ChangelogClient({
       </SgPageTabs>
       <div hidden={activeTab !== 'uds'}>
         <div className="sg-cl-page" data-cl-tab="uds">
-          <ChangelogRail items={railItems} activeId={activeRailId} onActivate={onRailActivate} />
+          <ChangelogRail
+            items={railItems}
+            activeId={activeRailId}
+            onActivate={onRailActivate}
+            scope="uds"
+          />
           <div className="sg-cl-main">
             <ChangelogToolbar
               activeTab="uds"
@@ -526,7 +546,12 @@ export function ChangelogClient({
       </div>
       <div hidden={activeTab !== 'site'}>
         <div className="sg-cl-page" data-cl-tab="site">
-          <ChangelogRail items={railItems} activeId={activeRailId} onActivate={onRailActivate} />
+          <ChangelogRail
+            items={railItems}
+            activeId={activeRailId}
+            onActivate={onRailActivate}
+            scope="site"
+          />
           <div className="sg-cl-main">
             <ChangelogToolbar
               activeTab="site"

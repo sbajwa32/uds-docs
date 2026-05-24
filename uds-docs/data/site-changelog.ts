@@ -1017,5 +1017,12 @@ export const SITE_CHANGELOG: SiteChangelogEntry[] = [
         { type: 'fixed', text: 'Restored four pieces of component-page chrome that were missing after the Next.js rewrite: the Storybook and Report Issue buttons in the header link bar (Figma and GitHub were already there), the orange "Not production-ready" warning banner on any component that isn\'t Production yet, and the "Last updated: X — Show recent changes" collapsible card that surfaces the two most recent changelog entries inline. All four are direct ports of legacy `app.js` behavior; the existing `.sg-not-for-production` and `.sg-recent-changes` CSS in `styles/pages/legacy.css` is reused verbatim.' },
         { type: 'changed', text: 'Version dropdown labels the live release as "(latest)" instead of "(current)", matching the legacy site\'s wording.' }
       ]
+    },
+    {
+      version: 'SITE 2026.05.24.3',
+      date: '2026-05-24',
+      changes: [
+        { type: 'fixed', text: 'Cleaned up four Changelog-page regressions surfaced in the side-by-side review: rail items were rendering with native `<button>` border + background instead of the legacy plain-text style (added a button reset to `.sg-cl-rail-link` so anchor- and button-based rails look identical), the rail heading was "Jump to" instead of "Jump to release" (or "Jump to date" on the Site tab), the rail meta only showed the date — it now shows date + change count on a second line like the legacy, the search placeholder said "Search changelog" instead of "Search changes", and the component filter chip group was missing its "FILTER BY COMPONENT" label.' }
+      ]
     }
 ];
