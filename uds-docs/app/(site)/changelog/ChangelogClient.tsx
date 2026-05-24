@@ -165,7 +165,7 @@ function SiteStream({ entries }: { entries: SiteChangelogEntry[] }) {
             <div className="sg-cl-day-body">
               {group.releases.map((release) => (
                 <section key={release.version} className="sg-cl-bump">
-                  <h4 className="sg-cl-bump-title">{release.version}</h4>
+                  <h4 className="sg-cl-bump-label">{release.version}</h4>
                   <div className="sg-cl-item-list">
                     {CHANGELOG_TYPE_ORDER.map((type) => {
                       const ofType: SiteChangelogChange[] = release.changes.filter(
