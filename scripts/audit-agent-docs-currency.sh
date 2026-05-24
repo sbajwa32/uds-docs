@@ -2,8 +2,10 @@
 # audit-agent-docs-currency.sh
 #
 # Cross-checks the agent-toolchain documentation page
-# (uds-docs/docs/pages/cursor-workflows.html) against the actual file list
-# under .cursor/rules/, .cursor/skills/, and .cursor/agents/.
+# (uds-docs/app/(site)/cursor-workflows/CursorWorkflowsClient.tsx, post-
+# migration; was uds-docs/docs/pages/cursor-workflows.html pre-migration)
+# against the actual file list under .cursor/rules/, .cursor/skills/, and
+# .cursor/agents/.
 #
 # Fails when:
 #   - a rule / skill / subagent file exists but is not referenced on the
@@ -15,7 +17,7 @@
 # (without extension, or with the explicit path) on the docs page counts as
 # documented. The page should mention every rule's `.mdc` filename, every
 # skill's directory name, and every subagent's `.md` filename — the new
-# cursor-workflows.html does so via the github-blob links.
+# CursorWorkflowsClient.tsx does so via the github-blob links it emits.
 #
 # Grandfathering: pre-baseline state is grandfathered via the
 # scripts/audit-baseline.json audit-agent-docs-currency.baseline SHA, mirroring
@@ -28,7 +30,7 @@ set -euo pipefail
 REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$REPO_ROOT"
 
-DOCS_PAGE="uds-docs/docs/pages/cursor-workflows.html"
+DOCS_PAGE="uds-docs/app/(site)/cursor-workflows/CursorWorkflowsClient.tsx"
 BASELINE_CONFIG="scripts/audit-baseline.json"
 
 if [ ! -f "$DOCS_PAGE" ]; then
@@ -43,7 +45,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-DOCS_PAGE = Path('uds-docs/docs/pages/cursor-workflows.html')
+DOCS_PAGE = Path('uds-docs/app/(site)/cursor-workflows/CursorWorkflowsClient.tsx')
 BASELINE_CONFIG = Path('scripts/audit-baseline.json')
 
 # Load baseline + tolerated-files config.

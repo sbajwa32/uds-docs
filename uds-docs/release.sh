@@ -20,7 +20,13 @@
 #   4. Update versions.json to include the archived version
 #   5. Re-aggregate uds/CHANGELOG.json from per-component changelogs (so the
 #      release captures any changelog edits that happened before the bump)
-#   6. Reset the SITE build counter via bump-site.sh
+#
+# Pre-migration this script also called bump-site.sh to reset the SITE
+# build counter. That apparatus (version.txt, bump-site.sh, ?v=N
+# cache-bust query params, runtime auto-reload polling) was removed in
+# Chunk 17 of the docs Next.js migration. Cache invalidation is now
+# Cloudflare's job (see uds-docs/public/_headers) and Next.js handles
+# content-hashed static assets automatically.
 
 set -euo pipefail
 
@@ -107,12 +113,6 @@ with open(path, 'w') as f:
     json.dump(manifest, f)
 print('  Written: latest=$NEW_VERSION, versions=' + str(versions))
 "
-
-echo ""
-echo "Resetting SITE build counter ..."
-if [[ -f "$DIR/bump-site.sh" ]]; then
-  bash "$DIR/bump-site.sh"
-fi
 
 echo ""
 echo "========================================"
