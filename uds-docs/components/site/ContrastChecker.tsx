@@ -285,7 +285,18 @@ export function ContrastChecker() {
             token={fgToken}
             open={popoverSlot === 'fg'}
             onClick={() => setPopoverSlot((s) => (s === 'fg' ? null : 'fg'))}
-          />
+          >
+            {popoverSlot === 'fg' && (
+              <ContrastCheckerPicker
+                slot="fg"
+                tokens={tokens}
+                selected={hero.fg}
+                anchorRef={fgTriggerRef}
+                onSelect={(name) => onPickToken('fg', name)}
+                onClose={() => setPopoverSlot(null)}
+              />
+            )}
+          </PickerTrigger>
           <span className="cc-pickers-on" aria-hidden="true">
             on
           </span>
@@ -295,29 +306,19 @@ export function ContrastChecker() {
             token={bgToken}
             open={popoverSlot === 'bg'}
             onClick={() => setPopoverSlot((s) => (s === 'bg' ? null : 'bg'))}
-          />
+          >
+            {popoverSlot === 'bg' && (
+              <ContrastCheckerPicker
+                slot="bg"
+                tokens={tokens}
+                selected={hero.bg}
+                anchorRef={bgTriggerRef}
+                onSelect={(name) => onPickToken('bg', name)}
+                onClose={() => setPopoverSlot(null)}
+              />
+            )}
+          </PickerTrigger>
         </div>
-
-        {popoverSlot === 'fg' && (
-          <ContrastCheckerPicker
-            slot="fg"
-            tokens={tokens}
-            selected={hero.fg}
-            anchorRef={fgTriggerRef}
-            onSelect={(name) => onPickToken('fg', name)}
-            onClose={() => setPopoverSlot(null)}
-          />
-        )}
-        {popoverSlot === 'bg' && (
-          <ContrastCheckerPicker
-            slot="bg"
-            tokens={tokens}
-            selected={hero.bg}
-            anchorRef={bgTriggerRef}
-            onSelect={(name) => onPickToken('bg', name)}
-            onClose={() => setPopoverSlot(null)}
-          />
-        )}
 
         <HeroStage fgToken={fgToken} bgToken={bgToken} />
         <HeroVerdict fgToken={fgToken} bgToken={bgToken} />
@@ -378,12 +379,14 @@ function PickerTrigger({
   token,
   open,
   onClick,
+  children,
 }: {
   slot: 'fg' | 'bg';
   triggerRef: React.RefObject<HTMLButtonElement | null>;
   token: Token | undefined;
   open: boolean;
   onClick: () => void;
+  children?: ReactNode;
 }) {
   const labelText = slot === 'fg' ? 'Foreground' : 'Surface';
   const swatchStyle: React.CSSProperties =
@@ -421,6 +424,7 @@ function PickerTrigger({
           keyboard_arrow_down
         </span>
       </button>
+      {children}
     </div>
   );
 }
