@@ -2,10 +2,16 @@
 // Wrapped via dangerouslySetInnerHTML to preserve markup verbatim — every
 // .sg-* class and inline <details>/<pre> block carries through unchanged.
 // Hash routes (#/foo) rewritten to plain Next.js paths (/foo).
+// The Download UDS (.zip) button is split out as a real React component
+// (`UdsDownloadButton`) since it needs JSZip + a click handler — the
+// legacy `<a href="#" id="gs-download-btn">` placeholder was wired up
+// imperatively by `app.js` which is now gone.
+
+import { UdsDownloadButton } from '@/components/site/UdsDownloadButton';
 
 export const metadata = { title: 'Getting Started — UDS' };
 
-const HTML = `<h1 class="sg-page-title">Getting Started</h1>
+const HTML_BEFORE_DOWNLOAD = `<h1 class="sg-page-title">Getting Started</h1>
         <p class="sg-page-desc">UDS (Urban Design System) ships in two layers: <strong>tokens</strong> (semantic CSS custom properties) and <strong>components</strong> (framework-agnostic web components in Storybook). Tokens drop into any stack via <code class="sg-inline-code">uds.css</code>; components register once and work in React, Vue, Svelte, Angular, or vanilla. The doc site is the design specification — all code shown is example-only.</p>
 
         <h2 class="sg-page-title" style="font-size:22px;margin-top:8px;">How it works</h2>
@@ -25,12 +31,9 @@ const HTML = `<h1 class="sg-page-title">Getting Started</h1>
         </div>
 
         <h2 class="sg-page-title" style="font-size:22px;margin-top:0;">Download</h2>
-        <p class="sg-page-desc">The bundle contains all tokens (colors, spacing, typography), every component stylesheet, and the JS behavior file. No dependencies, no build step.</p>
+        <p class="sg-page-desc">The bundle contains all tokens (colors, spacing, typography), every component stylesheet, and the JS behavior file. No dependencies, no build step.</p>`;
 
-        <a class="sg-download-btn" id="gs-download-btn" href="#" style="margin-bottom:8px;">
-          <span class="material-symbols-outlined">download</span> Download UDS (.zip)
-        </a>
-        <p style="font-size:var(--uds-font-size-sm);color:var(--uds-color-text-secondary);margin-top:var(--uds-space-050);">Or, if your team uses a shared repo, copy the <code class="sg-inline-code">uds/</code> folder directly into your project.</p>
+const HTML_AFTER_DOWNLOAD = `<p style="font-size:var(--uds-font-size-sm);color:var(--uds-color-text-secondary);margin-top:var(--uds-space-050);">Or, if your team uses a shared repo, copy the <code class="sg-inline-code">uds/</code> folder directly into your project.</p>
 
         <h2 class="sg-page-title" style="font-size:22px;margin-top:var(--uds-space-500);">npm</h2>
         <p class="sg-page-desc">Install the UDS token layer as an npm package for any bundler-based project.</p>
@@ -150,9 +153,10 @@ registerUdsComponents();</pre>
 
 export default function GettingStartedPage() {
   return (
-    <div
-      className="sg-page-content"
-      dangerouslySetInnerHTML={{ __html: HTML }}
-    />
+    <div className="sg-page-content">
+      <div dangerouslySetInnerHTML={{ __html: HTML_BEFORE_DOWNLOAD }} />
+      <UdsDownloadButton />
+      <div dangerouslySetInnerHTML={{ __html: HTML_AFTER_DOWNLOAD }} />
+    </div>
   );
 }

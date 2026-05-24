@@ -53,14 +53,16 @@ export function ChangelogTab({
                   const ofType = entries.filter((e) => e.type === type);
                   if (!ofType.length) return null;
                   return (
-                    <ul key={type} className="sg-cl-items">
+                    <ul key={type} style={{ listStyle: 'none', margin: 0, padding: 0 }}>
                       {ofType.map((entry, i) => (
                         <li
                           key={`${entry.version}-${type}-${i}`}
                           className={`sg-cl-item sg-cl-item--${type}`}
                         >
-                          <span className={`sg-cl-tag sg-cl-tag--${type}`}>{type}</span>
-                          <span className="sg-cl-text">{inlineCode(entry.text)}</span>
+                          <span className={`sg-cl-type sg-cl-type--${type}`}>
+                            {type}
+                          </span>{' '}
+                          {inlineCode(entry.text)}
                         </li>
                       ))}
                     </ul>
