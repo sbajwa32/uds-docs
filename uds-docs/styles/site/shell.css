@@ -1,0 +1,7 @@
+/* Top-level shell — sidebar + main content split. */
+
+.sg-shell {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  min-height: calc(100vh - 84px);
+}

@@ -1,0 +1,82 @@
+/* Sticky left navigation. Headings group component categories; links are
+   thin function components rendered for each entry. */
+
+.sg-sidebar {
+  position: sticky;
+  top: 84px;
+  height: calc(100vh - 84px);
+  overflow-y: auto;
+  border-right: 1px solid var(--uds-color-border-secondary);
+  padding: var(--uds-space-250) 0;
+  background: var(--uds-color-surface-page-main);
+  font-size: var(--uds-font-size-base);
+}
+
+.sg-sidebar::-webkit-scrollbar {
+  width: 4px;
+}
+.sg-sidebar::-webkit-scrollbar-thumb {
+  background: var(--uds-color-border-secondary);
+  border-radius: 4px;
+}
+
+/* text-primary (not text-secondary) for AA contrast at the small uppercase size. */
+.sg-sidebar-heading {
+  display: block;
+  font-size: var(--uds-font-size-xs);
+  font-weight: var(--uds-font-weight-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--uds-color-text-primary);
+  padding: var(--uds-space-200) var(--uds-space-300) var(--uds-space-075);
+}
+
+.sg-sidebar-heading:first-child {
+  padding-top: 0;
+}
+
+/* Late override (later in the cascade than the rule above): tighten spacing
+   between sequential headings. Verbatim from legacy site.css. */
+.sg-sidebar-heading {
+  display: block;
+  margin-top: var(--uds-space-300);
+}
+.sg-sidebar-heading:first-of-type {
+  margin-top: var(--uds-space-200);
+}
+
+.sg-sidebar-link {
+  display: block;
+  padding: 5px var(--uds-space-300) 5px 27px;
+  color: var(--uds-color-text-primary);
+  text-decoration: none;
+  border-left: 3px solid transparent;
+  transition: background 80ms, border-color 80ms, color 80ms;
+  font-size: var(--uds-font-size-base);
+}
+
+.sg-sidebar-link:hover {
+  background: var(--uds-color-surface-subtle);
+}
+
+.sg-sidebar-link.active {
+  color: var(--uds-color-text-interactive);
+  border-left-color: var(--uds-color-border-interactive);
+  font-weight: 500;
+  background: var(--uds-color-surface-subtle);
+}
+
+.sg-sidebar-link.disabled {
+  color: var(--uds-color-text-disabled);
+  pointer-events: none;
+}
+
+/* Top-of-sidebar prominent links (AI Assist, Changelog, Getting Started).
+   Slightly bolder + visually grouped with a divider. */
+.sg-sidebar-link--getting-started {
+  font-weight: 600;
+  padding-top: 4px !important;
+  padding-bottom: 12px !important;
+  margin-bottom: 4px;
+  border-bottom: 1px solid var(--uds-color-border-tertiary);
+}

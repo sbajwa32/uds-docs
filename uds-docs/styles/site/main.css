@@ -1,0 +1,9 @@
+/* Main content area inside the shell. */
+
+.sg-main {
+  padding: var(--uds-space-500) var(--uds-space-700) var(--uds-space-1000);
+  max-width: 1200px;
+  min-width: 0;
+  overflow-y: auto;
+  height: calc(100vh - 44px);
+}
