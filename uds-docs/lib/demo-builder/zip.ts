@@ -80,6 +80,30 @@ async function bundleUdsFiles(zip: JSZipType, prefix: string, origin: string): P
   );
 }
 
+/**
+ * Bundle just the UDS payload (tokens + per-component CSS/JS) into a
+ * single zip, no demo HTML wrapper. Used by the Getting Started
+ * "Download UDS (.zip)" button.
+ */
+export async function downloadUdsBundle(
+  origin: string,
+  filename: string = 'uds.zip',
+): Promise<{ filename: string; sizeKB: number }> {
+  const JSZip = await loadJSZip();
+  const zip = new JSZip();
+  await bundleUdsFiles(zip, '', origin);
+  const blob = await zip.generateAsync({ type: 'blob' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  return { filename, sizeKB: Math.round(blob.size / 1024) };
+}
+
 export interface DownloadOptions {
   components: ReadonlyArray<string>;
   origin: string;

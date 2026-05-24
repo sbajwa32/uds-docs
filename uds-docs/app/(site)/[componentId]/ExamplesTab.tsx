@@ -12,6 +12,22 @@ import { useEffect, useState } from 'react';
 import { useUdsVersion } from '@/components/site/UdsVersionProvider';
 import { fetchAllExamples, type RenderedExample } from '@/lib/examples-renderer';
 
+// Some example manifests have HTML entities (`&amp;`, `&lt;`) in their
+// label / description fields, because the legacy site rendered them via
+// `innerHTML` which decoded them on the way in. React renders strings
+// as plain text, so those entities show up literally. Decode the common
+// ones inline. (The manifest data files are inside the Figma source-of-
+// truth tree and can't be autonomously rewritten — see
+// `.cursor/rules/uds-source-of-truth.mdc`.)
+function decodeHtmlEntities(s: string): string {
+  return s
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'");
+}
+
 interface State {
   examples: RenderedExample[] | null;
   loading: boolean;
@@ -75,10 +91,10 @@ export function ExamplesTab({ componentId }: { componentId: string }) {
       {examples.map((ex) => (
         <section key={ex.id} className="sg-example-block">
           {ex.label ? (
-            <h3 className="sg-subsection-title">{ex.label}</h3>
+            <h3 className="sg-subsection-title">{decodeHtmlEntities(ex.label)}</h3>
           ) : null}
           {ex.description ? (
-            <p className="sg-subsection-desc">{ex.description}</p>
+            <p className="sg-subsection-desc">{decodeHtmlEntities(ex.description)}</p>
           ) : null}
           <div className="sg-example">
             <div
