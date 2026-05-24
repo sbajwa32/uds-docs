@@ -185,12 +185,26 @@ function groupSiteByDate(entries: SiteChangelogEntry[]): SiteDayGroup[] {
 }
 
 function formatChangelogDate(iso: string): string {
-  const d = new Date(iso + 'T00:00:00');
-  return d.toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  });
+  // Mirrors legacy app.js formatChangelogDate: parses the ISO date as UTC so a
+  // 2026-05-22 entry doesn't slip to "Thursday May 21" when a US-Pacific user
+  // is reading it just after midnight UTC. Default locale (no 'en-US' lock-in)
+  // so non-English browsers get their own weekday names.
+  if (!iso) return '';
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso);
+  if (!match) return iso;
+  const d = new Date(Date.UTC(+match[1], +match[2] - 1, +match[3]));
+  if (isNaN(d.getTime())) return iso;
+  try {
+    return d.toLocaleDateString(undefined, {
+      weekday: 'long',
+      month: 'long',
+      day: 'numeric',
+      year: 'numeric',
+      timeZone: 'UTC',
+    });
+  } catch {
+    return iso;
+  }
 }
 
 function SiteStream({ entries }: { entries: SiteChangelogEntry[] }) {
@@ -449,11 +463,18 @@ export function ChangelogClient({
         };
       });
     }
-    return groupSiteByDate(filteredSite).map((group) => ({
-      id: slug('cl-day', group.date),
-      label: formatChangelogDate(group.date),
-      meta: changeCountLabel(group.releases.reduce((n, r) => n + r.changes.length, 0)),
-    }));
+    return groupSiteByDate(filteredSite).map((group) => {
+      const bumps = group.releases.length;
+      const changes = group.releases.reduce((n, r) => n + r.changes.length, 0);
+      const metaParts: string[] = [];
+      if (bumps > 1) metaParts.push(`${bumps} bumps`);
+      metaParts.push(changeCountLabel(changes));
+      return {
+        id: slug('cl-day', group.date),
+        label: formatChangelogDate(group.date),
+        meta: metaParts.join(' '),
+      };
+    });
   }, [activeTab, filteredUds, filteredSite]);
 
   useEffect(() => {

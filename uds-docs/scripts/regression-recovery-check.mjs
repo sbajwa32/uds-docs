@@ -205,6 +205,43 @@ async function main() {
     throw new Error(`Rail link has unwanted border: ${changelogInitial.railLinkBorder}`);
   }
 
+  // Switch to the Site tab and check the weekday + "X bumps" rail meta.
+  await evaluate(`(() => {
+    const tab = Array.from(document.querySelectorAll('[role="tab"], .sg-page-tab')).find((t) => t.textContent.trim() === 'Site');
+    tab?.click();
+  })()`);
+  await new Promise((r) => setTimeout(r, 400));
+  const siteRail = await evaluate(`(() => {
+    const labels = Array.from(document.querySelectorAll('[data-cl-tab="site"] .sg-cl-rail-link'));
+    const ranked = labels
+      .map((el) => ({
+        label: el.firstChild?.textContent?.trim() || '',
+        meta: el.querySelector('.sg-cl-rail-link-meta')?.textContent.trim() || '',
+      }))
+      .filter((row) => row.label);
+    const heading = document.querySelector('[data-cl-tab="site"] .sg-cl-rail-heading')?.textContent.trim() || '';
+    return { heading, ranked };
+  })()`);
+  if (siteRail.heading !== 'Jump to date') {
+    throw new Error(`Site rail heading should be "Jump to date", got "${siteRail.heading}"`);
+  }
+  const weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+  const sampleLabel = siteRail.ranked[0]?.label || '';
+  if (!weekdays.some((w) => sampleLabel.startsWith(w))) {
+    throw new Error(`Site rail label should start with a weekday, got "${sampleLabel}"`);
+  }
+  const bumpsRow = siteRail.ranked.find((row) => /\d+\s+bumps/.test(row.meta));
+  if (!bumpsRow) {
+    throw new Error(`No site-rail row has "X bumps" meta — got ${JSON.stringify(siteRail.ranked.slice(0, 3))}`);
+  }
+  await screenshot('changelog-site-tab');
+  // Switch back to the UDS tab for downstream checks.
+  await evaluate(`(() => {
+    const tab = Array.from(document.querySelectorAll('[role="tab"], .sg-page-tab')).find((t) => t.textContent.trim() === 'UDS');
+    tab?.click();
+  })()`);
+  await new Promise((r) => setTimeout(r, 400));
+
   await screenshot('changelog-header');
   await evaluate(`(() => {
     const input = document.querySelector('.sg-cl-search');

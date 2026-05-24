@@ -1024,5 +1024,12 @@ export const SITE_CHANGELOG: SiteChangelogEntry[] = [
       changes: [
         { type: 'fixed', text: 'Cleaned up four Changelog-page regressions surfaced in the side-by-side review: rail items were rendering with native `<button>` border + background instead of the legacy plain-text style (added a button reset to `.sg-cl-rail-link` so anchor- and button-based rails look identical), the rail heading was "Jump to" instead of "Jump to release" (or "Jump to date" on the Site tab), the rail meta only showed the date — it now shows date + change count on a second line like the legacy, the search placeholder said "Search changelog" instead of "Search changes", and the component filter chip group was missing its "FILTER BY COMPONENT" label.' }
       ]
+    },
+    {
+      version: 'SITE 2026.05.24.4',
+      date: '2026-05-24',
+      changes: [
+        { type: 'fixed', text: 'Changelog Site-tab date format restored to the legacy "Sunday, May 24, 2026" shape (weekday + month + day + year, parsed in UTC, using the browser\'s default locale). The previous version dropped the weekday and locked the locale to `en-US`. Site-tab rail meta now also prefixes multi-bump days with "X bumps" so a Saturday with three SITE bumps reads "3 bumps 8 changes" instead of just "8 changes".' }
+      ]
     }
 ];
