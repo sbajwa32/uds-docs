@@ -988,6 +988,13 @@ export const SITE_CHANGELOG = [
       changes: [
         { type: 'fixed', text: 'Rewrote the `2026.05.23.2` entries to match the voice and length rules that shipped earlier the same day. The original seven entries collapse to two — one `added` for the new Cursor Workflows card, one `changed` for the Factory and `new-component` rewiring — and drop the merge-resolution narrative, the cache-bust enumeration, the inline `<code>` / `<strong>` / `<em>` tags (which were rendering as literal angle-bracket text after the same release escaped raw HTML), and the implementation-step narration of `.cursor/` files that aren\'t user-visible on the site.' }
       ]
+    },
+    {
+      version: 'SITE 2026.05.24.1',
+      date: '2026-05-24',
+      changes: [
+        { type: 'removed', text: 'Removed the `theme-contrast` CI job and deleted `scripts/audit-theme-contrast.sh` plus its axe-core driver. Contrast validation belongs in the Contrast Checker tool (`#/contrast-checker`) — you pick foreground/surface tokens, see ratios across all six themes, and adjust in Figma. The GitHub audit duplicated that work, was permanently red on known baseline failures, and couldn\'t trigger token fixes anyway per the source-of-truth rule. Release workflow, agent rules, and the Cursor Workflows page now point at the tool instead.' }
+      ]
     }
 ];
 

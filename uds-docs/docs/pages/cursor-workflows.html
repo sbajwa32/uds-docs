@@ -852,7 +852,7 @@
       <p class="sg-cw-concept-analogy">Like the MOT inspection.</p>
       <div class="sg-cw-concept-meta">
         <code>scripts/audit-*.sh</code>
-        <span class="sg-cw-concept-count">13</span>
+        <span class="sg-cw-concept-count">12</span>
       </div>
     </article>
   </div>
@@ -894,7 +894,7 @@
         </div>
         <div class="sg-cw-workflow-stats">
           <span class="sg-cw-workflow-stat"><strong>8</strong> steps</span>
-          <span class="sg-cw-workflow-stat"><strong>11</strong> audits gate it</span>
+          <span class="sg-cw-workflow-stat"><strong>10</strong> audits gate it</span>
         </div>
       </header>
 
@@ -949,9 +949,9 @@
         <li class="sg-cw-step">
           <span class="sg-cw-step-num">6</span>
           <div class="sg-cw-step-body">
-            <h5 class="sg-cw-step-title">Re-audit</h5>
-            <p class="sg-cw-step-desc">Rebuilds the aggregated changelog and component manifest, then re-runs the multi-theme contrast scan to catch any regression from the token import.</p>
-            <div class="sg-cw-step-uses"><code>aggregate-changelog.sh</code><code>aggregate-components.sh</code><code>audit-theme-contrast.sh</code></div>
+            <h5 class="sg-cw-step-title">Re-check contrast</h5>
+            <p class="sg-cw-step-desc">Rebuilds the aggregated changelog and component manifest, then reviews token pairings in the Contrast Checker across all six themes.</p>
+            <div class="sg-cw-step-uses"><code>aggregate-changelog.sh</code><code>aggregate-components.sh</code><code>#/contrast-checker</code></div>
           </div>
         </li>
         <li class="sg-cw-step">
@@ -975,7 +975,7 @@
       <div class="sg-cw-workflow-footer">
         <div class="sg-cw-workflow-audits">
           <span class="sg-cw-workflow-audits-label"><span class="material-symbols-outlined">verified_user</span>Audits that gate the merge</span>
-          <code>audit-component-completeness</code><code>audit-placeholders</code><code>audit-token-usage</code><code>audit-demo-coverage</code><code>audit-changelog-currency</code><code>audit-aggregate-currency</code><code>audit-figma-sync-state-currency</code><code>audit-css-api-table</code><code>audit-doc-internal-consistency</code><code>audit-agent-docs-currency</code><code>audit-theme-contrast</code>
+          <code>audit-component-completeness</code><code>audit-placeholders</code><code>audit-token-usage</code><code>audit-demo-coverage</code><code>audit-changelog-currency</code><code>audit-aggregate-currency</code><code>audit-figma-sync-state-currency</code><code>audit-css-api-table</code><code>audit-doc-internal-consistency</code><code>audit-agent-docs-currency</code>
         </div>
         <details class="sg-cw-details">
           <summary>What gets touched, end to end</summary>
@@ -1501,7 +1501,7 @@
        AUDITS TAB
        =================================================================== -->
   <div data-tab-panel="audits">
-    <p class="sg-subsection-desc" style="margin-bottom:var(--uds-space-300);">13 bash audits in <code>scripts/audit-*.sh</code>, wired into <code>.github/workflows/audits.yml</code>. They run on every PR and every push to <code>main</code>. Failing audits block merge. Three of them grandfather pre-existing drift via <code>scripts/audit-baseline.json</code>.</p>
+    <p class="sg-subsection-desc" style="margin-bottom:var(--uds-space-300);">12 bash audits in <code>scripts/audit-*.sh</code>, wired into <code>.github/workflows/audits.yml</code>. They run on every PR and every push to <code>main</code>. Failing audits block merge. Three of them grandfather pre-existing drift via <code>scripts/audit-baseline.json</code>. Contrast validation lives in the Contrast Checker tool (<code>#/contrast-checker</code>), not CI.</p>
 
     <!-- PRE-EXISTING AUDITS -->
     <div class="sg-cw-group">
@@ -1581,22 +1581,6 @@
         <article class="sg-cw-card">
           <header class="sg-cw-card-head"><code class="sg-cw-card-name">audit-figma-card-template</code><span class="sg-cw-pill sg-cw-pill--blocks"><span class="material-symbols-outlined">block</span>Blocks merge</span></header>
           <p class="sg-cw-card-body">Verifies the component-card template constants used by the card builder skill stay in sync with the canonical layout rule.</p>
-        </article>
-      </div>
-    </div>
-
-    <!-- THEME CONTRAST -->
-    <div class="sg-cw-group">
-      <header class="sg-cw-group-header">
-        <h4 class="sg-cw-group-name">Accessibility audit</h4>
-        <span class="sg-cw-group-count">1</span>
-      </header>
-      <p class="sg-cw-group-desc">Heavier than the static audits (needs Node + headless Chrome), so it runs in its own CI job.</p>
-
-      <div class="sg-cw-cards">
-        <article class="sg-cw-card">
-          <header class="sg-cw-card-head"><code class="sg-cw-card-name">audit-theme-contrast</code><span class="sg-cw-pill sg-cw-pill--blocks"><span class="material-symbols-outlined">block</span>Blocks merge</span></header>
-          <p class="sg-cw-card-body">Multi-theme axe-core scan across 6 theme combinations × 7 representative pages = 42 page-theme combos. Detects WCAG AA contrast violations and a handful of ARIA issues. <strong>Diagnostic, not authority</strong> &mdash; a failing contrast is a Figma-side design conversation per <code>uds-source-of-truth</code>, never a license for Cursor to bump tokens.</p>
         </article>
       </div>
     </div>

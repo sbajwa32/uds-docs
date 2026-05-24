@@ -62,10 +62,10 @@ the manual fallback when the hook hasn't run.
 | [`uds-figma-write-safety.mdc`](./rules/uds-figma-write-safety.mdc) | `2026-05-18T19:06:07Z` | Prevents accidental Figma mutations during UDS sync work. Read-only is the default; writes are explicitly scoped and summarized. |
 | [`uds-master-preflight.mdc`](./rules/uds-master-preflight.mdc) | `2026-05-13T17:54:48Z` | Master workflow rule — enforces version bump FIRST, then changes, then finalize. Runs on every task that modifies uds-docs/. |
 | [`uds-naming-conventions.mdc`](./rules/uds-naming-conventions.mdc) | `2026-05-22T19:10:35Z` | The design-system-level naming framework for UDS. Locks the canonical vocabulary for states, sizes, tones, emphasis, parts of a component,… |
-| [`uds-release-workflow.mdc`](./rules/uds-release-workflow.mdc) | `2026-05-12T18:41:50Z` | UDS Design System release workflow -- detects Figma version bumps and guides the release process for the documentation site |
+| [`uds-release-workflow.mdc`](./rules/uds-release-workflow.mdc) | `2026-05-24T00:02:42Z` | UDS Design System release workflow -- detects Figma version bumps and guides the release process for the documentation site |
 | [`uds-rule-discipline.mdc`](./rules/uds-rule-discipline.mdc) | `2026-05-12T18:41:50Z` | Discipline that fires whenever you edit a Cursor rule, skill, or subagent file. Bump that file's `lastUpdated:` frontmatter and update the… |
 | [`uds-site-changelog.mdc`](./rules/uds-site-changelog.mdc) | `2026-05-22T20:35:09Z` | Enforces site version bumping, SITE_CHANGELOG updates, cache busting, and the voice/length contract for SITE_CHANGELOG entries on every… |
-| [`uds-source-of-truth.mdc`](./rules/uds-source-of-truth.mdc) | `2026-05-12T18:41:50Z` | Figma is the source of truth for everything under uds-docs/uds/ — tokens, component CSS, specs, examples, schemas, all of it. Agents must… |
+| [`uds-source-of-truth.mdc`](./rules/uds-source-of-truth.mdc) | `2026-05-24T00:02:42Z` | Figma is the source of truth for everything under uds-docs/uds/ — tokens, component CSS, specs, examples, schemas, all of it. Agents must… |
 | [`uds-token-architecture.mdc`](./rules/uds-token-architecture.mdc) | `2026-05-12T18:41:50Z` | Canonical UDS Tokens Figma variable architecture and CSS output contract. Direct Figma Variables reads are primary; ZIP exports are… |
 | [`uds-token-first-css.mdc`](./rules/uds-token-first-css.mdc) | `2026-05-12T18:41:50Z` | Enforces UDS token usage in all CSS — no hardcoded colors, spacing, fonts, or radii. |
 
