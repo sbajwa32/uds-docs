@@ -113,22 +113,17 @@ bash scripts/audit-component-completeness.sh   # every component folder has all 
 bash scripts/audit-demo-coverage.sh            # every implementable component has a demoSuitable example
 bash scripts/audit-placeholders.sh             # every {{token}} used in examples is in the vocabulary
 bash scripts/audit-token-usage.sh              # per-component CSS uses --uds-* tokens, no hardcoded colors
-
-# Multi-theme accessibility (requires headless Chrome at port 9332):
-bash scripts/audit-theme-contrast.sh
 ```
 
-CI workflow in `.github/workflows/audits.yml` runs all of these on every
-PR. The `theme-contrast` job verifies WCAG AA contrast across all 6
-supported theme combinations (Base/ResMan/AnyoneHome × Light/Dark + Inhabit
-Light) on 7 representative pages — 42 page-theme combinations.
+CI workflow in `.github/workflows/audits.yml` runs all of these on every PR.
 
 ## Accessibility contract
 
-The repo enforces **WCAG AA contrast across all 6 supported theme
-combinations**. Token bumps to keep this contract are documented in
-`uds/CHANGELOG.globalNotes.json`. Component CSS that wants to style a
-"selected" or "active" state should follow these ARIA conventions:
+The repo supports **6 theme combinations** (Base/ResMan/AnyoneHome ×
+Light/Dark, plus Inhabit Light). Use the **Contrast Checker** tool on
+the docs site (`#/contrast-checker`) to evaluate token pairings across
+all themes from resolved CSS variables. Token changes flow through Figma
+first — see `.cursor/rules/uds-source-of-truth.mdc`.
 
 - Tabs → `role="tab"` inside `[role="tablist"]`
 - Nav items → `aria-current="page"` (NOT `aria-selected`)

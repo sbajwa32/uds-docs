@@ -99,7 +99,8 @@ uds-docs/                              # Repo root
 │   ├── audit-demo-coverage.sh         # Every implementable component has ≥1 demoSuitable example
 │   ├── audit-placeholders.sh          # Every {{token}} used is in placeholder-vocabulary.json
 │   ├── audit-token-usage.sh           # Per-component CSS uses --uds-* tokens, no hardcoded colors
-│   └── audit-theme-contrast.sh        # axe-core multi-theme audit (Phase 17). Requires headless Chrome at port 9332.
+│   ├── audit-figma-card-template.sh   # Component-card template recipe currency
+│   └── ...                            # plus changelog/aggregate/figma-sync/css-api/doc-internal/agent-docs/toolchain audits
 │
 ├── uds-docs/release.sh                # Snapshots uds/ → versions/<X>/uds/, bumps uds/version.json
 └── uds-docs/bump-site.sh              # Bumps SITE version + cache-bust params
@@ -198,17 +199,14 @@ The site supports **6 theme combinations**:
 5. AnyoneHome Light (emerald accent)
 6. Inhabit Light (amber accent)
 
-`scripts/audit-theme-contrast.sh` runs axe-core across **6 themes ×
-7 representative pages = 42 page-theme combinations** to detect WCAG
-color-contrast violations and a related set of ARIA failures
-(`aria-allowed-attr`, `aria-required-children`). Wired into
-`.github/workflows/audits.yml` as the `theme-contrast` job; runs on
-every PR + push to main.
+The **Contrast Checker** tool (`#/contrast-checker`) evaluates every text,
+icon, and border token against every surface token across all **6 theme
+combinations**, computing WCAG ratios live from resolved CSS variables.
+Use it after token imports or when reviewing contrast trade-offs.
 
-The audit is a **diagnostic**, not a token authority. It reports what's
-there. Whether a reported failure is a bug or an accepted design
-trade-off is a design decision recorded in Figma — never an agent call.
-See `.cursor/rules/uds-source-of-truth.mdc` for the full rule.
+Whether a failing pairing is a bug or an accepted design trade-off is a
+design decision recorded in Figma — never an agent call. See
+`.cursor/rules/uds-source-of-truth.mdc` for the full rule.
 
 ### Currently known WCAG AA failures (pending design conversation)
 
@@ -223,9 +221,8 @@ the UDS 0.3 Figma-sync state, several WCAG AA contrast pairings fail:
 | Light-mode `text-secondary` on `surface-main` | ~3.9:1 | 4.5:1 |
 | Dark-mode `text-secondary` on `surface-main` (neutral-110) | ~3.9:1 | 4.5:1 |
 
-These are not bugs to "fix" by editing tokens. The `audit-theme-contrast`
-CI job will fail with these present; that failing CI is the surface the
-design conversation happens on. Fix paths (any of which require
+These are not bugs to "fix" by editing tokens. Use the Contrast Checker
+to review them and decide in Figma. Fix paths (any of which require
 explicit user direction):
 
 1. Accept the failing contrasts as documented exceptions.
@@ -285,11 +282,8 @@ chrome, not the design system.
    bash scripts/audit-placeholders.sh
    bash scripts/audit-token-usage.sh
    ```
-6. If the change touched colors or themes, also run:
-   ```
-   # Server + headless Chrome must be running first; CI does this automatically.
-   bash scripts/audit-theme-contrast.sh
-   ```
+6. If the change touched colors or themes, review pairings in the
+   Contrast Checker (`#/contrast-checker`) after syncing from Figma.
 7. Bump SITE + commit per the SITE flow above
 
 ### To bump UDS to a new version:
@@ -311,9 +305,9 @@ chrome, not the design system.
   spec.json, examples, schemas, all of it). Surface findings; don't
   apply fixes. See `.cursor/rules/uds-source-of-truth.mdc` for the full
   rule, the prohibited-edit list, and the authorized write paths
-  (`import-figma-tokens`, `sync-figma-component-spec`, etc.). A failing
-  `audit-theme-contrast.sh` is NOT a license to bump a token; it's a
-  design conversation in disguise.
+  (`import-figma-tokens`, `sync-figma-component-spec`, etc.).
+  Contrast Checker findings are NOT a license to bump a token; surface
+  them and wait for Figma direction.
 - Don't add framework code (React/Vue/Svelte) anywhere. The site is vanilla.
 - Don't put component spec content directly in `index.html` — edit
   `uds/components/<id>/spec.json` (the Guidelines tab renders from it).

@@ -44,8 +44,7 @@ const KIND_PREFIX = {
 const FG_KINDS = ['text', 'icon', 'border'];
 const KIND_LABEL = { text: 'Text', icon: 'Icon', border: 'Border', surface: 'Surface' };
 
-// 6 supported theme combinations — same set covered by the
-// `audit-theme-contrast.sh` axe-core run.
+// 6 supported theme combinations — same set the Contrast Checker evaluates.
 const THEME_PROFILES = [
   { id: 'base-light',     label: 'Base · Light',       attrs: {} },
   { id: 'base-dark',      label: 'Base · Dark',        attrs: { 'data-color-scheme': 'dark' } },
