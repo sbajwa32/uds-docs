@@ -38,6 +38,7 @@ import { GuidelinesTab } from './GuidelinesTab';
 import { CodeTab } from './CodeTab';
 import { ChangelogTab } from './ChangelogTab';
 import { ExamplesTab } from './ExamplesTab';
+import { FigmaNotesTab } from './FigmaNotesTab';
 
 type TabKey = 'examples' | 'code' | 'guidelines' | 'figma-notes' | 'changelog' | 'playground';
 
@@ -159,9 +160,7 @@ export function ComponentPageClient({ componentId }: { componentId: string }) {
       </div>
       {showFigmaNotes ? (
         <div hidden={activeTab !== 'figma-notes'}>
-          <p className="sg-changelog-empty">
-            Figma Notes renderer lands in Chunk 13 of the docs Next.js migration.
-          </p>
+          <FigmaNotesTab notes={figmaNotes!.notes} />
         </div>
       ) : null}
       <div hidden={activeTab !== 'changelog'}>
