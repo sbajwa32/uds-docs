@@ -163,17 +163,49 @@ async function main() {
   console.log('[check 2] Changelog toolbar, component filter, rail, and empty state work');
   await send('Page.navigate', { url: `http://localhost:${SERVE_PORT}/changelog` });
   await sleep(2000);
-  const changelogInitial = await evaluate(`(() => ({
-    toolbar: !!document.querySelector('.sg-cl-toolbar'),
-    rail: document.querySelectorAll('.sg-cl-rail-link').length,
-    componentChips: document.querySelectorAll('.sg-cl-component-filter .sg-cl-chip').length,
-    releaseCards: document.querySelectorAll('.sg-cl-release').length,
-  }))()`);
+  const changelogInitial = await evaluate(`(() => {
+    const railLink = document.querySelector('.sg-cl-rail-link');
+    const railLinkStyle = railLink ? getComputedStyle(railLink) : null;
+    return {
+      toolbar: !!document.querySelector('.sg-cl-toolbar'),
+      rail: document.querySelectorAll('.sg-cl-rail-link').length,
+      componentChips: document.querySelectorAll('.sg-cl-component-filter .sg-cl-chip').length,
+      releaseCards: document.querySelectorAll('.sg-cl-release').length,
+      railHeading: document.querySelector('.sg-cl-rail .sg-cl-rail-heading')?.textContent.trim() || '',
+      componentFilterHeading: document.querySelector('.sg-cl-component-filter .sg-cl-rail-heading')?.textContent.trim() || '',
+      searchPlaceholder: document.querySelector('.sg-cl-search')?.getAttribute('placeholder') || '',
+      railMeta: document.querySelector('.sg-cl-rail-link-meta')?.textContent.trim() || '',
+      railLinkBorder: railLinkStyle?.borderTopWidth || '',
+      railLinkBackground: railLinkStyle?.backgroundColor || '',
+    };
+  })()`);
   if (!changelogInitial.toolbar) throw new Error('Missing changelog toolbar');
   if (changelogInitial.rail < 1) throw new Error('Missing changelog rail links');
   if (changelogInitial.componentChips < 5) throw new Error('Missing component filter chips');
   if (changelogInitial.releaseCards < 1) throw new Error('Missing UDS release cards');
+  if (changelogInitial.railHeading !== 'Jump to release') {
+    throw new Error(`Rail heading should be "Jump to release", got "${changelogInitial.railHeading}"`);
+  }
+  if (changelogInitial.componentFilterHeading !== 'Filter by component') {
+    throw new Error(
+      `Component filter heading should be "Filter by component", got "${changelogInitial.componentFilterHeading}"`,
+    );
+  }
+  if (changelogInitial.searchPlaceholder !== 'Search changes') {
+    throw new Error(
+      `Search placeholder should be "Search changes", got "${changelogInitial.searchPlaceholder}"`,
+    );
+  }
+  if (!/changes?$/.test(changelogInitial.railMeta) && !/\d+\s+changes?/.test(changelogInitial.railMeta)) {
+    throw new Error(`Rail meta missing change count: "${changelogInitial.railMeta}"`);
+  }
+  // Rail links should not have native button border (the legacy CSS reset above
+  // was the symptom of round-2's regression).
+  if (changelogInitial.railLinkBorder && changelogInitial.railLinkBorder !== '0px') {
+    throw new Error(`Rail link has unwanted border: ${changelogInitial.railLinkBorder}`);
+  }
 
+  await screenshot('changelog-header');
   await evaluate(`(() => {
     const input = document.querySelector('.sg-cl-search');
     const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;
