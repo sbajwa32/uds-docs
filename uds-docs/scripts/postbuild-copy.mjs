@@ -20,14 +20,15 @@ const COPIES = [
   { src: 'uds', dest: 'out/uds', kind: 'dir', label: 'UDS design system payload' },
   { src: 'versions', dest: 'out/versions', kind: 'dir', label: 'UDS version archives' },
   { src: 'versions.json', dest: 'out/versions.json', kind: 'file', label: 'versions manifest' },
-  // Per-component playground.js modules (under uds/components/<id>/) live in
-  // the source-of-truth directory and import a small esc() helper from
-  // docs/helpers/esc.js. Keep the helper served at its legacy URL so
-  // dynamic import() in <Playground> resolves correctly. Chunk 17's
-  // deletion of legacy docs/ will need to relocate this helper before it
-  // can drop docs/ entirely.
-  { src: 'docs/helpers', dest: 'out/docs/helpers', kind: 'dir', label: 'playground.js helper imports' },
 ];
+
+// Note: the per-component playground.js modules under uds/components/<id>/
+// import `esc` from `../../../docs/helpers/esc.js`. Post-Chunk-17 the
+// file lives at `uds-docs/public/docs/helpers/esc.js` — Next.js copies
+// everything under `public/` to the build output root at the URL `/...`,
+// so the playground's relative import resolves to `/docs/helpers/esc.js`
+// without a manual postbuild copy. Don't move or rename esc.js without
+// also updating the source-of-truth playground.js files.
 
 async function main() {
   if (!existsSync(OUT_DIR)) {
