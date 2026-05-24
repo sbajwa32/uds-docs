@@ -1031,5 +1031,12 @@ export const SITE_CHANGELOG: SiteChangelogEntry[] = [
       changes: [
         { type: 'fixed', text: 'Changelog Site-tab date format restored to the legacy "Sunday, May 24, 2026" shape (weekday + month + day + year, parsed in UTC, using the browser\'s default locale). The previous version dropped the weekday and locked the locale to `en-US`. Site-tab rail meta now also prefixes multi-bump days with "X bumps" so a Saturday with three SITE bumps reads "3 bumps 8 changes" instead of just "8 changes".' }
       ]
+    },
+    {
+      version: 'SITE 2026.05.24.5',
+      date: '2026-05-24',
+      changes: [
+        { type: 'fixed', text: 'Playground tab parity with the legacy site: the code block has its copy button back (icon swaps to a check for 1.5s after a successful copy), the "Implementation Reference" expandable is back below the code with the same Component File / Styles / Behavior / Tokens Used tab structure (CSS and JS panels lazy-fetch only when their tab is opened, tokens panel resolves swatches from `getComputedStyle` and re-resolves when the theme changes), and icon-search controls show the Material Symbols glyph + name as a button trigger (click to type a different symbol name). The searchable dropdown picker from the legacy is still a follow-up — it needs the 63KB MATERIAL_ICONS list loaded — but the visual regression where icon inputs lost their glyph preview is fixed.' }
+      ]
     }
 ];

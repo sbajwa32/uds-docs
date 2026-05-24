@@ -348,6 +348,38 @@ async function main() {
   }
   console.log(`  OK — last updated ${lastUpdated.version}, ${lastUpdated.releases} releases inline, expands cleanly`);
 
+  console.log('[check 8b] Playground tab restores copy button, Implementation Reference, and icon-preview controls');
+  await evaluate(`(() => {
+    const tab = Array.from(document.querySelectorAll('[role="tab"], .sg-page-tab')).find((t) => t.textContent.trim() === 'Playground');
+    tab?.click();
+  })()`);
+  await new Promise((r) => setTimeout(r, 800));
+  const playground = await evaluate(`(() => {
+    const findVisible = (sel) => Array.from(document.querySelectorAll(sel)).find((el) => el.offsetParent !== null) || null;
+    return {
+      copyBtn: !!findVisible('.sg-playground-right .sg-code-copy'),
+      implDetails: !!findVisible('.sg-impl-details'),
+      implTabs: findVisible('.sg-impl-details') ? document.querySelectorAll('.sg-impl-details .sg-impl-tab').length : 0,
+      iconPicker: !!findVisible('.sg-icon-picker-trigger'),
+      iconPickerHasGlyph: !!(findVisible('.sg-icon-picker-trigger')?.querySelector('.material-symbols-outlined')),
+    };
+  })()`);
+  if (!playground.copyBtn) throw new Error('Playground code block missing copy button');
+  if (!playground.implDetails) throw new Error('Playground missing Implementation Reference details');
+  if (playground.implTabs < 2) {
+    throw new Error(`Implementation Reference should have at least Component + Styles tabs, got ${playground.implTabs}`);
+  }
+  if (!playground.iconPicker) throw new Error('Playground icon-search control missing icon preview trigger');
+  if (!playground.iconPickerHasGlyph) throw new Error('Icon preview missing Material Symbols glyph');
+  // Scroll the playground into view so the screenshot captures the
+  // controls, code block, copy button, and Impl Ref details.
+  await evaluate(`(() => {
+    document.querySelector('.sg-playground-layout')?.scrollIntoView({ block: 'start' });
+  })()`);
+  await new Promise((r) => setTimeout(r, 200));
+  await screenshot('playground-tab');
+  console.log(`  OK — copy button, Impl Ref (${playground.implTabs} tabs), icon preview all present`);
+
   console.log('[check 8] Version dropdown labels the live release as "(latest)"');
   const dropdown = await evaluate(`(() => {
     const opts = Array.from(document.querySelectorAll('.sg-version-select option'));
