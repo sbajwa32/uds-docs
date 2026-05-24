@@ -1,64 +1,47 @@
 ---
-description: Enforces site version bumping, SITE_CHANGELOG updates, cache busting, and the voice/length contract for SITE_CHANGELOG entries on every documentation site change.
+description: Whenever you change anything inside uds-docs/, add a SITE_CHANGELOG entry to data/site-changelog.ts. The Voice and length section is what to write; the rest is mechanics.
 alwaysApply: true
-lastUpdated: 2026-05-22T20:35:09Z
+lastUpdated: 2026-05-24T08:55:00Z
 ---
 
 # UDS Site Changelog
 
-Whenever you modify ANY file in `uds-docs/`, you MUST perform these three steps before completing the task:
+Whenever you modify a file inside `uds-docs/`, append a `SITE_CHANGELOG`
+entry to `uds-docs/data/site-changelog.ts`. That's the whole contract
+post-migration.
 
-## 1. Bump the SITE version
+The SITE-versioning apparatus (`version.txt`, `bump-site.sh`, the
+`?v=N` cache-bust query params, the auto-reload polling) was removed
+during Chunk 17 of the Next.js migration. Cache-busting is now
+Cloudflare's job (per `_headers`); cache invalidation on deploy is
+Next's job (content-hashed asset URLs).
 
-**Run `bash uds-docs/bump-site.sh`** — this handles everything:
-- Gets today's date from the system `date` command (NEVER guess)
-- Increments N if same day, resets to `.1` if new day
-- Updates all 3 locations: index.html display, index.html inline SITE_VERSION, version.txt
+## How to add an entry
 
-NEVER manually edit the version string. ALWAYS use the script.
+1. Open `uds-docs/data/site-changelog.ts`.
+2. Append a new object to the `SITE_CHANGELOG` array — newest entries
+   go LAST in the array; the renderer reverses for display:
 
-## 2. Add a SITE_CHANGELOG entry
-
-After the repo restructure, the SITE changelog lives at
-`uds-docs/docs/data/site-changelog.js` (no longer inside `app.js`). Find
-the `SITE_CHANGELOG` array and **append** a new entry for the current SITE
-version (newest entries go LAST in the array — the renderer reverses for
-display):
-
-```javascript
+```ts
 {
-  version: 'SITE YYYY.MM.DD.N',   // matches the version in index.html
-  date: 'YYYY-MM-DD',
+  version: '2026.06.04.1',
+  date: '2026-06-04',
   changes: [
-    { type: 'added|changed|fixed|removed', text: 'Description of what changed' }
-  ]
-}
+    { type: 'added', text: 'Wired the version dropdown to the active UDS context.' },
+  ],
+},
 ```
 
-- If you're making multiple changes in one session, batch them into a single version entry
-- If an entry for the current version already exists, append to its `changes` array
-- Types: `added` (new feature/page), `changed` (modification), `fixed` (bug fix), `removed` (deletion)
+- `version` is a free-form bump string. Pick `YYYY.MM.DD.N` where `N`
+  resets to 1 each day. The version is informational only — it's not
+  read by any audit, fetcher, or cache layer.
+- `date` is the actual calendar date. Use ISO 8601 (`YYYY-MM-DD`).
+  Never guess; use `date -u +%Y-%m-%d` if you need to look it up.
+- `type` is one of `added`, `changed`, `fixed`, `removed`.
+- If multiple changes ship in one session, batch them into a single
+  entry with multiple `changes` items.
 
-## 3. Cache busting
-
-Three things to update:
-
-### a. Query params on script/link tags in `index.html`:
-- `<link rel="stylesheet" href="./uds/uds.css?v=N" />` — bump if any CSS changed
-- `<script src="./uds/uds.js?v=N"></script>` — bump if any JS changed
-- `<script type="module" src="./docs/app.js?v=N"></script>` — bump if `docs/app.js` (or anything it imports) changed
-- `<script type="module" src="./docs/modules/demo-builder/index.js?v=N"></script>` — bump if any Demo Builder module changed
-- `<link rel="stylesheet" href="./docs/site.css?v=N" />` — bump if `docs/site.css` changed
-
-Only bump the ones where the underlying file actually changed.
-
-### b. Update `version.txt`:
-Write the new SITE version number (just the `YYYY.MM.DD.N` part, no `SITE` prefix) to `uds-docs/version.txt`. This file is fetched on every page load to trigger auto-reload when a new version is deployed.
-
-### c. Update the inline SITE_VERSION in `index.html`:
-Find the `var SITE_VERSION = '...'` string in the inline `<script>` block in `<head>` and update it to match the new version.
-
-## 4. Voice and length
+## Voice and length
 
 SITE_CHANGELOG entries appear on the live Changelog page. They are read
 by humans, not by audits. Write them the way the early entries did —
@@ -68,9 +51,9 @@ short, descriptive, designer-readable.
 
 The reader is a senior product designer. Technically literate — they
 understand tokens, components, file structure, the difference between a
-CSS class and a JS function. They are not asking to be talked down to.
-They are also not reading the changelog to debug code; they are reading
-it to know what shipped.
+CSS class and a React component. They are not asking to be talked down
+to. They are also not reading the changelog to debug code; they are
+reading it to know what shipped.
 
 ### Test for whether to use a technical term
 
@@ -78,7 +61,7 @@ Use the term when the reader will need the exact name to act on it —
 copy a token, find a file, debug a regression, search the codebase.
 Skip it when it is decoration. If the same idea fits in plain language
 without losing accuracy or making the sentence longer, use plain
-language. This is the same test [`communication-style.mdc`](./communication-style.mdc)
+language. Same test [`communication-style.mdc`](./communication-style.mdc)
 uses for chat replies; it applies to written entries too.
 
 ### Length and shape
@@ -95,9 +78,6 @@ uses for chat replies; it applies to written entries too.
 - **No internal phase terminology** (`Phase 13 restructure`,
   `RUN_ID nav-header-...`, "the proof-of-fix for X workflow"). The
   reader does not have that context.
-- **No `?v=N` cache-bust enumeration.** One line per version covering
-  all bumped query params is plenty; if nothing was bumped, omit the
-  line entirely.
 - **No merge-resolution narratives.** "Merged with main; both branches
   bumped to .5; resolved to .6." is a commit-message detail, not a
   changelog entry.
@@ -114,4 +94,10 @@ technical voice is non-negotiable".
 
 ## Exceptions
 
-- Do NOT create a site changelog entry for changes that ONLY affect files outside `uds-docs/` (e.g. editing Cursor rules)
+- Don't create a site changelog entry for changes that only affect
+  files outside `uds-docs/` (e.g. editing Cursor rules, audits, the
+  repo-root `scripts/` directory).
+- Don't create an entry for changes to per-component `uds/components/`
+  files — those have their own `changelog.json` per component, and
+  `uds/CHANGELOG.json` aggregates them. The SITE changelog is for the
+  docs-site itself.

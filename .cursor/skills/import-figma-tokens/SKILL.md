@@ -1,7 +1,7 @@
 ---
 name: import-figma-tokens
 description: Import UDS token changes from the UDS Tokens Figma file. Uses direct Figma Variables reads first and token ZIP exports only as fallback. Writes token CSS only after token-audit passes.
-lastUpdated: 2026-05-12T18:41:50Z
+lastUpdated: 2026-05-24T09:19:52Z
 ---
 
 # Import Figma Tokens
@@ -58,13 +58,11 @@ Never manually type token values into CSS.
 
 ### 3. Bump first
 
-Before editing anything under `uds-docs/`, run:
-
-```bash
-bash uds-docs/bump-site.sh
-```
-
-Use the script output for the `SITE_CHANGELOG` entry.
+Per [`uds-site-changelog.mdc`](../../rules/uds-site-changelog.mdc),
+append a `SITE_CHANGELOG` entry to
+`uds-docs/data/site-changelog.ts` when you finish — the
+SITE-versioning preflight (`bump-site.sh`) was deleted during the
+Next.js migration.
 
 ### 4. Generate CSS deterministically
 

@@ -1,7 +1,7 @@
 ---
 name: link-figma-nodes
 description: Populate figmaNodeId and figmaPageNodeId fields in per-component spec.json files from canonical UDS Components Figma nodes. Use when Figma deep links are missing or stale.
-lastUpdated: 2026-05-12T18:41:50Z
+lastUpdated: 2026-05-24T09:19:52Z
 ---
 
 # Link Figma Nodes
@@ -83,15 +83,7 @@ Ask before:
 - choosing between multiple possible nodes
 - linking to a frame rather than a component / component-set node
 
-### 3. Bump-first for doc edits
-
-Before editing `uds-docs/`:
-
-```bash
-bash uds-docs/bump-site.sh
-```
-
-Then:
+### 3. Apply the doc edits
 
 1. Update `figmaNodeId` and/or `figmaPageNodeId` in
    `uds-docs/uds/components/<id>/spec.json`. Do NOT modify any other field

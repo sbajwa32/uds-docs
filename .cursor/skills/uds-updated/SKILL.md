@@ -1,7 +1,7 @@
 ---
 name: uds-updated
 description: Orchestrate a full UDS Figma-to-docs sync from a simple prompt like "UDS updated" or "Figma updated". Reads Figma Tokens and Components, classifies changes (including surplus findings from the inspector's bidirectional pass that flag doc-side artifacts with no Figma counterpart), applies only high-confidence non-breaking updates, and falls back to dry-run/reporting for ambiguous, breaking, or removal changes.
-lastUpdated: 2026-05-13T17:54:48Z
+lastUpdated: 2026-05-24T09:19:52Z
 ---
 
 # UDS Updated
@@ -73,7 +73,7 @@ Follow `uds-figma-preflight.mdc`:
 - UDS Tokens file key: `iqKgR73ubUHpQTIcF7XGMy`
 - UDS Components file key: `1XJoUJgtNpw4R0IIT3VjoK`
 - detect both `UDS Version: X.Y` pages
-- compare to `UDS_VERSION` in `uds-docs/docs/app.js`
+- compare to `version` in `uds-docs/uds/version.json`
 - skip any Figma page whose page name contains `{Ignore}`
 
 If Figma version is higher than site version, report it and continue into this
@@ -213,15 +213,14 @@ Ask before applying:
 
 If there are safe updates and the run is not dry-run:
 
-1. If touching any `uds-docs/` file, run `bash uds-docs/bump-site.sh` before
-   edits.
-2. Apply narrow updates using the delegated skill:
+1. Apply narrow updates using the delegated skill:
    - tokens → `import-figma-tokens`
    - status → `sync-figma-component-status`
    - component spec → `sync-figma-component-spec`
    - node links → `link-figma-nodes`
    - release notes → `sync-figma-release-notes`
-3. Add/update a SITE_CHANGELOG entry for the SITE version from the bump script.
+2. Add a SITE_CHANGELOG entry in `data/site-changelog.ts` per
+   [`uds-site-changelog.mdc`](../../rules/uds-site-changelog.mdc).
 4. Cache-bust changed assets in `index.html`.
 
 ### 9. Verify
