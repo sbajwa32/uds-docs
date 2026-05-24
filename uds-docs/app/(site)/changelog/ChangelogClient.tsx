@@ -222,18 +222,20 @@ export function ChangelogClient({
         </SgPageTab>
         <SgPageTab value="site">Site</SgPageTab>
       </SgPageTabs>
+      {/*
+        The legacy `.sg-cl-page` wrapper was a `200px (rail) | 1fr (main)`
+        grid. The migrated React port doesn't render a navigation rail yet
+        — until it does, drop the grid so the stream renders at full
+        content width instead of being squeezed into the empty rail slot.
+      */}
       <div hidden={activeTab !== 'uds'}>
-        <div className="sg-cl-page" data-cl-tab="uds">
-          <div className="sg-cl-main">
-            <UdsStream releases={udsChangelog} />
-          </div>
+        <div className="sg-cl-main" data-cl-tab="uds">
+          <UdsStream releases={udsChangelog} />
         </div>
       </div>
       <div hidden={activeTab !== 'site'}>
-        <div className="sg-cl-page" data-cl-tab="site">
-          <div className="sg-cl-main">
-            <SiteStream entries={SITE_CHANGELOG} />
-          </div>
+        <div className="sg-cl-main" data-cl-tab="site">
+          <SiteStream entries={SITE_CHANGELOG} />
         </div>
       </div>
     </>
