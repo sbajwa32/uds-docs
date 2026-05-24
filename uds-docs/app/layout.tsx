@@ -3,11 +3,6 @@ import type { ReactNode } from 'react';
 
 import { UdsThemeProvider } from '@/components/site/UdsThemeProvider';
 
-// Global UDS stylesheet — primitives, semantic tokens, layers, text styles, and
-// every component CSS that uds.css @imports. The whole design system payload
-// is published into out/uds/ by the postbuild step (Chunk 01), so this @import
-// resolves both at build time (Next bundles it) and at runtime (the bundled
-// CSS references uds/components/<id>/<id>.css from the deployed origin).
 import '../uds/uds.css';
 import '../styles/site/base.css';
 
@@ -17,13 +12,16 @@ export const metadata: Metadata = {
     'The Urban Design System (UDS) — design-to-engineering specification, components, tokens, and documentation.',
 };
 
+// Slim root layout — only what every route needs regardless of context:
+// HTML scaffold, fonts, the global UDS stylesheet, the base reset, and the
+// theme provider. The actual chrome (header / sidebar / main) lives in the
+// (site) route group's layout. Dev-only routes (kit-sink) sit in (dev)
+// without chrome.
+
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
       <head>
-        {/* UDS-defined fonts. Loaded via plain <link> tags rather than next/font
-            because Material Symbols isn't in next/font's catalog and we want
-            consistency in how all five fonts arrive. */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
         <link
