@@ -32,7 +32,9 @@ import {
 import { downloadDemoProject } from '@/lib/demo-builder/zip';
 import { generateDemoHTML } from '@/lib/demo-builder/generate-html';
 import { getHistory, pushHistory, type DemoHistoryEntry } from '@/lib/demo-builder/history';
+import { getComponentStatus } from '@/lib/uds-data';
 import { useUdsTheme } from './UdsThemeProvider';
+import { useUdsVersion } from './UdsVersionProvider';
 
 import '../../styles/site/demo-builder.css';
 
@@ -148,21 +150,49 @@ function DemoBuilderDialog({
   buildPreview: (components: string[]) => Promise<{ html: string; sizeKB: number }>;
 }) {
   const themeCtx = useUdsTheme();
+  const { fetchVersion } = useUdsVersion();
   const [selected, setSelected] = useState<Set<string>>(
     () => new Set(DEMO_COMPONENTS.map((c) => c.id)),
   );
   const [history, setHistory] = useState<DemoHistoryEntry[]>(() => getHistory());
   const [busy, setBusy] = useState<null | 'preview' | 'download'>(null);
   const [error, setError] = useState<string | null>(null);
+  const [statusMap, setStatusMap] = useState<Record<string, string>>({});
 
   const backdropRef = useRef<HTMLDivElement>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
-  const closeRef = useRef<HTMLButtonElement>(null);
 
-  // Focus management — push focus into the dialog when it opens.
+  // Focus management — focus the dialog container itself (tabindex=-1) so
+  // keyboard navigation works while keeping the close button free of an
+  // auto-applied :focus-visible outline on first open. The legacy dialog
+  // was static markup that never auto-focused the close button.
   useEffect(() => {
-    closeRef.current?.focus();
+    dialogRef.current?.focus();
   }, []);
+
+  // Fetch lifecycle status for each demo component to render the colored
+  // status dot next to its label. Direct port of legacy
+  // window.COMPONENT_STATUS_MAP[comp.id] behavior — drops `sg-demo-status-dot
+  // --<status>` on each row.
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const next: Record<string, string> = {};
+      const results = await Promise.all(
+        DEMO_COMPONENTS.map((c) =>
+          getComponentStatus(c.id, fetchVersion)
+            .then((s) => [c.id, s?.current || ''] as const)
+            .catch(() => [c.id, ''] as const),
+        ),
+      );
+      if (cancelled) return;
+      for (const [id, status] of results) next[id] = status;
+      setStatusMap(next);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [fetchVersion]);
 
   // Esc closes; backdrop click closes; basic focus trap with Tab.
   useEffect(() => {
@@ -296,13 +326,13 @@ function DemoBuilderDialog({
         role="dialog"
         aria-modal="true"
         aria-labelledby="sg-demo-title"
+        tabIndex={-1}
       >
         <div className="udc-dialog__header">
           <h2 className="udc-dialog__title" id="sg-demo-title">
             Build Demo Site
           </h2>
           <button
-            ref={closeRef}
             type="button"
             className="udc-dialog__close"
             aria-label="Close"
@@ -327,17 +357,27 @@ function DemoBuilderDialog({
           </div>
 
           <div className="sg-demo-grid">
-            {DEMO_COMPONENTS.map((c) => (
-              <label key={c.id}>
-                <input
-                  type="checkbox"
-                  checked={selected.has(c.id)}
-                  onChange={() => toggleOne(c.id)}
-                  data-demo-comp={c.id}
-                />
-                {' ' + c.label}
-              </label>
-            ))}
+            {DEMO_COMPONENTS.map((c) => {
+              const status = statusMap[c.id];
+              const dotClass = status ? `sg-demo-status-dot--${status}` : '';
+              return (
+                <label key={c.id}>
+                  <input
+                    type="checkbox"
+                    checked={selected.has(c.id)}
+                    onChange={() => toggleOne(c.id)}
+                    data-demo-comp={c.id}
+                  />
+                  {' ' + c.label}
+                  {status ? (
+                    <span
+                      className={`sg-demo-status-dot ${dotClass}`}
+                      title={status.replace('-', ' ')}
+                    />
+                  ) : null}
+                </label>
+              );
+            })}
           </div>
 
           {error && (

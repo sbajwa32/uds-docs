@@ -6,6 +6,14 @@
 .sg-demo-dialog {
   max-width: 720px;
   width: calc(100vw - 48px);
+  /* Reset the inherited color cascade: the Build Demo trigger lives in
+     .sg-brand-bar (the dark navy top bar), which sets `color: rgb(245,
+     245, 245)` so its own children render as white text. The dialog is
+     rendered as a React child of the trigger, so without an explicit
+     override the dialog body inherits that near-white color and `strong`
+     / fallback text disappears against the dialog's white background.
+     Re-anchor on the standard text-primary token. */
+  color: var(--uds-color-text-primary);
 }
 .sg-demo-dialog .udc-dialog__body {
   font-family: var(--uds-font-family);

@@ -1038,5 +1038,12 @@ export const SITE_CHANGELOG: SiteChangelogEntry[] = [
       changes: [
         { type: 'fixed', text: 'Playground tab parity with the legacy site: the code block has its copy button back (icon swaps to a check for 1.5s after a successful copy), the "Implementation Reference" expandable is back below the code with the same Component File / Styles / Behavior / Tokens Used tab structure (CSS and JS panels lazy-fetch only when their tab is opened, tokens panel resolves swatches from `getComputedStyle` and re-resolves when the theme changes), and icon-search controls show the Material Symbols glyph + name as a button trigger (click to type a different symbol name). The searchable dropdown picker from the legacy is still a follow-up — it needs the 63KB MATERIAL_ICONS list loaded — but the visual regression where icon inputs lost their glyph preview is fixed.' }
       ]
+    },
+    {
+      version: 'SITE 2026.05.24.6',
+      date: '2026-05-24',
+      changes: [
+        { type: 'fixed', text: 'Build Demo Site dialog parity: the "Last Build" heading is back above the timestamp/stats line (it was rendering as near-white text — the dialog inherits its color cascade from the dark `.sg-brand-bar` where the trigger button lives; explicit `color: var(--uds-color-text-primary)` reset on `.sg-demo-dialog` re-anchors all dialog text to the standard primary color). Each component row in the grid has its lifecycle status dot back (placeholder/blocked/in-progress/review/production — fetched per-component from `status.json` when the dialog opens). The close (X) button no longer auto-focuses on dialog open (it was showing a blue `:focus-visible` outline immediately); initial focus moves to the dialog container itself so keyboard navigation still works.' }
+      ]
     }
 ];

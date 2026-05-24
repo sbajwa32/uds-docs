@@ -348,6 +348,99 @@ async function main() {
   }
   console.log(`  OK — last updated ${lastUpdated.version}, ${lastUpdated.releases} releases inline, expands cleanly`);
 
+  console.log('[check 8a] Demo Builder dialog renders Last-Build heading, status dots, and clean close-button focus');
+  await send('Page.navigate', { url: `http://localhost:${SERVE_PORT}/button` });
+  await sleep(1500);
+  // Seed a history entry so the "Last Build" card has data to display.
+  await evaluate(`(() => {
+    const entry = {
+      timestamp: new Date().toISOString(),
+      framework: 'html',
+      theme: { colorScheme: '', brand: '', font: '' },
+      components: ['button', 'link', 'label'],
+      componentCount: 3,
+      sizeKB: 12,
+      blobHtml: '<html><body>Test</body></html>',
+    };
+    localStorage.setItem('uds-demo-history', JSON.stringify([entry]));
+  })()`);
+  await evaluate(`document.querySelector('.sg-demo-btn')?.click()`);
+  await sleep(800);
+  const demo = await evaluate(`(() => {
+    const dialog = document.querySelector('.sg-demo-dialog');
+    if (!dialog) return { open: false };
+    const closeBtn = dialog.querySelector('.udc-dialog__close');
+    const lastBuildStrong = dialog.querySelector('.sg-demo-history-meta strong');
+    const computed = lastBuildStrong ? getComputedStyle(lastBuildStrong) : null;
+    const labels = Array.from(dialog.querySelectorAll('.sg-demo-grid label'));
+    const labelsWithDots = labels.filter((l) => l.querySelector('.sg-demo-status-dot')).length;
+    const rect = lastBuildStrong?.getBoundingClientRect?.();
+    return {
+      open: true,
+      lastBuildText: lastBuildStrong?.textContent.trim() || '',
+      lastBuildDisplay: computed?.display || '',
+      lastBuildFontSize: computed?.fontSize || '',
+      lastBuildColor: computed?.color || '',
+      lastBuildVisibility: computed?.visibility || '',
+      lastBuildOpacity: computed?.opacity || '',
+      lastBuildHeight: rect?.height || 0,
+      lastBuildWidth: rect?.width || 0,
+      labelsTotal: labels.length,
+      labelsWithDots,
+      closeFocusedOnOpen: document.activeElement === closeBtn,
+    };
+  })()`);
+  const themeDebug = await evaluate(`(() => {
+    const strong = document.querySelector('.sg-demo-history-meta strong');
+    const chain = [];
+    let el = strong;
+    while (el && el !== document.documentElement) {
+      chain.push({
+        tag: el.tagName,
+        cls: el.className || '',
+        color: getComputedStyle(el).color,
+      });
+      el = el.parentElement;
+    }
+    return {
+      htmlScheme: document.documentElement.getAttribute('data-color-scheme') || '',
+      htmlTheme: document.documentElement.getAttribute('data-theme') || '',
+      bodyScheme: document.body.getAttribute('data-color-scheme') || '',
+      textPrimary: getComputedStyle(document.documentElement).getPropertyValue('--uds-color-text-primary').trim(),
+      htmlColor: getComputedStyle(document.documentElement).color,
+      chain,
+    };
+  })()`);
+  void themeDebug;
+  if (!demo.open) throw new Error('Demo Builder dialog failed to open');
+  if (demo.lastBuildText !== 'Last Build') {
+    throw new Error(`"Last Build" heading missing or wrong: "${demo.lastBuildText}"`);
+  }
+  if (demo.lastBuildDisplay !== 'block') {
+    throw new Error(`"Last Build" should be display:block, got "${demo.lastBuildDisplay}"`);
+  }
+  // Color check: in the default base-light theme, text should be dark
+  // (text-primary = #171717). If it's bright (≥ 200 average channel), the
+  // dialog is inheriting the .sg-brand-bar's near-white color and the
+  // text disappears against the dialog body background.
+  const colorMatch = /rgb\((\d+),\s*(\d+),\s*(\d+)\)/.exec(demo.lastBuildColor);
+  if (colorMatch) {
+    const avg = (Number(colorMatch[1]) + Number(colorMatch[2]) + Number(colorMatch[3])) / 3;
+    if (avg > 200) {
+      throw new Error(`"Last Build" color too bright (${demo.lastBuildColor}) — likely inheriting from .sg-brand-bar`);
+    }
+  }
+  if (demo.labelsWithDots < demo.labelsTotal) {
+    throw new Error(`Only ${demo.labelsWithDots}/${demo.labelsTotal} demo components have status dots`);
+  }
+  if (demo.closeFocusedOnOpen) {
+    throw new Error('Close button should NOT auto-focus on dialog open (causes blue outline)');
+  }
+  await screenshot('demo-builder-dialog');
+  console.log(`  OK — "Last Build" present, ${demo.labelsWithDots}/${demo.labelsTotal} status dots, close button not auto-focused`);
+  await evaluate(`document.querySelector('.sg-demo-dialog .udc-dialog__close')?.click()`);
+  await sleep(200);
+
   console.log('[check 8b] Playground tab restores copy button, Implementation Reference, and icon-preview controls');
   await evaluate(`(() => {
     const tab = Array.from(document.querySelectorAll('[role="tab"], .sg-page-tab')).find((t) => t.textContent.trim() === 'Playground');
