@@ -7,7 +7,8 @@
 import '../../styles/site/sidebar.css';
 import '../../styles/site/shell.css';
 
-import type { ReactNode } from 'react';
+import { forwardRef } from 'react';
+import type { FocusEventHandler, MouseEventHandler, ReactNode } from 'react';
 
 // ---------------------------------------------------------------------------
 // SgShell — top-level shell layout (sidebar + main split).
@@ -47,14 +48,7 @@ export function SgSidebarHeading({ children }: { children: ReactNode }) {
 // SgSidebarLink
 // ---------------------------------------------------------------------------
 
-export function SgSidebarLink({
-  href,
-  active = false,
-  disabled = false,
-  variant,
-  icon,
-  children,
-}: {
+export const SgSidebarLink = forwardRef<HTMLAnchorElement, {
   href: string;
   active?: boolean;
   disabled?: boolean;
@@ -62,8 +56,26 @@ export function SgSidebarLink({
   variant?: 'getting-started';
   /** Optional Material Symbol icon (only shown for the 'getting-started' variant in legacy markup). */
   icon?: string;
+  onMouseEnter?: MouseEventHandler<HTMLAnchorElement>;
+  onMouseLeave?: MouseEventHandler<HTMLAnchorElement>;
+  onFocus?: FocusEventHandler<HTMLAnchorElement>;
+  onBlur?: FocusEventHandler<HTMLAnchorElement>;
   children: ReactNode;
-}) {
+}>(function SgSidebarLink(
+  {
+    href,
+    active = false,
+    disabled = false,
+    variant,
+    icon,
+    onMouseEnter,
+    onMouseLeave,
+    onFocus,
+    onBlur,
+    children,
+  },
+  ref,
+) {
   const classes = ['sg-sidebar-link'];
   if (variant === 'getting-started') classes.push('sg-sidebar-link--getting-started');
   if (active) classes.push('active');
@@ -71,10 +83,15 @@ export function SgSidebarLink({
 
   return (
     <a
+      ref={ref}
       className={classes.join(' ')}
       href={href}
       aria-current={active ? 'page' : undefined}
       aria-disabled={disabled || undefined}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+      onFocus={onFocus}
+      onBlur={onBlur}
     >
       {icon ? (
         <span
@@ -88,4 +105,4 @@ export function SgSidebarLink({
       {children}
     </a>
   );
-}
+});
