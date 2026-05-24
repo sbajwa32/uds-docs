@@ -1009,5 +1009,13 @@ export const SITE_CHANGELOG: SiteChangelogEntry[] = [
       changes: [
         { type: 'removed', text: 'Removed the `theme-contrast` CI job and deleted `scripts/audit-theme-contrast.sh` plus its axe-core driver. Contrast validation belongs in the Contrast Checker tool (`#/contrast-checker`) — you pick foreground/surface tokens, see ratios across all six themes, and adjust in Figma. The GitHub audit duplicated that work, was permanently red on known baseline failures, and couldn\'t trigger token fixes anyway per the source-of-truth rule. Release workflow, agent rules, and the Cursor Workflows page now point at the tool instead.' }
       ]
+    },
+    {
+      version: 'SITE 2026.05.24.2',
+      date: '2026-05-24',
+      changes: [
+        { type: 'fixed', text: 'Restored four pieces of component-page chrome that were missing after the Next.js rewrite: the Storybook and Report Issue buttons in the header link bar (Figma and GitHub were already there), the orange "Not production-ready" warning banner on any component that isn\'t Production yet, and the "Last updated: X — Show recent changes" collapsible card that surfaces the two most recent changelog entries inline. All four are direct ports of legacy `app.js` behavior; the existing `.sg-not-for-production` and `.sg-recent-changes` CSS in `styles/pages/legacy.css` is reused verbatim.' },
+        { type: 'changed', text: 'Version dropdown labels the live release as "(latest)" instead of "(current)", matching the legacy site\'s wording.' }
+      ]
     }
 ];

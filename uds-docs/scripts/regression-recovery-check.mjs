@@ -227,6 +227,72 @@ async function main() {
   await screenshot('spec-popover');
   console.log('  OK — popover opens with checklist groups');
 
+  console.log('[check 5] Component header has Figma / Storybook / GitHub / Report Issue links');
+  // Close the popover from check 4 first so it doesn't intercept clicks.
+  await evaluate(`document.querySelector('.sg-spec-popover__close')?.click()`);
+  await sleep(200);
+  const headerLinks = await evaluate(`(() => {
+    const links = Array.from(document.querySelectorAll('.sg-page-links .sg-page-link'));
+    return links.map((el) => el.textContent.trim());
+  })()`);
+  const requiredLinks = ['Figma', 'Storybook', 'GitHub', 'Report Issue'];
+  for (const required of requiredLinks) {
+    if (!headerLinks.some((label) => label.includes(required))) {
+      throw new Error(`Missing header link "${required}". Saw: ${JSON.stringify(headerLinks)}`);
+    }
+  }
+  console.log(`  OK — ${headerLinks.length} header links: ${headerLinks.join(' / ')}`);
+
+  console.log('[check 6] Non-production component shows the "Not production-ready" banner');
+  const banner = await evaluate(`(() => {
+    const el = document.querySelector('.sg-not-for-production');
+    return { present: !!el, text: el?.textContent.trim() || '' };
+  })()`);
+  if (!banner.present) throw new Error('Missing .sg-not-for-production banner');
+  if (!banner.text.includes('Not production-ready')) {
+    throw new Error(`Banner text wrong: ${banner.text.slice(0, 120)}`);
+  }
+  console.log(`  OK — banner reads "${banner.text.slice(0, 80)}…"`);
+
+  console.log('[check 7] "Last updated" panel renders with version + recent changes');
+  const lastUpdated = await evaluate(`(async () => {
+    const det = document.querySelector('.sg-recent-changes');
+    if (!det) return { present: false };
+    const version = det.querySelector('.sg-recent-version')?.textContent.trim() || '';
+    const releases = det.querySelectorAll('.sg-recent-release').length;
+    const startsClosed = !det.open;
+    det.open = true;
+    await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+    const innerVisible = !!det.querySelector('.sg-recent-inner');
+    const fullLink = det.querySelector('.sg-recent-full')?.getAttribute('href') || '';
+    return { present: true, version, releases, startsClosed, innerVisible, fullLink };
+  })()`);
+  if (!lastUpdated.present) throw new Error('Missing .sg-recent-changes panel');
+  if (!lastUpdated.version) throw new Error('Last-updated panel has no version');
+  if (lastUpdated.releases < 1) {
+    throw new Error(`Last-updated panel has no recent releases: ${JSON.stringify(lastUpdated)}`);
+  }
+  if (!lastUpdated.startsClosed) throw new Error('Last-updated panel should start collapsed');
+  if (!lastUpdated.innerVisible) throw new Error('Last-updated panel does not expand on toggle');
+  if (!lastUpdated.fullLink.includes('changelog')) {
+    throw new Error(`"View full changelog" link missing/wrong: ${lastUpdated.fullLink}`);
+  }
+  console.log(`  OK — last updated ${lastUpdated.version}, ${lastUpdated.releases} releases inline, expands cleanly`);
+
+  console.log('[check 8] Version dropdown labels the live release as "(latest)"');
+  const dropdown = await evaluate(`(() => {
+    const opts = Array.from(document.querySelectorAll('.sg-version-select option'));
+    return opts.map((o) => o.textContent.trim());
+  })()`);
+  if (!dropdown.some((label) => label.includes('(latest)'))) {
+    throw new Error(`Version dropdown missing "(latest)" label: ${JSON.stringify(dropdown)}`);
+  }
+  if (dropdown.some((label) => label.includes('(current)'))) {
+    throw new Error(`Version dropdown still uses "(current)": ${JSON.stringify(dropdown)}`);
+  }
+  await screenshot('header-and-banner');
+  console.log(`  OK — dropdown: ${dropdown.join(' / ')}`);
+
   ws.close();
   console.log('[regression] all checks passed.');
 }

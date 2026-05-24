@@ -132,7 +132,12 @@ export function ComponentPageClient({ componentId }: { componentId: string }) {
 
   return (
     <>
-      <ComponentHeader componentId={componentId} spec={spec} status={status} />
+      <ComponentHeader
+        componentId={componentId}
+        spec={spec}
+        status={status}
+        changelog={changelog}
+      />
 
       <SgPageTabs
         activeTab={activeTab}

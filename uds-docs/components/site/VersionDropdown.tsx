@@ -26,7 +26,7 @@ export function VersionDropdown() {
       {versions.map((v) => (
         <option key={v} value={v}>
           UDS {v}
-          {v === liveVersion ? ' (current)' : ''}
+          {v === liveVersion ? ' (latest)' : ''}
         </option>
       ))}
     </select>
