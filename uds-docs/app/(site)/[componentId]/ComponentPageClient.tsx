@@ -31,6 +31,8 @@ import {
   type FigmaNotes,
 } from '@/lib/uds-data';
 
+import { Playground } from '@/components/site/Playground';
+
 import { ComponentHeader } from './ComponentHeader';
 import { GuidelinesTab } from './GuidelinesTab';
 import { CodeTab } from './CodeTab';
@@ -166,9 +168,7 @@ export function ComponentPageClient({ componentId }: { componentId: string }) {
         <ChangelogTab componentId={componentId} changelog={changelog} />
       </div>
       <div hidden={activeTab !== 'playground'}>
-        <p className="sg-changelog-empty">
-          Playground engine lands in Chunk 09 of the docs Next.js migration.
-        </p>
+        <Playground componentId={componentId} />
       </div>
     </>
   );
