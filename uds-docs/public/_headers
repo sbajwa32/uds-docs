@@ -1,0 +1,40 @@
+# Cloudflare Pages cache policy for the UDS documentation site.
+#
+# Replaces the legacy SITE_VERSION cache-bust apparatus (version.txt polling +
+# monkey-patched fetch with ?v= query strings) that the vanilla site used.
+# That whole mechanism is being deleted in Chunk 17.
+#
+# Three tiers:
+#   1. Runtime JSON (spec.json, status.json, changelog.json, components.json,
+#      version.json, versions.json) — no-cache so spec edits go live immediately.
+#   2. UDS CSS/JS — short TTL with revalidation so token/component updates
+#      propagate within minutes but aren't refetched on every page navigation.
+#   3. Next.js static assets (_next/static/*) — content-hashed by the framework,
+#      safe to cache forever.
+
+/uds/*.json
+  Cache-Control: no-cache
+
+/uds/**/*.json
+  Cache-Control: no-cache
+
+/versions.json
+  Cache-Control: no-cache
+
+/versions/*/uds/**/*.json
+  Cache-Control: no-cache
+
+/uds/uds.css
+  Cache-Control: public, max-age=300, must-revalidate
+
+/uds/uds.js
+  Cache-Control: public, max-age=300, must-revalidate
+
+/uds/components/**/*.css
+  Cache-Control: public, max-age=300, must-revalidate
+
+/uds/components/**/*.js
+  Cache-Control: public, max-age=300, must-revalidate
+
+/_next/static/*
+  Cache-Control: public, max-age=31536000, immutable
