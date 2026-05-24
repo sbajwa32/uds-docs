@@ -1,13 +1,16 @@
-// SgSkipLink — keyboard-only "Skip to main content" link.
-// Renders absolutely-positioned off-screen until focused (matches legacy markup).
-//
-// (Stub — full styles + kit-sink rendering land in subsequent commits of Chunk 04.)
+// Keyboard-only "Skip to main content" link.
+// Hidden until focused (per WCAG 2.4.1).
+
+import '../../styles/site/skip-link.css';
+
+import type { ReactNode } from 'react';
+
 export function SgSkipLink({
   href = '#main-content',
   children = 'Skip to main content',
 }: {
   href?: string;
-  children?: React.ReactNode;
+  children?: ReactNode;
 }) {
   return (
     <a className="sg-skip-link" href={href}>

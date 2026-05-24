@@ -1,0 +1,25 @@
+/* Site base — global reset + page foundations.
+   Verbatim port of the rules at the top of legacy docs/site.css. Required so
+   the body background and default text color flip with the theme; without
+   these, every chrome surface that doesn't paint its own background falls
+   through to user-agent default white. */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  background: var(--uds-color-surface-page-main);
+  color: var(--uds-color-text-primary);
+}
+
+body {
+  font-family: var(--uds-font-family);
+  font-size: var(--uds-font-size-base);
+  line-height: var(--uds-font-line-height-base);
+  min-height: 100vh;
+}

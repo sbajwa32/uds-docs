@@ -1,0 +1,87 @@
+/* Page-level chrome — page title/desc, page tabs, subsection primitives.
+   Used on every component page and several non-component pages. */
+
+.sg-page-title {
+  font-size: var(--uds-font-size-5xl);
+  font-weight: var(--uds-font-weight-bold);
+  letter-spacing: -0.02em;
+  margin-bottom: var(--uds-space-100);
+}
+
+.sg-page-desc {
+  font-size: var(--uds-font-size-md);
+  color: var(--uds-color-text-secondary);
+  line-height: 1.6;
+  margin-bottom: var(--uds-space-100);
+}
+
+/* Page tabs — every component page uses these (Examples / Code / Guidelines /
+   Changelog / Playground / Figma Notes). Cursor Workflows uses them too. */
+
+.sg-page-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--uds-color-border-primary);
+  margin-bottom: var(--uds-space-400);
+}
+
+.sg-page-tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--uds-space-150) var(--uds-space-250);
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  background: transparent;
+  cursor: pointer;
+  white-space: nowrap;
+  font-family: var(--uds-font-family);
+  font-size: var(--uds-font-size-base);
+  font-weight: var(--uds-font-weight-medium);
+  color: var(--uds-color-text-primary);
+  letter-spacing: 0;
+  transition: background-color 120ms, border-color 120ms, color 120ms;
+  -webkit-appearance: none;
+  appearance: none;
+  outline: none;
+}
+
+.sg-page-tab:hover {
+  background: var(--uds-color-surface-interactive-subtle-hover);
+  color: var(--uds-color-text-interactive);
+}
+
+.sg-page-tab[aria-selected='true'] {
+  color: var(--uds-color-text-interactive);
+  border-bottom-color: var(--uds-color-border-interactive);
+}
+
+/* Optional count badge on a tab (e.g. "Examples (3)"). */
+.sg-page-tab__count {
+  margin-left: var(--uds-space-075);
+  font-size: var(--uds-font-size-xs);
+  color: var(--uds-color-text-secondary);
+}
+
+.sg-page-tab[aria-selected='true'] .sg-page-tab__count {
+  color: var(--uds-color-text-interactive);
+}
+
+/* Subsection primitives — content sections inside a tab panel. */
+
+.sg-subsection {
+  margin-top: var(--uds-space-400);
+}
+
+.sg-subsection-title {
+  font-size: var(--uds-font-size-lg);
+  font-weight: 600;
+  margin-bottom: var(--uds-space-100);
+}
+
+.sg-subsection-desc {
+  font-size: var(--uds-font-size-base);
+  color: var(--uds-color-text-secondary);
+  line-height: 1.6;
+  margin-bottom: var(--uds-space-200);
+}

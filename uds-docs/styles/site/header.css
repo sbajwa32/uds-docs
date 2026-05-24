@@ -1,0 +1,195 @@
+/* Sticky top header containing the brand bar (top row) and theme bar (bottom row).
+   Brand bar uses surface-interactive-default which flips with theme so contrast
+   passes in both light + dark modes. */
+
+.sg-header {
+  position: sticky;
+  top: 0;
+  z-index: var(--uds-z-index-header);
+  font-family: var(--uds-font-family);
+}
+
+.sg-brand-bar {
+  background: var(--uds-color-surface-interactive-default);
+  color: var(--uds-color-text-inverse);
+  padding: 0 var(--uds-space-300);
+  height: var(--uds-space-500);
+  display: flex;
+  align-items: center;
+  gap: var(--uds-space-150);
+}
+
+.sg-brand-bar-title {
+  font-size: var(--uds-font-size-base);
+  font-weight: var(--uds-font-weight-bold);
+  letter-spacing: 0.04em;
+}
+
+.sg-brand-bar-subtitle {
+  font-size: var(--uds-font-size-sm);
+  font-weight: var(--uds-font-weight-regular);
+  /* Phase 16: opacity tuned so #f5f5f5 against #005ff0 passes WCAG AA. */
+  opacity: 0.95;
+}
+
+.sg-brand-bar-version {
+  font-size: var(--uds-font-size-sm);
+  font-weight: var(--uds-font-weight-medium);
+  opacity: 0.95;
+}
+
+.sg-brand-bar-build {
+  font-size: var(--uds-font-size-xs);
+  font-weight: var(--uds-font-weight-regular);
+  opacity: 0.95;
+  padding-left: var(--uds-space-150);
+  border-left: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+/* Demo Builder trigger (icon button in the brand bar). */
+
+.sg-demo-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  margin-left: var(--uds-space-050);
+  border: none;
+  border-radius: var(--uds-border-radius-container-sm);
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--uds-color-text-inverse);
+  cursor: pointer;
+  opacity: 0.6;
+  transition: opacity 120ms, background 120ms;
+  -webkit-appearance: none;
+  appearance: none;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.sg-demo-btn:hover {
+  opacity: 1;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.sg-demo-btn .material-symbols-outlined {
+  font-size: 18px;
+  line-height: 1;
+}
+
+/* Token search trigger (centered search box on the brand bar). */
+
+.sg-header-search-trigger {
+  flex: 1 1 auto;
+  max-width: 480px;
+  margin: 0 auto;
+  min-width: 200px;
+  display: flex;
+  align-items: center;
+  gap: var(--uds-space-100);
+  height: 30px;
+  padding: 0 var(--uds-space-150);
+  /* Darkened background so white text stays at ~7.9:1 contrast against the brand bar. */
+  background: rgba(0, 0, 0, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.30);
+  border-radius: var(--uds-border-radius-container-sm);
+  color: var(--uds-color-text-inverse);
+  font-family: var(--uds-font-family);
+  font-size: var(--uds-font-size-sm);
+  cursor: pointer;
+  transition: background 120ms ease, border-color 120ms ease;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.sg-header-search-trigger:hover {
+  background: rgba(0, 0, 0, 0.30);
+  border-color: rgba(255, 255, 255, 0.40);
+}
+
+.sg-header-search-trigger:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.7);
+  outline-offset: 2px;
+}
+
+.sg-header-search-trigger__icon {
+  font-size: 18px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.sg-header-search-trigger__placeholder {
+  flex: 1;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sg-header-search-trigger__kbds {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.sg-header-search-trigger__kbds kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  font-family: monospace;
+  font-size: 10px;
+  font-weight: var(--uds-font-weight-bold);
+  background: rgba(0, 0, 0, 0.32);
+  border: 1px solid rgba(255, 255, 255, 0.30);
+  border-radius: 3px;
+  /* Fixed white because the kbd background stays a translucent dark overlay
+     regardless of theme; text-inverse would flip dark in dark mode and fail. */
+  color: rgb(245, 245, 245);
+  line-height: 1;
+}
+
+@media (max-width: 720px) {
+  .sg-header-search-trigger__kbds {
+    display: none;
+  }
+  .sg-header-search-trigger {
+    min-width: 0;
+  }
+  .sg-header-search-trigger__placeholder {
+    display: none;
+  }
+}
+
+/* Version dropdown (right side of brand bar). */
+
+.sg-version-select {
+  font-size: 12px;
+  font-weight: 500;
+  font-family: var(--uds-font-family);
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--uds-color-text-inverse);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  padding: 2px 6px;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='none'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23fff' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 6px center;
+  padding-right: 20px;
+}
+
+.sg-version-select:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.sg-version-select option {
+  background: var(--uds-color-surface-page-inverse, #1a1a2e);
+  color: var(--uds-color-text-inverse);
+}
