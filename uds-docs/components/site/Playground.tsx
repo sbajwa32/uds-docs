@@ -18,6 +18,7 @@
 import { useEffect, useMemo, useState } from 'react';
 
 import { udsResolve } from '@/lib/uds-data';
+import { useUdsVersion } from './UdsVersionProvider';
 
 interface PlaygroundControlSelect {
   key: string;
@@ -66,6 +67,7 @@ interface LoadState {
 }
 
 export function Playground({ componentId }: { componentId: string }) {
+  const { fetchVersion } = useUdsVersion();
   const [load, setLoad] = useState<LoadState>({ config: null, loading: true, error: null });
   const [state, setState] = useState<Record<string, unknown>>({});
 
@@ -80,7 +82,7 @@ export function Playground({ componentId }: { componentId: string }) {
     (async () => {
       try {
         const url = new URL(
-          udsResolve(`components/${componentId}/playground.js`),
+          udsResolve(`components/${componentId}/playground.js`, fetchVersion),
           document.baseURI,
         ).href;
         const mod = (await import(/* webpackIgnore: true */ url)) as {
@@ -110,7 +112,7 @@ export function Playground({ componentId }: { componentId: string }) {
     return () => {
       cancelled = true;
     };
-  }, [componentId]);
+  }, [componentId, fetchVersion]);
 
   const output = useMemo(() => {
     if (!load.config) return null;

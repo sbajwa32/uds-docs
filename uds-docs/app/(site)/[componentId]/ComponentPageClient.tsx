@@ -32,6 +32,7 @@ import {
 } from '@/lib/uds-data';
 
 import { Playground } from '@/components/site/Playground';
+import { useUdsVersion } from '@/components/site/UdsVersionProvider';
 
 import { ComponentHeader } from './ComponentHeader';
 import { GuidelinesTab } from './GuidelinesTab';
@@ -58,6 +59,7 @@ interface FetchState {
 }
 
 export function ComponentPageClient({ componentId }: { componentId: string }) {
+  const { fetchVersion } = useUdsVersion();
   const [activeTab, setActiveTab] = useState<TabKey>('examples');
   const [{ data, loading, error }, setState] = useState<FetchState>({
     data: null,
@@ -74,17 +76,17 @@ export function ComponentPageClient({ componentId }: { componentId: string }) {
         // spec.json + status.json are required; everything else is optional
         // and rendered conditionally.
         const [spec, status] = await Promise.all([
-          getComponentSpec(componentId),
-          getComponentStatus(componentId),
+          getComponentSpec(componentId, fetchVersion),
+          getComponentStatus(componentId, fetchVersion),
         ]);
 
         // Optional fetches — tolerate per-resource 404 so a missing impl.json
         // (CSS-only component) doesn't break the page.
         const [changelog, impl, manifest, figmaNotes] = await Promise.all([
-          getComponentChangelog(componentId).catch(() => null),
-          getComponentImpl(componentId).catch(() => null),
-          getComponentManifest(componentId).catch(() => null),
-          getComponentFigmaNotes(componentId), // already returns null on 404
+          getComponentChangelog(componentId, fetchVersion).catch(() => null),
+          getComponentImpl(componentId, fetchVersion).catch(() => null),
+          getComponentManifest(componentId, fetchVersion).catch(() => null),
+          getComponentFigmaNotes(componentId, fetchVersion), // already returns null on 404
         ]);
 
         if (cancelled) return;
@@ -106,7 +108,7 @@ export function ComponentPageClient({ componentId }: { componentId: string }) {
     return () => {
       cancelled = true;
     };
-  }, [componentId]);
+  }, [componentId, fetchVersion]);
 
   if (loading) {
     return <p className="sg-changelog-empty">Loading component data…</p>;

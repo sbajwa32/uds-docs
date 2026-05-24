@@ -9,6 +9,7 @@
 
 import { useEffect, useState } from 'react';
 
+import { useUdsVersion } from '@/components/site/UdsVersionProvider';
 import { fetchAllExamples, type RenderedExample } from '@/lib/examples-renderer';
 
 interface State {
@@ -18,6 +19,7 @@ interface State {
 }
 
 export function ExamplesTab({ componentId }: { componentId: string }) {
+  const { fetchVersion } = useUdsVersion();
   const [{ examples, loading, error }, setState] = useState<State>({
     examples: null,
     loading: true,
@@ -29,7 +31,7 @@ export function ExamplesTab({ componentId }: { componentId: string }) {
     setState({ examples: null, loading: true, error: null });
 
     (async () => {
-      const result = await fetchAllExamples(componentId);
+      const result = await fetchAllExamples(componentId, { version: fetchVersion });
       if (cancelled) return;
       if (result.length === 0) {
         setState({ examples: [], loading: false, error: null });
@@ -48,7 +50,7 @@ export function ExamplesTab({ componentId }: { componentId: string }) {
     return () => {
       cancelled = true;
     };
-  }, [componentId]);
+  }, [componentId, fetchVersion]);
 
   if (loading) {
     return <p className="sg-changelog-empty">Loading examples…</p>;

@@ -1,11 +1,15 @@
 'use client';
 
 // Client-side wrapper for the Changelog page. Renders the two-tab strip
-// (UDS / SITE) and the corresponding stream for each tab.
+// (UDS / SITE) and the corresponding stream for each tab. The UDS stream
+// re-fetches when the active archive version changes (Chunk 14); the
+// SITE stream is migration-history-only and never archives.
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { SgPageTabs, SgPageTab } from '@/components/site/SgPageHeader';
+import { useUdsVersion } from '@/components/site/UdsVersionProvider';
+import { getChangelog } from '@/lib/uds-data';
 import type { AggregatedChangelog, ChangelogNote } from '@/lib/uds-data';
 import {
   SITE_CHANGELOG,
@@ -175,8 +179,36 @@ function SiteStream({ entries }: { entries: SiteChangelogEntry[] }) {
   );
 }
 
-export function ChangelogClient({ udsChangelog }: { udsChangelog: AggregatedChangelog }) {
+export function ChangelogClient({
+  initialUdsChangelog,
+}: {
+  initialUdsChangelog: AggregatedChangelog;
+}) {
+  const { fetchVersion, isArchive } = useUdsVersion();
   const [activeTab, setActiveTab] = useState<'uds' | 'site'>('uds');
+  const [udsChangelog, setUdsChangelog] = useState<AggregatedChangelog>(initialUdsChangelog);
+
+  // Re-fetch when switching to an archive version. The initial value is
+  // the build-time live changelog, so we only need to override on
+  // archive switch.
+  useEffect(() => {
+    if (!fetchVersion) {
+      setUdsChangelog(initialUdsChangelog);
+      return;
+    }
+    let cancelled = false;
+    getChangelog(fetchVersion)
+      .then((cl) => {
+        if (!cancelled) setUdsChangelog(cl);
+      })
+      .catch(() => {
+        // Archive lookup failed — fall back to the live changelog.
+        if (!cancelled) setUdsChangelog(initialUdsChangelog);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [fetchVersion, initialUdsChangelog]);
 
   return (
     <>
@@ -185,7 +217,9 @@ export function ChangelogClient({ udsChangelog }: { udsChangelog: AggregatedChan
         onActiveTabChange={(v) => setActiveTab(v as 'uds' | 'site')}
         ariaLabel="Changelog scope"
       >
-        <SgPageTab value="uds">UDS</SgPageTab>
+        <SgPageTab value="uds">
+          UDS{isArchive ? ` (${fetchVersion} archive)` : ''}
+        </SgPageTab>
         <SgPageTab value="site">Site</SgPageTab>
       </SgPageTabs>
       <div hidden={activeTab !== 'uds'}>
