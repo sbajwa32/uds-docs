@@ -20,6 +20,13 @@ const COPIES = [
   { src: 'uds', dest: 'out/uds', kind: 'dir', label: 'UDS design system payload' },
   { src: 'versions', dest: 'out/versions', kind: 'dir', label: 'UDS version archives' },
   { src: 'versions.json', dest: 'out/versions.json', kind: 'file', label: 'versions manifest' },
+  // Per-component playground.js modules (under uds/components/<id>/) live in
+  // the source-of-truth directory and import a small esc() helper from
+  // docs/helpers/esc.js. Keep the helper served at its legacy URL so
+  // dynamic import() in <Playground> resolves correctly. Chunk 17's
+  // deletion of legacy docs/ will need to relocate this helper before it
+  // can drop docs/ entirely.
+  { src: 'docs/helpers', dest: 'out/docs/helpers', kind: 'dir', label: 'playground.js helper imports' },
 ];
 
 async function main() {

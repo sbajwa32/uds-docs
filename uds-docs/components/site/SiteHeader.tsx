@@ -1,9 +1,11 @@
 import { SgHeader, SgBrandBar, SgThemeBar } from './SgHeader';
+import { TokenSearch } from './TokenSearch';
 
 // Site-wide header for the Next.js shell. Composes the Chunk 04 chrome
 // primitives and populates the SgBrandBar slots:
 //
-//   - searchTrigger   → visual stub; real component palette lands in Chunk 10.
+//   - searchTrigger   → <TokenSearch /> (Chunk 10) — owns both the trigger
+//     button and the modal markup.
 //   - versionDropdown → disabled <select> with the current UDS version as the
 //     only option. Chunk 14 enables it and wires up the version-switching.
 //   - demoButton      → omitted for now; Chunk 12b builds the real Demo Builder
@@ -29,31 +31,11 @@ function VersionDropdownStub() {
   );
 }
 
-function SearchTriggerStub() {
-  return (
-    <button
-      type="button"
-      className="sg-header-search-trigger"
-      aria-label="Search tokens (wired in Chunk 10)"
-      aria-haspopup="dialog"
-      title="Token search wired in Chunk 10"
-      disabled
-    >
-      <span className="material-symbols-outlined sg-header-search-trigger__icon">search</span>
-      <span className="sg-header-search-trigger__placeholder">Search tokens...</span>
-      <span className="sg-header-search-trigger__kbds">
-        <kbd>/</kbd>
-        <kbd>⌘K</kbd>
-      </span>
-    </button>
-  );
-}
-
 export function SiteHeader() {
   return (
     <SgHeader>
       <SgBrandBar
-        searchTrigger={<SearchTriggerStub />}
+        searchTrigger={<TokenSearch />}
         versionDropdown={<VersionDropdownStub />}
       />
       <SgThemeBar />
