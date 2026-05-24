@@ -1,7 +1,7 @@
 ---
 description: UDS Design System release workflow -- detects Figma version bumps and guides the release process for the documentation site
 alwaysApply: true
-lastUpdated: 2026-05-24T00:02:42Z
+lastUpdated: 2026-05-24T08:55:00Z
 ---
 
 # UDS Release Workflow
@@ -103,16 +103,16 @@ After the questionnaire, execute these steps in order. NEVER run `release.sh` wi
      — meaningful new/confirmed variant and state coverage on existing
      components, plus internal/support pages intentionally excluded from public
      docs.
-4. **Regenerate tokens**: Run `import-figma-tokens`; direct Figma Variables are primary, ZIPs fallback only. After regen, run `bash scripts/audit-theme-contrast.sh` to verify the 6-theme WCAG AA contract still holds. If new tokens regress contrast, document with token bumps in the same PR.
+4. **Regenerate tokens**: Run `import-figma-tokens`; direct Figma Variables are primary, ZIPs fallback only. Then check the Contrast Checker page (`/contrast-checker`) for any new failures introduced by the token bump. If new tokens regress contrast, document with token bumps in the same PR.
 5. **Add new components** (if any): Use `new-component` only after `figma-inventory` / `figma-component-inspector` identify high-confidence new components with enough required minimum content. Then run `bash scripts/aggregate-components.sh` to refresh `uds/components.json`.
 6. **Update Figma release notes**: Run `sync-figma-release-notes` to populate the new version page in both UDS Tokens and UDS Components with the unified changelog
-7. **Bump site**: Run `bash uds-docs/bump-site.sh` to set the initial SITE build counter
-8. **Verify**: Open the browser and confirm changelog, version dropdown, and status badges are correct
+7. **Verify**: Open the browser and confirm changelog, version dropdown, and status badges are correct
    - Verify that the 0.x release changelog includes token changes, new
      components, existing-component variant/state coverage, and excluded
      internal/support pages when applicable
    - Use the version dropdown to switch to the prior version (`?uds={old}`)
-     and confirm the archive renders correctly through `udsResolve()`.
+     and confirm the archive renders correctly via the version-aware
+     fetchers in `lib/uds-data.ts`.
 
 ## Post-Release Checklist
 
@@ -147,15 +147,13 @@ Never leave Figma changelogs out of sync with the site. If you forget, fix it im
 - `uds-docs/uds/CHANGELOG.json` — aggregated release changelog (auto-built; do NOT edit by hand)
 - `uds-docs/uds/CHANGELOG.globalNotes.json` — hand-curated non-component release notes per version
 - `uds-docs/uds/components/<id>/{spec,status,changelog,impl}.json` — single source of truth for that component
-- `uds-docs/docs/app.js` — router, render functions, theme switcher
-- `uds-docs/docs/helpers/uds-path.js` — `udsResolve()`, `viewingVersion()` for version-aware fetches
-- `uds-docs/index.html` — SPA shell, sidebar nav, `data-page` placeholders
+- `uds-docs/app/(site)/layout.tsx` — site chrome (header, sidebar, archive banner, main)
+- `uds-docs/components/site/UdsVersionProvider.tsx` — active-version context (replaces the legacy `udsResolve` / `versionsReady` helpers)
+- `uds-docs/lib/uds-data.ts` — pure async data fetchers; every per-version JSON read flows through this
 - `uds-docs/release.sh` — snapshots `uds/` to `versions/<old>/uds/`, bumps `uds/version.json`
-- `uds-docs/bump-site.sh` — increments SITE build counter and cache-busting params
 - `uds-docs/versions.json` — manifest of archived versions (drives the version dropdown)
 - `scripts/aggregate-changelog.sh` — regenerates `uds/CHANGELOG.json` from per-component changelogs
 - `scripts/aggregate-components.sh` — regenerates `uds/components.json` from `uds/components/<id>/`
-- `scripts/audit-theme-contrast.sh` — multi-theme axe-core a11y audit (WCAG AA across 6 themes)
 
 ## Component Status Mapping
 

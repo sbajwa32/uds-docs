@@ -2,7 +2,7 @@
 description: Checklist for implementing or updating a UDS component — ensures the per-component folder is whole and consistent across CSS, spec, examples, status, changelog, and playground.
 globs: ["uds-docs/**"]
 alwaysApply: false
-lastUpdated: 2026-05-12T18:41:50Z
+lastUpdated: 2026-05-24T09:19:52Z
 ---
 
 # UDS Component Completeness Checklist
@@ -68,8 +68,8 @@ and consistent.
 - [ ] `render(state)` returns vanilla HTML — no React/Vue snippets
 
 ## Site / app.js wiring (one-time per new component)
-- [ ] Sidebar link in `uds-docs/index.html` (under the right group)
-- [ ] `<div data-page="<id>" data-page-fragment data-default-tab="examples">...</div>` placeholder in `index.html`
+- [ ] Sidebar link in `uds-docs/components/site/SiteSidebar.tsx` (under the right group)
+- [ ] `data/component-api/<id>.ts` exists (even with empty `cssClasses` while the spec is incomplete)
   - The Examples tab content does NOT go in `index.html` — it lives in `uds/components/<id>/examples/*.html` and the docs site renders from there
 
 ## Pre-commit gate
