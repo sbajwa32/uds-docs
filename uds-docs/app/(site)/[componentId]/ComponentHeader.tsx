@@ -1,12 +1,11 @@
 // Page chrome for a component documentation page.
 //
-//   - SgPageTitle bound to spec.title (with figmanotes.json count badge if any).
+//   - SgPageTitle bound to spec.title.
 //   - SgPageDesc bound to spec.description.
-//   - Status badge (sg-component-progress) showing where the component sits in
-//     the placeholder → blocked → in-progress → review → production lifecycle.
-//   - "Spec X/Y" completeness pill — counts non-empty fields in spec.json
-//     against the COMPLETENESS_FIELDS list (data/completeness-fields.ts).
-//   - Figma + Storybook + GitHub link buttons in the header.
+//   - HeaderLinks — Figma + Storybook + GitHub icon-buttons.
+//   - ReadinessCard — two-row "Status" + "Spec" segmented bars (.sg-readiness
+//     markup). Direct port of `renderComponentProgress()` from the legacy
+//     app.js; the legacy CSS (styles/pages/legacy.css) is reused verbatim.
 
 import { SgPageTitle, SgPageDesc } from '@/components/site/SgPageHeader';
 import type { ComponentSpec, ComponentStatus } from '@/lib/uds-data';
@@ -38,65 +37,111 @@ function getDotPath(obj: unknown, dotPath: string): unknown {
   );
 }
 
-function computeCompleteness(spec: ComponentSpec): { filled: number; total: number } {
+interface CompletenessScore {
+  filled: number;
+  total: number;
+  filledFields: Set<string>;
+}
+
+function computeCompleteness(spec: ComponentSpec): CompletenessScore {
   let filled = 0;
+  const filledFields = new Set<string>();
   for (const field of COMPLETENESS_FIELDS) {
     const value = getDotPath(spec, field);
-    // Special-case `owner`: filled only if at least one role is non-Unassigned.
     if (field === 'owner' && value && typeof value === 'object') {
       const owner = value as { designer?: string; developer?: string };
       const hasDesigner = owner.designer && owner.designer !== 'Unassigned';
       const hasDeveloper = owner.developer && owner.developer !== 'Unassigned';
-      if (hasDesigner || hasDeveloper) filled++;
+      if (hasDesigner || hasDeveloper) {
+        filled++;
+        filledFields.add(field);
+      }
       continue;
     }
-    if (isFilledValue(value)) filled++;
+    if (isFilledValue(value)) {
+      filled++;
+      filledFields.add(field);
+    }
   }
-  return { filled, total: COMPLETENESS_FIELDS.length };
+  return { filled, total: COMPLETENESS_FIELDS.length, filledFields };
 }
 
-function StatusBadge({ status }: { status: ComponentStatus }) {
-  const meta = STATUS_LABELS[status.current];
+function ReadinessCard({
+  status,
+  score,
+}: {
+  status: ComponentStatus;
+  score: CompletenessScore;
+}) {
+  const meta = STATUS_LABELS[status.current] || {
+    label: status.current,
+    css: status.current,
+  };
   const currentIdx = STATUS_STEPS.findIndex((s) => s.key === status.current);
 
   return (
-    <div
-      className={`sg-component-progress sg-component-progress--${meta.css}`}
-      title={`${meta.label} (since UDS ${status.since})`}
-      aria-label={`Status: ${meta.label}`}
-    >
-      <span className={`sg-status-dot sg-status-dot--${meta.css}`} aria-hidden="true" />
-      <span className="sg-component-progress__label">{meta.label}</span>
-      {currentIdx >= 0 ? (
-        <span className="sg-component-progress__steps">
-          {STATUS_STEPS.map((step, idx) => (
+    <section className="sg-readiness" aria-label="Component readiness">
+      <div className="sg-readiness__row">
+        <div className="sg-readiness__label">
+          <span>Status</span>
+          <span className="sg-readiness__value">
+            {meta.label}{' '}
+            <span className="sg-readiness__value--muted">
+              · since {status.since}
+            </span>
+          </span>
+        </div>
+        <div
+          className="sg-status-bar"
+          role="group"
+          aria-label={`Component status: ${meta.label}`}
+        >
+          {STATUS_STEPS.map((step, idx) => {
+            let state: 'complete' | 'current' | 'future' = 'future';
+            if (currentIdx < 0) {
+              state = 'future';
+            } else if (idx < currentIdx) {
+              state = 'complete';
+            } else if (idx === currentIdx) {
+              state = 'current';
+            }
+            return (
+              <span
+                key={step.key}
+                className="sg-status-bar__segment"
+                data-state={state}
+                data-status={step.key}
+              >
+                {step.label}
+              </span>
+            );
+          })}
+        </div>
+      </div>
+      <div className="sg-readiness__row">
+        <div className="sg-readiness__label">
+          <span>Spec</span>
+          <span className="sg-readiness__value">
+            {score.filled} of {score.total} fields filled
+          </span>
+        </div>
+        <div
+          className="sg-spec-bar"
+          role="group"
+          aria-label={`Spec progress: ${score.filled} of ${score.total} fields filled`}
+        >
+          {COMPLETENESS_FIELDS.map((field) => (
             <span
-              key={step.key}
-              className={`sg-component-progress__step${
-                idx <= currentIdx ? ' sg-component-progress__step--complete' : ''
-              }`}
-              aria-hidden="true"
+              key={field}
+              className="sg-spec-bar__segment"
+              data-filled={score.filledFields.has(field) ? 'true' : 'false'}
+              data-field={field}
+              title={SPEC_FIELD_LABELS[field as CompletenessField]}
             />
           ))}
-        </span>
-      ) : null}
-    </div>
-  );
-}
-
-function CompletenessPill({ filled, total }: { filled: number; total: number }) {
-  const pct = total > 0 ? Math.round((filled / total) * 100) : 0;
-  const tone = pct >= 80 ? 'production' : pct >= 50 ? 'review' : 'in-progress';
-  // Render the missing-fields breakdown as the title attr so designers can
-  // hover the pill and see what's missing.
-  return (
-    <span
-      className={`sg-spec-pill sg-spec-pill--${tone}`}
-      title={`${filled} of ${total} fields filled (${pct}%)`}
-      aria-label={`Spec completeness: ${filled} of ${total}`}
-    >
-      Spec {filled}/{total}
-    </span>
+        </div>
+      </div>
+    </section>
   );
 }
 
@@ -163,33 +208,14 @@ export function ComponentHeader({
   spec: ComponentSpec;
   status: ComponentStatus;
 }) {
-  const { filled, total } = computeCompleteness(spec);
-
-  // Suppress unused-import warning on CompletenessField + SPEC_FIELD_LABELS;
-  // they're consumed by the title attr below.
-  const missingFields = COMPLETENESS_FIELDS.filter((f: CompletenessField) => {
-    if (f === 'owner') {
-      const o = spec.owner as { designer?: string; developer?: string } | undefined;
-      return !(o && ((o.designer && o.designer !== 'Unassigned') || (o.developer && o.developer !== 'Unassigned')));
-    }
-    return !isFilledValue(getDotPath(spec, f));
-  });
-  const titleSuffix =
-    missingFields.length > 0
-      ? `\nMissing: ${missingFields.map((f) => SPEC_FIELD_LABELS[f]).join(', ')}`
-      : '';
+  const score = computeCompleteness(spec);
 
   return (
     <>
-      <div className="sg-page-header" data-title-suffix={titleSuffix}>
-        <SgPageTitle>{spec.title || componentId}</SgPageTitle>
-        <div className="sg-page-meta">
-          <StatusBadge status={status} />
-          <CompletenessPill filled={filled} total={total} />
-        </div>
-      </div>
+      <SgPageTitle>{spec.title || componentId}</SgPageTitle>
       {spec.description ? <SgPageDesc>{spec.description}</SgPageDesc> : null}
       <HeaderLinks componentId={componentId} spec={spec} />
+      <ReadinessCard status={status} score={score} />
     </>
   );
 }
