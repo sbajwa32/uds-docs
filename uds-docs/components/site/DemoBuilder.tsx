@@ -77,6 +77,7 @@ const DEMO_COMPONENTS: ReadonlyArray<DemoComponent> = [
 // ---------------------------------------------------------------------------
 
 export function DemoBuilder() {
+  const { isArchive } = useUdsVersion();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [overlay, setOverlay] = useState<{
     html: string;
@@ -96,6 +97,14 @@ export function DemoBuilder() {
     },
     [],
   );
+
+  // Archive snapshots don't carry the interactive JS modules the demo
+  // builder needs (per-component examples + uds.js orchestrator are loaded
+  // from live paths). Hide the trigger in archive mode rather than ship a
+  // broken preview. Matches the legacy behavior that hides .sg-demo-btn
+  // when `isViewingHistorical()`. The early return sits below the hooks
+  // so we don't violate Rules of Hooks when archive flips.
+  if (isArchive) return null;
 
   return (
     <>

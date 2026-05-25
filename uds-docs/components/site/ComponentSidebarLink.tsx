@@ -19,6 +19,7 @@ import { STATUS_LABELS, STATUS_STEPS } from '@/data/status-labels';
 
 import { useUdsVersion } from './UdsVersionProvider';
 import { SgSidebarLink } from './SgSidebar';
+import { withUdsVersion } from './internal-href';
 
 interface TooltipData {
   spec: ComponentSpec;
@@ -147,11 +148,13 @@ export function ComponentSidebarLink({
     return <SidebarTooltip top={top} data={data} />;
   }, [data, mounted, top, visible]);
 
+  const versionedHref = withUdsVersion(href, fetchVersion);
+
   return (
     <>
       <SgSidebarLink
         ref={linkRef}
-        href={href}
+        href={versionedHref}
         active={active}
         onMouseEnter={show}
         onMouseLeave={hide}

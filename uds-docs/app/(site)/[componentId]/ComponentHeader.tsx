@@ -18,6 +18,8 @@ import {
   SPEC_FIELD_LABELS,
   type CompletenessField,
 } from '@/data/completeness-fields';
+import { useUdsVersion } from '@/components/site/UdsVersionProvider';
+import { withUdsVersion } from '@/components/site/internal-href';
 
 const FIGMA_FILE_KEY = '1XJoUJgtNpw4R0IIT3VjoK'; // UDS Components — same as legacy app.js
 const GITHUB_REPO = 'sbajwa32/uds-docs';
@@ -384,10 +386,19 @@ function LastUpdatedPanel({
   componentId: string;
   changelog: ComponentChangelog | null;
 }) {
+  const { fetchVersion } = useUdsVersion();
   const grouped = groupChangelogByVersion(changelog);
   if (!grouped.length) return null;
   const last = grouped[0];
   const preview = grouped.slice(0, 2);
+  // Deep-link directly to the component's Changelog tab. ComponentPageClient
+  // hydrates `activeTab` from `?tab=` on mount, matching the legacy SPA's
+  // `#/<id>?tab=changelog` shape. `withUdsVersion` also preserves `?uds=`
+  // so an archive reader stays inside the archive.
+  const fullChangelogHref = withUdsVersion(
+    `/${componentId}?tab=changelog`,
+    fetchVersion,
+  );
   return (
     <details className="sg-recent-changes">
       <summary>
@@ -411,7 +422,7 @@ function LastUpdatedPanel({
             </ul>
           </div>
         ))}
-        <a className="sg-recent-full" href={`#/${componentId}?tab=changelog`}>
+        <a className="sg-recent-full" href={fullChangelogHref}>
           View full changelog →
         </a>
       </div>

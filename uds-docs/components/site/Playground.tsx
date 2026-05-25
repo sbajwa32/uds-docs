@@ -234,6 +234,33 @@ function CopyButton({ getText }: { getText: () => string }) {
 // fetches impl.json + spec.json + the component CSS file; renders a tabbed
 // <details> below the playground code. Uses .sg-impl-* CSS verbatim.
 // ---------------------------------------------------------------------------
+
+// Normalize a UDS-relative asset path declared in spec.json or impl.json
+// into a path that udsResolve() can consume.
+//
+// Two shapes need handling:
+//   1. Leading "uds/" — both spec.dependencies.css[0] and impl.jsFile
+//      include the leading "uds/" prefix from the pre-restructure layout.
+//      udsResolve already prepends "./uds/" (or "./versions/<v>/uds/"), so
+//      a raw path of "uds/components/button.css" becomes
+//      "./uds/uds/components/button.css" — 404. Strip the prefix.
+//   2. Flat legacy CSS paths — spec.json still says "components/button.css"
+//      after stripping the prefix, but on disk every component CSS lives at
+//      "components/<id>/<id>.css" after the per-component restructure.
+//      Detect a `components/<filename>.css` path with no nested dir and
+//      remap to the canonical `components/<componentId>/<componentId>.css`.
+//      (For `tabs`, spec.json says `tab-horizontal.css`, but the file is
+//       `tabs/tabs.css`. Using componentId on both sides lands correctly.)
+function normalizeUdsAssetPath(path: string, componentId: string): string {
+  let p = path.replace(/^\/+/, '').replace(/^uds\//, '');
+  // Flat CSS: "components/<anything>.css" → "components/<id>/<id>.css".
+  const flatCss = /^components\/([^/]+)\.css$/.exec(p);
+  if (flatCss) {
+    p = `components/${componentId}/${componentId}.css`;
+  }
+  return p;
+}
+
 function ImplementationReference({ componentId }: { componentId: string }) {
   const { fetchVersion } = useUdsVersion();
   const [impl, setImpl] = useState<ComponentImpl | null>(null);
@@ -268,7 +295,8 @@ function ImplementationReference({ componentId }: { componentId: string }) {
   }, [componentId, fetchVersion]);
 
   // Lazy-fetch CSS when the Styles tab is first opened.
-  const cssPath = spec?.dependencies?.css?.[0] || null;
+  const rawCssPath = spec?.dependencies?.css?.[0] || null;
+  const cssPath = rawCssPath ? normalizeUdsAssetPath(rawCssPath, componentId) : null;
   useEffect(() => {
     if (activeTab !== 'styles' || cssText !== null || !cssPath) return;
     let cancelled = false;
@@ -286,7 +314,8 @@ function ImplementationReference({ componentId }: { componentId: string }) {
   }, [activeTab, cssText, cssPath, fetchVersion]);
 
   // Lazy-fetch JS when the Behavior tab is first opened.
-  const jsFile = impl?.jsFile || null;
+  const rawJsFile = impl?.jsFile || null;
+  const jsFile = rawJsFile ? normalizeUdsAssetPath(rawJsFile, componentId) : null;
   useEffect(() => {
     if (activeTab !== 'behavior' || jsText !== null || !jsFile) return;
     let cancelled = false;

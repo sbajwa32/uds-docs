@@ -10,8 +10,11 @@
 // Tabs (in display order):
 //   Examples | Code | Guidelines | Figma Notes (only if notes exist) | Changelog | Playground
 //
-// Default tab is `examples`. Examples (Chunk 08), Playground (Chunk 09), and
-// Figma Notes (Chunk 13) tab bodies are stubbed for now.
+// Default tab is `examples`. The Playground tab is conditional:
+//   - Hidden for components without a `playground.js` module
+//     (currently combobox, data-view, date-picker)
+//   - Hidden in archive views (?uds=) — archive snapshots don't carry the
+//     interactive JS modules the Playground engine dynamic-imports
 
 import { useEffect, useState } from 'react';
 
@@ -43,6 +46,19 @@ import { FigmaNotesTab } from './FigmaNotesTab';
 
 type TabKey = 'examples' | 'code' | 'guidelines' | 'figma-notes' | 'changelog' | 'playground';
 
+// Components that ship spec/CSS/examples but no interactive Playground yet.
+// Mirrors the on-disk truth: `ls uds/components/*/playground.js` excludes
+// these three. Listed here rather than runtime-probed because:
+//   - Static export can't easily ship a "does this file exist?" probe
+//   - The list rarely changes (lifecycle status governs it)
+//   - Wrong-positive shows the Playground tab and the user clicks into a
+//     dynamic-import error; wrong-negative just hides a feature
+const COMPONENTS_WITHOUT_PLAYGROUND = new Set<string>([
+  'combobox',
+  'data-view',
+  'date-picker',
+]);
+
 interface ComponentData {
   spec: ComponentSpec;
   status: ComponentStatus;
@@ -58,9 +74,36 @@ interface FetchState {
   error: string | null;
 }
 
+// Tab keys accepted via `?tab=` URL param. Same as the legacy SPA's hash-
+// based `#/<component>?tab=<key>` so existing deep-links keep working.
+const TAB_QUERY_KEYS: ReadonlySet<TabKey> = new Set([
+  'examples',
+  'code',
+  'guidelines',
+  'figma-notes',
+  'changelog',
+  'playground',
+]);
+
+function readTabFromUrl(): TabKey {
+  if (typeof window === 'undefined') return 'examples';
+  const params = new URLSearchParams(window.location.search);
+  const raw = params.get('tab');
+  if (raw && (TAB_QUERY_KEYS as Set<string>).has(raw)) return raw as TabKey;
+  return 'examples';
+}
+
 export function ComponentPageClient({ componentId }: { componentId: string }) {
-  const { fetchVersion } = useUdsVersion();
+  const { fetchVersion, isArchive } = useUdsVersion();
   const [activeTab, setActiveTab] = useState<TabKey>('examples');
+
+  // Hydrate the active tab from `?tab=` on mount. Doing it post-mount
+  // avoids the SSR/CSR mismatch you get from reading `window` during
+  // render. Designers landing on `/button?tab=changelog` get the right
+  // tab; everyone else starts on Examples.
+  useEffect(() => {
+    setActiveTab(readTabFromUrl());
+  }, [componentId]);
   const [{ data, loading, error }, setState] = useState<FetchState>({
     data: null,
     loading: true,
@@ -130,6 +173,22 @@ export function ComponentPageClient({ componentId }: { componentId: string }) {
   // Conditionally show Figma Notes tab only when the component has notes.
   const showFigmaNotes = !!(figmaNotes?.notes && figmaNotes.notes.length > 0);
 
+  // Playground tab is conditional. Hidden when:
+  //   (a) the component doesn't ship a playground.js (deferred components)
+  //   (b) we're viewing an archive — archive snapshots don't include
+  //       playground modules, so dynamic-import would fail
+  const showPlayground =
+    !isArchive && !COMPONENTS_WITHOUT_PLAYGROUND.has(componentId);
+
+  // If the user landed on the Playground tab via a stale URL/state and the
+  // tab no longer exists for this component, snap back to Examples.
+  if (activeTab === 'playground' && !showPlayground) {
+    setActiveTab('examples');
+  }
+  if (activeTab === 'figma-notes' && !showFigmaNotes) {
+    setActiveTab('examples');
+  }
+
   return (
     <>
       <ComponentHeader
@@ -153,7 +212,9 @@ export function ComponentPageClient({ componentId }: { componentId: string }) {
           </SgPageTab>
         ) : null}
         <SgPageTab value="changelog">Changelog</SgPageTab>
-        <SgPageTab value="playground">Playground</SgPageTab>
+        {showPlayground ? (
+          <SgPageTab value="playground">Playground</SgPageTab>
+        ) : null}
       </SgPageTabs>
 
       <div hidden={activeTab !== 'examples'}>
@@ -173,9 +234,11 @@ export function ComponentPageClient({ componentId }: { componentId: string }) {
       <div hidden={activeTab !== 'changelog'}>
         <ChangelogTab componentId={componentId} changelog={changelog} />
       </div>
-      <div hidden={activeTab !== 'playground'}>
-        <Playground componentId={componentId} />
-      </div>
+      {showPlayground && activeTab === 'playground' ? (
+        <div>
+          <Playground componentId={componentId} />
+        </div>
+      ) : null}
     </>
   );
 }
