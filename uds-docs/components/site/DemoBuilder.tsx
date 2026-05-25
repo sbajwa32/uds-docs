@@ -44,6 +44,17 @@ interface DemoComponent {
   label: string;
 }
 
+// Module-scoped cache so opening the Build Demo dialog multiple times
+// doesn't re-fetch 26 status.json files each time. Keyed by fetchVersion
+// — undefined for live, '0.2' for the archive, etc. The dialog only
+// renders the status dots, so a stale cache is bounded to one open
+// session and refreshes naturally on hard reload.
+const statusMapCache = new Map<string, Record<string, string>>();
+
+function statusMapCacheKey(fetchVersion: string | undefined): string {
+  return fetchVersion ?? '__live__';
+}
+
 const DEMO_COMPONENTS: ReadonlyArray<DemoComponent> = [
   { id: 'button', label: 'Button' },
   { id: 'link', label: 'Link' },
@@ -184,7 +195,17 @@ function DemoBuilderDialog({
   // status dot next to its label. Direct port of legacy
   // window.COMPONENT_STATUS_MAP[comp.id] behavior — drops `sg-demo-status-dot
   // --<status>` on each row.
+  //
+  // Result is cached per fetchVersion in `statusMapCache` so reopening the
+  // dialog (or switching the active archive and back) doesn't re-issue 26
+  // status.json fetches. The cache is bounded to the page lifecycle.
   useEffect(() => {
+    const key = statusMapCacheKey(fetchVersion);
+    const cached = statusMapCache.get(key);
+    if (cached) {
+      setStatusMap(cached);
+      return;
+    }
     let cancelled = false;
     (async () => {
       const next: Record<string, string> = {};
@@ -197,6 +218,7 @@ function DemoBuilderDialog({
       );
       if (cancelled) return;
       for (const [id, status] of results) next[id] = status;
+      statusMapCache.set(key, next);
       setStatusMap(next);
     })();
     return () => {

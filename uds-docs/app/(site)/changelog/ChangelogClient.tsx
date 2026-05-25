@@ -405,13 +405,21 @@ export function ChangelogClient({
   const typeEnabled = (type: string) => !disabledTypes.has(type as ChangelogType);
 
   const filteredUds = useMemo<AggregatedChangelog>(() => {
+    // When the user has actively narrowed the component filter, they want
+    // to see only the changes for those components — global release notes
+    // (which aren't tied to a component) become noise. With nothing
+    // selected we keep the legacy behavior and show global notes alongside
+    // every component group.
+    const hideGlobalNotes = selectedComponents.size > 0;
     const newestFirst = udsChangelog.slice().reverse();
     return newestFirst
       .map((release) => {
         const extra = `${release.version} ${release.date}`;
-        const globalNotes = (release.globalNotes ?? []).filter(
-          (entry) => typeEnabled(entry.type) && matchesQuery(entry, query, extra),
-        );
+        const globalNotes = hideGlobalNotes
+          ? []
+          : (release.globalNotes ?? []).filter(
+              (entry) => typeEnabled(entry.type) && matchesQuery(entry, query, extra),
+            );
 
         const byComponent: Record<string, ChangelogNote[]> = {};
         for (const [component, entries] of Object.entries(release.byComponent || {})) {
