@@ -198,6 +198,49 @@ The `Playground` dynamic `import()` resolves
 `new URL(udsResolve('components/<id>/playground.js', fetchVersion), document.baseURI).href`
 so any deploy origin (live, preview, archive view) loads the right module.
 
+### Archive contract (`?uds=<old-version>`)
+
+**Archive snapshots are content-only.** The active UDS payload (CSS, JS,
+playground modules, demo-builder assemblies) is always the live release.
+Only versioned **data** flips when you switch the dropdown:
+
+- **Versioned per `?uds=`**: `spec.json`, `status.json`, `changelog.json`,
+  `impl.json`, `examples/*.html`, `examples/manifest.json`,
+  `figmanotes.json`, `components.json`, `CHANGELOG.json`,
+  `CHANGELOG.globalNotes.json`, `version.json`.
+- **Always live (not versioned per `?uds=`)**: `uds/tokens/*.css`,
+  `uds/components/<id>/<id>.css`, `uds/components/<id>/<id>.js`,
+  `uds/uds.css`, `uds/uds.js`, the Code-tab API tables in
+  `data/component-api/<id>.ts`, the React UI itself.
+
+The trade-off: docs UI improvements automatically benefit historical
+views (you don't rebuild old archives to get a fixed sidebar tooltip),
+but a 0.2 archive view renders 0.2 spec content with the live release's
+tokens and component CSS. If a token value or class name changed between
+0.2 and 0.3, the archive will visually disagree with what shipped at 0.2.
+
+To keep the contract honest:
+
+1. **`SiteSidebar` filters component links** against the active version's
+   `components.json` manifest, so a 0.2 archive doesn't surface
+   components that didn't exist yet (Link, Label, Text Area, Combobox,
+   Date Picker, Toggle, Pagination, Data View).
+2. **Sidebar and header links preserve `?uds=`** via
+   `components/site/internal-href.ts`'s `withUdsVersion()` helper.
+3. **Features that depend on live-only modules are hidden in archive**:
+   the Playground tab (its `playground.js` is current-only), the
+   Implementation Reference details (uses the live impl.json shape +
+   resolves CSS/JS via `udsResolve` from live paths), and the Build Demo
+   trigger (assemblies and ZIP exports use live `uds/uds.js` +
+   per-component examples).
+
+If we later want fully versioned archives (CSS + JS frozen per release),
+the lift is: load `versions/<v>/uds/uds.css` and `versions/<v>/uds/uds.js`
+dynamically in `app/layout.tsx` based on `fetchVersion`, version the
+Code-tab API data into `versions/<v>/uds/components/<id>/api.json`, and
+gate Playground/Demo-Builder on per-version JS-module availability. Not
+required for the current designer-facing use of archives.
+
 ## Snapshot + pruning policy
 
 - **Snapshots** (`versions/<X>/uds/`) freeze ONLY the `uds/` design system —

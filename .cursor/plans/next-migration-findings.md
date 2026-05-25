@@ -4,19 +4,19 @@ overview: 'Second-pass validation of the UDS Docs Next.js migration review. The 
 todos:
   - id: archive-contract
     content: 'Fix archive routing and archive-only UI: preserve ?uds, filter sidebar from active manifest, and disable/hide Playground, Demo Builder, and Implementation Reference in archive views.'
-    status: pending
+    status: completed
   - id: playground-paths
     content: Make Playground conditional per component and normalize Implementation Reference CSS/JS paths.
-    status: pending
+    status: completed
   - id: tooling-ci
     content: 'Declare browser-test dependencies, replace interactive linting, and add Next build/type/test/gen-types checks to CI.'
-    status: pending
+    status: completed
   - id: a11y-focus
     content: 'Add focus management and assistive-tech semantics for Token Search, Demo Preview, Spec popover, sidebar tooltip, and local tabsets.'
-    status: pending
+    status: completed
   - id: archive-policy
     content: Decide and document whether archive CSS and Code-tab API data should be versioned or intentionally current-only.
-    status: pending
+    status: completed
 isProject: false
 ---
 # UDS Docs Next.js Migration Findings

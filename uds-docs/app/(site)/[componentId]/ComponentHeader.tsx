@@ -18,6 +18,8 @@ import {
   SPEC_FIELD_LABELS,
   type CompletenessField,
 } from '@/data/completeness-fields';
+import { useUdsVersion } from '@/components/site/UdsVersionProvider';
+import { withUdsVersion } from '@/components/site/internal-href';
 
 const FIGMA_FILE_KEY = '1XJoUJgtNpw4R0IIT3VjoK'; // UDS Components — same as legacy app.js
 const GITHUB_REPO = 'sbajwa32/uds-docs';
@@ -90,11 +92,36 @@ function ReadinessCard({
   const [open, setOpen] = useState(false);
   const triggerRef = useRef<HTMLButtonElement | null>(null);
   const popoverRef = useRef<HTMLDivElement | null>(null);
+  const closeBtnRef = useRef<HTMLButtonElement | null>(null);
 
   useEffect(() => {
     if (!open) return;
     function onKey(e: KeyboardEvent) {
-      if (e.key === 'Escape') setOpen(false);
+      if (e.key === 'Escape') {
+        setOpen(false);
+        return;
+      }
+      // Trap Tab inside the popover. With three interactive elements
+      // (close button + GitHub link + a tab loop), this keeps SR users
+      // from falling off the popover into background page content.
+      if (e.key === 'Tab' && popoverRef.current) {
+        const focusables = Array.from(
+          popoverRef.current.querySelectorAll<HTMLElement>(
+            'a[href], button:not([disabled])',
+          ),
+        ).filter((el) => el.offsetParent !== null);
+        if (focusables.length === 0) return;
+        const first = focusables[0];
+        const last = focusables[focusables.length - 1];
+        const active = document.activeElement as HTMLElement | null;
+        if (e.shiftKey && active === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && active === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
     }
     function onPointer(e: MouseEvent) {
       const target = e.target as Node;
@@ -108,6 +135,23 @@ function ReadinessCard({
       document.removeEventListener('keydown', onKey);
       document.removeEventListener('mousedown', onPointer);
     };
+  }, [open]);
+
+  // Push focus into the popover when it opens (the close button is the
+  // natural landing spot, mirroring the dialog pattern from the WAI-ARIA
+  // APG). Restore focus to the trigger on close so the user doesn't get
+  // dumped at the top of the page.
+  useEffect(() => {
+    if (open) {
+      const raf = requestAnimationFrame(() => closeBtnRef.current?.focus());
+      return () => cancelAnimationFrame(raf);
+    }
+    // open transitioned to false — restore focus to the trigger if it's
+    // still mounted (it is, since this card never unmounts during a
+    // popover open/close cycle).
+    if (triggerRef.current && document.body.contains(triggerRef.current)) {
+      triggerRef.current.focus();
+    }
   }, [open]);
 
   const pct = score.total > 0 ? Math.round((score.filled / score.total) * 100) : 0;
@@ -202,6 +246,7 @@ function ReadinessCard({
             </strong>
             <span className="sg-spec-popover__pct">{pct}% complete</span>
             <button
+              ref={closeBtnRef}
               type="button"
               className="sg-spec-popover__close"
               aria-label="Close spec checklist"
@@ -384,10 +429,19 @@ function LastUpdatedPanel({
   componentId: string;
   changelog: ComponentChangelog | null;
 }) {
+  const { fetchVersion } = useUdsVersion();
   const grouped = groupChangelogByVersion(changelog);
   if (!grouped.length) return null;
   const last = grouped[0];
   const preview = grouped.slice(0, 2);
+  // Deep-link directly to the component's Changelog tab. ComponentPageClient
+  // hydrates `activeTab` from `?tab=` on mount, matching the legacy SPA's
+  // `#/<id>?tab=changelog` shape. `withUdsVersion` also preserves `?uds=`
+  // so an archive reader stays inside the archive.
+  const fullChangelogHref = withUdsVersion(
+    `/${componentId}?tab=changelog`,
+    fetchVersion,
+  );
   return (
     <details className="sg-recent-changes">
       <summary>
@@ -411,7 +465,7 @@ function LastUpdatedPanel({
             </ul>
           </div>
         ))}
-        <a className="sg-recent-full" href={`#/${componentId}?tab=changelog`}>
+        <a className="sg-recent-full" href={fullChangelogHref}>
           View full changelog →
         </a>
       </div>

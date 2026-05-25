@@ -487,6 +487,114 @@ async function main() {
   await screenshot('header-and-banner');
   console.log(`  OK — dropdown: ${dropdown.join(' / ')}`);
 
+  console.log('[check 9] Playground hidden for deferred components (combobox)');
+  await send('Page.navigate', { url: `http://localhost:${SERVE_PORT}/combobox` });
+  await sleep(2000);
+  const comboboxTabs = await evaluate(`(() => {
+    const tabs = Array.from(document.querySelectorAll('.sg-page-tab')).map((t) => t.textContent.trim());
+    return { tabs };
+  })()`);
+  if (comboboxTabs.tabs.some((t) => t === 'Playground')) {
+    throw new Error(`Playground tab should be hidden for combobox; saw tabs: ${JSON.stringify(comboboxTabs.tabs)}`);
+  }
+  console.log(`  OK — combobox tabs: ${comboboxTabs.tabs.join(' / ')}`);
+
+  console.log('[check 10] Impl Ref CSS panel loads CSS from per-component path');
+  await send('Page.navigate', { url: `http://localhost:${SERVE_PORT}/dropdown` });
+  await sleep(2000);
+  await evaluate(`(() => {
+    const tab = Array.from(document.querySelectorAll('.sg-page-tab')).find((t) => t.textContent.trim() === 'Playground');
+    tab?.click();
+  })()`);
+  await sleep(800);
+  // Open Impl Ref details + click the Styles tab.
+  await evaluate(`(() => {
+    const details = document.querySelector('.sg-impl-details');
+    if (details) details.open = true;
+  })()`);
+  await sleep(200);
+  await evaluate(`(() => {
+    const stylesTab = Array.from(document.querySelectorAll('.sg-impl-tab')).find((t) => t.textContent.trim().startsWith('Styles'));
+    stylesTab?.click();
+  })()`);
+  await sleep(1500);
+  const implStyles = await evaluate(`(() => {
+    const panel = document.querySelector('.sg-impl-panel[data-impl-panel="styles"]');
+    const pre = panel?.querySelector('pre');
+    const text = pre?.textContent?.trim() || '';
+    return { hasError: /CSS file not found|Failed to load/i.test(text), preview: text.slice(0, 80) };
+  })()`);
+  if (implStyles.hasError) {
+    throw new Error(`Impl Ref Styles panel failed to load CSS: ${implStyles.preview}`);
+  }
+  if (!implStyles.preview.length) {
+    throw new Error('Impl Ref Styles panel rendered empty');
+  }
+  console.log(`  OK — CSS loaded (preview: ${implStyles.preview.slice(0, 60).replace(/\\s+/g, ' ')}…)`);
+
+  console.log('[check 11] Impl Ref JS panel loads JS from per-component path');
+  await evaluate(`(() => {
+    const behaviorTab = Array.from(document.querySelectorAll('.sg-impl-tab')).find((t) => t.textContent.trim().startsWith('Behavior'));
+    behaviorTab?.click();
+  })()`);
+  await sleep(1500);
+  const implBehavior = await evaluate(`(() => {
+    const panel = document.querySelector('.sg-impl-panel[data-impl-panel="behavior"]');
+    if (!panel) return { skipped: true };
+    const pre = panel.querySelector('pre');
+    const text = pre?.textContent?.trim() || '';
+    return { skipped: false, hasError: /JS file not found|Failed to load/i.test(text), preview: text.slice(0, 80) };
+  })()`);
+  if (!implBehavior.skipped) {
+    if (implBehavior.hasError) {
+      throw new Error(`Impl Ref Behavior panel failed to load JS: ${implBehavior.preview}`);
+    }
+    if (!implBehavior.preview.length) {
+      throw new Error('Impl Ref Behavior panel rendered empty');
+    }
+    console.log(`  OK — JS loaded (preview: ${implBehavior.preview.slice(0, 60).replace(/\\s+/g, ' ')}…)`);
+  } else {
+    console.log('  OK — dropdown has no Behavior tab (no impl.jsFunc)');
+  }
+
+  console.log('[check 12] Archive mode hides Playground tab + Demo Builder + filters sidebar');
+  await send('Page.navigate', { url: `http://localhost:${SERVE_PORT}/button?uds=0.2` });
+  await sleep(2500);
+  const archive = await evaluate(`(() => {
+    const tabs = Array.from(document.querySelectorAll('.sg-page-tab')).map((t) => t.textContent.trim());
+    const demoBtn = !!document.querySelector('.sg-demo-btn');
+    const linkLink = !!document.querySelector('.sg-sidebar-link[href^="/link"]');
+    const labelLink = !!document.querySelector('.sg-sidebar-link[href^="/label"]');
+    const buttonHref = document.querySelector('.sg-sidebar-link[href^="/button"]')?.getAttribute('href') || '';
+    const banner = !!document.querySelector('#sg-archive-banner, [data-archive-banner], .sg-archive-banner');
+    return { tabs, demoBtn, linkLink, labelLink, buttonHref, banner };
+  })()`);
+  if (archive.tabs.some((t) => t === 'Playground')) {
+    throw new Error(`Playground tab should hide in archive; saw tabs: ${JSON.stringify(archive.tabs)}`);
+  }
+  if (archive.demoBtn) {
+    throw new Error('Demo Builder trigger should hide in archive mode');
+  }
+  if (archive.linkLink || archive.labelLink) {
+    throw new Error('Sidebar should not show 0.3-only Link/Label rows in the 0.2 archive');
+  }
+  if (!/[?&]uds=0\.2/.test(archive.buttonHref)) {
+    throw new Error(`Sidebar links should preserve ?uds=0.2; saw "${archive.buttonHref}"`);
+  }
+  console.log(`  OK — archive tabs: ${archive.tabs.join(' / ')}; sidebar /button → ${archive.buttonHref}`);
+
+  console.log('[check 13] ?tab= deep-link hydrates the right component tab');
+  await send('Page.navigate', { url: `http://localhost:${SERVE_PORT}/button?tab=changelog` });
+  await sleep(2500);
+  const tabActive = await evaluate(`(() => {
+    const active = document.querySelector('.sg-page-tab[aria-selected="true"]')?.textContent.trim() || '';
+    return { active };
+  })()`);
+  if (tabActive.active !== 'Changelog') {
+    throw new Error(`?tab=changelog should activate the Changelog tab; saw "${tabActive.active}"`);
+  }
+  console.log(`  OK — /button?tab=changelog activated "${tabActive.active}"`);
+
   ws.close();
   console.log('[regression] all checks passed.');
 }

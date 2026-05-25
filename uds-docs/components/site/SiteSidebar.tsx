@@ -1,12 +1,23 @@
+'use client';
+
 // Canonical sidebar nav for the docs site. Mirrors the legacy index.html
 // nav block (lines 240-297 of the pre-migration index.html).
 //
 // Structure-as-data so future link adds/removes are one-line edits. Section
 // order matches the legacy site verbatim — designers know the layout.
+//
+// In archive mode (?uds=0.2), the component-link rows are filtered against
+// the archive's components.json manifest so links to components that don't
+// exist in that snapshot are hidden instead of leading to a "Couldn't load
+// component" page.
+
+import { useEffect, useState } from 'react';
 
 import { SgSidebar, SgSidebarHeading } from './SgSidebar';
 import { ActiveSgSidebarLink } from './ActiveSgSidebarLink';
 import { ComponentSidebarLink } from './ComponentSidebarLink';
+import { useUdsVersion } from './UdsVersionProvider';
+import { getComponents, type ComponentsManifest } from '@/lib/uds-data';
 
 interface NavLink {
   label: string;
@@ -124,10 +135,54 @@ const NAV: NavSection[] = [
 ];
 
 export function SiteSidebar() {
+  const { fetchVersion, isArchive } = useUdsVersion();
+  // Set of component ids available in the active version. `null` = still
+  // loading the manifest; `null` also means "don't filter yet, render every
+  // component link the NAV table defines". On live (`isArchive` is false)
+  // we never filter — the NAV table IS the live manifest by construction.
+  const [allowed, setAllowed] = useState<Set<string> | null>(null);
+
+  useEffect(() => {
+    if (!isArchive) {
+      setAllowed(null);
+      return;
+    }
+    let cancelled = false;
+    setAllowed(null);
+    getComponents(fetchVersion)
+      .then((manifest: ComponentsManifest) => {
+        if (cancelled) return;
+        const ids = new Set<string>();
+        for (const c of manifest.components ?? []) ids.add(c.id);
+        setAllowed(ids);
+      })
+      .catch(() => {
+        // Manifest fetch failed — leave allowed null so the user still sees
+        // every link instead of an empty sidebar. The component pages
+        // themselves will surface the missing-spec error.
+        if (!cancelled) setAllowed(null);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [fetchVersion, isArchive]);
+
   return (
     <SgSidebar>
       {NAV.map((section, sectionIdx) => {
-        const links = section.links.map((link) =>
+        const visibleLinks = section.links.filter((link) => {
+          // Non-component nav rows always render.
+          if (!link.componentId) return true;
+          // Live mode: render everything from the NAV table.
+          if (!isArchive) return true;
+          // Archive mode, manifest still loading: render optimistically.
+          if (allowed === null) return true;
+          return allowed.has(link.componentId);
+        });
+
+        if (visibleLinks.length === 0) return null;
+
+        const links = visibleLinks.map((link) =>
           link.componentId ? (
             <ComponentSidebarLink
               key={link.href}

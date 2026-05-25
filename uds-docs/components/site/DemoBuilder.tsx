@@ -21,6 +21,7 @@
 //     the dialog while it's open.
 
 import {
+  forwardRef,
   useCallback,
   useEffect,
   useMemo,
@@ -41,6 +42,17 @@ import '../../styles/site/demo-builder.css';
 interface DemoComponent {
   id: string;
   label: string;
+}
+
+// Module-scoped cache so opening the Build Demo dialog multiple times
+// doesn't re-fetch 26 status.json files each time. Keyed by fetchVersion
+// — undefined for live, '0.2' for the archive, etc. The dialog only
+// renders the status dots, so a stale cache is bounded to one open
+// session and refreshes naturally on hard reload.
+const statusMapCache = new Map<string, Record<string, string>>();
+
+function statusMapCacheKey(fetchVersion: string | undefined): string {
+  return fetchVersion ?? '__live__';
 }
 
 const DEMO_COMPONENTS: ReadonlyArray<DemoComponent> = [
@@ -77,6 +89,7 @@ const DEMO_COMPONENTS: ReadonlyArray<DemoComponent> = [
 // ---------------------------------------------------------------------------
 
 export function DemoBuilder() {
+  const { isArchive } = useUdsVersion();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [overlay, setOverlay] = useState<{
     html: string;
@@ -96,6 +109,14 @@ export function DemoBuilder() {
     },
     [],
   );
+
+  // Archive snapshots don't carry the interactive JS modules the demo
+  // builder needs (per-component examples + uds.js orchestrator are loaded
+  // from live paths). Hide the trigger in archive mode rather than ship a
+  // broken preview. Matches the legacy behavior that hides .sg-demo-btn
+  // when `isViewingHistorical()`. The early return sits below the hooks
+  // so we don't violate Rules of Hooks when archive flips.
+  if (isArchive) return null;
 
   return (
     <>
@@ -174,7 +195,17 @@ function DemoBuilderDialog({
   // status dot next to its label. Direct port of legacy
   // window.COMPONENT_STATUS_MAP[comp.id] behavior — drops `sg-demo-status-dot
   // --<status>` on each row.
+  //
+  // Result is cached per fetchVersion in `statusMapCache` so reopening the
+  // dialog (or switching the active archive and back) doesn't re-issue 26
+  // status.json fetches. The cache is bounded to the page lifecycle.
   useEffect(() => {
+    const key = statusMapCacheKey(fetchVersion);
+    const cached = statusMapCache.get(key);
+    if (cached) {
+      setStatusMap(cached);
+      return;
+    }
     let cancelled = false;
     (async () => {
       const next: Record<string, string> = {};
@@ -187,6 +218,7 @@ function DemoBuilderDialog({
       );
       if (cancelled) return;
       for (const [id, status] of results) next[id] = status;
+      statusMapCache.set(key, next);
       setStatusMap(next);
     })();
     return () => {
@@ -502,12 +534,60 @@ function DemoPreviewOverlay({
 }) {
   const [html, setHtml] = useState(initialHtml);
   const [rebuilding, setRebuilding] = useState(false);
+  const overlayRef = useRef<HTMLDivElement | null>(null);
+  const refreshBtnRef = useRef<HTMLButtonElement | null>(null);
+  // Capture the element that had focus before the overlay opened so we can
+  // restore it on close — required by the WAI-ARIA APG modal pattern.
+  const restoreFocusToRef = useRef<HTMLElement | null>(null);
 
+  useEffect(() => {
+    restoreFocusToRef.current =
+      typeof document !== 'undefined' && document.activeElement instanceof HTMLElement
+        ? document.activeElement
+        : null;
+    // Push focus into the overlay so screen-reader users land somewhere
+    // sensible. The Refresh button is the first interactive control
+    // (matches the legacy buildDemoToolbar() focus target).
+    const raf = requestAnimationFrame(() => {
+      refreshBtnRef.current?.focus();
+    });
+    return () => {
+      cancelAnimationFrame(raf);
+      // Restore focus on close. Guarded against the case where the
+      // previous element was unmounted while the overlay was open.
+      const target = restoreFocusToRef.current;
+      if (target && document.body.contains(target)) {
+        target.focus();
+      }
+    };
+  }, []);
+
+  // Esc closes + Tab traps focus inside the overlay. Without a trap, Tab
+  // can land in the iframe or escape to underlying page chrome — the
+  // review caught both.
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
       if (e.key === 'Escape') {
         e.preventDefault();
         onClose();
+        return;
+      }
+      if (e.key !== 'Tab' || !overlayRef.current) return;
+      const focusables = Array.from(
+        overlayRef.current.querySelectorAll<HTMLElement>(
+          'button:not([disabled]), iframe',
+        ),
+      ).filter((el) => el.offsetParent !== null);
+      if (focusables.length === 0) return;
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+      const active = document.activeElement as HTMLElement | null;
+      if (e.shiftKey && (active === first || !overlayRef.current.contains(active))) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && active === last) {
+        e.preventDefault();
+        first.focus();
       }
     }
     document.addEventListener('keydown', onKey);
@@ -538,11 +618,18 @@ function DemoPreviewOverlay({
   }, [html]);
 
   return (
-    <div className="sg-demo-overlay" role="dialog" aria-modal="true" aria-label="UDS Demo Preview">
+    <div
+      ref={overlayRef}
+      className="sg-demo-overlay"
+      role="dialog"
+      aria-modal="true"
+      aria-label="UDS Demo Preview"
+    >
       <div className="sg-demo-overlay-toolbar">
         <span className="sg-demo-overlay-toolbar__title">UDS Demo Preview</span>
         <div className="sg-demo-overlay-toolbar__actions">
           <ToolbarBtn
+            ref={refreshBtnRef}
             onClick={refresh}
             disabled={rebuilding}
             icon={rebuilding ? 'progress_activity' : 'refresh'}
@@ -562,21 +649,19 @@ function DemoPreviewOverlay({
   );
 }
 
-function ToolbarBtn({
-  onClick,
-  disabled,
-  icon,
-  label,
-  spinIcon,
-}: {
+const ToolbarBtn = forwardRef<HTMLButtonElement, {
   onClick: () => void;
   disabled?: boolean;
   icon: string;
   label: ReactNode;
   spinIcon?: boolean;
-}) {
+}>(function ToolbarBtn(
+  { onClick, disabled, icon, label, spinIcon },
+  ref,
+) {
   return (
     <button
+      ref={ref}
       type="button"
       className="sg-demo-overlay-toolbar__btn"
       onClick={onClick}
@@ -591,4 +676,4 @@ function ToolbarBtn({
       {label}
     </button>
   );
-}
+});
