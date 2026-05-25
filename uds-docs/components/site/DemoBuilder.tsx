@@ -21,6 +21,7 @@
 //     the dialog while it's open.
 
 import {
+  forwardRef,
   useCallback,
   useEffect,
   useMemo,
@@ -511,12 +512,60 @@ function DemoPreviewOverlay({
 }) {
   const [html, setHtml] = useState(initialHtml);
   const [rebuilding, setRebuilding] = useState(false);
+  const overlayRef = useRef<HTMLDivElement | null>(null);
+  const refreshBtnRef = useRef<HTMLButtonElement | null>(null);
+  // Capture the element that had focus before the overlay opened so we can
+  // restore it on close — required by the WAI-ARIA APG modal pattern.
+  const restoreFocusToRef = useRef<HTMLElement | null>(null);
 
+  useEffect(() => {
+    restoreFocusToRef.current =
+      typeof document !== 'undefined' && document.activeElement instanceof HTMLElement
+        ? document.activeElement
+        : null;
+    // Push focus into the overlay so screen-reader users land somewhere
+    // sensible. The Refresh button is the first interactive control
+    // (matches the legacy buildDemoToolbar() focus target).
+    const raf = requestAnimationFrame(() => {
+      refreshBtnRef.current?.focus();
+    });
+    return () => {
+      cancelAnimationFrame(raf);
+      // Restore focus on close. Guarded against the case where the
+      // previous element was unmounted while the overlay was open.
+      const target = restoreFocusToRef.current;
+      if (target && document.body.contains(target)) {
+        target.focus();
+      }
+    };
+  }, []);
+
+  // Esc closes + Tab traps focus inside the overlay. Without a trap, Tab
+  // can land in the iframe or escape to underlying page chrome — the
+  // review caught both.
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
       if (e.key === 'Escape') {
         e.preventDefault();
         onClose();
+        return;
+      }
+      if (e.key !== 'Tab' || !overlayRef.current) return;
+      const focusables = Array.from(
+        overlayRef.current.querySelectorAll<HTMLElement>(
+          'button:not([disabled]), iframe',
+        ),
+      ).filter((el) => el.offsetParent !== null);
+      if (focusables.length === 0) return;
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+      const active = document.activeElement as HTMLElement | null;
+      if (e.shiftKey && (active === first || !overlayRef.current.contains(active))) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && active === last) {
+        e.preventDefault();
+        first.focus();
       }
     }
     document.addEventListener('keydown', onKey);
@@ -547,11 +596,18 @@ function DemoPreviewOverlay({
   }, [html]);
 
   return (
-    <div className="sg-demo-overlay" role="dialog" aria-modal="true" aria-label="UDS Demo Preview">
+    <div
+      ref={overlayRef}
+      className="sg-demo-overlay"
+      role="dialog"
+      aria-modal="true"
+      aria-label="UDS Demo Preview"
+    >
       <div className="sg-demo-overlay-toolbar">
         <span className="sg-demo-overlay-toolbar__title">UDS Demo Preview</span>
         <div className="sg-demo-overlay-toolbar__actions">
           <ToolbarBtn
+            ref={refreshBtnRef}
             onClick={refresh}
             disabled={rebuilding}
             icon={rebuilding ? 'progress_activity' : 'refresh'}
@@ -571,21 +627,19 @@ function DemoPreviewOverlay({
   );
 }
 
-function ToolbarBtn({
-  onClick,
-  disabled,
-  icon,
-  label,
-  spinIcon,
-}: {
+const ToolbarBtn = forwardRef<HTMLButtonElement, {
   onClick: () => void;
   disabled?: boolean;
   icon: string;
   label: ReactNode;
   spinIcon?: boolean;
-}) {
+}>(function ToolbarBtn(
+  { onClick, disabled, icon, label, spinIcon },
+  ref,
+) {
   return (
     <button
+      ref={ref}
       type="button"
       className="sg-demo-overlay-toolbar__btn"
       onClick={onClick}
@@ -600,4 +654,4 @@ function ToolbarBtn({
       {label}
     </button>
   );
-}
+});

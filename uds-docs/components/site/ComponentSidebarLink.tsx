@@ -95,6 +95,12 @@ export function ComponentSidebarLink({
   const [visible, setVisible] = useState(false);
   const [top, setTop] = useState(0);
   const [mounted, setMounted] = useState(false);
+  // Stable id for the tooltip so the link can declare it via
+  // aria-describedby. The id encodes the component id; multiple
+  // tooltips never coexist visibly, but keeping the id stable means
+  // screen readers re-announce the right one if focus moves between
+  // links quickly.
+  const tooltipId = `sg-sidebar-tooltip-${componentId}`;
 
   useEffect(() => setMounted(true), []);
 
@@ -145,8 +151,8 @@ export function ComponentSidebarLink({
 
   const tooltip = useMemo(() => {
     if (!visible || !mounted || !data) return null;
-    return <SidebarTooltip top={top} data={data} />;
-  }, [data, mounted, top, visible]);
+    return <SidebarTooltip id={tooltipId} top={top} data={data} />;
+  }, [data, mounted, top, visible, tooltipId]);
 
   const versionedHref = withUdsVersion(href, fetchVersion);
 
@@ -156,6 +162,7 @@ export function ComponentSidebarLink({
         ref={linkRef}
         href={versionedHref}
         active={active}
+        ariaDescribedBy={visible && data ? tooltipId : undefined}
         onMouseEnter={show}
         onMouseLeave={hide}
         onFocus={show}
@@ -168,7 +175,15 @@ export function ComponentSidebarLink({
   );
 }
 
-function SidebarTooltip({ top, data }: { top: number; data: TooltipData }) {
+function SidebarTooltip({
+  id,
+  top,
+  data,
+}: {
+  id: string;
+  top: number;
+  data: TooltipData;
+}) {
   const meta = STATUS_LABELS[data.status.current] || {
     label: data.status.current,
     css: data.status.current,
@@ -179,6 +194,7 @@ function SidebarTooltip({ top, data }: { top: number; data: TooltipData }) {
 
   return (
     <span
+      id={id}
       className="udc-tooltip sg-sidebar-portal-tooltip"
       role="tooltip"
       data-visible="true"

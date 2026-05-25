@@ -56,6 +56,8 @@ export const SgSidebarLink = forwardRef<HTMLAnchorElement, {
   variant?: 'getting-started';
   /** Optional Material Symbol icon (only shown for the 'getting-started' variant in legacy markup). */
   icon?: string;
+  /** Id of an element that describes this link (passed through to aria-describedby). */
+  ariaDescribedBy?: string;
   onMouseEnter?: MouseEventHandler<HTMLAnchorElement>;
   onMouseLeave?: MouseEventHandler<HTMLAnchorElement>;
   onFocus?: FocusEventHandler<HTMLAnchorElement>;
@@ -68,6 +70,7 @@ export const SgSidebarLink = forwardRef<HTMLAnchorElement, {
     disabled = false,
     variant,
     icon,
+    ariaDescribedBy,
     onMouseEnter,
     onMouseLeave,
     onFocus,
@@ -88,6 +91,7 @@ export const SgSidebarLink = forwardRef<HTMLAnchorElement, {
       href={href}
       aria-current={active ? 'page' : undefined}
       aria-disabled={disabled || undefined}
+      aria-describedby={ariaDescribedBy}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
       onFocus={onFocus}

@@ -6,7 +6,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 
-import { SgPageTabs, SgPageTab } from '@/components/site/SgPageHeader';
+import { SgPageTabs, SgPageTab, SgPageTabPanel } from '@/components/site/SgPageHeader';
 import { useUdsVersion } from '@/components/site/UdsVersionProvider';
 import { getChangelog } from '@/lib/uds-data';
 import type { AggregatedChangelog, ChangelogNote } from '@/lib/uds-data';
@@ -537,8 +537,7 @@ export function ChangelogClient({
           UDS{isArchive ? ` (${fetchVersion} archive)` : ''}
         </SgPageTab>
         <SgPageTab value="site">Site</SgPageTab>
-      </SgPageTabs>
-      <div hidden={activeTab !== 'uds'}>
+        <SgPageTabPanel value="uds">
         <div className="sg-cl-page" data-cl-tab="uds">
           <ChangelogRail
             items={railItems}
@@ -564,8 +563,8 @@ export function ChangelogClient({
             )}
           </div>
         </div>
-      </div>
-      <div hidden={activeTab !== 'site'}>
+      </SgPageTabPanel>
+      <SgPageTabPanel value="site">
         <div className="sg-cl-page" data-cl-tab="site">
           <ChangelogRail
             items={railItems}
@@ -591,7 +590,8 @@ export function ChangelogClient({
             )}
           </div>
         </div>
-      </div>
+      </SgPageTabPanel>
+      </SgPageTabs>
     </>
   );
 }

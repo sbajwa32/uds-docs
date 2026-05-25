@@ -18,7 +18,7 @@
 
 import { useEffect, useState } from 'react';
 
-import { SgPageTabs, SgPageTab } from '@/components/site/SgPageHeader';
+import { SgPageTabs, SgPageTab, SgPageTabPanel } from '@/components/site/SgPageHeader';
 import {
   getComponentSpec,
   getComponentStatus,
@@ -215,30 +215,30 @@ export function ComponentPageClient({ componentId }: { componentId: string }) {
         {showPlayground ? (
           <SgPageTab value="playground">Playground</SgPageTab>
         ) : null}
-      </SgPageTabs>
 
-      <div hidden={activeTab !== 'examples'}>
-        <ExamplesTab componentId={componentId} />
-      </div>
-      <div hidden={activeTab !== 'code'}>
-        <CodeTab componentId={componentId} />
-      </div>
-      <div hidden={activeTab !== 'guidelines'}>
-        <GuidelinesTab spec={spec} impl={impl} />
-      </div>
-      {showFigmaNotes ? (
-        <div hidden={activeTab !== 'figma-notes'}>
-          <FigmaNotesTab notes={figmaNotes!.notes} />
-        </div>
-      ) : null}
-      <div hidden={activeTab !== 'changelog'}>
-        <ChangelogTab componentId={componentId} changelog={changelog} />
-      </div>
-      {showPlayground && activeTab === 'playground' ? (
-        <div>
-          <Playground componentId={componentId} />
-        </div>
-      ) : null}
+        <SgPageTabPanel value="examples">
+          <ExamplesTab componentId={componentId} />
+        </SgPageTabPanel>
+        <SgPageTabPanel value="code">
+          <CodeTab componentId={componentId} />
+        </SgPageTabPanel>
+        <SgPageTabPanel value="guidelines">
+          <GuidelinesTab spec={spec} impl={impl} />
+        </SgPageTabPanel>
+        {showFigmaNotes ? (
+          <SgPageTabPanel value="figma-notes">
+            <FigmaNotesTab notes={figmaNotes!.notes} />
+          </SgPageTabPanel>
+        ) : null}
+        <SgPageTabPanel value="changelog">
+          <ChangelogTab componentId={componentId} changelog={changelog} />
+        </SgPageTabPanel>
+        {showPlayground ? (
+          <SgPageTabPanel value="playground" forceMount={false}>
+            <Playground componentId={componentId} />
+          </SgPageTabPanel>
+        ) : null}
+      </SgPageTabs>
     </>
   );
 }
