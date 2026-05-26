@@ -1,7 +1,7 @@
 ---
 name: figma-component-card
 description: Build or update the canonical "component card" canvas layout on a UDS component page in Figma. Use when the user says "build/update the figma page for X", "regenerate the component cards", "scaffold the figma page for <component>", "apply the component card pilot to <component>", or "roll out the component card design across the library". Produces the seven-section card layout (HEADER, ANATOMY, VARIANTS, SUB-COMPONENTS, USAGE, ACCESSIBILITY, META) per `.cursor/rules/uds-figma-component-card.mdc`.
-lastUpdated: 2026-05-13T19:04:48Z
+lastUpdated: 2026-05-26T23:02:20Z
 ---
 
 # UDS Figma Component Card Skill
@@ -12,7 +12,7 @@ Builds the canonical seven-section card layout on a UDS component page in Figma.
 
 You MUST load these BEFORE any `use_figma` call:
 
-- [`figma-use`](../../../plugins/cache/cursor-public/figma/3590366424deba5651026319b71b291d10004f1b/skills/figma-use/SKILL.md) — Plugin API rules (font preload, paint binding, layout sizing, atomic-failure semantics)
+- `figma-use` — Plugin API rules (load from the active Figma plugin skill path in the available skills list)
 - [`uds-figma-component-card.mdc`](../../rules/uds-figma-component-card.mdc) — the design specification this skill implements (create mode)
 - [`uds-figma-component-card-update.mdc`](../../rules/uds-figma-component-card-update.mdc) — update-mode rule for any page that already has a `udc-<id>-page` frame
 - [`uds-figma-preflight.mdc`](../../rules/uds-figma-preflight.mdc) — read-only discovery first
@@ -246,7 +246,7 @@ If a phase errors mid-batch, identify which components succeeded (their results 
 - [`uds-figma-component-card.mdc`](../../rules/uds-figma-component-card.mdc) — design specification (the "what")
 - [`uds-figma-component-card-update.mdc`](../../rules/uds-figma-component-card-update.mdc) — update-mode rule (when to rebuild, how to preserve content)
 - [`figma-component-card-audit.md`](../../agents/figma-component-card-audit.md) — read-only verification subagent
-- [`figma-use`](../../../plugins/cache/cursor-public/figma/3590366424deba5651026319b71b291d10004f1b/skills/figma-use/SKILL.md) — Plugin API rules (mandatory pre-load before any `use_figma`)
+- `figma-use` — Plugin API rules (mandatory pre-load before any `use_figma`; load from the active Figma plugin skill path in the available skills list)
 - [`uds-source-of-truth.mdc`](../../rules/uds-source-of-truth.mdc) — `uds-docs/uds/` is read-only for this skill
 - [`uds-figma-write-safety.mdc`](../../rules/uds-figma-write-safety.mdc) — Figma write discipline + required summary
 - [`uds-figma-preflight.mdc`](../../rules/uds-figma-preflight.mdc) — pre-flight discovery requirements

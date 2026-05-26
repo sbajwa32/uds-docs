@@ -2,7 +2,7 @@
 description: Plugin API gotchas learned from UDS factory and sync work. Local-file component identity, INSTANCE_SWAP default formats, hidden auto-layout fills, resize-vs-sizing-mode ordering, per-side padding binding, effect-style binding. Auto-attaches to anything that calls `use_figma`.
 alwaysApply: false
 globs: ["**/*"]
-lastUpdated: 2026-05-22T18:39:47Z
+lastUpdated: 2026-05-26T23:02:20Z
 ---
 
 # UDS Figma Plugin API Gotchas
@@ -12,9 +12,8 @@ factory build and would bite any other `use_figma` workflow the same way.
 They are not UDS-specific — they apply to every script the agent writes
 against the Figma Plugin API — but they were learned during UDS work,
 so this rule lives alongside the rest of the UDS toolchain. If they
-later get upstreamed into
-[`figma-use/references/gotchas.md`](../../../home/ubuntu/.cursor/plugins/cache/cursor-public/657/a742f0a700a7772ff5ed85f7c9fc1dad5afa9fcc/skills/figma-use/references/gotchas.md),
-this rule can drop them and become a pointer.
+later get upstreamed into the active `figma-use` plugin skill's
+`references/gotchas.md`, this rule can drop them and become a pointer.
 
 ## 1. Component identity is file-scope-dependent
 
@@ -288,7 +287,7 @@ but custom effect overrides on top should be flagged as a separate
 
 ## Related
 
-- [`figma-use` skill (cached upstream)](../../../home/ubuntu/.cursor/plugins/cache/cursor-public/657/a742f0a700a7772ff5ed85f7c9fc1dad5afa9fcc/skills/figma-use/SKILL.md)
+- `figma-use` skill (active Figma plugin skill)
   — base Plugin API rules. These gotchas should eventually upstream
   into that skill's `references/gotchas.md`.
 - [`generate-uds-figma-component`](../skills/generate-uds-figma-component/SKILL.md)

@@ -1,7 +1,7 @@
 ---
 name: generate-uds-figma-component
 description: UDS Component Factory. Drafts a token-bound UDS component set directly inside the UDS Components Figma file on a brand-new `🟠 <Title> {Cursor}{Ignore}` page. Use when the user says "generate a UDS component for X", "factory me an Avatar", "draft a new UDS component called Y", "build a UDS component for Z in Figma", or "use the component factory to start <Title>". Stops at Figma — never writes to `uds-docs/uds/`. Docs landing is the existing `uds-updated` skill, run later by the designer.
-lastUpdated: 2026-05-22T19:10:35Z
+lastUpdated: 2026-05-26T23:02:20Z
 ---
 
 # UDS Component Factory — Generate UDS Figma Component
@@ -27,11 +27,13 @@ risks; the steps below are the operational implementation.
 
 You MUST load these BEFORE any `use_figma` call. Loading order matters:
 
-1. [`figma-use`](../../../plugins/cache/cursor-public/657/dd9335f17413d9185c6bc8426798b714ab1d29cb/skills/figma-use/SKILL.md)
+1. `figma-use` (load from the active Figma plugin skill path in the
+   available skills list)
    — Plugin API rules: page-context reset per call, return-pattern, ID
    return, font preload, color 0–1 range, atomic-failure semantics.
    Required by every `use_figma` invocation.
-2. [`figma-generate-library`](../../../plugins/cache/cursor-public/657/dd9335f17413d9185c6bc8426798b714ab1d29cb/skills/figma-generate-library/SKILL.md)
+2. `figma-generate-library` (load from the active Figma plugin skill
+   path in the available skills list)
    — supplies the state ledger
    (`setSharedPluginData('dsb','run_id', RUN_ID)`), the
    sequential-call rule, the library-discovery pattern
@@ -39,11 +41,10 @@ You MUST load these BEFORE any `use_figma` call. Loading order matters:
    and the Phase 3 component pattern. This factory inherits all of
    that and only defines UDS-specific deltas on top.
 
-If the cached plugin path resolves differently in the user's
-environment, both skills are also available via the official Figma MCP
-server's skill loader — load by name (`figma-use`,
-`figma-generate-library`) and let the loader resolve the path. Do NOT
-proceed without both loaded; they are not optional.
+The Figma plugin cache path can move between environments. Prefer the
+active paths from the available skills list, or the official Figma MCP
+skill loader by name (`figma-use`, `figma-generate-library`) when it is
+available. Do NOT proceed without both loaded; they are not optional.
 
 ## Mandatory rules
 
@@ -278,7 +279,7 @@ Persist the proposed model to
      variable, preload every font family + every weight the styles
      and variables span (Inter Regular/Medium/Bold AND Poppins
      Regular/Medium/Bold AND Roboto AND Lexend, etc.). Per
-     [`figma-use`](../../../plugins/cache/cursor-public/657/dd9335f17413d9185c6bc8426798b714ab1d29cb/skills/figma-use/SKILL.md)
+     `figma-use`
      rule 8 + the `FONT_FAMILY` gotcha: missing fonts cause silent
      fallback or "missing font" placeholders.
 - **Inspector-editable properties** — enumerate every per-instance
@@ -512,7 +513,7 @@ component set and linked to the relevant nodes. Done after the
 component set is combined (so the property surface lives on the
 set, not on individual variants), and BEFORE the B.4 write summary.
 
-Plugin API recipe (per [`figma-use`](../../../plugins/cache/cursor-public/657/dd9335f17413d9185c6bc8426798b714ab1d29cb/skills/figma-use/SKILL.md)
+Plugin API recipe (per `figma-use`
 rule 15: re-capture node IDs from the state ledger, do not guess):
 
 ```js
@@ -843,9 +844,9 @@ rebuild the page from scratch unless the designer explicitly asks
 
 - [Plan: UDS Component Factory](../../plans/uds-component-factory.md)
   — full scope, locked decisions, risks, pilot defaults, kill criteria.
-- [`figma-use` (cached plugin skill)](../../../plugins/cache/cursor-public/657/dd9335f17413d9185c6bc8426798b714ab1d29cb/skills/figma-use/SKILL.md)
+- `figma-use` (active Figma plugin skill)
   — Plugin API rules.
-- [`figma-generate-library` (cached plugin skill)](../../../plugins/cache/cursor-public/657/dd9335f17413d9185c6bc8426798b714ab1d29cb/skills/figma-generate-library/SKILL.md)
+- `figma-generate-library` (active Figma plugin skill)
   — state ledger, sequential rule, Phase 3 component pattern.
 - [`figma-component-card`](../figma-component-card/SKILL.md) — sibling
   Figma writer skill (writes the page-layout cards). Pairs with this
