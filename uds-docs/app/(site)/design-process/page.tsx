@@ -688,11 +688,8 @@ const HTML = `<h1 class="sg-page-title">Design Process</h1>
   <a href="/about">About UDS</a> · <a href="/cursor-workflows">Cursor Workflows</a> for the under-the-hood mechanics if you're curious how the assistant handles status changes, syncs, and changelog updates.
 </div>`;
 
+import { ProseContent } from '@/components/site/ProseContent';
+
 export default function DesignProcessPage() {
-  return (
-    <div
-      className="sg-page-content"
-      dangerouslySetInnerHTML={{ __html: HTML }}
-    />
-  );
+  return <ProseContent className="sg-page-content" html={HTML} />;
 }

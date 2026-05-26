@@ -285,11 +285,8 @@ DO:    color: var(--uds-color-text-interactive);
           </div>
         </div>`;
 
+import { ProseContent } from '@/components/site/ProseContent';
+
 export default function AiAssistPage() {
-  return (
-    <div
-      className="sg-page-content"
-      dangerouslySetInnerHTML={{ __html: HTML }}
-    />
-  );
+  return <ProseContent className="sg-page-content" html={HTML} />;
 }

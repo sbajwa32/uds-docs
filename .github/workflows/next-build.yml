@@ -48,3 +48,13 @@ jobs:
 
       - name: Build (static export)
         run: npm run build
+
+      - name: Browser regression check
+        # Headless-Chrome sweep covering 18 cases (component-page chrome,
+        # changelog rail, demo builder dialog, archive contract, theme
+        # persistence, ?uds= validation). Catches the kind of drift that
+        # type-check + lint + unit tests can't see — the prose-link
+        # rewriter, focus management, ARIA wiring, etc. The job uses the
+        # Chrome that ships with ubuntu-latest GitHub runners; no extra
+        # setup-chrome action needed.
+        run: npm run regression-check

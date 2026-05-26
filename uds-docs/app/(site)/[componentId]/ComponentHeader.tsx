@@ -9,6 +9,7 @@
 //     markup). Direct port of `renderComponentProgress()` from the legacy
 //     app.js; the legacy CSS (styles/pages/legacy.css) is reused verbatim.
 
+import Link from 'next/link';
 import { SgPageTitle, SgPageDesc } from '@/components/site/SgPageHeader';
 import { useEffect, useRef, useState } from 'react';
 import type { ComponentSpec, ComponentStatus, ComponentChangelog } from '@/lib/uds-data';
@@ -465,9 +466,9 @@ function LastUpdatedPanel({
             </ul>
           </div>
         ))}
-        <a className="sg-recent-full" href={fullChangelogHref}>
+        <Link className="sg-recent-full" href={fullChangelogHref}>
           View full changelog →
-        </a>
+        </Link>
       </div>
     </details>
   );

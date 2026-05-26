@@ -157,6 +157,7 @@ function ThemeButton({
       type="button"
       className={active ? 'udc-button-primary active' : 'udc-button-secondary'}
       data-size="sm"
+      aria-pressed={active}
       onClick={onClick}
     >
       {children}

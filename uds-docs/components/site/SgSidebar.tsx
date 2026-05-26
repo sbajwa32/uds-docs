@@ -3,10 +3,18 @@
 // SgSidebarLink supports `active` (current page) and `disabled` (non-clickable).
 // The "getting started" variant is used for the prominent links at the top
 // (AI Assist, Changelog, Getting Started) — bolder font + bottom-divider.
+//
+// Internal navigation uses Next's <Link> so route transitions are
+// client-side. The theme provider + UDS-version provider live above the
+// page boundary and stay mounted across navigation, which prevents the
+// "switch sidebar entry → theme bar snaps back to Light / Base / Inter"
+// reset the second review caught. Disabled links still render as plain
+// <a aria-disabled="true"> since <Link> always navigates.
 
 import '../../styles/site/sidebar.css';
 import '../../styles/site/shell.css';
 
+import Link from 'next/link';
 import { forwardRef } from 'react';
 import type { FocusEventHandler, MouseEventHandler, ReactNode } from 'react';
 
@@ -84,19 +92,11 @@ export const SgSidebarLink = forwardRef<HTMLAnchorElement, {
   if (active) classes.push('active');
   if (disabled) classes.push('disabled');
 
-  return (
-    <a
-      ref={ref}
-      className={classes.join(' ')}
-      href={href}
-      aria-current={active ? 'page' : undefined}
-      aria-disabled={disabled || undefined}
-      aria-describedby={ariaDescribedBy}
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
-      onFocus={onFocus}
-      onBlur={onBlur}
-    >
+  // Disabled links still render as a plain anchor — we never want a
+  // disabled <Link> to silently navigate. Otherwise use Next's <Link>
+  // for client-side route transitions that keep providers mounted.
+  const content = (
+    <>
       {icon ? (
         <span
           className="material-symbols-outlined"
@@ -107,6 +107,41 @@ export const SgSidebarLink = forwardRef<HTMLAnchorElement, {
         </span>
       ) : null}
       {children}
-    </a>
+    </>
+  );
+
+  if (disabled) {
+    return (
+      <a
+        ref={ref}
+        className={classes.join(' ')}
+        href={href}
+        aria-current={active ? 'page' : undefined}
+        aria-disabled="true"
+        aria-describedby={ariaDescribedBy}
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
+        onFocus={onFocus}
+        onBlur={onBlur}
+      >
+        {content}
+      </a>
+    );
+  }
+
+  return (
+    <Link
+      ref={ref}
+      className={classes.join(' ')}
+      href={href}
+      aria-current={active ? 'page' : undefined}
+      aria-describedby={ariaDescribedBy}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+      onFocus={onFocus}
+      onBlur={onBlur}
+    >
+      {content}
+    </Link>
   );
 });

@@ -595,6 +595,81 @@ async function main() {
   }
   console.log(`  OK — /button?tab=changelog activated "${tabActive.active}"`);
 
+  console.log('[check 14] Theme buttons expose aria-pressed for assistive tech');
+  await send('Page.navigate', { url: `http://localhost:${SERVE_PORT}/button` });
+  await sleep(2000);
+  const aria = await evaluate(`(() => {
+    const buttons = Array.from(document.querySelectorAll('.sg-theme-bar button'));
+    return buttons.map((b) => ({
+      label: b.textContent.trim(),
+      pressed: b.getAttribute('aria-pressed'),
+      active: b.classList.contains('active'),
+    }));
+  })()`);
+  const missing = aria.find((b) => b.pressed !== 'true' && b.pressed !== 'false');
+  if (missing) {
+    throw new Error(`Theme button "${missing.label}" missing aria-pressed`);
+  }
+  console.log(`  OK — ${aria.length} theme buttons all expose aria-pressed`);
+
+  console.log('[check 15] Theme persistence survives a page navigation');
+  await evaluate(`(() => {
+    const darkBtn = Array.from(document.querySelectorAll('.sg-theme-bar button')).find((b) => b.textContent.trim() === 'Dark');
+    darkBtn?.click();
+  })()`);
+  await sleep(200);
+  const beforeNav = await evaluate(`document.documentElement.getAttribute('data-color-scheme')`);
+  if (beforeNav !== 'dark') {
+    throw new Error(`Expected data-color-scheme="dark" after clicking Dark, saw "${beforeNav}"`);
+  }
+  // Click a sidebar link to switch pages via client navigation.
+  await evaluate(`document.querySelector('.sg-sidebar-link[href^="/link"]')?.click()`);
+  await sleep(1500);
+  const afterNav = await evaluate(`(() => ({
+    path: window.location.pathname,
+    scheme: document.documentElement.getAttribute('data-color-scheme'),
+  }))()`);
+  if (afterNav.path === '/button') {
+    throw new Error('Sidebar navigation did not change pathname — Link not wired?');
+  }
+  if (afterNav.scheme !== 'dark') {
+    throw new Error(`Theme reset on navigation: data-color-scheme is "${afterNav.scheme}" instead of "dark"`);
+  }
+  console.log(`  OK — ${afterNav.path} kept data-color-scheme=dark across nav`);
+  // Restore theme to default for downstream checks.
+  await evaluate(`(() => {
+    const lightBtn = Array.from(document.querySelectorAll('.sg-theme-bar button')).find((b) => b.textContent.trim() === 'Light');
+    lightBtn?.click();
+  })()`);
+  await sleep(200);
+
+  console.log('[check 16] Invalid ?uds= values are stripped from the URL');
+  await send('Page.navigate', { url: `http://localhost:${SERVE_PORT}/button?uds=9.9` });
+  await sleep(3000);
+  const invalidVersion = await evaluate(`(() => ({
+    search: window.location.search,
+    title: document.querySelector('.sg-page-title')?.textContent.trim() || '',
+  }))()`);
+  if (/[?&]uds=/.test(invalidVersion.search)) {
+    throw new Error(`Invalid ?uds=9.9 should be cleared; URL search is still "${invalidVersion.search}"`);
+  }
+  console.log(`  OK — invalid ?uds=9.9 dropped; landed on "${invalidVersion.title}"`);
+
+  console.log('[check 17] Root redirect preserves ?uds= query param');
+  await send('Page.navigate', { url: `http://localhost:${SERVE_PORT}/?uds=0.2` });
+  await sleep(2500);
+  const rootRedirect = await evaluate(`(() => ({
+    path: window.location.pathname,
+    search: window.location.search,
+  }))()`);
+  if (rootRedirect.path !== '/semantic-colors') {
+    throw new Error(`/?uds=0.2 should redirect to /semantic-colors; saw "${rootRedirect.path}"`);
+  }
+  if (!/uds=0\.2/.test(rootRedirect.search)) {
+    throw new Error(`Root redirect dropped ?uds=0.2; saw search "${rootRedirect.search}"`);
+  }
+  console.log(`  OK — /?uds=0.2 -> ${rootRedirect.path}${rootRedirect.search}`);
+
   ws.close();
   console.log('[regression] all checks passed.');
 }

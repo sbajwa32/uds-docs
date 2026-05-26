@@ -167,11 +167,8 @@ const HTML = `<h1 class="sg-page-title">About UDS</h1>
           <dt>Spec completeness</dt><dd>How filled-in this component's <code>uds/components/&lt;id&gt;/spec.json</code> file is. Different from production status — a Production-Ready component might still have an incomplete written spec.</dd>
         </dl>`;
 
+import { ProseContent } from '@/components/site/ProseContent';
+
 export default function AboutPage() {
-  return (
-    <div
-      className="sg-page-content"
-      dangerouslySetInnerHTML={{ __html: HTML }}
-    />
-  );
+  return <ProseContent className="sg-page-content" html={HTML} />;
 }
