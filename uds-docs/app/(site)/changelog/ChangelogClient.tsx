@@ -19,6 +19,14 @@ import {
 const CHANGELOG_TYPE_ORDER = ['added', 'changed', 'fixed', 'deprecated', 'removed'] as const;
 type ChangelogType = (typeof CHANGELOG_TYPE_ORDER)[number];
 
+const CHANGELOG_TYPE_LABEL: Record<ChangelogType, string> = {
+  added: 'Added',
+  changed: 'Changed',
+  fixed: 'Fixed',
+  deprecated: 'Deprecated',
+  removed: 'Removed',
+};
+
 interface RenderChange extends ChangelogNote {
   component?: string | string[];
 }
@@ -33,21 +41,25 @@ function changeCountLabel(n: number): string {
   return `${n} ${n === 1 ? 'change' : 'changes'}`;
 }
 
-function inlineCode(text: string): React.ReactNode {
+function InlineChangeText({ text }: { text: string }) {
   // Render `code` segments as <code>; everything else as plain text. Matches
   // the legacy app.js renderChangeItems behaviour but stays inside React's
   // tree (no dangerouslySetInnerHTML, so hydration is straightforward).
   const parts = text.split(/(`[^`]+`)/);
-  return parts.map((part, i) => {
-    if (part.startsWith('`') && part.endsWith('`')) {
-      return (
-        <code key={i} className="sg-cl-code">
-          {part.slice(1, -1)}
-        </code>
-      );
-    }
-    return <span key={i}>{part}</span>;
-  });
+  return (
+    <>
+      {parts.map((part, i) => {
+        if (part.startsWith('`') && part.endsWith('`')) {
+          return (
+            <code key={i} className="ds-changelog-inline-code">
+              {part.slice(1, -1)}
+            </code>
+          );
+        }
+        return <span key={i}>{part}</span>;
+      })}
+    </>
+  );
 }
 
 function slug(prefix: string, raw: string): string {
@@ -69,48 +81,59 @@ function matchesQuery(entry: RenderChange, query: string, extra: string = ''): b
   return `${changelogPlainText(entry)} ${extra.toLowerCase()}`.includes(q);
 }
 
-function ChangeItems({ entries, component }: { entries: RenderChange[]; component?: string }) {
-  // Class names match the legacy site exactly so the CSS in
-  // styles/pages/legacy.css (.sg-cl-item, .sg-cl-type, .sg-cl-item::before)
-  // applies — including the colored dot before each item and the
-  // type-color tinting.
+function ChangeTypeBadge({ type }: { type: string }) {
+  const normalized = type as ChangelogType;
   return (
-    <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
-      {entries.map((entry, idx) => {
-        const components = entry.component
-          ? Array.isArray(entry.component)
-            ? entry.component
-            : [entry.component]
-          : component
-            ? [component]
-            : [];
-        return (
-        <li key={idx} className={`sg-cl-item sg-cl-item--${entry.type}`}>
-          <span className={`sg-cl-type sg-cl-type--${entry.type}`}>
-            {entry.type}
-          </span>{' '}
+    <span className="ds-changelog-type" data-type={type}>
+      {CHANGELOG_TYPE_LABEL[normalized] ?? type}
+    </span>
+  );
+}
+
+function ComponentTag({ name }: { name: string }) {
+  return <span className="ds-changelog-component-tag">{name}</span>;
+}
+
+function ChangeItem({ entry, component }: { entry: RenderChange; component?: string }) {
+  const components = entry.component
+    ? Array.isArray(entry.component)
+      ? entry.component
+      : [entry.component]
+    : component
+      ? [component]
+      : [];
+
+  return (
+    <li className="ds-changelog-item" data-type={entry.type}>
+      <span className="ds-changelog-item-dot" aria-hidden="true" />
+      <div className="ds-changelog-item-body">
+        <div className="ds-changelog-item-meta">
+          <ChangeTypeBadge type={entry.type} />
           {components.map((c) => (
-            <span
-              key={c}
-              className="udc-badge sg-cl-component"
-              data-variant="secondary"
-              data-prominent="true"
-              data-size="sm"
-            >
-              {c}
-            </span>
+            <ComponentTag key={c} name={c} />
           ))}
-          {inlineCode(entry.text)}
-        </li>
-        );
-      })}
+        </div>
+        <p className="ds-changelog-item-text">
+          <InlineChangeText text={entry.text} />
+        </p>
+      </div>
+    </li>
+  );
+}
+
+function ChangeItems({ entries, component }: { entries: RenderChange[]; component?: string }) {
+  return (
+    <ul className="ds-changelog-item-list">
+      {entries.map((entry, idx) => (
+        <ChangeItem key={idx} entry={entry} component={component} />
+      ))}
     </ul>
   );
 }
 
 function UdsStream({ releases }: { releases: AggregatedChangelog }) {
   return (
-    <div className="sg-cl-stream" id="sg-global-changelog">
+    <div className="ds-changelog-stream" id="sg-global-changelog">
       {releases.map((release) => {
         const compNames = Object.keys(release.byComponent || {});
         let totalCount = (release.globalNotes ?? []).length;
@@ -118,21 +141,21 @@ function UdsStream({ releases }: { releases: AggregatedChangelog }) {
         const sectionId = slug('cl-release', release.version);
 
         return (
-          <article key={release.version} id={sectionId} className="sg-cl-release">
-            <header className="sg-cl-release-header">
-              <h3 className="sg-cl-release-title">UDS {release.version}</h3>
-              <div className="sg-cl-release-meta">
+          <article key={release.version} id={sectionId} className="ds-changelog-card">
+            <header className="ds-changelog-card-header">
+              <h3 className="ds-changelog-card-title">UDS {release.version}</h3>
+              <div className="ds-changelog-card-meta">
                 {release.date ? (
-                  <span className="sg-cl-release-date">{release.date}</span>
+                  <span>{release.date}</span>
                 ) : null}
-                <span className="sg-cl-release-count">{changeCountLabel(totalCount)}</span>
+                <span>{changeCountLabel(totalCount)}</span>
               </div>
             </header>
-            <div className="sg-cl-release-body">
+            <div className="ds-changelog-card-body">
               {release.globalNotes && release.globalNotes.length > 0 ? (
-                <section className="sg-cl-release-section">
-                  <h4 className="sg-cl-release-section-title">Release notes</h4>
-                  <div className="sg-cl-item-list">
+                <section className="ds-changelog-section">
+                  <h4 className="ds-changelog-section-title">Release notes</h4>
+                  <div>
                     {CHANGELOG_TYPE_ORDER.map((type) => {
                       const ofType = release.globalNotes.filter((e) => e.type === type);
                       if (!ofType.length) return null;
@@ -142,14 +165,14 @@ function UdsStream({ releases }: { releases: AggregatedChangelog }) {
                 </section>
               ) : null}
               {compNames.length > 0 ? (
-                <section className="sg-cl-release-section">
-                  <h4 className="sg-cl-release-section-title">Components</h4>
+                <section className="ds-changelog-section">
+                  <h4 className="ds-changelog-section-title">Components</h4>
                   {compNames.map((name) => {
                     const entries = release.byComponent[name];
                     return (
-                      <div key={name} className="sg-cl-comp">
-                        <h5 className="sg-cl-comp-name">{name}</h5>
-                        <div className="sg-cl-item-list">
+                      <div key={name} className="ds-changelog-component-group">
+                        <h5 className="ds-changelog-component-heading">{name}</h5>
+                        <div>
                           {CHANGELOG_TYPE_ORDER.map((type) => {
                             const ofType = entries.filter((e) => e.type === type);
                             if (!ofType.length) return null;
@@ -210,26 +233,26 @@ function formatChangelogDate(iso: string): string {
 function SiteStream({ entries }: { entries: SiteChangelogEntry[] }) {
   const groups = groupSiteByDate(entries);
   return (
-    <div className="sg-cl-stream" id="sg-site-changelog">
+    <div className="ds-changelog-stream" id="sg-site-changelog">
       {groups.map((group) => {
         const dayCount = group.releases.reduce((acc, r) => acc + r.changes.length, 0);
         const sectionId = slug('cl-day', group.date);
         return (
-          <article key={group.date} id={sectionId} className="sg-cl-day">
-            <header className="sg-cl-day-header">
-              <h3 className="sg-cl-day-title">{formatChangelogDate(group.date)}</h3>
-              <div className="sg-cl-day-meta">
+          <article key={group.date} id={sectionId} className="ds-changelog-card">
+            <header className="ds-changelog-card-header">
+              <h3 className="ds-changelog-card-title">{formatChangelogDate(group.date)}</h3>
+              <div className="ds-changelog-card-meta">
                 {group.releases.length > 1 ? (
-                  <span className="sg-cl-day-count">{group.releases.length} bumps</span>
+                  <span>{group.releases.length} bumps</span>
                 ) : null}
-                <span className="sg-cl-day-count">{changeCountLabel(dayCount)}</span>
+                <span>{changeCountLabel(dayCount)}</span>
               </div>
             </header>
-            <div className="sg-cl-day-body">
+            <div className="ds-changelog-card-body">
               {group.releases.map((release) => (
-                <section key={release.version} className="sg-cl-bump">
-                  <h4 className="sg-cl-bump-label">{release.version}</h4>
-                  <div className="sg-cl-item-list">
+                <section key={release.version} className="ds-changelog-section">
+                  <h4 className="ds-changelog-version-pill">{release.version}</h4>
+                  <div>
                     {CHANGELOG_TYPE_ORDER.map((type) => {
                       const ofType: SiteChangelogChange[] = release.changes.filter(
                         (e) => e.type === type,
@@ -268,13 +291,13 @@ function ChangelogToolbar({
   onToggleComponent: (component: string) => void;
 }) {
   return (
-    <div className="sg-cl-toolbar">
-      <label className="sg-cl-search-wrap">
-        <span className="material-symbols-outlined sg-cl-search-icon" aria-hidden="true">
+    <div className="ds-changelog-toolbar">
+      <label className="ds-changelog-search">
+        <span className="material-symbols-outlined ds-changelog-search-icon" aria-hidden="true">
           search
         </span>
         <input
-          className="sg-cl-search"
+          className="ds-changelog-search-input"
           type="search"
           value={query}
           placeholder="Search changes"
@@ -282,24 +305,25 @@ function ChangelogToolbar({
           onChange={(e) => onQueryChange(e.target.value)}
         />
       </label>
-      <div className="sg-cl-chips" aria-label="Change type filters">
+      <div className="ds-changelog-type-filters" aria-label="Change type filters">
         {CHANGELOG_TYPE_ORDER.map((type) => (
           <button
             key={type}
             type="button"
-            className={`sg-cl-chip sg-cl-chip--${type}`}
+            className="ds-changelog-filter-chip"
+            data-type={type}
             aria-pressed={!disabledTypes.has(type)}
             onClick={() => onToggleType(type)}
           >
-            {type}
+            {CHANGELOG_TYPE_LABEL[type]}
           </button>
         ))}
       </div>
       {activeTab === 'uds' && components.length > 0 ? (
-        <div className="sg-cl-component-filter">
-          <div className="sg-cl-rail-heading">Filter by component</div>
+        <div className="ds-changelog-component-filter">
+          <div className="ds-changelog-filter-label">Filter by component</div>
           <div
-            className="sg-cl-chips"
+            className="ds-changelog-component-filter-list"
             role="group"
             aria-label="Filter by component"
           >
@@ -309,7 +333,7 @@ function ChangelogToolbar({
                 <button
                   key={component}
                   type="button"
-                  className="sg-cl-chip"
+                  className="ds-changelog-component-filter-chip"
                   aria-pressed={active}
                   onClick={() => onToggleComponent(component)}
                 >
@@ -338,19 +362,19 @@ function ChangelogRail({
   if (!items.length) return null;
   const heading = scope === 'site' ? 'Jump to date' : 'Jump to release';
   return (
-    <nav className="sg-cl-rail" aria-label={heading}>
-      <h2 className="sg-cl-rail-heading">{heading}</h2>
-      <ol className="sg-cl-rail-list">
+    <nav className="ds-changelog-rail" aria-label={heading}>
+      <h2 className="ds-changelog-rail-heading">{heading}</h2>
+      <ol className="ds-changelog-rail-list">
         {items.map((item) => (
           <li key={item.id}>
             <button
               type="button"
-              className="sg-cl-rail-link"
+              className="ds-changelog-rail-link"
               aria-current={activeId === item.id}
               onClick={() => onActivate(item.id)}
             >
               {item.label}
-              {item.meta ? <span className="sg-cl-rail-link-meta">{item.meta}</span> : null}
+              {item.meta ? <span className="ds-changelog-rail-meta">{item.meta}</span> : null}
             </button>
           </li>
         ))}
@@ -554,14 +578,14 @@ export function ChangelogClient({
         </SgPageTab>
         <SgPageTab value="site">Site</SgPageTab>
         <SgPageTabPanel value="uds">
-        <div className="sg-cl-page" data-cl-tab="uds">
+        <div className="ds-changelog-layout" data-changelog-tab="uds">
           <ChangelogRail
             items={railItems}
             activeId={activeRailId}
             onActivate={onRailActivate}
             scope="uds"
           />
-          <div className="sg-cl-main">
+          <div className="ds-changelog-main">
             <ChangelogToolbar
               activeTab="uds"
               query={query}
@@ -573,7 +597,7 @@ export function ChangelogClient({
               onToggleComponent={onToggleComponent}
             />
             {archiveFetchFailed ? (
-              <p className="sg-cl-empty" role="alert">
+              <p className="ds-changelog-empty" role="alert">
                 Couldn&apos;t load the UDS {fetchVersion} archive changelog.
                 The archive may not include a CHANGELOG.json — switch back to
                 the latest version in the dropdown to see release notes.
@@ -581,20 +605,20 @@ export function ChangelogClient({
             ) : filteredUds.length ? (
               <UdsStream releases={filteredUds} />
             ) : (
-              <p className="sg-cl-empty">No UDS changelog entries match the current filters.</p>
+              <p className="ds-changelog-empty">No UDS changelog entries match the current filters.</p>
             )}
           </div>
         </div>
       </SgPageTabPanel>
       <SgPageTabPanel value="site">
-        <div className="sg-cl-page" data-cl-tab="site">
+        <div className="ds-changelog-layout" data-changelog-tab="site">
           <ChangelogRail
             items={railItems}
             activeId={activeRailId}
             onActivate={onRailActivate}
             scope="site"
           />
-          <div className="sg-cl-main">
+          <div className="ds-changelog-main">
             <ChangelogToolbar
               activeTab="site"
               query={query}
@@ -608,7 +632,7 @@ export function ChangelogClient({
             {filteredSite.length ? (
               <SiteStream entries={filteredSite} />
             ) : (
-              <p className="sg-cl-empty">No SITE changelog entries match the current filters.</p>
+              <p className="ds-changelog-empty">No SITE changelog entries match the current filters.</p>
             )}
           </div>
         </div>

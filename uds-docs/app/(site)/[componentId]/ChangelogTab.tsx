@@ -16,7 +16,7 @@ export function ChangelogTab({
 
   if (!changelog || !changelog.entries || changelog.entries.length === 0) {
     return (
-      <p className="sg-changelog-empty">
+      <p className="ds-changelog-empty">
         No changes recorded yet. This component was introduced in the initial
         release.
       </p>
@@ -34,35 +34,41 @@ export function ChangelogTab({
   const versions = Array.from(groups.keys()).reverse();
 
   return (
-    <div className="sg-cl-stream">
+    <div className="ds-changelog-stream">
       {versions.map((version) => {
         const entries = groups.get(version)!;
         return (
-          <article key={version} className="sg-cl-release">
-            <header className="sg-cl-release-header">
-              <h3 className="sg-cl-release-title">UDS {version}</h3>
-              <div className="sg-cl-release-meta">
-                <span className="sg-cl-release-count">
+          <article key={version} className="ds-changelog-card">
+            <header className="ds-changelog-card-header">
+              <h3 className="ds-changelog-card-title">UDS {version}</h3>
+              <div className="ds-changelog-card-meta">
+                <span>
                   {entries.length} {entries.length === 1 ? 'change' : 'changes'}
                 </span>
               </div>
             </header>
-            <div className="sg-cl-release-body">
-              <div className="sg-cl-item-list">
+            <div className="ds-changelog-card-body">
+              <div>
                 {TYPE_ORDER.map((type) => {
                   const ofType = entries.filter((e) => e.type === type);
                   if (!ofType.length) return null;
                   return (
-                    <ul key={type} style={{ listStyle: 'none', margin: 0, padding: 0 }}>
+                    <ul key={type} className="ds-changelog-item-list">
                       {ofType.map((entry, i) => (
                         <li
                           key={`${entry.version}-${type}-${i}`}
-                          className={`sg-cl-item sg-cl-item--${type}`}
+                          className="ds-changelog-item"
+                          data-type={type}
                         >
-                          <span className={`sg-cl-type sg-cl-type--${type}`}>
-                            {type}
-                          </span>{' '}
-                          {inlineCode(entry.text)}
+                          <span className="ds-changelog-item-dot" aria-hidden="true" />
+                          <div className="ds-changelog-item-body">
+                            <div className="ds-changelog-item-meta">
+                              <span className="ds-changelog-type" data-type={type}>
+                                {type}
+                              </span>
+                            </div>
+                            <p className="ds-changelog-item-text">{inlineCode(entry.text)}</p>
+                          </div>
                         </li>
                       ))}
                     </ul>
@@ -84,7 +90,7 @@ function inlineCode(text: string): React.ReactNode {
   return parts.map((part, i) => {
     if (part.startsWith('`') && part.endsWith('`')) {
       return (
-        <code key={i} className="sg-cl-code">
+        <code key={i} className="ds-changelog-inline-code">
           {part.slice(1, -1)}
         </code>
       );
