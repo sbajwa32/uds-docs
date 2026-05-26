@@ -207,7 +207,7 @@ async function main() {
 
   // Switch to the Site tab and check the weekday + "X bumps" rail meta.
   await evaluate(`(() => {
-    const tab = Array.from(document.querySelectorAll('[role="tab"], .sg-page-tab')).find((t) => t.textContent.trim() === 'Site');
+    const tab = Array.from(document.querySelectorAll('[role="tab"]')).find((t) => t.textContent.trim() === 'Site');
     tab?.click();
   })()`);
   await new Promise((r) => setTimeout(r, 400));
@@ -237,7 +237,7 @@ async function main() {
   await screenshot('changelog-site-tab');
   // Switch back to the UDS tab for downstream checks.
   await evaluate(`(() => {
-    const tab = Array.from(document.querySelectorAll('[role="tab"], .sg-page-tab')).find((t) => t.textContent.trim() === 'UDS');
+    const tab = Array.from(document.querySelectorAll('[role="tab"]')).find((t) => t.textContent.trim() === 'UDS');
     tab?.click();
   })()`);
   await new Promise((r) => setTimeout(r, 400));
@@ -443,7 +443,7 @@ async function main() {
 
   console.log('[check 8b] Playground tab restores copy button, Implementation Reference, and icon-preview controls');
   await evaluate(`(() => {
-    const tab = Array.from(document.querySelectorAll('[role="tab"], .sg-page-tab')).find((t) => t.textContent.trim() === 'Playground');
+    const tab = Array.from(document.querySelectorAll('[role="tab"]')).find((t) => t.textContent.trim() === 'Playground');
     tab?.click();
   })()`);
   await new Promise((r) => setTimeout(r, 800));
@@ -467,7 +467,7 @@ async function main() {
   // Scroll the playground into view so the screenshot captures the
   // controls, code block, copy button, and Impl Ref details.
   await evaluate(`(() => {
-    document.querySelector('.sg-playground-layout')?.scrollIntoView({ block: 'start' });
+    document.querySelector('.ds-playground-layout')?.scrollIntoView({ block: 'start' });
   })()`);
   await new Promise((r) => setTimeout(r, 200));
   await screenshot('playground-tab');
@@ -491,7 +491,7 @@ async function main() {
   await send('Page.navigate', { url: `http://localhost:${SERVE_PORT}/combobox` });
   await sleep(2000);
   const comboboxTabs = await evaluate(`(() => {
-    const tabs = Array.from(document.querySelectorAll('.sg-page-tab')).map((t) => t.textContent.trim());
+    const tabs = Array.from(document.querySelectorAll('[role="tab"]')).map((t) => t.textContent.trim());
     return { tabs };
   })()`);
   if (comboboxTabs.tabs.some((t) => t === 'Playground')) {
@@ -503,7 +503,7 @@ async function main() {
   await send('Page.navigate', { url: `http://localhost:${SERVE_PORT}/dropdown` });
   await sleep(2000);
   await evaluate(`(() => {
-    const tab = Array.from(document.querySelectorAll('.sg-page-tab')).find((t) => t.textContent.trim() === 'Playground');
+    const tab = Array.from(document.querySelectorAll('[role="tab"]')).find((t) => t.textContent.trim() === 'Playground');
     tab?.click();
   })()`);
   await sleep(800);
@@ -561,7 +561,7 @@ async function main() {
   await send('Page.navigate', { url: `http://localhost:${SERVE_PORT}/button?uds=0.2` });
   await sleep(2500);
   const archive = await evaluate(`(() => {
-    const tabs = Array.from(document.querySelectorAll('.sg-page-tab')).map((t) => t.textContent.trim());
+    const tabs = Array.from(document.querySelectorAll('[role="tab"]')).map((t) => t.textContent.trim());
     const demoBtn = !!document.querySelector('.sg-demo-btn');
     const linkLink = !!document.querySelector('.sg-sidebar-link[href^="/link"]');
     const labelLink = !!document.querySelector('.sg-sidebar-link[href^="/label"]');
@@ -587,7 +587,7 @@ async function main() {
   await send('Page.navigate', { url: `http://localhost:${SERVE_PORT}/button?tab=changelog` });
   await sleep(2500);
   const tabActive = await evaluate(`(() => {
-    const active = document.querySelector('.sg-page-tab[aria-selected="true"]')?.textContent.trim() || '';
+    const active = document.querySelector('[role="tab"][aria-selected="true"]')?.textContent.trim() || '';
     return { active };
   })()`);
   if (tabActive.active !== 'Changelog') {
@@ -648,7 +648,7 @@ async function main() {
   await sleep(3000);
   const invalidVersion = await evaluate(`(() => ({
     search: window.location.search,
-    title: document.querySelector('.sg-page-title')?.textContent.trim() || '',
+    title: document.querySelector('.ds-page-header__title, .sg-page-title')?.textContent.trim() || '',
   }))()`);
   if (/[?&]uds=/.test(invalidVersion.search)) {
     throw new Error(`Invalid ?uds=9.9 should be cleared; URL search is still "${invalidVersion.search}"`);
