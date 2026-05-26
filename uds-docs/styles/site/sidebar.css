@@ -2,6 +2,13 @@
    Sidebar — sticky left navigation with pill-style active states.
    ========================================================================== */
 
+/* Grid slot wrapper — keeps the sidebar as a single grid item even though
+   SgSidebar renders both the backdrop and the nav. Without this the
+   fragment's two children would each claim a grid column. */
+.sg-sidebar-slot {
+  position: relative;
+}
+
 .sg-sidebar {
   position: sticky;
   top: 51px;

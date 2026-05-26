@@ -29,7 +29,7 @@ export function SgSidebar({
   onMobileClose?: () => void;
 }) {
   return (
-    <>
+    <div className="sg-sidebar-slot">
       <div
         className="sg-sidebar-backdrop"
         data-visible={mobileOpen || undefined}
@@ -43,7 +43,7 @@ export function SgSidebar({
       >
         {children}
       </nav>
-    </>
+    </div>
   );
 }
 
