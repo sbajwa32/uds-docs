@@ -5,6 +5,7 @@ import { useState, useCallback } from 'react';
 import { usePathname } from 'next/navigation';
 import { useEffect } from 'react';
 
+import '../../styles/pages/legacy.css';
 import '../../styles/pages/component.css';
 import '../../styles/pages/changelog.css';
 import '../../styles/pages/tokens.css';
