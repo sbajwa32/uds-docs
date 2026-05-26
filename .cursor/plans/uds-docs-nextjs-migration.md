@@ -4,73 +4,73 @@ overview: 'Migrate the UDS documentation site from the current vanilla HTML + ha
 todos:
   - id: chunk-00-cloudflare-setup
     content: 'Chunk 00 (human, not agent): Set up Cloudflare Pages project pointed at the rebuild branch with Next.js Static Export build config; bind staging.udsdocs.com to it. udsdocs.com stays on GH Pages until Chunk 18.'
-    status: pending
+    status: completed
   - id: chunk-01-skeleton
     content: 'Chunk 01: Next.js 15 + TypeScript + App Router skeleton at uds-docs/, next.config.ts with output: export, next.config.ts ignores existing docs/ and index.html. Verifies Cloudflare picks up the first deploy.'
-    status: pending
+    status: completed
   - id: chunk-02-types
     content: 'Chunk 02: Generate TypeScript types in uds-docs/types/uds.ts from uds-docs/uds/schemas/*.schema.json, plus typed data loaders in lib/uds-data.ts'
-    status: pending
+    status: completed
   - id: chunk-03-theme
     content: 'Chunk 03: Theme system as React context (UdsThemeProvider, useUdsTheme), all 6 theme combos flipping correctly, import uds-docs/uds/uds.css as global styles'
-    status: pending
+    status: completed
   - id: chunk-04-site-chrome
     content: 'Chunk 04: React components for the current site chrome (.sg-* classes): SgHeader, SgBrandBar, SgSidebar, SgSidebarHeading, SgSidebarLink, SgMain, SgPageTitle, SgPageTabs/SgPageTab, SgSubsection, SgSkipLink. Same markup the current site already uses. No new UDS wrappers in this chunk.'
-    status: pending
+    status: completed
   - id: chunk-05-app-shell
     content: 'Chunk 05: app/layout.tsx with header (brand bar, version dropdown stub, theme toggle, search trigger), sidebar (SgSidebar from Chunk 04), active-link highlighting via useSelectedLayoutSegment'
-    status: pending
+    status: completed
   - id: chunk-06a-content-small
     content: 'Chunk 06a: Port 10 small content pages (changelog, getting-started, ai-assist, about, recipes, templates, 4 token pages) to MDX/TSX; site-changelog.js to data/site-changelog.ts'
-    status: pending
+    status: completed
   - id: chunk-06b-design-process
     content: 'Chunk 06b: Port design-process page (682 lines) to app/design-process/page.mdx with page-local CSS module'
-    status: pending
+    status: completed
   - id: chunk-06c-design-language
     content: 'Chunk 06c: Port design-language page (1,187 lines) with sticky-ToC scroll-spy as a <DesignLanguageToc> client component'
-    status: pending
+    status: completed
   - id: chunk-06d-cursor-workflows
     content: 'Chunk 06d: Port cursor-workflows page (1,669 lines) with its 6-tab structure using <SgPageTabs> site chrome'
-    status: pending
+    status: completed
   - id: chunk-07-component-renderer
     content: 'Chunk 07: Dynamic component page route app/[componentId]/page.tsx with Guidelines/Code/Changelog tabs implemented (Examples, Playground, Figma Notes stubbed); generateStaticParams from components.json'
-    status: pending
+    status: completed
   - id: chunk-08-examples-tab
     content: 'Chunk 08: Examples tab + token substitution; example-fetcher and canonical-pool ported into lib/examples-renderer.ts (outside demo-builder folder since they outlive it)'
-    status: pending
+    status: completed
   - id: chunk-09-playground
     content: 'Chunk 09: Playground engine - generic <Playground> component dynamic-imports per-component playground.js modules, renders control surface, live preview, framework code-sample switcher'
-    status: pending
+    status: completed
   - id: chunk-10-token-search
     content: 'Chunk 10: Token Search command palette (/ or Cmd+K), port from docs/modules/token-search/ to components/site/TokenSearch.tsx'
-    status: pending
+    status: completed
   - id: chunk-11-contrast-checker
     content: 'Chunk 11: Contrast Checker page at app/contrast-checker/page.tsx - color math ported verbatim, per-theme probe machinery as React effect, hero panel + browse mode + popover picker as React'
-    status: pending
+    status: completed
   - id: chunk-12a-demo-builder-data
     content: 'Chunk 12a: Demo Builder data layer in lib/demo-builder/ (rng, data-pools, substitution, assembler), unit tests for deterministic modules, seeded parity tests vs current site'
-    status: pending
+    status: completed
   - id: chunk-12b-demo-builder-ui
     content: 'Chunk 12b: Demo Builder UI - <DemoBuilderDialog>, Build Demo button in header, undo/redo via history, ZIP export'
-    status: pending
+    status: completed
   - id: chunk-13-figma-notes
     content: 'Chunk 13: Figma Notes tab - conditional injection per-component when figmanotes.json exists, render note cards with kind/severity/body'
-    status: pending
+    status: completed
   - id: chunk-14-version-archive
     content: 'Chunk 14: Version-aware archive viewing - UdsVersionContext + version-aware fetcher replacing uds-path.js, version dropdown wired to versions.json, archive banner, ?uds=0.2 renders historical UDS data'
-    status: pending
+    status: completed
   - id: chunk-15-audits
     content: 'Chunk 15: Update audit-css-api-table.sh, audit-doc-internal-consistency.sh, and audit-theme-contrast.sh page list to reference new file structure; verify all 13 audit scripts pass'
-    status: pending
+    status: completed
   - id: chunk-16-toolchain-docs
     content: 'Chunk 16: Update .cursor/rules/*.mdc and .cursor/skills/**/SKILL.md path references; rewrite AGENTS.md + uds-docs/AGENTS.md + uds-docs/README.md for new stack; regenerate-toolchain.sh; toolchain + agent-docs currency audits must pass'
-    status: pending
+    status: completed
   - id: chunk-17-cleanup
     content: 'Chunk 17: Delete uds-docs/docs/, uds-docs/index.html, uds-docs/version.txt, uds-docs/bump-site.sh; update uds-docs/release.sh to remove SITE bump; update .github/workflows/ (deploy.yml retired, audits.yml repointed if needed)'
-    status: pending
+    status: completed
   - id: chunk-18-cutover
     content: 'Chunk 18: Manual end-to-end validation pass on CF preview, DNS cutover to Cloudflare Pages, cutover PR from cursor/migration-next-stack-f9de to main, retire GH Pages deploy'
-    status: pending
+    status: completed
 isProject: false
 ---
 # UDS Docs Next.js Migration
