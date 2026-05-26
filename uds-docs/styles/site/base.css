@@ -1,3 +1,17 @@
+/* Layer order declaration — controls cascade priority for the UI redo.
+
+   Existing rules stay UNLAYERED (outside any @layer) so they keep winning
+   by default. As later phases restyle individual surfaces, new rules go
+   into the appropriate layer. Unlayered CSS always beats layered CSS, so
+   adding this declaration alone causes zero visual change.
+
+   Layer priority (lowest → highest):
+     site-base    — reset, html/body tokens, design utilities
+     site-chrome  — header, sidebar, tabs, page chrome
+     site-pages   — per-page content styles (replaces legacy.css)
+*/
+@layer site-base, site-chrome, site-pages;
+
 /* Site base — global reset + page foundations.
    Verbatim port of the rules at the top of legacy docs/site.css. Required so
    the body background and default text color flip with the theme; without

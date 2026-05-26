@@ -1,87 +1,142 @@
-/* Page-level chrome — page title/desc, page tabs, subsection primitives.
-   Used on every component page and several non-component pages. */
+/* ==========================================================================
+   Page chrome — title, description, tabs, and subsection primitives.
+
+   Used on every component page and several non-component pages.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Page title + description
+   -------------------------------------------------------------------------- */
 
 .sg-page-title {
   font-size: var(--uds-font-size-5xl);
   font-weight: var(--uds-font-weight-bold);
-  letter-spacing: -0.02em;
-  margin-bottom: var(--uds-space-100);
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+  margin-bottom: var(--uds-space-075);
 }
 
 .sg-page-desc {
   font-size: var(--uds-font-size-md);
   color: var(--uds-color-text-secondary);
-  line-height: 1.6;
-  margin-bottom: var(--uds-space-100);
+  line-height: 1.65;
+  max-width: 680px;
+  margin-bottom: var(--uds-space-150);
 }
 
-/* Page tabs — every component page uses these (Examples / Code / Guidelines /
-   Changelog / Playground / Figma Notes). Cursor Workflows uses them too. */
+/* --------------------------------------------------------------------------
+   Page tabs — animated underline via pseudo-element
+   -------------------------------------------------------------------------- */
 
 .sg-page-tabs {
   display: flex;
-  border-bottom: 1px solid var(--uds-color-border-primary);
+  gap: var(--uds-space-050);
+  border-bottom: 1px solid var(--uds-color-border-secondary);
   margin-bottom: var(--uds-space-400);
+  position: relative;
 }
 
 .sg-page-tab {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: var(--uds-space-150) var(--uds-space-250);
+  padding: var(--uds-space-150) var(--uds-space-200);
   border: none;
-  border-bottom: 2px solid transparent;
+  border-bottom: none;
   margin-bottom: -1px;
   background: transparent;
   cursor: pointer;
   white-space: nowrap;
   font-family: var(--uds-font-family);
-  font-size: var(--uds-font-size-base);
+  font-size: var(--uds-font-size-sm);
   font-weight: var(--uds-font-weight-medium);
-  color: var(--uds-color-text-primary);
+  color: var(--uds-color-text-secondary);
   letter-spacing: 0;
-  transition: background-color 120ms, border-color 120ms, color 120ms;
+  border-radius: var(--ds-radius-sm) var(--ds-radius-sm) 0 0;
+  transition: background var(--ds-transition-fast),
+              color var(--ds-transition-fast);
   -webkit-appearance: none;
   appearance: none;
   outline: none;
 }
 
+/* Animated underline — grows from center on selection. */
+.sg-page-tab::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background: var(--uds-color-border-interactive);
+  border-radius: 1px;
+  transition: width var(--ds-transition-base),
+              left var(--ds-transition-base);
+}
+
 .sg-page-tab:hover {
-  background: var(--uds-color-surface-interactive-subtle-hover);
-  color: var(--uds-color-text-interactive);
+  background: var(--uds-color-surface-subtle);
+  color: var(--uds-color-text-primary);
+}
+
+.sg-page-tab:focus-visible {
+  outline: none;
+  box-shadow: var(--ds-focus-ring);
 }
 
 .sg-page-tab[aria-selected='true'] {
   color: var(--uds-color-text-interactive);
-  border-bottom-color: var(--uds-color-border-interactive);
+  font-weight: var(--uds-font-weight-bold);
 }
 
-/* Optional count badge on a tab (e.g. "Examples (3)"). */
+.sg-page-tab[aria-selected='true']::after {
+  width: 100%;
+  left: 0;
+}
+
+/* Count badge on a tab (e.g. "Examples (3)"). */
 .sg-page-tab__count {
   margin-left: var(--uds-space-075);
   font-size: var(--uds-font-size-xs);
+  font-weight: var(--uds-font-weight-regular);
   color: var(--uds-color-text-secondary);
+  opacity: 0.7;
 }
 
 .sg-page-tab[aria-selected='true'] .sg-page-tab__count {
   color: var(--uds-color-text-interactive);
+  opacity: 1;
 }
 
-/* Subsection primitives — content sections inside a tab panel. */
+/* --------------------------------------------------------------------------
+   Subsection primitives — content sections inside a tab panel
+   -------------------------------------------------------------------------- */
 
 .sg-subsection {
-  margin-top: var(--uds-space-400);
+  margin-top: var(--uds-space-500);
+  padding-top: var(--uds-space-400);
+  border-top: 1px solid var(--uds-color-border-secondary);
+}
+
+.sg-subsection:first-child {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
 }
 
 .sg-subsection-title {
   font-size: var(--uds-font-size-lg);
-  font-weight: 600;
+  font-weight: var(--uds-font-weight-bold);
   margin-bottom: var(--uds-space-100);
+  padding-left: var(--uds-space-200);
+  border-left: 2px solid var(--uds-color-border-interactive);
 }
 
 .sg-subsection-desc {
   font-size: var(--uds-font-size-base);
   color: var(--uds-color-text-secondary);
-  line-height: 1.6;
-  margin-bottom: var(--uds-space-200);
+  line-height: 1.65;
+  max-width: 680px;
+  margin-bottom: var(--uds-space-250);
 }

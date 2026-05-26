@@ -1,16 +1,3 @@
-// Left navigation chrome — sticky sidebar with section headings + links.
-//
-// SgSidebarLink supports `active` (current page) and `disabled` (non-clickable).
-// The "getting started" variant is used for the prominent links at the top
-// (AI Assist, Changelog, Getting Started) — bolder font + bottom-divider.
-//
-// Internal navigation uses Next's <Link> so route transitions are
-// client-side. The theme provider + UDS-version provider live above the
-// page boundary and stay mounted across navigation, which prevents the
-// "switch sidebar entry → theme bar snaps back to Light / Base / Inter"
-// reset the second review caught. Disabled links still render as plain
-// <a aria-disabled="true"> since <Link> always navigates.
-
 import '../../styles/site/sidebar.css';
 import '../../styles/site/shell.css';
 
@@ -33,14 +20,56 @@ export function SgShell({ children }: { children: ReactNode }) {
 export function SgSidebar({
   children,
   ariaLabel = 'Site navigation',
+  mobileOpen,
+  onMobileClose,
 }: {
   children: ReactNode;
   ariaLabel?: string;
+  mobileOpen?: boolean;
+  onMobileClose?: () => void;
 }) {
   return (
-    <nav className="sg-sidebar" aria-label={ariaLabel}>
-      {children}
-    </nav>
+    <>
+      <div
+        className="sg-sidebar-backdrop"
+        data-visible={mobileOpen || undefined}
+        onClick={onMobileClose}
+        aria-hidden="true"
+      />
+      <nav
+        className="sg-sidebar"
+        aria-label={ariaLabel}
+        data-mobile-open={mobileOpen || undefined}
+      >
+        {children}
+      </nav>
+    </>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// SgSidebarToggle — floating button for mobile sidebar open/close
+// ---------------------------------------------------------------------------
+
+export function SgSidebarToggle({
+  open,
+  onToggle,
+}: {
+  open: boolean;
+  onToggle: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      className="sg-sidebar-toggle"
+      aria-label={open ? 'Close navigation' : 'Open navigation'}
+      aria-expanded={open}
+      onClick={onToggle}
+    >
+      <span className="material-symbols-outlined" aria-hidden="true">
+        {open ? 'close' : 'menu'}
+      </span>
+    </button>
   );
 }
 
@@ -60,11 +89,8 @@ export const SgSidebarLink = forwardRef<HTMLAnchorElement, {
   href: string;
   active?: boolean;
   disabled?: boolean;
-  /** 'getting-started' renders the prominent top-of-sidebar variant. */
   variant?: 'getting-started';
-  /** Optional Material Symbol icon (only shown for the 'getting-started' variant in legacy markup). */
   icon?: string;
-  /** Id of an element that describes this link (passed through to aria-describedby). */
   ariaDescribedBy?: string;
   onMouseEnter?: MouseEventHandler<HTMLAnchorElement>;
   onMouseLeave?: MouseEventHandler<HTMLAnchorElement>;
@@ -92,16 +118,13 @@ export const SgSidebarLink = forwardRef<HTMLAnchorElement, {
   if (active) classes.push('active');
   if (disabled) classes.push('disabled');
 
-  // Disabled links still render as a plain anchor — we never want a
-  // disabled <Link> to silently navigate. Otherwise use Next's <Link>
-  // for client-side route transitions that keep providers mounted.
   const content = (
     <>
       {icon ? (
         <span
           className="material-symbols-outlined"
           aria-hidden="true"
-          style={{ fontSize: 18, verticalAlign: -3, marginRight: 6 }}
+          style={{ fontSize: 18 }}
         >
           {icon}
         </span>

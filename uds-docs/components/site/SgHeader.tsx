@@ -1,18 +1,9 @@
 'use client';
 
-// Header chrome — sticky top bar with brand bar (top row) and theme bar (bottom row).
-//
-// SgBrandBar takes slots (children-as-named-props) for the controls it doesn't
-// own internally — Build Demo button, Search trigger, Version dropdown — so
-// later chunks can drop in real implementations without changing this file.
-//
-// SgThemeBar is wired directly to UdsThemeProvider (Chunk 03) — it owns the
-// real theme controls; no slots needed.
-
 import '../../styles/site/header.css';
 import '../../styles/site/theme-bar.css';
 
-import type { ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
 import {
   useUdsTheme,
   type ColorScheme,
@@ -41,17 +32,15 @@ export function SgBrandBar({
   demoButton,
   searchTrigger,
   versionDropdown,
+  themeToggle,
 }: {
   title?: ReactNode;
   subtitle?: ReactNode;
-  /** Right-aligned build version badge, e.g. "SITE 2026.05.24.1". */
   buildLabel?: ReactNode;
-  /** Build Demo trigger — populated by Chunk 12b. */
   demoButton?: ReactNode;
-  /** Token search trigger — populated by Chunk 10. */
   searchTrigger?: ReactNode;
-  /** Version dropdown — populated by Chunk 14. */
   versionDropdown?: ReactNode;
+  themeToggle?: ReactNode;
 }) {
   return (
     <div className="sg-brand-bar">
@@ -60,79 +49,112 @@ export function SgBrandBar({
       {demoButton}
       {searchTrigger}
       {versionDropdown}
+      {themeToggle}
       {buildLabel ? <span className="sg-brand-bar-build">{buildLabel}</span> : null}
     </div>
   );
 }
 
 // ---------------------------------------------------------------------------
-// SgThemeBar
+// SgThemeBar — collapsible appearance controls
 // ---------------------------------------------------------------------------
 
-export function SgThemeBar() {
+export function SgThemeBar({ open }: { open: boolean }) {
   const t = useUdsTheme();
 
   return (
-    <div className="sg-theme-bar">
-      <ThemeGroup label="Color">
-        <ThemeButton active={t.colorScheme === ''} onClick={() => t.setColorScheme('')}>
-          Light
-        </ThemeButton>
-        <ThemeButton active={t.colorScheme === 'dark'} onClick={() => t.setColorScheme('dark')}>
-          Dark
-        </ThemeButton>
-      </ThemeGroup>
-
-      <ThemeGroup label="Brand">
-        {(['', 'resman', 'anyonehome', 'inhabit'] as Theme[]).map((value) => (
-          <ThemeButton
-            key={value || 'base'}
-            active={t.theme === value}
-            onClick={() => t.setTheme(value)}
-          >
-            {value === '' ? 'Base' : labelize(value)}
+    <div className="sg-theme-bar-wrapper" data-open={open}>
+      <div className="sg-theme-bar">
+        <ThemeGroup label="Color">
+          <ThemeButton active={t.colorScheme === ''} onClick={() => t.setColorScheme('')}>
+            Light
           </ThemeButton>
-        ))}
-      </ThemeGroup>
-
-      <ThemeGroup label="Font">
-        {(['', 'poppins', 'roboto', 'lexend'] as Font[]).map((value) => (
-          <ThemeButton
-            key={value || 'inter'}
-            active={t.font === value}
-            onClick={() => t.setFont(value)}
-          >
-            {value === '' ? 'Inter' : labelize(value)}
+          <ThemeButton active={t.colorScheme === 'dark'} onClick={() => t.setColorScheme('dark')}>
+            Dark
           </ThemeButton>
-        ))}
-      </ThemeGroup>
+        </ThemeGroup>
 
-      <ThemeGroup label="Scale">
-        {(['smaller', '', 'larger'] as FontScale[]).map((value) => (
-          <ThemeButton
-            key={value || 'default'}
-            active={t.fontScale === value}
-            onClick={() => t.setFontScale(value)}
-          >
-            {value === '' ? 'Default' : labelize(value)}
-          </ThemeButton>
-        ))}
-      </ThemeGroup>
+        <ThemeGroup label="Brand">
+          {(['', 'resman', 'anyonehome', 'inhabit'] as Theme[]).map((value) => (
+            <ThemeButton
+              key={value || 'base'}
+              active={t.theme === value}
+              onClick={() => t.setTheme(value)}
+            >
+              {value === '' ? 'Base' : labelize(value)}
+            </ThemeButton>
+          ))}
+        </ThemeGroup>
 
-      <ThemeGroup label="Density">
-        {(['', 'comfortable'] as Density[]).map((value) => (
-          <ThemeButton
-            key={value || 'default'}
-            active={t.density === value}
-            onClick={() => t.setDensity(value)}
-          >
-            {value === '' ? 'Default' : labelize(value)}
-          </ThemeButton>
-        ))}
-      </ThemeGroup>
+        <ThemeGroup label="Font">
+          {(['', 'poppins', 'roboto', 'lexend'] as Font[]).map((value) => (
+            <ThemeButton
+              key={value || 'inter'}
+              active={t.font === value}
+              onClick={() => t.setFont(value)}
+            >
+              {value === '' ? 'Inter' : labelize(value)}
+            </ThemeButton>
+          ))}
+        </ThemeGroup>
+
+        <ThemeGroup label="Scale">
+          {(['smaller', '', 'larger'] as FontScale[]).map((value) => (
+            <ThemeButton
+              key={value || 'default'}
+              active={t.fontScale === value}
+              onClick={() => t.setFontScale(value)}
+            >
+              {value === '' ? 'Default' : labelize(value)}
+            </ThemeButton>
+          ))}
+        </ThemeGroup>
+
+        <ThemeGroup label="Density">
+          {(['', 'comfortable'] as Density[]).map((value) => (
+            <ThemeButton
+              key={value || 'default'}
+              active={t.density === value}
+              onClick={() => t.setDensity(value)}
+            >
+              {value === '' ? 'Default' : labelize(value)}
+            </ThemeButton>
+          ))}
+        </ThemeGroup>
+      </div>
     </div>
   );
 }
+
+// ---------------------------------------------------------------------------
+// SgThemeToggle — gear icon button that controls the collapsible theme bar
+// ---------------------------------------------------------------------------
+
+export function SgThemeToggle({
+  open,
+  onToggle,
+}: {
+  open: boolean;
+  onToggle: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      className="sg-theme-toggle-btn"
+      aria-label={open ? 'Close appearance settings' : 'Open appearance settings'}
+      aria-expanded={open}
+      onClick={onToggle}
+    >
+      <span className="material-symbols-outlined" aria-hidden="true">
+        settings
+      </span>
+    </button>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Internal helpers
+// ---------------------------------------------------------------------------
 
 function ThemeGroup({ label, children }: { label: string; children: ReactNode }) {
   return (
@@ -166,8 +188,6 @@ function ThemeButton({
 }
 
 function labelize(value: string): string {
-  // 'anyonehome' -> 'AnyoneHome', 'resman' -> 'ResMan', 'larger' -> 'Larger'.
-  // Verbatim from legacy markup labels.
   switch (value) {
     case 'anyonehome':
       return 'AnyoneHome';
@@ -192,5 +212,4 @@ function labelize(value: string): string {
   }
 }
 
-// Suppress unused-import warning on ColorScheme (kept for API symmetry / future expansion).
 export type { ColorScheme };

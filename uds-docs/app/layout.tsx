@@ -8,6 +8,7 @@ import {
 
 import '../uds/uds.css';
 import '../styles/site/base.css';
+import '../styles/site/design.css';
 
 export const metadata: Metadata = {
   title: 'UDS — Urban Design System',

@@ -1,18 +1,39 @@
-/* Sub-row of the header — appearance controls (color/brand/font/scale/density). */
+/* ==========================================================================
+   Theme bar — collapsible appearance controls panel.
+
+   Collapses to zero height by default; toggled open via the gear button
+   in the brand bar. Uses CSS grid row animation for smooth open/close.
+   ========================================================================== */
+
+.sg-theme-bar-wrapper {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows var(--ds-transition-slow);
+  border-bottom: 1px solid transparent;
+}
+
+.sg-theme-bar-wrapper[data-open='true'] {
+  grid-template-rows: 1fr;
+  border-bottom-color: var(--uds-color-border-secondary);
+}
 
 .sg-theme-bar {
-  background: var(--uds-color-surface-alt);
-  border-bottom: 1px solid var(--uds-color-border-secondary);
-  padding: var(--uds-space-100) var(--uds-space-300);
+  overflow: hidden;
+  background: var(--ds-surface-elevated);
+  padding: 0 var(--uds-space-300);
   display: flex;
   align-items: center;
   gap: var(--uds-space-250);
-  height: var(--uds-space-550);
-  overflow-x: auto;
-  overflow-y: hidden;
   white-space: nowrap;
   scrollbar-width: thin;
   scrollbar-color: var(--uds-color-border-secondary) transparent;
+}
+
+.sg-theme-bar-wrapper[data-open='true'] .sg-theme-bar {
+  padding-top: var(--uds-space-100);
+  padding-bottom: var(--uds-space-100);
+  overflow-x: auto;
+  overflow-y: hidden;
 }
 
 .sg-theme-bar::-webkit-scrollbar {
@@ -26,15 +47,13 @@
   background: transparent;
 }
 
-/* text-primary (not text-secondary) so the small bold uppercase labels pass
-   WCAG AA on the surface-alt theme-bar background. */
 .sg-theme-bar-label {
   font-family: var(--uds-font-family);
   font-size: var(--uds-font-size-xs);
   font-weight: var(--uds-font-weight-bold);
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: var(--uds-color-text-primary);
+  color: var(--uds-color-text-secondary);
   flex-shrink: 0;
 }
 
@@ -43,4 +62,51 @@
   align-items: center;
   gap: var(--uds-space-075);
   flex-shrink: 0;
+}
+
+/* --------------------------------------------------------------------------
+   Theme toggle button (gear icon in the brand bar)
+   -------------------------------------------------------------------------- */
+
+.sg-theme-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--uds-color-border-secondary);
+  border-radius: var(--ds-radius-md);
+  background: transparent;
+  color: var(--uds-color-text-secondary);
+  cursor: pointer;
+  transition: background var(--ds-transition-fast),
+              color var(--ds-transition-fast),
+              border-color var(--ds-transition-fast),
+              transform var(--ds-transition-base);
+  -webkit-appearance: none;
+  appearance: none;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.sg-theme-toggle-btn:hover {
+  background: var(--uds-color-surface-subtle);
+  color: var(--uds-color-text-primary);
+  border-color: var(--uds-color-border-primary);
+}
+
+.sg-theme-toggle-btn[aria-expanded='true'] {
+  color: var(--uds-color-text-interactive);
+  border-color: var(--uds-color-border-interactive);
+  transform: rotate(45deg);
+}
+
+.sg-theme-toggle-btn:focus-visible {
+  outline: none;
+  box-shadow: var(--ds-focus-ring);
+}
+
+.sg-theme-toggle-btn .material-symbols-outlined {
+  font-size: 18px;
+  line-height: 1;
 }

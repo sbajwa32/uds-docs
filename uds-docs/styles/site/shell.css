@@ -1,7 +1,15 @@
-/* Top-level shell — sidebar + main content split. */
+/* Top-level shell — sidebar + main content split.
+   On narrow viewports the sidebar collapses to an overlay and
+   the grid becomes single-column. */
 
 .sg-shell {
   display: grid;
   grid-template-columns: 260px 1fr;
-  min-height: calc(100vh - 84px);
+  min-height: calc(100vh - 51px);
+}
+
+@media (max-width: 860px) {
+  .sg-shell {
+    grid-template-columns: 1fr;
+  }
 }

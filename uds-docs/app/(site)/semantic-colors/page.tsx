@@ -1,28 +1,57 @@
-// Ported from docs/pages/tokens/semantic-colors.html during Chunk 06a.
-//
-// Preview tab uses dangerouslySetInnerHTML for the verbatim swatch markup —
-// every <div class="sg-token-row"> with its inline `style="background:var(...)"`
-// carries through unchanged. That keeps the visual diff at zero without
-// rewriting 148 lines of repetitive token rows in JSX.
-//
-// Code tab reads uds/tokens/semantic.css at build time, so the displayed CSS
-// is always the live source rather than the legacy hardcoded inline copy.
-
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
 
 import { TokenPageTabs } from '@/components/site/TokenPageTabs';
 
+import {
+  SEMANTIC_COLOR_GROUPS,
+  type TokenSwatch,
+  type TokenSwatchGroup,
+} from './token-preview-data';
+
 export const metadata = { title: 'Semantic Colors — UDS' };
 
-// The full Preview content (148 lines of repetitive token rows) lives in a
-// sibling preview-content.html file rather than inline. Read at build time.
-async function loadPreviewHtml(): Promise<string> {
-  const previewPath = path.join(
-    process.cwd(),
-    'app/(site)/semantic-colors/preview-content.html',
+const CHECKERBOARD_BG =
+  'linear-gradient(45deg,#ccc 25%,transparent 25%,transparent 75%,#ccc 75%),' +
+  'linear-gradient(45deg,#ccc 25%,transparent 25%,transparent 75%,#ccc 75%)';
+
+function TokenRow({ token }: { token: TokenSwatch }) {
+  const swatchStyle: React.CSSProperties = {
+    background: `var(${token.name})`,
+    ...(token.checkerboard && {
+      backgroundImage: CHECKERBOARD_BG,
+      backgroundSize: '8px 8px',
+      backgroundPosition: '0 0, 4px 4px',
+    }),
+  };
+
+  return (
+    <div className="sg-token-row">
+      <div className="sg-token-swatch" style={swatchStyle} />
+      <span className="sg-token-name">{token.name}</span>
+      {token.value && <span className="sg-token-value">{token.value}</span>}
+    </div>
   );
-  return fs.readFile(previewPath, 'utf8');
+}
+
+function TokenSwatchPreview({ groups }: { groups: TokenSwatchGroup[] }) {
+  return (
+    <>
+      {groups.map((group) => (
+        <div key={group.title} className="sg-subsection">
+          <h3 className="sg-subsection-title">{group.title}</h3>
+          {group.description && (
+            <p className="sg-subsection-desc">{group.description}</p>
+          )}
+          <div className="sg-token-table">
+            {group.tokens.map((token) => (
+              <TokenRow key={token.name} token={token} />
+            ))}
+          </div>
+        </div>
+      ))}
+    </>
+  );
 }
 
 function CodeTab({ css }: { css: string }) {
@@ -47,7 +76,6 @@ function CodeTab({ css }: { css: string }) {
 export default async function SemanticColorsPage() {
   const cssPath = path.join(process.cwd(), 'uds/tokens/semantic.css');
   const css = await fs.readFile(cssPath, 'utf8');
-  const previewHtml = await loadPreviewHtml();
 
   return (
     <>
@@ -57,7 +85,7 @@ export default async function SemanticColorsPage() {
         modes. Use these instead of primitives in component and layout code.
       </p>
       <TokenPageTabs
-        preview={<div dangerouslySetInnerHTML={{ __html: previewHtml }} />}
+        preview={<TokenSwatchPreview groups={SEMANTIC_COLOR_GROUPS} />}
         code={<CodeTab css={css} />}
       />
     </>

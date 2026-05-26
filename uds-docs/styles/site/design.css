@@ -1,0 +1,103 @@
+/* ==========================================================================
+   Doc-site design utilities — shared visual primitives for the UI redo.
+
+   Built entirely on UDS tokens (--uds-*). Every effect adapts automatically
+   across all 6 theme combinations because it derives from semantic tokens
+   rather than hardcoded values.
+
+   Nothing here changes how the site looks yet — these are building blocks
+   consumed by later phases when they restyle individual surfaces.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Elevation / shadow scale
+
+   Three levels derived from the page surface color. In light mode, shadows
+   are dark translucent; in dark mode they're darker translucent. Using
+   color-mix() with the inverse surface keeps them theme-aware.
+   -------------------------------------------------------------------------- */
+
+:root {
+  --ds-shadow-color: color-mix(in srgb, var(--uds-color-surface-page-inverse) 8%, transparent);
+  --ds-shadow-color-md: color-mix(in srgb, var(--uds-color-surface-page-inverse) 12%, transparent);
+  --ds-shadow-color-lg: color-mix(in srgb, var(--uds-color-surface-page-inverse) 16%, transparent);
+
+  --ds-shadow-sm: 0 1px 2px var(--ds-shadow-color);
+  --ds-shadow-md: 0 2px 8px var(--ds-shadow-color-md), 0 1px 2px var(--ds-shadow-color);
+  --ds-shadow-lg: 0 4px 16px var(--ds-shadow-color-lg), 0 2px 4px var(--ds-shadow-color-md);
+
+  /* --------------------------------------------------------------------------
+     Glass effect — frosted translucent surface
+
+     Semi-transparent background + backdrop blur. The background uses
+     color-mix() from the page surface so it adapts to every theme/mode.
+     -------------------------------------------------------------------------- */
+  --ds-glass-bg: color-mix(in srgb, var(--uds-color-surface-page-main) 80%, transparent);
+  --ds-glass-bg-heavy: color-mix(in srgb, var(--uds-color-surface-page-main) 90%, transparent);
+  --ds-glass-blur: blur(12px);
+  --ds-glass-border: 1px solid color-mix(in srgb, var(--uds-color-border-secondary) 50%, transparent);
+
+  /* --------------------------------------------------------------------------
+     Brand gradient
+
+     Derives from the interactive surface token which already flips per
+     theme (blue for Base, emerald for AnyoneHome, amber for Inhabit).
+     The "to" color is a lighter tint via color-mix().
+     -------------------------------------------------------------------------- */
+  --ds-gradient-brand: linear-gradient(
+    135deg,
+    var(--uds-color-surface-interactive-default),
+    color-mix(in srgb, var(--uds-color-surface-interactive-default) 60%, var(--uds-color-surface-page-main))
+  );
+
+  --ds-gradient-brand-subtle: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--uds-color-surface-interactive-default) 15%, var(--uds-color-surface-page-main)),
+    color-mix(in srgb, var(--uds-color-surface-interactive-default) 5%, var(--uds-color-surface-page-main))
+  );
+
+  /* --------------------------------------------------------------------------
+     Interactive focus glow
+
+     Soft box-shadow for focus states on interactive elements. Uses the
+     interactive border token so the glow matches the brand accent.
+     -------------------------------------------------------------------------- */
+  --ds-focus-ring: 0 0 0 2px var(--uds-color-surface-page-main),
+                   0 0 0 4px var(--uds-color-border-interactive);
+  --ds-focus-glow: 0 0 0 1px var(--uds-color-border-interactive),
+                   0 0 12px color-mix(in srgb, var(--uds-color-border-interactive) 25%, transparent);
+
+  /* --------------------------------------------------------------------------
+     Transition presets
+
+     Consistent timing across all animated surfaces.
+     -------------------------------------------------------------------------- */
+  --ds-transition-fast: 120ms ease;
+  --ds-transition-base: 200ms ease;
+  --ds-transition-slow: 350ms ease;
+  --ds-transition-spring: 350ms cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* --------------------------------------------------------------------------
+     Surface elevation for dark mode
+
+     Subtle tint that creates visual depth on dark surfaces.
+     In light mode the page-subtle and page-main tokens are close
+     enough that the mix is imperceptible.
+     -------------------------------------------------------------------------- */
+  --ds-surface-elevated: color-mix(
+    in srgb,
+    var(--uds-color-surface-page-subtle) 40%,
+    var(--uds-color-surface-page-main)
+  );
+
+  /* --------------------------------------------------------------------------
+     Border radius scale (doc-site specific)
+
+     Maps to UDS radius tokens but adds larger values for cards and panels.
+     -------------------------------------------------------------------------- */
+  --ds-radius-sm: var(--uds-border-radius-container-sm);
+  --ds-radius-md: var(--uds-border-radius-container);
+  --ds-radius-lg: var(--uds-border-radius-container-md);
+  --ds-radius-xl: 16px;
+  --ds-radius-full: 9999px;
+}
