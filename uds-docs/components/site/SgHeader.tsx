@@ -3,7 +3,7 @@
 import '../../styles/site/header.css';
 import '../../styles/site/theme-bar.css';
 
-import { useState, type ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import {
   useUdsTheme,
   type ColorScheme,

@@ -84,7 +84,7 @@ import 'uds-core/uds.css';`}</pre>
     └── breadcrumb.css              `}<span className="comment">← CSS-only</span></pre>
 
       <h2 className="sg-page-title" style={{ fontSize: 22 }}>Two Layers</h2>
-      <SgPageDesc>UDS ships in two layers. Use both, or just the tokens layer if you're using the Storybook web components.</SgPageDesc>
+      <SgPageDesc>UDS ships in two layers. Use both, or just the tokens layer if you&apos;re using the Storybook web components.</SgPageDesc>
 
       <SgSubsectionTitle>1. Tokens (CSS only)</SgSubsectionTitle>
       <SgSubsectionDesc>Semantic CSS custom properties for colors, spacing, type, borders, and shadows. Drop the stylesheet in any project — the icon font is a separate link.</SgSubsectionDesc>

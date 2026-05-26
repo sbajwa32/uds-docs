@@ -1,0 +1,123 @@
+/* ==========================================================================
+   Token page styles — swatch groups, token table rows, copy buttons.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Swatch groups (color palette displays)
+   -------------------------------------------------------------------------- */
+
+.sg-swatch-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--uds-space-100);
+  margin-bottom: var(--uds-space-300);
+}
+
+.sg-swatch {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--uds-space-075);
+  width: 72px;
+}
+
+.sg-swatch-color {
+  width: 72px;
+  height: var(--uds-space-600);
+  border-radius: var(--ds-radius-md);
+  border: 1px solid var(--uds-color-border-secondary);
+  box-shadow: var(--ds-shadow-sm);
+}
+
+.sg-swatch-label {
+  font-size: var(--uds-font-size-xs);
+  color: var(--uds-color-text-secondary);
+  text-align: center;
+  line-height: 1.3;
+}
+
+/* --------------------------------------------------------------------------
+   Token table (vertical list of token rows)
+   -------------------------------------------------------------------------- */
+
+.sg-token-table {
+  display: flex;
+  flex-direction: column;
+  gap: var(--uds-space-075);
+  margin-bottom: var(--uds-space-300);
+}
+
+.sg-token-row {
+  display: flex;
+  align-items: center;
+  gap: var(--uds-space-150);
+  padding: var(--uds-space-075) var(--uds-space-150);
+  border-radius: var(--ds-radius-sm);
+  background: var(--uds-color-surface-subtle);
+  transition: background var(--ds-transition-fast);
+
+  &:hover { background: var(--uds-color-surface-alt); }
+}
+
+.sg-token-swatch {
+  width: var(--uds-space-400);
+  height: var(--uds-space-400);
+  border-radius: var(--ds-radius-sm);
+  border: 1px solid var(--uds-color-border-secondary);
+  flex-shrink: 0;
+}
+
+.sg-token-name {
+  font-size: var(--uds-font-size-sm);
+  font-weight: var(--uds-font-weight-medium);
+  color: var(--uds-color-text-primary);
+  min-width: 260px;
+  font-family: 'SF Mono', 'Fira Code', monospace;
+}
+
+.sg-token-value {
+  font-size: var(--uds-font-size-xs);
+  color: var(--uds-color-text-secondary);
+  flex: 1;
+}
+
+.sg-token-copy {
+  margin-left: auto;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: var(--ds-radius-sm);
+  background: transparent;
+  color: var(--uds-color-text-secondary);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity var(--ds-transition-fast),
+              background var(--ds-transition-fast),
+              color var(--ds-transition-fast);
+
+  & .material-symbols-outlined { font-size: 16px; }
+
+  &:hover {
+    background: var(--uds-color-surface-alt);
+    color: var(--uds-color-text-primary);
+  }
+
+  &.copied { opacity: 1; color: var(--uds-color-text-success); }
+}
+
+.sg-token-row:hover .sg-token-copy { opacity: 1; }
+
+/* --------------------------------------------------------------------------
+   Utility: row layout
+   -------------------------------------------------------------------------- */
+
+.sg-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
