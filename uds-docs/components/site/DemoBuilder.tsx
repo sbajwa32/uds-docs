@@ -29,6 +29,7 @@ import {
   useState,
   type ReactNode,
 } from 'react';
+import { createPortal } from 'react-dom';
 
 import { downloadDemoProject } from '@/lib/demo-builder/zip';
 import { generateDemoHTML } from '@/lib/demo-builder/generate-html';
@@ -136,21 +137,23 @@ export function DemoBuilder() {
         </span>
       </span>
 
-      {dialogOpen && (
+      {dialogOpen && typeof document !== 'undefined' && createPortal(
         <DemoBuilderDialog
           onClose={closeDialog}
           onPreviewReady={(payload) => setOverlay(payload)}
           buildPreview={buildPreview}
-        />
+        />,
+        document.body,
       )}
 
-      {overlay && (
+      {overlay && typeof document !== 'undefined' && createPortal(
         <DemoPreviewOverlay
           html={overlay.html}
           components={overlay.components}
           buildPreview={buildPreview}
           onClose={closeOverlay}
-        />
+        />,
+        document.body,
       )}
     </>
   );

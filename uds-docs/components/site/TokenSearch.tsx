@@ -14,6 +14,7 @@
 // so we walk rules first and fall back to getComputedStyle on :root).
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 
 import '../../styles/site/token-search.css';
 
@@ -336,91 +337,84 @@ export function TokenSearch() {
         </span>
       </button>
 
-      <div
-        ref={modalRef}
-        id="sg-token-search"
-        className="sg-token-search"
-        data-open={open ? 'true' : 'false'}
-        role="dialog"
-        aria-modal="true"
-        aria-label="Search tokens"
-        onClick={(e) => {
-          if (e.target === e.currentTarget) closeModal();
-        }}
-      >
-        <div className="sg-token-search__panel">
-          <div className="sg-token-search__field">
-            <span className="material-symbols-outlined sg-token-search__icon" aria-hidden="true">
-              search
-            </span>
-            {/* ARIA combobox pattern: the input is the combobox; arrow keys
-                move the highlighted option via aria-activedescendant while
-                DOM focus stays on the input. The rows have role="option"
-                and stable ids; the listbox lives in the results container.
-                This matches the WAI-ARIA APG "Editable Combobox With List
-                Autocomplete" recipe. */}
-            <input
-              ref={inputRef}
-              type="search"
-              id="sg-token-search-input"
-              className="sg-token-search__input"
-              placeholder="Search tokens (try 'color-text', 'space-200', 'border-radius'...)"
-              autoComplete="off"
-              spellCheck={false}
-              role="combobox"
-              aria-expanded={open}
-              aria-controls="sg-token-search-listbox"
-              aria-autocomplete="list"
-              aria-activedescendant={
-                rows.length > 0 ? `sg-token-search-row-${activeIndex}` : undefined
-              }
-              value={query}
-              onChange={(e) => {
-                setQuery(e.target.value);
-                setActiveIndex(0);
-              }}
-              onKeyDown={(e) => {
-                // Trap Tab so focus can't escape the modal. The only
-                // focusable inside is the input itself, so we just prevent
-                // default. Esc / Arrow / Enter are handled by the global
-                // document listener below.
-                if (e.key === 'Tab') e.preventDefault();
-              }}
-            />
-            <kbd className="sg-token-search__hint">Esc</kbd>
-          </div>
+      {typeof document !== 'undefined' && createPortal(
+        <div
+          ref={modalRef}
+          id="sg-token-search"
+          className="sg-token-search"
+          data-open={open ? 'true' : 'false'}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Search tokens"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) closeModal();
+          }}
+        >
+          <div className="sg-token-search__panel">
+            <div className="sg-token-search__field">
+              <span className="material-symbols-outlined sg-token-search__icon" aria-hidden="true">
+                search
+              </span>
+              <input
+                ref={inputRef}
+                type="search"
+                id="sg-token-search-input"
+                className="sg-token-search__input"
+                placeholder="Search tokens (try 'color-text', 'space-200', 'border-radius'...)"
+                autoComplete="off"
+                spellCheck={false}
+                role="combobox"
+                aria-expanded={open}
+                aria-controls="sg-token-search-listbox"
+                aria-autocomplete="list"
+                aria-activedescendant={
+                  rows.length > 0 ? `sg-token-search-row-${activeIndex}` : undefined
+                }
+                value={query}
+                onChange={(e) => {
+                  setQuery(e.target.value);
+                  setActiveIndex(0);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Tab') e.preventDefault();
+                }}
+              />
+              <kbd className="sg-token-search__hint">Esc</kbd>
+            </div>
 
-          <div
-            id="sg-token-search-listbox"
-            className="sg-token-search__results"
-            role="listbox"
-            aria-label="Token search results"
-          >
-            <ResultsBody
-              query={query}
-              rows={rows}
-              groups={groups}
-              total={totalCount}
-              activeIndex={activeIndex}
-              onActivate={activateRow}
-              onHover={setActiveIndex}
-            />
-          </div>
+            <div
+              id="sg-token-search-listbox"
+              className="sg-token-search__results"
+              role="listbox"
+              aria-label="Token search results"
+            >
+              <ResultsBody
+                query={query}
+                rows={rows}
+                groups={groups}
+                total={totalCount}
+                activeIndex={activeIndex}
+                onActivate={activateRow}
+                onHover={setActiveIndex}
+              />
+            </div>
 
-          <div className="sg-token-search__footer">
-            <span>
-              <kbd>↑</kbd>
-              <kbd>↓</kbd> navigate
-            </span>
-            <span>
-              <kbd>Enter</kbd> open
-            </span>
-            <span>
-              <kbd>Esc</kbd> close
-            </span>
+            <div className="sg-token-search__footer">
+              <span>
+                <kbd>↑</kbd>
+                <kbd>↓</kbd> navigate
+              </span>
+              <span>
+                <kbd>Enter</kbd> open
+              </span>
+              <span>
+                <kbd>Esc</kbd> close
+              </span>
+            </div>
           </div>
-        </div>
-      </div>
+        </div>,
+        document.body,
+      )}
     </>
   );
 }
