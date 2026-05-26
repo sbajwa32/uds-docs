@@ -1,12 +1,12 @@
 /* ==========================================================================
-   Changelog page styles — rail, toolbar, cards, items, filters.
+   Changelog — React-native documentation UI.
+
+   These classes are owned by the typed React components in
+   app/(site)/changelog/ChangelogClient.tsx and the per-component
+   ChangelogTab. They intentionally avoid the old sg-cl legacy surface.
    ========================================================================== */
 
-/* --------------------------------------------------------------------------
-   Page layout: rail + main column
-   -------------------------------------------------------------------------- */
-
-.sg-cl-page {
+.ds-changelog-layout {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: var(--uds-space-300);
@@ -14,86 +14,87 @@
 }
 
 @media (min-width: 1100px) {
-  .sg-cl-page { grid-template-columns: 200px minmax(0, 1fr); }
+  .ds-changelog-layout {
+    grid-template-columns: 210px minmax(0, 1fr);
+  }
 }
 
-/* --------------------------------------------------------------------------
-   Version rail (sticky left nav)
-   -------------------------------------------------------------------------- */
+.ds-changelog-main {
+  min-width: 0;
+}
 
-.sg-cl-rail {
+.ds-changelog-rail {
   display: none;
   font-size: var(--uds-font-size-sm);
   line-height: var(--uds-font-line-height-sm);
 }
 
 @media (min-width: 1100px) {
-  .sg-cl-rail {
+  .ds-changelog-rail {
     display: block;
     position: sticky;
     top: var(--uds-space-300);
-    align-self: start;
-    max-height: calc(100vh - var(--uds-space-500));
+    align-self: flex-start;
+    max-height: calc(100vh - var(--uds-space-700));
     overflow-y: auto;
     padding-right: var(--uds-space-200);
     border-right: 1px solid var(--uds-color-border-secondary);
   }
 }
 
-.sg-cl-rail-heading {
+.ds-changelog-rail-heading,
+.ds-changelog-filter-label {
   font-size: var(--uds-font-size-xs);
-  font-weight: var(--uds-font-weight-medium);
+  font-weight: var(--uds-font-weight-bold);
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   color: var(--uds-color-text-secondary);
-  margin: 0 0 var(--uds-space-150) 0;
+  margin: 0 0 var(--uds-space-100);
 }
 
-.sg-cl-rail-list { list-style: none; margin: 0; padding: 0; }
+.ds-changelog-rail-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
 
-.sg-cl-rail-link {
+.ds-changelog-rail-link {
   appearance: none;
-  background: transparent;
-  border: 0;
-  font: inherit;
-  text-align: left;
   width: 100%;
   display: block;
-  padding: var(--uds-space-050) var(--uds-space-100);
-  margin: var(--uds-space-025) 0;
-  border-radius: var(--ds-radius-sm);
+  border: 0;
+  border-radius: var(--ds-radius-md);
+  background: transparent;
   color: var(--uds-color-text-secondary);
-  text-decoration: none;
-  font-variant-numeric: tabular-nums;
   cursor: pointer;
-  transition: background-color var(--ds-transition-fast), color var(--ds-transition-fast);
-
-  &:hover {
-    background: var(--uds-color-surface-interactive-subtle-hover);
-    color: var(--uds-color-text-primary);
-  }
-
-  &[aria-current="true"] {
-    background: var(--uds-color-surface-interactive-subtle);
-    color: var(--uds-color-text-interactive);
-    font-weight: var(--uds-font-weight-medium);
-  }
+  font: inherit;
+  font-variant-numeric: tabular-nums;
+  margin: var(--uds-space-025) 0;
+  padding: var(--uds-space-075) var(--uds-space-100);
+  text-align: left;
+  transition: background var(--ds-transition-fast), color var(--ds-transition-fast);
 }
 
-.sg-cl-rail-link-meta {
+.ds-changelog-rail-link:hover {
+  background: var(--uds-color-surface-subtle);
+  color: var(--uds-color-text-primary);
+}
+
+.ds-changelog-rail-link[aria-current='true'] {
+  background: var(--uds-color-surface-interactive-subtle);
+  color: var(--uds-color-text-interactive);
+  font-weight: var(--uds-font-weight-medium);
+}
+
+.ds-changelog-rail-meta {
   display: block;
-  font-size: var(--uds-font-size-xs);
   color: var(--uds-color-text-secondary);
+  font-size: var(--uds-font-size-xs);
   font-weight: var(--uds-font-weight-regular);
+  margin-top: 1px;
 }
 
-.sg-cl-main { min-width: 0; }
-
-/* --------------------------------------------------------------------------
-   Sticky toolbar (search + type chips + component filter)
-   -------------------------------------------------------------------------- */
-
-.sg-cl-toolbar {
+.ds-changelog-toolbar {
   position: sticky;
   top: 0;
   z-index: var(--uds-z-index-sticky);
@@ -102,18 +103,18 @@
   align-items: center;
   gap: var(--uds-space-200);
   padding: var(--uds-space-200) 0;
-  margin-bottom: var(--uds-space-200);
-  background: var(--uds-color-surface-main);
+  margin-bottom: var(--uds-space-250);
+  background: var(--uds-color-surface-page-main);
   border-bottom: 1px solid var(--uds-color-border-secondary);
 }
 
-.sg-cl-search-wrap {
+.ds-changelog-search {
   position: relative;
-  flex: 1 1 240px;
-  min-width: 200px;
+  flex: 1 1 260px;
+  min-width: 220px;
 }
 
-.sg-cl-search-icon {
+.ds-changelog-search-icon {
   position: absolute;
   left: var(--uds-space-150);
   top: 50%;
@@ -123,367 +124,291 @@
   pointer-events: none;
 }
 
-.sg-cl-search {
+.ds-changelog-search-input {
   width: 100%;
-  height: 36px;
+  height: 38px;
   padding: 0 var(--uds-space-200) 0 calc(var(--uds-space-150) + 18px + var(--uds-space-100));
-  background: var(--uds-color-surface-main);
   border: 1px solid var(--uds-color-border-secondary);
   border-radius: var(--ds-radius-md);
+  background: var(--uds-color-surface-main);
   color: var(--uds-color-text-primary);
   font-family: var(--uds-font-family);
   font-size: var(--uds-font-size-base);
-
-  &::placeholder { color: var(--uds-color-text-secondary); }
-
-  &:focus {
-    outline: 2px solid var(--uds-color-border-interactive);
-    outline-offset: 1px;
-    border-color: var(--uds-color-border-interactive);
-  }
 }
 
-/* --------------------------------------------------------------------------
-   Type chips (filter toggles)
-   -------------------------------------------------------------------------- */
+.ds-changelog-search-input::placeholder {
+  color: var(--uds-color-text-secondary);
+}
 
-.sg-cl-chips {
+.ds-changelog-search-input:focus-visible {
+  outline: none;
+  box-shadow: var(--ds-focus-ring);
+  border-color: var(--uds-color-border-interactive);
+}
+
+.ds-changelog-type-filters,
+.ds-changelog-component-filter-list {
   display: flex;
   flex-wrap: wrap;
   gap: var(--uds-space-100);
 }
 
-.sg-cl-chip {
+.ds-changelog-filter-chip,
+.ds-changelog-component-filter-chip {
+  appearance: none;
   display: inline-flex;
   align-items: center;
   gap: var(--uds-space-075);
-  height: 28px;
+  min-height: 28px;
   padding: 0 var(--uds-space-150);
-  background: var(--uds-color-surface-main);
   border: 1px solid var(--uds-color-border-secondary);
   border-radius: var(--ds-radius-full);
+  background: var(--uds-color-surface-main);
   color: var(--uds-color-text-secondary);
+  cursor: pointer;
   font-family: var(--uds-font-family);
   font-size: var(--uds-font-size-sm);
   font-weight: var(--uds-font-weight-medium);
-  cursor: pointer;
-  transition: background-color var(--ds-transition-fast),
-              color var(--ds-transition-fast),
-              border-color var(--ds-transition-fast);
-
-  &::before {
-    content: '';
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--uds-color-text-secondary);
-    flex-shrink: 0;
-  }
-
-  &:hover {
-    background: var(--uds-color-surface-interactive-subtle-hover);
-    color: var(--uds-color-text-primary);
-  }
-
-  &[aria-pressed="true"] {
-    background: var(--uds-color-surface-interactive-subtle);
-    border-color: var(--uds-color-border-interactive);
-    color: var(--uds-color-text-primary);
-  }
-
-  &[aria-pressed="false"] { opacity: 0.55; }
-  &[aria-pressed="false"]::before { opacity: 0.5; }
-
-  &:focus-visible {
-    outline: 2px solid var(--uds-color-border-interactive);
-    outline-offset: 1px;
-  }
+  transition: background var(--ds-transition-fast), border-color var(--ds-transition-fast), color var(--ds-transition-fast), opacity var(--ds-transition-fast);
 }
 
-.sg-cl-chip--added::before { background: var(--uds-color-text-success); }
-.sg-cl-chip--changed::before { background: var(--uds-color-text-warning); }
-.sg-cl-chip--fixed::before { background: var(--uds-color-text-success); }
-.sg-cl-chip--deprecated::before { background: var(--uds-color-text-error); }
-.sg-cl-chip--removed::before { background: var(--uds-color-text-error); }
+.ds-changelog-filter-chip::before,
+.ds-changelog-component-filter-chip::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: var(--ds-radius-full);
+  background: var(--uds-color-text-secondary);
+}
 
-.sg-cl-component-filter {
+.ds-changelog-filter-chip[data-type='added']::before,
+.ds-changelog-item[data-type='added'] .ds-changelog-item-dot { background: var(--uds-color-text-success); }
+.ds-changelog-filter-chip[data-type='changed']::before,
+.ds-changelog-item[data-type='changed'] .ds-changelog-item-dot { background: var(--uds-color-text-warning); }
+.ds-changelog-filter-chip[data-type='fixed']::before,
+.ds-changelog-item[data-type='fixed'] .ds-changelog-item-dot { background: var(--uds-color-text-success); }
+.ds-changelog-filter-chip[data-type='deprecated']::before,
+.ds-changelog-item[data-type='deprecated'] .ds-changelog-item-dot { background: var(--uds-color-text-error); }
+.ds-changelog-filter-chip[data-type='removed']::before,
+.ds-changelog-item[data-type='removed'] .ds-changelog-item-dot { background: var(--uds-color-text-error); }
+
+.ds-changelog-filter-chip:hover,
+.ds-changelog-component-filter-chip:hover {
+  background: var(--uds-color-surface-interactive-subtle-hover);
+  color: var(--uds-color-text-primary);
+}
+
+.ds-changelog-filter-chip[aria-pressed='true'],
+.ds-changelog-component-filter-chip[aria-pressed='true'] {
+  background: var(--uds-color-surface-interactive-subtle);
+  border-color: var(--uds-color-border-interactive);
+  color: var(--uds-color-text-primary);
+}
+
+.ds-changelog-filter-chip[aria-pressed='false'],
+.ds-changelog-component-filter-chip[aria-pressed='false'] {
+  opacity: 0.55;
+}
+
+.ds-changelog-filter-chip:focus-visible,
+.ds-changelog-component-filter-chip:focus-visible {
+  outline: none;
+  box-shadow: var(--ds-focus-ring);
+}
+
+.ds-changelog-component-filter {
   flex-basis: 100%;
-
-  &:empty { display: none; }
-
-  & .sg-cl-chips {
-    padding-top: var(--uds-space-150);
-    border-top: 1px solid var(--uds-color-border-secondary);
-  }
+  padding-top: var(--uds-space-150);
+  border-top: 1px solid var(--uds-color-border-secondary);
 }
 
-/* --------------------------------------------------------------------------
-   Empty state
-   -------------------------------------------------------------------------- */
-
-.sg-cl-empty,
-.sg-changelog-empty {
+.ds-changelog-empty {
   padding: var(--uds-space-400);
   text-align: center;
   color: var(--uds-color-text-secondary);
   font-size: var(--uds-font-size-base);
   background: var(--uds-color-surface-main);
   border: 1px dashed var(--uds-color-border-secondary);
-  border-radius: var(--ds-radius-md);
+  border-radius: var(--ds-radius-lg);
 }
 
-/* --------------------------------------------------------------------------
-   Stream (vertical stack of day/release cards)
-   -------------------------------------------------------------------------- */
-
-.sg-cl-stream {
+.ds-changelog-stream {
   display: flex;
   flex-direction: column;
   gap: var(--uds-space-300);
 }
 
-/* --------------------------------------------------------------------------
-   Day card (SITE tab) / Release card (UDS tab)
-   -------------------------------------------------------------------------- */
-
-.sg-cl-day,
-.sg-cl-release {
+.ds-changelog-card {
   background: var(--uds-color-surface-main);
   border: 1px solid var(--uds-color-border-secondary);
-  border-radius: var(--ds-radius-md);
+  border-radius: var(--ds-radius-lg);
   box-shadow: var(--ds-shadow-sm);
-  scroll-margin-top: 80px;
+  overflow: hidden;
 }
 
-.sg-cl-day-header,
-.sg-cl-release-header {
+.ds-changelog-card-header {
   display: flex;
-  align-items: baseline;
-  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
   gap: var(--uds-space-200);
-  padding: var(--uds-space-300) var(--uds-space-300) var(--uds-space-200);
+  padding: var(--uds-space-250) var(--uds-space-300);
   border-bottom: 1px solid var(--uds-color-border-secondary);
+  background: var(--ds-gradient-brand-subtle);
 }
 
-.sg-cl-day-title,
-.sg-cl-release-title {
+.ds-changelog-card-title {
   margin: 0;
-  font-size: var(--uds-font-size-xl);
-  line-height: var(--uds-font-line-height-xl);
+  font-size: var(--uds-font-size-lg);
   font-weight: var(--uds-font-weight-bold);
-  letter-spacing: -0.01em;
   color: var(--uds-color-text-primary);
+  letter-spacing: -0.01em;
 }
 
-.sg-cl-day-meta,
-.sg-cl-release-meta {
-  margin-left: auto;
+.ds-changelog-card-meta {
   display: flex;
-  gap: var(--uds-space-150);
-  align-items: center;
-  font-size: var(--uds-font-size-sm);
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--uds-space-100);
   color: var(--uds-color-text-secondary);
-  font-variant-numeric: tabular-nums;
+  font-size: var(--uds-font-size-xs);
 }
 
-.sg-cl-day-count,
-.sg-cl-release-count {
+.ds-changelog-card-meta span,
+.ds-changelog-version-pill {
   display: inline-flex;
   align-items: center;
-  gap: var(--uds-space-50);
+  min-height: 22px;
   padding: 0 var(--uds-space-100);
-  height: 22px;
+  border: 1px solid var(--uds-color-border-secondary);
   border-radius: var(--ds-radius-full);
-  background: var(--uds-color-surface-interactive-subtle);
+  background: var(--uds-color-surface-main);
+  color: var(--uds-color-text-secondary);
+}
+
+.ds-changelog-card-body {
+  padding: var(--uds-space-300);
+}
+
+.ds-changelog-section {
+  margin-top: var(--uds-space-300);
+}
+
+.ds-changelog-section:first-child {
+  margin-top: 0;
+}
+
+.ds-changelog-section-title {
+  margin: 0 0 var(--uds-space-150);
+  color: var(--uds-color-text-secondary);
+  font-size: var(--uds-font-size-xs);
+  font-weight: var(--uds-font-weight-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.ds-changelog-component-group {
+  margin-top: var(--uds-space-200);
+  padding-top: var(--uds-space-200);
+  border-top: 1px solid var(--uds-color-border-secondary);
+}
+
+.ds-changelog-component-group:first-of-type {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+}
+
+.ds-changelog-component-heading {
+  margin: 0 0 var(--uds-space-100);
+  color: var(--uds-color-text-primary);
+  font-size: var(--uds-font-size-base);
+  font-weight: var(--uds-font-weight-medium);
+}
+
+.ds-changelog-item-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.ds-changelog-item {
+  display: grid;
+  grid-template-columns: 10px minmax(0, 1fr);
+  gap: var(--uds-space-150);
+  color: var(--uds-color-text-primary);
+  font-size: var(--uds-font-size-base);
+  line-height: var(--uds-font-line-height-base);
+}
+
+.ds-changelog-item + .ds-changelog-item {
+  margin-top: var(--uds-space-150);
+}
+
+.ds-changelog-item-dot {
+  width: 8px;
+  height: 8px;
+  margin-top: 7px;
+  border-radius: var(--ds-radius-full);
+  background: var(--uds-color-text-secondary);
+}
+
+.ds-changelog-item-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--uds-space-075);
+  margin-bottom: var(--uds-space-050);
+}
+
+.ds-changelog-type {
+  color: var(--uds-color-text-secondary);
+  font-size: var(--uds-font-size-xs);
+  font-weight: var(--uds-font-weight-bold);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.ds-changelog-type[data-type='added'] { color: var(--uds-color-text-success); }
+.ds-changelog-type[data-type='changed'] { color: var(--uds-color-text-warning); }
+.ds-changelog-type[data-type='fixed'] { color: var(--uds-color-text-success); }
+.ds-changelog-type[data-type='deprecated'] { color: var(--uds-color-text-error); }
+.ds-changelog-type[data-type='removed'] { color: var(--uds-color-text-error); }
+
+.ds-changelog-component-tag {
+  display: inline-flex;
+  align-items: center;
+  min-height: 20px;
+  padding: 0 var(--uds-space-100);
+  border: 1px solid var(--uds-color-border-secondary);
+  border-radius: var(--ds-radius-full);
+  background: var(--uds-color-surface-subtle);
   color: var(--uds-color-text-secondary);
   font-size: var(--uds-font-size-xs);
   font-weight: var(--uds-font-weight-medium);
 }
 
-/* --------------------------------------------------------------------------
-   Bump sub-section (SITE tab)
-   -------------------------------------------------------------------------- */
-
-.sg-cl-bumps {
-  display: flex;
-  flex-direction: column;
+.ds-changelog-item-text {
+  margin: 0;
 }
 
-.sg-cl-bump {
-  padding: var(--uds-space-200) var(--uds-space-300);
-  border-bottom: 1px solid var(--uds-color-border-secondary);
-
-  &:last-child { border-bottom: none; }
-}
-
-.sg-cl-bump-label {
-  display: inline-block;
+.ds-changelog-inline-code {
   font-family: var(--uds-font-family-mono, ui-monospace, SFMono-Regular, monospace);
-  font-size: var(--uds-font-size-xs);
-  color: var(--uds-color-text-secondary);
-  letter-spacing: 0.02em;
-  margin-bottom: var(--uds-space-150);
-  padding: 2px var(--uds-space-100);
+  font-size: 0.92em;
+  padding: 1px var(--uds-space-050);
   background: var(--uds-color-surface-subtle);
   border: 1px solid var(--uds-color-border-secondary);
   border-radius: var(--ds-radius-sm);
 }
 
-/* --------------------------------------------------------------------------
-   Release body (UDS tab)
-   -------------------------------------------------------------------------- */
-
-.sg-cl-release-body {
-  padding: var(--uds-space-200) var(--uds-space-300) var(--uds-space-300);
-  display: flex;
-  flex-direction: column;
-  gap: var(--uds-space-300);
-}
-
-.sg-cl-release-section {
-  display: flex;
-  flex-direction: column;
-  gap: var(--uds-space-150);
-}
-
-.sg-cl-release-section-title {
-  margin: 0;
-  font-size: var(--uds-font-size-sm);
-  font-weight: var(--uds-font-weight-medium);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--uds-color-text-secondary);
-}
-
-.sg-cl-comp {
-  display: flex;
-  flex-direction: column;
-  gap: var(--uds-space-100);
-  padding: var(--uds-space-150) 0;
-  border-top: 1px solid var(--uds-color-border-secondary);
-
-  &:first-child { border-top: none; }
-}
-
-.sg-cl-comp-name {
-  margin: 0 0 var(--uds-space-050) 0;
-  font-size: var(--uds-font-size-base);
-  font-weight: var(--uds-font-weight-medium);
-  color: var(--uds-color-text-primary);
-}
-
-/* --------------------------------------------------------------------------
-   Items (shared with per-component changelog tab)
-   -------------------------------------------------------------------------- */
-
-.sg-cl-item {
-  font-size: var(--uds-font-size-base);
-  line-height: var(--uds-font-line-height-base);
-  padding-left: 18px;
-  position: relative;
-  color: var(--uds-color-text-primary);
-
-  & + & { margin-top: var(--uds-space-100); }
-
-  &::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 8px;
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--uds-color-text-secondary);
-  }
-
-  & code {
-    font-family: var(--uds-font-family-mono, ui-monospace, SFMono-Regular, monospace);
-    font-size: 0.92em;
-    padding: 1px var(--uds-space-050);
-    background: var(--uds-color-surface-subtle);
-    border: 1px solid var(--uds-color-border-secondary);
-    border-radius: 4px;
-  }
-}
-
-.sg-cl-item--added::before { background: var(--uds-color-text-success); }
-.sg-cl-item--changed::before { background: var(--uds-color-text-warning); }
-.sg-cl-item--fixed::before { background: var(--uds-color-text-success); }
-.sg-cl-item--deprecated::before { background: var(--uds-color-text-error); }
-.sg-cl-item--removed::before { background: var(--uds-color-text-error); }
-
-.sg-cl-type {
-  display: inline;
-  font-weight: var(--uds-font-weight-medium);
-  font-size: var(--uds-font-size-sm);
-  text-transform: lowercase;
-  letter-spacing: 0;
-  margin-right: var(--uds-space-100);
-  color: var(--uds-color-text-secondary);
-}
-
-.sg-cl-type--added { color: var(--uds-color-text-success); }
-.sg-cl-type--changed { color: var(--uds-color-text-warning); }
-.sg-cl-type--fixed { color: var(--uds-color-text-success); }
-.sg-cl-type--deprecated { color: var(--uds-color-text-error); }
-.sg-cl-type--removed { color: var(--uds-color-text-error); }
-
-.sg-cl-component {
-  margin-right: var(--uds-space-075);
-  vertical-align: baseline;
-}
-
-/* --------------------------------------------------------------------------
-   Per-component changelog tab (legacy markup, share styles)
-   -------------------------------------------------------------------------- */
-
-.sg-cl-version {
-  margin-bottom: var(--uds-space-400);
-  padding-bottom: var(--uds-space-300);
-  border-bottom: 1px solid var(--uds-color-border-secondary);
-
-  &:last-child { border-bottom: none; }
-}
-
-.sg-cl-header {
-  display: flex;
-  align-items: baseline;
-  gap: var(--uds-space-150);
-  margin-bottom: var(--uds-space-200);
-  flex-wrap: wrap;
-}
-
-.sg-cl-ver-num {
-  font-size: var(--uds-font-size-lg);
-  font-weight: var(--uds-font-weight-bold);
-  letter-spacing: -0.01em;
-  color: var(--uds-color-text-primary);
-}
-
-.sg-cl-ver-date {
-  font-size: var(--uds-font-size-sm);
-  color: var(--uds-color-text-secondary);
-  font-weight: var(--uds-font-weight-regular);
-}
-
-.sg-cl-group { margin-bottom: var(--uds-space-200); }
-
-.sg-cl-group-title {
+.ds-changelog-version-pill {
+  width: fit-content;
+  margin: 0 0 var(--uds-space-150);
+  font-family: var(--uds-font-family-mono, ui-monospace, SFMono-Regular, monospace);
   font-size: var(--uds-font-size-xs);
-  font-weight: var(--uds-font-weight-medium);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  margin-bottom: var(--uds-space-100);
-  color: var(--uds-color-text-secondary);
 }
 
-/* --------------------------------------------------------------------------
-   Filter visibility
-   -------------------------------------------------------------------------- */
-
-.sg-cl-item[hidden],
-.sg-cl-bump[hidden],
-.sg-cl-day[hidden],
-.sg-cl-release[hidden],
-.sg-cl-comp[hidden],
-.sg-cl-release-section[hidden] { display: none !important; }
+.ds-changelog-item[hidden],
+.ds-changelog-card[hidden],
+.ds-changelog-section[hidden] {
+  display: none !important;
+}
