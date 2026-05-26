@@ -450,7 +450,7 @@ async function main() {
   const playground = await evaluate(`(() => {
     const findVisible = (sel) => Array.from(document.querySelectorAll(sel)).find((el) => el.offsetParent !== null) || null;
     return {
-      copyBtn: !!findVisible('.sg-playground-right .sg-code-copy'),
+      copyBtn: !!findVisible('.ds-playground-right .ds-code-block__copy'),
       implDetails: !!findVisible('.sg-impl-details'),
       implTabs: findVisible('.sg-impl-details') ? document.querySelectorAll('.sg-impl-details .sg-impl-tab').length : 0,
       iconPicker: !!findVisible('.sg-icon-picker-trigger'),
