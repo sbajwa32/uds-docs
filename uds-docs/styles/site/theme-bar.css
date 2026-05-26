@@ -1,11 +1,17 @@
 /* ==========================================================================
    Theme bar — collapsible appearance controls panel.
 
-   Collapses to zero height by default; toggled open via the gear button
-   in the brand bar. Uses CSS grid row animation for smooth open/close.
+   Overlays the page content when open (position: absolute relative to
+   the sticky header) so the 51px header offset stays constant for
+   sidebar, archive banner, and main content.
    ========================================================================== */
 
 .sg-theme-bar-wrapper {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: var(--uds-z-index-dropdown);
   display: grid;
   grid-template-rows: 0fr;
   transition: grid-template-rows var(--ds-transition-slow);
@@ -19,7 +25,9 @@
 
 .sg-theme-bar {
   overflow: hidden;
-  background: var(--ds-surface-elevated);
+  background: var(--ds-glass-bg-heavy);
+  backdrop-filter: var(--ds-glass-blur);
+  -webkit-backdrop-filter: var(--ds-glass-blur);
   padding: 0 var(--uds-space-300);
   display: flex;
   align-items: center;

@@ -1,17 +1,22 @@
-/* Token search modal — keyboard-accessible search over every --uds-* token.
-   Ported verbatim from docs/site.css 618-754. The trigger button styles
-   live in styles/site/header.css; this file owns the modal itself. */
+/* ==========================================================================
+   Token Search — command-palette-style modal.
+
+   Frosted backdrop, grouped results, keyboard navigation indicators.
+   ========================================================================== */
 
 .sg-token-search {
   position: fixed;
   inset: 0;
   z-index: var(--uds-z-index-modal);
-  background: var(--uds-overlay-backdrop);
+  background: color-mix(in srgb, var(--uds-color-surface-page-inverse) 30%, transparent);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
   display: none;
   align-items: flex-start;
   justify-content: center;
-  padding: 80px 24px 24px;
+  padding: 10vh 24px 24px;
 }
+
 .sg-token-search[data-open="true"] {
   display: flex;
 }
@@ -19,26 +24,28 @@
 .sg-token-search__panel {
   width: 100%;
   max-width: 640px;
-  background: var(--uds-color-surface-main);
-  border: 1px solid var(--uds-color-border-secondary);
-  border-radius: var(--uds-border-radius-container-md);
-  box-shadow: var(--uds-shadow-depth-500, 0 24px 60px rgba(0, 0, 0, 0.18));
+  background: var(--ds-glass-bg-heavy);
+  backdrop-filter: var(--ds-glass-blur);
+  -webkit-backdrop-filter: var(--ds-glass-blur);
+  border: var(--ds-glass-border);
+  border-radius: var(--ds-radius-lg);
+  box-shadow: var(--ds-shadow-lg);
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  max-height: calc(100vh - 120px);
+  max-height: calc(100vh - 15vh);
 }
 
 .sg-token-search__field {
   display: flex;
   align-items: center;
   gap: var(--uds-space-100);
-  padding: var(--uds-space-200);
+  padding: var(--uds-space-200) var(--uds-space-250);
   border-bottom: 1px solid var(--uds-color-border-secondary);
 }
 
 .sg-token-search__icon {
-  color: var(--uds-color-icon-secondary);
+  color: var(--uds-color-text-secondary);
   font-size: 20px;
 }
 
@@ -51,8 +58,9 @@
   font-size: var(--uds-font-size-md);
   color: var(--uds-color-text-primary);
 }
+
 .sg-token-search__input::placeholder {
-  color: var(--uds-color-text-tertiary);
+  color: var(--uds-color-text-secondary);
 }
 
 .sg-token-search__hint,
@@ -65,8 +73,8 @@
   font-family: monospace;
   font-size: var(--uds-font-size-xs);
   background: var(--uds-color-surface-alt);
-  border: 1px solid var(--uds-color-border-primary);
-  border-radius: var(--uds-border-radius-container-sm);
+  border: 1px solid var(--uds-color-border-secondary);
+  border-radius: var(--ds-radius-sm);
   color: var(--uds-color-text-secondary);
 }
 
@@ -74,18 +82,20 @@
   flex: 1;
   overflow-y: auto;
   padding: var(--uds-space-100) 0;
+  scrollbar-width: thin;
+  scrollbar-color: var(--uds-color-border-secondary) transparent;
 }
 
 .sg-token-search__empty {
-  padding: var(--uds-space-300) var(--uds-space-200);
+  padding: var(--uds-space-400) var(--uds-space-200);
   text-align: center;
   font-family: var(--uds-font-family);
   font-size: var(--uds-font-size-sm);
-  color: var(--uds-color-text-tertiary);
+  color: var(--uds-color-text-secondary);
 }
 
 .sg-token-search__count {
-  padding: var(--uds-space-100) var(--uds-space-200);
+  padding: var(--uds-space-100) var(--uds-space-250);
   font-family: var(--uds-font-family);
   font-size: var(--uds-font-size-xs);
   color: var(--uds-color-text-secondary);
@@ -95,40 +105,43 @@
   top: 0;
   z-index: var(--uds-z-index-sticky);
 }
+
 .sg-token-search__count strong {
   color: var(--uds-color-text-primary);
   font-weight: var(--uds-font-weight-bold);
 }
+
 .sg-token-search__count code {
   font-family: monospace;
   font-size: 0.95em;
   background: var(--uds-color-surface-alt);
   padding: 1px 4px;
-  border-radius: 3px;
+  border-radius: var(--ds-radius-sm);
 }
 
 .sg-token-search__group-title {
-  padding: var(--uds-space-150) var(--uds-space-200) var(--uds-space-050);
+  padding: var(--uds-space-150) var(--uds-space-250) var(--uds-space-050);
   font-family: var(--uds-font-family);
   font-size: var(--uds-font-size-xs);
   font-weight: var(--uds-font-weight-bold);
-  color: var(--uds-color-text-tertiary);
+  color: var(--uds-color-text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.06em;
   display: flex;
   align-items: center;
   gap: var(--uds-space-100);
 }
+
 .sg-token-search__group-count {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   min-width: 22px;
-  height: 16px;
+  height: 18px;
   padding: 0 6px;
   background: var(--uds-color-surface-alt);
   color: var(--uds-color-text-secondary);
-  border-radius: var(--uds-border-radius-container-full);
+  border-radius: var(--ds-radius-full);
   font-size: 10px;
   font-weight: var(--uds-font-weight-bold);
   letter-spacing: 0;
@@ -139,24 +152,32 @@
   display: flex;
   align-items: center;
   gap: var(--uds-space-150);
-  padding: var(--uds-space-100) var(--uds-space-200);
+  padding: var(--uds-space-100) var(--uds-space-250);
   cursor: pointer;
   user-select: none;
   font-family: var(--uds-font-family);
-  transition: background 80ms ease;
+  border-radius: var(--ds-radius-sm);
+  margin: 0 var(--uds-space-100);
+  transition: background var(--ds-transition-fast);
 }
+
 .sg-token-search__row:hover,
 .sg-token-search__row[data-active="true"] {
   background: var(--uds-color-surface-interactive-subtle-hover);
 }
 
+.sg-token-search__row:focus-visible {
+  outline: none;
+  box-shadow: var(--ds-focus-ring);
+}
+
 .sg-token-search__swatch {
   flex-shrink: 0;
-  width: 18px;
-  height: 18px;
-  border-radius: var(--uds-border-radius-container-sm);
-  border: 1px solid var(--uds-color-border-primary);
-  background-clip: padding-box;
+  width: 20px;
+  height: 20px;
+  border-radius: var(--ds-radius-sm);
+  border: 1px solid var(--uds-color-border-secondary);
+  box-shadow: var(--ds-shadow-sm);
 }
 
 .sg-token-search__name {
@@ -169,8 +190,9 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
 .sg-token-search__name mark {
-  background: var(--uds-color-surface-warning-subtle);
+  background: color-mix(in srgb, var(--uds-color-surface-warning-subtle) 80%, transparent);
   color: inherit;
   padding: 0 2px;
   border-radius: 2px;
@@ -191,7 +213,7 @@
   flex-shrink: 0;
   font-size: var(--uds-font-size-xs);
   font-weight: var(--uds-font-weight-bold);
-  color: var(--uds-color-text-tertiary);
+  color: var(--uds-color-text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
@@ -199,13 +221,14 @@
 .sg-token-search__footer {
   display: flex;
   gap: var(--uds-space-200);
-  padding: var(--uds-space-100) var(--uds-space-200);
+  padding: var(--uds-space-100) var(--uds-space-250);
   border-top: 1px solid var(--uds-color-border-secondary);
   background: var(--uds-color-surface-subtle);
   font-family: var(--uds-font-family);
   font-size: var(--uds-font-size-xs);
   color: var(--uds-color-text-secondary);
 }
+
 .sg-token-search__footer kbd {
   margin-right: 4px;
 }
