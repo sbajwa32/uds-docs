@@ -4,22 +4,22 @@ overview: 'Chunk 18 (cutover) is what''s left of the Next.js migration. Most of 
 todos:
   - id: phase-1-cutover-pr
     content: 'Phase 1: Open cutover PR directly from cursor/migration-next-stack to main (post-Opus findings + SITE migration entry; ~23 files of diff). Do NOT route through an intermediate sync branch.'
-    status: pending
+    status: completed
   - id: phase-2-validation
     content: 'Phase 2: Run full validation suite locally (gen:types:check, tsc, lint, vitest, build, regression-check, repo audits). Confirm staging.udsdocs.com runtime endpoints return 200.'
-    status: pending
+    status: completed
   - id: phase-3-manual-walk
     content: 'Phase 3: User runs end-to-end walkthrough against staging.udsdocs.com (every page, every tab, every theme, version dropdown, Token Search, Contrast Checker, Demo Builder)'
-    status: pending
+    status: completed
   - id: phase-4-cf-swap
     content: 'Phase 4: User changes Cloudflare Pages production branch from cursor/migration-next-stack to main, waits for build to succeed, then adds udsdocs.com as custom domain'
-    status: pending
+    status: completed
   - id: phase-5-verify
     content: 'Phase 5: Verify udsdocs.com serves Next.js, smoke-test key pages, optionally disable GitHub Pages in repo settings'
-    status: pending
+    status: completed
   - id: phase-6-cleanup
     content: 'Phase 6 (optional, post-cutover): SITE_CHANGELOG entry for the cutover, delete merged feature branches, decide whether to keep cursor/migration-next-stack, mark migration plans completed in frontmatter'
-    status: pending
+    status: completed
 isProject: false
 ---
 # UDS Docs Migration — Chunk 18 Cutover Plan

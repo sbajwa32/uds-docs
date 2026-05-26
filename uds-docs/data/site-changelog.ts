@@ -1086,5 +1086,12 @@ export const SITE_CHANGELOG: SiteChangelogEntry[] = [
         { type: 'added', text: 'Theme bar buttons expose `aria-pressed` so screen readers announce the currently-selected color scheme, brand, font, scale, and density. Visual `active` class still matches.' },
         { type: 'added', text: 'CI now runs the headless-Chrome regression sweep alongside the build + lint + tests. The check covers 18 cases (component-page chrome, changelog rail, demo builder dialog, archive contract, theme persistence, `?uds=` validation, etc.) and catches drift that type-check + unit tests can\'t see.' }
       ]
+    },
+    {
+      version: 'SITE 2026.05.26.2',
+      date: '2026-05-26',
+      changes: [
+        { type: 'changed', text: 'Cutover complete — `udsdocs.com` now serves the Next.js app from Cloudflare Pages instead of the legacy GitHub Pages deploy. Same content, faster builds, proper cache headers, and client-side navigation throughout.' }
+      ]
     }
 ];
