@@ -1093,5 +1093,20 @@ export const SITE_CHANGELOG: SiteChangelogEntry[] = [
       changes: [
         { type: 'changed', text: 'Cutover complete — `udsdocs.com` now serves the Next.js app from Cloudflare Pages instead of the legacy GitHub Pages deploy. Same content, faster builds, proper cache headers, and client-side navigation throughout.' }
       ]
+    },
+    {
+      version: 'SITE 2026.05.26.3',
+      date: '2026-05-26',
+      changes: [
+        { type: 'changed', text: 'Refreshed the docs shell with a glass header, collapsible appearance controls, a mobile sidebar overlay, and animated page tabs. Static prose pages and the Semantic Colors preview now render as JSX instead of HTML strings, so internal navigation stays inside the React app and archived UDS views keep their context.' },
+        { type: 'fixed', text: 'Cleaned up follow-up regressions from the UI refresh: the sidebar and content columns render in the right places again, global modals open above the whole page, the Cloudflare build no longer fails on the converted Getting Started copy, and changelog type colors are restored without bringing back the old monolithic stylesheet.' }
+      ]
+    },
+    {
+      version: 'SITE 2026.05.26.4',
+      date: '2026-05-26',
+      changes: [
+        { type: 'changed', text: 'Started the React-native docs UI rebuild with the Changelog page. Releases, filters, type labels, component tags, and rail navigation now render through typed React components with `ds-changelog-*` styles built on UDS semantic tokens instead of the old `sg-cl-*` class surface.' }
+      ]
     }
 ];
