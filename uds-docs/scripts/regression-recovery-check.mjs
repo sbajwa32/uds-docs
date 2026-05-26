@@ -301,7 +301,7 @@ async function main() {
   await evaluate(`document.querySelector('.sg-spec-popover__close')?.click()`);
   await sleep(200);
   const headerLinks = await evaluate(`(() => {
-    const links = Array.from(document.querySelectorAll('.sg-page-links .sg-page-link'));
+    const links = Array.from(document.querySelectorAll('.ds-page-actions .ds-page-action'));
     return links.map((el) => el.textContent.trim());
   })()`);
   const requiredLinks = ['Figma', 'Storybook', 'GitHub', 'Report Issue'];
