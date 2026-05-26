@@ -164,17 +164,17 @@ async function main() {
   await send('Page.navigate', { url: `http://localhost:${SERVE_PORT}/changelog` });
   await sleep(2000);
   const changelogInitial = await evaluate(`(() => {
-    const railLink = document.querySelector('.sg-cl-rail-link');
+    const railLink = document.querySelector('.ds-changelog-rail-link');
     const railLinkStyle = railLink ? getComputedStyle(railLink) : null;
     return {
-      toolbar: !!document.querySelector('.sg-cl-toolbar'),
-      rail: document.querySelectorAll('.sg-cl-rail-link').length,
-      componentChips: document.querySelectorAll('.sg-cl-component-filter .sg-cl-chip').length,
-      releaseCards: document.querySelectorAll('.sg-cl-release').length,
-      railHeading: document.querySelector('.sg-cl-rail .sg-cl-rail-heading')?.textContent.trim() || '',
-      componentFilterHeading: document.querySelector('.sg-cl-component-filter .sg-cl-rail-heading')?.textContent.trim() || '',
-      searchPlaceholder: document.querySelector('.sg-cl-search')?.getAttribute('placeholder') || '',
-      railMeta: document.querySelector('.sg-cl-rail-link-meta')?.textContent.trim() || '',
+      toolbar: !!document.querySelector('.ds-changelog-toolbar'),
+      rail: document.querySelectorAll('.ds-changelog-rail-link').length,
+      componentChips: document.querySelectorAll('.ds-changelog-component-filter .ds-changelog-component-filter-chip').length,
+      releaseCards: document.querySelectorAll('.ds-changelog-card').length,
+      railHeading: document.querySelector('.ds-changelog-rail .ds-changelog-rail-heading')?.textContent.trim() || '',
+      componentFilterHeading: document.querySelector('.ds-changelog-component-filter .ds-changelog-filter-label')?.textContent.trim() || '',
+      searchPlaceholder: document.querySelector('.ds-changelog-search-input')?.getAttribute('placeholder') || '',
+      railMeta: document.querySelector('.ds-changelog-rail-meta')?.textContent.trim() || '',
       railLinkBorder: railLinkStyle?.borderTopWidth || '',
       railLinkBackground: railLinkStyle?.backgroundColor || '',
     };
@@ -212,14 +212,14 @@ async function main() {
   })()`);
   await new Promise((r) => setTimeout(r, 400));
   const siteRail = await evaluate(`(() => {
-    const labels = Array.from(document.querySelectorAll('[data-cl-tab="site"] .sg-cl-rail-link'));
+    const labels = Array.from(document.querySelectorAll('[data-changelog-tab="site"] .ds-changelog-rail-link'));
     const ranked = labels
       .map((el) => ({
         label: el.firstChild?.textContent?.trim() || '',
-        meta: el.querySelector('.sg-cl-rail-link-meta')?.textContent.trim() || '',
+        meta: el.querySelector('.ds-changelog-rail-meta')?.textContent.trim() || '',
       }))
       .filter((row) => row.label);
-    const heading = document.querySelector('[data-cl-tab="site"] .sg-cl-rail-heading')?.textContent.trim() || '';
+    const heading = document.querySelector('[data-changelog-tab="site"] .ds-changelog-rail-heading')?.textContent.trim() || '';
     return { heading, ranked };
   })()`);
   if (siteRail.heading !== 'Jump to date') {
@@ -244,13 +244,13 @@ async function main() {
 
   await screenshot('changelog-header');
   await evaluate(`(() => {
-    const input = document.querySelector('.sg-cl-search');
+    const input = document.querySelector('.ds-changelog-search-input');
     const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;
     setter.call(input, 'definitely-no-match-xyz');
     input.dispatchEvent(new Event('input', { bubbles: true }));
   })()`);
   await sleep(400);
-  const emptyText = await evaluate(`document.querySelector('.sg-cl-empty')?.textContent.trim() || null`);
+  const emptyText = await evaluate(`document.querySelector('.ds-changelog-empty')?.textContent.trim() || null`);
   if (!emptyText) throw new Error('Filtering did not show empty state');
   await screenshot('changelog-empty-state');
   console.log('  OK — toolbar/filter/rail present, empty state appears');
