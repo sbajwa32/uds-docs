@@ -151,12 +151,14 @@ registerUdsComponents();</pre>
         </tbody></table>
         <p style="font-size:13px;color:var(--uds-color-text-secondary);margin-top:12px;line-height:1.6;">Try these live using the appearance bar at the top of this site.</p>`;
 
+import { ProseContent } from '@/components/site/ProseContent';
+
 export default function GettingStartedPage() {
   return (
     <div className="sg-page-content">
-      <div dangerouslySetInnerHTML={{ __html: HTML_BEFORE_DOWNLOAD }} />
+      <ProseContent html={HTML_BEFORE_DOWNLOAD} />
       <UdsDownloadButton />
-      <div dangerouslySetInnerHTML={{ __html: HTML_AFTER_DOWNLOAD }} />
+      <ProseContent html={HTML_AFTER_DOWNLOAD} />
     </div>
   );
 }

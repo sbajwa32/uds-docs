@@ -122,11 +122,8 @@ const HTML = `<h1 class="sg-page-title">Composition Recipes</h1>
           </div>
         </div>`;
 
+import { ProseContent } from '@/components/site/ProseContent';
+
 export default function RecipesPage() {
-  return (
-    <div
-      className="sg-page-content"
-      dangerouslySetInnerHTML={{ __html: HTML }}
-    />
-  );
+  return <ProseContent className="sg-page-content" html={HTML} />;
 }

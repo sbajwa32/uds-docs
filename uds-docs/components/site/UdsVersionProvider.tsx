@@ -53,6 +53,16 @@ export interface UdsVersionContextValue {
    * directly.
    */
   fetchVersion: string | undefined;
+  /**
+   * False during the first render (when `?uds=` hasn't been read off
+   * the URL yet — the provider has to defer that to a mount effect so
+   * static-export SSR doesn't crash on `window`). Consumers that fetch
+   * UDS data MUST gate on `ready === true` before firing, otherwise an
+   * archive deep-link burns one fetch of the live payload before the
+   * archive version resolves. See `ComponentPageClient` for the
+   * canonical use.
+   */
+  ready: boolean;
 }
 
 const FALLBACK_LIVE_VERSION = '0.3';
@@ -71,10 +81,19 @@ export function UdsVersionProvider({ children }: { children: ReactNode }) {
 
   const [activeVersion, setActiveVersionState] = useState<string | null>(null);
   const [manifest, setManifest] = useState<VersionsManifest | null>(null);
+  const [ready, setReady] = useState(false);
 
-  // Mount once — read the URL param and the versions manifest.
+  // Mount once — read the URL param synchronously, then fetch the
+  // versions manifest in parallel. `ready` flips true as soon as the URL
+  // param is on the wire so consumers can stop deferring fetches. The
+  // manifest's job is validation + dropdown content; if it never arrives
+  // we still treat the provider as ready and let consumers fall back to
+  // the URL value (caveat: an unknown version will surface as an
+  // archive view until the manifest validates it). useLayoutEffect so
+  // the state is committed before children's useEffects fetch.
   useEffect(() => {
     setActiveVersionState(readActiveVersionFromUrl());
+    setReady(true);
 
     let cancelled = false;
     getVersions()
@@ -105,6 +124,24 @@ export function UdsVersionProvider({ children }: { children: ReactNode }) {
     window.addEventListener('popstate', onPop);
     return () => window.removeEventListener('popstate', onPop);
   }, []);
+
+  // When the URL param doesn't match a known archive, drop it. This
+  // prevents `/button?uds=9.9` from looking like a real archive view
+  // (banner says "UDS 9.9", dropdown says 0.3, data fetches all 404).
+  // Runs after the manifest loads so the validation is real, not a
+  // race against the initial mount fetch.
+  useEffect(() => {
+    if (!manifest) return;
+    if (activeVersion === null) return;
+    if (manifest.versions.includes(activeVersion)) return;
+    setActiveVersionState(null);
+    if (typeof window === 'undefined') return;
+    const params = new URLSearchParams(window.location.search);
+    params.delete('uds');
+    const qs = params.toString();
+    const url = pathname + (qs ? `?${qs}` : '');
+    router.replace(url, { scroll: false });
+  }, [manifest, activeVersion, pathname, router]);
 
   const liveVersion = manifest?.latest ?? FALLBACK_LIVE_VERSION;
   const versions = manifest?.versions ?? [liveVersion];
@@ -137,8 +174,9 @@ export function UdsVersionProvider({ children }: { children: ReactNode }) {
       setActiveVersion,
       isArchive,
       fetchVersion,
+      ready,
     }),
-    [activeVersion, liveVersion, versions, setActiveVersion, isArchive, fetchVersion],
+    [activeVersion, liveVersion, versions, setActiveVersion, isArchive, fetchVersion, ready],
   );
 
   return <UdsVersionContext.Provider value={value}>{children}</UdsVersionContext.Provider>;

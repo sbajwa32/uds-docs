@@ -374,20 +374,28 @@ export function ChangelogClient({
 
   // Re-fetch when switching to an archive version. The initial value is
   // the build-time live changelog, so we only need to override on
-  // archive switch.
+  // archive switch. If an archive fetch fails, surface an empty archive
+  // changelog with a flag — substituting live changelog data would be
+  // a silent data-correctness regression (the UI says "viewing 0.2"
+  // while showing 0.3 entries).
+  const [archiveFetchFailed, setArchiveFetchFailed] = useState(false);
   useEffect(() => {
     if (!fetchVersion) {
+      setArchiveFetchFailed(false);
       setUdsChangelog(initialUdsChangelog);
       return;
     }
     let cancelled = false;
+    setArchiveFetchFailed(false);
     getChangelog(fetchVersion)
       .then((cl) => {
-        if (!cancelled) setUdsChangelog(cl);
+        if (cancelled) return;
+        setUdsChangelog(cl);
       })
       .catch(() => {
-        // Archive lookup failed — fall back to the live changelog.
-        if (!cancelled) setUdsChangelog(initialUdsChangelog);
+        if (cancelled) return;
+        setArchiveFetchFailed(true);
+        setUdsChangelog([]);
       });
     return () => {
       cancelled = true;
@@ -564,7 +572,13 @@ export function ChangelogClient({
               selectedComponents={selectedComponents}
               onToggleComponent={onToggleComponent}
             />
-            {filteredUds.length ? (
+            {archiveFetchFailed ? (
+              <p className="sg-cl-empty" role="alert">
+                Couldn&apos;t load the UDS {fetchVersion} archive changelog.
+                The archive may not include a CHANGELOG.json — switch back to
+                the latest version in the dropdown to see release notes.
+              </p>
+            ) : filteredUds.length ? (
               <UdsStream releases={filteredUds} />
             ) : (
               <p className="sg-cl-empty">No UDS changelog entries match the current filters.</p>

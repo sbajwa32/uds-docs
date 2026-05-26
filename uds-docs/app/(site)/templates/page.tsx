@@ -95,11 +95,8 @@ const HTML = `<h1 class="sg-page-title">Layout Templates</h1>
           </div>
         </div>`;
 
+import { ProseContent } from '@/components/site/ProseContent';
+
 export default function TemplatesPage() {
-  return (
-    <div
-      className="sg-page-content"
-      dangerouslySetInnerHTML={{ __html: HTML }}
-    />
-  );
+  return <ProseContent className="sg-page-content" html={HTML} />;
 }

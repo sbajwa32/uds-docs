@@ -35,7 +35,7 @@ interface State {
 }
 
 export function ExamplesTab({ componentId }: { componentId: string }) {
-  const { fetchVersion } = useUdsVersion();
+  const { fetchVersion, isArchive, ready: versionReady } = useUdsVersion();
   const [{ examples, loading, error }, setState] = useState<State>({
     examples: null,
     loading: true,
@@ -43,6 +43,7 @@ export function ExamplesTab({ componentId }: { componentId: string }) {
   });
 
   useEffect(() => {
+    if (!versionReady) return;
     let cancelled = false;
     setState({ examples: null, loading: true, error: null });
 
@@ -66,7 +67,7 @@ export function ExamplesTab({ componentId }: { componentId: string }) {
     return () => {
       cancelled = true;
     };
-  }, [componentId, fetchVersion]);
+  }, [componentId, fetchVersion, versionReady]);
 
   if (loading) {
     return <p className="sg-changelog-empty">Loading examples…</p>;
@@ -79,6 +80,20 @@ export function ExamplesTab({ componentId }: { componentId: string }) {
     );
   }
   if (!examples || examples.length === 0) {
+    // Archive snapshots may not carry per-component examples (the 0.2
+    // archive in this repo only ships spec/status/changelog/CSS). Show a
+    // scoped message instead of the live "no examples documented yet"
+    // copy so the reader knows they're hitting an archive limitation,
+    // not a missing-content gap.
+    if (isArchive) {
+      return (
+        <p className="sg-changelog-empty">
+          Examples aren&apos;t archived for <code>{componentId}</code> in this
+          UDS version. Switch the version dropdown back to the latest release
+          to see them.
+        </p>
+      );
+    }
     return (
       <p className="sg-changelog-empty">
         No examples are documented for <code>{componentId}</code> yet.
