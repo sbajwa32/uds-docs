@@ -107,15 +107,6 @@ export function CursorWorkflowsClient() {
           </DocsCard>
 
           <DocsCard className="sg-cw-prompt" elevated>
-            <div className="sg-cw-prompt-say"><span className="material-symbols-outlined">chat</span>&quot;Lab me an Avatar&quot;</div>
-            <p className="sg-cw-prompt-body"><strong>Start a code-first draft playground.</strong>Creates a hidden dev route where you can preview and tune a component idea before recreating it in Figma.</p>
-            <div className="sg-cw-prompt-uses">
-              <span className="sg-cw-prompt-uses-label">Uses</span>
-              <code>uds-component-lab</code>
-            </div>
-          </DocsCard>
-
-          <DocsCard className="sg-cw-prompt" elevated>
             <div className="sg-cw-prompt-say"><span className="material-symbols-outlined">chat</span>&quot;Factory me an Avatar&quot;</div>
             <p className="sg-cw-prompt-body"><strong>Draft a new UDS component directly in Figma.</strong>Builds a token-bound component set on a brand-new draft page. You accept it by renaming the page; the docs site catches up on the next &quot;UDS updated.&quot;</p>
             <div className="sg-cw-prompt-uses">
@@ -740,13 +731,6 @@ export function CursorWorkflowsClient() {
                   <p className="sg-cw-card-body">Builds the canonical seven-card layout on a UDS Components Figma page from <code>spec.json</code> data. Direction of data flow is code → Figma (opposite of every other Figma-sync skill).</p>
                   <div className="sg-cw-triggers"><span className="sg-cw-triggers-label">Try</span><span className="sg-cw-trigger">&quot;build the Figma page for X&quot;</span><span className="sg-cw-trigger">&quot;regenerate the component cards&quot;</span></div>
                   <footer className="sg-cw-card-foot"><a className="sg-cw-card-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/skills/figma-component-card/SKILL.md" target="_blank" rel="noopener noreferrer">Open file<span className="material-symbols-outlined">open_in_new</span></a></footer>
-                </DocsCard>
-
-                <DocsCard className="sg-cw-card">
-                  <header className="sg-cw-card-head"><code className="sg-cw-card-name">uds-component-lab</code><span className="sg-cw-pill sg-cw-pill--orch">Orchestrator</span></header>
-                  <p className="sg-cw-card-body">Starts a dev-only code draft for a component idea. It creates a hidden lab route for previewing states and variants, keeps the draft out of official UDS docs, and waits for explicit direction before promoting anything to Figma.</p>
-                  <div className="sg-cw-triggers"><span className="sg-cw-triggers-label">Try</span><span className="sg-cw-trigger">&quot;Lab me an Avatar&quot;</span><span className="sg-cw-trigger">&quot;start a code-first lab for X&quot;</span></div>
-                  <footer className="sg-cw-card-foot"><a className="sg-cw-card-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/skills/uds-component-lab/SKILL.md" target="_blank" rel="noopener noreferrer">Open file<span className="material-symbols-outlined">open_in_new</span></a></footer>
                 </DocsCard>
 
                 <DocsCard className="sg-cw-card">
