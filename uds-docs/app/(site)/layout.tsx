@@ -5,7 +5,13 @@ import { useState, useCallback } from 'react';
 import { usePathname } from 'next/navigation';
 import { useEffect } from 'react';
 
-import '../../styles/pages/legacy.css';
+import '../../styles/pages/component.css';
+import '../../styles/pages/changelog.css';
+import '../../styles/pages/tokens.css';
+import '../../styles/pages/prose.css';
+import '../../styles/pages/contrast-checker.css';
+import '../../styles/pages/cursor-workflows.css';
+import '../../styles/pages/design-language.css';
 
 import { SgSkipLink } from '@/components/site/SgSkipLink';
 import { SgShell, SgSidebarToggle } from '@/components/site/SgSidebar';

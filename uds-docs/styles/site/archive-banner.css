@@ -1,18 +1,19 @@
-/* Archive-view banner — shown when ?uds=X.Y points to a historical UDS
-   snapshot. Sticky below the header so it stays visible as the user
-   scrolls through the archive. */
+/* ==========================================================================
+   Archive banner — softer treatment for historical UDS version viewing.
+   Subtle inline notification style instead of a heavy warning bar.
+   ========================================================================== */
 
 .sg-archive-banner {
   position: sticky;
-  top: 0;
+  top: 51px;
   z-index: var(--uds-z-index-sticky);
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--uds-space-200);
-  padding: var(--uds-space-100) var(--uds-space-300);
-  background: var(--uds-color-surface-warning-subtle);
-  border-bottom: 1px solid var(--uds-color-border-warning);
+  padding: var(--uds-space-075) var(--uds-space-300);
+  background: color-mix(in srgb, var(--uds-color-surface-warning-subtle) 60%, var(--uds-color-surface-page-main));
+  border-bottom: 1px solid color-mix(in srgb, var(--uds-color-border-warning) 40%, transparent);
   color: var(--uds-color-text-primary);
   font-family: var(--uds-font-family);
   font-size: var(--uds-font-size-sm);
@@ -27,10 +28,11 @@
   display: inline-block;
   background: var(--uds-color-surface-warning);
   color: var(--uds-color-text-inverse);
-  padding: 1px 6px;
-  border-radius: 4px;
+  padding: 1px 8px;
+  border-radius: var(--ds-radius-full);
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 12px;
+  font-size: 11px;
+  font-weight: var(--uds-font-weight-medium);
 }
 
 .sg-archive-banner__exit {
@@ -44,8 +46,15 @@
   cursor: pointer;
   font-family: inherit;
   font-size: inherit;
+  transition: color var(--ds-transition-fast);
 }
 
 .sg-archive-banner__exit:hover {
   text-decoration: underline;
+}
+
+.sg-archive-banner__exit:focus-visible {
+  outline: none;
+  box-shadow: var(--ds-focus-ring);
+  border-radius: var(--ds-radius-sm);
 }
