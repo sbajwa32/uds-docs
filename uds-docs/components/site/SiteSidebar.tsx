@@ -134,7 +134,13 @@ const NAV: NavSection[] = [
   },
 ];
 
-export function SiteSidebar() {
+export function SiteSidebar({
+  mobileOpen,
+  onMobileClose,
+}: {
+  mobileOpen?: boolean;
+  onMobileClose?: () => void;
+} = {}) {
   const { fetchVersion, isArchive } = useUdsVersion();
   // Set of component ids available in the active version. `null` = still
   // loading the manifest; `null` also means "don't filter yet, render every
@@ -168,7 +174,7 @@ export function SiteSidebar() {
   }, [fetchVersion, isArchive]);
 
   return (
-    <SgSidebar>
+    <SgSidebar mobileOpen={mobileOpen} onMobileClose={onMobileClose}>
       {NAV.map((section, sectionIdx) => {
         const visibleLinks = section.links.filter((link) => {
           // Non-component nav rows always render.

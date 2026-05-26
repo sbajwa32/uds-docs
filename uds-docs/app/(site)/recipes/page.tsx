@@ -1,129 +1,203 @@
-// Ported from docs/pages/recipes.html during Chunk 06a.
-// Wrapped via dangerouslySetInnerHTML to preserve markup verbatim — every
-// .sg-* class and inline <details>/<pre> block carries through unchanged.
-// Hash routes (#/foo) rewritten to plain Next.js paths (/foo).
+import { SgPageTitle, SgPageDesc } from '@/components/site/SgPageHeader';
 
 export const metadata = { title: 'Composition Recipes — UDS' };
 
-const HTML = `<h1 class="sg-page-title">Composition Recipes</h1>
-        <p class="sg-page-desc">Curated multi-component patterns. Each recipe is a working example of how UDS components compose into common UI patterns. Use them as starting points — copy the structure into Storybook and customize.</p>
-
-        <div class="sg-subsection"><h3 class="sg-subsection-title">Modal form with validation</h3>
-          <p class="sg-subsection-desc">Dialog + Text Input + Dropdown + Notification + primary/secondary buttons. Demonstrates focus trap, validation, and confirm/cancel actions.</p>
-          <div class="sg-example">
-            <div class="sg-example-preview" style="display:block;padding:32px;background:var(--uds-color-surface-page-main);min-height:240px;">
-              <div class="udc-dialog-backdrop" data-open="true" style="position:relative;inset:auto;background:transparent;backdrop-filter:none;">
-                <div class="udc-dialog" role="dialog" aria-modal="true" aria-labelledby="recipe-modal-title" style="margin:0;">
-                  <div class="udc-dialog__header"><h2 class="udc-dialog__title" id="recipe-modal-title">Add Tenant</h2><button class="udc-dialog__close" aria-label="Close"><span class="material-symbols-outlined">close</span></button></div>
-                  <div class="udc-dialog__body" style="display:flex;flex-direction:column;gap:16px;">
-                    <div class="udc-text-input"><label class="udc-text-input__label">Full name<span class="udc-text-input__required"></span></label><div class="udc-text-input__field"><input type="text" placeholder="Brian Smith" /></div><div class="udc-text-input__helper"><span>As it appears on the lease</span></div></div>
-                    <div class="udc-dropdown"><label class="udc-dropdown__label">Property</label><div class="udc-dropdown__trigger" tabindex="0" role="combobox" aria-expanded="false" aria-haspopup="listbox"><span class="udc-dropdown__value" data-placeholder>Select property...</span><span class="udc-dropdown__chevron"><span class="material-symbols-outlined">keyboard_arrow_down</span></span></div></div>
-                    <div class="udc-notification" data-variant="info" data-inline="true"><span class="udc-notification__icon"><span class="material-symbols-outlined">info</span></span><span class="udc-notification__text">Saving will send a welcome email automatically.</span></div>
-                  </div>
-                  <div class="udc-dialog__footer"><button class="udc-button-secondary">Cancel</button><button class="udc-button-primary">Save tenant</button></div>
-                </div>
-              </div>
-            </div>
-            <details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;div class="udc-dialog-backdrop" data-open="true"&gt;
-  &lt;div class="udc-dialog" role="dialog" aria-modal="true" aria-labelledby="title"&gt;
-    &lt;div class="udc-dialog__header"&gt;
-      &lt;h2 class="udc-dialog__title" id="title"&gt;Add Tenant&lt;/h2&gt;
-      &lt;button class="udc-dialog__close" aria-label="Close"&gt;…&lt;/button&gt;
-    &lt;/div&gt;
-    &lt;div class="udc-dialog__body"&gt;
-      &lt;!-- Text Input, Dropdown, Notification components --&gt;
-    &lt;/div&gt;
-    &lt;div class="udc-dialog__footer"&gt;
-      &lt;button class="udc-button-secondary"&gt;Cancel&lt;/button&gt;
-      &lt;button class="udc-button-primary"&gt;Save tenant&lt;/button&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-&lt;/div&gt;</code></pre></details>
-          </div>
-        </div>
-
-        <div class="sg-subsection"><h3 class="sg-subsection-title">Searchable data table</h3>
-          <p class="sg-subsection-desc">Search + Chip filters + Data Table + bulk action bar. Shows the canonical pattern for a list page.</p>
-          <div class="sg-example">
-            <div class="sg-example-preview" style="display:block;padding:24px;">
-              <div style="display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap;margin-bottom:16px;">
-                <div class="udc-search" style="flex:1;min-width:240px;"><div class="udc-search__field"><span class="udc-search__icon"><span class="material-symbols-outlined">search</span></span><input type="search" placeholder="Search tenants..." /></div></div>
-                <div style="display:flex;gap:8px;">
-                  <button class="udc-chip" data-variant="filter" aria-selected="true"><span class="udc-chip__leading-icon"><span class="material-symbols-outlined">check</span></span><span class="udc-chip__label">Active</span></button>
-                  <button class="udc-chip" data-variant="filter"><span class="udc-chip__label">Pending</span></button>
-                  <button class="udc-chip" data-variant="filter"><span class="udc-chip__label">Overdue</span></button>
-                </div>
-              </div>
-              <div class="udc-data-table">
-                <table>
-                  <thead><tr><th class="udc-dt-check"><input type="checkbox" /></th><th>Tenant</th><th>Status</th><th>Property</th></tr></thead>
-                  <tbody>
-                    <tr><td class="udc-dt-check"><input type="checkbox" /></td><td>Brian Smith</td><td><span class="udc-badge" data-variant="success">Active</span></td><td>Riverbend Estates</td></tr>
-                    <tr><td class="udc-dt-check"><input type="checkbox" /></td><td>Catherine Lee</td><td><span class="udc-badge" data-variant="warning">Pending</span></td><td>Sunnyvale Towers</td></tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-            <details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;!-- Filter bar: Search + Chips --&gt;
-&lt;div style="display:flex;gap:12px;"&gt;
-  &lt;div class="udc-search"&gt;…&lt;/div&gt;
-  &lt;button class="udc-chip" data-variant="filter" aria-selected="true"&gt;Active&lt;/button&gt;
-&lt;/div&gt;
-
-&lt;!-- Table --&gt;
-&lt;div class="udc-data-table"&gt;
-  &lt;table&gt;…&lt;/table&gt;
-&lt;/div&gt;</code></pre></details>
-          </div>
-        </div>
-
-        <div class="sg-subsection"><h3 class="sg-subsection-title">Settings panel with tabs</h3>
-          <p class="sg-subsection-desc">Tabs + List + Text Input + Checkbox + Save action. Pattern for grouped settings or preferences.</p>
-          <div class="sg-example">
-            <div class="sg-example-preview" style="display:block;padding:24px;">
-              <div class="udc-tabs" role="tablist" style="margin-bottom:24px;">
-                <button class="udc-tab" role="tab" aria-selected="true">General</button>
-                <button class="udc-tab" role="tab">Notifications</button>
-                <button class="udc-tab" role="tab">Billing</button>
-              </div>
-              <div style="display:flex;flex-direction:column;gap:16px;max-width:480px;">
-                <div class="udc-text-input"><label class="udc-text-input__label">Display name</label><div class="udc-text-input__field"><input type="text" value="Sunnyvale Towers" /></div></div>
-                <label class="udc-checkbox"><input type="checkbox" checked /><span class="udc-checkbox__control"></span><span class="udc-checkbox__label">Send weekly summary email</span></label>
-                <label class="udc-checkbox"><input type="checkbox" /><span class="udc-checkbox__control"></span><span class="udc-checkbox__label">Allow online payments</span></label>
-                <div style="display:flex;gap:8px;margin-top:8px;"><button class="udc-button-secondary">Cancel</button><button class="udc-button-primary">Save changes</button></div>
-              </div>
-            </div>
-            <details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;div class="udc-tabs" role="tablist"&gt;
-  &lt;button class="udc-tab" aria-selected="true"&gt;General&lt;/button&gt;
-  &lt;button class="udc-tab"&gt;Notifications&lt;/button&gt;
-&lt;/div&gt;
-&lt;!-- Tabbed panel content: Text Input, Checkboxes, action bar --&gt;</code></pre></details>
-          </div>
-        </div>
-
-        <div class="sg-subsection"><h3 class="sg-subsection-title">App shell with nav</h3>
-          <p class="sg-subsection-desc">Nav Header + Nav Vertical + content area. The standard authenticated app layout.</p>
-          <div class="sg-example">
-            <div class="sg-example-preview" style="display:block;padding:0;border:1px solid var(--uds-color-border-secondary);overflow:hidden;">
-              <div class="udc-nav-header"><div class="udc-nav-header__left"><div class="udc-nav-logo"><span class="material-symbols-outlined" style="font-size:24px;color:var(--uds-color-icon-interactive);">apartment</span><span class="udc-nav-logo__text">Boardroom</span></div></div><div class="udc-nav-header__right"><button class="udc-button-ghost" data-icon-only data-size="sm"><span class="material-symbols-outlined">notifications</span></button></div></div>
-              <div style="display:flex;min-height:200px;">
-                <nav class="udc-nav-vertical" aria-label="Main" style="width:200px;border-right:1px solid var(--uds-color-border-secondary);padding:12px 0;">
-                  <button class="udc-nav-button" aria-selected="true"><span class="material-symbols-outlined">space_dashboard</span><span class="udc-nav-button__label">Dashboard</span></button>
-                  <button class="udc-nav-button"><span class="material-symbols-outlined">book</span><span class="udc-nav-button__label">Leasing</span></button>
-                </nav>
-                <div style="flex:1;padding:16px;color:var(--uds-color-text-secondary);font-family:var(--uds-font-family);font-size:14px;">Page content goes here</div>
-              </div>
-            </div>
-            <details class="sg-example-code"><summary>Show code</summary><pre><code>&lt;div class="udc-nav-header"&gt;…&lt;/div&gt;
-&lt;div style="display:flex;min-height:calc(100vh - 64px);"&gt;
-  &lt;nav class="udc-nav-vertical" aria-label="Main"&gt;…&lt;/nav&gt;
-  &lt;main style="flex:1;"&gt;…&lt;/main&gt;
-&lt;/div&gt;</code></pre></details>
-          </div>
-        </div>`;
-
-import { ProseContent } from '@/components/site/ProseContent';
-
 export default function RecipesPage() {
-  return <ProseContent className="sg-page-content" html={HTML} />;
+  return (
+    <div className="sg-page-content">
+      <SgPageTitle>Composition Recipes</SgPageTitle>
+      <SgPageDesc>Curated multi-component patterns. Each recipe is a working example of how UDS components compose into common UI patterns. Use them as starting points — copy the structure into Storybook and customize.</SgPageDesc>
+
+      {/* Modal form with validation */}
+      <div className="sg-subsection">
+        <h3 className="sg-subsection-title">Modal form with validation</h3>
+        <p className="sg-subsection-desc">Dialog + Text Input + Dropdown + Notification + primary/secondary buttons. Demonstrates focus trap, validation, and confirm/cancel actions.</p>
+        <div className="sg-example">
+          <div className="sg-example-preview" style={{ display: 'block', padding: 32, background: 'var(--uds-color-surface-page-main)', minHeight: 240 }}>
+            <div className="udc-dialog-backdrop" data-open="true" style={{ position: 'relative', inset: 'auto', background: 'transparent', backdropFilter: 'none' }}>
+              <div className="udc-dialog" role="dialog" aria-modal="true" aria-labelledby="recipe-modal-title" style={{ margin: 0 }}>
+                <div className="udc-dialog__header">
+                  <h2 className="udc-dialog__title" id="recipe-modal-title">Add Tenant</h2>
+                  <button className="udc-dialog__close" aria-label="Close"><span className="material-symbols-outlined">close</span></button>
+                </div>
+                <div className="udc-dialog__body" style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                  <div className="udc-text-input">
+                    <label className="udc-text-input__label">Full name<span className="udc-text-input__required"></span></label>
+                    <div className="udc-text-input__field"><input type="text" placeholder="Brian Smith" /></div>
+                    <div className="udc-text-input__helper"><span>As it appears on the lease</span></div>
+                  </div>
+                  <div className="udc-dropdown">
+                    <label className="udc-dropdown__label">Property</label>
+                    <div className="udc-dropdown__trigger" tabIndex={0} role="combobox" aria-expanded={false} aria-haspopup="listbox">
+                      <span className="udc-dropdown__value" data-placeholder="">Select property...</span>
+                      <span className="udc-dropdown__chevron"><span className="material-symbols-outlined">keyboard_arrow_down</span></span>
+                    </div>
+                  </div>
+                  <div className="udc-notification" data-variant="info" data-inline="true">
+                    <span className="udc-notification__icon"><span className="material-symbols-outlined">info</span></span>
+                    <span className="udc-notification__text">Saving will send a welcome email automatically.</span>
+                  </div>
+                </div>
+                <div className="udc-dialog__footer">
+                  <button className="udc-button-secondary">Cancel</button>
+                  <button className="udc-button-primary">Save tenant</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <details className="sg-example-code">
+            <summary>Show code</summary>
+            <pre><code>{`<div class="udc-dialog-backdrop" data-open="true">
+  <div class="udc-dialog" role="dialog" aria-modal="true" aria-labelledby="title">
+    <div class="udc-dialog__header">
+      <h2 class="udc-dialog__title" id="title">Add Tenant</h2>
+      <button class="udc-dialog__close" aria-label="Close">…</button>
+    </div>
+    <div class="udc-dialog__body">
+      <!-- Text Input, Dropdown, Notification components -->
+    </div>
+    <div class="udc-dialog__footer">
+      <button class="udc-button-secondary">Cancel</button>
+      <button class="udc-button-primary">Save tenant</button>
+    </div>
+  </div>
+</div>`}</code></pre>
+          </details>
+        </div>
+      </div>
+
+      {/* Searchable data table */}
+      <div className="sg-subsection">
+        <h3 className="sg-subsection-title">Searchable data table</h3>
+        <p className="sg-subsection-desc">Search + Chip filters + Data Table + bulk action bar. Shows the canonical pattern for a list page.</p>
+        <div className="sg-example">
+          <div className="sg-example-preview" style={{ display: 'block', padding: 24 }}>
+            <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start', flexWrap: 'wrap', marginBottom: 16 }}>
+              <div className="udc-search" style={{ flex: 1, minWidth: 240 }}>
+                <div className="udc-search__field">
+                  <span className="udc-search__icon"><span className="material-symbols-outlined">search</span></span>
+                  <input type="search" placeholder="Search tenants..." />
+                </div>
+              </div>
+              <div style={{ display: 'flex', gap: 8 }}>
+                <button className="udc-chip" data-variant="filter" aria-selected="true"><span className="udc-chip__leading-icon"><span className="material-symbols-outlined">check</span></span><span className="udc-chip__label">Active</span></button>
+                <button className="udc-chip" data-variant="filter"><span className="udc-chip__label">Pending</span></button>
+                <button className="udc-chip" data-variant="filter"><span className="udc-chip__label">Overdue</span></button>
+              </div>
+            </div>
+            <div className="udc-data-table">
+              <table>
+                <thead>
+                  <tr>
+                    <th className="udc-dt-check"><input type="checkbox" /></th>
+                    <th>Tenant</th>
+                    <th>Status</th>
+                    <th>Property</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td className="udc-dt-check"><input type="checkbox" /></td>
+                    <td>Brian Smith</td>
+                    <td><span className="udc-badge" data-variant="success">Active</span></td>
+                    <td>Riverbend Estates</td>
+                  </tr>
+                  <tr>
+                    <td className="udc-dt-check"><input type="checkbox" /></td>
+                    <td>Catherine Lee</td>
+                    <td><span className="udc-badge" data-variant="warning">Pending</span></td>
+                    <td>Sunnyvale Towers</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <details className="sg-example-code">
+            <summary>Show code</summary>
+            <pre><code>{`<!-- Filter bar: Search + Chips -->
+<div style="display:flex;gap:12px;">
+  <div class="udc-search">…</div>
+  <button class="udc-chip" data-variant="filter" aria-selected="true">Active</button>
+</div>
+
+<!-- Table -->
+<div class="udc-data-table">
+  <table>…</table>
+</div>`}</code></pre>
+          </details>
+        </div>
+      </div>
+
+      {/* Settings panel with tabs */}
+      <div className="sg-subsection">
+        <h3 className="sg-subsection-title">Settings panel with tabs</h3>
+        <p className="sg-subsection-desc">Tabs + List + Text Input + Checkbox + Save action. Pattern for grouped settings or preferences.</p>
+        <div className="sg-example">
+          <div className="sg-example-preview" style={{ display: 'block', padding: 24 }}>
+            <div className="udc-tabs" role="tablist" style={{ marginBottom: 24 }}>
+              <button className="udc-tab" role="tab" aria-selected="true">General</button>
+              <button className="udc-tab" role="tab">Notifications</button>
+              <button className="udc-tab" role="tab">Billing</button>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 16, maxWidth: 480 }}>
+              <div className="udc-text-input">
+                <label className="udc-text-input__label">Display name</label>
+                <div className="udc-text-input__field"><input type="text" defaultValue="Sunnyvale Towers" /></div>
+              </div>
+              <label className="udc-checkbox"><input type="checkbox" defaultChecked /><span className="udc-checkbox__control"></span><span className="udc-checkbox__label">Send weekly summary email</span></label>
+              <label className="udc-checkbox"><input type="checkbox" /><span className="udc-checkbox__control"></span><span className="udc-checkbox__label">Allow online payments</span></label>
+              <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
+                <button className="udc-button-secondary">Cancel</button>
+                <button className="udc-button-primary">Save changes</button>
+              </div>
+            </div>
+          </div>
+          <details className="sg-example-code">
+            <summary>Show code</summary>
+            <pre><code>{`<div class="udc-tabs" role="tablist">
+  <button class="udc-tab" aria-selected="true">General</button>
+  <button class="udc-tab">Notifications</button>
+</div>
+<!-- Tabbed panel content: Text Input, Checkboxes, action bar -->`}</code></pre>
+          </details>
+        </div>
+      </div>
+
+      {/* App shell with nav */}
+      <div className="sg-subsection">
+        <h3 className="sg-subsection-title">App shell with nav</h3>
+        <p className="sg-subsection-desc">Nav Header + Nav Vertical + content area. The standard authenticated app layout.</p>
+        <div className="sg-example">
+          <div className="sg-example-preview" style={{ display: 'block', padding: 0, border: '1px solid var(--uds-color-border-secondary)', overflow: 'hidden' }}>
+            <div className="udc-nav-header">
+              <div className="udc-nav-header__left">
+                <div className="udc-nav-logo">
+                  <span className="material-symbols-outlined" style={{ fontSize: 24, color: 'var(--uds-color-icon-interactive)' }}>apartment</span>
+                  <span className="udc-nav-logo__text">Boardroom</span>
+                </div>
+              </div>
+              <div className="udc-nav-header__right">
+                <button className="udc-button-ghost" data-icon-only="" data-size="sm"><span className="material-symbols-outlined">notifications</span></button>
+              </div>
+            </div>
+            <div style={{ display: 'flex', minHeight: 200 }}>
+              <nav className="udc-nav-vertical" aria-label="Main" style={{ width: 200, borderRight: '1px solid var(--uds-color-border-secondary)', padding: '12px 0' }}>
+                <button className="udc-nav-button" aria-selected="true"><span className="material-symbols-outlined">space_dashboard</span><span className="udc-nav-button__label">Dashboard</span></button>
+                <button className="udc-nav-button"><span className="material-symbols-outlined">book</span><span className="udc-nav-button__label">Leasing</span></button>
+              </nav>
+              <div style={{ flex: 1, padding: 16, color: 'var(--uds-color-text-secondary)', fontFamily: 'var(--uds-font-family)', fontSize: 14 }}>Page content goes here</div>
+            </div>
+          </div>
+          <details className="sg-example-code">
+            <summary>Show code</summary>
+            <pre><code>{`<div class="udc-nav-header">…</div>
+<div style="display:flex;min-height:calc(100vh - 64px);">
+  <nav class="udc-nav-vertical" aria-label="Main">…</nav>
+  <main style="flex:1;">…</main>
+</div>`}</code></pre>
+          </details>
+        </div>
+      </div>
+    </div>
+  );
 }

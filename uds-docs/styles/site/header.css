@@ -1,6 +1,13 @@
-/* Sticky top header containing the brand bar (top row) and theme bar (bottom row).
-   Brand bar uses surface-interactive-default which flips with theme so contrast
-   passes in both light + dark modes. */
+/* ==========================================================================
+   Header — frosted glass top bar with brand gradient accent strip.
+
+   The header has two visual layers:
+     1. Brand bar — frosted glass with logo, search, version, demo trigger
+     2. Theme bar — collapsible appearance controls panel
+
+   The 3px gradient strip at the very top adapts per theme via
+   --uds-color-surface-interactive-default (blue/emerald/amber).
+   ========================================================================== */
 
 .sg-header {
   position: sticky;
@@ -9,59 +16,84 @@
   font-family: var(--uds-font-family);
 }
 
+/* --------------------------------------------------------------------------
+   Brand bar — frosted glass surface
+   -------------------------------------------------------------------------- */
+
 .sg-brand-bar {
-  background: var(--uds-color-surface-interactive-default);
-  color: var(--uds-color-text-inverse);
+  position: relative;
+  background: var(--ds-glass-bg);
+  backdrop-filter: var(--ds-glass-blur);
+  -webkit-backdrop-filter: var(--ds-glass-blur);
+  border-bottom: var(--ds-glass-border);
+  color: var(--uds-color-text-primary);
   padding: 0 var(--uds-space-300);
-  height: var(--uds-space-500);
+  height: 48px;
   display: flex;
   align-items: center;
-  gap: var(--uds-space-150);
+  gap: var(--uds-space-200);
+}
+
+/* Gradient accent strip — thin line at the very top of the page. */
+.sg-brand-bar::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--ds-gradient-brand);
 }
 
 .sg-brand-bar-title {
-  font-size: var(--uds-font-size-base);
+  font-size: var(--uds-font-size-md);
   font-weight: var(--uds-font-weight-bold);
-  letter-spacing: 0.04em;
+  letter-spacing: 0.02em;
+  background: var(--ds-gradient-brand);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .sg-brand-bar-subtitle {
   font-size: var(--uds-font-size-sm);
   font-weight: var(--uds-font-weight-regular);
-  /* Phase 16: opacity tuned so #f5f5f5 against #005ff0 passes WCAG AA. */
-  opacity: 0.95;
+  color: var(--uds-color-text-secondary);
 }
 
 .sg-brand-bar-version {
   font-size: var(--uds-font-size-sm);
   font-weight: var(--uds-font-weight-medium);
-  opacity: 0.95;
+  color: var(--uds-color-text-secondary);
 }
 
 .sg-brand-bar-build {
   font-size: var(--uds-font-size-xs);
   font-weight: var(--uds-font-weight-regular);
-  opacity: 0.95;
+  color: var(--uds-color-text-secondary);
   padding-left: var(--uds-space-150);
-  border-left: 1px solid rgba(255, 255, 255, 0.25);
+  border-left: 1px solid var(--uds-color-border-secondary);
+  margin-left: auto;
 }
 
-/* Demo Builder trigger (icon button in the brand bar). */
+/* --------------------------------------------------------------------------
+   Demo Builder trigger — icon button
+   -------------------------------------------------------------------------- */
 
 .sg-demo-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
-  margin-left: var(--uds-space-050);
-  border: none;
-  border-radius: var(--uds-border-radius-container-sm);
-  background: rgba(255, 255, 255, 0.1);
-  color: var(--uds-color-text-inverse);
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--uds-color-border-secondary);
+  border-radius: var(--ds-radius-md);
+  background: transparent;
+  color: var(--uds-color-text-secondary);
   cursor: pointer;
-  opacity: 0.6;
-  transition: opacity 120ms, background 120ms;
+  transition: background var(--ds-transition-fast),
+              color var(--ds-transition-fast),
+              border-color var(--ds-transition-fast);
   -webkit-appearance: none;
   appearance: none;
   padding: 0;
@@ -69,8 +101,14 @@
 }
 
 .sg-demo-btn:hover {
-  opacity: 1;
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--uds-color-surface-subtle);
+  color: var(--uds-color-text-primary);
+  border-color: var(--uds-color-border-primary);
+}
+
+.sg-demo-btn:focus-visible {
+  outline: none;
+  box-shadow: var(--ds-focus-ring);
 }
 
 .sg-demo-btn .material-symbols-outlined {
@@ -78,7 +116,9 @@
   line-height: 1;
 }
 
-/* Token search trigger (centered search box on the brand bar). */
+/* --------------------------------------------------------------------------
+   Token search trigger — pill-shaped search bar
+   -------------------------------------------------------------------------- */
 
 .sg-header-search-trigger {
   flex: 1 1 auto;
@@ -88,35 +128,38 @@
   display: flex;
   align-items: center;
   gap: var(--uds-space-100);
-  height: 30px;
-  padding: 0 var(--uds-space-150);
-  /* Darkened background so white text stays at ~7.9:1 contrast against the brand bar. */
-  background: rgba(0, 0, 0, 0.18);
-  border: 1px solid rgba(255, 255, 255, 0.30);
-  border-radius: var(--uds-border-radius-container-sm);
-  color: var(--uds-color-text-inverse);
+  height: 34px;
+  padding: 0 var(--uds-space-200);
+  background: var(--uds-color-surface-subtle);
+  border: 1px solid var(--uds-color-border-secondary);
+  border-radius: var(--ds-radius-full);
+  color: var(--uds-color-text-secondary);
   font-family: var(--uds-font-family);
   font-size: var(--uds-font-size-sm);
   cursor: pointer;
-  transition: background 120ms ease, border-color 120ms ease;
+  transition: background var(--ds-transition-fast),
+              border-color var(--ds-transition-fast),
+              box-shadow var(--ds-transition-base);
   -webkit-appearance: none;
   appearance: none;
 }
 
 .sg-header-search-trigger:hover {
-  background: rgba(0, 0, 0, 0.30);
-  border-color: rgba(255, 255, 255, 0.40);
+  background: var(--uds-color-surface-alt);
+  border-color: var(--uds-color-border-primary);
 }
 
 .sg-header-search-trigger:focus-visible {
-  outline: 2px solid rgba(255, 255, 255, 0.7);
-  outline-offset: 2px;
+  outline: none;
+  box-shadow: var(--ds-focus-glow);
+  border-color: var(--uds-color-border-interactive);
 }
 
 .sg-header-search-trigger__icon {
-  font-size: 18px;
+  font-size: 16px;
   line-height: 1;
   flex-shrink: 0;
+  color: var(--uds-color-text-secondary);
 }
 
 .sg-header-search-trigger__placeholder {
@@ -138,18 +181,16 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 18px;
-  height: 18px;
+  min-width: 20px;
+  height: 20px;
   padding: 0 5px;
   font-family: monospace;
   font-size: 10px;
   font-weight: var(--uds-font-weight-bold);
-  background: rgba(0, 0, 0, 0.32);
-  border: 1px solid rgba(255, 255, 255, 0.30);
-  border-radius: 3px;
-  /* Fixed white because the kbd background stays a translucent dark overlay
-     regardless of theme; text-inverse would flip dark in dark mode and fail. */
-  color: rgb(245, 245, 245);
+  background: var(--uds-color-surface-alt);
+  border: 1px solid var(--uds-color-border-secondary);
+  border-radius: var(--ds-radius-sm);
+  color: var(--uds-color-text-secondary);
   line-height: 1;
 }
 
@@ -165,31 +206,40 @@
   }
 }
 
-/* Version dropdown (right side of brand bar). */
+/* --------------------------------------------------------------------------
+   Version dropdown — clean select with custom arrow
+   -------------------------------------------------------------------------- */
 
 .sg-version-select {
-  font-size: 12px;
-  font-weight: 500;
+  font-size: var(--uds-font-size-xs);
+  font-weight: var(--uds-font-weight-medium);
   font-family: var(--uds-font-family);
-  background: rgba(255, 255, 255, 0.12);
-  color: var(--uds-color-text-inverse);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 4px;
-  padding: 2px 6px;
+  background: var(--uds-color-surface-subtle);
+  color: var(--uds-color-text-primary);
+  border: 1px solid var(--uds-color-border-secondary);
+  border-radius: var(--ds-radius-full);
+  padding: 4px 24px 4px 10px;
   cursor: pointer;
   appearance: none;
   -webkit-appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='none'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23fff' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='none'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23888' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
-  background-position: right 6px center;
-  padding-right: 20px;
+  background-position: right 8px center;
+  transition: background var(--ds-transition-fast),
+              border-color var(--ds-transition-fast);
 }
 
 .sg-version-select:hover {
-  background: rgba(255, 255, 255, 0.2);
+  border-color: var(--uds-color-border-primary);
+  background-color: var(--uds-color-surface-alt);
+}
+
+.sg-version-select:focus-visible {
+  outline: none;
+  box-shadow: var(--ds-focus-ring);
 }
 
 .sg-version-select option {
-  background: var(--uds-color-surface-page-inverse, #1a1a2e);
-  color: var(--uds-color-text-inverse);
+  background: var(--uds-color-surface-page-main);
+  color: var(--uds-color-text-primary);
 }

@@ -1,57 +1,72 @@
-/* Sticky left navigation. Headings group component categories; links are
-   thin function components rendered for each entry. */
+/* ==========================================================================
+   Sidebar — sticky left navigation with pill-style active states.
+   ========================================================================== */
 
 .sg-sidebar {
   position: sticky;
-  top: 84px;
-  height: calc(100vh - 84px);
+  top: 51px;
+  height: calc(100vh - 51px);
   overflow-y: auto;
   border-right: 1px solid var(--uds-color-border-secondary);
-  padding: var(--uds-space-250) 0;
+  padding: var(--uds-space-200) var(--uds-space-100);
   background: var(--uds-color-surface-page-main);
   font-size: var(--uds-font-size-base);
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+  transition: scrollbar-color var(--ds-transition-slow);
+}
+
+.sg-sidebar:hover {
+  scrollbar-color: var(--uds-color-border-secondary) transparent;
 }
 
 .sg-sidebar::-webkit-scrollbar {
   width: 4px;
 }
 .sg-sidebar::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: var(--ds-radius-full);
+  transition: background var(--ds-transition-slow);
+}
+.sg-sidebar:hover::-webkit-scrollbar-thumb {
   background: var(--uds-color-border-secondary);
-  border-radius: 4px;
 }
 
-/* text-primary (not text-secondary) for AA contrast at the small uppercase size. */
+/* --------------------------------------------------------------------------
+   Section headings — subtle uppercase dividers
+   -------------------------------------------------------------------------- */
+
 .sg-sidebar-heading {
   display: block;
   font-size: var(--uds-font-size-xs);
   font-weight: var(--uds-font-weight-bold);
   text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--uds-color-text-primary);
-  padding: var(--uds-space-200) var(--uds-space-300) var(--uds-space-075);
+  letter-spacing: 0.08em;
+  color: var(--uds-color-text-secondary);
+  padding: var(--uds-space-075) var(--uds-space-200);
+  margin-top: var(--uds-space-250);
 }
 
-.sg-sidebar-heading:first-child {
-  padding-top: 0;
-}
-
-/* Late override (later in the cascade than the rule above): tighten spacing
-   between sequential headings. Verbatim from legacy site.css. */
-.sg-sidebar-heading {
-  display: block;
-  margin-top: var(--uds-space-300);
-}
 .sg-sidebar-heading:first-of-type {
-  margin-top: var(--uds-space-200);
+  margin-top: var(--uds-space-100);
 }
+
+/* --------------------------------------------------------------------------
+   Links — pill-style active indicator
+   -------------------------------------------------------------------------- */
 
 .sg-sidebar-link {
-  display: block;
-  padding: 5px var(--uds-space-300) 5px 27px;
+  display: flex;
+  align-items: center;
+  gap: var(--uds-space-100);
+  padding: 6px var(--uds-space-200);
+  margin: 1px 0;
   color: var(--uds-color-text-primary);
   text-decoration: none;
-  border-left: 3px solid transparent;
-  transition: background 80ms, border-color 80ms, color 80ms;
+  border-radius: var(--ds-radius-md);
+  border-left: none;
+  transition: background var(--ds-transition-fast),
+              color var(--ds-transition-fast);
   font-size: var(--uds-font-size-base);
 }
 
@@ -61,9 +76,13 @@
 
 .sg-sidebar-link.active {
   color: var(--uds-color-text-interactive);
-  border-left-color: var(--uds-color-border-interactive);
-  font-weight: 500;
-  background: var(--uds-color-surface-subtle);
+  font-weight: var(--uds-font-weight-medium);
+  background: color-mix(in srgb, var(--uds-color-surface-interactive-subtle) 60%, transparent);
+}
+
+.sg-sidebar-link:focus-visible {
+  outline: none;
+  box-shadow: var(--ds-focus-ring);
 }
 
 .sg-sidebar-link.disabled {
@@ -71,12 +90,118 @@
   pointer-events: none;
 }
 
-/* Top-of-sidebar prominent links (AI Assist, Changelog, Getting Started).
-   Slightly bolder + visually grouped with a divider. */
+/* Top-of-sidebar prominent links (AI Assist, Changelog, Getting Started). */
 .sg-sidebar-link--getting-started {
-  font-weight: 600;
-  padding-top: 4px !important;
-  padding-bottom: 12px !important;
-  margin-bottom: 4px;
-  border-bottom: 1px solid var(--uds-color-border-tertiary);
+  font-weight: var(--uds-font-weight-medium);
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+.sg-sidebar-link--getting-started:last-of-type {
+  margin-bottom: var(--uds-space-100);
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--uds-color-border-secondary);
+}
+
+/* --------------------------------------------------------------------------
+   Status dot — colored indicator next to component links
+   -------------------------------------------------------------------------- */
+
+.sg-sidebar-status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--ds-radius-full);
+  flex-shrink: 0;
+}
+
+.sg-sidebar-status-dot[data-status='production'] {
+  background: var(--uds-color-surface-success);
+}
+.sg-sidebar-status-dot[data-status='in-progress'] {
+  background: var(--uds-color-surface-warning);
+}
+.sg-sidebar-status-dot[data-status='in-review'] {
+  background: var(--uds-color-surface-info);
+}
+.sg-sidebar-status-dot[data-status='placeholder'] {
+  background: var(--uds-color-border-secondary);
+}
+.sg-sidebar-status-dot[data-status='deprecated'] {
+  background: var(--uds-color-surface-error);
+}
+
+/* --------------------------------------------------------------------------
+   Mobile collapse — sidebar becomes an overlay on narrow viewports
+   -------------------------------------------------------------------------- */
+
+.sg-sidebar-toggle {
+  display: none;
+  position: fixed;
+  bottom: var(--uds-space-300);
+  left: var(--uds-space-300);
+  z-index: var(--uds-z-index-overlay);
+  width: 44px;
+  height: 44px;
+  border-radius: var(--ds-radius-full);
+  border: 1px solid var(--uds-color-border-secondary);
+  background: var(--ds-glass-bg-heavy);
+  backdrop-filter: var(--ds-glass-blur);
+  -webkit-backdrop-filter: var(--ds-glass-blur);
+  color: var(--uds-color-text-primary);
+  box-shadow: var(--ds-shadow-lg);
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  -webkit-appearance: none;
+  appearance: none;
+  padding: 0;
+}
+
+.sg-sidebar-toggle .material-symbols-outlined {
+  font-size: 22px;
+  line-height: 1;
+}
+
+.sg-sidebar-toggle:focus-visible {
+  outline: none;
+  box-shadow: var(--ds-focus-ring), var(--ds-shadow-lg);
+}
+
+@media (max-width: 860px) {
+  .sg-sidebar-toggle {
+    display: flex;
+  }
+
+  .sg-sidebar {
+    position: fixed;
+    top: 51px;
+    left: 0;
+    bottom: 0;
+    width: 280px;
+    z-index: var(--uds-z-index-overlay);
+    transform: translateX(-100%);
+    transition: transform var(--ds-transition-slow);
+    box-shadow: none;
+    height: auto;
+  }
+
+  .sg-sidebar[data-mobile-open='true'] {
+    transform: translateX(0);
+    box-shadow: var(--ds-shadow-lg);
+  }
+
+  .sg-sidebar-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    top: 51px;
+    z-index: calc(var(--uds-z-index-overlay) - 1);
+    background: color-mix(in srgb, var(--uds-color-surface-page-inverse) 30%, transparent);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+  }
+
+  .sg-sidebar-backdrop[data-visible='true'] {
+    display: block;
+  }
 }

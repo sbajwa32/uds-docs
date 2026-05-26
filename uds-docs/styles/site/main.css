@@ -1,9 +1,17 @@
 /* Main content area inside the shell. */
 
 .sg-main {
-  padding: var(--uds-space-500) var(--uds-space-700) var(--uds-space-1000);
-  max-width: 1200px;
+  padding: var(--uds-space-400) var(--uds-space-500) var(--uds-space-1000);
+  max-width: 1100px;
   min-width: 0;
   overflow-y: auto;
-  height: calc(100vh - 44px);
+  height: calc(100vh - 51px);
+}
+
+@media (max-width: 860px) {
+  .sg-main {
+    padding: var(--uds-space-300) var(--uds-space-300) var(--uds-space-700);
+    height: auto;
+    min-height: calc(100vh - 51px);
+  }
 }
