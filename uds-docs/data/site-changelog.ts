@@ -1004,6 +1004,19 @@ export const SITE_CHANGELOG: SiteChangelogEntry[] = [
       ]
     },
     {
+      version: 'SITE 2026.05.24.0',
+      date: '2026-05-24',
+      changes: [
+        { type: 'changed', text: 'Rewrote the docs site on Next.js 15 + React + TypeScript. The old vanilla HTML/CSS/JS SPA (`index.html` + `docs/app.js` + `docs/site.css` + the `docs/modules/` ES module collection) was replaced with one file per route under `app/`, React components for every interactive surface, and TypeScript types generated from the JSON schemas the docs site consumes. The Cloudflare-Pages deploy target stayed (static export), and every component still lives in `uds/components/<id>/` with the same files — Figma\'s source of truth wasn\'t touched. Visual parity is the contract: every `.udc-*` and `.sg-*` class renders the same way, every theme combo behaves the same, every interactive flow (Token Search, Build Demo, Playground, Contrast Checker) ships the same affordances.' },
+        { type: 'added', text: 'Version-aware archive viewing via `?uds=X.Y`. The version dropdown now flips a query param instead of navigating to a frozen folder. The React app re-fetches `versions/<X>/uds/...` for the archived release and renders it with the live UI, so bug fixes to docs chrome automatically benefit historical views. `UdsVersionProvider` reads `?uds=` from the URL, validates it against `versions.json`, and threads `fetchVersion` through every data fetcher in `lib/uds-data.ts`.' },
+        { type: 'added', text: 'Type-safe data layer. `types/uds.ts` is generated from the JSON schemas under `uds/schemas/` via `npm run gen:types`; every component spec, status, changelog, impl, and manifest is statically typed at every call site. Schema drift fails the build via `gen:types:check`.' },
+        { type: 'added', text: 'Reorganized into purpose-built folders: `app/(site)/` for public routes, `app/(dev)/` for the kit-sink dev page, `components/site/` for site chrome (header, sidebar, theme provider, version provider, token search, demo builder, playground, contrast checker), `lib/uds-data.ts` for the data layer, `lib/demo-builder/` + `lib/examples-renderer.ts` for shared rendering logic, `styles/site/` + `styles/pages/legacy.css` for site-side CSS. Nothing under `uds/` moved.' },
+        { type: 'added', text: 'Per-component co-location preserved across the rewrite: each component still ships `<id>.css`, `<id>.js`, `spec.json`, `status.json`, `changelog.json`, `impl.json`, `playground.js`, and `examples/*.html` in one folder. The Examples tab and the Build Demo dialog read the same `examples/*.html` files — structural drift between docs page and demo previews is still impossible.' },
+        { type: 'removed', text: 'Deleted the legacy stack: `index.html`, `docs/app.js`, `docs/site.css`, every file under `docs/modules/`, `docs/data/site-changelog.js`, `version.txt`, `bump-site.sh`, the GitHub Pages deploy workflow, and the `?v=N` cache-bust query param scheme (Next.js content-hashes its own static assets; Cloudflare\'s `_headers` policy handles JSON cache invalidation). Anything `uds/` stayed.' },
+        { type: 'fixed', text: 'Multiple architectural payoffs land alongside the rewrite: type-checked tab ARIA, proper focus management on every modal/popover, version-aware sidebar filtering, version-aware internal links, conditional component-page tabs (Playground hides for deferred components and archive views), tokenized Demo Builder dialog with status dots fetched per `fetchVersion`. Subsequent SITE entries on this same day (`.24.1` onward) document the post-cutover regression-recovery rounds that buttoned up visual parity with the legacy site.' }
+      ]
+    },
+    {
       version: 'SITE 2026.05.24.1',
       date: '2026-05-24',
       changes: [
