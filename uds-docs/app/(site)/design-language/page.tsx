@@ -755,13 +755,12 @@ const HTML = `<h1 class="sg-page-title">Design Language</h1>
   </div><!-- /.sg-dl-main -->
 </div><!-- /.sg-dl-layout -->`;
 
+import { ProseContent } from '@/components/site/ProseContent';
+
 export default function DesignLanguagePage() {
   return (
     <DesignLanguageToc>
-      <div
-        className="sg-page-content"
-        dangerouslySetInnerHTML={{ __html: HTML }}
-      />
+      <ProseContent className="sg-page-content" html={HTML} />
     </DesignLanguageToc>
   );
 }

@@ -4,19 +4,19 @@ overview: 'Fresh findings from a second review of `cursor/migration-next-stack` 
 todos:
   - id: theme-navigation
     content: Preserve appearance settings across internal navigation and reloads; avoid full document reloads for internal docs links.
-    status: pending
+    status: completed
   - id: archive-initialization
     content: Initialize archive version before UDS-data fetches and validate unknown ?uds values.
-    status: pending
+    status: completed
   - id: archive-payload-contract
     content: 'Align 0.2 archive payload, archive UI, and AGENTS archive contract for examples and impl data.'
-    status: pending
+    status: completed
   - id: content-link-routing
     content: Route static prose links through version-aware client navigation and preserve archive query params.
-    status: pending
+    status: completed
   - id: regression-ci
     content: Decide whether to add the browser regression check to CI and document the expected gate.
-    status: pending
+    status: completed
 isProject: false
 ---
 # UDS Docs Next.js Migration Findings - Post-Opus Pass

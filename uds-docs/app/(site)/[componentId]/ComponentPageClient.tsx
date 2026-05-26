@@ -94,7 +94,7 @@ function readTabFromUrl(): TabKey {
 }
 
 export function ComponentPageClient({ componentId }: { componentId: string }) {
-  const { fetchVersion, isArchive } = useUdsVersion();
+  const { fetchVersion, isArchive, ready: versionReady } = useUdsVersion();
   const [activeTab, setActiveTab] = useState<TabKey>('examples');
 
   // Hydrate the active tab from `?tab=` on mount. Doing it post-mount
@@ -111,6 +111,13 @@ export function ComponentPageClient({ componentId }: { componentId: string }) {
   });
 
   useEffect(() => {
+    // Defer fetching until the version provider has read ?uds= off the URL.
+    // Without this gate, a hard load of `/button?uds=0.2` fires the live
+    // spec.json fetch first (because activeVersion is still null in the
+    // first render), then re-fires the archive fetch when the provider
+    // commits. Wasted bytes + a flash of the live data.
+    if (!versionReady) return;
+
     let cancelled = false;
     setState({ data: null, loading: true, error: null });
 
@@ -151,7 +158,7 @@ export function ComponentPageClient({ componentId }: { componentId: string }) {
     return () => {
       cancelled = true;
     };
-  }, [componentId, fetchVersion]);
+  }, [componentId, fetchVersion, versionReady]);
 
   if (loading) {
     return <p className="sg-changelog-empty">Loading component data…</p>;

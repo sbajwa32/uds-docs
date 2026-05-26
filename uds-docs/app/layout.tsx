@@ -1,7 +1,10 @@
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 
-import { UdsThemeProvider } from '@/components/site/UdsThemeProvider';
+import {
+  UdsThemeProvider,
+  THEME_BOOTSTRAP_SCRIPT,
+} from '@/components/site/UdsThemeProvider';
 
 import '../uds/uds.css';
 import '../styles/site/base.css';
@@ -22,6 +25,14 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
       <head>
+        {/* Theme bootstrap. Runs BEFORE React hydrates to set the
+            data-color-scheme / data-theme / data-font / data-font-scale /
+            data-density attributes on <html> from localStorage. Without
+            this, a reader who picked Dark + Poppins sees a Light + Inter
+            flash on every reload until React mounts the provider. */}
+        <script
+          dangerouslySetInnerHTML={{ __html: THEME_BOOTSTRAP_SCRIPT }}
+        />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
         <link

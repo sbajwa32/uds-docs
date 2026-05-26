@@ -202,16 +202,46 @@ so any deploy origin (live, preview, archive view) loads the right module.
 
 **Archive snapshots are content-only.** The active UDS payload (CSS, JS,
 playground modules, demo-builder assemblies) is always the live release.
-Only versioned **data** flips when you switch the dropdown:
+Only versioned **data** flips when you switch the dropdown, and even
+within that "versioned data" set, the historical archives in this repo
+are not symmetric — older snapshots may only carry a subset of the
+per-component files.
 
-- **Versioned per `?uds=`**: `spec.json`, `status.json`, `changelog.json`,
-  `impl.json`, `examples/*.html`, `examples/manifest.json`,
-  `figmanotes.json`, `components.json`, `CHANGELOG.json`,
-  `CHANGELOG.globalNotes.json`, `version.json`.
-- **Always live (not versioned per `?uds=`)**: `uds/tokens/*.css`,
-  `uds/components/<id>/<id>.css`, `uds/components/<id>/<id>.js`,
-  `uds/uds.css`, `uds/uds.js`, the Code-tab API tables in
-  `data/component-api/<id>.ts`, the React UI itself.
+#### What's versioned in principle
+
+Files that the docs site fetches with the `fetchVersion` arg and will
+honor when present in `versions/<X>/uds/...`:
+
+- `version.json`, `components.json`, `CHANGELOG.json`,
+  `CHANGELOG.globalNotes.json`
+- per-component `spec.json`, `status.json`, `changelog.json`,
+  `impl.json`, `figmanotes.json`, `examples/manifest.json`,
+  `examples/*.html`
+- per-component `<id>.css` (consumed only by the Implementation
+  Reference Styles tab; the live page chrome still uses live tokens)
+
+#### What each archive actually ships
+
+The 0.2 snapshot in this repo only carries `<id>.css`, `spec.json`,
+`status.json`, `changelog.json` per component, plus the top-level
+manifests. **It does not carry `examples/`, `impl.json`, `playground.js`,
+or `figmanotes.json`.** That's why archive views hide Playground +
+Implementation Reference + Build Demo (those tabs need files the archive
+doesn't have) and the Examples tab surfaces a scoped "Examples aren't
+archived for this UDS version" message instead of pretending the
+component has no examples.
+
+Future archives created via `uds-docs/release.sh` follow the same
+content-only contract by default. Backfilling a sparse archive
+(`versions/0.2/`) with examples/impl requires explicit user direction —
+those files are part of Figma's source of truth for that release and
+need a deliberate decision, not an autonomous agent edit.
+
+#### What's always live (not versioned per `?uds=`)
+
+- `uds/tokens/*.css`, `uds/uds.css`, `uds/uds.js`, `uds/components/<id>/<id>.js`
+- The Code-tab API tables in `data/component-api/<id>.ts`
+- The React UI itself
 
 The trade-off: docs UI improvements automatically benefit historical
 views (you don't rebuild old archives to get a fixed sidebar tooltip),
@@ -219,27 +249,39 @@ but a 0.2 archive view renders 0.2 spec content with the live release's
 tokens and component CSS. If a token value or class name changed between
 0.2 and 0.3, the archive will visually disagree with what shipped at 0.2.
 
-To keep the contract honest:
+#### How the docs site keeps the contract honest
 
 1. **`SiteSidebar` filters component links** against the active version's
    `components.json` manifest, so a 0.2 archive doesn't surface
    components that didn't exist yet (Link, Label, Text Area, Combobox,
    Date Picker, Toggle, Pagination, Data View).
-2. **Sidebar and header links preserve `?uds=`** via
+2. **Sidebar, header, prose, and content links preserve `?uds=`** via
    `components/site/internal-href.ts`'s `withUdsVersion()` helper.
+   Sidebar links use `next/link` for client-side navigation; static
+   prose pages route through `components/site/ProseContent.tsx` which
+   intercepts internal-link clicks and rewrites `href` for middle-click
+   open-in-new-tab.
 3. **Features that depend on live-only modules are hidden in archive**:
-   the Playground tab (its `playground.js` is current-only), the
-   Implementation Reference details (uses the live impl.json shape +
-   resolves CSS/JS via `udsResolve` from live paths), and the Build Demo
-   trigger (assemblies and ZIP exports use live `uds/uds.js` +
-   per-component examples).
+   Playground tab, Implementation Reference, Build Demo trigger.
+4. **Unknown `?uds=` values are dropped.** `UdsVersionProvider`
+   validates the query param against `versions.json` once the manifest
+   loads; an unknown version (e.g. `?uds=9.9`) is cleared from the URL
+   so the user doesn't see a "viewing UDS 9.9" banner over 404s.
+5. **Archive-mode changelog failures surface a scoped error.** If
+   `versions/<X>/uds/CHANGELOG.json` 404s, the page tells the reader
+   the archive has no changelog instead of silently substituting the
+   live changelog.
 
-If we later want fully versioned archives (CSS + JS frozen per release),
-the lift is: load `versions/<v>/uds/uds.css` and `versions/<v>/uds/uds.js`
-dynamically in `app/layout.tsx` based on `fetchVersion`, version the
-Code-tab API data into `versions/<v>/uds/components/<id>/api.json`, and
-gate Playground/Demo-Builder on per-version JS-module availability. Not
-required for the current designer-facing use of archives.
+#### Path to fully versioned archives
+
+If we later want fully versioned archives (tokens + CSS + JS frozen per
+release), the lift is: load `versions/<v>/uds/uds.css` and
+`versions/<v>/uds/uds.js` dynamically in `app/layout.tsx` based on
+`fetchVersion`, version the Code-tab API data into
+`versions/<v>/uds/components/<id>/api.json`, gate Playground/Demo
+Builder on per-version JS-module availability, and backfill the existing
+archives with the missing per-component files. Not required for the
+current designer-facing use of archives.
 
 ## Snapshot + pruning policy
 
