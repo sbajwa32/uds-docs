@@ -1,0 +1,128 @@
+/* Figma Notes tab — open Figma findings raised by figma-component-inspector.
+   Ported verbatim from docs/site.css 3036-3155. Conditionally rendered when
+   the component's figmanotes.json contains at least one open note. */
+
+.sg-figma-notes-intro {
+  margin: 0 0 var(--uds-space-400);
+  color: var(--uds-color-text-secondary);
+  font-size: var(--uds-font-size-base);
+  line-height: 1.6;
+}
+
+.sg-figma-note {
+  border: 1px solid var(--uds-color-border-secondary);
+  border-radius: var(--uds-border-radius-input);
+  background: var(--uds-color-surface-main);
+  padding: var(--uds-space-300);
+  margin-bottom: var(--uds-space-300);
+}
+
+.sg-figma-note__header {
+  display: flex;
+  align-items: baseline;
+  gap: var(--uds-space-200);
+  justify-content: space-between;
+  margin-bottom: var(--uds-space-150);
+}
+
+.sg-figma-note__title {
+  margin: 0;
+  font-size: var(--uds-font-size-lg);
+  font-weight: var(--uds-font-weight-bold);
+  color: var(--uds-color-text-primary);
+  line-height: 1.4;
+}
+
+.sg-figma-note__kind {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  padding: var(--uds-space-025) var(--uds-space-100);
+  border-radius: var(--uds-border-radius-input);
+  font-size: var(--uds-font-size-xs);
+  font-weight: var(--uds-font-weight-medium);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.sg-figma-note__kind[data-kind="new-in-figma"] {
+  background: var(--uds-color-surface-success-subtle);
+  color: var(--uds-color-text-success);
+}
+.sg-figma-note__kind[data-kind="figma-orphan"] {
+  background: var(--uds-color-surface-warning-subtle);
+  color: var(--uds-color-text-warning);
+}
+.sg-figma-note__kind[data-kind="drift"] {
+  background: var(--uds-color-surface-interactive-subtle);
+  color: var(--uds-color-text-interactive);
+}
+.sg-figma-note__kind[data-kind="question"] {
+  background: var(--uds-color-surface-subtle);
+  color: var(--uds-color-text-secondary);
+}
+
+.sg-figma-note__summary {
+  margin: 0 0 var(--uds-space-200);
+  color: var(--uds-color-text-primary);
+  line-height: 1.6;
+}
+
+.sg-figma-note__decision {
+  margin: 0 0 var(--uds-space-200);
+  padding: var(--uds-space-150) var(--uds-space-200);
+  background: var(--uds-color-surface-interactive-subtle);
+  border-left: 3px solid var(--uds-color-border-interactive);
+  border-radius: var(--uds-border-radius-input);
+  color: var(--uds-color-text-primary);
+  line-height: 1.6;
+}
+
+.sg-figma-note__refs {
+  list-style: none;
+  margin: 0 0 var(--uds-space-200);
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--uds-space-100);
+}
+.sg-figma-note__refs li {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--uds-space-075);
+  padding: var(--uds-space-050) var(--uds-space-100);
+  background: var(--uds-color-surface-subtle);
+  border: 1px solid var(--uds-color-border-secondary);
+  border-radius: var(--uds-border-radius-input);
+  font-size: var(--uds-font-size-sm);
+}
+.sg-figma-note__ref-link {
+  color: var(--uds-color-text-interactive);
+  text-decoration: none;
+  font-weight: var(--uds-font-weight-medium);
+}
+.sg-figma-note__ref-link:hover {
+  text-decoration: underline;
+}
+.sg-figma-note__ref-id {
+  color: var(--uds-color-text-secondary);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: var(--uds-font-size-xs);
+}
+
+.sg-figma-note__footer {
+  margin-top: var(--uds-space-200);
+  padding-top: var(--uds-space-150);
+  border-top: 1px solid var(--uds-color-border-secondary);
+}
+.sg-figma-note__prune {
+  margin: 0 0 var(--uds-space-100);
+  font-size: var(--uds-font-size-sm);
+  color: var(--uds-color-text-secondary);
+  line-height: 1.5;
+}
+.sg-figma-note__meta {
+  margin: 0;
+  font-size: var(--uds-font-size-xs);
+  color: var(--uds-color-text-secondary);
+}

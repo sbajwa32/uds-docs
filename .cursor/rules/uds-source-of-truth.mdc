@@ -1,7 +1,7 @@
 ---
 description: Figma is the source of truth for everything under uds-docs/uds/ — tokens, component CSS, specs, examples, schemas, all of it. Agents must not autonomously modify those files in response to audit findings; surface findings as reports instead.
 alwaysApply: true
-lastUpdated: 2026-05-24T00:02:42Z
+lastUpdated: 2026-05-24T08:55:00Z
 ---
 
 # UDS Source of Truth
@@ -74,18 +74,30 @@ Any other proposed write into `uds-docs/uds/` must stop and ask the user.
 
 ## Files outside `uds-docs/uds/`
 
-Files outside `uds-docs/uds/` — i.e., `uds-docs/docs/**`,
-`uds-docs/index.html`, `uds-docs/version.txt`, `uds-docs/scripts/**`,
-`uds-docs/AGENTS.md`, `uds-docs/README.md`, `scripts/**` at the repo
-root, `.cursor/**`, `AGENTS.md` at the repo root — are documentation-site
-infrastructure or repo-level tooling. They are agent-modifiable under
-the normal workflow (`uds-master-preflight.mdc`,
-`uds-site-changelog.mdc`).
+Files outside `uds-docs/uds/` are documentation-site infrastructure or
+repo-level tooling. They are agent-modifiable under the normal workflow
+(`uds-master-preflight.mdc`, `uds-site-changelog.mdc`). The post-
+migration layout is:
 
-Note that site-side CSS like `uds-docs/docs/site.css` is also fair game
-for the agent: the `.sg-*` classes that style the documentation chrome
-are NOT the design system. Only the `.udc-*` classes inside
-`uds-docs/uds/components/<id>/<id>.css` are.
+- `uds-docs/app/**` — Next.js App Router pages and route groups
+- `uds-docs/components/**` — React components (site chrome + UDS wrappers)
+- `uds-docs/lib/**` — pure async data layer, color math, demo-builder helpers
+- `uds-docs/data/**` — typed data tables (`site-changelog.ts`,
+  `component-api/<id>.ts`, etc.)
+- `uds-docs/styles/**` — plain CSS for site chrome and page-local styling
+  (`.sg-*` and page-specific classes)
+- `uds-docs/types/**` — generated TypeScript types from JSON schemas
+- `uds-docs/public/**` — Next.js static assets including `_headers`
+- `uds-docs/scripts/**` — Next.js build helpers
+- `uds-docs/AGENTS.md`, `uds-docs/README.md`
+- `scripts/**` at the repo root — audits + tooling
+- `.cursor/**` — rules, skills, subagents, hooks
+- `AGENTS.md` at the repo root
+
+Note that site-side CSS — anything under `uds-docs/styles/` and the
+`.sg-*` classes it defines — is fair game for the agent. The chrome
+that styles the documentation site is NOT the design system. Only the
+`.udc-*` classes inside `uds-docs/uds/components/<id>/<id>.css` are.
 
 ## When an audit reports a failure under `uds-docs/uds/`
 
@@ -96,10 +108,10 @@ The correct agent response:
    threshold is.
 2. **Propose** options. For contrast failures, at minimum:
    - (a) accept the failure as a documented exception
-   - (b) change a foreground token at the component or site-CSS layer
-     (only allowed if the foreground swap doesn't itself touch
-     `uds-docs/uds/` — i.e. it's a `.sg-*` site class or external
-     consumer)
+   - (b) change a foreground token at the site-CSS layer (only allowed
+     if the foreground swap is on a `.sg-*` site class or an external
+     consumer, NOT on a `.udc-*` component class — those are inside the
+     design system)
    - (c) introduce a new `*-bold` or otherwise-qualified surface variant
      in Figma, then re-sync
    - (d) bump the offending token in Figma, then re-sync

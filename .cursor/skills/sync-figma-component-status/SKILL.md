@@ -1,7 +1,7 @@
 ---
 name: sync-figma-component-status
 description: Sync UDS Components Figma stoplight page prefixes into per-component status.json files. Use after figma-inventory reports status mismatches.
-lastUpdated: 2026-05-21T19:06:12Z
+lastUpdated: 2026-05-24T09:19:52Z
 ---
 
 # Sync Figma Component Status
@@ -38,8 +38,7 @@ lifecycle state.
 4. Exclude any Figma page whose name contains `{Ignore}`. These pages are
    intentionally out of scope and must not create status updates, deletion
    candidates, or missing-doc findings.
-5. Before editing `uds-docs/`, run `bash uds-docs/bump-site.sh` (preflight).
-6. For each high-confidence status change, edit
+5. For each high-confidence status change, edit
    `uds-docs/uds/components/<id>/status.json`:
    - Update `current` to the new value (one of `placeholder`, `blocked`,
      `in-progress`, `review`, `production`, `deprecated`).
@@ -54,11 +53,12 @@ lifecycle state.
 9. Update `.cursor/figma/state/components.snapshot.json` — bump each affected
    component's `status` field to the new value; bump `.cursor/figma/state/last-sync.json`
    `lastSuccessfulSync` and recompute `components.snapshotChecksum`.
-10. Add a concise `SITE_CHANGELOG` entry in `docs/data/site-changelog.js` listing
-    the changed statuses.
-11. Cache-bust `app.js` in `uds-docs/index.html` (since the imported
-    `site-changelog.js` changed).
-12. Visual-check the sidebar status badges and each affected component
+10. Add a concise `SITE_CHANGELOG` entry in `data/site-changelog.ts`
+    listing the changed statuses. Per
+    [`uds-site-changelog.mdc`](../../rules/uds-site-changelog.mdc),
+    there's no cache-bust step post-migration; Cloudflare and Next handle
+    invalidation automatically.
+11. Visual-check the sidebar status badges and each affected component
     page's header badge.
 13. Commit and push directly to `main`.
 

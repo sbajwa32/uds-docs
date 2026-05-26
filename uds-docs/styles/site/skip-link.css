@@ -1,0 +1,21 @@
+/* Keyboard-only "Skip to main content" link.
+   Hidden until focused (per WCAG 2.4.1). */
+
+.sg-skip-link {
+  position: absolute;
+  top: -100px;
+  left: var(--uds-space-200);
+  z-index: var(--uds-z-index-skip-link);
+  padding: var(--uds-space-100) var(--uds-space-200);
+  background: var(--uds-color-surface-interactive-default);
+  color: var(--uds-color-text-inverse);
+  font-size: var(--uds-font-size-base);
+  font-weight: var(--uds-font-weight-medium);
+  border-radius: var(--uds-border-radius-input);
+  text-decoration: none;
+  transition: top 120ms;
+}
+
+.sg-skip-link:focus {
+  top: var(--uds-space-100);
+}

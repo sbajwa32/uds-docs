@@ -1,0 +1,209 @@
+/* Demo Builder dialog and history card.
+   Ported verbatim from docs/site.css 129-176, plus the @keyframes sg-spin
+   needed by the toolbar Refresh-data button. The .sg-demo-btn (construction
+   icon in the brand bar) already lives in styles/site/header.css. */
+
+.sg-demo-dialog {
+  max-width: 720px;
+  width: calc(100vw - 48px);
+  /* Reset the inherited color cascade: the Build Demo trigger lives in
+     .sg-brand-bar (the dark navy top bar), which sets `color: rgb(245,
+     245, 245)` so its own children render as white text. The dialog is
+     rendered as a React child of the trigger, so without an explicit
+     override the dialog body inherits that near-white color and `strong`
+     / fallback text disappears against the dialog's white background.
+     Re-anchor on the standard text-primary token. */
+  color: var(--uds-color-text-primary);
+}
+.sg-demo-dialog .udc-dialog__body {
+  font-family: var(--uds-font-family);
+}
+
+.sg-demo-history {
+  padding: var(--uds-space-200);
+  border-radius: var(--uds-border-radius-input);
+  background: var(--uds-color-surface-subtle);
+  margin-bottom: var(--uds-space-300);
+  display: flex;
+  align-items: center;
+  gap: var(--uds-space-200);
+}
+.sg-demo-history-empty {
+  font-size: var(--uds-font-size-sm);
+  color: var(--uds-color-text-secondary);
+  padding: var(--uds-space-150) var(--uds-space-200);
+  background: var(--uds-color-surface-subtle);
+  border-radius: var(--uds-border-radius-input);
+  margin-bottom: var(--uds-space-300);
+  text-align: center;
+}
+.sg-demo-history-meta {
+  flex: 1;
+  min-width: 0;
+}
+.sg-demo-history-meta strong {
+  font-size: var(--uds-font-size-base);
+  display: block;
+  margin-bottom: var(--uds-space-050);
+}
+.sg-demo-history-meta span {
+  font-size: var(--uds-font-size-sm);
+  color: var(--uds-color-text-secondary);
+}
+
+.sg-demo-select-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--uds-space-150);
+}
+.sg-demo-select-row span {
+  font-size: var(--uds-font-size-sm);
+  font-weight: var(--uds-font-weight-bold);
+  color: var(--uds-color-text-primary);
+}
+.sg-demo-select-link {
+  font-size: var(--uds-font-size-sm);
+  color: var(--uds-color-text-interactive);
+  cursor: pointer;
+  border: none;
+  background: none;
+  text-decoration: underline;
+  font-family: var(--uds-font-family);
+}
+
+.sg-demo-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--uds-space-100) var(--uds-space-200);
+  margin-bottom: var(--uds-space-200);
+}
+.sg-demo-grid label {
+  display: flex;
+  align-items: center;
+  gap: var(--uds-space-100);
+  font-size: var(--uds-font-size-base);
+  color: var(--uds-color-text-primary);
+  cursor: pointer;
+  user-select: none;
+}
+.sg-demo-grid input[type="checkbox"] {
+  accent-color: var(--uds-color-surface-interactive-default);
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  cursor: pointer;
+}
+
+.sg-demo-status-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-left: var(--uds-space-075);
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+.sg-demo-status-dot--placeholder {
+  background: var(--uds-color-text-secondary);
+}
+.sg-demo-status-dot--blocked {
+  background: var(--uds-color-surface-error);
+}
+.sg-demo-status-dot--in-progress {
+  background: var(--uds-color-surface-warning);
+}
+.sg-demo-status-dot--review {
+  background: var(--uds-color-surface-warning-subtle);
+  border: 1px solid var(--uds-color-text-warning);
+}
+.sg-demo-status-dot--production {
+  background: var(--uds-color-surface-success);
+}
+
+.sg-demo-spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: var(--uds-color-text-inverse);
+  border-radius: 50%;
+  animation: sg-spin 0.6s linear infinite;
+  margin-right: var(--uds-space-075);
+  vertical-align: middle;
+}
+@keyframes sg-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.sg-demo-error {
+  font-size: var(--uds-font-size-sm);
+  color: var(--uds-color-text-error);
+  margin-top: var(--uds-space-100);
+}
+
+/* Preview overlay (open after Build). The legacy version inlined every
+   style on the overlay element; this version uses real classes so dark
+   mode + theme attributes carry through cleanly. */
+
+.sg-demo-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--uds-z-index-modal);
+  background: var(--uds-color-surface-page-main);
+  display: flex;
+  flex-direction: column;
+}
+
+.sg-demo-overlay-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px;
+  background: var(--uds-color-surface-interactive-default);
+  color: var(--uds-color-text-inverse);
+  font-family: var(--uds-font-family);
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.sg-demo-overlay-toolbar__title {
+  font-weight: 700;
+}
+
+.sg-demo-overlay-toolbar__actions {
+  display: flex;
+  gap: 8px;
+}
+
+.sg-demo-overlay-toolbar__btn {
+  background: rgba(255, 255, 255, 0.15);
+  border: none;
+  color: inherit;
+  padding: 4px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 13px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.sg-demo-overlay-toolbar__btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+.sg-demo-overlay-toolbar__btn[disabled] {
+  opacity: 0.6;
+  cursor: progress;
+}
+.sg-demo-overlay-toolbar__btn .material-symbols-outlined {
+  font-size: 16px;
+}
+
+.sg-demo-overlay-iframe {
+  flex: 1;
+  border: none;
+  width: 100%;
+}

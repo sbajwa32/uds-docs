@@ -1,7 +1,7 @@
 ---
 name: sync-figma-component-spec
 description: Update a UDS component's per-component artifacts (spec.json, CSS, examples, impl.json, playground.js, figmanotes.json) from a deep Figma component inspection. Bidirectional — consumes the inspector's `Doc-site surplus` + `Snapshot delta` sections to propose removals (deleted slots/events/states/CSS/JS/examples) as classified `potentially-breaking` or `destructive` findings that default to ask-user, AND consumes the inspector's `Figma Notes evaluation` section to update `figmanotes.json` (auto-prune resolved notes, add new ones). Use for prompts like "sync Button from Figma" or after figma-component-inspector reports high-confidence changes.
-lastUpdated: 2026-05-13T20:34:33Z
+lastUpdated: 2026-05-24T09:19:52Z
 ---
 
 # Sync Figma Component Spec
@@ -28,7 +28,9 @@ uds-docs/uds/components/<id>/
 ```
 
 The legacy `PLAYGROUNDS`, `IMPL_DATA`, and `demo-builder.js` ZIP-file-list
-tables in `docs/app.js` no longer exist; everything is per-component now.
+tables in the legacy `docs/app.js` no longer exist; every spec field is
+sourced from `uds/components/<id>/spec.json` and rendered by the
+per-component React renderer.
 
 ## Non-negotiable rule
 
@@ -210,7 +212,8 @@ For `implementation-ready` components, also propose updates to:
 Do not generate production framework code. The docs site remains vanilla
 HTML/CSS/JS reference only.
 
-Do not edit `docs/app.js` for component-specific data \u2014 there are no
+Do not edit any React component or page file for component-specific
+data — there are no
 `PLAYGROUNDS`, `IMPL_DATA`, or `FIGMA_LINKS` tables there anymore. Every
 component-data fetch in `app.js` routes through `udsResolve()` to the
 per-component file.
@@ -283,7 +286,7 @@ Preconditions before any apply:
 
 If applying:
 
-1. Run `bash uds-docs/bump-site.sh` before edits (preflight).
+1. Apply the edits in this order:
 2. For `implementation-ready` components, update files under
    `uds/components/<id>/` per the table in step 6 \u2014 spec.json, CSS,
    examples, impl.json, playground.js, figmanotes.json \u2014 as

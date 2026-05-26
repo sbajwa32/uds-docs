@@ -1,0 +1,211 @@
+/* Token search modal — keyboard-accessible search over every --uds-* token.
+   Ported verbatim from docs/site.css 618-754. The trigger button styles
+   live in styles/site/header.css; this file owns the modal itself. */
+
+.sg-token-search {
+  position: fixed;
+  inset: 0;
+  z-index: var(--uds-z-index-modal);
+  background: var(--uds-overlay-backdrop);
+  display: none;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 80px 24px 24px;
+}
+.sg-token-search[data-open="true"] {
+  display: flex;
+}
+
+.sg-token-search__panel {
+  width: 100%;
+  max-width: 640px;
+  background: var(--uds-color-surface-main);
+  border: 1px solid var(--uds-color-border-secondary);
+  border-radius: var(--uds-border-radius-container-md);
+  box-shadow: var(--uds-shadow-depth-500, 0 24px 60px rgba(0, 0, 0, 0.18));
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 120px);
+}
+
+.sg-token-search__field {
+  display: flex;
+  align-items: center;
+  gap: var(--uds-space-100);
+  padding: var(--uds-space-200);
+  border-bottom: 1px solid var(--uds-color-border-secondary);
+}
+
+.sg-token-search__icon {
+  color: var(--uds-color-icon-secondary);
+  font-size: 20px;
+}
+
+.sg-token-search__input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: var(--uds-font-family);
+  font-size: var(--uds-font-size-md);
+  color: var(--uds-color-text-primary);
+}
+.sg-token-search__input::placeholder {
+  color: var(--uds-color-text-tertiary);
+}
+
+.sg-token-search__hint,
+.sg-token-search__footer kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  padding: 1px 6px;
+  font-family: monospace;
+  font-size: var(--uds-font-size-xs);
+  background: var(--uds-color-surface-alt);
+  border: 1px solid var(--uds-color-border-primary);
+  border-radius: var(--uds-border-radius-container-sm);
+  color: var(--uds-color-text-secondary);
+}
+
+.sg-token-search__results {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--uds-space-100) 0;
+}
+
+.sg-token-search__empty {
+  padding: var(--uds-space-300) var(--uds-space-200);
+  text-align: center;
+  font-family: var(--uds-font-family);
+  font-size: var(--uds-font-size-sm);
+  color: var(--uds-color-text-tertiary);
+}
+
+.sg-token-search__count {
+  padding: var(--uds-space-100) var(--uds-space-200);
+  font-family: var(--uds-font-family);
+  font-size: var(--uds-font-size-xs);
+  color: var(--uds-color-text-secondary);
+  background: var(--uds-color-surface-subtle);
+  border-bottom: 1px solid var(--uds-color-border-secondary);
+  position: sticky;
+  top: 0;
+  z-index: var(--uds-z-index-sticky);
+}
+.sg-token-search__count strong {
+  color: var(--uds-color-text-primary);
+  font-weight: var(--uds-font-weight-bold);
+}
+.sg-token-search__count code {
+  font-family: monospace;
+  font-size: 0.95em;
+  background: var(--uds-color-surface-alt);
+  padding: 1px 4px;
+  border-radius: 3px;
+}
+
+.sg-token-search__group-title {
+  padding: var(--uds-space-150) var(--uds-space-200) var(--uds-space-050);
+  font-family: var(--uds-font-family);
+  font-size: var(--uds-font-size-xs);
+  font-weight: var(--uds-font-weight-bold);
+  color: var(--uds-color-text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  display: flex;
+  align-items: center;
+  gap: var(--uds-space-100);
+}
+.sg-token-search__group-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 16px;
+  padding: 0 6px;
+  background: var(--uds-color-surface-alt);
+  color: var(--uds-color-text-secondary);
+  border-radius: var(--uds-border-radius-container-full);
+  font-size: 10px;
+  font-weight: var(--uds-font-weight-bold);
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.sg-token-search__row {
+  display: flex;
+  align-items: center;
+  gap: var(--uds-space-150);
+  padding: var(--uds-space-100) var(--uds-space-200);
+  cursor: pointer;
+  user-select: none;
+  font-family: var(--uds-font-family);
+  transition: background 80ms ease;
+}
+.sg-token-search__row:hover,
+.sg-token-search__row[data-active="true"] {
+  background: var(--uds-color-surface-interactive-subtle-hover);
+}
+
+.sg-token-search__swatch {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  border-radius: var(--uds-border-radius-container-sm);
+  border: 1px solid var(--uds-color-border-primary);
+  background-clip: padding-box;
+}
+
+.sg-token-search__name {
+  flex: 1;
+  min-width: 0;
+  font-family: monospace;
+  font-size: var(--uds-font-size-sm);
+  color: var(--uds-color-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sg-token-search__name mark {
+  background: var(--uds-color-surface-warning-subtle);
+  color: inherit;
+  padding: 0 2px;
+  border-radius: 2px;
+}
+
+.sg-token-search__value {
+  flex-shrink: 0;
+  font-family: monospace;
+  font-size: var(--uds-font-size-xs);
+  color: var(--uds-color-text-secondary);
+  max-width: 180px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sg-token-search__category {
+  flex-shrink: 0;
+  font-size: var(--uds-font-size-xs);
+  font-weight: var(--uds-font-weight-bold);
+  color: var(--uds-color-text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.sg-token-search__footer {
+  display: flex;
+  gap: var(--uds-space-200);
+  padding: var(--uds-space-100) var(--uds-space-200);
+  border-top: 1px solid var(--uds-color-border-secondary);
+  background: var(--uds-color-surface-subtle);
+  font-family: var(--uds-font-family);
+  font-size: var(--uds-font-size-xs);
+  color: var(--uds-color-text-secondary);
+}
+.sg-token-search__footer kbd {
+  margin-right: 4px;
+}

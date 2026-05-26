@@ -1,0 +1,43 @@
+{
+  "name": "uds-docs",
+  "version": "0.0.0",
+  "private": true,
+  "description": "UDS documentation site (Next.js rebuild). The vanilla site at index.html + docs/ ships in parallel until Chunk 17.",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "postbuild": "node scripts/postbuild-copy.mjs",
+    "start": "next start",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "gen:types": "node scripts/gen-types.mjs",
+    "gen:types:check": "node scripts/gen-types.mjs && git diff --exit-code -- types/uds.ts",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "regression-check": "node scripts/regression-recovery-check.mjs"
+  },
+  "dependencies": {
+    "@mdx-js/loader": "^3.1.0",
+    "@mdx-js/react": "^3.1.0",
+    "@next/mdx": "^15.5.4",
+    "@types/mdx": "^2.0.13",
+    "jszip": "^3.10.1",
+    "next": "^15.5.4",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3.3.5",
+    "@types/node": "^22.18.0",
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.1.0",
+    "@types/ws": "^8.18.1",
+    "eslint": "^9.39.4",
+    "eslint-config-next": "^16.2.6",
+    "json-schema-to-typescript": "^15.0.4",
+    "serve": "^14.2.6",
+    "typescript": "^5.7.0",
+    "vitest": "^4.1.7",
+    "ws": "^8.21.0"
+  }
+}

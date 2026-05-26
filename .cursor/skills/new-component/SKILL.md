@@ -1,7 +1,7 @@
 ---
 name: new-component
-description: Scaffold a new UDS component end to end. Creates uds/components/<id>/ with all required files (CSS stub, spec.json, status.json, changelog.json, examples/, playground.js), bumps SITE, adds the sidebar link and placeholder data-page block. Triggers on phrases like "add a component", "scaffold a new component", "new component called X", "set up a new component for Y".
-lastUpdated: 2026-05-22T19:10:35Z
+description: Scaffold a new UDS component end to end. Creates uds/components/<id>/ with all required files (CSS stub, spec.json, status.json, changelog.json, examples/, playground.js), adds the sidebar link in components/site/SiteSidebar.tsx, and adds a SITE_CHANGELOG entry. Triggers on phrases like "add a component", "scaffold a new component", "new component called X", "set up a new component for Y".
+lastUpdated: 2026-05-24T09:19:52Z
 ---
 
 # New Component Scaffold
@@ -9,11 +9,15 @@ lastUpdated: 2026-05-22T19:10:35Z
 Scaffolds a new UDS component end-to-end: creates the
 `uds/components/<id>/` folder with every required file (CSS stub,
 `spec.json`, `status.json`, `changelog.json`, `examples/`,
-`playground.js`, `impl.json`), bumps SITE, and wires the sidebar link
-plus the `<div data-page>` placeholder block into `index.html`. After the
-skill finishes, the component appears in the sidebar with a "Spec X/22"
-pill in red (placeholder status), ready for the designer to flesh out
-the spec and visual examples.
+`playground.js`, `impl.json`) and wires the sidebar link in
+`uds-docs/components/site/SiteSidebar.tsx`. The dynamic component
+renderer at `app/(site)/[componentId]/page.tsx` picks up the new
+component automatically via `generateStaticParams`, so no per-page
+scaffolding is needed beyond the sidebar link and the `data/` entry.
+
+After the skill finishes, the component appears in the sidebar with a
+"Spec X/22" pill in red (placeholder status), ready for the designer to
+flesh out the spec and visual examples.
 
 ## Naming source of truth
 
@@ -56,25 +60,13 @@ Use the `AskQuestion` tool with multiple options where the answer is
 constrained (sidebar group), and free-text questions for the rest. Group
 questions logically — don't ask seven things at once.
 
-## Step 2 — Run the SITE version bump first
-
-Per [`uds-master-preflight.mdc`](../../rules/uds-master-preflight.mdc),
-bump-first:
-
-```bash
-bash uds-docs/bump-site.sh
-```
-
-Capture the new version string from the script output. You'll need it for
-the SITE_CHANGELOG entry at the end.
-
-## Step 3 — Create the component folder
+## Step 2 — Create the component folder
 
 ```bash
 mkdir -p uds-docs/uds/components/<id>/examples
 ```
 
-## Step 4 — Write `uds/components/<id>/spec.json`
+## Step 3 — Write `uds/components/<id>/spec.json`
 
 Use this template, with `<...>` placeholders filled in from Step 1. All
 other fields stay empty/null — the renderer hides empty sections.
@@ -121,7 +113,7 @@ other fields stay empty/null — the renderer hides empty sections.
 }
 ```
 
-## Step 5 — Write `uds/components/<id>/status.json`
+## Step 4 — Write `uds/components/<id>/status.json`
 
 ```json
 {
@@ -134,7 +126,7 @@ other fields stay empty/null — the renderer hides empty sections.
 }
 ```
 
-## Step 6 — Write `uds/components/<id>/changelog.json`
+## Step 5 — Write `uds/components/<id>/changelog.json`
 
 ```json
 {
@@ -146,7 +138,7 @@ other fields stay empty/null — the renderer hides empty sections.
 }
 ```
 
-## Step 7 — Create the empty CSS file + minimal example
+## Step 6 — Create the empty CSS file + minimal example
 
 ```bash
 touch uds-docs/uds/components/<id>/<id>.css
@@ -182,7 +174,7 @@ And the manifest:
 `demoWeight: 0` excludes the placeholder from the Demo Builder until a real
 example is written.
 
-## Step 8 — Write `uds/components/<id>/playground.js`
+## Step 7 — Write `uds/components/<id>/playground.js`
 
 ```js
 // Playground config for the <id> component.
@@ -197,45 +189,43 @@ export default {
 };
 ```
 
-## Step 9 — Add the sidebar link in `uds-docs/index.html`
+## Step 8 — Add the sidebar link in `components/site/SiteSidebar.tsx`
 
-Find the requested sidebar group heading (e.g.
-`<span class="sg-sidebar-heading">Forms &amp; Actions</span>`) and insert a
-new link as the LAST entry within that group:
+Find the requested sidebar group's `NavSection` block (e.g.
+`heading: 'Forms & Actions'`) and append a new `NavLink` entry inside
+its `links` array, alphabetised against its siblings:
 
-```html
-<a class="sg-sidebar-link" href="#/<id>"><Title></a>
+```ts
+{ label: '<Title>', href: '/<id>' },
 ```
 
-## Step 10 — Add page placeholder in `uds-docs/index.html`
+The component renderer at `app/(site)/[componentId]/page.tsx` picks up
+the new id automatically via `generateStaticParams` — no per-page
+scaffolding is needed.
 
-Insert a new `<div data-page="<id>">` block just before `</main>`:
+## Step 9 — Add the Code-tab API data
 
-```html
-<!-- <TITLE> -->
-<div data-page="<id>" data-default-tab="examples">
-  <h1 class="sg-page-title"><Title></h1>
-  <p class="sg-page-desc"><description></p>
-  <div class="sg-page-tabs" role="tablist">
-    <button class="sg-page-tab" data-tab="examples" aria-selected="true">Examples</button>
-    <button class="sg-page-tab" data-tab="code">Code</button>
-    <button class="sg-page-tab" data-tab="guidelines">Guidelines</button>
-    <button class="sg-page-tab" data-tab="changelog">Changelog</button>
-    <button class="sg-page-tab" data-tab="playground">Playground</button>
-  </div>
-  <div data-tab-panel="examples" class="active" data-needs-fetch></div>
-  <div data-tab-panel="code"><p class="sg-subsection-desc">Code examples will be added here.</p></div>
-  <div data-tab-panel="guidelines"></div>
-  <div data-tab-panel="changelog"><p class="sg-changelog-empty">No changes recorded yet.</p></div>
-  <div data-tab-panel="playground"></div>
-</div>
+Create `uds-docs/data/component-api/<id>.ts` so the Code tab can render
+the component's API surface (CSS classes + data attributes). Use the
+minimum shape:
+
+```ts
+import type { ComponentApi } from './types';
+
+export const <camelId>Api: ComponentApi = {
+  importPath: './components/<id>.css',
+  cssClasses: [
+    // Placeholder — designer to fill in after the real CSS is written.
+  ],
+  attributes: [],
+};
 ```
 
-The `examples` panel uses `data-needs-fetch` so the docs renderer
-lazy-loads from `uds/components/<id>/examples/`. The `guidelines` panel
-stays empty — `renderGuidelines()` fills it from `spec.json` at runtime.
+`audit-css-api-table.sh` will pass even with an empty `cssClasses` array
+(it skips components with no `cssClasses`); it fails only when the
+array exists but disagrees with the CSS file.
 
-## Step 11 — Add the component CSS import
+## Step 10 — Add the component CSS import
 
 Run:
 
@@ -246,23 +236,24 @@ python3 -c "import sys; sys.path.insert(0, 'scripts/lib'); from migrate_componen
 This regenerates `uds-docs/uds/uds.css` with the new component's CSS
 import. Hand-editing the imports is forbidden — always run the regenerator.
 
-## Step 12 — Cache-bust + SITE changelog entry
+## Step 11 — SITE changelog entry
 
-In `uds-docs/index.html`, bump `?v=N` on `docs/app.js` and `uds/uds.css`.
+Append to the `SITE_CHANGELOG` array in
+`uds-docs/data/site-changelog.ts`:
 
-In `uds-docs/docs/data/site-changelog.js`, append to `SITE_CHANGELOG`:
-
-```js
+```ts
 {
-  version: '<SITE_VERSION_FROM_STEP_2>',
+  version: '<YYYY.MM.DD.N>',
   date: '<YYYY-MM-DD>',
   changes: [
-    { type: 'added', text: 'Scaffolded new <Title> component (<id>) — placeholder status, spec ~6/22' }
-  ]
-}
+    { type: 'added', text: 'Scaffolded new <Title> component (<id>) — placeholder status.' },
+  ],
+},
 ```
 
-## Step 13 — Run audits + verify
+Use `date -u +%Y-%m-%d` if you need to look up today's date.
+
+## Step 12 — Run audits + verify
 
 ```bash
 bash scripts/audit-component-completeness.sh
@@ -270,11 +261,11 @@ bash scripts/audit-placeholders.sh
 bash scripts/audit-token-usage.sh
 ```
 
-All three must pass. Then open `http://localhost:4000/#/<id>` and confirm:
+All three must pass. Then run `npm run build && npx serve uds-docs/out -p 4000`
+(or use the existing dev server) and open `http://localhost:4000/<id>` and confirm:
 - Sidebar link appears under the requested group
 - Page header shows "Spec X/22" pill (red, since spec is at minimum)
 - Status badge reads "Not Started" / "Placeholder"
-- "Not production-ready" banner appears below the title
 - Guidelines tab renders the description, when-to-use, when-not-to-use,
   dependencies, and keyboard sections from the spec.json
 - Examples tab shows the placeholder default example
@@ -294,11 +285,9 @@ Then report to the user:
   Status MUST start as `placeholder`.
 - **Don't write Storybook code.** Production component code lives in the
   UDS Storybook repo.
-- **Don't put HTML spec content into `index.html`'s Guidelines panel.** The
-  panel must stay empty — the renderer fills it from `spec.json`.
-- **Don't put example HTML inline in `index.html`.** Examples live in
-  `uds/components/<id>/examples/*.html` and are rendered by the docs page +
-  Demo Builder from there.
+- **Don't put example HTML inline in any React component.** Examples
+  live in `uds/components/<id>/examples/*.html` and are rendered by the
+  Examples tab + Demo Builder from there.
 - **Don't fill `motion` or `responsive` fields.** They're intentionally
   deferred until UDS has motion / breakpoint tokens.
 

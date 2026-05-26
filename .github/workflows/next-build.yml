@@ -1,0 +1,50 @@
+name: Next.js Build & Lint
+
+# Runs on every PR + every push to main. Validates the Next.js app the
+# UDS Audits workflow doesn't touch: TypeScript types compile, ESLint
+# passes, the static export builds cleanly, and the type-generator output
+# is in sync with the JSON schemas it derives from.
+
+on:
+  pull_request:
+    branches: [main, cursor/migration-next-stack]
+  push:
+    branches: [main, cursor/migration-next-stack]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: uds-docs
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: uds-docs/package-lock.json
+
+      - name: Install
+        run: npm ci
+
+      - name: Generated types are fresh
+        # `gen:types:check` regenerates types/uds.ts from the JSON schemas
+        # and fails if the diff is non-empty — catches PRs that update a
+        # schema but forget to re-run `npm run gen:types`.
+        run: npm run gen:types:check
+
+      - name: TypeScript
+        run: npx tsc --noEmit
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Unit tests
+        run: npm test
+
+      - name: Build (static export)
+        run: npm run build
