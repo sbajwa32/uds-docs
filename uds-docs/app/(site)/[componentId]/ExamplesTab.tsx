@@ -10,6 +10,7 @@
 import { useEffect, useState } from 'react';
 
 import { useUdsVersion } from '@/components/site/UdsVersionProvider';
+import { DocsCodeBlock, DocsSection, DocsStateMessage } from '@/components/site/ui';
 import { fetchAllExamples, type RenderedExample } from '@/lib/examples-renderer';
 
 // Some example manifests have HTML entities (`&amp;`, `&lt;`) in their
@@ -70,13 +71,13 @@ export function ExamplesTab({ componentId }: { componentId: string }) {
   }, [componentId, fetchVersion, versionReady]);
 
   if (loading) {
-    return <p className="sg-changelog-empty">Loading examples…</p>;
+    return <DocsStateMessage>Loading examples…</DocsStateMessage>;
   }
   if (error) {
     return (
-      <p className="sg-changelog-empty" role="alert">
+      <DocsStateMessage tone="error">
         Couldn&apos;t load examples for <code>{componentId}</code>: {error}
-      </p>
+      </DocsStateMessage>
     );
   }
   if (!examples || examples.length === 0) {
@@ -87,43 +88,40 @@ export function ExamplesTab({ componentId }: { componentId: string }) {
     // not a missing-content gap.
     if (isArchive) {
       return (
-        <p className="sg-changelog-empty">
+        <DocsStateMessage>
           Examples aren&apos;t archived for <code>{componentId}</code> in this
           UDS version. Switch the version dropdown back to the latest release
           to see them.
-        </p>
+        </DocsStateMessage>
       );
     }
     return (
-      <p className="sg-changelog-empty">
+      <DocsStateMessage>
         No examples are documented for <code>{componentId}</code> yet.
-      </p>
+      </DocsStateMessage>
     );
   }
 
   return (
     <>
       {examples.map((ex) => (
-        <section key={ex.id} className="sg-example-block">
-          {ex.label ? (
-            <h3 className="sg-subsection-title">{decodeHtmlEntities(ex.label)}</h3>
-          ) : null}
-          {ex.description ? (
-            <p className="sg-subsection-desc">{decodeHtmlEntities(ex.description)}</p>
-          ) : null}
-          <div className="sg-example">
+        <DocsSection
+          key={ex.id}
+          title={ex.label ? decodeHtmlEntities(ex.label) : undefined}
+          description={ex.description ? decodeHtmlEntities(ex.description) : undefined}
+          level={3}
+        >
+          <div className="ds-example-card">
             <div
-              className="sg-example-preview"
+              className="ds-example-card__preview"
               dangerouslySetInnerHTML={{ __html: ex.html }}
             />
-            <details className="sg-example-code">
+            <details className="ds-example-card__code">
               <summary>Show code</summary>
-              <pre>
-                <code>{ex.html}</code>
-              </pre>
+              <DocsCodeBlock code={ex.html} language="html" />
             </details>
           </div>
-        </section>
+        </DocsSection>
       ))}
     </>
   );

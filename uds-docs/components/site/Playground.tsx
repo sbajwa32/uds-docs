@@ -25,6 +25,7 @@ import {
   type ComponentSpec,
 } from '@/lib/uds-data';
 import { useUdsVersion } from './UdsVersionProvider';
+import { DocsCodeBlock, DocsStateMessage } from './ui';
 
 interface PlaygroundControlSelect {
   key: string;
@@ -135,20 +136,20 @@ export function Playground({ componentId }: { componentId: string }) {
   }, [load.config, state]);
 
   if (load.loading) {
-    return <p className="sg-changelog-empty">Loading playground…</p>;
+    return <DocsStateMessage>Loading playground…</DocsStateMessage>;
   }
   if (load.error) {
     return (
-      <p className="sg-changelog-empty" role="alert">
+      <DocsStateMessage tone="error">
         Couldn&apos;t load playground for <code>{componentId}</code>: {load.error}
-      </p>
+      </DocsStateMessage>
     );
   }
   if (!load.config) {
     return (
-      <p className="sg-changelog-empty">
+      <DocsStateMessage>
         No playground is configured for <code>{componentId}</code>.
-      </p>
+      </DocsStateMessage>
     );
   }
 
@@ -162,13 +163,13 @@ export function Playground({ componentId }: { componentId: string }) {
         </span>
       </div>
 
-      <div className="sg-playground-layout">
-        <div className="sg-playground-left">
+      <div className="ds-playground-layout">
+        <div className="ds-playground-left">
           <div
-            className="sg-playground-preview"
+            className="ds-playground-preview"
             dangerouslySetInnerHTML={{ __html: output?.html ?? '' }}
           />
-          <div className="sg-playground-controls">
+          <div className="ds-playground-controls">
             {load.config.controls.map((c) => (
               <PlaygroundControlRow
                 key={c.key}
@@ -179,53 +180,12 @@ export function Playground({ componentId }: { componentId: string }) {
             ))}
           </div>
         </div>
-        <div className="sg-playground-right">
-          <div className="sg-code-wrap">
-            <CopyButton getText={() => output?.code ?? ''} />
-            <pre className="sg-playground-code">
-              <code>{output?.code ?? ''}</code>
-            </pre>
-          </div>
+        <div className="ds-playground-right">
+          <DocsCodeBlock code={output?.code ?? ''} language="html" />
           <ImplementationReference componentId={componentId} />
         </div>
       </div>
     </div>
-  );
-}
-
-// ---------------------------------------------------------------------------
-// CopyButton — direct port of legacy buildCopyButton(). Lives next to a
-// <pre>; click copies the supplied text to the clipboard and flashes the
-// check icon for 1.5s. Uses the existing .sg-code-copy CSS.
-// ---------------------------------------------------------------------------
-function CopyButton({ getText }: { getText: () => string }) {
-  const [copied, setCopied] = useState(false);
-  useEffect(() => {
-    if (!copied) return;
-    const t = setTimeout(() => setCopied(false), 1500);
-    return () => clearTimeout(t);
-  }, [copied]);
-
-  const onClick = async () => {
-    try {
-      await navigator.clipboard.writeText(getText());
-      setCopied(true);
-    } catch {
-      // Clipboard not available (e.g. insecure context) — silent fail
-      // matches legacy behavior.
-    }
-  };
-
-  return (
-    <button
-      type="button"
-      className="sg-code-copy"
-      title="Copy code"
-      data-copied={copied || undefined}
-      onClick={onClick}
-    >
-      <span className="material-symbols-outlined">{copied ? 'check' : 'content_copy'}</span>
-    </button>
   );
 }
 
@@ -369,29 +329,20 @@ function ImplementationReference({ componentId }: { componentId: string }) {
             className={`sg-impl-panel${activeTab === 'component' ? ' active' : ''}`}
             data-impl-panel="component"
           >
-            <div className="sg-code-wrap">
-              <CopyButton getText={() => impl.html || ''} />
-              <pre>{impl.html || '/* No example HTML in impl.json */'}</pre>
-            </div>
+            <DocsCodeBlock code={impl.html || '/* No example HTML in impl.json */'} language="html" />
           </div>
           <div
             className={`sg-impl-panel${activeTab === 'styles' ? ' active' : ''}`}
             data-impl-panel="styles"
           >
-            <div className="sg-code-wrap">
-              <CopyButton getText={() => cssText || ''} />
-              <pre>{cssText ?? 'Loading…'}</pre>
-            </div>
+            <DocsCodeBlock code={cssText ?? 'Loading…'} language="css" />
           </div>
           {hasBehavior ? (
             <div
               className={`sg-impl-panel${activeTab === 'behavior' ? ' active' : ''}`}
               data-impl-panel="behavior"
             >
-              <div className="sg-code-wrap">
-                <CopyButton getText={() => jsText || ''} />
-                <pre>{jsText ?? 'Loading…'}</pre>
-              </div>
+              <DocsCodeBlock code={jsText ?? 'Loading…'} language="js" />
             </div>
           ) : null}
           {hasTokens ? (
@@ -460,7 +411,7 @@ function IconPickerControl({
       <input
         ref={inputRef}
         type="text"
-        className="sg-pg-input"
+        className="ds-playground-input"
         placeholder="Material symbol name (e.g. add)"
         value={value}
         onChange={(e) => onChange(e.target.value)}
@@ -524,8 +475,8 @@ function PlaygroundControlRow({
   onChange: (v: unknown) => void;
 }) {
   return (
-    <div className="sg-pg-control">
-      <label className="sg-pg-label">{control.label}</label>
+    <div className="ds-playground-control">
+      <label className="ds-playground-control__label">{control.label}</label>
       <ControlInput control={control} value={value} onChange={onChange} />
     </div>
   );
@@ -544,7 +495,7 @@ function ControlInput({
     case 'select':
       return (
         <select
-          className="sg-pg-select"
+          className="ds-playground-input"
           value={String(value ?? '')}
           onChange={(e) => onChange(e.target.value)}
         >
@@ -559,7 +510,7 @@ function ControlInput({
       return (
         <input
           type="checkbox"
-          className="sg-pg-checkbox"
+          className="ds-playground-checkbox"
           checked={Boolean(value)}
           onChange={(e) => onChange(e.target.checked)}
         />
@@ -568,7 +519,7 @@ function ControlInput({
       return (
         <input
           type="text"
-          className="sg-pg-input"
+          className="ds-playground-input"
           value={String(value ?? '')}
           onChange={(e) => onChange(e.target.value)}
         />

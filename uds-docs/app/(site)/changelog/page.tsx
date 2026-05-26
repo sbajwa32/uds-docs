@@ -2,6 +2,7 @@ import { promises as fs } from 'node:fs';
 import path from 'node:path';
 
 import type { AggregatedChangelog } from '@/lib/uds-data';
+import { DocsPageHeader } from '@/components/site/ui';
 import { ChangelogClient } from './ChangelogClient';
 
 // Server component — reads the LIVE aggregated UDS changelog at build
@@ -19,11 +20,10 @@ export default async function ChangelogPage() {
 
   return (
     <>
-      <h1 className="sg-page-title">Changelog</h1>
-      <p className="sg-page-desc">
-        All notable changes to the Urban Design System and the documentation
-        site.
-      </p>
+      <DocsPageHeader
+        title="Changelog"
+        description="All notable changes to the Urban Design System and the documentation site."
+      />
       <ChangelogClient initialUdsChangelog={udsChangelog} />
     </>
   );

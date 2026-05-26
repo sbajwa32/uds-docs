@@ -1,17 +1,12 @@
-import { SgPageTitle, SgPageDesc } from '@/components/site/SgPageHeader';
+import { DocsCodeBlock, DocsPageHeader, DocsSection } from '@/components/site/ui';
 
 export const metadata = { title: 'Layout Templates — UDS' };
 
-export default function TemplatesPage() {
-  return (
-    <div className="sg-page-content">
-      <SgPageTitle>Layout Templates</SgPageTitle>
-      <SgPageDesc>Starter page structures. Each template is the bare skeleton — copy, fill in, and ship. All use UDS tokens and components only.</SgPageDesc>
-
-      <div className="sg-subsection"><h3 className="sg-subsection-title">App shell</h3>
-        <p className="sg-subsection-desc">Nav Header + Nav Vertical + main content. Use as the base layout for every authenticated page.</p>
-        <div className="sg-example">
-          <details className="sg-example-code" open><summary>Show code</summary><pre><code>{`<div class="udc-nav-header">
+const templates = [
+  {
+    title: 'App shell',
+    description: 'Nav Header + Nav Vertical + main content. Use as the base layout for every authenticated page.',
+    code: `<div class="udc-nav-header">
   <div class="udc-nav-header__left">…brand + bento…</div>
   <div class="udc-nav-header__center">…breadcrumb / search…</div>
   <div class="udc-nav-header__right">…notifications, account…</div>
@@ -25,14 +20,12 @@ export default function TemplatesPage() {
   <main style="flex:1;padding:var(--uds-space-300);overflow-y:auto;">
     …page content…
   </main>
-</div>`}</code></pre></details>
-        </div>
-      </div>
-
-      <div className="sg-subsection"><h3 className="sg-subsection-title">Settings page</h3>
-        <p className="sg-subsection-desc">Header + Tabs + form fields + sticky save bar.</p>
-        <div className="sg-example">
-          <details className="sg-example-code" open><summary>Show code</summary><pre><code>{`<header style="margin-bottom:var(--uds-space-300);">
+</div>`,
+  },
+  {
+    title: 'Settings page',
+    description: 'Header + Tabs + form fields + sticky save bar.',
+    code: `<header style="margin-bottom:var(--uds-space-300);">
   <h1>Settings</h1>
 </header>
 
@@ -49,14 +42,12 @@ export default function TemplatesPage() {
             border-top:1px solid var(--uds-color-border-secondary);">
   <button class="udc-button-secondary">Cancel</button>
   <button class="udc-button-primary">Save changes</button>
-</div>`}</code></pre></details>
-        </div>
-      </div>
-
-      <div className="sg-subsection"><h3 className="sg-subsection-title">Data browsing page</h3>
-        <p className="sg-subsection-desc">Filter bar (Search + Chips) + Data Table + pagination.</p>
-        <div className="sg-example">
-          <details className="sg-example-code" open><summary>Show code</summary><pre><code>{`<div style="display:flex;gap:var(--uds-space-150);
+</div>`,
+  },
+  {
+    title: 'Data browsing page',
+    description: 'Filter bar (Search + Chips) + Data Table + pagination.',
+    code: `<div style="display:flex;gap:var(--uds-space-150);
             margin-bottom:var(--uds-space-200);">
   <div class="udc-search" style="flex:1;">…</div>
   <button class="udc-chip" data-variant="filter">Active</button>
@@ -70,14 +61,12 @@ export default function TemplatesPage() {
             gap:var(--uds-space-100);margin-top:var(--uds-space-200);"
      aria-label="Pagination">
   …pagination buttons…
-</nav>`}</code></pre></details>
-        </div>
-      </div>
-
-      <div className="sg-subsection"><h3 className="sg-subsection-title">Marketing landing</h3>
-        <p className="sg-subsection-desc">Hero + feature tiles + CTA. Simpler header than the app shell.</p>
-        <div className="sg-example">
-          <details className="sg-example-code" open><summary>Show code</summary><pre><code>{`<header>
+</nav>`,
+  },
+  {
+    title: 'Marketing landing',
+    description: 'Hero + feature tiles + CTA. Simpler header than the app shell.',
+    code: `<header>
   <nav>…minimal brand + CTA…</nav>
 </header>
 
@@ -91,9 +80,23 @@ export default function TemplatesPage() {
 <section style="display:grid;grid-template-columns:repeat(3,1fr);
                 gap:var(--uds-space-300);padding:var(--uds-space-500);">
   …udc-tile cards…
-</section>`}</code></pre></details>
-        </div>
-      </div>
-    </div>
+</section>`,
+  },
+];
+
+export default function TemplatesPage() {
+  return (
+    <>
+      <DocsPageHeader
+        title="Layout Templates"
+        description="Starter page structures. Each template is the bare skeleton — copy, fill in, and ship. All use UDS tokens and components only."
+      />
+
+      {templates.map((template) => (
+        <DocsSection key={template.title} title={template.title} description={template.description}>
+          <DocsCodeBlock code={template.code} language="html" />
+        </DocsSection>
+      ))}
+    </>
   );
 }

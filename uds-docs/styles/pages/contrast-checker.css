@@ -14,11 +14,6 @@
      .cc-by-design
    ===================================================================== */
 
-.cc-loading {
-  color: var(--uds-color-text-secondary);
-  padding: var(--uds-space-200) 0;
-}
-
 /* ---- Shared sample swatches (text/icon/border previews) -------------- */
 
 .cc-sample {
@@ -106,25 +101,21 @@
   gap: var(--uds-space-400);
 }
 
-.cc-empty {
-  padding: var(--uds-space-300);
-  text-align: center;
-  color: var(--uds-color-text-secondary);
-  font-size: var(--uds-font-size-sm);
-  border: 1px dashed var(--uds-color-border-tertiary);
-  border-radius: var(--uds-border-radius-container);
+.cc-app > .ds-state-message {
+  margin: 0;
 }
 
 /* ---- Hero — Compare panel ------------------------------------------- */
+
+.cc-hero-anchor {
+  scroll-margin-top: var(--uds-space-300);
+}
 
 .cc-hero {
   display: flex;
   flex-direction: column;
   gap: var(--uds-space-250);
   padding: var(--uds-space-300);
-  background: var(--uds-color-surface-subtle);
-  border: 1px solid var(--uds-color-border-tertiary);
-  border-radius: var(--uds-border-radius-container);
 }
 
 .cc-pickers {
@@ -229,6 +220,12 @@
 }
 .cc-picker-trigger[aria-expanded="true"] .cc-picker-trigger-chevron {
   transform: rotate(180deg);
+}
+
+.cc-picker-trigger .ds-badge {
+  flex: 0 0 auto;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
 /* ---- Popover picker ------------------------------------------------- */
@@ -489,9 +486,6 @@
   align-items: flex-start;
   gap: var(--uds-space-100);
   padding: var(--uds-space-200) var(--uds-space-300);
-  background: var(--uds-color-surface-main);
-  border: 1px solid var(--uds-color-border-tertiary);
-  border-radius: var(--uds-border-radius-container);
 }
 .cc-big-pair {
   display: flex;
@@ -511,35 +505,10 @@
   color: var(--uds-color-text-secondary);
   font-size: 24px;
 }
-.cc-big-verdict {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--uds-space-100);
-  height: 36px;
+.cc-big-pair .ds-badge {
+  min-height: 36px;
   padding: 0 var(--uds-space-200);
-  border-radius: var(--uds-border-radius-container-full);
   font-size: var(--uds-font-size-base);
-  font-weight: var(--uds-font-weight-medium);
-}
-.cc-big-verdict-aaa {
-  background: var(--uds-color-surface-success-subtle);
-  color: var(--uds-color-text-success);
-}
-.cc-big-verdict-aa {
-  background: var(--uds-color-surface-success-subtle);
-  color: var(--uds-color-text-success);
-}
-.cc-big-verdict-aa-large {
-  background: var(--uds-color-surface-warning-subtle);
-  color: var(--uds-color-text-warning);
-}
-.cc-big-verdict-fail {
-  background: var(--uds-color-surface-error-subtle);
-  color: var(--uds-color-text-error);
-}
-.cc-big-verdict-na {
-  background: var(--uds-color-surface-alt);
-  color: var(--uds-color-text-secondary);
 }
 .cc-big-note {
   font-size: var(--uds-font-size-sm);
@@ -658,6 +627,11 @@
   display: flex;
   flex-direction: column;
   gap: var(--uds-space-200);
+  padding: var(--uds-space-300);
+}
+
+.cc-browse-section {
+  margin-top: 0;
 }
 
 .cc-browse-toolbar {
@@ -781,6 +755,11 @@
   gap: var(--uds-space-050);
   min-width: 0;
 }
+.cc-curated-title .ds-badge {
+  align-self: flex-start;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
 .cc-curated-pill {
   display: inline-flex;
   align-items: center;
@@ -877,10 +856,7 @@
 
 .cc-matrix-scroll {
   overflow: auto;
-  border: 1px solid var(--uds-color-border-tertiary);
-  border-radius: var(--uds-border-radius-container);
   max-height: 70vh;
-  background: var(--uds-color-surface-main);
 }
 table.cc-matrix {
   border-collapse: separate;
@@ -1037,9 +1013,7 @@ table.cc-matrix {
 /* ---- WCAG help (collapsed) ----------------------------------------- */
 
 .cc-help {
-  background: var(--uds-color-surface-main);
-  border: 1px solid var(--uds-color-border-tertiary);
-  border-radius: var(--uds-border-radius-container);
+  margin: 0;
 }
 .cc-help-summary {
   display: flex;
@@ -1057,8 +1031,11 @@ table.cc-matrix {
   color: var(--uds-color-icon-secondary);
   font-size: 20px;
 }
+.cc-help[open] .cc-help-summary {
+  border-bottom: 1px solid var(--uds-color-border-secondary);
+}
 .cc-help-body {
-  padding: 0 var(--uds-space-200) var(--uds-space-200);
+  padding: var(--uds-space-200);
 }
 .cc-help-list {
   list-style: disc;

@@ -3,16 +3,24 @@
    ===================================================================== */
 
 /* Section spacing */
-.sg-cw-section { margin: 0 0 var(--uds-space-500); }
+.sg-cw-section {
+  display: flex;
+  flex-direction: column;
+  margin: 0 0 var(--uds-space-500);
+}
 .sg-cw-section:first-of-type { margin-top: var(--uds-space-200); }
 .sg-cw-section + .sg-cw-section { margin-top: var(--uds-space-500); }
 
-.sg-cw-eyebrow {
+.sg-cw-section-eyebrow {
+  order: -1;
+  margin-bottom: var(--uds-space-100);
+}
+
+.sg-cw-section-eyebrow .ds-badge {
   display: inline-flex;
   align-items: center;
   gap: var(--uds-space-075);
   padding: 2px 10px 2px 8px;
-  margin-bottom: var(--uds-space-100);
   background: var(--uds-color-surface-subtle);
   border: 1px solid var(--uds-color-border-secondary);
   border-radius: var(--uds-border-radius-container-full);
@@ -23,7 +31,7 @@
   text-transform: uppercase;
   color: var(--uds-color-text-secondary);
 }
-.sg-cw-eyebrow .material-symbols-outlined { font-size: 14px; }
+.sg-cw-section-eyebrow .material-symbols-outlined { font-size: 14px; }
 
 /* =====================================================================
    QUICK START — "Say this, get that" prompt cards
@@ -122,6 +130,10 @@
   gap: var(--uds-space-200);
   margin: var(--uds-space-200) 0 0;
 }
+.sg-cw-concept-shell {
+  min-width: 0;
+  display: flex;
+}
 .sg-cw-concept {
   display: flex;
   flex-direction: column;
@@ -132,6 +144,7 @@
   border-radius: var(--uds-border-radius-container-md);
   font-family: var(--uds-font-family);
   position: relative;
+  flex: 1;
 }
 .sg-cw-concept::before {
   content: "";
@@ -140,10 +153,10 @@
   height: 3px;
   border-radius: var(--uds-border-radius-container-md) var(--uds-border-radius-container-md) 0 0;
 }
-.sg-cw-concept[data-type="rule"]::before     { background: var(--uds-color-surface-info); }
-.sg-cw-concept[data-type="skill"]::before    { background: var(--uds-color-surface-success); }
-.sg-cw-concept[data-type="subagent"]::before { background: var(--uds-color-surface-warning); }
-.sg-cw-concept[data-type="audit"]::before    { background: var(--uds-color-surface-error); }
+.sg-cw-concept-shell[data-type="rule"] .sg-cw-concept::before     { background: var(--uds-color-surface-info); }
+.sg-cw-concept-shell[data-type="skill"] .sg-cw-concept::before    { background: var(--uds-color-surface-success); }
+.sg-cw-concept-shell[data-type="subagent"] .sg-cw-concept::before { background: var(--uds-color-surface-warning); }
+.sg-cw-concept-shell[data-type="audit"] .sg-cw-concept::before    { background: var(--uds-color-surface-error); }
 
 .sg-cw-concept-icon {
   width: 40px;
@@ -153,10 +166,10 @@
   justify-content: center;
   border-radius: var(--uds-border-radius-container-sm);
 }
-.sg-cw-concept[data-type="rule"]     .sg-cw-concept-icon { background: var(--uds-color-surface-info-subtle);    color: var(--uds-color-icon-info); }
-.sg-cw-concept[data-type="skill"]    .sg-cw-concept-icon { background: var(--uds-color-surface-success-subtle); color: var(--uds-color-icon-success); }
-.sg-cw-concept[data-type="subagent"] .sg-cw-concept-icon { background: var(--uds-color-surface-warning-subtle); color: var(--uds-color-icon-warning); }
-.sg-cw-concept[data-type="audit"]    .sg-cw-concept-icon { background: var(--uds-color-surface-error-subtle);   color: var(--uds-color-icon-error); }
+.sg-cw-concept-shell[data-type="rule"]     .sg-cw-concept-icon { background: var(--uds-color-surface-info-subtle);    color: var(--uds-color-icon-info); }
+.sg-cw-concept-shell[data-type="skill"]    .sg-cw-concept-icon { background: var(--uds-color-surface-success-subtle); color: var(--uds-color-icon-success); }
+.sg-cw-concept-shell[data-type="subagent"] .sg-cw-concept-icon { background: var(--uds-color-surface-warning-subtle); color: var(--uds-color-icon-warning); }
+.sg-cw-concept-shell[data-type="audit"]    .sg-cw-concept-icon { background: var(--uds-color-surface-error-subtle);   color: var(--uds-color-icon-error); }
 .sg-cw-concept-icon .material-symbols-outlined { font-size: 22px; }
 
 .sg-cw-concept-name {
@@ -210,6 +223,10 @@
 /* =====================================================================
    WORKFLOWS TAB — workflow cards with step strip
    ===================================================================== */
+.sg-cw-workflow-anchor {
+  scroll-margin-top: var(--uds-space-200);
+}
+
 .sg-cw-workflow {
   display: flex;
   flex-direction: column;
@@ -220,7 +237,6 @@
   border-radius: var(--uds-border-radius-container-md);
   margin: 0 0 var(--uds-space-250);
   font-family: var(--uds-font-family);
-  scroll-margin-top: var(--uds-space-200);
 }
 
 .sg-cw-workflow-header {

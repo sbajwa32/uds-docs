@@ -9,6 +9,7 @@ import { promises as fs } from 'node:fs';
 import path from 'node:path';
 
 import { TokenPageTabs } from '@/components/site/TokenPageTabs';
+import { DocsCodeBlock, DocsPageHeader, DocsSection, TokenGroup, TokenSwatchCard } from '@/components/site/ui';
 
 export const metadata = { title: 'Primitive Colors — UDS' };
 
@@ -33,23 +34,15 @@ const SPECIAL = [
   {
     name: '--uds-primitive-color-special-white',
     value: '#ffffff',
-    style: { background: 'var(--uds-primitive-color-special-white)' },
   },
   {
     name: '--uds-primitive-color-special-black',
     value: '#000000',
-    style: { background: 'var(--uds-primitive-color-special-black)' },
   },
   {
     name: '--uds-primitive-color-special-none',
     value: 'transparent',
-    style: {
-      background: 'var(--uds-primitive-color-special-none)',
-      backgroundImage:
-        'linear-gradient(45deg,#ccc 25%,transparent 25%,transparent 75%,#ccc 75%),linear-gradient(45deg,#ccc 25%,transparent 25%,transparent 75%,#ccc 75%)',
-      backgroundSize: '8px 8px',
-      backgroundPosition: '0 0,4px 4px',
-    },
+    checkerboard: true,
   },
 ];
 
@@ -60,35 +53,32 @@ function capitalize(s: string): string {
 function PreviewTab() {
   return (
     <>
-      <div className="sg-subsection" id="prim-special">
-        <h3 className="sg-subsection-title">Special</h3>
-        <div className="sg-token-list">
-          {SPECIAL.map((sw) => (
-            <div key={sw.name} className="sg-token-row">
-              <div className="sg-token-swatch" style={sw.style} />
-              <span className="sg-token-name">{sw.name}</span>
-              <span className="sg-token-value">{sw.value}</span>
-            </div>
-          ))}
-        </div>
-      </div>
+      <TokenGroup title="Special">
+        {SPECIAL.map((sw) => (
+          <TokenSwatchCard
+            key={sw.name}
+            name={sw.name}
+            value={sw.value}
+            swatch={`var(${sw.name})`}
+            checkerboard={'checkerboard' in sw && Boolean(sw.checkerboard)}
+          />
+        ))}
+      </TokenGroup>
 
       {FAMILIES.map((family) => (
-        <div key={family} className="sg-subsection" id={`prim-${family}`}>
-          <h3 className="sg-subsection-title">{capitalize(family)}</h3>
-          <div className="sg-token-list">
-            {STEPS.map((step) => {
-              const varName = `--uds-primitive-color-${family}-${step}`;
-              return (
-                <div key={step} className="sg-token-row">
-                  <div className="sg-token-swatch" style={{ background: `var(${varName})` }} />
-                  <span className="sg-token-name">{varName}</span>
-                  <span className="sg-token-value">{`${family}-${step}`}</span>
-                </div>
-              );
-            })}
-          </div>
-        </div>
+        <TokenGroup key={family} title={capitalize(family)}>
+          {STEPS.map((step) => {
+            const varName = `--uds-primitive-color-${family}-${step}`;
+            return (
+              <TokenSwatchCard
+                key={step}
+                name={varName}
+                value={`${family}-${step}`}
+                swatch={`var(${varName})`}
+              />
+            );
+          })}
+        </TokenGroup>
       ))}
     </>
   );
@@ -97,18 +87,15 @@ function PreviewTab() {
 function CodeTab({ css }: { css: string }) {
   return (
     <>
-      <h3 className="sg-subsection-title">Import</h3>
-      <pre className="sg-playground-code" style={{ marginBottom: 24 }}>
-        @import url(&apos;./tokens/primitives.css&apos;);
-      </pre>
-      <h3 className="sg-subsection-title">All Primitive Color Tokens</h3>
-      <p className="sg-subsection-desc">
-        Copy the full CSS below to include all primitive color tokens in your
-        project.
-      </p>
-      <pre className="sg-playground-code" id="prim-code-block">
-        {css}
-      </pre>
+      <DocsSection title="Import">
+        <DocsCodeBlock code="@import url('./tokens/primitives.css');" language="css" />
+      </DocsSection>
+      <DocsSection
+        title="All Primitive Color Tokens"
+        description="Copy the full CSS below to include all primitive color tokens in your project."
+      >
+        <DocsCodeBlock code={css} language="css" />
+      </DocsSection>
     </>
   );
 }
@@ -119,11 +106,10 @@ export default async function PrimitiveColorsPage() {
 
   return (
     <>
-      <h1 className="sg-page-title">Primitive Colors</h1>
-      <p className="sg-page-desc">
-        Raw palette values. These are referenced by semantic tokens — avoid
-        using primitives directly in component code.
-      </p>
+      <DocsPageHeader
+        title="Primitive Colors"
+        description="Raw palette values. These are referenced by semantic tokens — avoid using primitives directly in component code."
+      />
       <TokenPageTabs preview={<PreviewTab />} code={<CodeTab css={css} />} />
     </>
   );

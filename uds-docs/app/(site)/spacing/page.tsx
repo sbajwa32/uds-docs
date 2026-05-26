@@ -3,6 +3,8 @@
 // Truly static — just inline swatch divs sized via UDS spacing tokens. Switch
 // the Density theme control to see comfortable-mode adjustments.
 
+import { DocsCard, DocsPageHeader, DocsSection } from '@/components/site/ui';
+
 export const metadata = { title: 'Spacing — UDS' };
 
 const STEPS = [
@@ -19,34 +21,35 @@ const STEPS = [
 export default function SpacingPage() {
   return (
     <>
-      <h1 className="sg-page-title">Spacing</h1>
-      <p className="sg-page-desc">
-        A consistent spacing scale used for padding, margins, and gaps. Switch
-        the <strong>Density</strong> control above to see the comfortable mode
-        adjustments.
-      </p>
-      <div className="sg-example">
-        <div
-          className="sg-example-preview"
-          style={{ alignItems: 'flex-end', gap: 16 }}
-        >
+      <DocsPageHeader
+        title="Spacing"
+        description={
+          <>
+            A consistent spacing scale used for padding, margins, and gaps. Switch the{' '}
+            <strong>Density</strong> control above to see the comfortable mode adjustments.
+          </>
+        }
+      />
+      <DocsSection title="Spacing scale">
+        <DocsCard>
+          <div className="ds-spacing-scale">
           {STEPS.map(({ id, token }) => (
-            <div key={id} style={{ textAlign: 'center' }}>
+            <div key={id} className="ds-spacing-scale__item">
               <div
+                className="ds-spacing-scale__bar"
                 style={{
                   width: token,
                   height: token,
-                  background: 'var(--uds-color-surface-interactive-default)',
-                  margin: '0 auto 4px',
                   minWidth: id === '050' ? 2 : undefined,
                   minHeight: id === '050' ? 2 : undefined,
                 }}
               />
-              <span className="sg-swatch-label">{id}</span>
+              <code className="ds-spacing-scale__label">space-{id}</code>
             </div>
           ))}
-        </div>
-      </div>
+          </div>
+        </DocsCard>
+      </DocsSection>
     </>
   );
 }
