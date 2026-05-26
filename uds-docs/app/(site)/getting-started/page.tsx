@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import { VersionedLink as Link } from '@/components/site/VersionedLink';
 import { SgPageTitle, SgPageDesc } from '@/components/site/SgPageHeader';
 import { SgSubsectionTitle, SgSubsectionDesc } from '@/components/site/SgSubsection';
 import { UdsDownloadButton } from '@/components/site/UdsDownloadButton';

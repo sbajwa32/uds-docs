@@ -59,7 +59,7 @@ export function SgBrandBar({
 // SgThemeBar — collapsible appearance controls
 // ---------------------------------------------------------------------------
 
-export function SgThemeBar({ open }: { open: boolean }) {
+export function SgThemeBar({ open = true }: { open?: boolean }) {
   const t = useUdsTheme();
 
   return (
