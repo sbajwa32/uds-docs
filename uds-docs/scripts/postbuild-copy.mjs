@@ -30,13 +30,9 @@ const COPIES = [
   },
 ];
 
-// Note: the per-component playground.js modules under uds/components/<id>/
-// import `esc` from `../../../docs/helpers/esc.js`. Post-Chunk-17 the
-// file lives at `uds-docs/public/docs/helpers/esc.js` — Next.js copies
-// everything under `public/` to the build output root at the URL `/...`,
-// so the playground's relative import resolves to `/docs/helpers/esc.js`
-// without a manual postbuild copy. Don't move or rename esc.js without
-// also updating the source-of-truth playground.js files.
+// Each per-component `uds/components/<id>/playground.js` cartridge is
+// self-contained — it defines its own `escAttr` / `escText` helpers
+// inline, so no shared `esc.js` ship needs to be staged here.
 
 async function main() {
   if (!existsSync(OUT_DIR)) {

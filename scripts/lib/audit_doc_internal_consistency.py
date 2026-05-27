@@ -28,11 +28,6 @@ Five checks (all enforceable from structured data):
      exist in `uds-docs/uds/components.json` `components[]`. Catches
      references to deleted components.
 
-  5. If `uds-docs/uds/uds.js` still uses the legacy `COMPONENT_SCRIPTS`
-     array, every entry must point at a real per-component JS file. If it
-     is a Web Components compatibility loader, no legacy loader entries
-     are required.
-
 Per-component allow-list tolerance via
 `scripts/audit-baseline.json` `audit-doc-internal-consistency`:
 
@@ -54,7 +49,6 @@ UDS_DOCS = REPO_ROOT / "uds-docs"
 COMPONENTS_DIR = UDS_DOCS / "uds" / "components"
 TOKENS_DIR = UDS_DOCS / "uds" / "tokens"
 API_DATA_DIR = UDS_DOCS / "data" / "component-api"
-ORCHESTRATOR_JS = UDS_DOCS / "uds" / "uds.js"
 WEB_COMPONENTS_SRC = UDS_DOCS / "packages" / "uds-web-components" / "src"
 COMPONENTS_JSON = UDS_DOCS / "uds" / "components.json"
 BASELINE_CONFIG = REPO_ROOT / "scripts" / "audit-baseline.json"
@@ -240,27 +234,6 @@ def build_defined_token_set() -> set[str]:
     return out
 
 
-# ---------------------------------------------------------------------------
-# Orchestrator parsing
-# ---------------------------------------------------------------------------
-
-
-_COMP_SCRIPT_ENTRY_RE = re.compile(
-    r"['\"](components/[^'\"]+\.js)['\"]"
-)
-
-
-def extract_component_scripts(orch_text: str) -> list[str]:
-    """Return the ordered list of paths inside `var COMPONENT_SCRIPTS = [...]`.
-
-    Falls back to a broad regex match across the file if the variable
-    block can't be isolated.
-    """
-    m = re.search(r"COMPONENT_SCRIPTS\s*=\s*\[(.*?)\]\s*;", orch_text, re.S)
-    block = m.group(1) if m else orch_text
-    return [m.group(1) for m in _COMP_SCRIPT_ENTRY_RE.finditer(block)]
-
-
 def read_web_component_sources() -> str:
     if not WEB_COMPONENTS_SRC.exists():
         return ""
@@ -403,33 +376,6 @@ def audit_component(
 # ---------------------------------------------------------------------------
 
 
-def audit_orchestrator() -> list[str]:
-    findings: list[str] = []
-    if not ORCHESTRATOR_JS.exists():
-        return [
-            "uds.js/missing: uds-docs/uds/uds.js does not exist; cannot verify "
-            "COMPONENT_SCRIPTS loader integrity"
-        ]
-    orch_text = ORCHESTRATOR_JS.read_text()
-    if "web-components.js" in orch_text and "COMPONENT_SCRIPTS" not in orch_text:
-        return []
-    entries = extract_component_scripts(orch_text)
-    if not entries:
-        findings.append(
-            "uds.js/no-loader-entries: could not parse COMPONENT_SCRIPTS array — "
-            "regex match failed"
-        )
-        return findings
-    for rel in entries:
-        target = UDS_DOCS / "uds" / rel
-        if not target.exists():
-            findings.append(
-                f"uds.js/loader-orphan/{rel}: COMPONENT_SCRIPTS lists "
-                f"'{rel}' but {target} does not exist"
-            )
-    return findings
-
-
 # ---------------------------------------------------------------------------
 # Components manifest
 # ---------------------------------------------------------------------------
@@ -524,12 +470,6 @@ def main() -> None:
                 continue
             all_findings.append(f)
 
-    orch_findings = audit_orchestrator()
-    for f in orch_findings:
-        if _is_tolerated(f, tolerated_findings):
-            continue
-        all_findings.append(f)
-
     if all_findings:
         print("FAIL — doc-internal-consistency violations:")
         for f in sorted(all_findings):
@@ -544,8 +484,6 @@ def main() -> None:
         print("    one OR delete the stale token reference.")
         print("  - paired-missing/<id>: remove or correct the entry in")
         print("    spec.json commonlyPairedWith.")
-        print("  - uds.js/loader-orphan/<path>: remove the entry from")
-        print("    COMPONENT_SCRIPTS (and the matching UDS._initX in UDS.init).")
         print("")
         print("If a finding is intentional or pre-baseline, add it (literal")
         print("string, or `comp/check/` prefix) to scripts/audit-baseline.json")

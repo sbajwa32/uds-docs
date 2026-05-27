@@ -484,7 +484,7 @@ export function CursorWorkflowsClient() {
                 <details className="sg-cw-details">
                   <summary>What gets touched, end to end</summary>
                   <div className="sg-cw-details-body">
-                    A brand-new <code>uds/components/&lt;id&gt;/</code> folder, <code>uds/uds.css</code>, optionally <code>uds/uds.js</code>, <code>uds/components.json</code>, <code>uds/CHANGELOG.json</code>, and <code>uds-docs/data/site-changelog.ts</code>. Status starts at <em>placeholder</em>; spec completeness rises as the designer fills in fields. No Figma release-notes sync needed unless the addition lands as part of a UDS release.
+                    A brand-new <code>uds/components/&lt;id&gt;/</code> folder, <code>uds/components.json</code>, <code>uds/CHANGELOG.json</code>, and <code>uds-docs/data/site-changelog.ts</code>. The implementation (CSS, behavior) lands in the <code>@uds/web-components</code> package as a new <code>&lt;udc-id&gt;</code> custom element. Status starts at <em>placeholder</em>; spec completeness rises as the designer fills in fields. No Figma release-notes sync needed unless the addition lands as part of a UDS release.
                   </div>
                 </details>
               </div>

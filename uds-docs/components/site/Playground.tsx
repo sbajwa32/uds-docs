@@ -1,19 +1,16 @@
 'use client';
 
 // Generic playground engine. Dynamic-imports the per-component playground.js
-// module (which lives at uds/components/<id>/playground.js — unchanged source-
-// of-truth file), reads its controls + render function, then renders the live
-// preview + code output reactively on every control change.
+// module from `uds/components/<id>/playground.js`, reads its `controls` +
+// `render(state)` function, then renders the live preview + code output
+// reactively on every control change. Same player + cartridge split as the
+// Examples tab and Demo Builder — see lib/examples-renderer.ts and
+// lib/demo-builder/ for the matching engines.
 //
-// Direct port of createPlaygroundEngine() from docs/modules/playground/index.js
-// into a React component. The legacy engine was DOM-imperative; this version
-// keeps the same control vocabulary (select / checkbox / text / icon-search)
-// but lets React own the state + re-render lifecycle.
-//
-// The per-component playground.js modules are unchanged. They still:
-//   - import { esc } from '../../../docs/helpers/esc.js' (resolved at runtime
-//     via the postbuild copy of docs/helpers/ into out/docs/helpers/)
-//   - export default { controls: [...], render(state) -> { html, code } }
+// Each cartridge is a self-contained ES module that default-exports
+// `{ controls: PlaygroundControl[], render(state) -> { html, code } }`.
+// Cartridges define their own `escAttr` / `escText` helpers inline so they
+// don't depend on shared runtime modules.
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 

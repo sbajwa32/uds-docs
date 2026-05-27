@@ -1348,5 +1348,14 @@ export const SITE_CHANGELOG: SiteChangelogEntry[] = [
       changes: [
         { type: 'fixed', text: 'Restored the searchable Material Symbols icon picker in playgrounds. The migration had downgraded the icon-search control to a plain text input where you had to know the symbol name to type it; clicking the picker now opens a dropdown with a search box that filters the full Material Symbols vocabulary (capped at 60 results at a time), matching the legacy `buildIconPicker` behaviour.' }
       ]
+    },
+    {
+      version: 'SITE 2026.05.27.33',
+      date: '2026-05-27',
+      changes: [
+        { type: 'removed', text: 'Cleaned up migration-era legacy hangovers in the docs site. Deleted the dead `public/docs/helpers/esc.js` shim (every playground.js now defines its own escape helpers inline), the five `chunk-*-smoke-test.mjs` verification scripts from the Next.js migration, and refreshed comments + Getting Started copy + Cursor Workflows copy that still pointed at the pre-cutover `uds.js` orchestrator.' },
+        { type: 'fixed', text: 'Demo Builder ZIP downloads were silently dropping every per-component file because the hand-curated `UDS_FILES` list in `lib/demo-builder/zip.ts` still pointed at the pre-rewrite layout (`components/text-input.css` instead of `components/text-input/text-input.css`). The ZIP now ships the actual minimum payload — `uds.css` + the four token files — plus the `web-components.js` bundle, matching the cutover architecture.' },
+        { type: 'removed', text: 'Deleted the `uds/uds.js` compatibility loader. The docs site had zero internal references after the Web Components cutover; consumers should reference `web-components.js` directly. Also updated `uds/package.json` to drop the `main: "uds.js"` field, bump version to 0.3, and point `homepage` at `udsdocs.com`. The doc-internal-consistency audit no longer carries a check for the legacy `COMPONENT_SCRIPTS` loader (now down to four checks from five).' }
+      ]
     }
 ];
