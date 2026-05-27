@@ -263,27 +263,9 @@ export class UdsPaginationElement extends LitElement {
   }
 }
 
-export class UdsTooltipElement extends LitElement {
-  static properties = {
-    open: { type: Boolean, reflect: true },
-    position: { type: String, reflect: true },
-  };
-  open = false;
-  position = 'top';
-  static styles = [hostInline, css`.root { position: relative; display: inline-flex; } .tip { position: absolute; z-index: 20; min-width: max-content; max-width: 260px; padding: var(--uds-space-075, 6px) var(--uds-space-100, 8px); border-radius: var(--uds-border-radius-input, 8px); background: var(--uds-color-surface-inverse, #171717); color: var(--uds-color-text-inverse, #fff); font-size: var(--uds-font-size-xs, 12px); line-height: var(--uds-font-line-height-xs, 1.2); } :host(:not([open])) .tip { display: none; } :host([position='top']) .tip { inset-block-end: calc(100% + var(--uds-space-050, 4px)); inset-inline-start: 50%; transform: translateX(-50%); } :host([position='bottom']) .tip { inset-block-start: calc(100% + var(--uds-space-050, 4px)); inset-inline-start: 50%; transform: translateX(-50%); } :host([position='left']) .tip { inset-inline-end: calc(100% + var(--uds-space-050, 4px)); inset-block-start: 50%; transform: translateY(-50%); } :host([position='right']) .tip { inset-inline-start: calc(100% + var(--uds-space-050, 4px)); inset-block-start: 50%; transform: translateY(-50%); }`];
-  render() {
-    return html`<span part="root" class="root" @mouseenter=${this.show} @mouseleave=${this.hide} @focusin=${this.show} @focusout=${this.hide} @keydown=${this.handleKeydown}><slot name="trigger"></slot><span part="tooltip" class="tip" role="tooltip"><slot></slot></span></span>`;
-  }
-  private show() {
-    this.open = true;
-  }
-  private hide() {
-    this.open = false;
-  }
-  private handleKeydown(event: KeyboardEvent) {
-    if (event.key === 'Escape') this.hide();
-  }
-}
+// Tooltip lives in ./tooltip.ts (extracted with the full CSS port).
+export { UdsTooltipElement } from './tooltip';
+export type { UdsTooltipPosition } from './tooltip';
 
 export class UdsDialogElement extends LitElement {
   static properties = {
@@ -454,7 +436,6 @@ declare global {
     'udc-list': UdsListElement;
     'udc-list-item': UdsListItemElement;
     'udc-pagination': UdsPaginationElement;
-    'udc-tooltip': UdsTooltipElement;
     'udc-dialog': UdsDialogElement;
     'udc-combobox': UdsComboboxElement;
     'udc-combobox-option': UdsComboboxOptionElement;

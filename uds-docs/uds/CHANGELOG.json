@@ -766,6 +766,10 @@
         {
           "type": "changed",
           "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
+        },
+        {
+          "type": "changed",
+          "text": "Ported the full tooltip CSS into the `<udc-tooltip>` shadow DOM \u2014 light `surface-main` background with `shadow-depth-300`, `text-primary` content, 4 positions (top/bottom/left/right), and visibility driven by `:hover` / `:focus-within` / `open`. Added an interactive playground (tooltip text, position, always-open) emitting `<udc-tooltip>` markup with a `<udc-button slot=\"trigger\">`."
         }
       ]
     }

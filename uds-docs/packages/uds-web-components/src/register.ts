@@ -11,6 +11,7 @@ import { UdsRadioElement, UdsRadioGroupElement } from './components/radio';
 import { UdsSearchElement } from './components/search';
 import { UdsTextAreaElement } from './components/text-area';
 import { UdsToggleElement } from './components/toggle';
+import { UdsTooltipElement } from './components/tooltip';
 import {
   UdsBreadcrumbElement,
   UdsComboboxElement,
@@ -27,7 +28,6 @@ import {
   UdsNavVerticalElement,
   UdsPaginationElement,
   UdsSpacerElement,
-  UdsTooltipElement,
 } from './components/remaining';
 import { UdsTabsElement, UdsTabElement, UdsTabPanelElement } from './components/tabs';
 import { UdsTextInputElement } from './components/text-input';

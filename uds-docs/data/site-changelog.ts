@@ -1257,5 +1257,12 @@ export const SITE_CHANGELOG: SiteChangelogEntry[] = [
       changes: [
         { type: 'fixed', text: 'Restored the Notification visual styling and playground. `<udc-notification>` now ships the dedicated icon-* color token for the leading icon, the larger close-button glyph sizing, and the subtle/prominent/inline variants across all four tones. Playground brings back tone, style, message, and dismissible controls.' }
       ]
+    },
+    {
+      version: 'SITE 2026.05.27.20',
+      date: '2026-05-27',
+      changes: [
+        { type: 'fixed', text: 'Restored the Tooltip visual styling and playground. `<udc-tooltip>` now uses the light surface-main bubble with shadow-depth-300 (was a dark inverse pill) and supports top/bottom/left/right positions. Playground brings back the tooltip text, position, and an always-open toggle.' }
+      ]
     }
 ];

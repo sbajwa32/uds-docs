@@ -19,6 +19,7 @@ export { UdsRadioElement, UdsRadioGroupElement, type UdsRadioChangeDetail, type 
 export { UdsSearchElement, type UdsSearchChangeDetail, type UdsSearchState } from './components/search';
 export { UdsTextAreaElement, type UdsTextAreaChangeDetail, type UdsTextAreaState } from './components/text-area';
 export { UdsToggleElement, type UdsToggleChangeDetail } from './components/toggle';
+export { UdsTooltipElement, type UdsTooltipPosition } from './components/tooltip';
 export {
   UdsBreadcrumbElement,
   UdsComboboxElement,
@@ -35,7 +36,6 @@ export {
   UdsNavVerticalElement,
   UdsPaginationElement,
   UdsSpacerElement,
-  UdsTooltipElement,
   type UdsCheckedChangeDetail,
   type UdsPageChangeDetail,
   type UdsSortChangeDetail,
