@@ -250,12 +250,8 @@ export type {
   UdsDataTableSortDirection,
 } from './data-table';
 
-export class UdsDataViewElement extends LitElement {
-  static styles = [hostBlock, css`.root { display: grid; gap: var(--uds-space-200, 16px); padding: var(--uds-space-300, 24px); border: 1px solid var(--uds-color-border-secondary, #e5e5e5); border-radius: var(--uds-border-radius-card, 12px); background: var(--uds-color-surface-main, #fff); }`];
-  render() {
-    return html`<section part="root" class="root"><header part="header"><slot name="header"></slot></header><div part="body"><slot></slot></div><footer part="actions"><slot name="actions"></slot></footer></section>`;
-  }
-}
+// DataView lives in ./data-view.ts (extracted with full CSS).
+export { UdsDataViewElement } from './data-view';
 
 // NavHeader lives in ./nav-header.ts (extracted with the full canonical anatomy).
 export { UdsNavHeaderElement } from './nav-header';
@@ -270,6 +266,5 @@ declare global {
     'udc-icon-wrapper': UdsIconWrapperElement;
     'udc-combobox': UdsComboboxElement;
     'udc-combobox-option': UdsComboboxOptionElement;
-    'udc-data-view': UdsDataViewElement;
   }
 }

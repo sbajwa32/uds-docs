@@ -19,6 +19,7 @@ export {
   type UdsDataTableSortChangeDetail,
   type UdsDataTableSortDirection,
 } from './components/data-table';
+export { UdsDataViewElement } from './components/data-view';
 export { UdsDatePickerElement, type UdsDatePickerChangeDetail, type UdsDatePickerState } from './components/date-picker';
 export { UdsDialogElement } from './components/dialog';
 export { UdsDropdownElement, UdsDropdownItemElement, type UdsDropdownChangeDetail, type UdsDropdownState } from './components/dropdown';
@@ -37,7 +38,6 @@ export { UdsTooltipElement, type UdsTooltipPosition } from './components/tooltip
 export {
   UdsComboboxElement,
   UdsComboboxOptionElement,
-  UdsDataViewElement,
   UdsDividerElement,
   UdsIconWrapperElement,
   UdsSpacerElement,

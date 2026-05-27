@@ -1327,5 +1327,12 @@ export const SITE_CHANGELOG: SiteChangelogEntry[] = [
       changes: [
         { type: 'fixed', text: 'Restored the Data Table visual styling and playground. `<udc-data-table>` now renders the table itself in shadow DOM from `columns` + `rows` JSON attributes — no need to author the inner `<table>` markup — and ports the original sticky header row, striped/selected/hover row treatments, prominent text, alignment helpers, checkbox column with select-all, and the sortable header indicator. Playground brings back row count, striped, selectable, and initial-sort controls.' }
       ]
+    },
+    {
+      version: 'SITE 2026.05.27.30',
+      date: '2026-05-27',
+      changes: [
+        { type: 'changed', text: 'Data View now ships a card-style container with header, body, and actions slot groups inside `<udc-data-view>` shadow DOM (surface-main bg, container-md radius, header / footer dividers). The original Figma source was placeholder-only in 0.3, so this is a sensible token-bound default. Added an interactive playground (heading, body shape, show-actions).' }
+      ]
     }
 ];
