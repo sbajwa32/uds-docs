@@ -644,6 +644,10 @@
         {
           "type": "changed",
           "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
+        },
+        {
+          "type": "changed",
+          "text": "Ported the full pagination CSS into the `<udc-pagination>` shadow DOM (32px page buttons with border-primary, hover surface-interactive-subtle-hover, active page in surface-interactive-default with text-inverse, focus ring, and the meta row for rows-per-page + range). Component now numbers its own buttons based on `page` / `total-pages`, collapses long ranges with ellipsis, and exposes `udc-page-change` events. Rebuilt the playground with current-page, total-pages, and show-meta controls."
         }
       ],
       "Radio": [

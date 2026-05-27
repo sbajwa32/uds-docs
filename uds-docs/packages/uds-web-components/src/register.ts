@@ -11,6 +11,7 @@ import { UdsLinkElement } from './components/link';
 import { UdsNavHeaderElement } from './components/nav-header';
 import { UdsNavItemElement, UdsNavVerticalElement } from './components/nav-vertical';
 import { UdsNotificationElement } from './components/notification';
+import { UdsPaginationElement } from './components/pagination';
 import { UdsRadioElement, UdsRadioGroupElement } from './components/radio';
 import { UdsSearchElement } from './components/search';
 import { UdsTextAreaElement } from './components/text-area';
@@ -25,7 +26,6 @@ import {
   UdsIconWrapperElement,
   UdsListElement,
   UdsListItemElement,
-  UdsPaginationElement,
   UdsSpacerElement,
 } from './components/remaining';
 import { UdsTabsElement, UdsTabElement, UdsTabPanelElement } from './components/tabs';

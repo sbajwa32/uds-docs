@@ -19,6 +19,7 @@ export { UdsLinkElement } from './components/link';
 export { UdsNavHeaderElement } from './components/nav-header';
 export { UdsNavItemElement, UdsNavVerticalElement } from './components/nav-vertical';
 export { UdsNotificationElement, type UdsNotificationTone, type UdsNotificationVariant } from './components/notification';
+export { UdsPaginationElement, type UdsPageChangeDetail } from './components/pagination';
 export { UdsRadioElement, UdsRadioGroupElement, type UdsRadioChangeDetail, type UdsRadioState } from './components/radio';
 export { UdsSearchElement, type UdsSearchChangeDetail, type UdsSearchState } from './components/search';
 export { UdsTextAreaElement, type UdsTextAreaChangeDetail, type UdsTextAreaState } from './components/text-area';
@@ -33,10 +34,8 @@ export {
   UdsIconWrapperElement,
   UdsListElement,
   UdsListItemElement,
-  UdsPaginationElement,
   UdsSpacerElement,
   type UdsCheckedChangeDetail,
-  type UdsPageChangeDetail,
   type UdsSortChangeDetail,
   type UdsValueChangeDetail,
 } from './components/remaining';

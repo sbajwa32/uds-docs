@@ -1306,5 +1306,12 @@ export const SITE_CHANGELOG: SiteChangelogEntry[] = [
       changes: [
         { type: 'fixed', text: 'Restored the Breadcrumb visual styling and playground. `<udc-breadcrumb>` now ships the pill container, the SVG chevron-right separators, text-interactive-neutral links with hover underline, bold current-page styling, and the frameless variant. Component accepts an `items` array attribute or slotted content. Playground brings back items-count and frameless controls.' }
       ]
+    },
+    {
+      version: 'SITE 2026.05.27.27',
+      date: '2026-05-27',
+      changes: [
+        { type: 'fixed', text: 'Restored the Pagination visual styling and playground. `<udc-pagination>` now ships the 32px numbered page buttons, surface-interactive-default active page, focus ring, chevron previous/next, ellipsis for large ranges, and the rows-per-page + range meta row (was a single previous/next + status row before). Playground brings back current-page, total-pages, and show-meta controls.' }
+      ]
     }
 ];

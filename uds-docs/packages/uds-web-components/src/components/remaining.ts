@@ -12,10 +12,6 @@ export interface UdsCheckedChangeDetail {
   value: string;
 }
 
-export interface UdsPageChangeDetail {
-  page: number;
-}
-
 export interface UdsSortChangeDetail {
   key: string;
   direction: 'asc' | 'desc' | 'none';
@@ -243,22 +239,8 @@ export class UdsListItemElement extends LitElement {
   }
 }
 
-export class UdsPaginationElement extends LitElement {
-  static properties = {
-    page: { type: Number, reflect: true },
-    totalPages: { type: Number, attribute: 'total-pages', reflect: true },
-  };
-  page = 1;
-  totalPages = 1;
-  static styles = [hostInline, css`.root { display: inline-flex; align-items: center; gap: var(--uds-space-100, 8px); } button { font: inherit; }`, focusRing];
-  render() {
-    return html`<nav part="nav" class="root" aria-label="Pagination"><button part="previous" ?disabled=${this.page <= 1} @click=${() => this.setPage(this.page - 1)}>Previous</button><span part="status">Page ${this.page} of ${this.totalPages}</span><button part="next" ?disabled=${this.page >= this.totalPages} @click=${() => this.setPage(this.page + 1)}>Next</button></nav>`;
-  }
-  private setPage(page: number) {
-    this.page = Math.max(1, Math.min(this.totalPages, page));
-    emitUdsEvent<UdsPageChangeDetail>(this, 'udc-page-change', { page: this.page });
-  }
-}
+// Pagination lives in ./pagination.ts (extracted with the full CSS port).
+export { UdsPaginationElement } from './pagination';
 
 // Tooltip lives in ./tooltip.ts (extracted with the full CSS port).
 export { UdsTooltipElement } from './tooltip';
@@ -360,7 +342,6 @@ declare global {
     'udc-icon-wrapper': UdsIconWrapperElement;
     'udc-list': UdsListElement;
     'udc-list-item': UdsListItemElement;
-    'udc-pagination': UdsPaginationElement;
     'udc-combobox': UdsComboboxElement;
     'udc-combobox-option': UdsComboboxOptionElement;
     'udc-data-table': UdsDataTableElement;
