@@ -612,83 +612,16 @@ export class UdsDialogElement extends LitElement {
   }
 }
 
-export class UdsDropdownElement extends LitElement {
-  static formAssociated = true;
-  static properties = {
-    value: { type: String, reflect: true },
-    label: { type: String, reflect: true },
-    open: { type: Boolean, reflect: true },
-  };
-  value = '';
-  label = '';
-  open = false;
-  private readonly triggerId = `udc-dropdown-trigger-${Math.random().toString(36).slice(2)}`;
-  private readonly listboxId = `udc-dropdown-listbox-${Math.random().toString(36).slice(2)}`;
-  private readonly internals = formInternals(this);
-  static styles = [hostBlock, css`.root { position: relative; display: grid; gap: var(--uds-space-050, 4px); } button { min-height: var(--uds-space-600, 48px); border: 1px solid var(--uds-color-border-primary, #d4d4d4); border-radius: var(--uds-border-radius-input, 8px); background: var(--uds-color-surface-main, #fff); font: inherit; text-align: left; padding: var(--uds-space-100, 8px); } .menu { display: none; position: absolute; z-index: 10; inset-block-start: 100%; width: 100%; border: 1px solid var(--uds-color-border-primary, #d4d4d4); border-radius: var(--uds-border-radius-input, 8px); background: var(--uds-color-surface-main, #fff); } :host([open]) .menu { display: grid; }`];
-  connectedCallback() {
-    super.connectedCallback();
-    this.addEventListener('udc-option-select', this.handleSelect as EventListener);
-  }
+// Dropdown + DropdownItem live in ./dropdown.ts (extracted with the full CSS port).
+// Re-export so existing imports from './components/remaining' keep working.
+export { UdsDropdownElement, UdsDropdownItemElement } from './dropdown';
+export type { UdsDropdownChangeDetail, UdsDropdownState } from './dropdown';
 
-  disconnectedCallback() {
-    this.removeEventListener('udc-option-select', this.handleSelect as EventListener);
-    super.disconnectedCallback();
-  }
+import { UdsDropdownElement as _UdsDropdownElement, UdsDropdownItemElement as _UdsDropdownItemElement } from './dropdown';
 
-  protected updated(changed: PropertyValues<this>) {
-    if (changed.has('value')) this.internals?.setFormValue(this.value);
-  }
-  render() {
-    return html`<div part="root" class="root"><span class="label">${this.label}</span><button id=${this.triggerId} part="trigger" type="button" role="combobox" aria-controls=${this.listboxId} aria-expanded=${this.open ? 'true' : 'false'} @click=${this.toggleOpen} @keydown=${this.handleTriggerKeydown}>${this.value || 'Select'}</button><div id=${this.listboxId} part="menu" class="menu" role="listbox"><slot></slot></div></div>`;
-  }
-  private toggleOpen() {
-    this.open = !this.open;
-  }
-  private handleTriggerKeydown(event: KeyboardEvent) {
-    if (event.key === 'Escape') {
-      this.open = false;
-      return;
-    }
-    if (event.key === 'ArrowDown' || event.key === 'Enter' || event.key === ' ') {
-      event.preventDefault();
-      this.open = true;
-      queueMicrotask(() => this.querySelector<UdsDropdownItemElement>('udc-dropdown-item, udc-combobox-option')?.focusOption());
-    }
-  }
-  private handleSelect(event: Event) {
-    const detail = (event as CustomEvent<UdsValueChangeDetail>).detail;
-    this.value = detail.value;
-    this.open = false;
-    emitUdsEvent<UdsValueChangeDetail>(this, 'udc-change', { value: this.value });
-  }
-}
-
-export class UdsDropdownItemElement extends LitElement {
-  static properties = {
-    value: { type: String, reflect: true },
-  };
-  value = '';
-  static styles = [hostBlock, css`button { width: 100%; padding: var(--uds-space-100, 8px); border: 0; background: transparent; color: var(--uds-color-text-primary, #171717); font: inherit; text-align: left; } button:hover { background: var(--uds-color-surface-subtle, #f5f5f5); }`];
-  render() {
-    return html`<button part="item" type="button" role="option" @click=${this.select} @keydown=${this.handleKeydown}><slot></slot></button>`;
-  }
-  focusOption() {
-    this.renderRoot.querySelector<HTMLElement>('button')?.focus();
-  }
-  private select() {
-    emitUdsEvent<UdsValueChangeDetail>(this, 'udc-option-select', { value: this.value || this.textContent?.trim() || '' });
-  }
-  private handleKeydown(event: KeyboardEvent) {
-    if (event.key === 'Enter' || event.key === ' ') {
-      event.preventDefault();
-      this.select();
-    }
-  }
-}
-
-export class UdsComboboxElement extends UdsDropdownElement {}
-export class UdsComboboxOptionElement extends UdsDropdownItemElement {}
+/** Combobox is currently a Dropdown alias; full filtering/autocomplete arrives later. */
+export class UdsComboboxElement extends _UdsDropdownElement {}
+export class UdsComboboxOptionElement extends _UdsDropdownItemElement {}
 
 export class UdsDatePickerElement extends LitElement {
   static formAssociated = true;
@@ -824,8 +757,6 @@ declare global {
     'udc-pagination': UdsPaginationElement;
     'udc-tooltip': UdsTooltipElement;
     'udc-dialog': UdsDialogElement;
-    'udc-dropdown': UdsDropdownElement;
-    'udc-dropdown-item': UdsDropdownItemElement;
     'udc-combobox': UdsComboboxElement;
     'udc-combobox-option': UdsComboboxOptionElement;
     'udc-date-picker': UdsDatePickerElement;

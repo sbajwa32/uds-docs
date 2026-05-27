@@ -10,6 +10,7 @@ export {
 } from './components/button';
 export { UdsCheckboxElement, type UdsCheckboxChangeDetail } from './components/checkbox';
 export { UdsChipElement, type UdsChipToggleDetail, type UdsChipVariant, type UdsDismissDetail } from './components/chip';
+export { UdsDropdownElement, UdsDropdownItemElement, type UdsDropdownChangeDetail, type UdsDropdownState } from './components/dropdown';
 export { UdsNotificationElement, type UdsNotificationTone, type UdsNotificationVariant } from './components/notification';
 export {
   UdsBreadcrumbElement,
@@ -20,8 +21,6 @@ export {
   UdsDatePickerElement,
   UdsDialogElement,
   UdsDividerElement,
-  UdsDropdownElement,
-  UdsDropdownItemElement,
   UdsIconWrapperElement,
   UdsLabelElement,
   UdsLinkElement,

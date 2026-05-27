@@ -2,6 +2,7 @@ import { UdsBadgeElement } from './components/badge';
 import { UdsButtonElement } from './components/button';
 import { UdsCheckboxElement } from './components/checkbox';
 import { UdsChipElement } from './components/chip';
+import { UdsDropdownElement, UdsDropdownItemElement } from './components/dropdown';
 import { UdsNotificationElement } from './components/notification';
 import {
   UdsBreadcrumbElement,
@@ -12,8 +13,6 @@ import {
   UdsDatePickerElement,
   UdsDialogElement,
   UdsDividerElement,
-  UdsDropdownElement,
-  UdsDropdownItemElement,
   UdsIconWrapperElement,
   UdsLabelElement,
   UdsLinkElement,

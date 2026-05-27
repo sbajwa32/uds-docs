@@ -81,16 +81,18 @@ export function Playground({ componentId }: { componentId: string }) {
   const [state, setState] = useState<Record<string, unknown>>({});
   const webComponentExample = !isArchive ? WEB_COMPONENT_EXAMPLES[componentId]?.[0] ?? null : null;
 
+  // Make sure the live `<udc-*>` tags inside the preview pane get upgraded.
+  // Safe to call repeatedly — registration is idempotent.
+  useEffect(() => {
+    if (!isArchive) {
+      registerUdsComponents();
+    }
+  }, [isArchive]);
+
   // Dynamic import of the per-component playground.js. Anchored at
   // document.baseURI so the import works from any deploy URL (production +
   // per-PR previews + archive views).
   useEffect(() => {
-    if (webComponentExample) {
-      registerUdsComponents();
-      setLoad({ config: null, loading: false, error: null });
-      setState({});
-      return;
-    }
     let cancelled = false;
     setLoad({ config: null, loading: true, error: null });
     setState({});
@@ -128,7 +130,7 @@ export function Playground({ componentId }: { componentId: string }) {
     return () => {
       cancelled = true;
     };
-  }, [componentId, fetchVersion, webComponentExample]);
+  }, [componentId, fetchVersion]);
 
   const output = useMemo(() => {
     if (!load.config) return null;
@@ -144,42 +146,6 @@ export function Playground({ componentId }: { componentId: string }) {
     }
   }, [load.config, state]);
 
-  if (webComponentExample) {
-    return (
-      <div>
-        <div className="sg-example-only-banner">
-          <span className="material-symbols-outlined">code_blocks</span>
-          <span>
-            <strong>Web Component API.</strong> This playground shows the target
-            component tag for the live docs view.
-          </span>
-        </div>
-
-        <div className="ds-playground-layout">
-          <div className="ds-playground-left">
-            <div
-              className="ds-playground-preview"
-              dangerouslySetInnerHTML={{ __html: webComponentExample.html }}
-            />
-            <div className="ds-playground-controls">
-              <label className="ds-control-row">
-                <span>Icon preview</span>
-                <button type="button" className="sg-icon-picker-trigger" aria-label="Icon preview">
-                  <span className="material-symbols-outlined" aria-hidden="true">info</span>
-                  <span className="sg-icon-picker-name">info</span>
-                </button>
-              </label>
-            </div>
-          </div>
-          <div className="ds-playground-right">
-            <DocsCodeBlock code={webComponentExample.html} language="html" />
-            <ImplementationReference componentId={componentId} />
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   if (load.loading) {
     return <DocsStateMessage>Loading playground…</DocsStateMessage>;
   }
@@ -191,6 +157,33 @@ export function Playground({ componentId }: { componentId: string }) {
     );
   }
   if (!load.config) {
+    // No playground.js exists. If we have a static Web Component example,
+    // fall back to that — show the tag for reference, no interactive controls.
+    if (webComponentExample) {
+      return (
+        <div>
+          <div className="sg-example-only-banner">
+            <span className="material-symbols-outlined">code_blocks</span>
+            <span>
+              <strong>Web Component API.</strong> This playground shows the target
+              component tag for the live docs view.
+            </span>
+          </div>
+          <div className="ds-playground-layout">
+            <div className="ds-playground-left">
+              <div
+                className="ds-playground-preview"
+                dangerouslySetInnerHTML={{ __html: webComponentExample.html }}
+              />
+            </div>
+            <div className="ds-playground-right">
+              <DocsCodeBlock code={webComponentExample.html} language="html" />
+              <ImplementationReference componentId={componentId} />
+            </div>
+          </div>
+        </div>
+      );
+    }
     return (
       <DocsStateMessage>
         No playground is configured for <code>{componentId}</code>.
@@ -203,8 +196,17 @@ export function Playground({ componentId }: { componentId: string }) {
       <div className="sg-example-only-banner">
         <span className="material-symbols-outlined">code_blocks</span>
         <span>
-          <strong>Example only.</strong> All code on this page is reference.
-          Production components live in Storybook.
+          {webComponentExample ? (
+            <>
+              <strong>Web Component API.</strong> Adjust the controls to preview
+              <code> &lt;udc-{componentId}&gt;</code> live.
+            </>
+          ) : (
+            <>
+              <strong>Example only.</strong> All code on this page is reference.
+              Production components live in Storybook.
+            </>
+          )}
         </span>
       </div>
 

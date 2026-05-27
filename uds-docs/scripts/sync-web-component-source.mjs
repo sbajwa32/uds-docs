@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, writeFile, stat } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 
 const ROOT = process.cwd();
@@ -109,7 +109,18 @@ for (const entry of entries) {
     )}\n`,
   );
 
-  await writeFile(resolve(base, 'playground.js'), playgroundModule(entry.html));
+  // Only overwrite playground.js if it's the auto-generated stub (controls: []).
+  // Hand-curated playgrounds with real controls take precedence.
+  const playgroundPath = resolve(base, 'playground.js');
+  let existing = '';
+  try {
+    existing = await readFile(playgroundPath, 'utf8');
+  } catch {}
+  const isStub = !existing || /controls:\s*\[\s*\]/m.test(existing);
+  if (isStub) {
+    await writeFile(playgroundPath, playgroundModule(entry.html));
+  }
+
   await writeFile(resolve(base, 'impl.json'), `${JSON.stringify(implJson(entry.componentId, entry.html), null, 2)}\n`);
 }
 

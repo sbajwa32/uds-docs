@@ -396,6 +396,10 @@
         {
           "type": "changed",
           "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
+        },
+        {
+          "type": "changed",
+          "text": "Ported the full dropdown CSS into the `<udc-dropdown>` shadow DOM and rebuilt the playground with the original 13 controls (state, disabled, show-label, label text, required, leading icon, placeholder, helper text, counter text, options count). Restores visual and interactive parity with the pre-Web-Components dropdown."
         }
       ],
       "Icon Wrapper": [

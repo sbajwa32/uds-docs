@@ -78,9 +78,18 @@ export const WEB_COMPONENT_EXAMPLES: Record<string, RenderedExample[]> = {
       id: 'default',
       label: 'Dropdown',
       description: 'A popup selection control.',
-      html: `<udc-dropdown label="Property" value="riverbend">
+      html: `<udc-dropdown
+  show-label
+  label="Property"
+  placeholder="Choose…"
+  leading-icon="add_circle_outline"
+  show-helper
+  helper-text="Helper text"
+  value="riverbend"
+>
   <udc-dropdown-item value="riverbend">Riverbend Estates</udc-dropdown-item>
   <udc-dropdown-item value="lakeside">Lakeside Villas</udc-dropdown-item>
+  <udc-dropdown-item value="rolling-pines">Rolling Pines</udc-dropdown-item>
 </udc-dropdown>`,
     },
   ],
