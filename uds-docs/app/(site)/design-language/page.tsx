@@ -1,6 +1,6 @@
 import { VersionedLink as Link } from '@/components/site/VersionedLink';
 
-import { SgPageTitle, SgPageDesc } from '@/components/site/SgPageHeader';
+import { DocsPageHeader } from '@/components/site/ui';
 
 import { DesignLanguageToc } from './DesignLanguageToc';
 
@@ -12,8 +12,10 @@ export default function DesignLanguagePage() {
   return (
     <DesignLanguageToc>
       <div className="sg-page-content">
-        <SgPageTitle>Design Language</SgPageTitle>
-        <SgPageDesc>How UDS components look in each state. Every preview on this page is a real component&mdash;the colors come from the same tokens as production. Where components disagree on the same state, both are shown so we can pick one.</SgPageDesc>
+        <DocsPageHeader
+          title="Design Language"
+          description="How UDS components look in each state. Every preview on this page is a real component — the colors come from the same tokens as production. Where components disagree on the same state, both are shown so we can pick one."
+        />
 
         {/* Header meta — one line, designer-friendly */}
         <div className="sg-dl-meta">

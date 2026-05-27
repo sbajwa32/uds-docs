@@ -6,7 +6,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 
-import { SgPageTabs, SgPageTab, SgPageTabPanel } from '@/components/site/SgPageHeader';
+import { DocsTab, DocsTabPanel, DocsTabs } from '@/components/site/ui';
 import { useUdsVersion } from '@/components/site/UdsVersionProvider';
 import { getChangelog } from '@/lib/uds-data';
 import type { AggregatedChangelog, ChangelogNote } from '@/lib/uds-data';
@@ -568,16 +568,16 @@ export function ChangelogClient({
 
   return (
     <>
-      <SgPageTabs
+      <DocsTabs
         activeTab={activeTab}
         onActiveTabChange={(v) => setActiveTab(v as 'uds' | 'site')}
         ariaLabel="Changelog scope"
       >
-        <SgPageTab value="uds">
+        <DocsTab value="uds">
           UDS{isArchive ? ` (${fetchVersion} archive)` : ''}
-        </SgPageTab>
-        <SgPageTab value="site">Site</SgPageTab>
-        <SgPageTabPanel value="uds">
+        </DocsTab>
+        <DocsTab value="site">Site</DocsTab>
+        <DocsTabPanel value="uds">
         <div className="ds-changelog-layout" data-changelog-tab="uds">
           <ChangelogRail
             items={railItems}
@@ -609,8 +609,8 @@ export function ChangelogClient({
             )}
           </div>
         </div>
-      </SgPageTabPanel>
-      <SgPageTabPanel value="site">
+      </DocsTabPanel>
+      <DocsTabPanel value="site">
         <div className="ds-changelog-layout" data-changelog-tab="site">
           <ChangelogRail
             items={railItems}
@@ -636,8 +636,8 @@ export function ChangelogClient({
             )}
           </div>
         </div>
-      </SgPageTabPanel>
-      </SgPageTabs>
+      </DocsTabPanel>
+      </DocsTabs>
     </>
   );
 }

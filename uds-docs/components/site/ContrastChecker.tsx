@@ -36,7 +36,6 @@ import {
   formatRatio,
   isTransparent,
   verdictBigLabel,
-  verdictClass,
   verdictExplanation,
   verdictLabel,
   type FgKind,
@@ -67,6 +66,7 @@ import {
 import '../../styles/pages/contrast-checker.css';
 import { useUdsTheme, type ColorScheme, type Theme } from './UdsThemeProvider';
 import { ContrastCheckerPicker } from './ContrastCheckerPicker';
+import { DocsBadge, DocsCard, DocsSection, DocsStateMessage } from './ui';
 
 // ---------------------------------------------------------------------------
 // Defaults
@@ -96,6 +96,8 @@ interface VerdictResult {
   isByDesign: boolean;
 }
 
+type DocsBadgeTone = 'neutral' | 'info' | 'success' | 'warning' | 'error' | 'brand';
+
 function evaluatePair(
   fgToken: Token | undefined,
   bgToken: Token | undefined,
@@ -117,6 +119,19 @@ function evaluatePair(
   return { status, ratio, isByDesign: fgToken.isDisabled || bgToken.isDisabled };
 }
 
+function verdictBadgeTone(status: Verdict): DocsBadgeTone {
+  if (status === 'fail') return 'error';
+  if (status === 'aa-large') return 'warning';
+  if (status === 'aa' || status === 'aaa') return 'success';
+  return 'neutral';
+}
+
+function kindBadgeTone(kind: Exclude<FgKind, 'surface'>): DocsBadgeTone {
+  if (kind === 'text') return 'info';
+  if (kind === 'icon') return 'success';
+  return 'warning';
+}
+
 function VerdictPill({
   fgToken,
   bgToken,
@@ -128,18 +143,16 @@ function VerdictPill({
 }) {
   const v = evaluatePair(fgToken, bgToken, rgbOverride);
   if (v.status === 'na' || !fgToken) {
-    return <span className="cc-verdict cc-verdict-na">Transparent — N/A</span>;
+    return <DocsBadge>Transparent — N/A</DocsBadge>;
   }
   return (
     <>
       <span className="cc-ratio">{formatRatio(v.ratio)}</span>
-      <span className={verdictClass(v.status)}>
+      <DocsBadge tone={verdictBadgeTone(v.status)}>
         {verdictLabel(v.status, fgToken.kind)}
-      </span>
+      </DocsBadge>
       {v.isByDesign && (
-        <span className="cc-by-design">
-          by&nbsp;design
-        </span>
+        <DocsBadge>by design</DocsBadge>
       )}
     </>
   );
@@ -270,99 +283,109 @@ export function ContrastChecker() {
   if (!tokens) {
     return (
       <section className="cc-app" data-cc-zone="loading">
-        <p className="cc-loading">Loading tokens…</p>
+        <DocsStateMessage>Loading tokens…</DocsStateMessage>
       </section>
     );
   }
 
   return (
     <section className="cc-app">
-      <section className="cc-hero" data-cc-zone="hero" ref={heroRef}>
-        <div className="cc-pickers">
-          <PickerTrigger
-            slot="fg"
-            triggerRef={fgTriggerRef}
-            token={fgToken}
-            open={popoverSlot === 'fg'}
-            onClick={() => setPopoverSlot((s) => (s === 'fg' ? null : 'fg'))}
-          >
-            {popoverSlot === 'fg' && (
-              <ContrastCheckerPicker
-                slot="fg"
-                tokens={tokens}
-                selected={hero.fg}
-                anchorRef={fgTriggerRef}
-                onSelect={(name) => onPickToken('fg', name)}
-                onClose={() => setPopoverSlot(null)}
-              />
-            )}
-          </PickerTrigger>
-          <span className="cc-pickers-on" aria-hidden="true">
-            on
-          </span>
-          <PickerTrigger
-            slot="bg"
-            triggerRef={bgTriggerRef}
-            token={bgToken}
-            open={popoverSlot === 'bg'}
-            onClick={() => setPopoverSlot((s) => (s === 'bg' ? null : 'bg'))}
-          >
-            {popoverSlot === 'bg' && (
-              <ContrastCheckerPicker
-                slot="bg"
-                tokens={tokens}
-                selected={hero.bg}
-                anchorRef={bgTriggerRef}
-                onSelect={(name) => onPickToken('bg', name)}
-                onClose={() => setPopoverSlot(null)}
-              />
-            )}
-          </PickerTrigger>
-        </div>
-
-        <HeroStage fgToken={fgToken} bgToken={bgToken} />
-        <HeroVerdict fgToken={fgToken} bgToken={bgToken} />
-
-        <div className="cc-themes-wrap">
-          <div className="cc-themes-head">
-            <span className="cc-themes-label">Across themes</span>
-            <span className="cc-themes-hint">Click any theme to apply it globally</span>
+      <section className="cc-hero-anchor" data-cc-zone="hero" ref={heroRef}>
+        <DocsCard className="cc-hero" elevated>
+          <div className="cc-pickers">
+            <PickerTrigger
+              slot="fg"
+              triggerRef={fgTriggerRef}
+              token={fgToken}
+              open={popoverSlot === 'fg'}
+              onClick={() => setPopoverSlot((s) => (s === 'fg' ? null : 'fg'))}
+            >
+              {popoverSlot === 'fg' && (
+                <ContrastCheckerPicker
+                  slot="fg"
+                  tokens={tokens}
+                  selected={hero.fg}
+                  anchorRef={fgTriggerRef}
+                  onSelect={(name) => onPickToken('fg', name)}
+                  onClose={() => setPopoverSlot(null)}
+                />
+              )}
+            </PickerTrigger>
+            <span className="cc-pickers-on" aria-hidden="true">
+              on
+            </span>
+            <PickerTrigger
+              slot="bg"
+              triggerRef={bgTriggerRef}
+              token={bgToken}
+              open={popoverSlot === 'bg'}
+              onClick={() => setPopoverSlot((s) => (s === 'bg' ? null : 'bg'))}
+            >
+              {popoverSlot === 'bg' && (
+                <ContrastCheckerPicker
+                  slot="bg"
+                  tokens={tokens}
+                  selected={hero.bg}
+                  anchorRef={bgTriggerRef}
+                  onSelect={(name) => onPickToken('bg', name)}
+                  onClose={() => setPopoverSlot(null)}
+                />
+              )}
+            </PickerTrigger>
           </div>
-          <div className="cc-themes">
-            {THEME_PROFILES.map((profile) => (
-              <ThemeCell
-                key={profile.id}
-                profile={profile}
-                fgToken={fgToken}
-                bgToken={bgToken}
-                active={profile.id === activeProfileId}
-                onApply={() => themeCtx.setThemeState(profileAttrsToState(profile))}
-              />
-            ))}
+
+          <HeroStage fgToken={fgToken} bgToken={bgToken} />
+          <HeroVerdict fgToken={fgToken} bgToken={bgToken} />
+
+          <div className="cc-themes-wrap">
+            <div className="cc-themes-head">
+              <span className="cc-themes-label">Across themes</span>
+              <span className="cc-themes-hint">Click any theme to apply it globally</span>
+            </div>
+            <div className="cc-themes">
+              {THEME_PROFILES.map((profile) => (
+                <ThemeCell
+                  key={profile.id}
+                  profile={profile}
+                  fgToken={fgToken}
+                  bgToken={bgToken}
+                  active={profile.id === activeProfileId}
+                  onApply={() => themeCtx.setThemeState(profileAttrsToState(profile))}
+                />
+              ))}
+            </div>
           </div>
-        </div>
+        </DocsCard>
       </section>
 
-      <section className="cc-browse" data-cc-zone="browse">
-        <BrowseToolbar browse={browse} setBrowse={setBrowse} />
-        <div className="cc-browse-body">
-          {browse.view === 'curated' ? (
-            <CuratedList
-              tokens={tokens}
-              hero={hero}
-              browse={browse}
-              onLoadPair={onLoadPair}
-            />
-          ) : (
-            <MatrixView
-              tokens={tokens}
-              hero={hero}
-              browse={browse}
-              onLoadPair={onLoadPair}
-            />
-          )}
-        </div>
-      </section>
+      <div data-cc-zone="browse">
+        <DocsSection
+          className="cc-browse-section"
+          title="Browse pairings"
+          description="Review common token combinations or scan the full surface matrix."
+        >
+          <DocsCard className="cc-browse">
+            <BrowseToolbar browse={browse} setBrowse={setBrowse} />
+            <div className="cc-browse-body">
+              {browse.view === 'curated' ? (
+                <CuratedList
+                  tokens={tokens}
+                  hero={hero}
+                  browse={browse}
+                  onLoadPair={onLoadPair}
+                />
+              ) : (
+                <MatrixView
+                  tokens={tokens}
+                  hero={hero}
+                  browse={browse}
+                  onLoadPair={onLoadPair}
+                />
+              )}
+            </div>
+          </DocsCard>
+        </DocsSection>
+      </div>
 
       <HelpDetails />
     </section>
@@ -414,9 +437,9 @@ function PickerTrigger({
         <span className="cc-picker-trigger-name">
           {token ? shortName(token.name) : '—'}
         </span>
-        <span className="cc-picker-trigger-kind">
-          {token && token.kind !== 'surface' ? KIND_LABEL[token.kind] : ''}
-        </span>
+        {token && token.kind !== 'surface' ? (
+          <DocsBadge>{KIND_LABEL[token.kind]}</DocsBadge>
+        ) : null}
         <span
           className="material-symbols-outlined cc-picker-trigger-chevron"
           aria-hidden="true"
@@ -546,7 +569,7 @@ function HeroVerdict({
   if (!fgToken || !bgToken) return null;
   const v = evaluatePair(fgToken, bgToken);
   return (
-    <div className="cc-verdict-row" data-cc-verdict-row>
+    <DocsCard className="cc-verdict-row">
       <div className="cc-big-pair">
         {isFinite(v.ratio) ? (
           <span className="cc-big-ratio">{formatRatio(v.ratio)}</span>
@@ -554,11 +577,11 @@ function HeroVerdict({
           <span className="cc-big-ratio cc-big-ratio--na">N/A</span>
         )}
         {v.status === 'na' ? (
-          <span className="cc-big-verdict cc-big-verdict-na">Transparent</span>
+          <DocsBadge>Transparent</DocsBadge>
         ) : (
-          <span className={`cc-big-verdict cc-big-verdict-${v.status}`}>
+          <DocsBadge tone={verdictBadgeTone(v.status)}>
             {verdictBigLabel(v.status, fgToken.kind)}
-          </span>
+          </DocsBadge>
         )}
       </div>
       {v.isByDesign ? (
@@ -569,7 +592,7 @@ function HeroVerdict({
       ) : (
         <span className="cc-big-note">{verdictExplanation(v.status, fgToken.kind)}</span>
       )}
-    </div>
+    </DocsCard>
   );
 }
 
@@ -800,9 +823,7 @@ function CuratedList({
           onClick={() => onLoadPair(fg.name, surface.name)}
         >
           <span className="cc-curated-title">
-            <span className={`cc-curated-pill cc-curated-pill--${kind}`}>
-              {KIND_LABEL[kind]}
-            </span>
+            <DocsBadge tone={kindBadgeTone(kind)}>{KIND_LABEL[kind]}</DocsBadge>
             <span className="cc-curated-titletext">{pair.title}</span>
           </span>
           <span
@@ -851,7 +872,7 @@ function CuratedList({
   }
 
   if (!rows.length) {
-    return <div className="cc-empty">No curated pairings match the current filters.</div>;
+    return <DocsStateMessage>No curated pairings match the current filters.</DocsStateMessage>;
   }
   return <div className="cc-curated-list">{rows}</div>;
 }
@@ -879,7 +900,7 @@ function MatrixView({
   const surfaces = MATRIX_SURFACES.map((n) => byName[n]).filter(Boolean) as Token[];
 
   return (
-    <div className="cc-matrix-scroll">
+    <DocsCard className="cc-matrix-scroll">
       <table className="cc-matrix" role="grid">
         <thead>
           <tr>
@@ -959,7 +980,7 @@ function MatrixView({
           })}
         </tbody>
       </table>
-    </div>
+    </DocsCard>
   );
 }
 
@@ -1009,37 +1030,39 @@ function MatrixCellSample({
 
 function HelpDetails() {
   return (
-    <details className="cc-help">
-      <summary className="cc-help-summary">
-        <span className="material-symbols-outlined" aria-hidden="true">
-          help_outline
-        </span>
-        WCAG thresholds and conventions
-      </summary>
-      <div className="cc-help-body">
-        <ul className="cc-help-list">
-          <li>
-            <strong>Text</strong> — WCAG SC 1.4.3: <strong>4.5:1</strong> for
-            normal body (AA), <strong>7:1</strong> for AAA, <strong>3:1</strong>{' '}
-            for large text (18 pt+ regular or 14 pt+ bold).
-          </li>
-          <li>
-            <strong>Icons</strong> and <strong>borders</strong> — WCAG SC 1.4.11
-            Non-text Contrast: <strong>3:1</strong> against the adjacent
-            surface. SC 1.4.11 doesn&apos;t define an AAA tier.
-          </li>
-          <li>
-            Transparent tokens (<code>*-none</code>) are skipped — contrast is
-            undefined against / using a transparent fill.
-          </li>
-          <li>
-            Tokens whose name contains <code>-disabled</code> are intentionally
-            low-contrast by design; the ratio is still shown but the verdict
-            pill is labelled <em>by design</em> so the result is not misread as
-            a bug.
-          </li>
-        </ul>
-      </div>
-    </details>
+    <DocsCard className="cc-help-card">
+      <details className="cc-help">
+        <summary className="cc-help-summary">
+          <span className="material-symbols-outlined" aria-hidden="true">
+            help_outline
+          </span>
+          WCAG thresholds and conventions
+        </summary>
+        <div className="cc-help-body">
+          <ul className="cc-help-list">
+            <li>
+              <strong>Text</strong> — WCAG SC 1.4.3: <strong>4.5:1</strong> for
+              normal body (AA), <strong>7:1</strong> for AAA, <strong>3:1</strong>{' '}
+              for large text (18 pt+ regular or 14 pt+ bold).
+            </li>
+            <li>
+              <strong>Icons</strong> and <strong>borders</strong> — WCAG SC 1.4.11
+              Non-text Contrast: <strong>3:1</strong> against the adjacent
+              surface. SC 1.4.11 doesn&apos;t define an AAA tier.
+            </li>
+            <li>
+              Transparent tokens (<code>*-none</code>) are skipped — contrast is
+              undefined against / using a transparent fill.
+            </li>
+            <li>
+              Tokens whose name contains <code>-disabled</code> are intentionally
+              low-contrast by design; the ratio is still shown but the verdict
+              pill is labelled <em>by design</em> so the result is not misread as
+              a bug.
+            </li>
+          </ul>
+        </div>
+      </details>
+    </DocsCard>
   );
 }

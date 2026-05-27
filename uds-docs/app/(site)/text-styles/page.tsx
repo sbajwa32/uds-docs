@@ -6,6 +6,8 @@
 // utility classes come from uds/tokens/text-styles.css and are applied as-is
 // to render preview rows.
 
+import { DocsCard, DocsPageHeader, DocsSection } from '@/components/site/ui';
+
 export const metadata = { title: 'Text Styles — UDS' };
 
 interface TextStyleItem {
@@ -90,22 +92,9 @@ const SECTIONS: TextStyleSection[] = [
 
 function TextStyleRow({ cls, label, spec }: TextStyleItem) {
   return (
-    <div
-      style={{
-        display: 'flex',
-        alignItems: 'baseline',
-        gap: 12,
-        flexWrap: 'wrap',
-      }}
-    >
+    <div className="ds-text-style-row">
       <span className={cls}>{label}</span>
-      <span
-        style={{
-          fontSize: 'var(--uds-font-size-xs)',
-          color: 'var(--uds-color-text-secondary)',
-          whiteSpace: 'nowrap',
-        }}
-      >
+      <span className="ds-text-style-row__meta">
         .{cls} &middot; {spec}
       </span>
     </div>
@@ -115,28 +104,20 @@ function TextStyleRow({ cls, label, spec }: TextStyleItem) {
 export default function TextStylesPage() {
   return (
     <>
-      <h1 className="sg-page-title">Text Styles</h1>
-      <p className="sg-page-desc">
-        35 typography utility classes built on semantic font tokens. Each maps
-        1:1 to a Figma text style and responds to font family, scale, and
-        density changes via the theme bar above.
-      </p>
+      <DocsPageHeader
+        title="Text Styles"
+        description="35 typography utility classes built on semantic font tokens. Each maps 1:1 to a Figma text style and responds to font family, scale, and density changes via the theme bar above."
+      />
       {SECTIONS.map((section) => (
-        <div key={section.title} className="sg-subsection">
-          <h3 className="sg-subsection-title">{section.title}</h3>
-          {section.desc ? <p className="sg-subsection-desc">{section.desc}</p> : null}
-          <div className="sg-example">
-            <div
-              className="sg-example-preview"
-              data-direction="column"
-              style={{ gap: 12 }}
-            >
+        <DocsSection key={section.title} title={section.title} description={section.desc}>
+          <DocsCard>
+            <div className="ds-text-style-list">
               {section.items.map((item) => (
                 <TextStyleRow key={item.cls} {...item} />
               ))}
             </div>
-          </div>
-        </div>
+          </DocsCard>
+        </DocsSection>
       ))}
     </>
   );

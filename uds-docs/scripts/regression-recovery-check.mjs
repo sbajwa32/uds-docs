@@ -164,17 +164,17 @@ async function main() {
   await send('Page.navigate', { url: `http://localhost:${SERVE_PORT}/changelog` });
   await sleep(2000);
   const changelogInitial = await evaluate(`(() => {
-    const railLink = document.querySelector('.sg-cl-rail-link');
+    const railLink = document.querySelector('.ds-changelog-rail-link');
     const railLinkStyle = railLink ? getComputedStyle(railLink) : null;
     return {
-      toolbar: !!document.querySelector('.sg-cl-toolbar'),
-      rail: document.querySelectorAll('.sg-cl-rail-link').length,
-      componentChips: document.querySelectorAll('.sg-cl-component-filter .sg-cl-chip').length,
-      releaseCards: document.querySelectorAll('.sg-cl-release').length,
-      railHeading: document.querySelector('.sg-cl-rail .sg-cl-rail-heading')?.textContent.trim() || '',
-      componentFilterHeading: document.querySelector('.sg-cl-component-filter .sg-cl-rail-heading')?.textContent.trim() || '',
-      searchPlaceholder: document.querySelector('.sg-cl-search')?.getAttribute('placeholder') || '',
-      railMeta: document.querySelector('.sg-cl-rail-link-meta')?.textContent.trim() || '',
+      toolbar: !!document.querySelector('.ds-changelog-toolbar'),
+      rail: document.querySelectorAll('.ds-changelog-rail-link').length,
+      componentChips: document.querySelectorAll('.ds-changelog-component-filter .ds-changelog-component-filter-chip').length,
+      releaseCards: document.querySelectorAll('.ds-changelog-card').length,
+      railHeading: document.querySelector('.ds-changelog-rail .ds-changelog-rail-heading')?.textContent.trim() || '',
+      componentFilterHeading: document.querySelector('.ds-changelog-component-filter .ds-changelog-filter-label')?.textContent.trim() || '',
+      searchPlaceholder: document.querySelector('.ds-changelog-search-input')?.getAttribute('placeholder') || '',
+      railMeta: document.querySelector('.ds-changelog-rail-meta')?.textContent.trim() || '',
       railLinkBorder: railLinkStyle?.borderTopWidth || '',
       railLinkBackground: railLinkStyle?.backgroundColor || '',
     };
@@ -207,19 +207,19 @@ async function main() {
 
   // Switch to the Site tab and check the weekday + "X bumps" rail meta.
   await evaluate(`(() => {
-    const tab = Array.from(document.querySelectorAll('[role="tab"], .sg-page-tab')).find((t) => t.textContent.trim() === 'Site');
+    const tab = Array.from(document.querySelectorAll('[role="tab"]')).find((t) => t.textContent.trim() === 'Site');
     tab?.click();
   })()`);
   await new Promise((r) => setTimeout(r, 400));
   const siteRail = await evaluate(`(() => {
-    const labels = Array.from(document.querySelectorAll('[data-cl-tab="site"] .sg-cl-rail-link'));
+    const labels = Array.from(document.querySelectorAll('[data-changelog-tab="site"] .ds-changelog-rail-link'));
     const ranked = labels
       .map((el) => ({
         label: el.firstChild?.textContent?.trim() || '',
-        meta: el.querySelector('.sg-cl-rail-link-meta')?.textContent.trim() || '',
+        meta: el.querySelector('.ds-changelog-rail-meta')?.textContent.trim() || '',
       }))
       .filter((row) => row.label);
-    const heading = document.querySelector('[data-cl-tab="site"] .sg-cl-rail-heading')?.textContent.trim() || '';
+    const heading = document.querySelector('[data-changelog-tab="site"] .ds-changelog-rail-heading')?.textContent.trim() || '';
     return { heading, ranked };
   })()`);
   if (siteRail.heading !== 'Jump to date') {
@@ -237,20 +237,20 @@ async function main() {
   await screenshot('changelog-site-tab');
   // Switch back to the UDS tab for downstream checks.
   await evaluate(`(() => {
-    const tab = Array.from(document.querySelectorAll('[role="tab"], .sg-page-tab')).find((t) => t.textContent.trim() === 'UDS');
+    const tab = Array.from(document.querySelectorAll('[role="tab"]')).find((t) => t.textContent.trim() === 'UDS');
     tab?.click();
   })()`);
   await new Promise((r) => setTimeout(r, 400));
 
   await screenshot('changelog-header');
   await evaluate(`(() => {
-    const input = document.querySelector('.sg-cl-search');
+    const input = document.querySelector('.ds-changelog-search-input');
     const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;
     setter.call(input, 'definitely-no-match-xyz');
     input.dispatchEvent(new Event('input', { bubbles: true }));
   })()`);
   await sleep(400);
-  const emptyText = await evaluate(`document.querySelector('.sg-cl-empty')?.textContent.trim() || null`);
+  const emptyText = await evaluate(`document.querySelector('.ds-changelog-empty')?.textContent.trim() || null`);
   if (!emptyText) throw new Error('Filtering did not show empty state');
   await screenshot('changelog-empty-state');
   console.log('  OK — toolbar/filter/rail present, empty state appears');
@@ -301,7 +301,7 @@ async function main() {
   await evaluate(`document.querySelector('.sg-spec-popover__close')?.click()`);
   await sleep(200);
   const headerLinks = await evaluate(`(() => {
-    const links = Array.from(document.querySelectorAll('.sg-page-links .sg-page-link'));
+    const links = Array.from(document.querySelectorAll('.ds-page-actions .ds-page-action'));
     return links.map((el) => el.textContent.trim());
   })()`);
   const requiredLinks = ['Figma', 'Storybook', 'GitHub', 'Report Issue'];
@@ -443,14 +443,14 @@ async function main() {
 
   console.log('[check 8b] Playground tab restores copy button, Implementation Reference, and icon-preview controls');
   await evaluate(`(() => {
-    const tab = Array.from(document.querySelectorAll('[role="tab"], .sg-page-tab')).find((t) => t.textContent.trim() === 'Playground');
+    const tab = Array.from(document.querySelectorAll('[role="tab"]')).find((t) => t.textContent.trim() === 'Playground');
     tab?.click();
   })()`);
   await new Promise((r) => setTimeout(r, 800));
   const playground = await evaluate(`(() => {
     const findVisible = (sel) => Array.from(document.querySelectorAll(sel)).find((el) => el.offsetParent !== null) || null;
     return {
-      copyBtn: !!findVisible('.sg-playground-right .sg-code-copy'),
+      copyBtn: !!findVisible('.ds-playground-right .ds-code-block__copy'),
       implDetails: !!findVisible('.sg-impl-details'),
       implTabs: findVisible('.sg-impl-details') ? document.querySelectorAll('.sg-impl-details .sg-impl-tab').length : 0,
       iconPicker: !!findVisible('.sg-icon-picker-trigger'),
@@ -467,7 +467,7 @@ async function main() {
   // Scroll the playground into view so the screenshot captures the
   // controls, code block, copy button, and Impl Ref details.
   await evaluate(`(() => {
-    document.querySelector('.sg-playground-layout')?.scrollIntoView({ block: 'start' });
+    document.querySelector('.ds-playground-layout')?.scrollIntoView({ block: 'start' });
   })()`);
   await new Promise((r) => setTimeout(r, 200));
   await screenshot('playground-tab');
@@ -491,7 +491,7 @@ async function main() {
   await send('Page.navigate', { url: `http://localhost:${SERVE_PORT}/combobox` });
   await sleep(2000);
   const comboboxTabs = await evaluate(`(() => {
-    const tabs = Array.from(document.querySelectorAll('.sg-page-tab')).map((t) => t.textContent.trim());
+    const tabs = Array.from(document.querySelectorAll('[role="tab"]')).map((t) => t.textContent.trim());
     return { tabs };
   })()`);
   if (comboboxTabs.tabs.some((t) => t === 'Playground')) {
@@ -503,7 +503,7 @@ async function main() {
   await send('Page.navigate', { url: `http://localhost:${SERVE_PORT}/dropdown` });
   await sleep(2000);
   await evaluate(`(() => {
-    const tab = Array.from(document.querySelectorAll('.sg-page-tab')).find((t) => t.textContent.trim() === 'Playground');
+    const tab = Array.from(document.querySelectorAll('[role="tab"]')).find((t) => t.textContent.trim() === 'Playground');
     tab?.click();
   })()`);
   await sleep(800);
@@ -561,7 +561,7 @@ async function main() {
   await send('Page.navigate', { url: `http://localhost:${SERVE_PORT}/button?uds=0.2` });
   await sleep(2500);
   const archive = await evaluate(`(() => {
-    const tabs = Array.from(document.querySelectorAll('.sg-page-tab')).map((t) => t.textContent.trim());
+    const tabs = Array.from(document.querySelectorAll('[role="tab"]')).map((t) => t.textContent.trim());
     const demoBtn = !!document.querySelector('.sg-demo-btn');
     const linkLink = !!document.querySelector('.sg-sidebar-link[href^="/link"]');
     const labelLink = !!document.querySelector('.sg-sidebar-link[href^="/label"]');
@@ -587,7 +587,7 @@ async function main() {
   await send('Page.navigate', { url: `http://localhost:${SERVE_PORT}/button?tab=changelog` });
   await sleep(2500);
   const tabActive = await evaluate(`(() => {
-    const active = document.querySelector('.sg-page-tab[aria-selected="true"]')?.textContent.trim() || '';
+    const active = document.querySelector('[role="tab"][aria-selected="true"]')?.textContent.trim() || '';
     return { active };
   })()`);
   if (tabActive.active !== 'Changelog') {
@@ -648,7 +648,7 @@ async function main() {
   await sleep(3000);
   const invalidVersion = await evaluate(`(() => ({
     search: window.location.search,
-    title: document.querySelector('.sg-page-title')?.textContent.trim() || '',
+    title: document.querySelector('.ds-page-header__title, .sg-page-title')?.textContent.trim() || '',
   }))()`);
   if (/[?&]uds=/.test(invalidVersion.search)) {
     throw new Error(`Invalid ?uds=9.9 should be cleared; URL search is still "${invalidVersion.search}"`);

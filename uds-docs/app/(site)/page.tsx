@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
-import { SgPageTitle, SgPageDesc } from '@/components/site/SgPageHeader';
+import { DocsPageHeader } from '@/components/site/ui';
 
 // Home page (`/`). The legacy site landed on `semantic-colors` by default
 // when the URL had no fragment; preserve that behavior with a
@@ -27,11 +27,10 @@ export default function HomePage() {
 
   return (
     <>
-      <SgPageTitle>UDS — Urban Design System</SgPageTitle>
-      <SgPageDesc>
-        Welcome to the UDS documentation site. Loading the Semantic Colors
-        page…
-      </SgPageDesc>
+      <DocsPageHeader
+        title="UDS — Urban Design System"
+        description="Welcome to the UDS documentation site. Loading the Semantic Colors page…"
+      />
     </>
   );
 }

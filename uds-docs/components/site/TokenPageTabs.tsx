@@ -6,7 +6,7 @@
 
 import { useState, type ReactNode } from 'react';
 
-import { SgPageTabs, SgPageTab } from './SgPageHeader';
+import { DocsTab, DocsTabPanel, DocsTabs } from './ui';
 
 export function TokenPageTabs({
   preview,
@@ -18,16 +18,16 @@ export function TokenPageTabs({
   const [activeTab, setActiveTab] = useState<'preview' | 'code'>('preview');
   return (
     <>
-      <SgPageTabs
+      <DocsTabs
         activeTab={activeTab}
         onActiveTabChange={(v) => setActiveTab(v as 'preview' | 'code')}
         ariaLabel="Token preview vs source code"
       >
-        <SgPageTab value="preview">Preview</SgPageTab>
-        <SgPageTab value="code">Code</SgPageTab>
-      </SgPageTabs>
-      <div hidden={activeTab !== 'preview'}>{preview}</div>
-      <div hidden={activeTab !== 'code'}>{code}</div>
+        <DocsTab value="preview">Preview</DocsTab>
+        <DocsTab value="code">Code</DocsTab>
+        <DocsTabPanel value="preview">{preview}</DocsTabPanel>
+        <DocsTabPanel value="code">{code}</DocsTabPanel>
+      </DocsTabs>
     </>
   );
 }

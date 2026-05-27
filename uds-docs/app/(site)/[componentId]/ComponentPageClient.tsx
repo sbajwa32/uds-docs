@@ -18,7 +18,7 @@
 
 import { useEffect, useState } from 'react';
 
-import { SgPageTabs, SgPageTab, SgPageTabPanel } from '@/components/site/SgPageHeader';
+import { DocsStateMessage, DocsTab, DocsTabPanel, DocsTabs } from '@/components/site/ui';
 import {
   getComponentSpec,
   getComponentStatus,
@@ -161,16 +161,13 @@ export function ComponentPageClient({ componentId }: { componentId: string }) {
   }, [componentId, fetchVersion, versionReady]);
 
   if (loading) {
-    return <p className="sg-changelog-empty">Loading component data…</p>;
+    return <DocsStateMessage>Loading component data…</DocsStateMessage>;
   }
   if (error || !data) {
     return (
-      <div role="alert">
-        <h1 className="sg-page-title">Couldn&apos;t load component</h1>
-        <p className="sg-page-desc">
+      <DocsStateMessage title="Couldn’t load component" tone="error">
           {error || 'Unknown error while fetching component data.'}
-        </p>
-      </div>
+      </DocsStateMessage>
     );
   }
 
@@ -205,47 +202,47 @@ export function ComponentPageClient({ componentId }: { componentId: string }) {
         changelog={changelog}
       />
 
-      <SgPageTabs
+      <DocsTabs
         activeTab={activeTab}
         onActiveTabChange={(v) => setActiveTab(v as TabKey)}
         ariaLabel="Component documentation"
       >
-        <SgPageTab value="examples">Examples</SgPageTab>
-        <SgPageTab value="code">Code</SgPageTab>
-        <SgPageTab value="guidelines">Guidelines</SgPageTab>
+        <DocsTab value="examples">Examples</DocsTab>
+        <DocsTab value="code">Code</DocsTab>
+        <DocsTab value="guidelines">Guidelines</DocsTab>
         {showFigmaNotes ? (
-          <SgPageTab value="figma-notes" count={figmaNotes!.notes.length}>
+          <DocsTab value="figma-notes" count={figmaNotes!.notes.length}>
             Figma Notes
-          </SgPageTab>
+          </DocsTab>
         ) : null}
-        <SgPageTab value="changelog">Changelog</SgPageTab>
+        <DocsTab value="changelog">Changelog</DocsTab>
         {showPlayground ? (
-          <SgPageTab value="playground">Playground</SgPageTab>
+          <DocsTab value="playground">Playground</DocsTab>
         ) : null}
 
-        <SgPageTabPanel value="examples">
+        <DocsTabPanel value="examples">
           <ExamplesTab componentId={componentId} />
-        </SgPageTabPanel>
-        <SgPageTabPanel value="code">
+        </DocsTabPanel>
+        <DocsTabPanel value="code">
           <CodeTab componentId={componentId} />
-        </SgPageTabPanel>
-        <SgPageTabPanel value="guidelines">
+        </DocsTabPanel>
+        <DocsTabPanel value="guidelines">
           <GuidelinesTab spec={spec} impl={impl} />
-        </SgPageTabPanel>
+        </DocsTabPanel>
         {showFigmaNotes ? (
-          <SgPageTabPanel value="figma-notes">
+          <DocsTabPanel value="figma-notes">
             <FigmaNotesTab notes={figmaNotes!.notes} />
-          </SgPageTabPanel>
+          </DocsTabPanel>
         ) : null}
-        <SgPageTabPanel value="changelog">
+        <DocsTabPanel value="changelog">
           <ChangelogTab componentId={componentId} changelog={changelog} />
-        </SgPageTabPanel>
+        </DocsTabPanel>
         {showPlayground ? (
-          <SgPageTabPanel value="playground" forceMount={false}>
+          <DocsTabPanel value="playground" forceMount={false}>
             <Playground componentId={componentId} />
-          </SgPageTabPanel>
+          </DocsTabPanel>
         ) : null}
-      </SgPageTabs>
+      </DocsTabs>
     </>
   );
 }

@@ -1108,5 +1108,12 @@ export const SITE_CHANGELOG: SiteChangelogEntry[] = [
       changes: [
         { type: 'changed', text: 'Started the React-native docs UI rebuild with the Changelog page. Releases, filters, type labels, component tags, and rail navigation now render through typed React components with `ds-changelog-*` styles built on UDS semantic tokens instead of the old `sg-cl-*` class surface.' }
       ]
+    },
+    {
+      version: 'SITE 2026.05.26.5',
+      date: '2026-05-26',
+      changes: [
+        { type: 'changed', text: 'Expanded the React-native docs UI rebuild beyond Changelog. Token references, component-page framing, examples, code tables, guidelines, playground panels, and major prose/tool pages now use shared docs-site React primitives with UDS semantic-token styling, while UDS component previews remain vanilla HTML as the source markup being documented.' }
+      ]
     }
 ];

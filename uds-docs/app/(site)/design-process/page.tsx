@@ -1,13 +1,15 @@
 import { VersionedLink as Link } from '@/components/site/VersionedLink';
-import { SgPageTitle, SgPageDesc } from '@/components/site/SgPageHeader';
+import { DocsPageHeader } from '@/components/site/ui';
 
 export const metadata = { title: 'Design Process — UDS' };
 
 export default function DesignProcessPage() {
   return (
     <div className="sg-page-content">
-      <SgPageTitle>Design Process</SgPageTitle>
-      <SgPageDesc>How a component moves from a first sketch to something developers can build. The page below proposes a process; the bottom half compares it to how big design systems handle the same problem.</SgPageDesc>
+      <DocsPageHeader
+        title="Design Process"
+        description="How a component moves from a first sketch to something developers can build. The page below proposes a process; the bottom half compares it to how big design systems handle the same problem."
+      />
 
       <style>{`
 /* Page-local styles for the design-process page. Scoped via .sg-dp-* prefix. */
@@ -357,7 +359,7 @@ export default function DesignProcessPage() {
       </div>
 
       {/* OVERVIEW */}
-      <p className="sg-page-desc">The stoplight tells you where each component is in the design process. Five colors, one for each stage. Red means just starting; green means ready for developers to build. The proposal below explains what each color means, what you{"'"}ll see while you{"'"}re there, and what to check off to move forward.</p>
+      <p className="ds-page-header__description">The stoplight tells you where each component is in the design process. Five colors, one for each stage. Red means just starting; green means ready for developers to build. The proposal below explains what each color means, what you{"'"}ll see while you{"'"}re there, and what to check off to move forward.</p>
 
       {/* PART 1 — THE PROPOSED PROCESS */}
       <div className="sg-dp-part-marker">Part 1 — The proposal</div>

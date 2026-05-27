@@ -2,16 +2,15 @@
 
 // Page chrome for a component documentation page.
 //
-//   - SgPageTitle bound to spec.title.
-//   - SgPageDesc bound to spec.description.
+//   - DocsPageHeader bound to spec.title/spec.description.
 //   - HeaderLinks — Figma + Storybook + GitHub icon-buttons.
 //   - ReadinessCard — two-row "Status" + "Spec" segmented bars (.sg-readiness
 //     markup). Direct port of `renderComponentProgress()` from the legacy
 //     app.js; the legacy CSS (styles/pages/legacy.css) is reused verbatim.
 
 import Link from 'next/link';
-import { SgPageTitle, SgPageDesc } from '@/components/site/SgPageHeader';
 import { useEffect, useRef, useState } from 'react';
+import { DocsPageHeader } from '@/components/site/ui';
 import type { ComponentSpec, ComponentStatus, ComponentChangelog } from '@/lib/uds-data';
 import { STATUS_LABELS, STATUS_STEPS } from '@/data/status-labels';
 import {
@@ -332,10 +331,10 @@ function HeaderLinks({ componentId, spec }: { componentId: string; spec: Compone
   const reportIssueUrl = `${GITHUB_REPO_URL}/issues/new?title=${reportTitle}&body=${reportBody}`;
 
   return (
-    <div className="sg-page-links">
+    <div className="ds-page-actions">
       {figmaUrl ? (
         <a
-          className="sg-page-link"
+          className="ds-page-action"
           href={figmaUrl}
           target="_blank"
           rel="noopener noreferrer"
@@ -344,13 +343,13 @@ function HeaderLinks({ componentId, spec }: { componentId: string; spec: Compone
           {figmaLabel}
         </a>
       ) : (
-        <span className="sg-page-link" aria-disabled="true">
+        <span className="ds-page-action" aria-disabled="true">
           <span className="material-symbols-outlined">design_services</span>
           Figma
         </span>
       )}
       <a
-        className="sg-page-link"
+        className="ds-page-action"
         href={storybookUrl}
         target="_blank"
         rel="noopener noreferrer"
@@ -359,12 +358,12 @@ function HeaderLinks({ componentId, spec }: { componentId: string; spec: Compone
         <span className="material-symbols-outlined">auto_awesome</span>
         Storybook
       </a>
-      <span className="sg-page-link" aria-disabled="true">
+      <span className="ds-page-action" aria-disabled="true">
         <span className="material-symbols-outlined">code</span>
         GitHub
       </span>
       <a
-        className="sg-page-link"
+        className="ds-page-action"
         href={reportIssueUrl}
         target="_blank"
         rel="noopener noreferrer"
@@ -489,9 +488,11 @@ export function ComponentHeader({
 
   return (
     <>
-      <SgPageTitle>{spec.title || componentId}</SgPageTitle>
-      {spec.description ? <SgPageDesc>{spec.description}</SgPageDesc> : null}
-      <HeaderLinks componentId={componentId} spec={spec} />
+      <DocsPageHeader
+        title={spec.title || componentId}
+        description={spec.description}
+        actions={<HeaderLinks componentId={componentId} spec={spec} />}
+      />
       <ReadinessCard componentId={componentId} status={status} score={score} />
       <NotProductionBanner status={status} />
       <LastUpdatedPanel componentId={componentId} changelog={changelog} />

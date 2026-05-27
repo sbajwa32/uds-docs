@@ -71,22 +71,22 @@ function isFilled<T>(arr: T[] | undefined | null): arr is T[] {
 
 function GroupSection({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <section className="sg-gl-group">
-      <h2 className="sg-gl-group-title">{title}</h2>
+    <section className="ds-guideline-group">
+      <h2 className="ds-guideline-group__title">{title}</h2>
       {children}
     </section>
   );
 }
 
 function SectionTitle({ children }: { children: React.ReactNode }) {
-  return <h3 className="sg-gl-subhead">{children}</h3>;
+  return <h3 className="ds-guideline-subhead">{children}</h3>;
 }
 
 function ProseSection({ title, text }: { title?: string; text: string }) {
   return (
-    <div className="sg-gl-section">
+    <div className="ds-guideline-section">
       {title ? <SectionTitle>{title}</SectionTitle> : null}
-      <p className="sg-gl-prose">{text}</p>
+      <p className="ds-guideline-prose">{text}</p>
     </div>
   );
 }
@@ -102,9 +102,9 @@ function ListSection({
 }) {
   const Tag = ordered ? 'ol' : 'ul';
   return (
-    <div className="sg-gl-section">
+    <div className="ds-guideline-section">
       {title ? <SectionTitle>{title}</SectionTitle> : null}
-      <Tag className="sg-gl-list">
+      <Tag className="ds-guideline-list">
         {items.map((item, i) => (
           <li key={i}>{item}</li>
         ))}
@@ -115,9 +115,9 @@ function ListSection({
 
 function PropsTable({ props: rows }: { props: SpecPropEntry[] }) {
   return (
-    <div className="sg-gl-section">
+    <div className="ds-guideline-section">
       <SectionTitle>Props / attributes</SectionTitle>
-      <table className="sg-gl-table">
+      <table className="ds-table">
         <thead>
           <tr>
             <th>Name</th>
@@ -153,9 +153,9 @@ function PropsTable({ props: rows }: { props: SpecPropEntry[] }) {
 
 function EventsTable({ events }: { events: SpecEventEntry[] }) {
   return (
-    <div className="sg-gl-section">
+    <div className="ds-guideline-section">
       <SectionTitle>Events emitted</SectionTitle>
-      <table className="sg-gl-table">
+      <table className="ds-table">
         <thead>
           <tr>
             <th>Name</th>
@@ -181,9 +181,9 @@ function EventsTable({ events }: { events: SpecEventEntry[] }) {
 
 function SlotsTable({ slots }: { slots: SpecSlotEntry[] }) {
   return (
-    <div className="sg-gl-section">
+    <div className="ds-guideline-section">
       <SectionTitle>Slots / content model</SectionTitle>
-      <table className="sg-gl-table">
+      <table className="ds-table">
         <thead>
           <tr>
             <th>Slot</th>
@@ -207,9 +207,9 @@ function SlotsTable({ slots }: { slots: SpecSlotEntry[] }) {
 
 function StatesTable({ states }: { states: SpecStateEntry[] }) {
   return (
-    <div className="sg-gl-section">
+    <div className="ds-guideline-section">
       <SectionTitle>States coverage</SectionTitle>
-      <table className="sg-gl-table">
+      <table className="ds-table">
         <thead>
           <tr>
             <th>State</th>
@@ -242,12 +242,12 @@ function DependenciesSection({
   const js = (deps.js as string[] | undefined) ?? [];
   if (css.length === 0 && js.length === 0) return null;
   return (
-    <div className="sg-gl-section">
+    <div className="ds-guideline-section">
       <SectionTitle>Dependencies</SectionTitle>
       {css.length > 0 ? (
         <>
-          <p className="sg-gl-subhead">CSS</p>
-          <ul className="sg-gl-list">
+          <p className="ds-guideline-subhead">CSS</p>
+          <ul className="ds-guideline-list">
             {css.map((path) => (
               <li key={path}>
                 <code>{path}</code>
@@ -258,8 +258,8 @@ function DependenciesSection({
       ) : null}
       {js.length > 0 ? (
         <>
-          <p className="sg-gl-subhead">JS</p>
-          <ul className="sg-gl-list">
+          <p className="ds-guideline-subhead">JS</p>
+          <ul className="ds-guideline-list">
             {js.map((path) => (
               <li key={path}>
                 <code>{path}</code>
@@ -280,12 +280,12 @@ function DosDontsSection({
   const dos = dosDonts.dos ?? [];
   const donts = dosDonts.donts ?? [];
   return (
-    <div className="sg-gl-section">
+    <div className="ds-guideline-section">
       <SectionTitle>Do&apos;s &amp; don&apos;ts</SectionTitle>
-      <div className="sg-gl-dodont sg-gl-dodont-cols">
+      <div className="ds-guideline-dodont ds-guideline-dodont-cols">
         {dos.length > 0 ? (
-          <div className="sg-gl-dodont-col sg-gl-do">
-            <h4 className="sg-gl-subhead">Do</h4>
+          <div className="ds-guideline-dodont-col ds-guideline-do">
+            <h4 className="ds-guideline-subhead">Do</h4>
             <ul>
               {dos.map((d, i) => (
                 <li key={i}>{d}</li>
@@ -294,8 +294,8 @@ function DosDontsSection({
           </div>
         ) : null}
         {donts.length > 0 ? (
-          <div className="sg-gl-dodont-col sg-gl-dont">
-            <h4 className="sg-gl-subhead">Don&apos;t</h4>
+          <div className="ds-guideline-dodont-col ds-guideline-dont">
+            <h4 className="ds-guideline-subhead">Don&apos;t</h4>
             <ul>
               {donts.map((d, i) => (
                 <li key={i}>{d}</li>
@@ -310,9 +310,9 @@ function DosDontsSection({
 
 function PairedWithSection({ ids }: { ids: string[] }) {
   return (
-    <div className="sg-gl-section">
+    <div className="ds-guideline-section">
       <SectionTitle>Commonly paired with</SectionTitle>
-      <ul className="sg-gl-paired">
+      <ul className="ds-guideline-paired">
         {ids.map((id) => (
           <li key={id}>
             <a className="sg-page-link" href={`/${id}`}>
@@ -327,9 +327,9 @@ function PairedWithSection({ ids }: { ids: string[] }) {
 
 function KeyboardTable({ rows }: { rows: SpecKeyboardEntry[] }) {
   return (
-    <div className="sg-gl-section">
+    <div className="ds-guideline-section">
       <SectionTitle>Keyboard</SectionTitle>
-      <table className="sg-gl-table">
+      <table className="ds-table">
         <thead>
           <tr>
             <th>Key</th>
@@ -353,9 +353,9 @@ function KeyboardTable({ rows }: { rows: SpecKeyboardEntry[] }) {
 
 function ScreenReaderTable({ rows }: { rows: SpecScreenReaderEntry[] }) {
   return (
-    <div className="sg-gl-section">
+    <div className="ds-guideline-section">
       <SectionTitle>Screen reader</SectionTitle>
-      <table className="sg-gl-table">
+      <table className="ds-table">
         <thead>
           <tr>
             <th>Trigger</th>
@@ -377,9 +377,9 @@ function ScreenReaderTable({ rows }: { rows: SpecScreenReaderEntry[] }) {
 
 function WcagTable({ rows }: { rows: SpecWcagEntry[] }) {
   return (
-    <div className="sg-gl-section">
+    <div className="ds-guideline-section">
       <SectionTitle>WCAG criteria</SectionTitle>
-      <table className="sg-gl-table">
+      <table className="ds-table">
         <thead>
           <tr>
             <th>Criterion</th>
@@ -405,9 +405,9 @@ function WcagTable({ rows }: { rows: SpecWcagEntry[] }) {
 
 function ContrastTable({ rows }: { rows: SpecContrastEntry[] }) {
   return (
-    <div className="sg-gl-section">
+    <div className="ds-guideline-section">
       <SectionTitle>Color contrast</SectionTitle>
-      <table className="sg-gl-table">
+      <table className="ds-table">
         <thead>
           <tr>
             <th>Foreground</th>
@@ -437,9 +437,9 @@ function ContrastTable({ rows }: { rows: SpecContrastEntry[] }) {
 
 function OwnershipSection({ owner }: { owner: { designer?: string; developer?: string } }) {
   return (
-    <div className="sg-gl-section">
+    <div className="ds-guideline-section">
       <SectionTitle>Ownership</SectionTitle>
-      <ul className="sg-gl-list">
+      <ul className="ds-guideline-list">
         {owner.designer && owner.designer !== 'Unassigned' ? (
           <li>
             <strong>Designer:</strong> {owner.designer}
@@ -460,21 +460,21 @@ function ImplementationReferenceSection({ impl }: { impl: ComponentImpl }) {
   const tokenGroups = Object.entries(tokens) as [string, string[]][];
 
   return (
-    <div className="sg-gl-section">
+    <div className="ds-guideline-section">
       <SectionTitle>Implementation Reference</SectionTitle>
       {impl.jsFunc ? (
-        <p className="sg-gl-prose">
+        <p className="ds-guideline-prose">
           Behavior in <code>{impl.jsFile}</code> via{' '}
           <code>{impl.jsFunc}()</code>.
         </p>
       ) : null}
       {tokenGroups.length > 0 ? (
         <>
-          <p className="sg-gl-subhead">Tokens used</p>
+          <p className="ds-guideline-subhead">Tokens used</p>
           {tokenGroups.map(([groupName, list]) => (
             <div key={groupName}>
-              <p className="sg-gl-subhead">{groupName}</p>
-              <ul className="sg-gl-list">
+              <p className="ds-guideline-subhead">{groupName}</p>
+              <ul className="ds-guideline-list">
                 {(list ?? []).map((t) => (
                   <li key={t}>
                     <code>{t}</code>
@@ -619,7 +619,7 @@ export function GuidelinesTab({
 
   if (groups.length === 0) {
     return (
-      <div className="sg-guidelines-empty">
+      <div className="ds-guidelines-empty">
         <p>No guidelines captured yet. This spec is in progress.</p>
       </div>
     );

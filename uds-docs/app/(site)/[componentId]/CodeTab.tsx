@@ -3,38 +3,56 @@
 // the component's legacy Code tab didn't follow the standard structure.
 
 import { COMPONENT_API } from '@/data/component-api';
+import { DocsCodeBlock, DocsSection, DocsStateMessage } from '@/components/site/ui';
+
+function decodeHtmlEntities(value: string): string {
+  return value
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&amp;/g, '&')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'");
+}
+
+function extractLegacyCode(rawCodeHtml: string): string {
+  const codeMatch = /<code>([\s\S]*?)<\/code>/i.exec(rawCodeHtml);
+  return decodeHtmlEntities(codeMatch?.[1] ?? rawCodeHtml.replace(/<[^>]+>/g, ''));
+}
 
 export function CodeTab({ componentId }: { componentId: string }) {
   const api = COMPONENT_API[componentId];
 
   if (!api) {
     return (
-      <p className="sg-changelog-empty">
+      <DocsStateMessage>
         No API documented for <code>{componentId}</code> yet.
-      </p>
+      </DocsStateMessage>
     );
   }
 
-  // Raw fallback — render the legacy Code tab markup verbatim.
+  // Raw fallback — render the legacy code sample as text, not HTML.
   if (api.rawCodeHtml && (!api.cssClasses || api.cssClasses.length === 0) && !api.attributes) {
-    return <div dangerouslySetInnerHTML={{ __html: api.rawCodeHtml }} />;
+    return (
+      <DocsSection title="Vanilla HTML">
+        <DocsCodeBlock code={extractLegacyCode(api.rawCodeHtml)} language="html" />
+      </DocsSection>
+    );
   }
 
   return (
     <>
       {api.importPath ? (
         <>
-          <h3 className="sg-subsection-title">Import</h3>
-          <pre className="sg-playground-code" style={{ marginBottom: 24 }}>
-            @import url(&apos;{api.importPath}&apos;);
-          </pre>
+          <DocsSection title="Import">
+            <DocsCodeBlock code={`@import url('${api.importPath}');`} language="css" />
+          </DocsSection>
         </>
       ) : null}
 
       {api.cssClasses && api.cssClasses.length > 0 ? (
         <>
-          <h3 className="sg-subsection-title">CSS Classes</h3>
-          <table className="sg-api-table">
+          <DocsSection title="CSS Classes">
+          <table className="ds-table">
             <thead>
               <tr>
                 <th>Class</th>
@@ -52,13 +70,14 @@ export function CodeTab({ componentId }: { componentId: string }) {
               ))}
             </tbody>
           </table>
+          </DocsSection>
         </>
       ) : null}
 
       {api.attributes && api.attributes.length > 0 ? (
         <>
-          <h3 className="sg-subsection-title">Data Attributes</h3>
-          <table className="sg-api-table">
+          <DocsSection title="Data Attributes">
+          <table className="ds-table">
             <thead>
               <tr>
                 <th>Attribute</th>
@@ -84,6 +103,7 @@ export function CodeTab({ componentId }: { componentId: string }) {
               ))}
             </tbody>
           </table>
+          </DocsSection>
         </>
       ) : null}
     </>
