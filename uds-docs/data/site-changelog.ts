@@ -1130,5 +1130,12 @@ export const SITE_CHANGELOG: SiteChangelogEntry[] = [
         { type: 'removed', text: 'Removed stale migration CSS and dead docs-site stubs left after the React docs UI rebuild.' },
         { type: 'fixed', text: 'Updated AI Assist, Getting Started, Cursor Workflows, and smoke scripts to point at the Cloudflare site, current spec paths, and ds-* tab selectors.' }
       ]
+    },
+    {
+      version: 'SITE 2026.05.27.2',
+      date: '2026-05-27',
+      changes: [
+        { type: 'fixed', text: 'Cleared the PostCSS security advisory in the docs-site dependency tree.' }
+      ]
     }
 ];
