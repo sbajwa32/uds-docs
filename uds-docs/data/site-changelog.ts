@@ -1115,5 +1115,12 @@ export const SITE_CHANGELOG: SiteChangelogEntry[] = [
       changes: [
         { type: 'changed', text: 'Expanded the React-native docs UI rebuild beyond Changelog. Token references, component-page framing, examples, code tables, guidelines, playground panels, and major prose/tool pages now use shared docs-site React primitives with UDS semantic-token styling, while UDS component previews remain vanilla HTML as the source markup being documented.' }
       ]
+    },
+    {
+      version: 'SITE 2026.05.26.6',
+      date: '2026-05-26',
+      changes: [
+        { type: 'added', text: 'Added a reusable Cursor workflow for code-first component labs. You can now say “Lab me an Avatar” to start a hidden draft playground before promoting the direction to Figma.' }
+      ]
     }
 ];

@@ -69,7 +69,7 @@ the manual fallback when the hook hasn't run.
 | [`uds-token-architecture.mdc`](./rules/uds-token-architecture.mdc) | `2026-05-12T18:41:50Z` | Canonical UDS Tokens Figma variable architecture and CSS output contract. Direct Figma Variables reads are primary; ZIP exports are… |
 | [`uds-token-first-css.mdc`](./rules/uds-token-first-css.mdc) | `2026-05-12T18:41:50Z` | Enforces UDS token usage in all CSS — no hardcoded colors, spacing, fonts, or radii. |
 
-## Skills (9)
+## Skills (10)
 
 | Skill | Last updated (UTC) | Description |
 |---|---|---|
@@ -81,6 +81,7 @@ the manual fallback when the hook hasn't run.
 | [`sync-figma-component-spec`](./skills/sync-figma-component-spec/SKILL.md) | `2026-05-24T09:19:52Z` | Update a UDS component's per-component artifacts (spec.json, CSS, examples, impl.json, playground.js, figmanotes.json) from a deep Figma… |
 | [`sync-figma-component-status`](./skills/sync-figma-component-status/SKILL.md) | `2026-05-24T09:19:52Z` | Sync UDS Components Figma stoplight page prefixes into per-component status.json files. Use after figma-inventory reports status mismatches. |
 | [`sync-figma-release-notes`](./skills/sync-figma-release-notes/SKILL.md) | `2026-05-12T18:41:50Z` | Rebuild Release Notes frames in both UDS Figma files from the aggregated UDS CHANGELOG. Use during releases or after CHANGELOG changes that… |
+| [`uds-component-lab`](./skills/uds-component-lab/SKILL.md) | `2026-05-27T00:16:27Z` | Create a dev-only code-first UDS component lab for draft exploration. Use when the user says "Lab me a [component]", "start a code-first… |
 | [`uds-updated`](./skills/uds-updated/SKILL.md) | `2026-05-24T09:19:52Z` | Orchestrate a full UDS Figma-to-docs sync from a simple prompt like "UDS updated" or "Figma updated". Reads Figma Tokens and Components,… |
 
 ## Subagents (7)
