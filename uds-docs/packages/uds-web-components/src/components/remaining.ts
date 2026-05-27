@@ -346,65 +346,9 @@ export class UdsTextAreaElement extends LitElement {
 export { UdsToggleElement } from './toggle';
 export type { UdsToggleChangeDetail } from './toggle';
 
-export class UdsRadioGroupElement extends LitElement {
-  static formAssociated = true;
-  static properties = {
-    name: { type: String, reflect: true },
-    value: { type: String, reflect: true },
-    label: { type: String, reflect: true },
-  };
-
-  name = '';
-  value = '';
-  label = '';
-  private readonly internals = formInternals(this);
-
-  static styles = [hostBlock, css`.group { display: grid; gap: var(--uds-space-100, 8px); } .label { font-weight: var(--uds-font-weight-medium, 500); }`];
-
-  protected updated(changed: PropertyValues<this>) {
-    if (changed.has('value')) this.internals?.setFormValue(this.value);
-  }
-
-  render() {
-    return html`<fieldset part="group" class="group" @udc-change=${this.handleRadioChange}><legend part="label" class="label">${this.label}<slot name="label"></slot></legend><slot></slot></fieldset>`;
-  }
-
-  private handleRadioChange(event: Event) {
-    const detail = (event as CustomEvent<UdsCheckedChangeDetail>).detail;
-    if (!detail?.checked) return;
-    this.value = detail.value;
-    this.querySelectorAll<UdsRadioElement>('udc-radio').forEach((radio) => {
-      radio.checked = radio.value === this.value;
-      radio.name = this.name;
-    });
-    emitUdsEvent<UdsValueChangeDetail>(this, 'udc-radio-group-change', { value: this.value });
-  }
-}
-
-export class UdsRadioElement extends LitElement {
-  static properties = {
-    name: { type: String, reflect: true },
-    value: { type: String, reflect: true },
-    checked: { type: Boolean, reflect: true },
-    disabled: { type: Boolean, reflect: true },
-  };
-
-  name = '';
-  value = '';
-  checked = false;
-  disabled = false;
-
-  static styles = [hostInline, css`label { display: inline-flex; align-items: center; gap: var(--uds-space-100, 8px); color: var(--uds-color-text-primary, #171717); }`];
-
-  render() {
-    return html`<label part="label"><input part="input" type="radio" name=${this.name || nothing} value=${this.value} ?checked=${this.checked} ?disabled=${this.disabled} @change=${this.handleChange} /><slot></slot></label>`;
-  }
-
-  private handleChange(event: Event) {
-    this.checked = (event.currentTarget as HTMLInputElement).checked;
-    emitUdsEvent<UdsCheckedChangeDetail>(this, 'udc-change', { checked: this.checked, value: this.value });
-  }
-}
+// Radio + RadioGroup live in ./radio.ts (extracted with the full CSS port).
+export { UdsRadioElement, UdsRadioGroupElement } from './radio';
+export type { UdsRadioChangeDetail, UdsRadioState } from './radio';
 
 export class UdsSearchElement extends LitElement {
   static formAssociated = true;
@@ -703,8 +647,6 @@ declare global {
     'udc-label': UdsLabelElement;
     'udc-link': UdsLinkElement;
     'udc-text-area': UdsTextAreaElement;
-    'udc-radio-group': UdsRadioGroupElement;
-    'udc-radio': UdsRadioElement;
     'udc-search': UdsSearchElement;
     'udc-breadcrumb': UdsBreadcrumbElement;
     'udc-list': UdsListElement;

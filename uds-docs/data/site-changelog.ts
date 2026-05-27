@@ -1187,5 +1187,12 @@ export const SITE_CHANGELOG: SiteChangelogEntry[] = [
       changes: [
         { type: 'fixed', text: 'Restored the Toggle visual styling and playground. `<udc-toggle>` now uses the proper 52×32 track with a 20×20 thumb that translates 20px when active, plus the focus ring and disabled treatment, and the playground brings back the label, checked, and disabled controls.' }
       ]
+    },
+    {
+      version: 'SITE 2026.05.27.10',
+      date: '2026-05-27',
+      changes: [
+        { type: 'fixed', text: 'Restored the Radio visual styling and group behavior. `<udc-radio>` and `<udc-radio-group>` now carry the original 20×20 ring + 12×12 center dot, the text-interactive recolor when selected, hover/focus/disabled treatments, error state, and the group legend. RadioGroup syncs selection through its `value` attribute. Playground brings back options-count, disabled, and error controls.' }
+      ]
     }
 ];

@@ -4,6 +4,7 @@ import { UdsCheckboxElement } from './components/checkbox';
 import { UdsChipElement } from './components/chip';
 import { UdsDropdownElement, UdsDropdownItemElement } from './components/dropdown';
 import { UdsNotificationElement } from './components/notification';
+import { UdsRadioElement, UdsRadioGroupElement } from './components/radio';
 import { UdsToggleElement } from './components/toggle';
 import {
   UdsBreadcrumbElement,
@@ -23,8 +24,6 @@ import {
   UdsNavItemElement,
   UdsNavVerticalElement,
   UdsPaginationElement,
-  UdsRadioElement,
-  UdsRadioGroupElement,
   UdsSearchElement,
   UdsSpacerElement,
   UdsTextAreaElement,

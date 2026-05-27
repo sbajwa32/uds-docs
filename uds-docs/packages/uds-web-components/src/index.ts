@@ -12,6 +12,7 @@ export { UdsCheckboxElement, type UdsCheckboxChangeDetail } from './components/c
 export { UdsChipElement, type UdsChipToggleDetail, type UdsChipVariant, type UdsDismissDetail } from './components/chip';
 export { UdsDropdownElement, UdsDropdownItemElement, type UdsDropdownChangeDetail, type UdsDropdownState } from './components/dropdown';
 export { UdsNotificationElement, type UdsNotificationTone, type UdsNotificationVariant } from './components/notification';
+export { UdsRadioElement, UdsRadioGroupElement, type UdsRadioChangeDetail, type UdsRadioState } from './components/radio';
 export { UdsToggleElement, type UdsToggleChangeDetail } from './components/toggle';
 export {
   UdsBreadcrumbElement,
@@ -31,8 +32,6 @@ export {
   UdsNavItemElement,
   UdsNavVerticalElement,
   UdsPaginationElement,
-  UdsRadioElement,
-  UdsRadioGroupElement,
   UdsSearchElement,
   UdsSpacerElement,
   UdsTextAreaElement,
