@@ -41,6 +41,11 @@
       "version": "0.3",
       "type": "changed",
       "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
+    },
+    {
+      "version": "0.3",
+      "type": "changed",
+      "text": "Ported the full nav-vertical CSS into `<udc-nav-vertical>` + `<udc-nav-item>` shadow DOM. The container drives `variant` (list/rail) and `leading-icons` on its children. List items render as full-width 48px rows with hover/selected (surface-interactive-active + text-inverse) treatments; rail items stack icon-over-label with a 2px active indicator bar on the left. Rebuilt the playground with variant, leading-icons, item-count, and selected-item controls."
     }
   ]
 }

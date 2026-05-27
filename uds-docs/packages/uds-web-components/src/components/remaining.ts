@@ -353,25 +353,8 @@ export class UdsDataViewElement extends LitElement {
 // NavHeader lives in ./nav-header.ts (extracted with the full canonical anatomy).
 export { UdsNavHeaderElement } from './nav-header';
 
-export class UdsNavVerticalElement extends LitElement {
-  static styles = [hostBlock, css`nav { display: grid; gap: var(--uds-space-050, 4px); }`];
-  render() {
-    return html`<nav part="nav" aria-label=${this.getAttribute('aria-label') || 'Navigation'}><slot></slot></nav>`;
-  }
-}
-
-export class UdsNavItemElement extends LitElement {
-  static properties = {
-    href: { type: String, reflect: true },
-    current: { type: Boolean, reflect: true },
-  };
-  href = '';
-  current = false;
-  static styles = [hostBlock, css`a { display: flex; align-items: center; gap: var(--uds-space-100, 8px); padding: var(--uds-space-100, 8px); border-radius: var(--uds-border-radius-input, 8px); color: var(--uds-color-text-primary, #171717); text-decoration: none; } :host([current]) a { background: var(--uds-color-surface-interactive-subtle-active, #eef5ff); color: var(--uds-color-text-interactive, #005ff0); }`];
-  render() {
-    return html`<a part="link" href=${this.href || nothing} aria-current=${this.current ? 'page' : nothing}><slot></slot></a>`;
-  }
-}
+// NavVertical + NavItem live in ./nav-vertical.ts (extracted with full CSS port).
+export { UdsNavVerticalElement, UdsNavItemElement } from './nav-vertical';
 
 declare global {
   interface HTMLElementTagNameMap {
@@ -386,7 +369,5 @@ declare global {
     'udc-combobox-option': UdsComboboxOptionElement;
     'udc-data-table': UdsDataTableElement;
     'udc-data-view': UdsDataViewElement;
-    'udc-nav-vertical': UdsNavVerticalElement;
-    'udc-nav-item': UdsNavItemElement;
   }
 }

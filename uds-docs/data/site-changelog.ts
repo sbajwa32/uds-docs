@@ -1292,5 +1292,12 @@ export const SITE_CHANGELOG: SiteChangelogEntry[] = [
       changes: [
         { type: 'fixed', text: 'Restored the Nav Header visual styling and playground. `<udc-nav-header>` now renders the full canonical anatomy (logo, title-area pill, center search, My Work button, account group) as a single opinionated Web Component driven by `app-name`, `title-only`, `show-search`, `show-mywork`, and `mywork-badge` attributes. Slot escape hatches let consumers override individual sections without forking the CSS.' }
       ]
+    },
+    {
+      version: 'SITE 2026.05.27.25',
+      date: '2026-05-27',
+      changes: [
+        { type: 'fixed', text: 'Restored the Nav Vertical visual styling and playground. `<udc-nav-vertical>` + `<udc-nav-item>` ship the list (full-width 48px rows) and rail (icon-over-label with active indicator bar) variants, leading-icons toggle, hover/selected/focus treatments, and `aria-current` selection. Playground brings back variant, leading icons, item count, and selected-item controls.' }
+      ]
     }
 ];
