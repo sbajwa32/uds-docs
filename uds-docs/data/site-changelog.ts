@@ -1278,5 +1278,12 @@ export const SITE_CHANGELOG: SiteChangelogEntry[] = [
       changes: [
         { type: 'fixed', text: 'Restored the Tabs playground. `<udc-tabs>` already shipped the tablist border, the 2px interactive border on selected, hover/focus treatments, the small size, and keyboard navigation in its shadow DOM — the playground tab now brings back tab-count, size, and disabled-tab controls.' }
       ]
+    },
+    {
+      version: 'SITE 2026.05.27.23',
+      date: '2026-05-27',
+      changes: [
+        { type: 'fixed', text: 'Restored the Tile visual styling and playground. `<udc-tile>` now uses BEM `.udc-tile__content` / `__label` / `__body` / `__chevron` inside its shadow DOM, with the larger chevron glyph, hover surface change, selected (info-subtle bg + 2px interactive border), focus-visible ring, and disabled treatment. Playground brings back label, body lines, required-dot, chevron, and state controls.' }
+      ]
     }
 ];

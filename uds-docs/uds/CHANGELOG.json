@@ -746,6 +746,10 @@
         {
           "type": "changed",
           "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
+        },
+        {
+          "type": "changed",
+          "text": "Ported the full tile CSS into the `<udc-tile>` shadow DOM with BEM `.udc-tile__content` / `__label` / `__required` / `__body` / `__chevron` siblings. Chevron icon now uses `--uds-font-size-2xl`. Hover, selected (info-subtle bg + 2px interactive border), focus-visible ring, and disabled (opacity 0.5, chevron hidden) all match the original. Added an interactive playground (label, body lines, required, chevron, state)."
         }
       ],
       "Toggle": [
