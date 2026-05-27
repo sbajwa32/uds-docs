@@ -1166,5 +1166,12 @@ export const SITE_CHANGELOG: SiteChangelogEntry[] = [
       changes: [
         { type: 'fixed', text: 'Restored the Text Input playground and visual styling. The `<udc-text-input>` Web Component now carries the field border, focus ring, error recolor, disabled treatment, leading icon, and trailing button hover/active/focus inside its shadow DOM, and the playground tab brings back all 14 interactive controls. Second component in the visual-parity sweep.' }
       ]
+    },
+    {
+      version: 'SITE 2026.05.27.7',
+      date: '2026-05-27',
+      changes: [
+        { type: 'fixed', text: 'Restored the Button playground and visual styling. `<udc-button>` now ships the full variant matrix (primary/secondary/ghost × default/danger/success/warning/neutral), small size, leading/trailing icons, icon-only square mode, and the selected/disabled states inside its shadow DOM. Playground brings back all 12 original controls. Also fixed an empty-string attribute reflection bug that was forcing every button to 12px padding on all sides.' }
+      ]
     }
 ];

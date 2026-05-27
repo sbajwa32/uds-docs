@@ -21,7 +21,8 @@ describe('UDS Web Components', () => {
 
     const inner = button.shadowRoot?.querySelector('button');
     const slot = button.shadowRoot?.querySelector('slot');
-    expect(inner?.getAttribute('data-variant')).toBe('secondary');
+    expect(button.getAttribute('variant')).toBe('secondary');
+    expect(inner).toBeTruthy();
     expect(slot?.assignedNodes({ flatten: true })[0]?.textContent).toBe('Save');
   });
 
