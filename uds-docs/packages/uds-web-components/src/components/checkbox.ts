@@ -8,12 +8,36 @@ export interface UdsCheckboxChangeDetail {
   value: string;
 }
 
+export type UdsCheckboxState = 'default' | 'error';
+
+/**
+ * `<udc-checkbox>` — accessible checkbox with label, required dot, error
+ * state, and indeterminate support.
+ *
+ * Public attributes/properties:
+ *   name           — form field name
+ *   value          — form value when checked (default "on")
+ *   label          — visible label text (or slot content)
+ *   checked        — boolean
+ *   indeterminate  — boolean (mid-state, e.g. tristate "select all")
+ *   required       — boolean (renders required dot after label)
+ *   disabled       — boolean
+ *   state          — "default" | "error"
+ *
+ * Slots:
+ *   default        — label content (replaces `label` attribute)
+ *
+ * Events:
+ *   udc-change     — fires when checked changes; detail: { checked, value }
+ *   change         — native change event (re-dispatched for bubble+compose)
+ */
 export class UdsCheckboxElement extends LitElement {
   static formAssociated = true;
 
   static properties = {
     name: { type: String, reflect: true },
     value: { type: String, reflect: true },
+    label: { type: String, reflect: true },
     checked: { type: Boolean, reflect: true },
     indeterminate: { type: Boolean, reflect: true },
     required: { type: Boolean, reflect: true },
@@ -23,11 +47,12 @@ export class UdsCheckboxElement extends LitElement {
 
   name = '';
   value = 'on';
+  label = '';
   checked = false;
   indeterminate = false;
   required = false;
   disabled = false;
-  state: 'default' | 'error' = 'default';
+  state: UdsCheckboxState = 'default';
 
   private readonly internals: ElementInternals | null;
   private initialChecked = false;
@@ -39,29 +64,40 @@ export class UdsCheckboxElement extends LitElement {
     this.initialChecked = this.checked;
   }
 
+  /**
+   * Full CSS port from `uds/components/checkbox/checkbox.css` on main.
+   */
   static styles = [
     hostInline,
     css`
-      label {
+      :host {
+        display: inline-flex;
+        font-family: var(--uds-font-family);
+      }
+
+      /* Root — horizontal flex, gap = space/100 (8px) */
+      .udc-checkbox {
         display: inline-flex;
         align-items: center;
-        gap: var(--uds-space-100, 8px);
+        gap: var(--uds-space-100);
         cursor: pointer;
         user-select: none;
         position: relative;
       }
 
-      input {
+      /* Hide native input but keep it accessible */
+      .udc-checkbox input[type='checkbox'] {
         position: absolute;
         width: 24px;
         height: 24px;
         opacity: 0;
         margin: 0;
         cursor: pointer;
-        z-index: 1;
+        z-index: var(--uds-z-index-base, 1);
       }
 
-      .control {
+      /* Control — visible checkbox box */
+      .udc-checkbox__control {
         position: relative;
         display: inline-flex;
         align-items: center;
@@ -71,18 +107,19 @@ export class UdsCheckboxElement extends LitElement {
         flex-shrink: 0;
       }
 
-      .control::before {
+      .udc-checkbox__control::before {
         content: '';
         display: block;
         width: 18px;
         height: 18px;
         border-radius: 4px;
-        border: 1px solid var(--uds-color-border-primary, #d4d4d4);
+        border: 1px solid var(--uds-color-border-primary);
         background: transparent;
         transition: background-color 120ms ease, border-color 120ms ease;
       }
 
-      .control::after {
+      /* Checkmark — hidden by default */
+      .udc-checkbox__control::after {
         content: '';
         position: absolute;
         top: 50%;
@@ -91,73 +128,109 @@ export class UdsCheckboxElement extends LitElement {
         height: 10px;
         transform: translate(-50%, -50%);
         opacity: 0;
-        background: var(--uds-color-icon-inverse, #fff);
         transition: opacity 120ms ease;
-        clip-path: polygon(14% 44%, 0 59%, 39% 100%, 100% 14%, 86% 0, 37% 68%);
+        background: var(--uds-color-icon-inverse);
+        -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 13 10'%3E%3Cpath d='M1 5l3.5 3.5L12 1' stroke='white' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+        -webkit-mask-size: contain;
+        -webkit-mask-repeat: no-repeat;
+        mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 13 10'%3E%3Cpath d='M1 5l3.5 3.5L12 1' stroke='white' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+        mask-size: contain;
+        mask-repeat: no-repeat;
       }
 
-      input:checked ~ .control::before {
-        background: var(--uds-color-surface-interactive-default, #1f6feb);
-        border-color: var(--uds-color-surface-interactive-default, #1f6feb);
+      /* Label */
+      .udc-checkbox__label {
+        font-family: var(--uds-font-family);
+        font-size: var(--uds-font-size-base);
+        font-weight: var(--uds-font-weight-medium);
+        line-height: var(--uds-font-line-height-base);
+        color: var(--uds-color-text-primary);
+        letter-spacing: 0;
       }
 
-      input:checked ~ .control::after {
+      /* Required dot */
+      .udc-checkbox__required {
+        width: var(--uds-space-050);
+        height: var(--uds-space-050);
+        border-radius: 50%;
+        background: var(--uds-color-icon-error);
+        flex-shrink: 0;
+        align-self: flex-start;
+        margin-top: 2px;
+      }
+
+      /* CHECKED — inner box fills with interactive color, checkmark visible */
+      .udc-checkbox input[type='checkbox']:checked ~ .udc-checkbox__control::before {
+        background: var(--uds-color-surface-interactive-default);
+        border-color: var(--uds-color-surface-interactive-default);
+      }
+
+      .udc-checkbox input[type='checkbox']:checked ~ .udc-checkbox__control::after {
         opacity: 1;
       }
 
-      :host([indeterminate]) .control::after {
+      /* INDETERMINATE — horizontal bar instead of checkmark */
+      :host([indeterminate]) .udc-checkbox__control::before {
+        background: var(--uds-color-surface-interactive-default);
+        border-color: var(--uds-color-surface-interactive-default);
+      }
+
+      :host([indeterminate]) .udc-checkbox__control::after {
+        opacity: 1;
         width: 10px;
         height: 2px;
-        clip-path: none;
-        opacity: 1;
+        mask-image: none;
+        -webkit-mask-image: none;
       }
 
-      label:hover .control::before {
-        border-color: var(--uds-color-border-interactive, #1f6feb);
+      /* HOVER */
+      .udc-checkbox:hover .udc-checkbox__control::before {
+        border-color: var(--uds-color-border-interactive);
       }
 
-      input:focus-visible ~ .control {
-        outline: 2px solid var(--uds-color-border-outline-focus-visible, #2563eb);
+      /* FOCUS-VISIBLE */
+      .udc-checkbox input[type='checkbox']:focus-visible ~ .udc-checkbox__control {
+        outline: 2px solid var(--uds-color-border-outline-focus-visible);
         outline-offset: 1px;
         border-radius: 6px;
       }
 
-      .label {
-        font-size: var(--uds-font-size-base, 16px);
-        font-weight: var(--uds-font-weight-medium, 500);
-        line-height: var(--uds-font-line-height-base, 1.5);
-        color: var(--uds-color-text-primary, #171717);
-      }
-
-      .required {
-        width: var(--uds-space-050, 4px);
-        height: var(--uds-space-050, 4px);
-        border-radius: 50%;
-        background: var(--uds-color-icon-error, #b42318);
-        flex-shrink: 0;
-      }
-
-      :host([state='error']) .control::before {
-        background: var(--uds-color-surface-interactive-red-subtle, #fef3f2);
-        border-color: var(--uds-color-border-error, #b42318);
-      }
-
-      :host([state='error']) .label {
-        color: var(--uds-color-text-error, #b42318);
-        font-weight: var(--uds-font-weight-bold, 700);
-      }
-
-      :host([disabled]) label {
+      /* DISABLED */
+      :host([disabled]) .udc-checkbox {
         cursor: not-allowed;
       }
 
-      input:disabled ~ .control::before {
-        background: var(--uds-color-surface-interactive-disabled, #f5f5f5);
-        border-color: var(--uds-color-border-disabled, #d4d4d4);
+      .udc-checkbox input[type='checkbox']:disabled ~ .udc-checkbox__control::before {
+        background: var(--uds-color-surface-interactive-disabled);
+        border-color: var(--uds-color-border-disabled);
       }
 
-      input:disabled ~ .label {
-        color: var(--uds-color-text-disabled, #a3a3a3);
+      .udc-checkbox input[type='checkbox']:disabled:checked ~ .udc-checkbox__control::before {
+        background: var(--uds-color-surface-interactive-disabled);
+        border-color: var(--uds-color-border-disabled);
+      }
+
+      .udc-checkbox input[type='checkbox']:disabled ~ .udc-checkbox__label {
+        color: var(--uds-color-text-disabled);
+      }
+
+      /* ERROR STATE */
+      :host([state='error']) .udc-checkbox__control::before {
+        background: var(--uds-color-surface-interactive-red-subtle);
+        border-color: var(--uds-color-border-error);
+      }
+
+      :host([state='error'])
+        .udc-checkbox
+        input[type='checkbox']:checked
+        ~ .udc-checkbox__control::before {
+        background: var(--uds-color-surface-interactive-red-subtle);
+        border-color: var(--uds-color-border-error);
+      }
+
+      :host([state='error']) .udc-checkbox__label {
+        color: var(--uds-color-text-error);
+        font-weight: var(--uds-font-weight-bold);
       }
     `,
   ];
@@ -173,7 +246,7 @@ export class UdsCheckboxElement extends LitElement {
 
   render() {
     return html`
-      <label part="root">
+      <label class="udc-checkbox" part="root">
         <input
           part="input"
           type="checkbox"
@@ -186,9 +259,11 @@ export class UdsCheckboxElement extends LitElement {
           aria-invalid=${this.state === 'error' ? 'true' : nothing}
           @change=${this.handleChange}
         />
-        <span part="control" class="control"></span>
-        <span part="label" class="label"><slot></slot></span>
-        ${this.required ? html`<span part="required" class="required"></span>` : nothing}
+        <span class="udc-checkbox__control" part="control"></span>
+        <span class="udc-checkbox__label" part="label"><slot>${this.label}</slot></span>
+        ${this.required
+          ? html`<span class="udc-checkbox__required" part="required"></span>`
+          : nothing}
       </label>
     `;
   }

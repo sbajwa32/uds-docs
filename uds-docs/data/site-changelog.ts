@@ -1173,5 +1173,12 @@ export const SITE_CHANGELOG: SiteChangelogEntry[] = [
       changes: [
         { type: 'fixed', text: 'Restored the Button playground and visual styling. `<udc-button>` now ships the full variant matrix (primary/secondary/ghost × default/danger/success/warning/neutral), small size, leading/trailing icons, icon-only square mode, and the selected/disabled states inside its shadow DOM. Playground brings back all 12 original controls. Also fixed an empty-string attribute reflection bug that was forcing every button to 12px padding on all sides.' }
       ]
+    },
+    {
+      version: 'SITE 2026.05.27.8',
+      date: '2026-05-27',
+      changes: [
+        { type: 'fixed', text: 'Restored the Checkbox visual styling and playground. `<udc-checkbox>` now uses the SVG-mask checkmark and ships the hover/focus/disabled/error treatments inside shadow DOM, and the playground brings back checked, indeterminate, disabled, required, error, and label controls.' }
+      ]
     }
 ];

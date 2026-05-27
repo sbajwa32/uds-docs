@@ -21,6 +21,11 @@
       "version": "0.3",
       "type": "changed",
       "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
+    },
+    {
+      "version": "0.3",
+      "type": "changed",
+      "text": "Ported the full checkbox CSS into the `<udc-checkbox>` shadow DOM (SVG-mask checkmark, hover/focus/disabled/error treatments) and rebuilt the playground with the original 4 controls plus indeterminate and required toggles."
     }
   ]
 }
