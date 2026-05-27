@@ -13,6 +13,7 @@ export { UdsChipElement, type UdsChipToggleDetail, type UdsChipVariant, type Uds
 export { UdsDatePickerElement, type UdsDatePickerChangeDetail, type UdsDatePickerState } from './components/date-picker';
 export { UdsDropdownElement, UdsDropdownItemElement, type UdsDropdownChangeDetail, type UdsDropdownState } from './components/dropdown';
 export { UdsLabelElement, type UdsLabelAlign, type UdsLabelSize, type UdsLabelVariant } from './components/label';
+export { UdsLinkElement } from './components/link';
 export { UdsNotificationElement, type UdsNotificationTone, type UdsNotificationVariant } from './components/notification';
 export { UdsRadioElement, UdsRadioGroupElement, type UdsRadioChangeDetail, type UdsRadioState } from './components/radio';
 export { UdsSearchElement, type UdsSearchChangeDetail, type UdsSearchState } from './components/search';
@@ -27,7 +28,6 @@ export {
   UdsDialogElement,
   UdsDividerElement,
   UdsIconWrapperElement,
-  UdsLinkElement,
   UdsListElement,
   UdsListItemElement,
   UdsNavHeaderElement,

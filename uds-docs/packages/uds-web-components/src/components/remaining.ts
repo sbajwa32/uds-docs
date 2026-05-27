@@ -192,53 +192,8 @@ export class UdsIconWrapperElement extends LitElement {
 export { UdsLabelElement } from './label';
 export type { UdsLabelVariant, UdsLabelSize, UdsLabelAlign } from './label';
 
-export class UdsLinkElement extends LitElement {
-  static properties = {
-    href: { type: String, reflect: true },
-    target: { type: String, reflect: true },
-    disabled: { type: Boolean, reflect: true },
-    leadingIcon: { type: String, attribute: 'leading-icon', reflect: true },
-    trailingIcon: { type: String, attribute: 'trailing-icon', reflect: true },
-  };
-
-  href = '';
-  target = '';
-  disabled = false;
-  leadingIcon = '';
-  trailingIcon = '';
-
-  static styles = [
-    hostInline,
-    materialIconStyles,
-    css`
-      a {
-        display: inline-flex;
-        align-items: center;
-        gap: var(--uds-space-050, 4px);
-        color: var(--uds-color-text-interactive, #005ff0);
-        font: inherit;
-        text-decoration: underline;
-        text-underline-offset: 0.16em;
-      }
-
-      a[aria-disabled='true'] {
-        color: var(--uds-color-text-disabled-bold, #737373);
-        pointer-events: none;
-      }
-    `,
-    focusRing,
-  ];
-
-  render() {
-    return html`
-      <a part="link" href=${this.disabled ? nothing : this.href} target=${this.target || nothing} aria-disabled=${this.disabled ? 'true' : nothing}>
-        ${this.leadingIcon ? html`<span part="leading-icon" class="material-symbols-outlined" aria-hidden="true">${this.leadingIcon}</span>` : nothing}
-        <slot></slot>
-        ${this.trailingIcon ? html`<span part="trailing-icon" class="material-symbols-outlined" aria-hidden="true">${this.trailingIcon}</span>` : nothing}
-      </a>
-    `;
-  }
-}
+// Link lives in ./link.ts (extracted with the full CSS port).
+export { UdsLinkElement } from './link';
 
 // TextArea lives in ./text-area.ts (extracted with the full CSS port).
 export { UdsTextAreaElement } from './text-area';
@@ -495,7 +450,6 @@ declare global {
     'udc-divider': UdsDividerElement;
     'udc-spacer': UdsSpacerElement;
     'udc-icon-wrapper': UdsIconWrapperElement;
-    'udc-link': UdsLinkElement;
     'udc-breadcrumb': UdsBreadcrumbElement;
     'udc-list': UdsListElement;
     'udc-list-item': UdsListItemElement;

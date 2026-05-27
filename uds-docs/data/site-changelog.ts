@@ -1229,5 +1229,12 @@ export const SITE_CHANGELOG: SiteChangelogEntry[] = [
       changes: [
         { type: 'fixed', text: 'Restored the Label visual styling and playground. `<udc-label>` now carries the full variant matrix (default/disabled/error/interactive/success), small size, prominent (bold) weight, alignment, fill-frame, multiline, and the required dot. Playground brings back text, variant, required, small, and prominent controls.' }
       ]
+    },
+    {
+      version: 'SITE 2026.05.27.16',
+      date: '2026-05-27',
+      changes: [
+        { type: 'fixed', text: 'Restored the Link visual styling and playground. `<udc-link>` now ships the text-interactive color, underline at the correct offset, hover/active/focus rings, disabled treatment, current-page indicator, and the new-window affordance (auto-sets target/rel + open_in_new icon). Playground brings back label, href, current, disabled, new-window, and leading/trailing icon controls.' }
+      ]
     }
 ];
