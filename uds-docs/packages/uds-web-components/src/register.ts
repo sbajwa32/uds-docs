@@ -4,6 +4,7 @@ import { UdsCheckboxElement } from './components/checkbox';
 import { UdsChipElement } from './components/chip';
 import { UdsDatePickerElement } from './components/date-picker';
 import { UdsDropdownElement, UdsDropdownItemElement } from './components/dropdown';
+import { UdsLabelElement } from './components/label';
 import { UdsNotificationElement } from './components/notification';
 import { UdsRadioElement, UdsRadioGroupElement } from './components/radio';
 import { UdsSearchElement } from './components/search';
@@ -18,7 +19,6 @@ import {
   UdsDialogElement,
   UdsDividerElement,
   UdsIconWrapperElement,
-  UdsLabelElement,
   UdsLinkElement,
   UdsListElement,
   UdsListItemElement,

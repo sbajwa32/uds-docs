@@ -188,46 +188,9 @@ export class UdsIconWrapperElement extends LitElement {
   }
 }
 
-export class UdsLabelElement extends LitElement {
-  static properties = {
-    for: { type: String, reflect: true },
-    required: { type: Boolean, reflect: true },
-    disabled: { type: Boolean, reflect: true },
-  };
-
-  for = '';
-  required = false;
-  disabled = false;
-
-  static styles = [
-    hostInline,
-    css`
-      label {
-        display: inline-flex;
-        align-items: center;
-        gap: var(--uds-space-050, 4px);
-        color: var(--uds-color-text-primary, #171717);
-        font-size: var(--uds-font-size-sm, 14px);
-        font-weight: var(--uds-font-weight-medium, 500);
-      }
-
-      :host([disabled]) label {
-        color: var(--uds-color-text-disabled-bold, #737373);
-      }
-
-      .required {
-        width: 4px;
-        height: 4px;
-        border-radius: 50%;
-        background: var(--uds-color-icon-error, #b42318);
-      }
-    `,
-  ];
-
-  render() {
-    return html`<label part="label" for=${this.for || nothing}><slot></slot>${this.required ? html`<span part="required" class="required"></span>` : nothing}</label>`;
-  }
-}
+// Label lives in ./label.ts (extracted with the full CSS port).
+export { UdsLabelElement } from './label';
+export type { UdsLabelVariant, UdsLabelSize, UdsLabelAlign } from './label';
 
 export class UdsLinkElement extends LitElement {
   static properties = {
@@ -532,7 +495,6 @@ declare global {
     'udc-divider': UdsDividerElement;
     'udc-spacer': UdsSpacerElement;
     'udc-icon-wrapper': UdsIconWrapperElement;
-    'udc-label': UdsLabelElement;
     'udc-link': UdsLinkElement;
     'udc-breadcrumb': UdsBreadcrumbElement;
     'udc-list': UdsListElement;

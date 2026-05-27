@@ -444,6 +444,10 @@
         {
           "type": "changed",
           "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
+        },
+        {
+          "type": "changed",
+          "text": "Ported the full label CSS into the `<udc-label>` shadow DOM with the full variant matrix (default/disabled/error/interactive/success), small size, prominent (bold) weight, alignment (start/middle/right), fill-frame, and multiline support. Required dot rendered after the slot content. Rebuilt the playground with text, variant, required, small, and prominent controls."
         }
       ],
       "Link": [

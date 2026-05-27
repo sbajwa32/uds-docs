@@ -1222,5 +1222,12 @@ export const SITE_CHANGELOG: SiteChangelogEntry[] = [
       changes: [
         { type: 'fixed', text: 'Restored the Search visual styling and playground. `<udc-search>` now ships the leading search icon, hover surface change, focus ring on the wrapper, and a clear button that appears once the input has a value. Playground brings back placeholder, initial value, state, and disabled controls.' }
       ]
+    },
+    {
+      version: 'SITE 2026.05.27.15',
+      date: '2026-05-27',
+      changes: [
+        { type: 'fixed', text: 'Restored the Label visual styling and playground. `<udc-label>` now carries the full variant matrix (default/disabled/error/interactive/success), small size, prominent (bold) weight, alignment, fill-frame, multiline, and the required dot. Playground brings back text, variant, required, small, and prominent controls.' }
+      ]
     }
 ];
