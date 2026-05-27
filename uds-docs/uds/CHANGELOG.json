@@ -422,6 +422,10 @@
         {
           "type": "changed",
           "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
+        },
+        {
+          "type": "changed",
+          "text": "Ported the full divider CSS into the `<udc-divider>` shadow DOM (1px border-tertiary stroke, container-full radius, sm/md/lg/xl padding mapped to `--uds-space-050/100/150/200`). Replaces the prior generic horizontal/vertical implementation. Added an interactive playground with the padding select."
         }
       ],
       "Dropdown": [
@@ -454,6 +458,10 @@
         {
           "type": "changed",
           "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
+        },
+        {
+          "type": "changed",
+          "text": "Ported the full icon-wrapper CSS into the `<udc-icon-wrapper>` shadow DOM with the original size matrix (16/20/24/32/48/64 padded containers with corresponding inner icon sizes) and a `color` attribute that maps to `--uds-color-icon-*` tokens. Replaces the prior info/success/warning/error tone-pill behaviour. Added an interactive playground with icon, size, and color controls."
         }
       ],
       "Label": [
@@ -706,6 +714,10 @@
         {
           "type": "changed",
           "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
+        },
+        {
+          "type": "changed",
+          "text": "Ported the full spacer CSS into the `<udc-spacer>` shadow DOM with the original `size` token-step API (050/075/100/150/200/300/400/500/600) and the 100\u00d7100 Figma default. Replaces the prior xs/sm/md/lg/xl t-shirt sizing. Added an interactive playground with the size select."
         }
       ],
       "Tabs": [

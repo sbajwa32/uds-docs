@@ -21,8 +21,10 @@ export {
 } from './components/data-table';
 export { UdsDataViewElement } from './components/data-view';
 export { UdsDatePickerElement, type UdsDatePickerChangeDetail, type UdsDatePickerState } from './components/date-picker';
+export { UdsDividerElement, type UdsDividerPadding } from './components/divider';
 export { UdsDialogElement } from './components/dialog';
 export { UdsDropdownElement, UdsDropdownItemElement, type UdsDropdownChangeDetail, type UdsDropdownState } from './components/dropdown';
+export { UdsIconWrapperElement, type UdsIconWrapperColor, type UdsIconWrapperSize } from './components/icon-wrapper';
 export { UdsLabelElement, type UdsLabelAlign, type UdsLabelSize, type UdsLabelVariant } from './components/label';
 export { UdsLinkElement } from './components/link';
 export { UdsListElement, UdsListItemElement, type UdsListItemSelectDetail } from './components/list';
@@ -32,15 +34,13 @@ export { UdsNotificationElement, type UdsNotificationTone, type UdsNotificationV
 export { UdsPaginationElement, type UdsPageChangeDetail } from './components/pagination';
 export { UdsRadioElement, UdsRadioGroupElement, type UdsRadioChangeDetail, type UdsRadioState } from './components/radio';
 export { UdsSearchElement, type UdsSearchChangeDetail, type UdsSearchState } from './components/search';
+export { UdsSpacerElement, type UdsSpacerSize } from './components/spacer';
 export { UdsTextAreaElement, type UdsTextAreaChangeDetail, type UdsTextAreaState } from './components/text-area';
 export { UdsToggleElement, type UdsToggleChangeDetail } from './components/toggle';
 export { UdsTooltipElement, type UdsTooltipPosition } from './components/tooltip';
 export {
   UdsComboboxElement,
   UdsComboboxOptionElement,
-  UdsDividerElement,
-  UdsIconWrapperElement,
-  UdsSpacerElement,
   type UdsCheckedChangeDetail,
   type UdsSortChangeDetail,
   type UdsValueChangeDetail,

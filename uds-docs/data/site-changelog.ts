@@ -1334,5 +1334,12 @@ export const SITE_CHANGELOG: SiteChangelogEntry[] = [
       changes: [
         { type: 'changed', text: 'Data View now ships a card-style container with header, body, and actions slot groups inside `<udc-data-view>` shadow DOM (surface-main bg, container-md radius, header / footer dividers). The original Figma source was placeholder-only in 0.3, so this is a sensible token-bound default. Added an interactive playground (heading, body shape, show-actions).' }
       ]
+    },
+    {
+      version: 'SITE 2026.05.27.31',
+      date: '2026-05-27',
+      changes: [
+        { type: 'fixed', text: 'Restored the Divider, Spacer, and Icon Wrapper atoms. `<udc-divider>` now uses the border-tertiary stroke + sm/md/lg/xl padding; `<udc-spacer>` ports the original size-step API (050/075/100/150/200/300/400/500/600) with the 100×100 Figma default; `<udc-icon-wrapper>` ships the 16/20/24/32/48/64 size matrix with a `color` attribute mapped to `--uds-color-icon-*` tokens. Playgrounds for all three components are restored. This completes the visual-parity sweep — every documented component now ships the full original styling and an interactive playground inside its shadow DOM.' }
+      ]
     }
 ];

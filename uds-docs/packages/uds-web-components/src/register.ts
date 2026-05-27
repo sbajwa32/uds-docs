@@ -6,8 +6,10 @@ import { UdsChipElement } from './components/chip';
 import { UdsDataTableElement } from './components/data-table';
 import { UdsDataViewElement } from './components/data-view';
 import { UdsDatePickerElement } from './components/date-picker';
+import { UdsDividerElement } from './components/divider';
 import { UdsDialogElement } from './components/dialog';
 import { UdsDropdownElement, UdsDropdownItemElement } from './components/dropdown';
+import { UdsIconWrapperElement } from './components/icon-wrapper';
 import { UdsLabelElement } from './components/label';
 import { UdsLinkElement } from './components/link';
 import { UdsListElement, UdsListItemElement } from './components/list';
@@ -17,15 +19,13 @@ import { UdsNotificationElement } from './components/notification';
 import { UdsPaginationElement } from './components/pagination';
 import { UdsRadioElement, UdsRadioGroupElement } from './components/radio';
 import { UdsSearchElement } from './components/search';
+import { UdsSpacerElement } from './components/spacer';
 import { UdsTextAreaElement } from './components/text-area';
 import { UdsToggleElement } from './components/toggle';
 import { UdsTooltipElement } from './components/tooltip';
 import {
   UdsComboboxElement,
   UdsComboboxOptionElement,
-  UdsDividerElement,
-  UdsIconWrapperElement,
-  UdsSpacerElement,
 } from './components/remaining';
 import { UdsTabsElement, UdsTabElement, UdsTabPanelElement } from './components/tabs';
 import { UdsTextInputElement } from './components/text-input';

@@ -21,6 +21,11 @@
       "version": "0.3",
       "type": "changed",
       "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
+    },
+    {
+      "version": "0.3",
+      "type": "changed",
+      "text": "Ported the full divider CSS into the `<udc-divider>` shadow DOM (1px border-tertiary stroke, container-full radius, sm/md/lg/xl padding mapped to `--uds-space-050/100/150/200`). Replaces the prior generic horizontal/vertical implementation. Added an interactive playground with the padding select."
     }
   ]
 }

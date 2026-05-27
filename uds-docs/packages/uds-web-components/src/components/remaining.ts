@@ -76,113 +76,13 @@ function formInternals(host: HTMLElement): ElementInternals | null {
   return typeof candidate.attachInternals === 'function' ? candidate.attachInternals() : null;
 }
 
-export class UdsDividerElement extends LitElement {
-  static properties = {
-    orientation: { type: String, reflect: true },
-  };
-
-  orientation: 'horizontal' | 'vertical' = 'horizontal';
-
-  static styles = [
-    hostBlock,
-    css`
-      :host {
-        display: block;
-      }
-
-      .divider {
-        width: 100%;
-        border: 0;
-        border-top: 1px solid var(--uds-color-border-secondary, #e5e5e5);
-      }
-
-      :host([orientation='vertical']) {
-        display: inline-block;
-        align-self: stretch;
-      }
-
-      :host([orientation='vertical']) .divider {
-        width: 0;
-        height: 100%;
-        min-height: var(--uds-space-300, 24px);
-        border-top: 0;
-        border-left: 1px solid var(--uds-color-border-secondary, #e5e5e5);
-      }
-    `,
-  ];
-
-  render() {
-    return html`<div part="divider" class="divider" role="separator" aria-orientation=${this.orientation}></div>`;
-  }
-}
-
-export class UdsSpacerElement extends LitElement {
-  static properties = {
-    size: { type: String, reflect: true },
-    axis: { type: String, reflect: true },
-  };
-
-  size: 'xs' | 'sm' | 'md' | 'lg' | 'xl' = 'md';
-  axis: 'block' | 'inline' = 'block';
-
-  private sizeValue() {
-    return {
-      xs: 'var(--uds-space-100, 8px)',
-      sm: 'var(--uds-space-200, 16px)',
-      md: 'var(--uds-space-300, 24px)',
-      lg: 'var(--uds-space-400, 32px)',
-      xl: 'var(--uds-space-600, 48px)',
-    }[this.size];
-  }
-
-  render() {
-    const value = this.sizeValue();
-    const style = this.axis === 'inline' ? `display:inline-block;width:${value};height:1px;` : `display:block;height:${value};`;
-    return html`<span part="spacer" aria-hidden="true" style=${style}></span>`;
-  }
-}
-
-export class UdsIconWrapperElement extends LitElement {
-  static properties = {
-    icon: { type: String, reflect: true },
-    label: { type: String, reflect: true },
-    tone: { type: String, reflect: true },
-  };
-
-  icon = '';
-  label = '';
-  tone: 'neutral' | 'info' | 'success' | 'warning' | 'error' = 'neutral';
-
-  static styles = [
-    hostInline,
-    materialIconStyles,
-    css`
-      .icon {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: var(--uds-space-400, 32px);
-        height: var(--uds-space-400, 32px);
-        border-radius: var(--uds-border-radius-full, 999px);
-        background: var(--uds-color-surface-subtle, #f5f5f5);
-        color: var(--uds-color-icon-primary, #171717);
-      }
-
-      :host([tone='info']) .icon { color: var(--uds-color-icon-info, #005ff0); background: var(--uds-color-surface-info-subtle, #eef5ff); }
-      :host([tone='success']) .icon { color: var(--uds-color-icon-success, #067647); background: var(--uds-color-surface-success-subtle, #ecfdf3); }
-      :host([tone='warning']) .icon { color: var(--uds-color-icon-warning, #b54708); background: var(--uds-color-surface-warning-subtle, #fffaeb); }
-      :host([tone='error']) .icon { color: var(--uds-color-icon-error, #b42318); background: var(--uds-color-surface-error-subtle, #fef3f2); }
-    `,
-  ];
-
-  render() {
-    return html`
-      <span part="icon" class="icon" role=${this.label ? 'img' : nothing} aria-label=${this.label || nothing}>
-        <slot><span class="material-symbols-outlined" aria-hidden="true">${this.icon}</span></slot>
-      </span>
-    `;
-  }
-}
+// Divider, Spacer, IconWrapper live in their own files (extracted with full CSS port).
+export { UdsDividerElement } from './divider';
+export type { UdsDividerPadding } from './divider';
+export { UdsSpacerElement } from './spacer';
+export type { UdsSpacerSize } from './spacer';
+export { UdsIconWrapperElement } from './icon-wrapper';
+export type { UdsIconWrapperSize, UdsIconWrapperColor } from './icon-wrapper';
 
 // Label lives in ./label.ts (extracted with the full CSS port).
 export { UdsLabelElement } from './label';
@@ -261,9 +161,6 @@ export { UdsNavVerticalElement, UdsNavItemElement } from './nav-vertical';
 
 declare global {
   interface HTMLElementTagNameMap {
-    'udc-divider': UdsDividerElement;
-    'udc-spacer': UdsSpacerElement;
-    'udc-icon-wrapper': UdsIconWrapperElement;
     'udc-combobox': UdsComboboxElement;
     'udc-combobox-option': UdsComboboxOptionElement;
   }
