@@ -1250,5 +1250,12 @@ export const SITE_CHANGELOG: SiteChangelogEntry[] = [
       changes: [
         { type: 'fixed', text: 'Restored the Chip visual styling and playground. `<udc-chip>` now ships the BEM leading-icon/label/trailing-icon structure with `--uds-font-size-lg` icon sizing, hover/active/focus rings, the surface-interactive-active selected state with inverse text + icons, and a smaller trailing chevron for the dropdown variant. Playground brings back variant, label, selected, leading-icon, and disabled controls.' }
       ]
+    },
+    {
+      version: 'SITE 2026.05.27.19',
+      date: '2026-05-27',
+      changes: [
+        { type: 'fixed', text: 'Restored the Notification visual styling and playground. `<udc-notification>` now ships the dedicated icon-* color token for the leading icon, the larger close-button glyph sizing, and the subtle/prominent/inline variants across all four tones. Playground brings back tone, style, message, and dismissible controls.' }
+      ]
     }
 ];
