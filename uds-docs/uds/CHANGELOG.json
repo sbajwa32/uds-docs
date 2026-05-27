@@ -692,6 +692,10 @@
         {
           "type": "changed",
           "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
+        },
+        {
+          "type": "changed",
+          "text": "Rebuilt the playground with the original tab-count, size (default/sm), and disabled-tab controls. The existing `<udc-tabs>` / `<udc-tab>` / `<udc-tab-panel>` shadow DOM already shipped the original tabs.css (border-bottom tablist, 2px interactive border on selected, hover surface-interactive-subtle-hover, focus outline, sm size with tighter vertical padding) plus the keyboard navigation (Arrow/Home/End) and `udc-tab-change` event."
         }
       ],
       "Text Area": [
