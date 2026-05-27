@@ -16,6 +16,11 @@
       "version": "0.3",
       "type": "changed",
       "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
+    },
+    {
+      "version": "0.3",
+      "type": "changed",
+      "text": "Ported the full text-area CSS into the `<udc-text-area>` shadow DOM (88px min-height field, hover/focus ring on the field, error and disabled treatments, helper row with counter). Rebuilt the playground with the original label/placeholder/state controls plus disabled, required, helper text, max-length, and counter toggle."
     }
   ]
 }

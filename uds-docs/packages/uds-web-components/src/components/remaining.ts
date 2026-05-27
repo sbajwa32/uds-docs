@@ -277,70 +277,9 @@ export class UdsLinkElement extends LitElement {
   }
 }
 
-export class UdsTextAreaElement extends LitElement {
-  static formAssociated = true;
-  static properties = {
-    name: { type: String, reflect: true },
-    value: { type: String, reflect: true },
-    label: { type: String, reflect: true },
-    helperText: { type: String, attribute: 'helper-text', reflect: true },
-    placeholder: { type: String, reflect: true },
-    state: { type: String, reflect: true },
-    rows: { type: Number, reflect: true },
-    required: { type: Boolean, reflect: true },
-    disabled: { type: Boolean, reflect: true },
-    maxLength: { type: Number, attribute: 'max-length', reflect: true },
-  };
-
-  name = '';
-  value = '';
-  label = '';
-  helperText = '';
-  placeholder = '';
-  state = 'default';
-  rows = 4;
-  required = false;
-  disabled = false;
-  maxLength?: number;
-  private readonly internals = formInternals(this);
-
-  static styles = [hostBlock, fieldChrome];
-
-  protected updated(changed: PropertyValues<this>) {
-    if (changed.has('value')) this.internals?.setFormValue(this.value);
-  }
-
-  render() {
-    return html`
-      <label part="label" class="label">${this.label}<slot name="label"></slot></label>
-      <div part="field" class="field">
-        <textarea
-          part="textarea"
-          name=${this.name || nothing}
-          .value=${this.value}
-          rows=${this.rows}
-          placeholder=${this.placeholder || nothing}
-          maxlength=${this.maxLength ?? nothing}
-          ?required=${this.required}
-          ?disabled=${this.disabled}
-          aria-invalid=${this.state === 'error' ? 'true' : nothing}
-          @input=${this.handleInput}
-          @change=${this.handleChange}
-        ></textarea>
-      </div>
-      ${this.helperText || this.maxLength !== undefined ? html`<div part="helper" class="helper">${this.helperText}<span>${this.maxLength !== undefined ? `${this.value.length}/${this.maxLength}` : ''}</span></div>` : nothing}
-    `;
-  }
-
-  private handleInput(event: Event) {
-    this.value = (event.currentTarget as HTMLTextAreaElement).value;
-    emitUdsEvent<UdsValueChangeDetail>(this, 'udc-input', { value: this.value });
-  }
-
-  private handleChange() {
-    emitUdsEvent<UdsValueChangeDetail>(this, 'udc-change', { value: this.value });
-  }
-}
+// TextArea lives in ./text-area.ts (extracted with the full CSS port).
+export { UdsTextAreaElement } from './text-area';
+export type { UdsTextAreaChangeDetail, UdsTextAreaState } from './text-area';
 
 // Toggle lives in ./toggle.ts (extracted with the full CSS port).
 export { UdsToggleElement } from './toggle';
@@ -626,7 +565,6 @@ declare global {
     'udc-icon-wrapper': UdsIconWrapperElement;
     'udc-label': UdsLabelElement;
     'udc-link': UdsLinkElement;
-    'udc-text-area': UdsTextAreaElement;
     'udc-search': UdsSearchElement;
     'udc-breadcrumb': UdsBreadcrumbElement;
     'udc-list': UdsListElement;

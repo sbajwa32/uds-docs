@@ -1208,5 +1208,12 @@ export const SITE_CHANGELOG: SiteChangelogEntry[] = [
       changes: [
         { type: 'changed', text: 'Date Picker now matches the Text Input field chrome — label, calendar leading icon, helper text, focus ring, error and disabled treatments — with a browser-native date popover. Added an interactive playground (state, label, required, helper, value, min, max). The custom calendar popover is still pending a Figma source.' }
       ]
+    },
+    {
+      version: 'SITE 2026.05.27.13',
+      date: '2026-05-27',
+      changes: [
+        { type: 'fixed', text: 'Restored the Text Area visual styling and playground. `<udc-text-area>` now carries the 88px min-height field, hover/focus ring, error and disabled treatments, and helper row with character counter. Playground brings back state, label, placeholder, disabled, required, helper text, max-length, and counter controls.' }
+      ]
     }
 ];
