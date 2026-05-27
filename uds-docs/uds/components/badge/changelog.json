@@ -26,6 +26,11 @@
       "version": "0.3",
       "type": "changed",
       "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
+    },
+    {
+      "version": "0.3",
+      "type": "changed",
+      "text": "Rebuilt the playground with interactive controls (tone, variant, size, label) for `<udc-badge>`. The existing shadow-DOM CSS port (5 tones × prominent/subtle × default/sm) already matched the original `badge.css`."
     }
   ]
 }

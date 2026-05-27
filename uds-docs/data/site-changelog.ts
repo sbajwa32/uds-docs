@@ -1236,5 +1236,12 @@ export const SITE_CHANGELOG: SiteChangelogEntry[] = [
       changes: [
         { type: 'fixed', text: 'Restored the Link visual styling and playground. `<udc-link>` now ships the text-interactive color, underline at the correct offset, hover/active/focus rings, disabled treatment, current-page indicator, and the new-window affordance (auto-sets target/rel + open_in_new icon). Playground brings back label, href, current, disabled, new-window, and leading/trailing icon controls.' }
       ]
+    },
+    {
+      version: 'SITE 2026.05.27.17',
+      date: '2026-05-27',
+      changes: [
+        { type: 'fixed', text: 'Restored the Badge playground. `<udc-badge>` already shipped the 5-tone × prominent/subtle × default/sm matrix in its shadow DOM — the playground tab now brings back tone, variant, size, and label controls.' }
+      ]
     }
 ];
