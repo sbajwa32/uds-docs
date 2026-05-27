@@ -1,8 +1,8 @@
 ---
 description: Enforces UDS token usage in all CSS — no hardcoded colors, spacing, fonts, or radii.
-globs: ["uds-docs/uds/**/*.css", "uds-docs/index.html"]
+globs: ["uds-docs/uds/**/*.css", "uds-docs/styles/**/*.css", "uds-docs/packages/uds-web-components/src/**/*.ts"]
 alwaysApply: false
-lastUpdated: 2026-05-12T18:41:50Z
+lastUpdated: 2026-05-27T22:21:24Z
 ---
 
 # Token-First CSS

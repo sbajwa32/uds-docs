@@ -6,8 +6,8 @@ display order encoded by the per-component status.json's earliest "since" versio
 (earlier first), with alphabetical tiebreak.
 
 This is the single source of truth for "which components exist". The docs site
-fetches this file at boot, then fetches each component's status.json + spec.json
-in parallel to build the in-memory COMPONENT_STATUS map. release.sh and the
+fetches this file, then fetches each component's status.json + spec.json in
+parallel to build its runtime component metadata. release.sh and the
 new-component skill keep it in sync.
 """
 

@@ -16,10 +16,9 @@
 # Four checks, all enforceable against structured data:
 #   1. Every .udc-<id>* selector in <id>.css must appear in at least one of:
 #        examples/*.html, impl.json html, playground.js render, the
-#        Code-tab API table in index.html.
+#        Code-tab API data in uds-docs/data/component-api/<id>.ts.
 #   2. Every event in spec.json events[] must be dispatched somewhere in
-#        the @uds/web-components source (or, if a legacy <id>.js file is
-#        still present, in that). Otherwise the event must be flagged in
+#        the @uds/web-components source. Otherwise the event must be flagged in
 #        spec.json knownIssues containing "spec-only".
 #   3. Every --uds-* token in impl.json tokens must exist as a defined
 #        custom property under uds-docs/uds/tokens/*.css.

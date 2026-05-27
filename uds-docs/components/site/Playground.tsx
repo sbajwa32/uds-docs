@@ -437,9 +437,8 @@ function TokensPanel({ tokens }: { tokens: Record<string, string[]> }) {
   );
 }
 
-// Max number of icons rendered in the dropdown. Matches the legacy
-// vanilla picker (docs/app.js `MAX_RESULTS = 60`) — bumping much higher
-// makes the dropdown sluggish on lower-end laptops.
+// Max number of icons rendered in the dropdown. Bumping much higher makes the
+// picker sluggish on lower-end laptops.
 const ICON_PICKER_MAX_RESULTS = 60;
 
 function IconPickerControl({
@@ -640,7 +639,6 @@ function ControlInput({
       // Searchable Material Symbols picker. Trigger button displays the
       // current glyph + name; clicking opens a dropdown with a search
       // input and the filtered icon list, capped to 60 results at a time.
-      // Matches the legacy `buildIconPicker` (docs/app.js) behavior.
       return <IconPickerControl value={String(value ?? '')} onChange={(v) => onChange(v)} />;
     default:
       return null;

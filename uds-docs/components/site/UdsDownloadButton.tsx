@@ -1,11 +1,8 @@
 'use client';
 
 // "Download UDS (.zip)" button used on the Getting Started page. Bundles
-// the runnable UDS payload (tokens + per-component CSS/JS) into a zip
+// the runnable UDS payload (tokens + Web Components bundle) into a zip
 // via JSZip on click, then triggers a browser download.
-//
-// Direct port of the legacy `gs-download-btn` handler from
-// `docs/app.js`.
 
 import { useState } from 'react';
 

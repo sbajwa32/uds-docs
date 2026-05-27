@@ -5,7 +5,7 @@
   "type": "object",
   "properties": {
     "$schema": { "type": "string", "description": "Path to this schema file (../../schemas/spec.schema.json)" },
-    "component": { "type": "string", "description": "Component ID matching folder name and data-page attribute" },
+    "component": { "type": "string", "description": "Component ID matching folder name and route segment" },
     "title": { "type": "string" },
     "description": { "type": "string", "description": "One-paragraph summary of the component's purpose" },
 
@@ -170,12 +170,12 @@
     "draft": { "type": "boolean", "default": false, "description": "When true, hide from sidebar/routing on production. Show with ?draft=1." },
 
     "figmaNodeId": { "type": ["string", "null"], "description": "Deep-link to specific variant node in Figma. If null, the renderer falls back to figmaPageNodeId." },
-    "figmaPageNodeId": { "type": ["string", "null"], "description": "Deep-link to the component's page-level node in the UDS Components Figma file. Used as fallback when figmaNodeId is null. Migrated from the legacy FIGMA_LINKS table during the Phase 13 cleanup." },
+    "figmaPageNodeId": { "type": ["string", "null"], "description": "Deep-link to the component's page-level node in the UDS Components Figma file. Used as fallback when figmaNodeId is null." },
     "storybookSlug": { "type": ["string", "null"], "description": "Storybook story path, e.g. 'components-button--primary'. If null, falls back to the Storybook home." },
 
     "implReference": {
       "type": ["object", "null"],
-      "description": "Replaces the old IMPL_DATA[id].html() function — declarative pointer to an example file used by the Implementation Reference panel.",
+      "description": "Declarative pointer to an example file used by the Implementation Reference panel.",
       "properties": {
         "exampleId": { "type": "string", "description": "ID of an entry in this component's examples/manifest.json" }
       }

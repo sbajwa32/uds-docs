@@ -2,7 +2,7 @@
 name: figma-component-inspector
 description: Deep-inspects a single UDS component in the UDS Components Figma file by reading node trees, component sets, variants, layer details, token bindings, nested instances, and doc-site parity. Bidirectional — reports both Figma-side gaps (mismatches, missing) and doc-site surplus (artifacts with no Figma counterpart), plus a snapshot delta against the prior captured state to surface deletions and renames. Open Figma findings that need designer attention are surfaced as structured entries in uds/components/<id>/figmanotes.json (not free-text in spec.json knownIssues), classified by `kind` so they auto-prune on the next inspection when resolved. Read-only; never modifies files or Figma. Use when updating a component spec, investigating a component mismatch, or before syncing Figma component changes into docs.
 model: inherit
-lastUpdated: 2026-05-13T20:34:33Z
+lastUpdated: 2026-05-27T22:21:24Z
 ---
 
 # Figma Component Inspector
@@ -36,14 +36,14 @@ Read (every file is mandatory unless explicitly marked optional):
 - UDS Components Figma file: `1XJoUJgtNpw4R0IIT3VjoK`
 - `uds-docs/uds/components/<component>/spec.json`
 - `uds-docs/uds/components/<component>/<component>.css`
-- `uds-docs/uds/components/<component>/<component>.js`, if it exists
 - `uds-docs/uds/components/<component>/examples/manifest.json` + each example file
 - `uds-docs/uds/components/<component>/impl.json`
 - `uds-docs/uds/components/<component>/playground.js`
 - `uds-docs/uds/components/<component>/status.json` (the `current` field; replaces the legacy `COMPONENT_STATUS` table)
 - `uds-docs/uds/components/<component>/figmanotes.json` if present (the prior open Figma notes for this component — used by §7c auto-prune)
-- `uds-docs/index.html` (only the chrome / data-page block / Code-tab `<table class="sg-api-table">` for the component)
-- `uds-docs/uds/uds.js` (the orchestrator's `COMPONENT_SCRIPTS` array + the `UDS._init<Name>` block in `UDS.init` — used by §7a surplus pass)
+- `uds-docs/data/component-api/<component>.ts`
+- `uds-docs/packages/uds-web-components/src/components/<component>.ts`
+- `uds-docs/packages/uds-react/src/index.tsx` (the matching wrapper export)
 - `.cursor/rules/uds-figma-component-inspection.mdc`
 - `.cursor/rules/uds-figma-change-classification.mdc`
 - `.cursor/figma/state/components.snapshot.json` (MANDATORY — read BEFORE
@@ -126,7 +126,7 @@ Only call something a prop/state if it is supported by one of:
 
 - Figma variant property
 - explicit layer/property convention
-- existing CSS attribute
+- existing Web Component attribute/property
 - current JSON schema/content
 - explicit component description
 
@@ -170,13 +170,14 @@ screenshots alone:
 Compare against:
 
 - `uds-docs/uds/components/<id>/spec.json` (props, events, slots, states, accessibility, knownIssues, figmaNodeId, figmaPageNodeId)
-- `uds-docs/uds/components/<id>/<id>.css` (tokens used, selectors, hover/focus/disabled states)
+- `uds-docs/uds/components/<id>/<id>.css` (retained token/stub selectors)
+- `uds-docs/packages/uds-web-components/src/components/<id>.ts` (runtime API, events, parts, and shadow-DOM styles)
+- `uds-docs/packages/uds-react/src/index.tsx` (wrapper export and prop/event mapping)
 - `uds-docs/uds/components/<id>/examples/*.html` (anatomy + ARIA in real markup)
 - `uds-docs/uds/components/<id>/impl.json` (Implementation Reference HTML + token groups)
 - `uds-docs/uds/components/<id>/playground.js` (controls and render output)
 - `uds-docs/uds/components/<id>/status.json` `current` field (lifecycle)
-- Code-tab API table inside `<div data-page="<id>">` in `uds-docs/index.html` (the hardcoded `udc-*` selector list)
-- `uds-docs/uds/uds.js` orchestrator (the `COMPONENT_SCRIPTS` loader entry for `components/<id>/<id>.js` and the matching `UDS._init<Name>` selector wiring in `UDS.init`)
+- Code-tab API data in `uds-docs/data/component-api/<id>.ts`
 
 Classify mismatches:
 
@@ -197,12 +198,14 @@ and tag each as `attested` / `unattested-by-figma` / `infrastructure`:
 - every `spec.json` `props[]` name
 - every `spec.json` `acceptanceCriteria[]` entry (semantic match — flag
   entries mentioning concepts no longer in Figma)
-- every `.udc-<id>*` selector defined in `<id>.css`
+- every retained `.udc-<id>*` selector defined in `<id>.css`
 - every entry in `examples/manifest.json`
-- every Code-tab API row in `index.html`
+- every Code-tab API row in `uds-docs/data/component-api/<id>.ts`
 - every `--uds-*` token group in `impl.json` `tokens`
-- every public function in `<id>.js` plus its orchestrator loader entry
-  + `UDS._init<Name>` wiring in `uds-docs/uds/uds.js`
+- every public Web Component attribute/property/event/slot/part in
+  `packages/uds-web-components/src/components/<id>.ts`
+- the matching React wrapper export and prop/event mapping in
+  `packages/uds-react/src/index.tsx`
 - every control in `playground.js` `controls[]`
 
 `infrastructure` is the only tag that does not require a Figma counterpart;

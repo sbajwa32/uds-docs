@@ -1,9 +1,6 @@
 'use client';
 
-// Searchable popover picker for the Contrast Checker. Direct port of
-// `openPopover` / `closePopover` / `renderPopoverList` from the legacy
-// `docs/modules/contrast-checker/index.js` (lines 988–1126), turned into
-// a self-contained React component.
+// Searchable popover picker for the Contrast Checker.
 //
 // Behavior parity points:
 //   - `fg` slot lists Text + Icon + Border tokens (filterable via
@@ -81,7 +78,7 @@ export function ContrastCheckerPicker({
 
   const q = query.trim().toLowerCase();
 
-  // Groups + filtering — parity with legacy renderPopoverList.
+  // Groups + filtering.
   const groups: Array<[TokenKind, Token[]]> = [];
   if (slot === 'bg') {
     groups.push(['surface', tokens.surfaces]);

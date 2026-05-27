@@ -1,9 +1,7 @@
 'use client';
 
 // Figma Notes tab — renders open Figma findings raised by the
-// figma-component-inspector subagent. React port of `initFigmaNotes` +
-// `injectFigmaNotesTab` + `renderFigmaNotes` + `buildFigmaNoteCard` from
-// docs/app.js (~190 LOC).
+// figma-component-inspector subagent.
 //
 // Conditional injection: the parent (ComponentPageClient) only renders
 // this component when figmanotes.json exists and has at least one note,
@@ -14,8 +12,7 @@ import type { FigmaNotes } from '@/lib/uds-data';
 import '../../../styles/site/figma-notes.css';
 
 // File-key for the UDS Components Figma file. Used to build deep-links
-// to individual nodes. Must match the legacy `FIGMA_FILE_KEY` constant
-// in `docs/app.js`.
+// to individual nodes.
 const FIGMA_FILE_KEY = '1XJoUJgtNpw4R0IIT3VjoK';
 
 const KIND_LABELS: Record<string, string> = {

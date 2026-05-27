@@ -1,7 +1,7 @@
 ---
 name: sync-figma-component-spec
 description: Update a UDS component's per-component artifacts (spec.json, CSS, examples, impl.json, playground.js, figmanotes.json) from a deep Figma component inspection. Bidirectional — consumes the inspector's `Doc-site surplus` + `Snapshot delta` sections to propose removals (deleted slots/events/states/CSS/JS/examples) as classified `potentially-breaking` or `destructive` findings that default to ask-user, AND consumes the inspector's `Figma Notes evaluation` section to update `figmanotes.json` (auto-prune resolved notes, add new ones). Use for prompts like "sync Button from Figma" or after figma-component-inspector reports high-confidence changes.
-lastUpdated: 2026-05-24T09:19:52Z
+lastUpdated: 2026-05-27T22:21:24Z
 ---
 
 # Sync Figma Component Spec
@@ -15,8 +15,7 @@ After Phase 13 of the repo restructure, every per-component artifact lives in
 
 ```
 uds-docs/uds/components/<id>/
-  <id>.css                # token-first component CSS
-  <id>.js                 # optional interactive behavior
+  <id>.css                # token-only compatibility/stub CSS
   spec.json               # contract (props, events, slots, states, a11y, knownIssues, ...)
   status.json             # lifecycle state
   changelog.json          # per-component history
@@ -44,6 +43,26 @@ evidence only. The source of truth is:
 - token bindings
 - auto-layout and sizing metadata
 - current doc-site JSON / CSS / examples / impl / playground
+
+## Component contract baseline
+
+Every sync must apply
+[`uds-component-checklist.mdc`](../../rules/uds-component-checklist.mdc) before
+writing files. Classify the component (`layout`, `display`, `action`, `form`,
+`navigation`, `feedback`, or `data`), then compare the Figma inspection and
+current docs against the standard state/API/accessibility/playground baseline.
+
+Report gaps explicitly:
+
+- high-confidence supported states become `states[]`, props, examples,
+  playground controls, Web Component behavior, and React wrapper props.
+- unsupported states become `notApplicable` findings with a reason.
+- ambiguous, missing, removed, or potentially-breaking states follow
+  `uds-figma-change-classification.mdc` and default to ask-user/stop.
+
+Do not backfill missing states from intuition. If Figma does not define focus,
+error, selected, expanded, etc., report the baseline gap instead of inventing
+the behavior.
 
 ## Inputs
 
@@ -145,13 +164,13 @@ proposal. Every row carries the full classification finding shape from
 | `spec.json` `states[]` entry with no Figma counterpart | Remove from `states[]` | `potentially-breaking` |
 | `spec.json` `props[]` entry with no Figma counterpart | Remove from `props[]` | `potentially-breaking` |
 | `spec.json` `acceptanceCriteria[]` mentioning a removed concept | Remove from `acceptanceCriteria[]` | `non-breaking` |
-| `.udc-<id>*` selector unattested in Figma AND no example/impl/playground reference | Remove rule from `<id>.css` | `potentially-breaking` |
+| retained `.udc-<id>*` selector unattested in Figma AND no example/impl/playground reference | Remove rule from `<id>.css` | `potentially-breaking` |
 | Example file unattested in Figma | Delete `examples/<file>.html` + remove `manifest.json` entry | `destructive` |
-| `<id>.js` public function whose dispatched event no longer exists in `spec.json` AND no Figma interaction maps to it | Remove function from `<id>.js`; if file becomes empty, delete it and also remove `'components/<id>/<id>.js'` from `COMPONENT_SCRIPTS` and the `UDS._init<Name>` block in `uds-docs/uds/uds.js` `UDS.init` | `potentially-breaking` |
+| Web Component public event/prop/slot/part whose Figma counterpart no longer exists | Propose removing or deprecating it in `@uds/web-components` and the `@uds/react` wrapper | `potentially-breaking` |
 | `impl.json` `html` references a removed selector | Regenerate `html` for the post-removal anatomy | `non-breaking` if every removed selector is also a surplus finding, else `potentially-breaking` |
 | `impl.json` `tokens` group references a token that's no longer in any retained CSS rule | Trim the token from `impl.json` `tokens` | `non-breaking` |
-| `playground.js` control with no surviving Figma prop or no matching `<id>.css` selector | Remove control + corresponding `render()` branch | `potentially-breaking` |
-| Code-tab `<table class="sg-api-table">` row in `index.html` paired with a surplus CSS selector | Remove `<tr>` from the table | `non-breaking` |
+| `playground.js` control with no surviving Figma prop or no matching Web Component API surface | Remove control + corresponding `render()` branch | `potentially-breaking` |
+| Code-tab API data row in `uds-docs/data/component-api/<id>.ts` paired with a surplus API surface | Remove the row | `non-breaking` |
 | `nestedInstance.name` in `Snapshot delta` "removed" list AND matching `commonlyPairedWith[]` entry that is no longer attested | Remove from `spec.json` `commonlyPairedWith[]` | `non-breaking` |
 
 Also list any `scripts/audit-baseline.json` allow-list entries for this
@@ -203,20 +222,22 @@ For `implementation-ready` components, also propose updates to:
 | primary / default variants | `examples/<variant>.html` + `examples/manifest.json` |
 | anatomy HTML | `impl.json` `html` field |
 | CSS tokens consumed | `impl.json` `tokens` groups |
-| JS entry point | `impl.json` `jsFunc` + `jsFile` |
-| component classes and states | `uds/components/<id>/<id>.css` |
+| Web Component public API and behavior | `packages/uds-web-components/src/components/<id>.ts` |
+| React wrapper prop/event mapping | `packages/uds-react/src/index.tsx` |
+| token payload/stub CSS | `uds/components/<id>/<id>.css` |
 | controls that can vary safely | `playground.js` default-export `controls` array |
 | playground rendered output | `playground.js` `render(state)` function (must return `{ html, code }`) |
 | demo suitability | `examples/manifest.json` `demoWeight` / `showInDocs` per example |
 
-Do not generate production framework code. The docs site remains vanilla
-HTML/CSS/JS reference only.
+Do not generate a second React implementation. Production behavior lives in
+`@uds/web-components`; `@uds/react` is a wrapper around the same custom element.
 
 Do not edit any React component or page file for component-specific
 data — there are no
 `PLAYGROUNDS`, `IMPL_DATA`, or `FIGMA_LINKS` tables there anymore. Every
-component-data fetch in `app.js` routes through `udsResolve()` to the
-per-component file.
+component-data fetch in the Next app routes through `lib/uds-data.ts` to the
+per-component file, and runtime examples/playgrounds render real `<udc-*>`
+elements.
 
 ### 7. Dry-run output
 
@@ -288,18 +309,17 @@ If applying:
 
 1. Apply the edits in this order:
 2. For `implementation-ready` components, update files under
-   `uds/components/<id>/` per the table in step 6 \u2014 spec.json, CSS,
-   examples, impl.json, playground.js, figmanotes.json \u2014 as
+   `uds/components/<id>/` and the matching Web Component / React wrapper source
+   per the table in step 6 \u2014 spec.json, payload CSS, examples, impl.json,
+   playground.js, figmanotes.json, Web Component source, and React wrapper \u2014 as
    applicable. Match Figma bindings verbatim. Apply step 5.5 removals
-   into the same files (deletions, CSS-rule removals, manifest trims).
+   into the same files (deletions, retained CSS-rule removals, manifest trims,
+   Web Component API removals, wrapper trims).
    Apply step 5.6 figmanotes updates: remove resolved notes from
    `figmanotes.json` `notes[]`; append new notes. If `figmanotes.json`
    doesn't exist yet and there are notes to add, create it from the
    schema-conformant template. If it ends up empty after pruning,
-   delete the file (the doc-site UI hides the tab when 404). If a
-   removal touches `uds-docs/uds/uds.js` (loader entry + `UDS.init`
-   selector), edit it in the same commit batch \u2014 it falls inside
-   this skill's scope as the loader manifest for per-component JS.
+   delete the file (the doc-site UI hides the tab when 404).
 3. For `placeholder-only` components, update `knownIssues` and visible docs
    so the reason is explicit; do not add demo coverage or fabricate examples.
 4. Add a per-component `changelog.json` entry for THIS UDS version for each
@@ -313,10 +333,9 @@ If applying:
    `variantProperties`, and `nestedInstances` to the values captured by the
    inspector. Bump `.cursor/figma/state/last-sync.json` `lastSuccessfulSync`
    and recompute `components.snapshotChecksum`.
-7. Add or update the `SITE_CHANGELOG` entry in `docs/data/site-changelog.js`.
-8. Cache-bust changed assets in `index.html?v=` (`uds.css` if any component
-   CSS changed; `uds.js` if any component JS changed; `app.js` if any of its
-   imports changed).
+7. Add or update the `SITE_CHANGELOG` entry in `uds-docs/data/site-changelog.ts`.
+8. No manual cache busting is required; Cloudflare headers and Next static
+   asset hashes handle deploy freshness.
 9. If step 5.5 listed `scripts/audit-baseline.json` allow-list entries
    to remove (e.g. the component's id under
    `audit-css-api-table.toleratedComponents`), remove them in the same

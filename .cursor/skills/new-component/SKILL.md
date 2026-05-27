@@ -1,7 +1,7 @@
 ---
 name: new-component
 description: Scaffold a new UDS component end to end. Creates uds/components/<id>/ with all required files (CSS stub, spec.json, status.json, changelog.json, examples/, playground.js), adds the sidebar link in components/site/SiteSidebar.tsx, and adds a SITE_CHANGELOG entry. Triggers on phrases like "add a component", "scaffold a new component", "new component called X", "set up a new component for Y".
-lastUpdated: 2026-05-24T09:19:52Z
+lastUpdated: 2026-05-27T22:21:24Z
 ---
 
 # New Component Scaffold
@@ -42,13 +42,30 @@ When this skill fills the template with placeholders, the placeholders
 should look like the framework's vocabulary so the designer's first
 real edit is "add the details," not "rename half of these."
 
+## Component contract baseline
+
+Before writing the scaffold, apply
+[`uds-component-checklist.mdc`](../../rules/uds-component-checklist.mdc).
+Classify the component as `layout`, `display`, `action`, `form`,
+`navigation`, `feedback`, or `data`, then include starter placeholders for the
+states and API fields that class requires. If a baseline state does not belong
+to the component, write an explicit `notApplicable` reason instead of leaving
+the gap ambiguous.
+
+New documented components target the current stack:
+
+- Web Component implementation in `@uds/web-components`
+- React wrapper in `@uds/react`
+- real `<udc-*>` examples and playground markup
+- no new legacy per-component behavior file and no `uds/uds.js` wiring
+
 ## Step 1 — Collect required inputs from the user
 
 Ask for these. Don't proceed until you have all of them.
 
 | Field | Format / example | Notes |
 |---|---|---|
-| `id` | kebab-case, no `udc-` prefix (e.g. `toggle-switch`) | Becomes the folder name `uds/components/<id>/`, the `data-page` attribute, and the `<id>.css` filename |
+| `id` | kebab-case, no `udc-` prefix (e.g. `toggle-switch`) | Becomes the folder name `uds/components/<id>/`, the route segment, the `<udc-*>` tag suffix, and the `<id>.css` filename |
 | `title` | Title Case (e.g. "Toggle Switch") | Sidebar label and `<h1>` page title |
 | `description` | One paragraph | Why this component exists. Goes into `description` field. |
 | `whenToUse` | 1-2 sentences | Goes into `whenToUse` field. |
@@ -138,7 +155,7 @@ other fields stay empty/null — the renderer hides empty sections.
 }
 ```
 
-## Step 6 — Create the empty CSS file + minimal example
+## Step 6 — Create the CSS payload stub + minimal Web Component example
 
 ```bash
 touch uds-docs/uds/components/<id>/<id>.css
@@ -148,9 +165,9 @@ Write a placeholder example HTML file:
 
 ```bash
 cat > uds-docs/uds/components/<id>/examples/default.html <<'EOF'
-<div class="udc-<id>">
-  <p>Default example placeholder. Designer to add real markup.</p>
-</div>
+<udc-<id>>
+  Default example placeholder. Designer to add real markup.
+</udc-<id>>
 EOF
 ```
 
@@ -181,9 +198,10 @@ example is written.
 export default {
   controls: [],
   render: function (state) {
+    const html = '<udc-<id>>Placeholder</udc-<id>>';
     return {
-      html: '<div class="udc-<id>">Placeholder</div>',
-      code: '<!-- placeholder; designer to add real markup -->'
+      html,
+      code: html
     };
   }
 };
@@ -206,35 +224,38 @@ scaffolding is needed.
 ## Step 9 — Add the Code-tab API data
 
 Create `uds-docs/data/component-api/<id>.ts` so the Code tab can render
-the component's API surface (CSS classes + data attributes). Use the
+the component's public API surface (attributes/properties, slots, events,
+parts, and any retained CSS-class compatibility rows). Use the
 minimum shape:
 
 ```ts
 import type { ComponentApi } from './types';
 
 export const <camelId>Api: ComponentApi = {
-  importPath: './components/<id>.css',
-  cssClasses: [
-    // Placeholder — designer to fill in after the real CSS is written.
-  ],
+  importPath: '@uds/web-components',
+  cssClasses: [],
   attributes: [],
 };
 ```
 
 `audit-css-api-table.sh` will pass even with an empty `cssClasses` array
-(it skips components with no `cssClasses`); it fails only when the
-array exists but disagrees with the CSS file.
+(the Web Components runtime API usually lives in attributes/properties,
+slots, events, and parts); it fails only when retained CSS-class rows
+disagree with the payload CSS.
 
-## Step 10 — Add the component CSS import
+## Step 10 — Add the Web Component + React wrapper source
 
-Run:
+Add the runtime implementation to:
 
-```bash
-python3 -c "import sys; sys.path.insert(0, 'scripts/lib'); from migrate_component import regenerate_uds_orchestrators; print(regenerate_uds_orchestrators(False))"
-```
+- `uds-docs/packages/uds-web-components/src/components/<id>.ts`
+- `uds-docs/packages/uds-web-components/src/components/remaining.ts`
+- `uds-docs/packages/uds-web-components/src/register.ts`
+- `uds-docs/packages/uds-web-components/src/index.ts`
+- `uds-docs/packages/uds-react/src/index.tsx`
 
-This regenerates `uds-docs/uds/uds.css` with the new component's CSS
-import. Hand-editing the imports is forbidden — always run the regenerator.
+The initial Web Component can be a token-bound placeholder, but it must register
+the real `<udc-<id>>` tag and the React package must export a wrapper. Do not
+add a legacy per-component behavior file or revive `uds/uds.js`.
 
 ## Step 11 — SITE changelog entry
 
@@ -257,12 +278,15 @@ Use `date -u +%Y-%m-%d` if you need to look up today's date.
 
 ```bash
 bash scripts/audit-component-completeness.sh
+bash scripts/audit-demo-coverage.sh
 bash scripts/audit-placeholders.sh
 bash scripts/audit-token-usage.sh
+bash scripts/audit-css-api-table.sh
+bash scripts/audit-doc-internal-consistency.sh
 ```
 
-All three must pass. Then run `npm run build && npx serve uds-docs/out -p 4000`
-(or use the existing dev server) and open `http://localhost:4000/<id>` and confirm:
+All audits must pass. Then run `cd uds-docs && npm run build && npx vitest run`.
+Use the dev server or static preview to open `/<id>` and confirm:
 - Sidebar link appears under the requested group
 - Page header shows "Spec X/22" pill (red, since spec is at minimum)
 - Status badge reads "Not Started" / "Placeholder"
@@ -273,8 +297,9 @@ All three must pass. Then run `npm run build && npx serve uds-docs/out -p 4000`
 
 Then report to the user:
 - Component `<id>` scaffolded at spec completeness ~6/22
-- The `<id>.css` file is empty and ready for visual styles
-- The placeholder example needs to be replaced by the designer with real markup
+- The Web Component and React wrapper placeholders exist and need real design
+  details before production use
+- The placeholder example needs to be replaced with real `<udc-*>` markup
 - Demo Builder excluded (`demoWeight: 0`) until a real example exists
 
 ## DO NOT
@@ -283,8 +308,9 @@ Then report to the user:
   developer input. Leave the placeholder example in place.
 - **Don't add a per-component CHANGELOG entry that claims production-ready.**
   Status MUST start as `placeholder`.
-- **Don't write Storybook code.** Production component code lives in the
-  UDS Storybook repo.
+- **Don't write Storybook code.** The docs package exports the Web Component
+  and React wrapper; Storybook integration belongs in the Storybook repo when
+  that package consumes the released component.
 - **Don't put example HTML inline in any React component.** Examples
   live in `uds/components/<id>/examples/*.html` and are rendered by the
   Examples tab + Demo Builder from there.

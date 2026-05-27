@@ -1,14 +1,13 @@
 """Audit: every per-component folder has the required files.
 
 Required for every component:
-  - <id>.css                          (token-first component CSS)
+  - <id>.css                          (token-only compatibility/stub CSS)
   - spec.json                         (conforms to spec.schema.json)
   - status.json                       (conforms to status.schema.json)
   - changelog.json                    (conforms to changelog.schema.json)
   - examples/manifest.json            (conforms to manifest.schema.json)
   - examples/*.html                   (at least one HTML example)
 Optional:
-  - <id>.js                           (interactive components)
   - playground.js                     (default-export object literal)
 """
 from __future__ import annotations
@@ -60,7 +59,7 @@ def main():
         targets = args
     else:
         if not rl.NEW_COMPONENTS_DIR.exists():
-            print("OK — no per-component folders yet (audit is a no-op pre-migration)")
+            print("OK — no per-component folders yet")
             return
         targets = sorted(p.name for p in rl.NEW_COMPONENTS_DIR.iterdir() if p.is_dir())
 

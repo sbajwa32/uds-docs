@@ -2,11 +2,9 @@
 
 // Page-level chrome: title, description, and tabs.
 //
-// SgPageTabs is a controlled-state tab strip with the same markup the legacy
-// site uses. Behavior:
+// SgPageTabs is a controlled-state tab strip. Behavior:
 //   - Click a tab to activate.
-//   - Arrow Left/Right move activation between tabs (automatic activation —
-//     focus shift = activation, matches the legacy click-to-switch pattern).
+//   - Arrow Left/Right move activation between tabs (automatic activation).
 //   - Home / End jump to first / last tab.
 //   - The active tab has tabIndex=0 (others tabIndex=-1) so Tab key leaves
 //     the tablist after one stop, per WAI-ARIA APG.
@@ -82,7 +80,7 @@ export function SgPageTabs({
   // wrapper; the panels render after it as siblings so the tablist
   // doesn't accidentally include the panel content as an aria child.
   // Anything else (raw nodes, custom buttons) passes through into the
-  // tablist slot so consumers retain the legacy markup flexibility.
+  // tablist slot so consumers retain composition flexibility.
   const tabs: ReactNode[] = [];
   const panels: ReactNode[] = [];
   const values: string[] = [];
@@ -172,9 +170,8 @@ SgPageTab.displayName = 'SgPageTab';
 /**
  * Paired panel for a `<SgPageTab>`. Resolves the tab/panel id pair from
  * the shared `<SgPageTabs>` context so consumers don't have to manage ids
- * themselves. Hidden via the `hidden` attribute when inactive (preserves
- * mounted state — matches the legacy behavior where all panels mount
- * once and visibility toggles).
+ * themselves. Hidden via the `hidden` attribute when inactive, preserving
+ * mounted state while visibility toggles.
  *
  * Consumers can pass `forceMount={false}` to unmount inactive panels
  * instead (used for the Playground tab on component pages, where the

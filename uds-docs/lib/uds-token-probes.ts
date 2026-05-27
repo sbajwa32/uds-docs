@@ -3,15 +3,7 @@
 // theme profiles (per-theme detached probes whose `data-*` attributes
 // short-circuit the CSS attribute selectors that drive theming).
 //
-// Direct port of:
-//   - `harvestTokens()` / `resolveAllTokens()` / `resolveLiveRgb()` (lines
-//     205–256 of the legacy module)
-//   - `ensureThemeProbes()` / `resolveTokenInTheme()` (lines 268–287)
-//
-// The legacy module instantiated module-level probe elements at import
-// time (via an IIFE that touched `document.body`). We can't do that in a
-// Next.js client component because the module loads server-side too —
-// instead, the probes are lazily created on first use via
+// Probes are lazily created on first use via
 // `ensureLiveProbe()` / `ensureThemeProbes()`. Both are no-ops on the
 // server.
 
@@ -179,8 +171,8 @@ export function harvestTokens(): TokenSet {
 
 /**
  * Resolves every token's RGB value via the live probe. Mutates the input
- * tokens (sets `t.rgb`) — matches the legacy in-place pattern. Clears
- * the live cache first so re-resolves after a theme change pick up the
+ * tokens (sets `t.rgb`). Clears the live cache first so re-resolves after a
+ * theme change pick up the
  * new values.
  */
 export function resolveAllTokens(tokens: TokenSet): void {

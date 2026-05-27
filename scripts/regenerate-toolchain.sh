@@ -106,7 +106,7 @@ or `.cursor/agents/`:
 
 2. Run `bash scripts/regenerate-toolchain.sh` to refresh this file.
 3. If you added a new rule/skill/subagent, also add a row to
-   `uds-docs/docs/pages/cursor-workflows.html` so
+   `uds-docs/app/(site)/cursor-workflows/CursorWorkflowsClient.tsx` so
    `audit-agent-docs-currency.sh` passes.
 
 CI enforces this via `scripts/audit-toolchain-currency.sh`, which fails

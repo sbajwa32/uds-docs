@@ -1,17 +1,17 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "UDS Component Implementation Reference",
-  "description": "Per-component impl.json file. Powers the 'Implementation Reference' details on the Code tab — the 'Component File' tab (raw HTML), the 'Behavior (JS)' tab (links to a JS init function), and the 'Tokens Used' tab (categorized list of CSS custom properties). Migrated from the legacy IMPL_DATA global table during the Phase 13 cleanup.",
+  "description": "Per-component impl.json file. Powers the Implementation Reference details on the Code tab: example HTML, optional behavior notes, and categorized design-token references.",
   "type": "object",
   "properties": {
     "$schema": { "type": "string" },
     "jsFunc": {
       "type": ["string", "null"],
-      "description": "Name of the init function defined in <id>.js, e.g. 'initTextInput'. Null if the component is CSS-only."
+      "description": "Legacy-compatible behavior function name. Null for current Web Component implementations unless an archived component payload still references a function."
     },
     "jsFile": {
       "type": ["string", "null"],
-      "description": "Path to the JS file containing jsFunc, relative to uds-docs/. Null when jsFunc is null. Replaces the legacy JS_FUNC_TO_FILE global table that mapped function names to file paths."
+      "description": "Legacy-compatible path to the JS file containing jsFunc, relative to uds-docs/. Null for current Web Component implementations."
     },
     "tokens": {
       "type": "object",

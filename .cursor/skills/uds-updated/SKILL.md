@@ -1,7 +1,7 @@
 ---
 name: uds-updated
 description: Orchestrate a full UDS Figma-to-docs sync from a simple prompt like "UDS updated" or "Figma updated". Reads Figma Tokens and Components, classifies changes (including surplus findings from the inspector's bidirectional pass that flag doc-side artifacts with no Figma counterpart), applies only high-confidence non-breaking updates, and falls back to dry-run/reporting for ambiguous, breaking, or removal changes.
-lastUpdated: 2026-05-24T09:19:52Z
+lastUpdated: 2026-05-27T22:21:24Z
 ---
 
 # UDS Updated
@@ -41,6 +41,23 @@ Dry run means:
 - no SITE bump
 - no commits
 - produce a structured "would change" report only
+
+## Component contract baseline
+
+For any component that is new, changed, or inspected during the sync, apply
+[`uds-component-checklist.mdc`](../../rules/uds-component-checklist.mdc).
+The release report must call out baseline gaps by component class:
+
+- supported states/API fields that will be applied
+- required states/API fields missing from Figma or docs
+- items marked `notApplicable`, with reasons
+- Web Component implementation coverage
+- React wrapper coverage
+- playground/example coverage
+
+This prevents a release from treating each component as a custom one-off. Do
+not infer missing focus/error/selected/expanded behavior from sibling
+components; classify and report the gap.
 
 ## MCP-enabled read requirement
 
@@ -221,7 +238,8 @@ If there are safe updates and the run is not dry-run:
    - release notes → `sync-figma-release-notes`
 2. Add a SITE_CHANGELOG entry in `data/site-changelog.ts` per
    [`uds-site-changelog.mdc`](../../rules/uds-site-changelog.mdc).
-4. Cache-bust changed assets in `index.html`.
+3. No manual cache busting is required; Cloudflare headers and Next static
+   asset hashes handle deploy freshness.
 
 ### 9. Verify
 
@@ -230,15 +248,14 @@ Required verification:
 - parse changed JSON files
 - run token CSS sanity checks if token files changed
 - visually inspect affected pages in the desktop preview when available
-- confirm `version.txt` matches the SITE version displayed in `index.html`
 - confirm no generated docs render literal HTML as elements
-- **run `bash uds-docs/scripts/audit-demo-builder.sh`** — must exit 0.
-  This catches Demo Builder drift: any implementable component (one whose
-  `content/<id>.json` `knownIssues` does NOT contain "no inspectable
-  component set yet") MUST be in both `DEMO_COMPONENTS` and `DEMO_TEMPLATES`,
-  and every `udc-*` class used in `demo-builder.js` MUST be defined in some
-  `uds/components/*.css` file. If this fails, fix Demo Builder before
-  declaring the sync complete.
+- **run `bash scripts/audit-demo-coverage.sh`** — must exit 0. This catches
+  Demo Builder drift by requiring every implementation-ready component to have
+  at least one manifest example with `demoWeight > 0`; the React Demo Builder
+  assembles from those same example files.
+- run `bash scripts/audit-doc-internal-consistency.sh` so spec events,
+  examples, impl refs, token refs, and Web Component event dispatches stay in
+  sync.
 - confirm the UDS `CHANGELOG`  entry includes the release coverage pass:
   tokens, new component pages, existing-component variant/state coverage, and
   internal/support exclusions
@@ -257,7 +274,7 @@ Do not update snapshots for failed, partial, dry-run, or unverified runs.
 
 ### 11. Commit and push
 
-Per `AGENTS.md`, commit and push directly to `main`:
+If the user explicitly requested an applied sync and commit/push, use:
 
 ```bash
 git add -A

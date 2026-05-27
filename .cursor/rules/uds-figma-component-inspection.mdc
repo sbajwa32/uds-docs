@@ -2,7 +2,7 @@
 description: Requires deep Figma node inspection for UDS Components; screenshots are supporting evidence only. Inspection is bidirectional — every doc-site artifact must be checked for a Figma counterpart, and every prior snapshot entry must be diffed against the new read.
 globs: ["uds-docs/**", ".cursor/**"]
 alwaysApply: false
-lastUpdated: 2026-05-13T17:54:48Z
+lastUpdated: 2026-05-27T22:21:24Z
 ---
 
 # UDS Figma Component Inspection
@@ -74,14 +74,16 @@ Artifacts to enumerate:
 - every `spec.json` `props[]` name
 - every `spec.json` `acceptanceCriteria[]` entry (semantic match — flag
   criteria mentioning concepts no longer in Figma)
-- every `.udc-<id>*` selector defined in `<id>.css`
+- every retained `.udc-<id>*` selector defined in `<id>.css` (usually a
+  token-only compatibility/stub file after the Web Components cutover)
 - every entry in `examples/manifest.json`
-- every `<code>.udc-...</code>` row in the Code-tab `<table class="sg-api-table">`
-  inside `<div data-page="<id>">` in `uds-docs/index.html`
+- every row in `uds-docs/data/component-api/<id>.ts` (attributes/properties,
+  slots, events, parts, and any retained CSS-class rows)
 - every `--uds-*` token group enumerated in `impl.json` `tokens`
-- every public function exported by `<id>.js` (and the matching
-  `'components/<id>/<id>.js'` loader entry in `uds-docs/uds/uds.js`
-  + the `UDS._init<Name>` call in `UDS.init`)
+- every public custom event, attribute/property, slot, and part exposed by
+  `packages/uds-web-components/src/components/<id>.ts`
+- the matching React wrapper export and prop/event mapping in
+  `packages/uds-react/src/index.tsx`
 - every control in `playground.js` `controls[]` and the corresponding
   reference in `render()`
 
@@ -207,11 +209,12 @@ Any component inspection report must include:
 |---|---|---|---|---|---|---|
 
 (One row per `spec.json` slot/event/state/prop/acceptanceCriterion, per
-`.udc-<id>*` CSS selector, per `examples/manifest.json` entry, per
-Code-tab API table row, per `impl.json` token group, per `<id>.js` public
-function, per `playground.js` control. Tag must be one of `attested`,
-`unattested-by-figma`, `infrastructure`. `unattested-by-figma` entries
-must have Confidence + Risk + Reason + Default action populated.)
+retained `.udc-<id>*` CSS selector, per `examples/manifest.json` entry, per
+Code-tab API data row, per `impl.json` token group, per Web Component public
+attribute/property/event/slot/part, per React wrapper prop/event mapping, per
+`playground.js` control. Tag must be one of `attested`,
+`unattested-by-figma`, `infrastructure`. `unattested-by-figma` entries must
+have Confidence + Risk + Reason + Default action populated.)
 
 ## Snapshot delta
 - Prior snapshot present: yes / no

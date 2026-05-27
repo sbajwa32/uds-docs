@@ -1,17 +1,12 @@
 // Renders per-component example HTML on the docs page.
 //
-// Direct port of:
-//   - docs/modules/demo-builder/example-fetcher.js (manifest + HTML fetch)
-//   - docs/modules/demo-builder/canonical-pool.js (fixed substitution values)
-//   - docs/modules/demo-builder/substitution.js   (placeholder resolver)
-//
-// Lives outside lib/demo-builder/ because Demo Builder will outlive this code
-// path: the docs page's Examples tab uses canonical (fixed) substitution
+// Lives outside lib/demo-builder/ because the docs page's Examples tab uses
+// canonical (fixed) substitution
 // while Demo Builder uses random substitution. Both need the same fetch +
 // resolve mechanism, but only Demo Builder needs the random pool.
 //
-// Tokens use the same {{placeholder.name}} vocabulary the legacy modules use
-// — see docs/data/placeholder-vocabulary.json (Phase 12 addition).
+// Tokens use the same {{placeholder.name}} vocabulary as Demo Builder; see
+// uds/schemas/placeholder-vocabulary.json.
 
 import { udsResolve } from './uds-data';
 

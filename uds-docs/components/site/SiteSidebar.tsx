@@ -1,10 +1,8 @@
 'use client';
 
-// Canonical sidebar nav for the docs site. Mirrors the legacy index.html
-// nav block (lines 240-297 of the pre-migration index.html).
+// Canonical sidebar nav for the docs site.
 //
-// Structure-as-data so future link adds/removes are one-line edits. Section
-// order matches the legacy site verbatim — designers know the layout.
+// Structure-as-data so future link adds/removes are one-line edits.
 //
 // In archive mode (?uds=0.2), the component-link rows are filtered against
 // the archive's components.json manifest so links to components that don't

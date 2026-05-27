@@ -1,7 +1,7 @@
 ---
 description: Default chat tone for this repo + voice for human-facing docs prose. Talk to the user as a senior product designer, not a developer — concise, plain language, technical terms only when they're the clearest word. Same voice applies to rendered docs pages, spec.json prose fields, dosDonts, README, and SITE_CHANGELOG entries (which render on the live Changelog page). Technical voice stays non-negotiable for code, schemas, per-component changelogs, audits, commits, and PR descriptions.
 alwaysApply: true
-lastUpdated: 2026-05-24T09:19:52Z
+lastUpdated: 2026-05-27T22:21:24Z
 ---
 
 # Communication Style
@@ -77,7 +77,7 @@ of them.
 
 That covers:
 
-- **Rendered page copy** in `uds-docs/docs/pages/*.html` — page ledes,
+- **Rendered page copy** in `uds-docs/app/(site)/**` — page ledes,
   section headers, callouts, descriptions, FAQ entries.
 - **Prose fields in `uds-docs/uds/components/<id>/spec.json`** —
   `description`, `whenToUse`, `whenNotToUse`, and the strings inside
@@ -91,7 +91,7 @@ That covers:
 - **`uds-docs/uds/CHANGELOG.globalNotes.json`** — hand-curated
   non-component release notes. The version key is metadata; the prose
   is for readers.
-- **`uds-docs/docs/data/site-changelog.js` `SITE_CHANGELOG` entries** —
+- **`uds-docs/data/site-changelog.ts` `SITE_CHANGELOG` entries** —
   the typed fields (`version`, `date`, `type`) are structured metadata,
   but the `text` is prose that renders directly on the live Changelog
   page. Designer voice. Per-component `changelog.json` is different —

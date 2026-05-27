@@ -1,91 +1,136 @@
 ---
-description: Checklist for implementing or updating a UDS component — ensures the per-component folder is whole and consistent across CSS, spec, examples, status, changelog, and playground.
-globs: ["uds-docs/**"]
+description: Standard UDS component contract. Every component must be evaluated against the same anatomy, API, state, accessibility, example, playground, Web Component, and React-wrapper baseline.
+globs: ["uds-docs/uds/components/**", "uds-docs/packages/uds-web-components/**", "uds-docs/packages/uds-react/**", "uds-docs/data/component-api/**"]
 alwaysApply: false
-lastUpdated: 2026-05-24T09:19:52Z
+lastUpdated: 2026-05-27T22:21:24Z
 ---
 
-# UDS Component Completeness Checklist
+# UDS Component Contract
 
-After the repo restructure, every component lives in **one folder**:
-`uds-docs/uds/components/<id>/`. Editing that folder is editing the
-component end-to-end. The checklist below ensures the folder stays whole
-and consistent.
+Every UDS component follows the same contract. A component does **not** need
+every state or feature, but every component must say whether each baseline item
+is supported or `notApplicable`, with a reason.
 
-## Required files in every component folder
+## Component class
 
-- [ ] `<id>.css` — token-first component CSS (audited by `audit-token-usage.sh`)
-- [ ] `<id>.js` — only if the component has interactive behavior
-- [ ] `spec.json` — conforms to `uds/schemas/spec.schema.json` (the Guidelines tab renders from this)
-- [ ] `status.json` — `{ current, since, history[] }`
-- [ ] `changelog.json` — all component history (oldest first), `addedIn` matches `status.history[0].version`
-- [ ] `playground.js` — exports a default `{ controls, render }` config (used by Playground tab)
-- [ ] `examples/manifest.json` — conforms to `uds/schemas/manifest.schema.json`
-- [ ] `examples/*.html` — at least one HTML example file referenced by the manifest
+Classify the component first:
 
-## CSS (`<id>.css`)
-- [ ] `:hover` state on interactive elements
-- [ ] `:focus-visible` style with `--uds-color-border-outline-focus-visible` on focusable elements
-- [ ] `disabled` / `aria-disabled="true"` styling (if applicable)
-- [ ] All colors, spacing, fonts, radii use UDS tokens (no hex codes outside `var(--uds-color-X, #fallback)` form)
-- [ ] Shadow values use `--uds-shadow-*` tokens
+- `layout`: divider, spacer
+- `display`: badge, label, icon wrapper, data view
+- `action`: button, link, chip
+- `form`: text input, dropdown, checkbox, radio, toggle, combobox, date picker
+- `navigation`: nav header, nav vertical, breadcrumb, pagination, tabs
+- `feedback`: notification, tooltip, dialog
+- `data`: list, data table
 
-## JS (`<id>.js`) — only when interactive
-- [ ] IIFE pattern with `window.UDS._init{Name} = init{Name}`
-- [ ] `_udsInit` guard (set AFTER validation, not before)
-- [ ] Keyboard activation (Enter/Space) for any focusable interactive element
-- [ ] Listed in `uds/uds.js` `COMPONENT_SCRIPTS` array (path: `components/<id>/<id>.js`)
-- [ ] Wired into `UDS.init()` with the correct selector
+This class decides which states and API fields are required.
 
-## Spec (`spec.json`)
-- [ ] Required minimum: `component`, `title`, `description`, `whenToUse`, `whenNotToUse`, `dependencies.css`, `accessibility.keyboard`, `owner`
-- [ ] Aim for 80%+ spec completeness before marking Production Ready (see `uds-content-schema.mdc`)
-- [ ] `figmaNodeId` set if a deep-link to a specific Figma variant exists
-- [ ] `storybookSlug` set once the Storybook story exists
-- [ ] `implReference: { exampleId }` points to a real entry in `examples/manifest.json`
+## Minimum contract
 
-## Status (`status.json`)
-- [ ] `current` is one of `placeholder | blocked | in-progress | review | production | deprecated`
-- [ ] `since` is the UDS version where the current status was entered
-- [ ] `history[0].version` matches `addedIn` in `changelog.json`
+Every component needs:
 
-## Changelog (`changelog.json`)
-- [ ] `addedIn` matches the earliest entry's version
-- [ ] `entries[]` are oldest-first within the array
-- [ ] Each entry has `{ version, type, text }` where type is `added | changed | fixed | deprecated | removed`
-- [ ] Re-run `bash scripts/aggregate-changelog.sh` after any changelog edit so `uds/CHANGELOG.json` stays in sync
+- Anatomy: named parts, slots, and visible regions.
+- Variants: every Figma variant mapped to a Web Component attribute/property.
+- Sizes: supported sizes, or `notApplicable` with a reason.
+- Tone/emphasis: supported visual intent, or `notApplicable` with a reason.
+- Tokens: all colors, typography, spacing, borders, radii, and shadows sourced
+  from `--uds-*` tokens.
+- Web Component API: `<udc-*>` tag, attributes/properties, slots, events, parts.
+- React API: wrapper export in `@uds/react` with React-friendly props/events.
+- Examples: at least one realistic example and manifest entry.
+- Playground: controls for all meaningful variants, states, slots, icons, and
+  content inputs.
+- Accessibility: keyboard, screen reader, focus order, WCAG notes, and contrast.
+- Status/changelog: status and per-component changelog kept current.
 
-## Examples (`examples/*.html` + `manifest.json`)
-- [ ] At least one `manifest.json` entry has `demoWeight > 0` (so the Demo Builder picks it)
-- [ ] Every example file referenced in the manifest exists
-- [ ] Every `{{placeholder}}` used in HTML is registered in `uds/schemas/placeholder-vocabulary.json`
-- [ ] The set of `udc-*` subpart classes used in examples covers the component's documented API (e.g. nav-header should use bento, search, mywork, account; dropdown should use leading-icon, helper, counter, required when those exist)
+## State baseline
 
-## Playground (`playground.js`)
-- [ ] Default export is `{ controls: [...], render: function (state) { return { html, code } } }`
-- [ ] All controls have `key`, `label`, `type`, `default`
-- [ ] Icon-search controls use `type: 'icon-search'`
-- [ ] `render(state)` returns vanilla HTML — no React/Vue snippets
+Evaluate every component against this list:
 
-## Site / app.js wiring (one-time per new component)
-- [ ] Sidebar link in `uds-docs/components/site/SiteSidebar.tsx` (under the right group)
-- [ ] `data/component-api/<id>.ts` exists (even with empty `cssClasses` while the spec is incomplete)
-  - The Examples tab content does NOT go in `index.html` — it lives in `uds/components/<id>/examples/*.html` and the docs site renders from there
+- `default`: required for all.
+- `hover`: required for pointer-interactive components.
+- `focus` / `focus-visible`: required for keyboard-focusable components.
+- `active` / `pressed`: required for buttons, toggles, tabs, nav items, chips,
+  and menu-like controls.
+- `disabled`: required for form controls and actions.
+- `error` / `invalid`: required for form controls.
+- `required`: required for form controls where user input is mandatory.
+- `checked` / `selected`: required for checkbox, radio, toggle, tabs, nav, list
+  options, pagination, and selectable data patterns.
+- `expanded` / `collapsed`: required for dropdown, combobox, accordion-like,
+  nav, tooltip, dialog trigger, and disclosure patterns.
+- `loading`: required when async work is a supported behavior; otherwise mark
+  `notApplicable`.
+- `empty`: required for search, data, list, table, select, and content surfaces.
+- `readonly`: required for text-entry components if supported; otherwise mark
+  `notApplicable`.
 
-## Pre-commit gate
+`Spacer`, `Divider`, and other non-interactive layout components should mark
+interactive states as `notApplicable: "No focusable or pointer-interactive
+surface."`
 
-Run all four audits before committing component changes:
+## Required files
+
+Each component folder keeps the source-of-truth content together:
+
+- `<id>.css`: token-only compatibility/stub CSS for the docs payload.
+- `spec.json`: prose + structured contract rendered by the Guidelines tab.
+- `status.json`: lifecycle status.
+- `changelog.json`: per-component release history.
+- `impl.json`: Code tab Implementation Reference.
+- `playground.js`: control cartridge for the shared Playground.
+- `examples/manifest.json`: example metadata.
+- `examples/*.html`: Web Component example markup.
+
+Runtime implementation lives in `uds-docs/packages/uds-web-components/src/**`.
+React wrappers live in `uds-docs/packages/uds-react/src/index.tsx`. Do not add
+new legacy per-component behavior files or revive `uds/uds.js`.
+
+## Spec requirements
+
+`spec.json` must document:
+
+- `props[]`: public Web Component attributes/properties.
+- `events[]`: custom events emitted by the Web Component.
+- `slots[]`: named/default content regions.
+- `states[]`: every supported state from the baseline, plus explicit omissions
+  as `knownIssues` or notes when the schema has no structured place for N/A.
+- `accessibility.keyboard[]`: expected keyboard behavior.
+- `accessibility.screenReader[]`: announcements and roles.
+- `accessibility.wcag[]`: criteria met or known gaps.
+- `acceptanceCriteria[]`: ship checklist for the component.
+
+Aim for 80%+ spec completeness before marking a component `production`.
+
+## Playground requirements
+
+The shared Playground is the player; each component cartridge only describes
+controls and markup.
+
+- Controls cover all meaningful variants, sizes, states, icon choices, labels,
+  helper text, placeholder text, and slotted content.
+- Icon controls use `type: 'icon-search'`.
+- Render real `<udc-*>` markup.
+- Code output should expose both Web Component usage and React wrapper usage
+  when the React wrapper exists.
+
+## Verification
+
+Run the relevant gates after component work:
 
 ```bash
 bash scripts/audit-component-completeness.sh
 bash scripts/audit-demo-coverage.sh
 bash scripts/audit-placeholders.sh
 bash scripts/audit-token-usage.sh
+bash scripts/audit-css-api-table.sh
+bash scripts/audit-doc-internal-consistency.sh
 ```
 
-All four must exit 0.
+For Web Component or React wrapper changes, also run:
 
-## Code quality (vanilla)
-- [ ] All `udc-*` class names match the canonical BEM pattern
-- [ ] All keyboard interactions in JS match the spec's `accessibility.keyboard` table
-- [ ] Realistic data examples for data-consuming components (Data Table, List, Dropdown, Search, Breadcrumb) — use the placeholder vocabulary so the Demo Builder can roll varied data
+```bash
+cd uds-docs
+npm run build
+npx vitest run
+```

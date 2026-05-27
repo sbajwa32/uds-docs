@@ -2,7 +2,7 @@
 name: figma-spec-gap
 description: Read-only agent that compares UDS Components Figma coverage against the doc site's component JSON specs, sidebar pages, figmaNodeId fields, and Storybook links. Use when asking "what specs are missing from Figma?", "which components need Figma links?", or as part of the broader UDS updated workflow.
 model: inherit
-lastUpdated: 2026-05-12T18:41:50Z
+lastUpdated: 2026-05-27T22:21:24Z
 ---
 
 # Figma Spec Gap
@@ -30,11 +30,10 @@ write to Figma or repository files.
    whose name contains `{Ignore}`.
 3. Read `uds-docs/uds/components.json` (the manifest) and each
    `uds-docs/uds/components/<id>/spec.json` it enumerates.
-4. Read sidebar and `data-page` sections in `uds-docs/index.html`.
+4. Read sidebar links in `uds-docs/components/site/SiteSidebar.tsx` and
+   generated component routes from `uds-docs/uds/components.json`.
 5. Read each `uds-docs/uds/components/<id>/status.json` for the `current`
-   lifecycle value (the runtime in `app.js` builds an in-memory
-   `COMPONENT_STATUS` map from these files plus `components.json` — there is
-   no static `COMPONENT_STATUS` table to read). The Figma deep-link button on
+   lifecycle value. The Figma deep-link button on
    the docs page is built from `spec.json.figmaNodeId` (preferred) /
    `spec.json.figmaPageNodeId` (fallback) — there is no `FIGMA_LINKS` table
    either.

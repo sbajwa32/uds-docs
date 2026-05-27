@@ -2,23 +2,20 @@
 
 The figma-component-inspector's `Doc-site surplus` pass is the PRIMARY
 deletion detector (reads from Figma). This script is the doc-side
-SAFETY NET: it walks each per-component folder + the orchestrator and
+SAFETY NET: it walks each per-component folder + Web Component source and
 flags partial-cleanup drift that ships without an inspector pass.
 
-Five checks (all enforceable from structured data):
+Four checks (all enforceable from structured data):
 
   1. Every `.udc-<id>*` CSS selector defined in `<id>.css` must appear
      in at least one of: any `examples/*.html` (the rendered class
      attribute), `impl.json` `html`, `playground.js` `render`, or the
-     Code-tab `<table class="sg-api-table">` inside
-     `<div data-page="<id>">` in `uds-docs/index.html`. Catches CSS
-     orphaned by example/impl/playground cleanup.
+     Code-tab API data in `uds-docs/data/component-api/<id>.ts`.
+     Catches CSS orphaned by example/impl/playground cleanup.
 
   2. Every event name in `spec.json` `events[]` must be dispatched
      somewhere in the component behavior source. Post Web Components
-     rewrite, that source is `packages/uds-web-components/src/**`
-     instead of `<id>.js`. A legacy `<id>.js` file is still checked if
-     present.
+     rewrite, that source is `packages/uds-web-components/src/**`.
 
   3. Every `--uds-*` token enumerated in `impl.json` `tokens` must exist
      as a defined custom property under `uds-docs/uds/tokens/*.css`.
@@ -168,9 +165,8 @@ def selector_appears_in(haystacks: Iterable[str], selector: str) -> bool:
     """Match `selector` (bare class like `.udc-nav-bento` or
     `udc-nav-bento`) inside any of the haystacks.
 
-    Examples have `class="udc-foo"`; impl.json/playground.js have
-    `'udc-foo'` or `"udc-foo"` or `\\.udc-foo`; index.html API tables
-    have `<code>.udc-foo</code>`.
+    Examples have `class="udc-foo"`; impl.json/playground.js/API data have
+    `'udc-foo'` or `"udc-foo"` or `\\.udc-foo`.
     """
     bare = selector.lstrip(".")
     bare_dot = "." + bare
@@ -314,8 +310,8 @@ def audit_component(
         if not name:
             continue
         # DOM-native events (click, change, blur, etc.) don't need a
-        # CustomEvent dispatch from <id>.js — the browser dispatches
-        # them. Auto-excuse.
+        # CustomEvent dispatch from the Web Component source — the browser
+        # dispatches them. Auto-excuse.
         if name.lower() in DOM_NATIVE_EVENTS:
             continue
         excused = (
@@ -325,7 +321,7 @@ def audit_component(
             isinstance(i, str) and "spec-only" in i.lower() and name.lower() in i.lower()
             for i in known_issues
         )
-        # Dispatched if the event name appears in <id>.js. We accept any
+        # Dispatched if the event name appears in Web Component source. We accept any
         # occurrence (it could be in a CustomEvent('name'), an emit
         # helper, a comment, etc.) — the audit is a presence check, not
         # a static analysis.
@@ -478,7 +474,7 @@ def main() -> None:
         print("Fix paths:")
         print("  - css-orphan/<sel>: remove the rule from <id>.css OR add it to")
         print("    an example/impl/playground/API table.")
-        print("  - event-undispatched/<name>: add the dispatch to <id>.js OR add")
+        print("  - event-undispatched/<name>: add the dispatch to @uds/web-components OR add")
         print("    a knownIssues entry containing 'spec-only' AND the event name.")
         print("  - token-missing/<token>: rename the token in impl.json to a real")
         print("    one OR delete the stale token reference.")

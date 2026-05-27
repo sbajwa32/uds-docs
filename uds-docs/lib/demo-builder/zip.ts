@@ -62,7 +62,7 @@ async function bundleUdsFiles(zip: JSZipType, prefix: string, origin: string): P
 }
 
 /**
- * Bundle just the UDS payload (tokens + per-component CSS/JS) into a
+ * Bundle just the UDS payload (tokens + Web Components bundle) into a
  * single zip, no demo HTML wrapper. Used by the Getting Started
  * "Download UDS (.zip)" button.
  */

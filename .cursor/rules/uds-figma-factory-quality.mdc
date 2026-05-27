@@ -2,7 +2,7 @@
 description: Process quality rules for any factory-style Figma build (generate-uds-figma-component, new-component, future factories). State design contract (specify visuals not just tokens), mandatory machine-verified audits, variant grid layout reflects axis semantics, visible anatomy by default, dependency manifest before write. Design-system-agnostic — the specific UDS visual constructions live in uds-design-language.mdc.
 alwaysApply: false
 globs: [".cursor/skills/generate-uds-figma-component/**", ".cursor/skills/new-component/**", ".cursor/skills/figma-component-card/**"]
-lastUpdated: 2026-05-22T18:25:26Z
+lastUpdated: 2026-05-27T22:21:24Z
 ---
 
 # Figma Factory Quality
@@ -75,7 +75,7 @@ For UDS factory runs specifically: don't re-derive state visuals from
 scratch. Read
 [`uds-design-language.mdc`](./uds-design-language.mdc) (or the
 designer-facing
-[`uds-docs/docs/pages/design-language.html`](../../uds-docs/docs/pages/design-language.html))
+[`uds-docs/app/(site)/design-language/page.tsx`](../../uds-docs/app/(site)/design-language/page.tsx))
 and bind the Phase A model to its canon. That doc was derived from
 every existing component CSS, with known inconsistencies surfaced
 explicitly — so the factory output stays in dialect with the system.

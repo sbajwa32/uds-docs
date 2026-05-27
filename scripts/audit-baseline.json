@@ -6,7 +6,7 @@
     "baselineNote": "PR1 (cursor/nav-header-changelog-fix-d3c2) merge commit. Sets the floor for the changelog-currency audit; commits before this SHA may have un-recorded component file changes that we deliberately did not backfill."
   },
   "audit-css-api-table": {
-    "_comment": "Components whose Code-tab <table class='sg-api-table'> in index.html disagrees with their <id>.css's udc-* selectors as of 2026-05-12. The audit fails ONLY for components NOT in this tolerated list; new drift (and any new component added without a complete table) still fails. To remove an entry from this list, fix the table in index.html OR fix the CSS file to match the table.",
+    "_comment": "Components whose Code-tab API data in uds-docs/data/component-api/<id>.ts disagrees with retained <id>.css udc-* selectors as of 2026-05-12. The audit fails ONLY for components NOT in this tolerated list; new drift still fails. To remove an entry from this list, fix the API data or the retained CSS payload to match.",
     "toleratedComponents": [
       "badge",
       "breadcrumb",
@@ -23,7 +23,7 @@
     "baselineNote": "Initial run of audit-css-api-table.sh against the post-PR1 state found pre-existing API-table drift across 10 components (some missing entries, some cross-component class references that are legitimate, some BEM sub-elements deliberately omitted). Backfilling all 10 is a separate sweep; for now they're tolerated and new drift fails. nav-header stays tolerated even after the 2026-05-13 bento removal because the audit's belongs_to family-fallback logic for nav-* classes is imperfect (it doesn't recognize sibling subparts like .udc-nav-account / .udc-nav-logo / .udc-nav-search as belonging to nav-header). The rigorous coherence check for nav-header is audit-doc-internal-consistency.sh, which DOES work correctly. A follow-up to fix the belongs_to family-fallback in audit-css-api-table.sh (one-line change) is filed separately."
   },
   "audit-agent-docs-currency": {
-    "_comment": "Tracks whether every .cursor/rules/*.mdc, .cursor/skills/*/SKILL.md, .cursor/agents/*.md is mentioned on uds-docs/docs/pages/cursor-workflows.html (and vice-versa). Pre-baseline commits are not enforced. Add file basenames to toleratedFiles for rules/skills/agents that intentionally do NOT appear on the docs page (e.g. internal-only or experimental). Update baseline only on a deliberate sweep that brings every file into the docs.",
+    "_comment": "Tracks whether every .cursor/rules/*.mdc, .cursor/skills/*/SKILL.md, .cursor/agents/*.md is mentioned on uds-docs/app/(site)/cursor-workflows/CursorWorkflowsClient.tsx (and vice-versa). Pre-baseline commits are not enforced. Add file basenames to toleratedFiles for rules/skills/agents that intentionally do NOT appear on the docs page (e.g. internal-only or experimental). Update baseline only on a deliberate sweep that brings every file into the docs.",
     "baseline": "1bea1a540f83c86cdd8e57ba790f233353bee3a9",
     "baselineDate": "2026-05-12",
     "baselineNote": "Set to PR1 merge commit. Initial pass after PR2 refreshed cursor-workflows.html to mirror all 14 rules, 8 skills, 7 subagents, 9 audits.",

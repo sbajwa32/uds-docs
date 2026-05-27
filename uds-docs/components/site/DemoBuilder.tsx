@@ -1,8 +1,7 @@
 'use client';
 
 // Demo Builder — Build Demo trigger button (brand bar) + dialog + preview
-// overlay. React port of docs/modules/demo-builder/index.js + overlay.js +
-// the dialog markup that used to live inline in index.html.
+// overlay.
 //
 // Behavior parity with the legacy site:
 //   - The construction-icon button in the brand bar opens a modal listing
@@ -13,7 +12,7 @@
 //     the result in an <iframe srcdoc>. A "Refresh data" button on the
 //     overlay re-rolls the same components with a fresh seed.
 //   - "Download ZIP" bundles the same demo HTML + UDS payload (tokens +
-//     per-component CSS/JS) into a `demo-html.zip` via JSZip.
+//     Web Components bundle) into a `demo-html.zip` via JSZip.
 //   - The last build is saved to localStorage and surfaced on the next
 //     dialog open as an "Open" card so the user can revisit without
 //     re-rolling.
@@ -195,9 +194,7 @@ function DemoBuilderDialog({
   }, []);
 
   // Fetch lifecycle status for each demo component to render the colored
-  // status dot next to its label. Direct port of legacy
-  // window.COMPONENT_STATUS_MAP[comp.id] behavior — drops `sg-demo-status-dot
-  // --<status>` on each row.
+  // status dot next to its label.
   //
   // Result is cached per fetchVersion in `statusMapCache` so reopening the
   // dialog (or switching the active archive and back) doesn't re-issue 26

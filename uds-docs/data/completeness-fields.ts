@@ -1,5 +1,3 @@
-// Ported from docs/data/completeness-fields.js during Chunk 07.
-//
 // Drives the "Spec X/Y" completeness pill on every component page header.
 // Each entry is a dot-path into spec.json — the page renderer counts how many
 // of these are non-empty in the component's spec.json to compute X/Y.

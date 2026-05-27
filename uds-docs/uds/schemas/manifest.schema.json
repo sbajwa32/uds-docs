@@ -14,7 +14,7 @@
         "properties": {
           "id": {
             "type": "string",
-            "description": "Stable identifier for this example, used as the IMPL_DATA reference target and for linking."
+            "description": "Stable identifier for this example, used by implReference, Examples tab linking, and Demo Builder selection."
           },
           "file": {
             "type": "string",

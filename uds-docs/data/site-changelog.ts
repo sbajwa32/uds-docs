@@ -1357,5 +1357,28 @@ export const SITE_CHANGELOG: SiteChangelogEntry[] = [
         { type: 'fixed', text: 'Demo Builder ZIP downloads were silently dropping every per-component file because the hand-curated `UDS_FILES` list in `lib/demo-builder/zip.ts` still pointed at the pre-rewrite layout (`components/text-input.css` instead of `components/text-input/text-input.css`). The ZIP now ships the actual minimum payload — `uds.css` + the four token files — plus the `web-components.js` bundle, matching the cutover architecture.' },
         { type: 'removed', text: 'Deleted the `uds/uds.js` compatibility loader. The docs site had zero internal references after the Web Components cutover; consumers should reference `web-components.js` directly. Also updated `uds/package.json` to drop the `main: "uds.js"` field, bump version to 0.3, and point `homepage` at `udsdocs.com`. The doc-internal-consistency audit no longer carries a check for the legacy `COMPONENT_SCRIPTS` loader (now down to four checks from five).' }
       ]
+    },
+    {
+      version: 'SITE 2026.05.27.34',
+      date: '2026-05-27',
+      changes: [
+        { type: 'changed', text: 'Reworked the Cursor component checklist into a standard UDS component contract. Future component work now has a shared baseline for anatomy, variants, states, API, accessibility, examples, playground controls, Web Component implementation, and React wrapper coverage, with explicit `notApplicable` reasons when a state does not belong to a component.' }
+      ]
+    },
+    {
+      version: 'SITE 2026.05.27.35',
+      date: '2026-05-27',
+      changes: [
+        { type: 'fixed', text: 'Audited and cleaned stale stack guidance left over from the vanilla and Next.js migration eras. Agent rules, sync skills, Figma inspector agents, README/AGENTS guidance, audit comments, schema descriptions, and the Cursor Workflows page now point at the Web Components + React wrapper stack instead of `uds.js`, `app.js`, `index.html`, or per-component JS files.' },
+        { type: 'removed', text: 'Deleted obsolete migration-only scripts and the dead `uds-docs/scripts/audit-demo-builder.sh` check. The active replacement is the root `scripts/audit-demo-coverage.sh`, which verifies Demo Builder coverage from per-component example manifests.' },
+        { type: 'changed', text: 'Updated Cloudflare `_headers` so the published `web-components.js` bundle gets the same short revalidation policy that `uds.js` used to have.' }
+      ]
+    },
+    {
+      version: 'SITE 2026.05.27.36',
+      date: '2026-05-27',
+      changes: [
+        { type: 'fixed', text: 'Ran a second stale-stack pass and cleaned remaining active references in generated type descriptions, spec-audit guidance, current React comments, token-probe helpers, and component-manifest tooling. Historical changelog and migration records were left intact as history.' }
+      ]
     }
 ];

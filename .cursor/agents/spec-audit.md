@@ -3,7 +3,7 @@ name: spec-audit
 description: Audits per-component spec.json completeness across one or all UDS components. Reports gaps and recommends the highest-impact fields to fill in next. Read-only — never modifies files. Use when the user asks "what specs are incomplete?", "audit the X spec", "which components need spec work?", or before a release.
 model: inherit
 readonly: true
-lastUpdated: 2026-05-12T18:41:50Z
+lastUpdated: 2026-05-27T22:21:24Z
 ---
 
 # Spec Audit
@@ -23,7 +23,7 @@ If the user's request is ambiguous, default to `all`.
 
 ### 1. Read the canonical schema
 
-Read `uds-docs/uds/schemas/spec.schema.json` to confirm field names and shapes. The "applicable" fields for completeness scoring (matching `COMPLETENESS_FIELDS` exported from `uds-docs/docs/data/completeness-fields.js` and imported by `app.js`) are:
+Read `uds-docs/uds/schemas/spec.schema.json` to confirm field names and shapes. The "applicable" fields for completeness scoring match `COMPLETENESS_FIELDS` exported from `uds-docs/data/completeness-fields.ts`:
 
 ```
 description, whenToUse, whenNotToUse,
@@ -127,7 +127,7 @@ If auditing a single component, omit the Summary section and just produce the pe
 ## See also
 
 - `uds-docs/uds/schemas/spec.schema.json` — canonical schema
-- `uds-docs/docs/data/completeness-fields.js` — `COMPLETENESS_FIELDS` export, the live source of the 22-field list (imported by `app.js`)
+- `uds-docs/data/completeness-fields.ts` — `COMPLETENESS_FIELDS` export, the live source of the 22-field list
 - `uds-docs/uds/components.json` — the manifest enumerating which components exist (built by `scripts/aggregate-components.sh` from per-component folders)
 - `.cursor/rules/uds-content-schema.mdc` — required-minimum definition
 - `.cursor/skills/new-component/SKILL.md` — what new components start with (~6/22)

@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
 # audit-css-api-table.sh
 #
-# For each component, regex-extract udc-* selectors defined in
-# uds-docs/uds/components/<id>/<id>.css and compare them to the udc-*
-# codes listed in uds-docs/data/component-api/<id>.ts (the typed data
-# files that drive the Code tab in the Next.js app).
+# For each component, regex-extract retained udc-* selectors defined in
+# uds-docs/uds/components/<id>/<id>.css and compare them to any retained
+# CSS-class rows in uds-docs/data/component-api/<id>.ts (the typed data
+# files that drive the Code tab in the Next.js app). Web Component runtime API
+# usually lives in attributes/properties, slots, events, and parts instead.
 #
 # Pre-migration: the source of truth lived inline in
 # uds-docs/index.html as <table class="sg-api-table"> blocks. Chunk 07
@@ -19,8 +20,8 @@
 #     (within reasonable tolerance for variant attributes like
 #     [data-something="x"]).
 #
-# Catches the failure mode where a component CSS class is added/renamed/removed
-# but the hand-maintained API table is not updated.
+# Catches the failure mode where a retained CSS class is added/renamed/removed
+# but the hand-maintained API data is not updated.
 
 set -euo pipefail
 

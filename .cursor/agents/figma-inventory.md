@@ -2,7 +2,7 @@
 name: figma-inventory
 description: Read-only inventory of UDS Figma files. Lists versions, component pages, statuses, new/missing components, node fingerprints, and doc-site coverage. Use for "what changed in Figma?", "status sync", "new components", or the first phase of "UDS updated".
 model: inherit
-lastUpdated: 2026-05-12T18:41:50Z
+lastUpdated: 2026-05-27T22:21:24Z
 ---
 
 # Figma Inventory
@@ -30,9 +30,9 @@ write to Figma or repository files.
 
 - UDS Tokens file key: `iqKgR73ubUHpQTIcF7XGMy`
 - UDS Components file key: `1XJoUJgtNpw4R0IIT3VjoK`
-- Site version source: `uds-docs/uds/version.json` (`UDS_VERSION` in `app.js` is just a boot default that gets overwritten by this fetch)
-- Component status source: each `uds-docs/uds/components/<id>/status.json` `current` field (enumerated via `uds-docs/uds/components.json`; the in-memory `COMPONENT_STATUS` map in `app.js` is built at runtime from these files, not authored there)
-- Sidebar/page coverage: `uds-docs/index.html`
+- Site version source: `uds-docs/uds/version.json`
+- Component status source: each `uds-docs/uds/components/<id>/status.json` `current` field, enumerated via `uds-docs/uds/components.json`
+- Sidebar/page coverage: `uds-docs/components/site/SiteSidebar.tsx` and generated component routes from `uds-docs/uds/components.json`
 - Component manifest: `uds-docs/uds/components.json`
 - Component specs: each `uds-docs/uds/components/<id>/spec.json` (`figmaNodeId`, `figmaPageNodeId`)
 - Previous snapshot: `.cursor/figma/state/components.snapshot.json`
@@ -67,8 +67,8 @@ write to Figma or repository files.
 6. Read doc-site state:
    - site `UDS_VERSION` from `uds-docs/uds/version.json`
    - component statuses from each `uds-docs/uds/components/<id>/status.json` (`current` field)
-   - sidebar links in `uds-docs/index.html`
-   - `<div data-page="<id>">` component sections in `uds-docs/index.html`
+  - sidebar links in `uds-docs/components/site/SiteSidebar.tsx`
+  - generated component routes from `uds-docs/uds/components.json`
    - per-component `spec.json` `component`, `title`, `figmaNodeId`, `figmaPageNodeId` for each entry in `uds-docs/uds/components.json`
 7. Compare against `.cursor/figma/state/components.snapshot.json` if present.
 8. Classify every finding using `.cursor/rules/uds-figma-change-classification.mdc`.

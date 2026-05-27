@@ -10,9 +10,11 @@ The site lives at <https://udsdocs.com/> and is hosted on Cloudflare Pages.
 The repo cleanly separates the **design system** from the **documentation
 site that documents it**:
 
-- **`uds-docs/uds/`** — the design system itself. Tokens (CSS custom properties),
-  per-component CSS/JS, component specs, examples. Self-contained — anyone
-  can copy this folder into another project to consume the design system.
+- **`uds-docs/uds/`** — the portable design-system payload: tokens, specs,
+  examples, changelogs, statuses, and manifests. Runtime component
+  implementations now ship through `@uds/web-components`.
+- **`uds-docs/packages/uds-web-components/`** and **`uds-docs/packages/uds-react/`** —
+  the native Web Component implementation and React wrapper package.
 - **`uds-docs/app/`, `uds-docs/components/`, `uds-docs/lib/`, `uds-docs/styles/`** —
   the Next.js documentation site. Routing, page rendering, the Demo Builder,
   the Token Search modal, and the Playground engine all live there.
@@ -51,18 +53,19 @@ Cloudflare Pages auto-deploys the static export on push to `main`.
 
 Every component is one folder under `uds/components/<id>/` containing:
 
-- `<id>.css` — token-first component CSS
-- `<id>.js` — optional, for interactive components
+- `<id>.css` — token-only compatibility/stub CSS
 - `spec.json` — Guidelines-tab data (description, props, accessibility, etc.)
 - `status.json` — lifecycle status + since-version
 - `changelog.json` — full history for that component
-- `impl.json` — Implementation Reference data (Code-tab tokens / HTML / JS)
+- `impl.json` — Implementation Reference data (Code-tab tokens / HTML / behavior notes)
 - `playground.js` — ES-module playground config (loaded via dynamic import)
 - `examples/*.html` + `manifest.json` — example variants used by both
   the docs page Examples tab AND the Demo Builder
 
-Pick the file, edit, re-run the audits, add changelog entries, commit. Detailed flow
-in [AGENTS.md](./AGENTS.md).
+Runtime behavior lives in `uds-docs/packages/uds-web-components/src/components/**`.
+React wrappers live in `uds-docs/packages/uds-react/src/index.tsx`. Pick the
+right file, re-run the audits, add changelog entries, commit when requested.
+Detailed flow in [AGENTS.md](./AGENTS.md).
 
 ### Bump UDS to a new release
 
@@ -78,13 +81,12 @@ Snapshots the current `uds/` into `versions/0.3/uds/`, bumps
 
 - **Tokens** (`uds-docs/uds/tokens/`) — primitives (raw color/font palette),
   semantic tokens (named role aliases), font scale, layers (z-index scale).
-- **Components** (`uds-docs/uds/components/<id>/`) — CSS-only or CSS+JS. All
-  framework-agnostic vanilla web components / utility classes.
+- **Components** (`uds-docs/packages/uds-web-components/`) — native
+  `<udc-*>` Web Components with shadow-DOM styles.
+- **React wrappers** (`uds-docs/packages/uds-react/`) — React-friendly wrappers
+  around the same Web Components.
 - **Documentation** (`uds-docs/app/`) — the React app that renders specs,
   examples, guidelines, playgrounds, the Demo Builder, and the Token Search modal.
-
-Production framework wrappers (React, Vue, etc.) for each component live
-in the UDS Storybook repo, NOT this repo. This repo is the **specification**.
 
 ## Version dropdown — view any historical UDS release
 

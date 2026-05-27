@@ -662,8 +662,8 @@ export function CursorWorkflowsClient() {
                 </DocsCard>
 
                 <DocsCard className="sg-cw-card">
-                  <header className="sg-cw-card-head"><code className="sg-cw-card-name">uds-component-checklist</code><span className="sg-cw-pill sg-cw-pill--scoped">Loads on <span className="sg-cw-scope">uds-docs/**</span></span></header>
-                  <p className="sg-cw-card-body">The required file list per component folder plus the pre-commit gate of audit scripts. The <code>new-component</code> skill uses this as its &quot;what does complete look like&quot; definition.</p>
+                  <header className="sg-cw-card-head"><code className="sg-cw-card-name">uds-component-checklist</code><span className="sg-cw-pill sg-cw-pill--scoped">Loads on <span className="sg-cw-scope">component source files</span></span></header>
+                  <p className="sg-cw-card-body">The standard UDS component contract: anatomy, variants, states, API, accessibility, examples, playground controls, Web Component implementation, and React wrapper coverage. The <code>new-component</code> and sync workflows use it as the baseline for &quot;complete,&quot; with explicit <code>notApplicable</code> reasons when a state does not belong to a component.</p>
                   <footer className="sg-cw-card-foot"><a className="sg-cw-card-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/rules/uds-component-checklist.mdc" target="_blank" rel="noopener noreferrer">Open file<span className="material-symbols-outlined">open_in_new</span></a></footer>
                 </DocsCard>
 
@@ -925,7 +925,7 @@ export function CursorWorkflowsClient() {
 
                 <DocsCard className="sg-cw-card">
                   <header className="sg-cw-card-head"><code className="sg-cw-card-name">audit-css-api-table</code><span className="sg-cw-pill sg-cw-pill--grand"><span className="material-symbols-outlined">history</span>Grandfathered</span></header>
-                  <p className="sg-cw-card-body">For each component, regex-extracts <code>udc-*</code> selectors from the CSS and the codes from the hardcoded API table in <code>index.html</code>. Fails on either-direction drift. 10 components with pre-existing drift are tolerated via baseline; new drift fails.</p>
+                  <p className="sg-cw-card-body">For each component, compares retained <code>udc-*</code> selectors in the payload CSS with the typed Code-tab API data in <code>data/component-api/&lt;id&gt;.ts</code>. Fails on either-direction drift. Empty <code>cssClasses</code> arrays are intentional for Web Components; retained legacy rows still have to match.</p>
                 </DocsCard>
 
                 <DocsCard className="sg-cw-card">

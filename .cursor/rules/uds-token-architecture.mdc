@@ -1,8 +1,8 @@
 ---
 description: Canonical UDS Tokens Figma variable architecture and CSS output contract. Direct Figma Variables reads are primary; ZIP exports are fallback only.
-globs: ["uds-docs/uds/tokens/**/*.css", "uds-docs/docs/app.js", "uds-docs/index.html"]
+globs: ["uds-docs/uds/tokens/**/*.css", "uds-docs/styles/**/*.css", "uds-docs/packages/uds-web-components/src/**/*.ts"]
 alwaysApply: false
-lastUpdated: 2026-05-12T18:41:50Z
+lastUpdated: 2026-05-27T22:21:24Z
 ---
 
 # UDS Token Architecture

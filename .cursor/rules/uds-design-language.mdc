@@ -1,8 +1,8 @@
 ---
-description: How every UDS component handles each state, extracted from existing component CSS. State constructions (Default/Hover/Active/Focus/Filled/Selected/Error/Disabled/Read-only/Loading), focus-ring patterns and when to use each, surface treatments, elevation/shadow scale, border-radius scale, density/sizing patterns, selection treatments. Component-specific overrides documented per state. Differences between components flagged for designer review. The factory and any new-component skill should bind state visuals to the constructions in this doc rather than re-deriving them.
+description: How every UDS component handles each state, extracted from current Figma/docs component evidence and Web Component source. State constructions (Default/Hover/Active/Focus/Filled/Selected/Error/Disabled/Read-only/Loading), focus-ring patterns and when to use each, surface treatments, elevation/shadow scale, border-radius scale, density/sizing patterns, selection treatments. Component-specific overrides documented per state. Differences between components flagged for designer review. The factory and any new-component skill should bind state visuals to the constructions in this doc rather than re-deriving them.
 alwaysApply: false
 globs: ["**/*"]
-lastUpdated: 2026-05-21T18:24:08Z
+lastUpdated: 2026-05-27T22:21:24Z
 ---
 
 # UDS Design Language
@@ -574,10 +574,11 @@ A few rules that apply across multiple sections above:
 - [`uds-token-first-css.mdc`](./uds-token-first-css.mdc) — bans
   hardcoded values in component CSS; designs in this doc resolve to
   token bindings, never hex.
-- Component CSS files at
-  `uds-docs/uds/components/<id>/<id>.css` — the source data for the
-  standards in this rule. When a component disagrees with the standard, fix
-  via [`uds-source-of-truth.mdc`](./uds-source-of-truth.mdc)
-  authorized paths only (Figma round-trip), not autonomously.
+- Current component implementation source at
+  `uds-docs/packages/uds-web-components/src/components/<id>.ts`, plus the
+  Figma component read and per-component docs payload. When a component
+  disagrees with the standard, fix via
+  [`uds-source-of-truth.mdc`](./uds-source-of-truth.mdc) authorized paths only
+  (Figma round-trip), not autonomously.
 - Designer-facing version of this document:
-  [`uds-docs/docs/pages/design-language.html`](../../uds-docs/docs/pages/design-language.html).
+  [`uds-docs/app/(site)/design-language/page.tsx`](../../uds-docs/app/(site)/design-language/page.tsx).

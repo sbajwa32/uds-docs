@@ -1,7 +1,7 @@
 ---
 description: Master workflow rule — sync, source-of-truth check, change, finalize. Runs on every task that modifies uds-docs/.
 alwaysApply: true
-lastUpdated: 2026-05-24T08:55:00Z
+lastUpdated: 2026-05-27T22:21:24Z
 ---
 
 # UDS Master Workflow
@@ -104,8 +104,9 @@ skill files; do them here.
    first, fill in later" pattern is gone — there's no preflight bump
    anymore, so write the real entry as part of finalize.
 2. **Per-component changelog entry** — if you edited any file under
-   `uds-docs/uds/components/<id>/` (`<id>.css`, `<id>.js`, `spec.json`,
-   `status.json`, `examples/**`, `impl.json`, `playground.js`), you MUST add
+   `uds-docs/uds/components/<id>/` (`<id>.css`, `spec.json`,
+   `status.json`, `examples/**`, `impl.json`, `playground.js`) or the matching
+   Web Component / React wrapper source, you MUST add
    a corresponding entry to `uds-docs/uds/components/<id>/changelog.json` for
    the current UDS version. The only exemption is a pure revert toward
    verified Figma parity; in that case include `[no-changelog: revert toward
@@ -139,11 +140,14 @@ skill files; do them here.
 7. **Token-first CSS** — for any new CSS added under `uds-docs/uds/**`,
    verify it uses `--uds-*` tokens (no hardcoded colors, font sizes,
    spacings, radii). `scripts/audit-token-usage.sh` enforces this.
-8. **Component checklist** — if a component was added or modified, verify
-   the per-component folder is complete: `<id>.css`, `spec.json`,
-   `status.json`, `changelog.json`, `impl.json`, `playground.js`,
-   `examples/manifest.json`, ≥1 example HTML; sidebar link in
-   `uds-docs/components/site/SiteSidebar.tsx`.
+8. **Component contract** — if a component was added or modified, verify
+   it satisfies `uds-component-checklist.mdc`: class, anatomy, variants,
+   required states or explicit `notApplicable` reasons, Web Component API,
+   React wrapper API, examples, playground controls, accessibility, and the
+   complete per-component folder (`<id>.css`, `spec.json`, `status.json`,
+   `changelog.json`, `impl.json`, `playground.js`,
+   `examples/manifest.json`, ≥1 example HTML); sidebar link in
+   `uds-docs/components/site/SiteSidebar.tsx` for new public components.
    `scripts/audit-component-completeness.sh` enforces the per-folder
    completeness; the sidebar link is a manual check (the file is
    structure-as-data, one new line per added component).
@@ -196,24 +200,23 @@ The other finalize-time discipline is preserved and is enforced by CI
 audits, not just convention:
 
 - `scripts/audit-changelog-currency.sh` — fails if a component's source files
-  (CSS/JS/spec/examples/impl/playground) have newer commits than
+  (CSS/spec/examples/impl/playground/Web Component source/React wrapper) have newer commits than
   `changelog.json`.
 - `scripts/audit-aggregate-currency.sh` — fails if `uds/CHANGELOG.json` or
   `uds/components.json` differs from a fresh aggregate.
 - `scripts/audit-figma-sync-state-currency.sh` — fails if any `spec.json`
   `figmaNodeId` disagrees with `components.snapshot.json` `componentSetNodeId`.
-- `scripts/audit-css-api-table.sh` — fails if the Code-tab API data in
-  `uds-docs/data/component-api/<id>.ts` is out of sync with the actual
-  `udc-*` selectors in the component's CSS.
+- `scripts/audit-css-api-table.sh` — legacy-named audit that now treats empty
+  `cssClasses` arrays as intentional for Web Components and fails only when
+  documented API data drifts from retained component payload CSS.
 - `scripts/audit-doc-internal-consistency.sh` — per-component doc-side
   coherence safety net (the partner of the `figma-component-inspector`'s
-  bidirectional Surplus pass). Five checks: orphan `.udc-<id>*` CSS
+  bidirectional Surplus pass). Four checks: orphan `.udc-<id>*` CSS
   selectors absent from every example/impl/playground/API-data entry;
-  spec `events[]` not dispatched in `<id>.js` (DOM-native events
-  auto-excused); `impl.json` token refs missing from
+  spec `events[]` not dispatched in `@uds/web-components` source (DOM-native
+  events auto-excused); `impl.json` token refs missing from
   `uds/tokens/*.css`; `commonlyPairedWith[]` refs missing from
-  `components.json`; orchestrator `COMPONENT_SCRIPTS` entries pointing
-  at missing files. Catches partial cleanups (e.g. you removed a CSS
+  `components.json`. Catches partial cleanups (e.g. you removed a CSS
   rule but left the slot in `spec.json`). Tolerated findings are
   enumerated in `scripts/audit-baseline.json`
   `audit-doc-internal-consistency.toleratedFindings`; new drift fails.

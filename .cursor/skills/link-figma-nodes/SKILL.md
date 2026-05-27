@@ -1,7 +1,7 @@
 ---
 name: link-figma-nodes
 description: Populate figmaNodeId and figmaPageNodeId fields in per-component spec.json files from canonical UDS Components Figma nodes. Use when Figma deep links are missing or stale.
-lastUpdated: 2026-05-24T09:19:52Z
+lastUpdated: 2026-05-27T22:21:24Z
 ---
 
 # Link Figma Nodes
@@ -101,9 +101,9 @@ Ask before:
    `.cursor/figma/state/last-sync.json` `lastSuccessfulSync` and recompute
    `components.snapshotChecksum`. (`scripts/audit-figma-sync-state-currency.sh`
    will fail CI if you skip this step.)
-5. Add a `SITE_CHANGELOG` entry in `docs/data/site-changelog.js`.
-6. Cache-bust `app.js?v=` in `index.html` (because the imported
-   `site-changelog.js` changed).
+5. Add a `SITE_CHANGELOG` entry in `uds-docs/data/site-changelog.ts`.
+6. No manual cache busting is required; Cloudflare headers and Next static
+   asset hashes handle deploy freshness.
 7. Visual-check that the "Figma" page-link button on each affected docs
    page deep-links to the correct node in Figma.
 8. Commit and push.
