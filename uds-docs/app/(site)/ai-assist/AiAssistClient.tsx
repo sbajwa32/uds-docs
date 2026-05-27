@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { DocsPageHeader, DocsSection, DocsTab, DocsTabPanel, DocsTabs } from '@/components/site/ui';
+import { DocsCodeBlock, DocsPageHeader, DocsSection, DocsTab, DocsTabPanel, DocsTabs } from '@/components/site/ui';
 
 export default function AiAssistClient() {
   const [activeTab, setActiveTab] = useState('overview');
@@ -20,9 +20,9 @@ Icons: Material Symbols Outlined from Google Fonts CDN.
 Component prefix: udc- (e.g. udc-button-primary, udc-dropdown, udc-data-table).
 Theming: set data-color-scheme="dark" on html for dark mode. Semantic tokens adapt automatically.
 Pattern mapping: toast→udc-notification, modal→udc-dialog, select→udc-dropdown, tag→udc-chip, status→udc-badge, card→udc-tile, sidebar→udc-nav-vertical, topbar→udc-nav-header.
-Full JSON context: https://sbajwa32.github.io/uds-docs/ai-context.json
-Per-component spec (with acceptance criteria, props, events, slots, states, accessibility): https://sbajwa32.github.io/uds-docs/content/<component>.json
-Schema: https://sbajwa32.github.io/uds-docs/content/schema.json
+Full JSON context: https://udsdocs.com/ai-context.json
+Per-component spec (with acceptance criteria, props, events, slots, states, accessibility): https://udsdocs.com/uds/components/<component>/spec.json
+Schema: https://udsdocs.com/uds/schemas/spec.schema.json
 Storybook (production components): see Storybook URL on the doc site.`}
       </div>
 
@@ -68,7 +68,7 @@ Storybook (production components): see Storybook URL on the doc site.`}
           <DocsSection>
             <h3 className="ds-section__title">Full Example — Tenant Dashboard</h3>
             <p className="ds-section__description">Here&apos;s how UDS components compose together in a real page:</p>
-            <pre className="sg-playground-code" style={{ fontSize: 'var(--uds-font-size-sm)', lineHeight: 1.6, maxHeight: '400px', overflow: 'auto' }}>{`<!-- Nav Header -->
+            <DocsCodeBlock code={`<!-- Nav Header -->
 <div class="udc-nav-header">
   <div class="udc-nav-header__left">
     <div class="udc-nav-logo">...</div>
@@ -121,7 +121,7 @@ Storybook (production components): see Storybook URL on the doc site.`}
       </table>
     </div>
   </main>
-</div>`}</pre>
+</div>`} language="html" />
           </DocsSection>
         </DocsTabPanel>
 
@@ -168,7 +168,7 @@ Storybook (production components): see Storybook URL on the doc site.`}
           <DocsSection>
             <h3 className="ds-section__title">How Theming Works</h3>
             <p className="ds-section__description">Theming works by setting data attributes on <code >{'<html>'}</code>. When these change, semantic token VALUES change automatically — your component code stays the same.</p>
-            <pre className="sg-playground-code" style={{ marginBottom: 'var(--uds-space-300)' }}>{`/* Same token, different values per theme */
+            <DocsCodeBlock code={`/* Same token, different values per theme */
 --uds-color-surface-main:    #fafafa   /* light mode (default) */
 --uds-color-surface-main:    #1a1a1a   /* data-color-scheme="dark" */
 
@@ -176,7 +176,7 @@ Storybook (production components): see Storybook URL on the doc site.`}
 --uds-color-text-interactive: #0066cc  /* data-theme="resman" */
 
 /* Your code: always use the semantic token */
-background: var(--uds-color-surface-main);  /* works in ALL themes */`}</pre>
+background: var(--uds-color-surface-main);  /* works in ALL themes */`} language="css" />
           </DocsSection>
 
           <div className="sg-subsection" style={{ padding: 'var(--uds-space-200)', background: 'var(--uds-color-surface-error-subtle)', borderRadius: 'var(--uds-border-radius-input)', borderLeft: '4px solid var(--uds-color-text-error)', marginBottom: 'var(--uds-space-300)' }}>
@@ -200,14 +200,14 @@ background: var(--uds-color-surface-main);  /* works in ALL themes */`}</pre>
 
           <DocsSection>
             <h3 className="ds-section__title">Implementation</h3>
-            <pre className="sg-playground-code">{`/* Dark mode — just set the attribute, everything adapts */
+            <DocsCodeBlock code={`/* Dark mode — just set the attribute, everything adapts */
 <html data-color-scheme="dark">
 
 /* Brand switching — accent colors change automatically */
 <html data-theme="resman">
 
 /* Combine modes freely */
-<html data-color-scheme="dark" data-theme="resman" data-font="poppins">`}</pre>
+<html data-color-scheme="dark" data-theme="resman" data-font="poppins">`} language="html" />
           </DocsSection>
         </DocsTabPanel>
 
@@ -215,20 +215,20 @@ background: var(--uds-color-surface-main);  /* works in ALL themes */`}</pre>
         <DocsTabPanel value="rules">
           <DocsSection>
             <h3 className="sg-subsection-title" style={{ color: 'var(--uds-color-text-success)' }}>DO</h3>
-            <pre className="sg-playground-code">{`color: var(--uds-color-text-primary);
+            <DocsCodeBlock code={`color: var(--uds-color-text-primary);
 padding: var(--uds-space-200);
 font-family: var(--uds-font-family);
 border-radius: var(--uds-border-radius-input);
-box-shadow: var(--uds-shadow-depth-300);`}</pre>
+box-shadow: var(--uds-shadow-depth-300);`} language="css" />
           </DocsSection>
 
           <DocsSection>
             <h3 className="sg-subsection-title" style={{ color: 'var(--uds-color-text-error)' }}>DON&apos;T</h3>
-            <pre className="sg-playground-code">{`color: #171717;
+            <DocsCodeBlock code={`color: #171717;
 padding: 16px;
 font-family: 'Inter', sans-serif;
 border-radius: 8px;
-box-shadow: 0 4px 12px rgba(0,0,0,0.08);`}</pre>
+box-shadow: 0 4px 12px rgba(0,0,0,0.08);`} language="css" />
           </DocsSection>
 
           <DocsSection>
@@ -236,18 +236,18 @@ box-shadow: 0 4px 12px rgba(0,0,0,0.08);`}</pre>
             <ul style={{ fontSize: 'var(--uds-font-size-base)', lineHeight: 1.8, paddingLeft: 'var(--uds-space-250)' }}>
               <li>The HTML examples on this site are <strong>example only</strong> — they show the design intent (markup shape, classes, ARIA, keyboard behavior).</li>
               <li>Use the framework-agnostic <strong>web components from the UDS Storybook</strong> in production projects (any framework).</li>
-              <li>Per-component spec is in <code >{'content/<component>.json'}</code> on this site — fetch it for acceptance criteria, props, events, slots, accessibility.</li>
+              <li>Per-component spec is in <code >{'uds/components/<component>/spec.json'}</code> on this site — fetch it for acceptance criteria, props, events, slots, accessibility.</li>
               <li>Vanilla HTML projects can use <code >uds/uds.css</code> + <code >uds/uds.js</code> directly with the example markup as a fallback.</li>
             </ul>
           </DocsSection>
 
           <DocsSection>
             <h3 className="sg-subsection-title" style={{ color: 'var(--uds-color-text-error)' }}>Primitives Ban</h3>
-            <pre className="sg-playground-code">{`/* NEVER use primitive tokens in components */
+            <DocsCodeBlock code={`/* NEVER use primitive tokens in components */
 DON'T: color: var(--uds-primitive-color-blue-60-M);
 DO:    color: var(--uds-color-text-interactive);
 
-/* Primitives don't change with themes. Semantics do. */`}</pre>
+/* Primitives don't change with themes. Semantics do. */`} language="css" />
           </DocsSection>
 
           <DocsSection>

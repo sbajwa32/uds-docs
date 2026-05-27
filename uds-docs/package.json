@@ -2,7 +2,7 @@
   "name": "uds-docs",
   "version": "0.0.0",
   "private": true,
-  "description": "UDS documentation site (Next.js rebuild). The vanilla site at index.html + docs/ ships in parallel until Chunk 17.",
+  "description": "UDS documentation site (Next.js static export).",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

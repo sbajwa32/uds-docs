@@ -162,9 +162,9 @@ async function main() {
   console.log('[check 1] /nav-header renders the Figma Notes tab with count badge');
   const navHeaderInfo = await evaluate(`
     (() => {
-      const tab = document.querySelector('.sg-page-tab[data-tab="figma-notes"]');
+      const tab = document.querySelector('.ds-tab[id$="-tab-figma-notes"]');
       if (!tab) return { found: false };
-      const count = tab.querySelector('.sg-page-tab__count');
+      const count = tab.querySelector('.ds-tab__count');
       return {
         found: true,
         countText: count ? count.textContent.trim() : null,
@@ -180,7 +180,7 @@ async function main() {
   console.log(`[check 1] OK — tab present with count badge "${navHeaderInfo.countText}"`);
 
   console.log('[check 2] clicking the tab renders 7 note cards with kinds + refs');
-  await evaluate(`document.querySelector('.sg-page-tab[data-tab="figma-notes"]').click()`);
+  await evaluate(`document.querySelector('.ds-tab[id$="-tab-figma-notes"]').click()`);
   await sleep(400);
   const noteInfo = await evaluate(`
     (() => {
@@ -230,8 +230,8 @@ async function main() {
   console.log('[check 3] /button does NOT render the Figma Notes tab');
   const buttonInfo = await evaluate(`
     (() => {
-      const tab = document.querySelector('.sg-page-tab[data-tab="figma-notes"]');
-      const allTabs = Array.from(document.querySelectorAll('.sg-page-tab')).map((t) => t.dataset.tab);
+      const tab = document.querySelector('.ds-tab[id$="-tab-figma-notes"]');
+      const allTabs = Array.from(document.querySelectorAll('.ds-tab')).map((t) => t.id.replace(/^.*-tab-/, ''));
       return {
         figmaTab: !!tab,
         tabs: allTabs,

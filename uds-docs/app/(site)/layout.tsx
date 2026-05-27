@@ -7,8 +7,6 @@ import { useEffect } from 'react';
 
 import '../../styles/pages/component.css';
 import '../../styles/pages/changelog.css';
-import '../../styles/pages/tokens.css';
-import '../../styles/pages/prose.css';
 import '../../styles/pages/contrast-checker.css';
 import '../../styles/pages/cursor-workflows.css';
 import '../../styles/pages/design-language.css';

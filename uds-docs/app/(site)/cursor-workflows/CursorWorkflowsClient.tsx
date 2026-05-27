@@ -3,7 +3,7 @@
 // Ported from docs/pages/cursor-workflows.html during Chunk 06d.
 // Converted from dangerouslySetInnerHTML to native JSX.
 //
-// Page-local <style> block extracted to styles/pages/cursor-workflows.css.
+// Page-local styles are imported once from the site layout.
 // Body sliced into: intro (pre-tab sections), 6 tab panels, and an outro
 // (final callout). Tab strip uses DocsTabs/DocsTab/DocsTabPanel from
 // Chunk 04.
@@ -13,7 +13,6 @@ import { useState } from 'react';
 import { DocsTab, DocsTabPanel, DocsTabs } from '@/components/site/ui';
 import { DocsBadge, DocsCard, DocsPageHeader, DocsSection } from '@/components/site/ui';
 
-import '../../../styles/pages/cursor-workflows.css';
 
 type TabKey = 'workflows' | 'rules' | 'skills' | 'subagents' | 'audits' | 'add';
 
@@ -303,7 +302,7 @@ export function CursorWorkflowsClient() {
                   <div className="sg-cw-step-body">
                     <h5 className="sg-cw-step-title">Re-check contrast</h5>
                     <p className="sg-cw-step-desc">Rebuilds the aggregated changelog and component manifest, then reviews token pairings in the Contrast Checker across all six themes.</p>
-                    <div className="sg-cw-step-uses"><code>aggregate-changelog.sh</code><code>aggregate-components.sh</code><code>#/contrast-checker</code></div>
+                    <div className="sg-cw-step-uses"><code>aggregate-changelog.sh</code><code>aggregate-components.sh</code><code>/contrast-checker</code></div>
                   </div>
                 </li>
                 <li className="sg-cw-step">
@@ -317,9 +316,9 @@ export function CursorWorkflowsClient() {
                 <li className="sg-cw-step">
                   <span className="sg-cw-step-num">8</span>
                   <div className="sg-cw-step-body">
-                    <h5 className="sg-cw-step-title">SITE bump &amp; deploy</h5>
+                    <h5 className="sg-cw-step-title">Docs changelog</h5>
                     <p className="sg-cw-step-desc">Bumps the SITE build counter, appends the SITE changelog entry, cache-busts what changed, pushes to <code>main</code>. GitHub Actions deploys to GH Pages.</p>
-                    <div className="sg-cw-step-uses"><code>bump-site.sh</code></div>
+                    <div className="sg-cw-step-uses"><code>SITE_CHANGELOG</code></div>
                   </div>
                 </li>
               </ol>
@@ -332,7 +331,7 @@ export function CursorWorkflowsClient() {
                 <details className="sg-cw-details">
                   <summary>What gets touched, end to end</summary>
                   <div className="sg-cw-details-body">
-                    Every file under <code>uds/components/&lt;id&gt;/</code> for the changed components, all <code>uds/tokens/*.css</code>, <code>uds/CHANGELOG.json</code>, <code>uds/components.json</code>, <code>uds/version.json</code>, <code>versions.json</code> plus a new <code>versions/&lt;old&gt;/uds/</code> snapshot, <code>.cursor/figma/state/</code> snapshot files, the <strong>Release Notes</strong> frame in BOTH Figma files, <code>uds-docs/index.html</code>, <code>uds-docs/version.txt</code>, <code>uds-docs/docs/data/site-changelog.js</code>.
+                    Every file under <code>uds/components/&lt;id&gt;/</code> for the changed components, all <code>uds/tokens/*.css</code>, <code>uds/CHANGELOG.json</code>, <code>uds/components.json</code>, <code>uds/version.json</code>, <code>versions.json</code> plus a new <code>versions/&lt;old&gt;/uds/</code> snapshot, <code>.cursor/figma/state/</code> snapshot files, the <strong>Release Notes</strong> frame in BOTH Figma files, and <code>uds-docs/data/site-changelog.ts</code>.
                   </div>
                 </details>
               </div>
@@ -404,9 +403,9 @@ export function CursorWorkflowsClient() {
                 <li className="sg-cw-step">
                   <span className="sg-cw-step-num">6</span>
                   <div className="sg-cw-step-body">
-                    <h5 className="sg-cw-step-title">SITE bump &amp; deploy</h5>
-                    <p className="sg-cw-step-desc">Bumps the SITE build counter, appends a SITE changelog entry describing the sync, cache-busts what changed.</p>
-                    <div className="sg-cw-step-uses"><code>bump-site.sh</code></div>
+                    <h5 className="sg-cw-step-title">Docs changelog</h5>
+                    <p className="sg-cw-step-desc">Appends a SITE changelog entry describing the sync. Cloudflare and Next.js handle cache invalidation on deploy.</p>
+                    <div className="sg-cw-step-uses"><code>SITE_CHANGELOG</code></div>
                   </div>
                 </li>
               </ol>
@@ -419,7 +418,7 @@ export function CursorWorkflowsClient() {
                 <details className="sg-cw-details">
                   <summary>What gets touched, end to end</summary>
                   <div className="sg-cw-details-body">
-                    The one or few <code>uds/components/&lt;id&gt;/</code> folders being synced, <code>uds/CHANGELOG.json</code>, <code>.cursor/figma/state/components.snapshot.json</code> + <code>last-sync.json</code>, the <strong>Release Notes</strong> frames in BOTH Figma files, <code>uds-docs/index.html</code>, <code>uds-docs/version.txt</code>, <code>uds-docs/docs/data/site-changelog.js</code>.
+                    The one or few <code>uds/components/&lt;id&gt;/</code> folders being synced, <code>uds/CHANGELOG.json</code>, <code>.cursor/figma/state/components.snapshot.json</code> + <code>last-sync.json</code>, the <strong>Release Notes</strong> frames in BOTH Figma files, and <code>uds-docs/data/site-changelog.ts</code>.
                   </div>
                 </details>
               </div>
@@ -474,9 +473,9 @@ export function CursorWorkflowsClient() {
                 <li className="sg-cw-step">
                   <span className="sg-cw-step-num">4</span>
                   <div className="sg-cw-step-body">
-                    <h5 className="sg-cw-step-title">SITE bump &amp; deploy</h5>
-                    <p className="sg-cw-step-desc">Bumps the SITE build counter, appends a SITE changelog entry announcing the new component, cache-busts the docs stylesheet and app bundle.</p>
-                    <div className="sg-cw-step-uses"><code>bump-site.sh</code></div>
+                    <h5 className="sg-cw-step-title">Docs changelog</h5>
+                    <p className="sg-cw-step-desc">Appends a SITE changelog entry announcing the new component. Cloudflare and Next.js handle cache invalidation on deploy.</p>
+                    <div className="sg-cw-step-uses"><code>SITE_CHANGELOG</code></div>
                   </div>
                 </li>
               </ol>
@@ -485,7 +484,7 @@ export function CursorWorkflowsClient() {
                 <details className="sg-cw-details">
                   <summary>What gets touched, end to end</summary>
                   <div className="sg-cw-details-body">
-                    A brand-new <code>uds/components/&lt;id&gt;/</code> folder, <code>uds/uds.css</code>, optionally <code>uds/uds.js</code>, <code>uds/components.json</code>, <code>uds/CHANGELOG.json</code>, <code>uds-docs/index.html</code>, <code>uds-docs/version.txt</code>, <code>uds-docs/docs/data/site-changelog.js</code>. Status starts at <em>placeholder</em>; spec completeness rises as the designer fills in fields. No Figma release-notes sync needed unless the addition lands as part of a UDS release.
+                    A brand-new <code>uds/components/&lt;id&gt;/</code> folder, <code>uds/uds.css</code>, optionally <code>uds/uds.js</code>, <code>uds/components.json</code>, <code>uds/CHANGELOG.json</code>, and <code>uds-docs/data/site-changelog.ts</code>. Status starts at <em>placeholder</em>; spec completeness rises as the designer fills in fields. No Figma release-notes sync needed unless the addition lands as part of a UDS release.
                   </div>
                 </details>
               </div>
@@ -539,9 +538,9 @@ export function CursorWorkflowsClient() {
                 <li className="sg-cw-step">
                   <span className="sg-cw-step-num">4</span>
                   <div className="sg-cw-step-body">
-                    <h5 className="sg-cw-step-title">SITE bump &amp; deploy</h5>
-                    <p className="sg-cw-step-desc">Bumps the SITE build counter. If the global changelog actually changed, Figma release notes rebuild too.</p>
-                    <div className="sg-cw-step-uses"><code>bump-site.sh</code><code>sync-figma-release-notes</code></div>
+                    <h5 className="sg-cw-step-title">Docs changelog &amp; release notes</h5>
+                    <p className="sg-cw-step-desc">Appends the SITE changelog entry. If the global changelog actually changed, Figma release notes rebuild too.</p>
+                    <div className="sg-cw-step-uses"><code>SITE_CHANGELOG</code><code>sync-figma-release-notes</code></div>
                   </div>
                 </li>
               </ol>
@@ -550,7 +549,7 @@ export function CursorWorkflowsClient() {
                 <details className="sg-cw-details">
                   <summary>What gets touched, end to end</summary>
                   <div className="sg-cw-details-body">
-                    One source file under <code>uds/components/&lt;id&gt;/</code>, that component&apos;s <code>changelog.json</code>, <code>uds/CHANGELOG.json</code>, plus the SITE trio (<code>version.txt</code>, <code>index.html</code>, <code>site-changelog.js</code>). Skip the per-component changelog entry and <code>audit-changelog-currency</code> blocks the merge.
+                    One source file under <code>uds/components/&lt;id&gt;/</code>, that component&apos;s <code>changelog.json</code>, <code>uds/CHANGELOG.json</code>, plus <code>uds-docs/data/site-changelog.ts</code>. Skip the per-component changelog entry and <code>audit-changelog-currency</code> blocks the merge.
                   </div>
                 </details>
               </div>
@@ -867,7 +866,7 @@ export function CursorWorkflowsClient() {
               TAB PANEL: CI Audits
               ============================================================ */}
           <DocsTabPanel value="audits">
-            <p className="sg-subsection-desc" style={{ marginBottom: 'var(--uds-space-300)' }}>12 bash audits in <code>scripts/audit-*.sh</code>, wired into <code>.github/workflows/audits.yml</code>. They run on every PR and every push to <code>main</code>. Failing audits block merge. Three of them grandfather pre-existing drift via <code>scripts/audit-baseline.json</code>. Contrast validation lives in the Contrast Checker tool (<code>#/contrast-checker</code>), not CI.</p>
+            <p className="sg-subsection-desc" style={{ marginBottom: 'var(--uds-space-300)' }}>12 bash audits in <code>scripts/audit-*.sh</code>, wired into <code>.github/workflows/audits.yml</code>. They run on every PR and every push to <code>main</code>. Failing audits block merge. Three of them grandfather pre-existing drift via <code>scripts/audit-baseline.json</code>. Contrast validation lives in the Contrast Checker tool (<code>/contrast-checker</code>), not CI.</p>
 
             {/* PRE-EXISTING AUDITS */}
             <div className="sg-cw-group">
