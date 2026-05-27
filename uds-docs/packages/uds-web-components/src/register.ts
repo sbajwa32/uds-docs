@@ -2,6 +2,7 @@ import { UdsBadgeElement } from './components/badge';
 import { UdsButtonElement } from './components/button';
 import { UdsCheckboxElement } from './components/checkbox';
 import { UdsChipElement } from './components/chip';
+import { UdsDatePickerElement } from './components/date-picker';
 import { UdsDropdownElement, UdsDropdownItemElement } from './components/dropdown';
 import { UdsNotificationElement } from './components/notification';
 import { UdsRadioElement, UdsRadioGroupElement } from './components/radio';
@@ -12,7 +13,6 @@ import {
   UdsComboboxOptionElement,
   UdsDataTableElement,
   UdsDataViewElement,
-  UdsDatePickerElement,
   UdsDialogElement,
   UdsDividerElement,
   UdsIconWrapperElement,

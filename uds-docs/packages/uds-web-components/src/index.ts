@@ -10,6 +10,7 @@ export {
 } from './components/button';
 export { UdsCheckboxElement, type UdsCheckboxChangeDetail } from './components/checkbox';
 export { UdsChipElement, type UdsChipToggleDetail, type UdsChipVariant, type UdsDismissDetail } from './components/chip';
+export { UdsDatePickerElement, type UdsDatePickerChangeDetail, type UdsDatePickerState } from './components/date-picker';
 export { UdsDropdownElement, UdsDropdownItemElement, type UdsDropdownChangeDetail, type UdsDropdownState } from './components/dropdown';
 export { UdsNotificationElement, type UdsNotificationTone, type UdsNotificationVariant } from './components/notification';
 export { UdsRadioElement, UdsRadioGroupElement, type UdsRadioChangeDetail, type UdsRadioState } from './components/radio';
@@ -20,7 +21,6 @@ export {
   UdsComboboxOptionElement,
   UdsDataTableElement,
   UdsDataViewElement,
-  UdsDatePickerElement,
   UdsDialogElement,
   UdsDividerElement,
   UdsIconWrapperElement,

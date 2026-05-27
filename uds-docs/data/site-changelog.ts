@@ -1201,5 +1201,12 @@ export const SITE_CHANGELOG: SiteChangelogEntry[] = [
       changes: [
         { type: 'changed', text: 'Combobox now inherits the rebuilt Dropdown shadow DOM, so the page renders with the proper label, leading icon, chevron, helper text, error and disabled treatments. Added an interactive playground mirroring the Dropdown control surface. Filtering and autocomplete on top of the alias still need a real Figma source — Combobox was placeholder-only in 0.3.' }
       ]
+    },
+    {
+      version: 'SITE 2026.05.27.12',
+      date: '2026-05-27',
+      changes: [
+        { type: 'changed', text: 'Date Picker now matches the Text Input field chrome — label, calendar leading icon, helper text, focus ring, error and disabled treatments — with a browser-native date popover. Added an interactive playground (state, label, required, helper, value, min, max). The custom calendar popover is still pending a Figma source.' }
+      ]
     }
 ];

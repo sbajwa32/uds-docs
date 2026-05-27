@@ -523,29 +523,9 @@ import { UdsDropdownElement as _UdsDropdownElement, UdsDropdownItemElement as _U
 export class UdsComboboxElement extends _UdsDropdownElement {}
 export class UdsComboboxOptionElement extends _UdsDropdownItemElement {}
 
-export class UdsDatePickerElement extends LitElement {
-  static formAssociated = true;
-  static properties = {
-    name: { type: String, reflect: true },
-    value: { type: String, reflect: true },
-    label: { type: String, reflect: true },
-  };
-  name = '';
-  value = '';
-  label = '';
-  private readonly internals = formInternals(this);
-  static styles = [hostBlock, fieldChrome];
-  protected updated(changed: PropertyValues<this>) {
-    if (changed.has('value')) this.internals?.setFormValue(this.value);
-  }
-  render() {
-    return html`<label class="label">${this.label}</label><div class="field"><input part="input" type="date" name=${this.name || nothing} .value=${this.value} @change=${this.handleChange} /></div>`;
-  }
-  private handleChange(event: Event) {
-    this.value = (event.currentTarget as HTMLInputElement).value;
-    emitUdsEvent<UdsValueChangeDetail>(this, 'udc-change', { value: this.value });
-  }
-}
+// DatePicker lives in ./date-picker.ts (extracted with full field chrome).
+export { UdsDatePickerElement } from './date-picker';
+export type { UdsDatePickerChangeDetail, UdsDatePickerState } from './date-picker';
 
 export class UdsDataTableElement extends LitElement {
   static properties = {
@@ -656,7 +636,6 @@ declare global {
     'udc-dialog': UdsDialogElement;
     'udc-combobox': UdsComboboxElement;
     'udc-combobox-option': UdsComboboxOptionElement;
-    'udc-date-picker': UdsDatePickerElement;
     'udc-data-table': UdsDataTableElement;
     'udc-data-view': UdsDataViewElement;
     'udc-nav-header': UdsNavHeaderElement;

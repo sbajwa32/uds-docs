@@ -119,7 +119,14 @@ export const WEB_COMPONENT_EXAMPLES: Record<string, RenderedExample[]> = {
       id: 'default',
       label: 'Date Picker',
       description: 'A form-associated date field.',
-      html: `<udc-date-picker name="move-in" label="Move-in date"></udc-date-picker>`,
+      html: `<udc-date-picker
+  name="move-in"
+  show-label
+  label="Move-in date"
+  show-helper
+  helper-text="Pick the day you take possession."
+  required
+></udc-date-picker>`,
     },
   ],
   toggle: [
