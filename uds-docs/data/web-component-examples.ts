@@ -101,9 +101,16 @@ export const WEB_COMPONENT_EXAMPLES: Record<string, RenderedExample[]> = {
       id: 'default',
       label: 'Combobox',
       description: 'A selectable option list prepared for filtering behavior.',
-      html: `<udc-combobox label="Property" value="riverbend">
+      html: `<udc-combobox
+  show-label
+  label="Apartment"
+  placeholder="Search apartments…"
+  leading-icon="search"
+  value="riverbend"
+>
   <udc-combobox-option value="riverbend">Riverbend Estates</udc-combobox-option>
   <udc-combobox-option value="lakeside">Lakeside Villas</udc-combobox-option>
+  <udc-combobox-option value="rolling-pines">Rolling Pines</udc-combobox-option>
 </udc-combobox>`,
     },
   ],

@@ -320,6 +320,10 @@
         {
           "type": "changed",
           "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
+        },
+        {
+          "type": "changed",
+          "text": "`<udc-combobox>` now aliases the rebuilt `<udc-dropdown>` Web Component, so it inherits the full shadow-DOM styling (label, leading icon, placeholder, chevron, helper text, error/disabled treatments, listbox panel). Added an interactive playground with the same control surface as Dropdown. Filtering/autocomplete behavior on top of the alias is still pending Figma source."
         }
       ],
       "Data Table": [

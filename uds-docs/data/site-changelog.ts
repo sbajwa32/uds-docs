@@ -1194,5 +1194,12 @@ export const SITE_CHANGELOG: SiteChangelogEntry[] = [
       changes: [
         { type: 'fixed', text: 'Restored the Radio visual styling and group behavior. `<udc-radio>` and `<udc-radio-group>` now carry the original 20×20 ring + 12×12 center dot, the text-interactive recolor when selected, hover/focus/disabled treatments, error state, and the group legend. RadioGroup syncs selection through its `value` attribute. Playground brings back options-count, disabled, and error controls.' }
       ]
+    },
+    {
+      version: 'SITE 2026.05.27.11',
+      date: '2026-05-27',
+      changes: [
+        { type: 'changed', text: 'Combobox now inherits the rebuilt Dropdown shadow DOM, so the page renders with the proper label, leading icon, chevron, helper text, error and disabled treatments. Added an interactive playground mirroring the Dropdown control surface. Filtering and autocomplete on top of the alias still need a real Figma source — Combobox was placeholder-only in 0.3.' }
+      ]
     }
 ];
