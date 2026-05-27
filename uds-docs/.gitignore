@@ -8,6 +8,7 @@ node_modules/
 # TypeScript
 *.tsbuildinfo
 next-env.d.ts
+packages/*/dist/
 
 # Editor scratch
 .vercel

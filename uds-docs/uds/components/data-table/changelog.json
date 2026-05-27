@@ -11,6 +11,16 @@
       "version": "0.3",
       "type": "changed",
       "text": "Figma data-table coverage expanded: text/dropdown/ghost-button/checkbox/badge cell types, header cells, 1-14 columns, 2-14 rows, alignment, leading/trailing icons, dividers, prominent text, and error highlighting"
+    },
+    {
+      "version": "0.3",
+      "type": "changed",
+      "text": "Replaced documented examples, implementation reference, and playground output with the Web Component API."
+    },
+    {
+      "version": "0.3",
+      "type": "changed",
+      "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
     }
   ]
 }

@@ -5,32 +5,66 @@
   "description": "A vertical navigation list for primary app sections. Typically lives in a sidebar.",
   "whenToUse": "In the left sidebar of an application shell. When there are 4+ primary destinations.",
   "whenNotToUse": "For secondary or contextual navigation (use a list or tabs). On mobile without a collapsible shell.",
-  "acceptanceCriteria": [],
+  "acceptanceCriteria": [
+    "Public API uses <udc-nav-vertical>, <udc-nav-item> Web Component tags."
+  ],
   "dependencies": {
     "css": [
-      "uds/components/nav-vertical.css"
+      "uds/uds.css"
     ],
     "js": [
-      "uds/components/nav-vertical.js"
+      "web-components.js"
     ]
   },
   "props": [
     {
-      "name": "leadingIcons",
-      "type": "boolean",
-      "default": true,
+      "name": "href",
+      "type": "string",
+      "default": null,
       "required": false,
-      "description": "Show a leading material icon before each item label. Maps to Figma component-set `udc-nav-vertical` variant property `Leading Icons` (True | False)."
+      "description": "Nav item href."
+    },
+    {
+      "name": "current",
+      "type": "boolean",
+      "default": false,
+      "required": false,
+      "description": "Current page state."
     }
   ],
   "events": [],
-  "slots": [],
+  "slots": [
+    {
+      "name": "default",
+      "description": "Navigation items."
+    }
+  ],
   "states": [
-    { "name": "default", "description": "Resting state for an inactive nav item.", "hasVisual": true },
-    { "name": "hover", "description": "Pointer over an inactive nav item.", "hasVisual": true },
-    { "name": "active", "description": "Pointer pressed on an inactive nav item (mouse-down).", "hasVisual": true },
-    { "name": "selected", "description": "The current page indicator (driven by `aria-current=\"page\"` or legacy `aria-selected=\"true\"`).", "hasVisual": true },
-    { "name": "focused", "description": "Keyboard focus visible (driven by `:focus-visible`).", "hasVisual": true }
+    {
+      "name": "default",
+      "description": "Resting state for an inactive nav item.",
+      "hasVisual": true
+    },
+    {
+      "name": "hover",
+      "description": "Pointer over an inactive nav item.",
+      "hasVisual": true
+    },
+    {
+      "name": "active",
+      "description": "Pointer pressed on an inactive nav item (mouse-down).",
+      "hasVisual": true
+    },
+    {
+      "name": "selected",
+      "description": "The current page indicator (driven by `aria-current=\"page\"` or legacy `aria-selected=\"true\"`).",
+      "hasVisual": true
+    },
+    {
+      "name": "focused",
+      "description": "Keyboard focus visible (driven by `:focus-visible`).",
+      "hasVisual": true
+    }
   ],
   "contentGuidelines": null,
   "commonlyPairedWith": [],

@@ -6,6 +6,7 @@
   "whenToUse": "Use when users need to browse structured records but a tabular grid is not the best representation.",
   "whenNotToUse": "For dense row-and-column comparison, sorting, and bulk actions, use Data Table.",
   "acceptanceCriteria": [
+    "Public API uses <udc-data-view> Web Component tag.",
     "Figma component set exists and exposes variant properties",
     "Examples and Code tabs are generated from inspected Figma structure",
     "Component CSS uses UDS tokens only",
@@ -13,13 +14,28 @@
   ],
   "dependencies": {
     "css": [
-      "uds/components/data-view.css"
+      "uds/uds.css"
     ],
-    "js": []
+    "js": [
+      "web-components.js"
+    ]
   },
   "props": [],
   "events": [],
-  "slots": [],
+  "slots": [
+    {
+      "name": "header",
+      "description": "Header content."
+    },
+    {
+      "name": "default",
+      "description": "Body content."
+    },
+    {
+      "name": "actions",
+      "description": "Action content."
+    }
+  ],
   "states": [],
   "contentGuidelines": null,
   "commonlyPairedWith": [],

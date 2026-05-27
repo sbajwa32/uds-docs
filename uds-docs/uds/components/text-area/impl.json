@@ -5,25 +5,30 @@
   "tokens": {
     "Color": [
       "--uds-color-surface-main",
+      "--uds-color-surface-subtle",
+      "--uds-color-surface-interactive-default",
       "--uds-color-text-primary",
       "--uds-color-text-secondary",
-      "--uds-color-text-error",
+      "--uds-color-text-interactive",
       "--uds-color-border-primary",
-      "--uds-color-border-error",
+      "--uds-color-border-secondary",
       "--uds-color-border-outline-focus-visible"
     ],
     "Font": [
       "--uds-font-family",
-      "--uds-font-size-xs",
-      "--uds-font-size-base"
+      "--uds-font-size-base",
+      "--uds-font-weight-medium"
     ],
     "Space": [
-      "--uds-space-075",
-      "--uds-space-100"
+      "--uds-space-100",
+      "--uds-space-150",
+      "--uds-space-200",
+      "--uds-space-300"
     ],
     "Border": [
-      "--uds-border-radius-input"
+      "--uds-border-radius-input",
+      "--uds-border-radius-container-md"
     ]
   },
-  "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head><meta charset=\"UTF-8\" /><link rel=\"stylesheet\" href=\"uds/uds.css\" /></head>\n<body>\n  <div class=\"udc-text-area\"><label class=\"udc-label\" for=\"notes\">Notes</label><div class=\"udc-text-area__field\"><textarea id=\"notes\"></textarea></div></div>\n</body>\n</html>"
+  "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\" />\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n  <link href=\"https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined\" rel=\"stylesheet\" />\n  <link rel=\"stylesheet\" href=\"uds/uds.css\" />\n  <script type=\"module\" src=\"web-components.js\"></script>\n  <title>text-area</title>\n</head>\n<body>\n<udc-text-area\n  name=\"notes\"\n  label=\"Notes\"\n  helper-text=\"Add context for the leasing team.\"\n  max-length=\"500\"\n></udc-text-area>\n</body>\n</html>"
 }

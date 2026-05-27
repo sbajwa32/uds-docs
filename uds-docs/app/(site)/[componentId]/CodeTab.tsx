@@ -1,7 +1,10 @@
-// Code tab — renders Import line + CSS Classes table + Data Attributes table
-// from data/component-api/<componentId>.ts. Falls back to rawCodeHtml when
-// the component's legacy Code tab didn't follow the standard structure.
+'use client';
 
+// Code tab — live docs now lead with the Web Component API. The legacy
+// component-api table remains as a fallback for components without a
+// Web Component example or for archive contexts.
+
+import { WEB_COMPONENT_EXAMPLES } from '@/data/web-component-examples';
 import { COMPONENT_API } from '@/data/component-api';
 import { DocsCodeBlock, DocsSection, DocsStateMessage } from '@/components/site/ui';
 
@@ -20,7 +23,31 @@ function extractLegacyCode(rawCodeHtml: string): string {
 }
 
 export function CodeTab({ componentId }: { componentId: string }) {
+  const webComponentExample = WEB_COMPONENT_EXAMPLES[componentId]?.[0] ?? null;
   const api = COMPONENT_API[componentId];
+
+  if (webComponentExample) {
+    return (
+      <>
+        <DocsSection
+          title="Install"
+          description="Register the Web Components package once, then use the component tag anywhere in your app."
+        >
+          <DocsCodeBlock
+            code={`import './uds/uds.css';
+import { registerUdsComponents } from '@uds/web-components';
+
+registerUdsComponents();`}
+            language="js"
+          />
+        </DocsSection>
+
+        <DocsSection title="Web Component Usage" description={webComponentExample.description}>
+          <DocsCodeBlock code={webComponentExample.html} language="html" />
+        </DocsSection>
+      </>
+    );
+  }
 
   if (!api) {
     return (
@@ -33,7 +60,7 @@ export function CodeTab({ componentId }: { componentId: string }) {
   // Raw fallback — render the legacy code sample as text, not HTML.
   if (api.rawCodeHtml && (!api.cssClasses || api.cssClasses.length === 0) && !api.attributes) {
     return (
-      <DocsSection title="Vanilla HTML">
+      <DocsSection title="Legacy HTML">
         <DocsCodeBlock code={extractLegacyCode(api.rawCodeHtml)} language="html" />
       </DocsSection>
     );

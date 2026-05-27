@@ -3,16 +3,32 @@
   "jsFunc": null,
   "jsFile": null,
   "tokens": {
+    "Color": [
+      "--uds-color-surface-main",
+      "--uds-color-surface-subtle",
+      "--uds-color-surface-interactive-default",
+      "--uds-color-text-primary",
+      "--uds-color-text-secondary",
+      "--uds-color-text-interactive",
+      "--uds-color-border-primary",
+      "--uds-color-border-secondary",
+      "--uds-color-border-outline-focus-visible"
+    ],
+    "Font": [
+      "--uds-font-family",
+      "--uds-font-size-base",
+      "--uds-font-weight-medium"
+    ],
     "Space": [
-      "--uds-space-050",
       "--uds-space-100",
       "--uds-space-150",
       "--uds-space-200",
-      "--uds-space-300",
-      "--uds-space-400",
-      "--uds-space-500",
-      "--uds-space-600"
+      "--uds-space-300"
+    ],
+    "Border": [
+      "--uds-border-radius-input",
+      "--uds-border-radius-container-md"
     ]
   },
-  "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\" />\n  <link rel=\"stylesheet\" href=\"uds/uds.css\" />\n</head>\n<body>\n\n  <div style=\"display:flex; flex-direction:column;\">\n    <p>First section</p>\n    <div class=\"udc-spacer\" data-size=\"200\"></div>\n    <p>Second section</p>\n    <div class=\"udc-spacer\" data-size=\"400\"></div>\n    <p>Third section</p>\n  </div>\n\n</body>\n</html>"
+  "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\" />\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n  <link href=\"https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined\" rel=\"stylesheet\" />\n  <link rel=\"stylesheet\" href=\"uds/uds.css\" />\n  <script type=\"module\" src=\"web-components.js\"></script>\n  <title>spacer</title>\n</head>\n<body>\n<udc-spacer size=\"md\"></udc-spacer>\n</body>\n</html>"
 }

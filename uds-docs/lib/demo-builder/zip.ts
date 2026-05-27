@@ -63,6 +63,17 @@ const UDS_FILES: ReadonlyArray<string> = [
   'components/tooltip.css',
 ];
 
+async function bundleWebComponentsBundle(zip: JSZipType, origin: string): Promise<void> {
+  try {
+    const res = await fetch(`${origin}/web-components.js`);
+    if (!res.ok) return;
+    zip.file('web-components.js', await res.text());
+  } catch {
+    // Preview/download still contains semantic tokens even if the bundle is
+    // missing in a local dev session; production builds publish this file.
+  }
+}
+
 async function bundleUdsFiles(zip: JSZipType, prefix: string, origin: string): Promise<void> {
   await Promise.all(
     UDS_FILES.map(async (f) => {
@@ -92,6 +103,7 @@ export async function downloadUdsBundle(
   const JSZip = await loadJSZip();
   const zip = new JSZip();
   await bundleUdsFiles(zip, '', origin);
+  await bundleWebComponentsBundle(zip, origin);
   const blob = await zip.generateAsync({ type: 'blob' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -133,6 +145,7 @@ export async function downloadDemoProject(
   });
   zip.file('index.html', html);
   await bundleUdsFiles(zip, 'uds/', origin);
+  await bundleWebComponentsBundle(zip, origin);
   const blob = await zip.generateAsync({ type: 'blob' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');

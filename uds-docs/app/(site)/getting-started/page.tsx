@@ -10,7 +10,7 @@ const howItWorks = [
     title: '1. Get the files',
     body: (
       <>
-        Download the UDS bundle below (CSS + JS), or copy the <code>uds/</code> folder from the shared repository.
+        Import the UDS CSS bundle for tokens, then register the Web Components package once at app startup.
       </>
     ),
   },
@@ -19,25 +19,28 @@ const howItWorks = [
     title: '2. Add to your project',
     body: (
       <>
-        Link <code>uds.css</code> for styling and <code>uds.js</code> for component behavior. The JS orchestrator
-        auto-loads per-component scripts (one <code>.js</code> file per interactive component).
+        Use <code>@uds/web-components</code> in any framework, or <code>@uds/react</code> when your app is React.
       </>
     ),
   },
   {
     icon: 'content_copy',
     title: '3. Copy & paste',
-    body: 'Browse component pages, copy the markup from any example or playground, and paste it into your project. Done.',
+    body: 'Use the Web Component tags as the public API. Current class-based examples stay in place only until cutover.',
   },
 ];
 
-const npmInstallCode = 'npm install uds-core';
+const npmInstallCode = `# Once the package is published
+npm install @uds/web-components @uds/react`;
 
 const npmImportCode = `// In your entry file (main.jsx, main.js, etc.)
-import 'uds-core/uds.css';`;
+import './uds/uds.css';
+import { registerUdsComponents } from '@uds/web-components';
+
+registerUdsComponents();`;
 
 const cdnCode = `<link rel="stylesheet" href="https://udsdocs.com/uds/uds.css" />
-<script src="https://udsdocs.com/uds/uds.js"></script>`;
+<!-- Web Component registration bundle will replace the legacy uds.js path at public cutover. -->`;
 
 const pinnedVersionCode = '<link rel="stylesheet" href="https://udsdocs.com/versions/0.2/uds/uds.css" />';
 
@@ -45,7 +48,7 @@ const aiAssistPathCode = 'your-project/.cursor/rules/uds-design-system.mdc';
 
 const fileStructureCode = `uds/
 ├── uds.css              ← master stylesheet (imports all component CSS)
-├── uds.js               ← orchestrator (loads all component JS)
+├── uds.js               ← legacy orchestrator kept until Web Component cutover
 ├── tokens/
 │   ├── primitives.css   ← raw color palette
 │   ├── semantic.css     ← themed color, spacing, font tokens
@@ -72,19 +75,30 @@ const tokenLayerCode = `<head>
 </head>`;
 
 const webComponentsCode = `// app entry (any framework)
-import 'uds-core/uds.css';
-import { registerUdsComponents } from '@uds/components'; // (TODO: real package once published)
+import './uds/uds.css';
+import { registerUdsComponents } from '@uds/web-components';
+
 registerUdsComponents();`;
 
 const webComponentsTemplateCode = `<!-- Then in any framework's template -->
 <udc-button variant="primary">Save</udc-button>
-<udc-dialog open>...</udc-dialog>`;
+<udc-text-input label="Full name" helper-text="First and last name required"></udc-text-input>`;
+
+const reactWrapperCode = `import { UdsButton, UdsTextInput } from '@uds/react';
+
+export function ProfileForm() {
+  return (
+    <>
+      <UdsTextInput label="Full name" helperText="First and last name required" />
+      <UdsButton variant="primary">Save</UdsButton>
+    </>
+  );
+}`;
 
 const vanillaFallbackCode = `<link rel="stylesheet" href="uds/uds.css" />
-<script src="uds/uds.js"></script>
+<script type="module" src="path/to/register-uds-components.js"></script>
 
-<!-- Copy markup from any component page -->
-<button class="udc-button-primary">Save changes</button>`;
+<udc-button variant="primary">Save changes</udc-button>`;
 
 const themingCode = `<!-- Light mode (default — no attributes needed) -->
 <html>
@@ -136,7 +150,7 @@ export default function GettingStartedPage() {
 
       <DocsSection
         title="Download"
-        description="The bundle contains all tokens (colors, spacing, typography), every component stylesheet, and the JS behavior file. No dependencies, no build step."
+        description="The current bundle contains the token CSS and legacy component payload. The Web Components package is being built beside it for the public API cutover."
       >
         <UdsDownloadButton />
         <DocsStateMessage tone="info">
@@ -146,19 +160,20 @@ export default function GettingStartedPage() {
 
       <DocsSection
         title="npm"
-        description="Install the UDS token layer as an npm package for any bundler-based project."
+        description="Install the Web Component package for framework-agnostic components, or add the React wrapper package when your app is React."
       >
         <DocsCodeBlock code={npmInstallCode} language="shell" />
         <div style={{ marginTop: 'var(--uds-space-150)' }}>
           <DocsCodeBlock code={npmImportCode} language="js" />
         </div>
         <p className="ds-guideline-prose" style={{ marginTop: 'var(--uds-space-200)' }}>
-          Works with Vite, Next.js, Nuxt, and most bundlers. This is the <strong>token layer</strong> only — for
-          production component code, register the framework-agnostic web components from the UDS Storybook.
+          The Web Component package is being built beside the current docs examples. Every documented component now
+          has an initial tag and React wrapper; the current component pages stay on the existing examples until
+          examples, playgrounds, and deeper complex-component behavior are ready for the full cutover.
         </p>
       </DocsSection>
 
-      <DocsSection title="CDN" description="Add UDS to any page with two tags — no build step required.">
+      <DocsSection title="CDN" description="Add the UDS token CSS to any page. Component registration will move to the Web Components bundle at cutover.">
         <DocsCodeBlock code={cdnCode} language="html" />
         <p className="ds-guideline-prose" style={{ marginTop: 'var(--uds-space-200)' }}>
           Pin to a specific version:
@@ -196,7 +211,7 @@ export default function GettingStartedPage() {
 
       <DocsSection
         title="Two Layers"
-        description="UDS ships in two layers. Use both, or just the tokens layer if you're using the Storybook web components."
+        description="UDS ships in two layers. Use both, or just the tokens layer when you only need foundations."
       >
         <DocsSection
           title="1. Tokens (CSS only)"
@@ -207,8 +222,8 @@ export default function GettingStartedPage() {
         </DocsSection>
 
         <DocsSection
-          title="2. Components — Storybook web components (recommended)"
-          description="Production component code lives in the UDS Storybook as framework-agnostic web components. Register them once at app entry, then use the tags in any framework — React, Vue, Svelte, Angular, vanilla."
+          title="2. Components — Web Components"
+          description="The replacement component API is framework-agnostic Web Components. Register them once at app entry, then use the tags in any framework — React, Vue, Svelte, Angular, or plain HTML."
           level={3}
         >
           <DocsCodeBlock code={webComponentsCode} language="js" />
@@ -216,18 +231,25 @@ export default function GettingStartedPage() {
             <DocsCodeBlock code={webComponentsTemplateCode} language="html" />
           </div>
           <p className="ds-guideline-prose" style={{ marginTop: 'var(--uds-space-200)' }}>
-            Browse the Storybook for live demos, props, and the full component API. Until the Storybook is live, this
-            section is a placeholder.
+            This package is landing in parallel with the current docs. Wait for the public cutover before replacing
+            every class-based example in product guidance.
           </p>
         </DocsSection>
 
         <DocsSection
-          title="2b. Components — vanilla HTML fallback"
+          title="2b. React wrappers"
+          description="React apps should use the wrapper package. It renders the same Web Components and provides React-friendly prop and event names."
+          level={3}
+        >
+          <DocsCodeBlock code={reactWrapperCode} language="tsx" />
+        </DocsSection>
+
+        <DocsSection
+          title="2c. Current docs examples"
           description={
             <>
-              If a project can&apos;t use web components (strictly server-rendered, etc.), copy the HTML structure shown
-              on each component page into your markup and load <code>uds.js</code> for interactive behavior. Note:{' '}
-              <strong>all code on this site is example only</strong> — production code lives in Storybook.
+              Component pages still show the current class-based examples while the Web Component set is incomplete.
+              Those examples remain useful for design review, but they are no longer the target public API.
             </>
           }
           level={3}
@@ -262,8 +284,8 @@ export default function GettingStartedPage() {
                 <strong>Code</strong>
               </td>
               <td>
-                Vanilla HTML/CSS structure showing the design intent. Example only — for production framework code, use
-                the Storybook web components
+                Current HTML/CSS examples showing the design intent. For production framework code, use the Web
+                Component package once the matching component has landed.
               </td>
             </tr>
             <tr>
@@ -272,7 +294,7 @@ export default function GettingStartedPage() {
               </td>
               <td>
                 Full handoff spec: when to use, acceptance criteria, props, events, slots, states, accessibility,
-                ownership. Auto-rendered from <code>content/&lt;component&gt;.json</code>
+                ownership. Auto-rendered from <code>uds/components/&lt;component&gt;/spec.json</code>
               </td>
             </tr>
             <tr>

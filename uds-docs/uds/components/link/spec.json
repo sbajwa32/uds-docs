@@ -6,6 +6,7 @@
   "whenToUse": "Use links for navigation or opening resources. Use them when the result is a change of location rather than an immediate action.",
   "whenNotToUse": "Do not use links to submit forms or trigger in-place actions; use Button for actions.",
   "acceptanceCriteria": [
+    "Public API uses <udc-link> Web Component tag.",
     "Default, current-page, disabled, and open-in-new-window variants render from Figma matrix",
     "Focus ring is visible when tabbed to",
     "Disabled links do not navigate",
@@ -14,51 +15,62 @@
   ],
   "dependencies": {
     "css": [
-      "uds/components/link.css"
+      "uds/uds.css"
     ],
-    "js": []
+    "js": [
+      "web-components.js"
+    ]
   },
   "props": [
     {
       "name": "href",
       "type": "string",
-      "required": true,
-      "description": "Destination URL or route."
+      "default": null,
+      "required": false,
+      "description": "Destination URL."
     },
     {
       "name": "target",
-      "type": "enum",
-      "enum": [
-        "_self",
-        "_blank"
-      ],
-      "default": "_self",
-      "description": "Use _blank only when opening a new window or external resource."
-    },
-    {
-      "name": "aria-current",
-      "type": "enum",
-      "enum": [
-        "page"
-      ],
+      "type": "string",
       "default": null,
-      "description": "Marks the link as the current page."
+      "required": false,
+      "description": "Anchor target."
     },
     {
-      "name": "aria-disabled",
+      "name": "disabled",
       "type": "boolean",
       "default": false,
-      "description": "Marks link as disabled when navigation is unavailable."
+      "required": false,
+      "description": "Disabled state."
     },
     {
-      "name": "data-new-window",
-      "type": "boolean",
-      "default": false,
-      "description": "Displays the open-in-new-window affordance."
+      "name": "leading-icon",
+      "type": "string",
+      "default": null,
+      "required": false,
+      "description": "Icon before label."
+    },
+    {
+      "name": "trailing-icon",
+      "type": "string",
+      "default": null,
+      "required": false,
+      "description": "Icon after label."
     }
   ],
-  "events": [],
-  "slots": [],
+  "events": [
+    {
+      "name": "click",
+      "description": "Fires when activated.",
+      "payload": "MouseEvent"
+    }
+  ],
+  "slots": [
+    {
+      "name": "default",
+      "description": "Link label."
+    }
+  ],
   "states": [
     {
       "name": "default",

@@ -6,6 +6,16 @@
       "version": "0.3",
       "type": "added",
       "text": "Multi-line text-entry component with default/hover/focused/active/error-focused states, token-first CSS, examples, code, playground, and Demo Builder coverage"
+    },
+    {
+      "version": "0.3",
+      "type": "changed",
+      "text": "Replaced documented examples, implementation reference, and playground output with the Web Component API."
+    },
+    {
+      "version": "0.3",
+      "type": "changed",
+      "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
     }
   ]
 }

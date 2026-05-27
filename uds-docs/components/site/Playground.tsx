@@ -17,6 +17,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 
+import { WEB_COMPONENT_EXAMPLES } from '@/data/web-component-examples';
 import {
   udsResolve,
   getComponentImpl,
@@ -24,6 +25,7 @@ import {
   type ComponentImpl,
   type ComponentSpec,
 } from '@/lib/uds-data';
+import { registerUdsComponents } from '@uds/web-components';
 import { useUdsVersion } from './UdsVersionProvider';
 import { DocsCodeBlock, DocsStateMessage } from './ui';
 
@@ -74,14 +76,21 @@ interface LoadState {
 }
 
 export function Playground({ componentId }: { componentId: string }) {
-  const { fetchVersion } = useUdsVersion();
+  const { fetchVersion, isArchive } = useUdsVersion();
   const [load, setLoad] = useState<LoadState>({ config: null, loading: true, error: null });
   const [state, setState] = useState<Record<string, unknown>>({});
+  const webComponentExample = !isArchive ? WEB_COMPONENT_EXAMPLES[componentId]?.[0] ?? null : null;
 
   // Dynamic import of the per-component playground.js. Anchored at
   // document.baseURI so the import works from any deploy URL (production +
   // per-PR previews + archive views).
   useEffect(() => {
+    if (webComponentExample) {
+      registerUdsComponents();
+      setLoad({ config: null, loading: false, error: null });
+      setState({});
+      return;
+    }
     let cancelled = false;
     setLoad({ config: null, loading: true, error: null });
     setState({});
@@ -119,7 +128,7 @@ export function Playground({ componentId }: { componentId: string }) {
     return () => {
       cancelled = true;
     };
-  }, [componentId, fetchVersion]);
+  }, [componentId, fetchVersion, webComponentExample]);
 
   const output = useMemo(() => {
     if (!load.config) return null;
@@ -134,6 +143,42 @@ export function Playground({ componentId }: { componentId: string }) {
       };
     }
   }, [load.config, state]);
+
+  if (webComponentExample) {
+    return (
+      <div>
+        <div className="sg-example-only-banner">
+          <span className="material-symbols-outlined">code_blocks</span>
+          <span>
+            <strong>Web Component API.</strong> This playground shows the target
+            component tag for the live docs view.
+          </span>
+        </div>
+
+        <div className="ds-playground-layout">
+          <div className="ds-playground-left">
+            <div
+              className="ds-playground-preview"
+              dangerouslySetInnerHTML={{ __html: webComponentExample.html }}
+            />
+            <div className="ds-playground-controls">
+              <label className="ds-control-row">
+                <span>Icon preview</span>
+                <button type="button" className="sg-icon-picker-trigger" aria-label="Icon preview">
+                  <span className="material-symbols-outlined" aria-hidden="true">info</span>
+                  <span className="sg-icon-picker-name">info</span>
+                </button>
+              </label>
+            </div>
+          </div>
+          <div className="ds-playground-right">
+            <DocsCodeBlock code={webComponentExample.html} language="html" />
+            <ImplementationReference componentId={componentId} />
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (load.loading) {
     return <DocsStateMessage>Loading playground…</DocsStateMessage>;

@@ -1,4 +1,5 @@
 import { VersionedLink as Link } from '@/components/site/VersionedLink';
+import { WebComponentPreview } from '@/components/site/WebComponentPreview';
 
 import { DocsPageHeader } from '@/components/site/ui';
 
@@ -66,13 +67,8 @@ export default function DesignLanguagePage() {
                   </div>
                   <div className="sg-dl-preview">
                     <span className="sg-dl-preview-label">Live preview</span>
-                    <div className="udc-text-input">
-                      <label className="udc-text-input__label">Field label</label>
-                      <div className="udc-text-input__field">
-                        <input type="text" placeholder="Placeholder text" />
-                      </div>
-                    </div>
-                    <button className="udc-button-primary" type="button">Primary</button>
+                    <WebComponentPreview html={`<udc-text-input label="Field label" placeholder="Placeholder text"></udc-text-input>
+<udc-button variant="primary">Primary</udc-button>`} />
                   </div>
                   <div className="sg-dl-chip-row">
                     <span className="sg-dl-chip"><span className="sg-dl-chip-swatch" style={{ background: 'var(--uds-color-surface-main)' }}></span>surface-main<span className="sg-dl-chip-role">bg</span></span>
@@ -90,12 +86,7 @@ export default function DesignLanguagePage() {
                   </div>
                   <div className="sg-dl-preview">
                     <span className="sg-dl-preview-label">Live preview (forced state)</span>
-                    <div className="udc-text-input">
-                      <label className="udc-text-input__label">Field label</label>
-                      <div className="udc-text-input__field sg-dl-force-hover">
-                        <input type="text" placeholder="Placeholder text" />
-                      </div>
-                    </div>
+                    <WebComponentPreview html={`<udc-text-input label="Field label" placeholder="Placeholder text"></udc-text-input>`} />
                     <p style={{ fontSize: 'var(--uds-font-size-xs)', color: 'var(--uds-color-text-secondary)', margin: 0 }}>&rarr; <strong>Hover over a real button</strong> on the Button page to see it animated.</p>
                   </div>
                   <div className="sg-dl-chip-row">
@@ -114,12 +105,7 @@ export default function DesignLanguagePage() {
                   </div>
                   <div className="sg-dl-preview">
                     <span className="sg-dl-preview-label">Live preview (forced state)</span>
-                    <div className="udc-text-input">
-                      <label className="udc-text-input__label">Field label</label>
-                      <div className="udc-text-input__field sg-dl-force-focus">
-                        <input type="text" placeholder="Placeholder text" />
-                      </div>
-                    </div>
+                    <WebComponentPreview html={`<udc-text-input label="Field label" placeholder="Placeholder text"></udc-text-input>`} />
                     <p style={{ fontSize: 'var(--uds-font-size-xs)', color: 'var(--uds-color-text-secondary)', margin: 0 }}>&rarr; <strong>Tab</strong> through any real field on the Text Input page to see it.</p>
                   </div>
                   <div className="sg-dl-chip-row">
@@ -137,8 +123,8 @@ export default function DesignLanguagePage() {
                   </div>
                   <div className="sg-dl-preview">
                     <span className="sg-dl-preview-label">Live preview</span>
-                    <button className="udc-button-primary" type="button" style={{ background: 'var(--uds-color-surface-interactive-active)', borderColor: 'var(--uds-color-surface-interactive-active)' }}>Pressed primary</button>
-                    <button className="udc-button-secondary" type="button" style={{ background: 'var(--uds-color-surface-interactive-subtle-active)' }}>Pressed secondary</button>
+                    <WebComponentPreview html={`<udc-button variant="primary">Pressed primary</udc-button>
+<udc-button variant="secondary">Pressed secondary</udc-button>`} />
                     <p style={{ fontSize: 'var(--uds-font-size-xs)', color: 'var(--uds-color-text-secondary)', margin: 0 }}>&rarr; Mouse-down on a real button to see this state.</p>
                   </div>
                   <div className="sg-dl-chip-row">
@@ -169,17 +155,8 @@ export default function DesignLanguagePage() {
                   </div>
                   <div className="sg-dl-preview">
                     <span className="sg-dl-preview-label">Live preview</span>
-                    <div className="udc-text-input" data-state="error">
-                      <label className="udc-text-input__label">Email <span className="udc-text-input__required"></span></label>
-                      <div className="udc-text-input__field">
-                        <input type="text" defaultValue="not-an-email" />
-                      </div>
-                      <div className="udc-text-input__helper"><span>Use a valid email address</span></div>
-                    </div>
-                    <div className="udc-notification" data-variant="error">
-                      <span className="udc-notification__icon"><span className="material-symbols-outlined">error</span></span>
-                      <span className="udc-notification__text">Something went wrong.</span>
-                    </div>
+                    <WebComponentPreview html={`<udc-text-input label="Email" value="not-an-email" state="error" helper-text="Use a valid email address" required></udc-text-input>
+<udc-notification tone="error">Something went wrong.</udc-notification>`} />
                   </div>
                   <div className="sg-dl-chip-row">
                     <span className="sg-dl-chip"><span className="sg-dl-chip-swatch" style={{ background: 'var(--uds-color-border-error)' }}></span>border-error</span>
@@ -197,11 +174,8 @@ export default function DesignLanguagePage() {
                   </div>
                   <div className="sg-dl-preview">
                     <span className="sg-dl-preview-label">Live preview</span>
-                    <div className="udc-notification" data-variant="info">
-                      <span className="udc-notification__icon"><span className="material-symbols-outlined">info</span></span>
-                      <span className="udc-notification__text">Heads up — info notification.</span>
-                    </div>
-                    <span className="udc-badge" data-variant="info" data-prominent="false">Info badge</span>
+                    <WebComponentPreview html={`<udc-notification tone="info">Heads up — info notification.</udc-notification>
+<udc-badge tone="info" variant="subtle">Info badge</udc-badge>`} />
                   </div>
                   <div className="sg-dl-chip-row">
                     <span className="sg-dl-chip"><span className="sg-dl-chip-swatch" style={{ background: 'var(--uds-color-surface-info-subtle)' }}></span>surface-info-subtle</span>
@@ -218,11 +192,8 @@ export default function DesignLanguagePage() {
                   </div>
                   <div className="sg-dl-preview">
                     <span className="sg-dl-preview-label">Live preview</span>
-                    <div className="udc-notification" data-variant="success">
-                      <span className="udc-notification__icon"><span className="material-symbols-outlined">check_circle</span></span>
-                      <span className="udc-notification__text">All set — your changes saved.</span>
-                    </div>
-                    <span className="udc-badge" data-variant="success" data-prominent="false">Done</span>
+                    <WebComponentPreview html={`<udc-notification tone="success">All set — your changes saved.</udc-notification>
+<udc-badge tone="success" variant="subtle">Done</udc-badge>`} />
                   </div>
                   <div className="sg-dl-chip-row">
                     <span className="sg-dl-chip"><span className="sg-dl-chip-swatch" style={{ background: 'var(--uds-color-surface-success-subtle)' }}></span>surface-success-subtle</span>
@@ -239,11 +210,8 @@ export default function DesignLanguagePage() {
                   </div>
                   <div className="sg-dl-preview">
                     <span className="sg-dl-preview-label">Live preview</span>
-                    <div className="udc-notification" data-variant="warning">
-                      <span className="udc-notification__icon"><span className="material-symbols-outlined">warning</span></span>
-                      <span className="udc-notification__text">Heads up — something needs attention.</span>
-                    </div>
-                    <span className="udc-badge" data-variant="warning" data-prominent="false">Pending</span>
+                    <WebComponentPreview html={`<udc-notification tone="warning">Heads up — something needs attention.</udc-notification>
+<udc-badge tone="warning" variant="subtle">Pending</udc-badge>`} />
                   </div>
                   <div className="sg-dl-chip-row">
                     <span className="sg-dl-chip"><span className="sg-dl-chip-swatch" style={{ background: 'var(--uds-color-surface-warning-subtle)' }}></span>surface-warning-subtle</span>
@@ -274,14 +242,9 @@ export default function DesignLanguagePage() {
                   </div>
                   <div className="sg-dl-preview">
                     <span className="sg-dl-preview-label">Live preview</span>
-                    <div className="udc-text-input">
-                      <label className="udc-text-input__label">Account ID</label>
-                      <div className="udc-text-input__field">
-                        <input type="text" placeholder="Auto-generated" disabled />
-                      </div>
-                    </div>
-                    <button className="udc-button-primary" type="button" disabled>Submit</button>
-                    <button className="udc-button-secondary" type="button" disabled>Cancel</button>
+                    <WebComponentPreview html={`<udc-text-input label="Account ID" placeholder="Auto-generated" disabled></udc-text-input>
+<udc-button variant="primary" disabled>Submit</udc-button>
+<udc-button variant="secondary" disabled>Cancel</udc-button>`} />
                   </div>
                   <div className="sg-dl-chip-row">
                     <span className="sg-dl-chip"><span className="sg-dl-chip-swatch" style={{ background: 'var(--uds-color-surface-interactive-disabled)' }}></span>surface-interactive-disabled<span className="sg-dl-chip-role">filled bg</span></span>
@@ -299,12 +262,7 @@ export default function DesignLanguagePage() {
                   </div>
                   <div className="sg-dl-preview">
                     <span className="sg-dl-preview-label">Live preview (proposed)</span>
-                    <div className="udc-text-input">
-                      <label className="udc-text-input__label">Property name</label>
-                      <div className="udc-text-input__field sg-dl-force-readonly">
-                        <input type="text" defaultValue="Riverbend Estates" readOnly />
-                      </div>
-                    </div>
+                    <WebComponentPreview html={`<udc-text-input label="Property name" value="Riverbend Estates" readonly></udc-text-input>`} />
                     <p style={{ fontSize: 'var(--uds-font-size-xs)', color: 'var(--uds-color-text-secondary)', margin: 0 }}>User can read + copy the value but not edit. <span className="sg-dl-badge sg-dl-badge--warn">proposed</span></p>
                   </div>
                   <div className="sg-dl-chip-row">
@@ -349,8 +307,8 @@ export default function DesignLanguagePage() {
                   </div>
                   <div className="sg-dl-preview">
                     <span className="sg-dl-preview-label">Live preview</span>
-                    <label className="udc-checkbox"><input type="checkbox" defaultChecked /><span className="udc-checkbox__control"></span><span className="udc-checkbox__label">Marketing emails</span></label>
-                    <label className="udc-checkbox"><input type="checkbox" /><span className="udc-checkbox__control"></span><span className="udc-checkbox__label">Promotional offers</span></label>
+                    <WebComponentPreview html={`<udc-checkbox checked>Marketing emails</udc-checkbox>
+<udc-checkbox>Promotional offers</udc-checkbox>`} />
                   </div>
                   <div className="sg-dl-chip-row">
                     <span className="sg-dl-chip"><span className="sg-dl-chip-swatch" style={{ background: 'var(--uds-color-surface-interactive-default)' }}></span>surface-interactive-default<span className="sg-dl-chip-role">filled box</span></span>
@@ -366,8 +324,10 @@ export default function DesignLanguagePage() {
                   </div>
                   <div className="sg-dl-preview">
                     <span className="sg-dl-preview-label">Live preview</span>
-                    <label className="udc-radio"><input type="radio" name="dl-demo-radio" defaultChecked /><span className="udc-radio__control"></span><span className="udc-radio__label">Yes, send updates</span></label>
-                    <label className="udc-radio"><input type="radio" name="dl-demo-radio" /><span className="udc-radio__control"></span><span className="udc-radio__label">No thanks</span></label>
+                    <WebComponentPreview html={`<udc-radio-group name="dl-demo-radio" value="yes">
+  <udc-radio value="yes" checked>Yes, send updates</udc-radio>
+  <udc-radio value="no">No thanks</udc-radio>
+</udc-radio-group>`} />
                   </div>
                   <div className="sg-dl-chip-row">
                     <span className="sg-dl-chip"><span className="sg-dl-chip-swatch" style={{ background: 'var(--uds-color-icon-interactive)' }}></span>icon-interactive<span className="sg-dl-chip-role">center dot</span></span>
@@ -384,9 +344,9 @@ export default function DesignLanguagePage() {
                   <div className="sg-dl-preview">
                     <span className="sg-dl-preview-label">Live preview</span>
                     <div style={{ display: 'flex', gap: 'var(--uds-space-100)', flexWrap: 'wrap' }}>
-                      <button className="udc-chip" type="button"><span className="udc-chip__label">All</span></button>
-                      <button className="udc-chip" type="button" data-selected="true"><span className="udc-chip__leading-icon"><span className="material-symbols-outlined">check</span></span><span className="udc-chip__label">Open</span></button>
-                      <button className="udc-chip" type="button"><span className="udc-chip__label">Closed</span></button>
+                      <WebComponentPreview html={`<udc-chip variant="filter">All</udc-chip>
+<udc-chip variant="filter" selected>Open</udc-chip>
+<udc-chip variant="filter">Closed</udc-chip>`} />
                     </div>
                   </div>
                   <div className="sg-dl-chip-row">
@@ -441,7 +401,7 @@ export default function DesignLanguagePage() {
                   <h3 className="sg-dl-compare-card-name">A. <code>outline + outline-offset</code> <span className="sg-dl-badge sg-dl-badge--safe">recommended</span></h3>
                   <p className="sg-dl-compare-card-desc">Outline with a transparent offset. The gap is genuinely empty space &mdash; always blends with whatever&rsquo;s behind. Default for new code.</p>
                   <div className="sg-dl-compare-card-preview">
-                    <a className="udc-link" href="#focus-ring" tabIndex={-1} style={{ outline: '2px solid var(--uds-color-border-outline-focus-visible)', outlineOffset: 'var(--uds-space-050)', borderRadius: 'var(--uds-border-radius-container-sm)' }}>Focused link</a>
+                    <WebComponentPreview html={`<udc-link href="#focus-ring">Focused link</udc-link>`} />
                   </div>
                   <p className="sg-dl-compare-card-desc"><strong>Used by:</strong> checkbox, radio, link, toggle, tabs, text-area, dropdown items, dialog close, notification close.</p>
                 </div>
@@ -451,11 +411,7 @@ export default function DesignLanguagePage() {
                   <h3 className="sg-dl-compare-card-name">B. Stacked <code>box-shadow</code></h3>
                   <p className="sg-dl-compare-card-desc">Two box-shadows: a surface-colored &ldquo;gap&rdquo; layer + the focus ring outside it. Use when an outline would be clipped (form field with <code>overflow:hidden</code>). Theme-safe ONLY when the gap binds to <code>surface-main</code>, not <code>surface-white</code>.</p>
                   <div className="sg-dl-compare-card-preview">
-                    <div className="udc-text-input" style={{ maxWidth: '200px', margin: 0 }}>
-                      <div className="udc-text-input__field sg-dl-force-focus" style={{ minHeight: '36px' }}>
-                        <input type="text" defaultValue="focused" />
-                      </div>
-                    </div>
+                    <WebComponentPreview html={`<udc-text-input value="focused"></udc-text-input>`} />
                   </div>
                   <p className="sg-dl-compare-card-desc"><strong>Used by:</strong> chip, search (theme-safe). <strong>Bug:</strong> button, text-input, dropdown bind the gap to <code>surface-white</code> &mdash; visible white ring in dark mode. See <a href="#inconsistencies" style={{ color: 'var(--uds-color-text-interactive)' }}>§12.1</a>.</p>
                 </div>
@@ -618,16 +574,16 @@ export default function DesignLanguagePage() {
                 <div className="sg-dl-compare-card">
                   <h3 className="sg-dl-compare-card-name">Default (comfortable)</h3>
                   <div className="sg-dl-compare-card-preview" style={{ flexDirection: 'column', gap: 'var(--uds-space-150)' }}>
-                    <button className="udc-button-primary" type="button">Submit</button>
-                    <button className="udc-button-secondary" type="button">Cancel</button>
+                    <WebComponentPreview html={`<udc-button variant="primary">Submit</udc-button>
+<udc-button variant="secondary">Cancel</udc-button>`} />
                   </div>
                   <p className="sg-dl-compare-card-desc">Button: <code>padding: space-150 space-200</code> (12 &times; 16 px)<br />Tab: <code>padding: space-200 space-300</code> (16 &times; 24 px)</p>
                 </div>
                 <div className="sg-dl-compare-card">
-                  <h3 className="sg-dl-compare-card-name">Small (<code>data-size=&quot;sm&quot;</code>)</h3>
+                  <h3 className="sg-dl-compare-card-name">Small (<code>size=&quot;sm&quot;</code>)</h3>
                   <div className="sg-dl-compare-card-preview" style={{ flexDirection: 'column', gap: 'var(--uds-space-150)' }}>
-                    <button className="udc-button-primary" type="button" data-size="sm">Submit</button>
-                    <button className="udc-button-secondary" type="button" data-size="sm">Cancel</button>
+                    <WebComponentPreview html={`<udc-button variant="primary" size="sm">Submit</udc-button>
+<udc-button variant="secondary" size="sm">Cancel</udc-button>`} />
                   </div>
                   <p className="sg-dl-compare-card-desc">Button: <code>padding: space-075 space-150</code> (6 &times; 12 px)<br />Tab: <code>padding-top/bottom: space-100</code> (8 px)</p>
                 </div>

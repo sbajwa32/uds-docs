@@ -2,12 +2,12 @@
   "$schema": "../../../schemas/manifest.schema.json",
   "examples": [
     {
-      "id": "variants",
-      "file": "variants.html",
-      "label": "Variants",
+      "id": "web-component",
+      "file": "web-component.html",
+      "label": "Label",
       "showInDocs": true,
       "demoWeight": 3,
-      "description": "Label variants cover default, required, disabled, error, interactive, success, prominent, smaller, and multiline use cases."
+      "description": "A form label with required indicator support."
     }
   ]
 }

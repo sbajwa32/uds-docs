@@ -13,6 +13,7 @@
 // `lib/demo-builder/zip.ts`.
 
 import { reseedRandom } from './rng';
+import { WEB_COMPONENT_EXAMPLES } from '@/data/web-component-examples';
 import { assembleHTMLBody, type FetchRawExampleFn } from './assembler';
 import { RANDOM_POOL } from './data-pools';
 import { applyRandomSubstitution } from './substitution';
@@ -57,7 +58,12 @@ function themeAttrString(attrs: Record<string, string>): string {
     .join('');
 }
 
-function baseHead(title: string, attrs: Record<string, string>, udsBase: string): string {
+function baseHead(
+  title: string,
+  attrs: Record<string, string>,
+  udsBase: string,
+  webComponentsSrc: string,
+): string {
   return [
     '<!DOCTYPE html>',
     '<html lang="en"' + themeAttrString(attrs) + '>',
@@ -73,6 +79,7 @@ function baseHead(title: string, attrs: Record<string, string>, udsBase: string)
     '    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }',
     '    body { font-family: var(--uds-font-family); background: var(--uds-color-surface-page-main); color: var(--uds-color-text-primary); }',
     '  </style>',
+    '  <script type="module" src="' + webComponentsSrc + '"></script>',
     '</head>',
     '',
   ].join('\n');
@@ -88,6 +95,9 @@ function baseHead(title: string, attrs: Record<string, string>, udsBase: string)
  * the same files so there's no drift risk.
  */
 async function defaultFetchRawExample(componentId: string): Promise<string | null> {
+  const webComponentExample = WEB_COMPONENT_EXAMPLES[componentId]?.[0];
+  if (webComponentExample) return webComponentExample.html;
+
   try {
     const manifestUrl = `./uds/components/${componentId}/examples/manifest.json`;
     const manifestRes = await fetch(manifestUrl, { cache: 'no-cache' });
@@ -130,6 +140,7 @@ export async function generateDemoHTML(
   const themeAttrs = opts.themeAttrs ?? getCurrentThemeAttrs();
   const absolute = opts.absoluteAssets ?? true;
   const udsBase = absolute ? `${origin}/uds` : './uds';
+  const webComponentsSrc = absolute ? `${origin}/web-components.js` : './web-components.js';
   const fetchFn = opts.fetchRawExample ?? defaultFetchRawExample;
 
   const body = await assembleHTMLBody(components, {
@@ -138,12 +149,10 @@ export async function generateDemoHTML(
   });
 
   return (
-    baseHead('UDS Demo — HTML', themeAttrs, udsBase) +
+    baseHead('UDS Demo — HTML', themeAttrs, udsBase, webComponentsSrc) +
     '<body>\n' +
     body +
-    '\n<script src="' +
-    udsBase +
-    '/uds.js"></script>\n</body>\n</html>'
+    '\n</body>\n</html>'
   );
 }
 

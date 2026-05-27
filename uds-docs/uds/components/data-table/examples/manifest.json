@@ -2,32 +2,12 @@
   "$schema": "../../../schemas/manifest.schema.json",
   "examples": [
     {
-      "id": "basic-table",
-      "file": "basic-table.html",
-      "label": "Basic table",
+      "id": "web-component",
+      "file": "web-component.html",
+      "label": "Data Table",
       "showInDocs": true,
-      "demoWeight": 3
-    },
-    {
-      "id": "with-checkboxes-sort-badges-amp-actions",
-      "file": "with-checkboxes-sort-badges-amp-actions.html",
-      "label": "With checkboxes, sort, badges &amp; actions",
-      "showInDocs": true,
-      "demoWeight": 1
-    },
-    {
-      "id": "striped-rows",
-      "file": "striped-rows.html",
-      "label": "Striped rows",
-      "showInDocs": true,
-      "demoWeight": 1
-    },
-    {
-      "id": "error-highlight-on-row",
-      "file": "error-highlight-on-row.html",
-      "label": "Error highlight on row",
-      "showInDocs": true,
-      "demoWeight": 1
+      "demoWeight": 3,
+      "description": "A token-bound table wrapper."
     }
   ]
 }

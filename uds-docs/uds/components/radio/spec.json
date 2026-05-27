@@ -3,18 +3,69 @@
   "component": "radio",
   "title": "Radio",
   "description": "A radio button lets users select exactly one option from a set.",
-  "whenToUse": "Mutually exclusive selection from 2\u20135 options. When the user must see all options at once.",
+  "whenToUse": "Mutually exclusive selection from 2–5 options. When the user must see all options at once.",
   "whenNotToUse": "For more than 5 options, use a dropdown select instead. For multiple selections, use checkboxes.",
-  "acceptanceCriteria": [],
+  "acceptanceCriteria": [
+    "Public API uses <udc-radio-group>, <udc-radio> Web Component tags."
+  ],
   "dependencies": {
     "css": [
-      "uds/components/radio.css"
+      "uds/uds.css"
     ],
-    "js": []
+    "js": [
+      "web-components.js"
+    ]
   },
-  "props": [],
-  "events": [],
-  "slots": [],
+  "props": [
+    {
+      "name": "name",
+      "type": "string",
+      "default": null,
+      "required": false,
+      "description": "Group form name."
+    },
+    {
+      "name": "value",
+      "type": "string",
+      "default": null,
+      "required": false,
+      "description": "Selected value."
+    },
+    {
+      "name": "label",
+      "type": "string",
+      "default": null,
+      "required": false,
+      "description": "Group label."
+    },
+    {
+      "name": "checked",
+      "type": "boolean",
+      "default": false,
+      "required": false,
+      "description": "Radio option selected state."
+    },
+    {
+      "name": "disabled",
+      "type": "boolean",
+      "default": false,
+      "required": false,
+      "description": "Disabled option state."
+    }
+  ],
+  "events": [
+    {
+      "name": "udc-radio-group-change",
+      "description": "Fires when selected value changes.",
+      "payload": "{ value }"
+    }
+  ],
+  "slots": [
+    {
+      "name": "default",
+      "description": "Radio options."
+    }
+  ],
   "states": [],
   "contentGuidelines": null,
   "commonlyPairedWith": [],

@@ -2,76 +2,12 @@
   "$schema": "../../../schemas/manifest.schema.json",
   "examples": [
     {
-      "id": "variants",
-      "file": "variants.html",
-      "label": "Variants",
+      "id": "web-component",
+      "file": "web-component.html",
+      "label": "Button",
       "showInDocs": true,
       "demoWeight": 3,
-      "description": "Primary, secondary, and ghost buttons provide different levels of visual emphasis."
-    },
-    {
-      "id": "sizes",
-      "file": "sizes.html",
-      "label": "Sizes",
-      "showInDocs": true,
-      "demoWeight": 1,
-      "description": "Small and default sizes. Use data-size=\"sm\" for compact variant."
-    },
-    {
-      "id": "leading-icon",
-      "file": "leading-icon.html",
-      "label": "Leading icon",
-      "showInDocs": true,
-      "demoWeight": 1,
-      "description": "Add a leading icon with data-leading-icon. Left padding is automatically reduced."
-    },
-    {
-      "id": "trailing-icon",
-      "file": "trailing-icon.html",
-      "label": "Trailing icon",
-      "showInDocs": true,
-      "demoWeight": 1,
-      "description": "Add a trailing icon with data-trailing-icon. Right padding is automatically reduced."
-    },
-    {
-      "id": "icon-only",
-      "file": "icon-only.html",
-      "label": "Icon only",
-      "showInDocs": true,
-      "demoWeight": 1,
-      "description": "Square buttons with only an icon. Use data-icon-only and always provide an aria-label."
-    },
-    {
-      "id": "destructive",
-      "file": "destructive.html",
-      "label": "Destructive",
-      "showInDocs": true,
-      "demoWeight": 1,
-      "description": "Use data-btn-color=\"danger\" on the button or a parent to signal destructive actions (maps to Figma's Destructive=True)."
-    },
-    {
-      "id": "disabled",
-      "file": "disabled.html",
-      "label": "Disabled",
-      "showInDocs": true,
-      "demoWeight": 1,
-      "description": "Disabled buttons use a dedicated fill and text color \u2014 not opacity."
-    },
-    {
-      "id": "selected",
-      "file": "selected.html",
-      "label": "Selected",
-      "showInDocs": true,
-      "demoWeight": 1,
-      "description": "Toggle-style selection via aria-selected=\"true\"."
-    },
-    {
-      "id": "color-palettes",
-      "file": "color-palettes.html",
-      "label": "Color palettes",
-      "showInDocs": true,
-      "demoWeight": 1,
-      "description": "Wrap buttons in a container with data-btn-color to override the accent."
+      "description": "Primary, secondary, and ghost actions."
     }
   ]
 }

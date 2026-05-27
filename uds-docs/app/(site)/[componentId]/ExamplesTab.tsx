@@ -11,7 +11,9 @@ import { useEffect, useState } from 'react';
 
 import { useUdsVersion } from '@/components/site/UdsVersionProvider';
 import { DocsCodeBlock, DocsSection, DocsStateMessage } from '@/components/site/ui';
+import { WEB_COMPONENT_EXAMPLES } from '@/data/web-component-examples';
 import { fetchAllExamples, type RenderedExample } from '@/lib/examples-renderer';
+import { registerUdsComponents } from '@uds/web-components';
 
 // Some example manifests have HTML entities (`&amp;`, `&lt;`) in their
 // label / description fields, because the legacy site rendered them via
@@ -49,6 +51,15 @@ export function ExamplesTab({ componentId }: { componentId: string }) {
     setState({ examples: null, loading: true, error: null });
 
     (async () => {
+      if (!isArchive && WEB_COMPONENT_EXAMPLES[componentId]) {
+        registerUdsComponents();
+        setState({
+          examples: WEB_COMPONENT_EXAMPLES[componentId],
+          loading: false,
+          error: null,
+        });
+        return;
+      }
       const result = await fetchAllExamples(componentId, { version: fetchVersion });
       if (cancelled) return;
       if (result.length === 0) {
@@ -68,7 +79,7 @@ export function ExamplesTab({ componentId }: { componentId: string }) {
     return () => {
       cancelled = true;
     };
-  }, [componentId, fetchVersion, versionReady]);
+  }, [componentId, fetchVersion, isArchive, versionReady]);
 
   if (loading) {
     return <DocsStateMessage>Loading examples…</DocsStateMessage>;

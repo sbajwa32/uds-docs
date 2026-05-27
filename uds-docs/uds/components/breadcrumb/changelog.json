@@ -11,6 +11,16 @@
       "version": "0.3",
       "type": "changed",
       "text": "Figma variant matrix confirmed: framed/frameless, depth on/off, 2-6 link groups, current/default/disabled link states, and open-in-new-window affordance"
+    },
+    {
+      "version": "0.3",
+      "type": "changed",
+      "text": "Replaced documented examples, implementation reference, and playground output with the Web Component API."
+    },
+    {
+      "version": "0.3",
+      "type": "changed",
+      "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
     }
   ]
 }

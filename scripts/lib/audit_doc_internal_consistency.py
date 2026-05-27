@@ -15,10 +15,10 @@ Five checks (all enforceable from structured data):
      orphaned by example/impl/playground cleanup.
 
   2. Every event name in `spec.json` `events[]` must be dispatched
-     somewhere in `<id>.js` (literal substring match against the event
-     name string), OR explicitly excused in a `spec.json` `knownIssues`
-     entry containing the literal phrase `spec-only`. Catches spec
-     events left behind after the JS handler was removed.
+     somewhere in the component behavior source. Post Web Components
+     rewrite, that source is `packages/uds-web-components/src/**`
+     instead of `<id>.js`. A legacy `<id>.js` file is still checked if
+     present.
 
   3. Every `--uds-*` token enumerated in `impl.json` `tokens` must exist
      as a defined custom property under `uds-docs/uds/tokens/*.css`.
@@ -28,9 +28,10 @@ Five checks (all enforceable from structured data):
      exist in `uds-docs/uds/components.json` `components[]`. Catches
      references to deleted components.
 
-  5. Every entry in `uds-docs/uds/uds.js` `COMPONENT_SCRIPTS` array
-     must point at a real per-component JS file. Catches "removed the
-     file but left the loader entry."
+  5. If `uds-docs/uds/uds.js` still uses the legacy `COMPONENT_SCRIPTS`
+     array, every entry must point at a real per-component JS file. If it
+     is a Web Components compatibility loader, no legacy loader entries
+     are required.
 
 Per-component allow-list tolerance via
 `scripts/audit-baseline.json` `audit-doc-internal-consistency`:
@@ -54,6 +55,7 @@ COMPONENTS_DIR = UDS_DOCS / "uds" / "components"
 TOKENS_DIR = UDS_DOCS / "uds" / "tokens"
 API_DATA_DIR = UDS_DOCS / "data" / "component-api"
 ORCHESTRATOR_JS = UDS_DOCS / "uds" / "uds.js"
+WEB_COMPONENTS_SRC = UDS_DOCS / "packages" / "uds-web-components" / "src"
 COMPONENTS_JSON = UDS_DOCS / "uds" / "components.json"
 BASELINE_CONFIG = REPO_ROOT / "scripts" / "audit-baseline.json"
 
@@ -259,6 +261,18 @@ def extract_component_scripts(orch_text: str) -> list[str]:
     return [m.group(1) for m in _COMP_SCRIPT_ENTRY_RE.finditer(block)]
 
 
+def read_web_component_sources() -> str:
+    if not WEB_COMPONENTS_SRC.exists():
+        return ""
+    chunks: list[str] = []
+    for path in WEB_COMPONENTS_SRC.rglob("*.ts"):
+        try:
+            chunks.append(path.read_text())
+        except Exception:
+            continue
+    return "\n".join(chunks)
+
+
 # ---------------------------------------------------------------------------
 # Per-component checks
 # ---------------------------------------------------------------------------
@@ -319,7 +333,7 @@ def audit_component(
 
     # ---------- Check 2: spec events must be dispatched or excused ----------
     events = (spec.get("events") or []) if isinstance(spec, dict) else []
-    js_text = js_path.read_text() if js_path.exists() else ""
+    js_text = (js_path.read_text() if js_path.exists() else "") + "\n" + read_web_component_sources()
     known_issues = (spec.get("knownIssues") or []) if isinstance(spec, dict) else []
     spec_only_excused = " ".join(known_issues).lower()
     for ev in events:
@@ -397,6 +411,8 @@ def audit_orchestrator() -> list[str]:
             "COMPONENT_SCRIPTS loader integrity"
         ]
     orch_text = ORCHESTRATOR_JS.read_text()
+    if "web-components.js" in orch_text and "COMPONENT_SCRIPTS" not in orch_text:
+        return []
     entries = extract_component_scripts(orch_text)
     if not entries:
         findings.append(

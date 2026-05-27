@@ -232,6 +232,14 @@
           "text": "Figma variant matrix confirmed: 2 sizes (Default/Small), 5 variants (Info/Secondary/Success/Error/Warning), and Prominent true/false"
         },
         {
+          "type": "changed",
+          "text": "Replaced documented examples, implementation reference, and playground output with the Web Component API."
+        },
+        {
+          "type": "changed",
+          "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
+        },
+        {
           "type": "fixed",
           "text": "Fixed invisible text on the secondary prominent variant. The CSS paired `surface-bold` (light gray in light mode) with `text-inverse` (near-white in light mode) \u2014 contrast was ~1.07:1, basically invisible. Switched to `text-primary` for a contrast of ~9.7:1 in light mode and ~10:1 in dark mode. Affected the changelog component-name pills and per-component changelog type labels."
         }
@@ -240,90 +248,210 @@
         {
           "type": "changed",
           "text": "Figma variant matrix confirmed: framed/frameless, depth on/off, 2-6 link groups, current/default/disabled link states, and open-in-new-window affordance"
+        },
+        {
+          "type": "changed",
+          "text": "Replaced documented examples, implementation reference, and playground output with the Web Component API."
+        },
+        {
+          "type": "changed",
+          "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
         }
       ],
       "Button": [
         {
           "type": "changed",
           "text": "Figma variant matrix confirmed for primary/secondary/ghost buttons: destructive true/false, default/small sizes, default/hover/active/selected/disabled states, leading/trailing icons, icon-only, and horizontal/vertical button groups"
+        },
+        {
+          "type": "changed",
+          "text": "Replaced documented examples, implementation reference, and playground output with the Web Component API."
+        },
+        {
+          "type": "changed",
+          "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
         }
       ],
       "Checkbox": [
         {
           "type": "changed",
           "text": "Figma variant matrix confirmed for checkbox and multiline checkbox: selected true/false plus default/hover/active/focused/selected/disabled/error states"
+        },
+        {
+          "type": "changed",
+          "text": "Replaced documented examples, implementation reference, and playground output with the Web Component API."
+        },
+        {
+          "type": "changed",
+          "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
         }
       ],
       "Chip": [
         {
           "type": "changed",
           "text": "Figma variant matrix confirmed: default/filter/input/dropdown variants, selected true/false, and default/hover/active/focused/focused-on-active states"
+        },
+        {
+          "type": "changed",
+          "text": "Replaced documented examples, implementation reference, and playground output with the Web Component API."
+        },
+        {
+          "type": "changed",
+          "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
         }
       ],
       "Combobox": [
         {
           "type": "added",
           "text": "Placeholder page for searchable text-entry selection component from Figma 0.3"
+        },
+        {
+          "type": "changed",
+          "text": "Replaced documented examples, implementation reference, and playground output with the Web Component API."
+        },
+        {
+          "type": "changed",
+          "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
         }
       ],
       "Data Table": [
         {
           "type": "changed",
           "text": "Figma data-table coverage expanded: text/dropdown/ghost-button/checkbox/badge cell types, header cells, 1-14 columns, 2-14 rows, alignment, leading/trailing icons, dividers, prominent text, and error highlighting"
+        },
+        {
+          "type": "changed",
+          "text": "Replaced documented examples, implementation reference, and playground output with the Web Component API."
+        },
+        {
+          "type": "changed",
+          "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
         }
       ],
       "Data View": [
         {
           "type": "added",
           "text": "Placeholder page for non-table record collection layouts from Figma 0.3"
+        },
+        {
+          "type": "changed",
+          "text": "Replaced documented examples, implementation reference, and playground output with the Web Component API."
+        },
+        {
+          "type": "changed",
+          "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
         }
       ],
       "Date Picker": [
         {
           "type": "added",
           "text": "Placeholder page for calendar date-entry component from Figma 0.3"
+        },
+        {
+          "type": "changed",
+          "text": "Replaced documented examples, implementation reference, and playground output with the Web Component API."
+        },
+        {
+          "type": "changed",
+          "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
         }
       ],
       "Dialog": [
         {
           "type": "changed",
           "text": "Figma dialog component supports 1-4 slot configurations plus header and footer subcomponents"
+        },
+        {
+          "type": "changed",
+          "text": "Replaced documented examples, implementation reference, and playground output with the Web Component API."
+        },
+        {
+          "type": "changed",
+          "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
         }
       ],
       "Divider": [
         {
           "type": "changed",
           "text": "Figma divider coverage confirmed for sm, md, lg, and xl padding variants"
+        },
+        {
+          "type": "changed",
+          "text": "Replaced documented examples, implementation reference, and playground output with the Web Component API."
+        },
+        {
+          "type": "changed",
+          "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
         }
       ],
       "Dropdown": [
         {
           "type": "changed",
           "text": "Figma dropdown coverage confirmed: default/disabled/error field states plus dropdown item active/default/focused/hover states"
+        },
+        {
+          "type": "changed",
+          "text": "Replaced documented examples, implementation reference, and playground output with the Web Component API."
+        },
+        {
+          "type": "changed",
+          "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
         }
       ],
       "Icon Wrapper": [
         {
           "type": "changed",
           "text": "Figma icon wrapper coverage confirmed for 16, 20, 24, 32, 48, and 64px sizes"
+        },
+        {
+          "type": "changed",
+          "text": "Replaced documented examples, implementation reference, and playground output with the Web Component API."
+        },
+        {
+          "type": "changed",
+          "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
         }
       ],
       "Label": [
         {
           "type": "added",
           "text": "Blocked form-control label component with multiline/basic/extended features, default/disabled/error/interactive/success variants, token-first CSS, examples, code, playground, and Demo Builder coverage"
+        },
+        {
+          "type": "changed",
+          "text": "Replaced documented examples, implementation reference, and playground output with the Web Component API."
+        },
+        {
+          "type": "changed",
+          "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
         }
       ],
       "Link": [
         {
           "type": "added",
           "text": "In-progress navigational link component with default/current page/disabled states, optional open-in-new-window affordance, token-first CSS, examples, code, playground, and Demo Builder coverage"
+        },
+        {
+          "type": "changed",
+          "text": "Replaced documented examples, implementation reference, and playground output with the Web Component API."
+        },
+        {
+          "type": "changed",
+          "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
         }
       ],
       "List": [
         {
           "type": "changed",
           "text": "Figma list coverage confirmed: 1-10 item lists, draggable and non-draggable item variants, leading/trailing icons, and default/hover/active/focused/selected states"
+        },
+        {
+          "type": "changed",
+          "text": "Replaced documented examples, implementation reference, and playground output with the Web Component API."
+        },
+        {
+          "type": "changed",
+          "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
         }
       ],
       "Nav Header": [
@@ -346,6 +474,14 @@
         {
           "type": "changed",
           "text": "spec.json knownIssues expanded with three new entries: (a) the new `_udc-nav-header_logo-pill` component on the Figma page (id 6399:13744, 98\u00d748 brand vector + 'ResMan' text label) is NOT wired into the canonical udc-nav-header Variant=Default; treating as design exploration pending designer confirmation; (b) the logo `Outline=True` variant (id 6403:39132, light-fill brand vector) is defined in Figma but not exposed as a doc-side prop \u2014 deferred pending designer direction; (c) standalone `_udc-nav-header_dropdown` (6019:32094) and `_udc-nav-header_nav-tile` (5498:2340) components still exist on the nav-header page as orphans (not nested anywhere); the bento concept was removed from the canonical contract but the sub-components weren't deleted from the page; no doc-side surface for these orphans."
+        },
+        {
+          "type": "changed",
+          "text": "Replaced documented examples, implementation reference, and playground output with the Web Component API."
+        },
+        {
+          "type": "changed",
+          "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
         },
         {
           "type": "fixed",
@@ -416,60 +552,160 @@
         {
           "type": "changed",
           "text": ".cursor/figma/state/components.snapshot.json nav-vertical entry refreshed from placeholder seed values. variantProperties was {} \u2014 now `Leading Icons: [true, false]`. nestedInstances was [] \u2014 now records the udc-list instance (6598:8558 -> main 5195:894) that wraps the 7 _udc-list_item rows; this is the structural detail the previous snapshot missed entirely. fingerprint hashes upgraded from `seed:6598:8553` / `seed:6598:8555` / `not-captured` to `captured:2026-05-12:*` markers. tokenBindings stays [] (snapshot convention) but the per-state token-binding tables for container, default, hover, active, selected, and focused list-items are documented in the inspector report."
+        },
+        {
+          "type": "changed",
+          "text": "Replaced documented examples, implementation reference, and playground output with the Web Component API."
+        },
+        {
+          "type": "changed",
+          "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
         }
       ],
       "Notification": [
         {
           "type": "changed",
           "text": "Figma notification coverage confirmed: info/success/error/warning variants, inline true/false, and prominent true/false"
+        },
+        {
+          "type": "changed",
+          "text": "Replaced documented examples, implementation reference, and playground output with the Web Component API."
+        },
+        {
+          "type": "changed",
+          "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
         }
       ],
       "Pagination": [
         {
           "type": "added",
           "text": "Blocked paginated navigation component with default/active states, rows-per-page context, token-first CSS, examples, code, playground, and Demo Builder coverage"
+        },
+        {
+          "type": "changed",
+          "text": "Replaced documented examples, implementation reference, and playground output with the Web Component API."
+        },
+        {
+          "type": "changed",
+          "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
         }
       ],
       "Radio": [
         {
           "type": "changed",
           "text": "Figma radio coverage confirmed: radio button states including selected/error/disabled/hover/active combinations plus 2-5 option radio groups"
+        },
+        {
+          "type": "changed",
+          "text": "Replaced documented examples, implementation reference, and playground output with the Web Component API."
+        },
+        {
+          "type": "changed",
+          "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
         }
       ],
       "Search": [
         {
           "type": "changed",
           "text": "Figma search bar coverage confirmed: default/hover/focused/active/error-active states"
+        },
+        {
+          "type": "changed",
+          "text": "Replaced documented examples, implementation reference, and playground output with the Web Component API."
+        },
+        {
+          "type": "changed",
+          "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
+        }
+      ],
+      "Spacer": [
+        {
+          "type": "changed",
+          "text": "Replaced documented examples, implementation reference, and playground output with the Web Component API."
+        },
+        {
+          "type": "changed",
+          "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
         }
       ],
       "Tabs": [
         {
           "type": "changed",
           "text": "Figma tab coverage confirmed: default/small sizes, 2-6 tab groups, selected and disabled states, plus hover/focus/active-on-selected variants"
+        },
+        {
+          "type": "changed",
+          "text": "Replaced documented examples, implementation reference, and playground output with the Web Component API."
+        },
+        {
+          "type": "changed",
+          "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
         }
       ],
       "Text Area": [
         {
           "type": "added",
           "text": "Multi-line text-entry component with default/hover/focused/active/error-focused states, token-first CSS, examples, code, playground, and Demo Builder coverage"
+        },
+        {
+          "type": "changed",
+          "text": "Replaced documented examples, implementation reference, and playground output with the Web Component API."
+        },
+        {
+          "type": "changed",
+          "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
         }
       ],
       "Text Input": [
         {
           "type": "changed",
           "text": "Figma text input coverage confirmed: field default/disabled/error states and wrapper default/active/error states"
+        },
+        {
+          "type": "changed",
+          "text": "Replaced documented examples, implementation reference, and playground output with the Web Component API."
+        },
+        {
+          "type": "changed",
+          "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
         }
       ],
       "Tile": [
         {
           "type": "changed",
           "text": "Figma tile coverage confirmed: default/hover/focused/selected/disabled states"
+        },
+        {
+          "type": "changed",
+          "text": "Replaced documented examples, implementation reference, and playground output with the Web Component API."
+        },
+        {
+          "type": "changed",
+          "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
         }
       ],
       "Toggle": [
         {
           "type": "added",
           "text": "Immediate on/off setting control with active true/false and disabled variants, token-first CSS, examples, code, playground, and Demo Builder coverage"
+        },
+        {
+          "type": "changed",
+          "text": "Replaced documented examples, implementation reference, and playground output with the Web Component API."
+        },
+        {
+          "type": "changed",
+          "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
+        }
+      ],
+      "Tooltip": [
+        {
+          "type": "changed",
+          "text": "Replaced documented examples, implementation reference, and playground output with the Web Component API."
+        },
+        {
+          "type": "changed",
+          "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
         }
       ]
     }

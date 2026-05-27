@@ -121,7 +121,7 @@ export function DemoBuilder() {
 
   return (
     <>
-      <span className="udc-tooltip-wrapper">
+      <span className="sg-demo-tooltip-wrapper">
         <button
           type="button"
           className="sg-demo-btn"
@@ -132,7 +132,7 @@ export function DemoBuilder() {
         >
           <span className="material-symbols-outlined">construction</span>
         </button>
-        <span className="udc-tooltip" role="tooltip" data-position="bottom">
+        <span className="sg-demo-tooltip" role="tooltip">
           Build a multi-component HTML demo
         </span>
       </span>
@@ -349,27 +349,26 @@ function DemoBuilderDialog({
   return (
     <div
       ref={backdropRef}
-      className="udc-dialog-backdrop"
-      data-open="true"
+      className="sg-demo-dialog-backdrop"
       onClick={(e) => {
         if (e.target === backdropRef.current) onClose();
       }}
     >
       <div
         ref={dialogRef}
-        className="udc-dialog sg-demo-dialog"
+        className="sg-demo-dialog"
         role="dialog"
         aria-modal="true"
         aria-labelledby="sg-demo-title"
         tabIndex={-1}
       >
-        <div className="udc-dialog__header">
-          <h2 className="udc-dialog__title" id="sg-demo-title">
+        <div className="sg-demo-dialog__header">
+          <h2 className="sg-demo-dialog__title" id="sg-demo-title">
             Build Demo Site
           </h2>
           <button
             type="button"
-            className="udc-dialog__close"
+            className="sg-demo-dialog__close"
             aria-label="Close"
             onClick={onClose}
           >
@@ -377,7 +376,7 @@ function DemoBuilderDialog({
           </button>
         </div>
 
-        <div className="udc-dialog__body">
+        <div className="sg-demo-dialog__body">
           <HistoryCard history={history} onOpen={openPrevious} />
 
           <div className="sg-demo-select-row">
@@ -422,17 +421,17 @@ function DemoBuilderDialog({
           )}
         </div>
 
-        <div className="udc-dialog__footer">
+        <div className="sg-demo-dialog__footer">
           <button
             type="button"
-            className="udc-button-secondary"
+            className="sg-demo-action-btn"
             onClick={onClose}
           >
             Cancel
           </button>
           <button
             type="button"
-            className="udc-button-secondary"
+            className="sg-demo-action-btn"
             onClick={onDownload}
             disabled={busy !== null}
           >
@@ -455,7 +454,7 @@ function DemoBuilderDialog({
           </button>
           <button
             type="button"
-            className="udc-button-primary"
+            className="sg-demo-action-btn sg-demo-action-btn--primary"
             onClick={onPreview}
             disabled={busy !== null}
           >
@@ -504,8 +503,7 @@ function HistoryCard({
       </div>
       <button
         type="button"
-        className="udc-button-secondary"
-        data-size="sm"
+        className="sg-demo-action-btn sg-demo-action-btn--sm"
         onClick={onOpen}
       >
         <span

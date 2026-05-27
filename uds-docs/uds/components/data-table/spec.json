@@ -4,127 +4,59 @@
   "title": "Data Table",
   "description": "A sortable, selectable table for displaying tabular data with headers, checkboxes, and action columns.",
   "whenToUse": "For displaying structured tabular data. When users need to sort, filter, or select rows. For data review and bulk actions.",
-  "whenNotToUse": "For simple key/value pairs \u2014 use a definition list. For highly complex data \u2014 consider a specialized grid component outside UDS.",
+  "whenNotToUse": "For simple key/value pairs — use a definition list. For highly complex data — consider a specialized grid component outside UDS.",
   "acceptanceCriteria": [
+    "Public API uses <udc-data-table> Web Component tag.",
     "Renders semantic <table>, <thead>, <tbody>, with scope=\"col\" on headers",
-    "Sortable headers expose aria-sort and cycle none \u2192 asc \u2192 desc on activation",
+    "Sortable headers expose aria-sort and cycle none → asc → desc on activation",
     "Selectable mode adds a leading checkbox column and a header \"select all\" checkbox using aria-checked=\"mixed\" for partial selection",
     "Row click fires row-click only when the click did not originate from a checkbox or action cell",
     "Striped rows, default density, and compact density all render correctly",
     "Empty state, error state, and loading state are visually distinct and reachable via the documented props/slots",
     "Action cells render UDS buttons with consistent sizing across densities",
     "Badge and action cell types compose with the existing Badge and Button components without re-implementing styling",
-    "At \u2265 200 rows, performance notes recommend virtualization (see Performance section)"
+    "At ≥ 200 rows, performance notes recommend virtualization (see Performance section)"
   ],
   "dependencies": {
     "css": [
-      "uds/components/data-table.css"
+      "uds/uds.css"
     ],
     "js": [
-      "uds/components/data-table.js"
+      "web-components.js"
     ]
   },
   "props": [
     {
-      "name": "columns",
-      "type": "object",
-      "required": true,
-      "description": "Array of { id, header, sortable?, align?, type? } where type \u2208 text|badge|action|number"
+      "name": "sort-key",
+      "type": "string",
+      "default": null,
+      "required": false,
+      "description": "Current sorted key."
     },
     {
-      "name": "rows",
-      "type": "object",
-      "required": true,
-      "description": "Array of row objects keyed by column id"
-    },
-    {
-      "name": "selectable",
-      "type": "boolean",
-      "default": false,
-      "description": "Adds a checkbox column for row selection"
-    },
-    {
-      "name": "selectedIds",
-      "type": "object",
-      "description": "Array of currently selected row ids"
-    },
-    {
-      "name": "sortable",
-      "type": "boolean",
-      "default": false,
-      "description": "Allows clicking column headers to sort. Per-column override via column.sortable."
-    },
-    {
-      "name": "sort",
-      "type": "object",
-      "description": "{ columnId: string, direction: 'asc' | 'desc' }"
-    },
-    {
-      "name": "data-density",
+      "name": "sort-direction",
       "type": "enum",
+      "default": "none",
+      "required": false,
+      "description": "Current sort direction.",
       "enum": [
-        "default",
-        "compact"
-      ],
-      "default": "default",
-      "description": "Compact density tightens padding for high-volume tables"
-    },
-    {
-      "name": "stripedRows",
-      "type": "boolean",
-      "default": false,
-      "description": "Alternates row backgrounds for scannability in long tables"
-    },
-    {
-      "name": "emptyState",
-      "type": "string",
-      "description": "Copy or component to render when rows is empty"
-    },
-    {
-      "name": "errorState",
-      "type": "string",
-      "description": "Copy or component to render when load failed"
+        "asc",
+        "desc",
+        "none"
+      ]
     }
   ],
   "events": [
     {
-      "name": "sort",
-      "description": "Fires when a sortable header is activated",
-      "payload": "{ columnId: string, direction: 'asc' | 'desc' }"
-    },
-    {
-      "name": "select",
-      "description": "Fires when a row's checkbox is toggled",
-      "payload": "{ rowId: string, selected: boolean }"
-    },
-    {
-      "name": "select-all",
-      "description": "Fires when the header checkbox is toggled",
-      "payload": "{ selected: boolean, ids: string[] }"
-    },
-    {
-      "name": "row-click",
-      "description": "Fires when a row body is clicked (not the checkbox)",
-      "payload": "{ rowId: string, row: object }"
-    },
-    {
-      "name": "action",
-      "description": "Fires when an action-cell button is clicked",
-      "payload": "{ rowId: string, actionId: string }"
+      "name": "udc-sort-change",
+      "description": "Fires when sortable header changes.",
+      "payload": "{ key, direction }"
     }
   ],
   "slots": [
     {
-      "name": "header",
-      "description": "Optional toolbar above the table for filters, search, bulk actions"
-    },
-    {
-      "name": "footer",
-      "description": "Optional footer for pagination or summary rows"
-    },
-    {
-      "name": "empty",
-      "description": "Custom empty-state content; replaces emptyState prop when present"
+      "name": "default",
+      "description": "A table element."
     }
   ],
   "states": [
@@ -155,7 +87,7 @@
     },
     {
       "name": "row-selected",
-      "description": "Row checkbox checked \u2014 data-selected=\"true\" on the <tr>",
+      "description": "Row checkbox checked — data-selected=\"true\" on the <tr>",
       "hasVisual": true
     },
     {
@@ -164,7 +96,7 @@
       "hasVisual": true
     }
   ],
-  "contentGuidelines": "Column headers: noun phrase, sentence case. Numeric columns right-aligned with monospace tabular numerals. Empty state: explain why and offer the next action (\"No tenants yet \u2014 Add tenant\"). Error state: describe what failed and how to retry.",
+  "contentGuidelines": "Column headers: noun phrase, sentence case. Numeric columns right-aligned with monospace tabular numerals. Empty state: explain why and offer the next action (\"No tenants yet — Add tenant\"). Error state: describe what failed and how to retry.",
   "commonlyPairedWith": [
     "badge",
     "button",
@@ -177,14 +109,14 @@
     "dos": [
       "Use semantic table markup; the assistive-tech model depends on <table> structure",
       "Right-align numeric columns and use tabular numerals",
-      "Preserve sort and selection across pagination \u2014 don't silently drop them",
+      "Preserve sort and selection across pagination — don't silently drop them",
       "Pair selection with a bulk-action toolbar above the table when count > 0"
     ],
     "donts": [
-      "Don't use a data table for layout \u2014 that's what grid is for",
+      "Don't use a data table for layout — that's what grid is for",
       "Don't make the entire row clickable AND have an action button in the same row without explicit role distinction",
       "Don't render 1,000+ rows without virtualization",
-      "Don't hide the column count from the empty state \u2014 explain why nothing is shown"
+      "Don't hide the column count from the empty state — explain why nothing is shown"
     ]
   },
   "accessibility": {
@@ -195,7 +127,7 @@
       },
       {
         "key": "Enter / Space on sort header",
-        "action": "Cycle sort direction (none \u2192 asc \u2192 desc \u2192 none)"
+        "action": "Cycle sort direction (none → asc → desc → none)"
       },
       {
         "key": "Space on row checkbox",
@@ -209,7 +141,7 @@
     "screenReader": [
       {
         "trigger": "Sort header receives focus and is sorted",
-        "announcement": "Column header [name], sortable, currently sorted [ascending|descending] \u2014 announced via aria-sort"
+        "announcement": "Column header [name], sortable, currently sorted [ascending|descending] — announced via aria-sort"
       },
       {
         "trigger": "Row checkbox receives focus",
@@ -217,7 +149,7 @@
       },
       {
         "trigger": "Header checkbox toggled",
-        "announcement": "All rows selected (or deselected) \u2014 uses aria-checked=\"mixed\" for partial selection"
+        "announcement": "All rows selected (or deselected) — uses aria-checked=\"mixed\" for partial selection"
       }
     ],
     "wcag": [
@@ -255,13 +187,13 @@
     "contrast": []
   },
   "knownIssues": [
-    "Keyboard grid navigation (cell-by-cell with arrow keys) is not yet specified \u2014 tab through interactive cells is the only supported model in 0.2"
+    "Keyboard grid navigation (cell-by-cell with arrow keys) is not yet specified — tab through interactive cells is the only supported model in 0.2"
   ],
-  "performance": "Virtualize rows at \u2265 200 visible rows. Avoid rendering all rows when total > 1,000. Sort and filter should run synchronously up to ~5,000 rows; defer to a worker beyond that.",
+  "performance": "Virtualize rows at ≥ 200 visible rows. Avoid rendering all rows when total > 1,000. Sort and filter should run synchronously up to ~5,000 rows; defer to a worker beyond that.",
   "motion": null,
   "responsive": null,
   "visualHierarchy": "The table is the primary content of its surface. Filters, search, and bulk-action buttons sit in a toolbar above; pagination or load-more sits below.",
-  "densityBehavior": "Default density matches form spacing (comfortable). Compact density reduces row height by ~25% for high-volume admin tables. Don't switch density per-row \u2014 it's a table-level decision.",
+  "densityBehavior": "Default density matches form spacing (comfortable). Compact density reduces row height by ~25% for high-volume admin tables. Don't switch density per-row — it's a table-level decision.",
   "owner": {
     "designer": "Unassigned",
     "developer": "Unassigned"

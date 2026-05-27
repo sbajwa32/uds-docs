@@ -6,6 +6,16 @@
       "version": "0.3",
       "type": "added",
       "text": "Placeholder page for searchable text-entry selection component from Figma 0.3"
+    },
+    {
+      "version": "0.3",
+      "type": "changed",
+      "text": "Replaced documented examples, implementation reference, and playground output with the Web Component API."
+    },
+    {
+      "version": "0.3",
+      "type": "changed",
+      "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
     }
   ]
 }

@@ -4,18 +4,60 @@
   "title": "Search",
   "description": "A search input with leading search icon, value clearing, and optional filter state.",
   "whenToUse": "For searching across a dataset or page. Place prominently when search is the primary action.",
-  "whenNotToUse": "For generic text entry \u2014 use Text Input. For dropdown-with-typeahead \u2014 use a combobox pattern.",
-  "acceptanceCriteria": [],
+  "whenNotToUse": "For generic text entry — use Text Input. For dropdown-with-typeahead — use a combobox pattern.",
+  "acceptanceCriteria": [
+    "Public API uses <udc-search> Web Component tag."
+  ],
   "dependencies": {
     "css": [
-      "uds/components/search.css"
+      "uds/uds.css"
     ],
     "js": [
-      "uds/components/search.js"
+      "web-components.js"
     ]
   },
-  "props": [],
-  "events": [],
+  "props": [
+    {
+      "name": "name",
+      "type": "string",
+      "default": null,
+      "required": false,
+      "description": "Form field name."
+    },
+    {
+      "name": "value",
+      "type": "string",
+      "default": "",
+      "required": false,
+      "description": "Search value."
+    },
+    {
+      "name": "label",
+      "type": "string",
+      "default": "Search",
+      "required": false,
+      "description": "Accessible label."
+    },
+    {
+      "name": "placeholder",
+      "type": "string",
+      "default": "Search",
+      "required": false,
+      "description": "Placeholder."
+    }
+  ],
+  "events": [
+    {
+      "name": "udc-input",
+      "description": "Fires on input.",
+      "payload": "{ value }"
+    },
+    {
+      "name": "udc-change",
+      "description": "Fires on committed change.",
+      "payload": "{ value }"
+    }
+  ],
   "slots": [],
   "states": [],
   "contentGuidelines": null,

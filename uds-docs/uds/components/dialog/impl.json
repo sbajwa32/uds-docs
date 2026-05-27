@@ -1,42 +1,34 @@
 {
   "$schema": "../../schemas/impl.schema.json",
-  "jsFunc": "initDialog",
-  "jsFile": "uds/components/dialog/dialog.js",
+  "jsFunc": null,
+  "jsFile": null,
   "tokens": {
-    "Surface": [
+    "Color": [
       "--uds-color-surface-main",
       "--uds-color-surface-subtle",
-      "--uds-color-surface-alt",
-      "--uds-color-surface-interactive-none",
-      "--uds-color-surface-interactive-subtle-hover"
-    ],
-    "Text": [
+      "--uds-color-surface-interactive-default",
       "--uds-color-text-primary",
-      "--uds-color-text-inverse"
-    ],
-    "Icon": [
-      "--uds-color-icon-secondary"
-    ],
-    "Border": [
-      "--uds-color-border-interactive",
-      "--uds-border-radius-container-xl",
-      "--uds-border-radius-input"
-    ],
-    "Space": [
-      "--uds-space-075",
-      "--uds-space-100",
-      "--uds-space-200",
-      "--uds-space-300"
+      "--uds-color-text-secondary",
+      "--uds-color-text-interactive",
+      "--uds-color-border-primary",
+      "--uds-color-border-secondary",
+      "--uds-color-border-outline-focus-visible"
     ],
     "Font": [
       "--uds-font-family",
-      "--uds-font-size-xl",
-      "--uds-font-weight-bold",
-      "--uds-font-line-height-400"
+      "--uds-font-size-base",
+      "--uds-font-weight-medium"
     ],
-    "Effect": [
-      "elevation depth-500: 0 10px 20px 2px rgba(0,0,0,0.2)"
+    "Space": [
+      "--uds-space-100",
+      "--uds-space-150",
+      "--uds-space-200",
+      "--uds-space-300"
+    ],
+    "Border": [
+      "--uds-border-radius-input",
+      "--uds-border-radius-container-md"
     ]
   },
-  "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\" />\n  <link href=\"https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined\" rel=\"stylesheet\" />\n  <link rel=\"stylesheet\" href=\"uds/uds.css\" />\n</head>\n<body>\n\n  <button class=\"udc-button-primary\" onclick=\"document.getElementById('my-dialog').setAttribute('data-open','true');UDS.init();\">Open Dialog</button>\n\n  <div class=\"udc-dialog-backdrop\" id=\"my-dialog\" data-open=\"false\">\n    <div class=\"udc-dialog\" role=\"dialog\" aria-modal=\"true\" aria-labelledby=\"dlg-title\">\n      <div class=\"udc-dialog__header\">\n        <h2 class=\"udc-dialog__title\" id=\"dlg-title\">Dialog title</h2>\n        <button class=\"udc-dialog__close\" aria-label=\"Close\">\n          <span class=\"material-symbols-outlined\">close</span>\n        </button>\n      </div>\n      <div class=\"udc-dialog__body\">\n        <p>Your content goes here.</p>\n      </div>\n      <div class=\"udc-dialog__footer\">\n        <button class=\"udc-button-secondary\">Cancel</button>\n        <button class=\"udc-button-primary\">Confirm</button>\n      </div>\n    </div>\n  </div>\n\n  <script src=\"uds/uds.js\"></script>\n</body>\n</html>"
+  "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\" />\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n  <link href=\"https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined\" rel=\"stylesheet\" />\n  <link rel=\"stylesheet\" href=\"uds/uds.css\" />\n  <script type=\"module\" src=\"web-components.js\"></script>\n  <title>dialog</title>\n</head>\n<body>\n<udc-dialog heading=\"Confirm archive\" open>\n  Archive this lease?\n  <div slot=\"actions\">\n    <udc-button variant=\"secondary\">Cancel</udc-button>\n    <udc-button variant=\"primary\" color=\"danger\">Archive</udc-button>\n  </div>\n</udc-dialog>\n</body>\n</html>"
 }

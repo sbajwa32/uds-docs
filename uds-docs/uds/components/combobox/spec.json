@@ -6,6 +6,7 @@
   "whenToUse": "Use when users can search or type to narrow a large option set, especially when free text and selection share the same field.",
   "whenNotToUse": "For a closed set of simple options, use Dropdown. For 2-4 visible options, use Radio.",
   "acceptanceCriteria": [
+    "Public API uses <udc-combobox>, <udc-combobox-option> Web Component tags.",
     "Figma component set exists and exposes variant properties",
     "Examples and Code tabs are generated from inspected Figma structure",
     "Component CSS uses UDS tokens only",
@@ -13,13 +14,48 @@
   ],
   "dependencies": {
     "css": [
-      "uds/components/combobox.css"
+      "uds/uds.css"
     ],
-    "js": []
+    "js": [
+      "web-components.js"
+    ]
   },
-  "props": [],
-  "events": [],
-  "slots": [],
+  "props": [
+    {
+      "name": "label",
+      "type": "string",
+      "default": null,
+      "required": false,
+      "description": "Visible label."
+    },
+    {
+      "name": "value",
+      "type": "string",
+      "default": null,
+      "required": false,
+      "description": "Selected value."
+    },
+    {
+      "name": "open",
+      "type": "boolean",
+      "default": false,
+      "required": false,
+      "description": "Open state."
+    }
+  ],
+  "events": [
+    {
+      "name": "udc-change",
+      "description": "Fires when value changes.",
+      "payload": "{ value }"
+    }
+  ],
+  "slots": [
+    {
+      "name": "default",
+      "description": "Combobox options."
+    }
+  ],
   "states": [],
   "contentGuidelines": null,
   "commonlyPairedWith": [],

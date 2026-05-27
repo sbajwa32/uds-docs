@@ -487,15 +487,15 @@ async function main() {
   await screenshot('header-and-banner');
   console.log(`  OK — dropdown: ${dropdown.join(' / ')}`);
 
-  console.log('[check 9] Playground hidden for deferred components (combobox)');
+  console.log('[check 9] Combobox now exposes the Web Component Playground tab');
   await send('Page.navigate', { url: `http://localhost:${SERVE_PORT}/combobox` });
   await sleep(2000);
   const comboboxTabs = await evaluate(`(() => {
     const tabs = Array.from(document.querySelectorAll('[role="tab"]')).map((t) => t.textContent.trim());
     return { tabs };
   })()`);
-  if (comboboxTabs.tabs.some((t) => t === 'Playground')) {
-    throw new Error(`Playground tab should be hidden for combobox; saw tabs: ${JSON.stringify(comboboxTabs.tabs)}`);
+  if (!comboboxTabs.tabs.some((t) => t === 'Playground')) {
+    throw new Error(`Playground tab should be visible for combobox; saw tabs: ${JSON.stringify(comboboxTabs.tabs)}`);
   }
   console.log(`  OK — combobox tabs: ${comboboxTabs.tabs.join(' / ')}`);
 

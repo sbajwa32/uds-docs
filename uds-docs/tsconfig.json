@@ -15,9 +15,12 @@
     "incremental": true,
     "plugins": [{ "name": "next" }],
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./*"],
+      "@uds/web-components": ["./packages/uds-web-components/src/index.ts"],
+      "@uds/web-components/register": ["./packages/uds-web-components/src/register.ts"],
+      "@uds/react": ["./packages/uds-react/src/index.tsx"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules", "out", ".next", "uds", "versions", "docs", "scripts"]
+  "exclude": ["node_modules", "out", ".next", "uds", "versions", "docs", "scripts", "packages/*/dist"]
 }

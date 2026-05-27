@@ -177,8 +177,8 @@ function ThemeButton({
   return (
     <button
       type="button"
-      className={active ? 'udc-button-primary active' : 'udc-button-secondary'}
-      data-size="sm"
+      className="sg-theme-option-btn"
+      data-active={active ? 'true' : 'false'}
       aria-pressed={active}
       onClick={onClick}
     >

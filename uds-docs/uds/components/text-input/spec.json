@@ -6,6 +6,7 @@
   "whenToUse": "Single-line text entry: names, emails, search queries. When you need validation feedback (error state).",
   "whenNotToUse": "For multi-line entry, use a textarea. For choosing from a predefined set, use a dropdown.",
   "acceptanceCriteria": [
+    "Public API uses <udc-text-input> Web Component tag.",
     "Label is always visible above the field; placeholders never replace labels",
     "Helper text and counter render below the field with consistent spacing across sizes",
     "Error state recolors the label, border, helper text, and counter; aria-invalid is set on the underlying <input>",
@@ -18,107 +19,137 @@
   ],
   "dependencies": {
     "css": [
-      "uds/components/text-input.css"
+      "uds/uds.css"
     ],
     "js": [
-      "uds/components/text-input.js"
+      "web-components.js"
     ]
   },
   "props": [
     {
-      "name": "data-state",
-      "type": "enum",
-      "enum": [
-        "default",
-        "error"
-      ],
-      "default": "default",
-      "description": "Visual validation state. Use \"error\" when helper text describes a validation failure."
-    },
-    {
       "name": "name",
       "type": "string",
-      "description": "Form field name; required for forms"
+      "default": null,
+      "required": false,
+      "description": "Form field name."
     },
     {
       "name": "value",
       "type": "string",
-      "description": "Current input value (controlled or initial)"
-    },
-    {
-      "name": "placeholder",
-      "type": "string",
-      "description": "Hint text shown when the field is empty. Never use as a label substitute."
+      "default": "",
+      "required": false,
+      "description": "Current value."
     },
     {
       "name": "label",
       "type": "string",
-      "required": true,
-      "description": "Visible label rendered above the field"
+      "default": null,
+      "required": false,
+      "description": "Visible label."
     },
     {
-      "name": "helperText",
+      "name": "helper-text",
       "type": "string",
-      "description": "Supporting text below the field. Switches color to error when data-state=error."
+      "default": null,
+      "required": false,
+      "description": "Helper or error text."
     },
     {
-      "name": "maxLength",
-      "type": "number",
-      "description": "Character limit; pairs with the inline counter (X/N)"
+      "name": "placeholder",
+      "type": "string",
+      "default": null,
+      "required": false,
+      "description": "Input placeholder."
+    },
+    {
+      "name": "state",
+      "type": "enum",
+      "default": "default",
+      "required": false,
+      "description": "Validation state.",
+      "enum": [
+        "default",
+        "error"
+      ]
+    },
+    {
+      "name": "type",
+      "type": "enum",
+      "default": "text",
+      "required": false,
+      "description": "Input type.",
+      "enum": [
+        "text",
+        "email",
+        "password",
+        "search",
+        "tel",
+        "url"
+      ]
     },
     {
       "name": "required",
       "type": "boolean",
       "default": false,
-      "description": "Renders the required asterisk; sets aria-required"
+      "required": false,
+      "description": "Marks required."
     },
     {
       "name": "disabled",
       "type": "boolean",
       "default": false,
-      "description": "Standard HTML disabled attribute"
+      "required": false,
+      "description": "Disabled state."
     },
     {
-      "name": "leadingIcon",
-      "type": "string",
-      "description": "Material Symbols Outlined name rendered inside the input on the left"
+      "name": "readonly",
+      "type": "boolean",
+      "default": false,
+      "required": false,
+      "description": "Read-only state."
     },
     {
-      "name": "trailingIcon",
+      "name": "max-length",
+      "type": "number",
+      "default": null,
+      "required": false,
+      "description": "Character counter max."
+    },
+    {
+      "name": "leading-icon",
       "type": "string",
-      "description": "Material Symbols Outlined name rendered inside the input on the right (e.g. visibility toggle)"
+      "default": null,
+      "required": false,
+      "description": "Material Symbols name before input."
+    },
+    {
+      "name": "trailing-icon",
+      "type": "string",
+      "default": null,
+      "required": false,
+      "description": "Material Symbols name after input."
     }
   ],
   "events": [
     {
-      "name": "input",
-      "description": "Fires on every keystroke",
-      "payload": "{ value: string }"
+      "name": "udc-input",
+      "description": "Fires on input.",
+      "payload": "{ value }"
     },
     {
-      "name": "change",
-      "description": "Fires on blur when the value has changed",
-      "payload": "{ value: string }"
-    },
-    {
-      "name": "focus",
-      "description": "Fires when the field gains focus",
-      "payload": "FocusEvent"
-    },
-    {
-      "name": "blur",
-      "description": "Fires when the field loses focus",
-      "payload": "FocusEvent"
+      "name": "udc-change",
+      "description": "Fires on committed change.",
+      "payload": "{ value }"
     }
   ],
   "slots": [
     {
-      "name": "leading",
-      "description": "Custom leading content (icon, prefix). Prefer the leadingIcon prop for Material Symbols."
+      "name": "label",
+      "description": "Custom label content."
     },
     {
-      "name": "trailing",
-      "description": "Custom trailing content (icon button, suffix). Used for password reveal, clear, etc."
+      "name": "helper",
+      "description": "Custom helper content."
     }
   ],
   "states": [
@@ -134,7 +165,7 @@
     },
     {
       "name": "error",
-      "description": "data-state=\"error\" \u2014 label, border, and helper text recolor to error tokens",
+      "description": "state=\"error\" — label, border, and helper text recolor to error tokens",
       "hasVisual": true
     },
     {
@@ -163,10 +194,10 @@
       "Use type=\"email\" / type=\"tel\" / inputmode=\"numeric\" to surface the right mobile keyboard"
     ],
     "donts": [
-      "Don't replace labels with placeholders \u2014 placeholders disappear and reduce form usability",
+      "Don't replace labels with placeholders — placeholders disappear and reduce form usability",
       "Don't validate on every keystroke; wait until blur or submit",
       "Don't use red borders without an accompanying error message",
-      "Don't disable the field when you really mean read-only \u2014 they're different states"
+      "Don't disable the field when you really mean read-only — they're different states"
     ]
   },
   "accessibility": {
@@ -187,10 +218,10 @@
     "screenReader": [
       {
         "trigger": "Input receives focus",
-        "announcement": "[Label], edit \u2014 announces \"required\" when required is set, and the current helper text via aria-describedby"
+        "announcement": "[Label], edit — announces \"required\" when required is set, and the current helper text via aria-describedby"
       },
       {
-        "trigger": "data-state=\"error\" applied",
+        "trigger": "state=\"error\" applied",
         "announcement": "Helper text is announced as the error message via aria-describedby; consumer should also set aria-invalid=\"true\""
       }
     ],
@@ -229,12 +260,12 @@
     "contrast": []
   },
   "knownIssues": [
-    "Loading state is not yet specified \u2014 disabled is the closest approximation in 0.2"
+    "Loading state is not yet specified — disabled is the closest approximation in 0.2"
   ],
   "performance": null,
   "motion": null,
   "responsive": null,
-  "visualHierarchy": "Form fields are siblings \u2014 keep size and spacing consistent. Group related fields with shared labels (e.g. address group) and use a divider between groups in long forms.",
+  "visualHierarchy": "Form fields are siblings — keep size and spacing consistent. Group related fields with shared labels (e.g. address group) and use a divider between groups in long forms.",
   "densityBehavior": "Default field height is comfortable; sm size is reserved for filter rows above tables. Don't mix sizes within the same form.",
   "owner": {
     "designer": "Unassigned",

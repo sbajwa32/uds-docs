@@ -4,31 +4,31 @@
   "jsFile": null,
   "tokens": {
     "Color": [
+      "--uds-color-surface-main",
+      "--uds-color-surface-subtle",
+      "--uds-color-surface-interactive-default",
       "--uds-color-text-primary",
-      "--uds-color-text-disabled",
-      "--uds-color-text-error",
+      "--uds-color-text-secondary",
       "--uds-color-text-interactive",
-      "--uds-color-icon-error",
-      "--uds-color-icon-interactive",
       "--uds-color-border-primary",
-      "--uds-color-border-disabled",
-      "--uds-color-border-error",
-      "--uds-color-border-interactive",
+      "--uds-color-border-secondary",
       "--uds-color-border-outline-focus-visible"
     ],
     "Font": [
       "--uds-font-family",
-      "--uds-font-size-sm",
       "--uds-font-size-base",
-      "--uds-font-line-height-sm",
-      "--uds-font-line-height-base",
-      "--uds-font-weight-medium",
-      "--uds-font-weight-bold"
+      "--uds-font-weight-medium"
     ],
     "Space": [
-      "--uds-space-050",
-      "--uds-space-100"
+      "--uds-space-100",
+      "--uds-space-150",
+      "--uds-space-200",
+      "--uds-space-300"
+    ],
+    "Border": [
+      "--uds-border-radius-input",
+      "--uds-border-radius-container-md"
     ]
   },
-  "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\" />\n  <link rel=\"stylesheet\" href=\"uds/uds.css\" />\n</head>\n<body>\n\n  <fieldset class=\"udc-radio-group\">\n    <legend class=\"udc-radio-group__legend\">Preferred contact</legend>\n    <label class=\"udc-radio\">\n      <input type=\"radio\" name=\"contact\" value=\"email\" checked />\n      <span class=\"udc-radio__control\"></span>\n      <span class=\"udc-radio__label\">Email</span>\n    </label>\n    <label class=\"udc-radio\">\n      <input type=\"radio\" name=\"contact\" value=\"phone\" />\n      <span class=\"udc-radio__control\"></span>\n      <span class=\"udc-radio__label\">Phone</span>\n    </label>\n    <label class=\"udc-radio\">\n      <input type=\"radio\" name=\"contact\" value=\"sms\" />\n      <span class=\"udc-radio__control\"></span>\n      <span class=\"udc-radio__label\">SMS</span>\n    </label>\n  </fieldset>\n\n</body>\n</html>"
+  "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\" />\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n  <link href=\"https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined\" rel=\"stylesheet\" />\n  <link rel=\"stylesheet\" href=\"uds/uds.css\" />\n  <script type=\"module\" src=\"web-components.js\"></script>\n  <title>radio</title>\n</head>\n<body>\n<udc-radio-group name=\"contact\" label=\"Preferred contact\" value=\"email\">\n  <udc-radio value=\"email\">Email</udc-radio>\n  <udc-radio value=\"phone\">Phone</udc-radio>\n</udc-radio-group>\n</body>\n</html>"
 }

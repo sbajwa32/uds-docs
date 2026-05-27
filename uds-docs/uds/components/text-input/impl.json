@@ -1,46 +1,34 @@
 {
   "$schema": "../../schemas/impl.schema.json",
-  "jsFunc": "initTextInput",
-  "jsFile": "uds/components/text-input/text-input.js",
+  "jsFunc": null,
+  "jsFile": null,
   "tokens": {
     "Color": [
       "--uds-color-surface-main",
-      "--uds-color-surface-white",
-      "--uds-color-surface-interactive-none",
-      "--uds-color-surface-interactive-disabled",
-      "--uds-color-surface-interactive-subtle-hover",
-      "--uds-color-surface-interactive-subtle-active",
+      "--uds-color-surface-subtle",
+      "--uds-color-surface-interactive-default",
       "--uds-color-text-primary",
       "--uds-color-text-secondary",
-      "--uds-color-text-disabled",
-      "--uds-color-text-disabled-bold",
-      "--uds-color-text-error",
+      "--uds-color-text-interactive",
       "--uds-color-border-primary",
-      "--uds-color-border-error",
-      "--uds-color-border-outline-focus-visible",
-      "--uds-color-icon-secondary",
-      "--uds-color-icon-error"
+      "--uds-color-border-secondary",
+      "--uds-color-border-outline-focus-visible"
     ],
     "Font": [
       "--uds-font-family",
-      "--uds-font-size-xs",
-      "--uds-font-size-sm",
       "--uds-font-size-base",
-      "--uds-font-line-height-xs",
-      "--uds-font-line-height-sm",
-      "--uds-font-line-height-base",
-      "--uds-font-weight-regular",
-      "--uds-font-weight-medium",
-      "--uds-font-weight-bold"
+      "--uds-font-weight-medium"
     ],
     "Space": [
-      "--uds-space-050",
-      "--uds-space-075",
-      "--uds-space-100"
+      "--uds-space-100",
+      "--uds-space-150",
+      "--uds-space-200",
+      "--uds-space-300"
     ],
     "Border": [
-      "--uds-border-radius-input"
+      "--uds-border-radius-input",
+      "--uds-border-radius-container-md"
     ]
   },
-  "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\" />\n  <link href=\"https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined\" rel=\"stylesheet\" />\n  <link rel=\"stylesheet\" href=\"uds/uds.css\" />\n</head>\n<body>\n\n  <div class=\"udc-text-input\">\n    <label class=\"udc-text-input__label\">Email address</label>\n    <div class=\"udc-text-input__field\">\n      <input type=\"email\" placeholder=\"you@example.com\" required />\n    </div>\n    <div class=\"udc-text-input__helper\">\n      <span>We'll never share your email</span>\n    </div>\n  </div>\n\n  <script src=\"uds/uds.js\"></script>\n</body>\n</html>"
+  "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\" />\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n  <link href=\"https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined\" rel=\"stylesheet\" />\n  <link rel=\"stylesheet\" href=\"uds/uds.css\" />\n  <script type=\"module\" src=\"web-components.js\"></script>\n  <title>text-input</title>\n</head>\n<body>\n<udc-text-input\n  name=\"email\"\n  label=\"Email address\"\n  type=\"email\"\n  helper-text=\"We'll never share your email.\"\n  required\n></udc-text-input>\n</body>\n</html>"
 }

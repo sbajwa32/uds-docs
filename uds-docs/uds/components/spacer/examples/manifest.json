@@ -2,11 +2,12 @@
   "$schema": "../../../schemas/manifest.schema.json",
   "examples": [
     {
-      "id": "sizes",
-      "file": "sizes.html",
-      "label": "Sizes",
+      "id": "web-component",
+      "file": "web-component.html",
+      "label": "Spacer",
       "showInDocs": true,
-      "demoWeight": 3
+      "demoWeight": 3,
+      "description": "A token-sized spacing utility."
     }
   ]
 }

@@ -6,58 +6,64 @@
   "whenToUse": "To label status or state (active/pending/error). To communicate a category tag. To show counts or notifications.",
   "whenNotToUse": "For interactive filter tags, use a Chip component instead.",
   "acceptanceCriteria": [
+    "Public API uses <udc-badge> Web Component tag.",
     "All five tones render in both prominent and subtle variants",
     "Default and sm sizes render at the documented padding/typography",
     "Text contrast against background meets WCAG AA in both light and dark modes for every variant",
     "Badge does not receive focus and has no hover/active/disabled states",
-    "Color is never the sole indicator of meaning \u2014 every variant has a textual label"
+    "Color is never the sole indicator of meaning — every variant has a textual label"
   ],
   "dependencies": {
     "css": [
-      "uds/components/badge.css"
+      "uds/uds.css"
     ],
-    "js": []
+    "js": [
+      "web-components.js"
+    ]
   },
   "props": [
     {
-      "name": "data-variant",
+      "name": "tone",
       "type": "enum",
+      "default": "neutral",
+      "required": false,
+      "description": "Semantic tone.",
       "enum": [
+        "neutral",
         "info",
-        "secondary",
         "success",
-        "error",
-        "warning"
-      ],
-      "default": "info",
-      "description": "Tone of the badge"
+        "warning",
+        "error"
+      ]
     },
     {
-      "name": "data-prominent",
+      "name": "variant",
       "type": "enum",
+      "default": "prominent",
+      "required": false,
+      "description": "Visual treatment.",
       "enum": [
-        "true",
-        "false"
-      ],
-      "default": "true",
-      "description": "true = filled (high emphasis); false = subtle (tinted background, colored text)"
+        "prominent",
+        "subtle"
+      ]
     },
     {
-      "name": "data-size",
+      "name": "size",
       "type": "enum",
+      "default": "default",
+      "required": false,
+      "description": "Badge size.",
       "enum": [
         "default",
         "sm"
-      ],
-      "default": "default",
-      "description": "Compact size for use inside dense surfaces (e.g. table cells, list rows)"
+      ]
     }
   ],
   "events": [],
   "slots": [
     {
       "name": "default",
-      "description": "The badge text content. Keep short \u2014 typically a status word, count, or category label."
+      "description": "Badge label."
     }
   ],
   "states": [
@@ -68,10 +74,10 @@
     },
     {
       "name": "not-applicable",
-      "description": "Badge is not focusable or interactive \u2014 no hover, focus, active, or disabled states"
+      "description": "Badge is not focusable or interactive — no hover, focus, active, or disabled states"
     }
   ],
-  "contentGuidelines": "Single short word or count, ideally \u2264 12 characters. Use sentence case for status labels (\"Pending\", not \"PENDING\"). Numeric badges should display \"99+\" rather than 4-digit counts.",
+  "contentGuidelines": "Single short word or count, ideally ≤ 12 characters. Use sentence case for status labels (\"Pending\", not \"PENDING\"). Numeric badges should display \"99+\" rather than 4-digit counts.",
   "commonlyPairedWith": [
     "data-table",
     "list",
@@ -80,12 +86,12 @@
   ],
   "dosDonts": {
     "dos": [
-      "Convey meaning with text, not color alone \u2014 pair status colors with explicit words",
+      "Convey meaning with text, not color alone — pair status colors with explicit words",
       "Use the subtle variant when badges sit on a colored or busy surface",
       "Keep tone consistent: success = positive, warning = needs attention, error = blocking"
     ],
     "donts": [
-      "Don't make a badge interactive \u2014 use a Chip for filter/dismiss/select behavior",
+      "Don't make a badge interactive — use a Chip for filter/dismiss/select behavior",
       "Don't stack badges to communicate multiple statuses; pick the most important one",
       "Don't use the error tone for non-blocking states like \"draft\""
     ]
@@ -93,7 +99,7 @@
   "accessibility": {
     "keyboard": [
       {
-        "key": "\u2014",
+        "key": "—",
         "action": "Not focusable; badges are decorative and convey meaning via their text content"
       }
     ],
@@ -133,5 +139,5 @@
   "figmaNodeId": "5794:7948",
   "figmaPageNodeId": "5440-5049",
   "storybookSlug": null,
-  "_legacyAccessibilityNotes": "Badges are decorative by default; convey meaning via surrounding text as well. Do not rely on color alone \u2014 the label text carries the meaning."
+  "_legacyAccessibilityNotes": "Badges are decorative by default; convey meaning via surrounding text as well. Do not rely on color alone — the label text carries the meaning."
 }

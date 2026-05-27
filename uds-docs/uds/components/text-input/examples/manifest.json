@@ -2,51 +2,12 @@
   "$schema": "../../../schemas/manifest.schema.json",
   "examples": [
     {
-      "id": "default",
-      "file": "default.html",
-      "label": "Default",
+      "id": "web-component",
+      "file": "web-component.html",
+      "label": "Text Input",
       "showInDocs": true,
       "demoWeight": 3,
-      "description": "Standard text input with label, placeholder, helper text, and counter."
-    },
-    {
-      "id": "error-state",
-      "file": "error-state.html",
-      "label": "Error state",
-      "showInDocs": true,
-      "demoWeight": 1,
-      "description": "Apply data-state=\"error\" to the root wrapper."
-    },
-    {
-      "id": "leading-icon",
-      "file": "leading-icon.html",
-      "label": "Leading icon",
-      "showInDocs": true,
-      "demoWeight": 1,
-      "description": "Add a leading icon slot inside the field container."
-    },
-    {
-      "id": "trailing-button",
-      "file": "trailing-button.html",
-      "label": "Trailing button",
-      "showInDocs": true,
-      "demoWeight": 1,
-      "description": "Add a trailing action button (e.g. clear, visibility toggle)."
-    },
-    {
-      "id": "leading-icon-trailing-button",
-      "file": "leading-icon-trailing-button.html",
-      "label": "Leading icon + trailing button",
-      "showInDocs": true,
-      "demoWeight": 1,
-      "description": "Both icon slots used together."
-    },
-    {
-      "id": "disabled",
-      "file": "disabled.html",
-      "label": "Disabled",
-      "showInDocs": true,
-      "demoWeight": 1
+      "description": "A form-associated text field."
     }
   ]
 }

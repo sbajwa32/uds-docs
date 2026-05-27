@@ -2,12 +2,12 @@
   "$schema": "../../../schemas/manifest.schema.json",
   "examples": [
     {
-      "id": "states",
-      "file": "states.html",
-      "label": "States",
+      "id": "web-component",
+      "file": "web-component.html",
+      "label": "Link",
       "showInDocs": true,
       "demoWeight": 3,
-      "description": "Default, current page, disabled, and external-link affordance from the Figma variant matrix."
+      "description": "Inline navigation with optional icons."
     }
   ]
 }

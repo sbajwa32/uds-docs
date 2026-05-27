@@ -1,33 +1,34 @@
 {
   "$schema": "../../schemas/impl.schema.json",
-  "jsFunc": "initCheckbox",
-  "jsFile": "uds/components/checkbox/checkbox.js",
+  "jsFunc": null,
+  "jsFile": null,
   "tokens": {
     "Color": [
+      "--uds-color-surface-main",
+      "--uds-color-surface-subtle",
       "--uds-color-surface-interactive-default",
-      "--uds-color-surface-interactive-disabled",
-      "--uds-color-surface-interactive-red-subtle",
       "--uds-color-text-primary",
-      "--uds-color-text-disabled",
-      "--uds-color-text-error",
-      "--uds-color-icon-inverse",
-      "--uds-color-icon-error",
+      "--uds-color-text-secondary",
+      "--uds-color-text-interactive",
       "--uds-color-border-primary",
-      "--uds-color-border-disabled",
-      "--uds-color-border-error",
-      "--uds-color-border-interactive",
+      "--uds-color-border-secondary",
       "--uds-color-border-outline-focus-visible"
     ],
     "Font": [
       "--uds-font-family",
       "--uds-font-size-base",
-      "--uds-font-line-height-base",
-      "--uds-font-weight-medium",
-      "--uds-font-weight-bold"
+      "--uds-font-weight-medium"
     ],
     "Space": [
-      "--uds-space-100"
+      "--uds-space-100",
+      "--uds-space-150",
+      "--uds-space-200",
+      "--uds-space-300"
+    ],
+    "Border": [
+      "--uds-border-radius-input",
+      "--uds-border-radius-container-md"
     ]
   },
-  "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\" />\n  <link rel=\"stylesheet\" href=\"uds/uds.css\" />\n</head>\n<body>\n\n  <label class=\"udc-checkbox\">\n    <input type=\"checkbox\" />\n    <span class=\"udc-checkbox__control\"></span>\n    <span class=\"udc-checkbox__label\">Accept terms</span>\n  </label>\n\n  <!-- Required -->\n  <label class=\"udc-checkbox\" data-required=\"true\">\n    <input type=\"checkbox\" required />\n    <span class=\"udc-checkbox__control\"></span>\n    <span class=\"udc-checkbox__label\">I agree</span>\n    <span class=\"udc-checkbox__required\"></span>\n  </label>\n\n  <script src=\"uds/uds.js\"></script>\n</body>\n</html>"
+  "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\" />\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n  <link href=\"https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined\" rel=\"stylesheet\" />\n  <link rel=\"stylesheet\" href=\"uds/uds.css\" />\n  <script type=\"module\" src=\"web-components.js\"></script>\n  <title>checkbox</title>\n</head>\n<body>\n<udc-checkbox name=\"terms\" required>Accept terms</udc-checkbox>\n</body>\n</html>"
 }

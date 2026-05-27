@@ -1144,5 +1144,13 @@ export const SITE_CHANGELOG: SiteChangelogEntry[] = [
       changes: [
         { type: 'fixed', text: 'Published the AI Assist context JSON and Cursor rule file with the static site export.' }
       ]
+    },
+    {
+      version: 'SITE 2026.05.27.4',
+      date: '2026-05-27',
+      changes: [
+        { type: 'added', text: 'Started the parallel Web Components foundation for the next UDS API. Every documented component now has an initial Lit-based tag and React wrapper, while the current component pages stay on the existing examples until the full public cutover is ready.' },
+        { type: 'changed', text: 'Updated the UDS source payload and current docs experience around the Web Component API. Component specs, examples, implementation references, playgrounds, Examples, Code, Playground, Design Language previews, Getting Started, Recipes, Templates, AI Assist, the AI context JSON, and the downloadable Cursor rule now point teams toward Web Components and React wrappers. Demo Builder emits standalone Web Component demos, docs-site widgets no longer rely on the old UDS class hooks, and an audit keeps copied guidance from drifting back to the old class-based API.' }
+      ]
     }
 ];

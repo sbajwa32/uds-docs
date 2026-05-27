@@ -6,6 +6,7 @@
   "whenToUse": "To separate groups of related content. Between sections within a card or panel.",
   "whenNotToUse": "When whitespace alone provides sufficient separation. Do not use as decoration.",
   "acceptanceCriteria": [
+    "Public API uses <udc-divider> Web Component tag.",
     "Renders at all four padding sizes (sm/md/lg/xl)",
     "Border color uses --uds-color-border-secondary so it adapts to light/dark/brand modes",
     "When grouping is meaningful, markup includes role=\"separator\"",
@@ -13,22 +14,23 @@
   ],
   "dependencies": {
     "css": [
-      "uds/components/divider.css"
+      "uds/uds.css"
     ],
-    "js": []
+    "js": [
+      "web-components.js"
+    ]
   },
   "props": [
     {
-      "name": "data-padding",
+      "name": "orientation",
       "type": "enum",
+      "default": "horizontal",
+      "required": false,
+      "description": "Separator orientation.",
       "enum": [
-        "sm",
-        "md",
-        "lg",
-        "xl"
-      ],
-      "default": "sm",
-      "description": "Vertical padding around the rule. Use larger paddings to add breathing room between major sections."
+        "horizontal",
+        "vertical"
+      ]
     }
   ],
   "events": [],
@@ -59,13 +61,13 @@
     "donts": [
       "Don't use a divider when whitespace alone communicates separation",
       "Don't use dividers as decoration; they should always indicate a content boundary",
-      "Don't stack multiple dividers \u2014 increase padding instead"
+      "Don't stack multiple dividers — increase padding instead"
     ]
   },
   "accessibility": {
     "keyboard": [
       {
-        "key": "\u2014",
+        "key": "—",
         "action": "Not focusable; the divider is presentational"
       }
     ],
@@ -98,5 +100,5 @@
   "figmaNodeId": "5749:10953",
   "figmaPageNodeId": "5621-7292",
   "storybookSlug": null,
-  "_legacyAccessibilityNotes": "Purely presentational \u2014 use <hr> for semantic separation if appropriate, otherwise role=\"separator\"."
+  "_legacyAccessibilityNotes": "Purely presentational — use <hr> for semantic separation if appropriate, otherwise role=\"separator\"."
 }

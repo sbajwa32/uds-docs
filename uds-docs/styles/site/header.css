@@ -116,6 +116,36 @@
   line-height: 1;
 }
 
+.sg-demo-tooltip-wrapper {
+  position: relative;
+  display: inline-flex;
+}
+
+.sg-demo-tooltip {
+  position: absolute;
+  z-index: var(--uds-z-index-tooltip);
+  top: calc(100% + var(--uds-space-050));
+  left: 50%;
+  transform: translateX(-50%);
+  min-width: max-content;
+  max-width: 220px;
+  padding: var(--uds-space-075) var(--uds-space-100);
+  border-radius: var(--uds-border-radius-input);
+  background: var(--uds-color-surface-inverse, #171717);
+  color: var(--uds-color-text-inverse, #fff);
+  font-size: var(--uds-font-size-xs);
+  line-height: var(--uds-font-line-height-xs);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.sg-demo-tooltip-wrapper:hover .sg-demo-tooltip,
+.sg-demo-tooltip-wrapper:focus-within .sg-demo-tooltip {
+  opacity: 1;
+  visibility: visible;
+}
+
 /* --------------------------------------------------------------------------
    Token search trigger — pill-shaped search bar
    -------------------------------------------------------------------------- */

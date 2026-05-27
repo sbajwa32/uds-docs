@@ -2,39 +2,12 @@
   "$schema": "../../../schemas/manifest.schema.json",
   "examples": [
     {
-      "id": "info-default",
-      "file": "info-default.html",
-      "label": "Info (default)",
+      "id": "web-component",
+      "file": "web-component.html",
+      "label": "Notification",
       "showInDocs": true,
-      "demoWeight": 3
-    },
-    {
-      "id": "success",
-      "file": "success.html",
-      "label": "Success",
-      "showInDocs": true,
-      "demoWeight": 1
-    },
-    {
-      "id": "error",
-      "file": "error.html",
-      "label": "Error",
-      "showInDocs": true,
-      "demoWeight": 1
-    },
-    {
-      "id": "warning",
-      "file": "warning.html",
-      "label": "Warning",
-      "showInDocs": true,
-      "demoWeight": 1
-    },
-    {
-      "id": "with-close-button",
-      "file": "with-close-button.html",
-      "label": "With close button",
-      "showInDocs": true,
-      "demoWeight": 1
+      "demoWeight": 3,
+      "description": "A message with optional dismissal."
     }
   ]
 }

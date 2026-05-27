@@ -6,6 +6,7 @@
   "whenToUse": "Use labels above or beside form controls so users understand what information is required.",
   "whenNotToUse": "Do not use placeholder text as a label replacement; pair form controls with visible labels.",
   "acceptanceCriteria": [
+    "Public API uses <udc-label> Web Component tag.",
     "Basic and extended label variants render",
     "Default/disabled/error/interactive/success tones render",
     "Multiline labels wrap cleanly",
@@ -14,66 +15,42 @@
   ],
   "dependencies": {
     "css": [
-      "uds/components/label.css"
+      "uds/uds.css"
     ],
-    "js": []
+    "js": [
+      "web-components.js"
+    ]
   },
   "props": [
     {
-      "name": "data-variant",
-      "type": "enum",
-      "enum": [
-        "default",
-        "disabled",
-        "error",
-        "interactive",
-        "success"
-      ],
-      "default": "default",
-      "description": "Label tone/state."
+      "name": "for",
+      "type": "string",
+      "default": null,
+      "required": false,
+      "description": "Associated control id."
     },
     {
-      "name": "data-multiline",
+      "name": "required",
       "type": "boolean",
       "default": false,
-      "description": "Allows wrapping label text."
+      "required": false,
+      "description": "Required indicator."
     },
     {
-      "name": "data-size",
-      "type": "enum",
-      "enum": [
-        "default",
-        "sm"
-      ],
-      "default": "default",
-      "description": "Default or smaller text size."
-    },
-    {
-      "name": "data-prominent",
+      "name": "disabled",
       "type": "boolean",
       "default": false,
-      "description": "Uses bold text treatment."
-    },
-    {
-      "name": "data-align",
-      "type": "enum",
-      "enum": [
-        "left",
-        "middle",
-        "right"
-      ],
-      "default": "left",
-      "description": "Horizontal text alignment."
-    },
-    {
-      "name": "data-required",
-      "type": "boolean",
-      "default": false,
-      "description": "Shows required dot."
+      "required": false,
+      "description": "Disabled state."
     }
   ],
   "events": [],
-  "slots": [],
+  "slots": [
+    {
+      "name": "default",
+      "description": "Label text."
+    }
+  ],
   "states": [
     {
       "name": "default",
@@ -123,7 +100,7 @@
   "accessibility": {
     "keyboard": [
       {
-        "key": "\u2014",
+        "key": "—",
         "action": "Not focusable by itself; associated control receives focus"
       }
     ],

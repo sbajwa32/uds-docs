@@ -4,13 +4,13 @@
   "title": "Button",
   "description": "A button triggers an action or event. Primary for main actions, secondary for alternatives, ghost for low-emphasis.",
   "whenToUse": "Use buttons to trigger an action (submit, save, cancel, delete). Primary for the main action; secondary for alternatives; ghost for low-emphasis.",
-  "whenNotToUse": "Do not use buttons for navigation links \u2014 use an anchor (<a>) instead. Avoid more than 2\u20133 buttons in a row; consider a dropdown or action menu.",
+  "whenNotToUse": "Do not use buttons for navigation links — use an anchor (<a>) instead. Avoid more than 2–3 buttons in a row; consider a dropdown or action menu.",
   "acceptanceCriteria": [
+    "Public API uses <udc-button> Web Component tag.",
     "Three variants render: primary (filled), secondary (outline), ghost (text-only)",
     "Default and sm sizes render at the documented heights",
     "Leading- and trailing-icon slots accept any Material Symbols Outlined name",
     "Icon-only mode renders as a square; consumer must supply aria-label",
-    "Destructive variant (data-btn-color=\"danger\") tints all three variants with the error color tokens",
     "All states render distinct visuals: default, hover, active, focus-visible, selected, disabled",
     "Focus ring uses --uds-color-border-outline-focus-visible and meets WCAG 2.4.7",
     "Disabled buttons have aria-disabled or the native disabled attribute and do not fire click",
@@ -18,89 +18,106 @@
   ],
   "dependencies": {
     "css": [
-      "uds/components/button.css"
+      "uds/uds.css"
     ],
-    "js": []
+    "js": [
+      "web-components.js"
+    ]
   },
   "props": [
     {
-      "name": "class",
+      "name": "variant",
       "type": "enum",
+      "default": "primary",
+      "required": false,
+      "description": "Visual emphasis.",
       "enum": [
-        "udc-button-primary",
-        "udc-button-secondary",
-        "udc-button-ghost"
-      ],
-      "default": "udc-button-primary",
-      "description": "Variant \u2014 primary for the main action, secondary for alternatives, ghost for low-emphasis"
+        "primary",
+        "secondary",
+        "ghost"
+      ]
     },
     {
-      "name": "data-size",
+      "name": "size",
       "type": "enum",
+      "default": "default",
+      "required": false,
+      "description": "Button size.",
       "enum": [
         "default",
         "sm"
-      ],
-      "default": "default",
-      "description": "Compact size for dense contexts like table cells or sidebars"
+      ]
     },
     {
-      "name": "data-btn-color",
+      "name": "color",
       "type": "enum",
+      "default": "default",
+      "required": false,
+      "description": "Destructive color treatment.",
       "enum": [
         "default",
         "danger"
-      ],
-      "default": "default",
-      "description": "Destructive variant. Pair with confirmation dialogs for irreversible actions."
-    },
-    {
-      "name": "data-icon-only",
-      "type": "boolean",
-      "default": false,
-      "description": "Renders the button as a square with only an icon. Requires aria-label on the <button>."
-    },
-    {
-      "name": "data-leading-icon",
-      "type": "string",
-      "default": null,
-      "description": "Material Symbols Outlined name to render before the label"
-    },
-    {
-      "name": "data-trailing-icon",
-      "type": "string",
-      "default": null,
-      "description": "Material Symbols Outlined name to render after the label"
+      ]
     },
     {
       "name": "disabled",
       "type": "boolean",
       "default": false,
-      "description": "Standard HTML disabled attribute. Disables interaction and applies the disabled visual state."
+      "required": false,
+      "description": "Disables interaction."
+    },
+    {
+      "name": "selected",
+      "type": "boolean",
+      "default": false,
+      "required": false,
+      "description": "Toggled-on visual state."
+    },
+    {
+      "name": "icon-only",
+      "type": "boolean",
+      "default": false,
+      "required": false,
+      "description": "Square icon-only button; requires aria-label."
+    },
+    {
+      "name": "leading-icon",
+      "type": "string",
+      "default": null,
+      "required": false,
+      "description": "Material Symbols name before the label."
+    },
+    {
+      "name": "trailing-icon",
+      "type": "string",
+      "default": null,
+      "required": false,
+      "description": "Material Symbols name after the label."
     },
     {
       "name": "type",
       "type": "enum",
+      "default": "button",
+      "required": false,
+      "description": "Native button type.",
       "enum": [
         "button",
         "submit",
         "reset"
-      ],
-      "default": "button",
-      "description": "Native button type. Use \"submit\" inside <form> only when this is the form's submit action."
+      ]
     }
   ],
   "events": [
     {
       "name": "click",
-      "description": "Fires when the button is activated by mouse, keyboard (Enter/Space), or touch",
+      "description": "Fires when activated.",
       "payload": "MouseEvent"
     }
   ],
   "slots": [
     {
       "name": "default",
-      "description": "The button label. Use sentence case verbs (\"Save changes\")."
+      "description": "Button label."
     }
   ],
   "states": [
@@ -121,7 +138,7 @@
     },
     {
       "name": "focus-visible",
-      "description": "Keyboard-focused \u2014 shows the focus ring (--uds-color-border-outline-focus-visible)",
+      "description": "Keyboard-focused — shows the focus ring (--uds-color-border-outline-focus-visible)",
       "hasVisual": true
     },
     {
@@ -136,7 +153,7 @@
     },
     {
       "name": "loading",
-      "description": "Not yet supported in 0.2 \u2014 track in component changelog"
+      "description": "Not yet supported in 0.2 — track in component changelog"
     }
   ],
   "contentGuidelines": "Sentence case verbs (\"Save changes\", \"Delete tenant\"). Avoid generic labels like \"OK\" or \"Submit\". Keep button text under 20 characters; if the action requires explanation, surface it in adjacent helper copy.",
@@ -155,7 +172,7 @@
       "Provide aria-label on icon-only buttons"
     ],
     "donts": [
-      "Don't use buttons for navigation \u2014 use anchor (<a>) tags",
+      "Don't use buttons for navigation — use anchor (<a>) tags",
       "Don't put more than one primary button on a single surface",
       "Don't gate the danger variant behind a single click without confirmation for irreversible actions",
       "Don't rely on hover-only affordances; the focus state must be equally visible"
@@ -179,10 +196,10 @@
     "screenReader": [
       {
         "trigger": "Button receives focus",
-        "announcement": "[Label], button \u2014 announces \"disabled\" when the disabled attribute is present"
+        "announcement": "[Label], button — announces \"disabled\" when the disabled attribute is present"
       },
       {
-        "trigger": "data-icon-only button receives focus",
+        "trigger": "icon-only button receives focus",
         "announcement": "Reads the aria-label on the <button> element; the icon itself is aria-hidden"
       }
     ],
@@ -221,8 +238,8 @@
   "performance": null,
   "motion": null,
   "responsive": null,
-  "visualHierarchy": "Primary buttons are the page's main action \u2014 at most one per surface. Secondary buttons sit alongside primaries (Cancel + Save). Ghost buttons are for low-emphasis actions in toolbars or nested controls.",
-  "densityBehavior": "Default size is the standard target across forms and dialogs. Use data-size=\"sm\" inside table cells, dense toolbars, and the comfortable density when paired with sm inputs.",
+  "visualHierarchy": "Primary buttons are the page's main action — at most one per surface. Secondary buttons sit alongside primaries (Cancel + Save). Ghost buttons are for low-emphasis actions in toolbars or nested controls.",
+  "densityBehavior": "Default size is the standard target across forms and dialogs. Use size=\"sm\" inside table cells, dense toolbars, and the comfortable density when paired with sm inputs.",
   "owner": {
     "designer": "Unassigned",
     "developer": "Unassigned"

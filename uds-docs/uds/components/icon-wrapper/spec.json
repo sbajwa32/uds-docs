@@ -6,6 +6,7 @@
   "whenToUse": "When placing standalone Material Symbols icons that need sizing standardization. To apply a specific icon color via CSS variables.",
   "whenNotToUse": "For icons inside components that already handle sizing (e.g. buttons). Do not use for decorative shapes.",
   "acceptanceCriteria": [
+    "Public API uses <udc-icon-wrapper> Web Component tag.",
     "Renders at all six documented sizes (16/20/24/32/48/64)",
     "Inherits color from currentColor unless --_iw-color is overridden",
     "When used decoratively, the inner icon has aria-hidden=\"true\"",
@@ -13,31 +14,47 @@
   ],
   "dependencies": {
     "css": [
-      "uds/components/icon-wrapper.css"
+      "uds/uds.css"
     ],
-    "js": []
+    "js": [
+      "web-components.js"
+    ]
   },
   "props": [
     {
-      "name": "data-size",
+      "name": "icon",
+      "type": "string",
+      "default": null,
+      "required": false,
+      "description": "Material Symbols name."
+    },
+    {
+      "name": "label",
+      "type": "string",
+      "default": null,
+      "required": false,
+      "description": "Accessible label."
+    },
+    {
+      "name": "tone",
       "type": "enum",
+      "default": "neutral",
+      "required": false,
+      "description": "Semantic tone.",
       "enum": [
-        "16",
-        "20",
-        "24",
-        "32",
-        "48",
-        "64"
-      ],
-      "default": "24",
-      "description": "Icon wrapper size in pixels. Maps to internal --_iw-size token."
+        "neutral",
+        "info",
+        "success",
+        "warning",
+        "error"
+      ]
     }
   ],
   "events": [],
   "slots": [
     {
       "name": "default",
-      "description": "A single Material Symbols Outlined icon. The wrapper sets the icon's font-size and inherits color from the surrounding text."
+      "description": "Custom icon content."
     }
   ],
   "states": [
@@ -48,7 +65,7 @@
     },
     {
       "name": "not-applicable",
-      "description": "The wrapper is not focusable or interactive \u2014 interactivity belongs to the parent element"
+      "description": "The wrapper is not focusable or interactive — interactivity belongs to the parent element"
     }
   ],
   "contentGuidelines": "Icons should reinforce, not replace, a text label. Reserve standalone icons for highly recognizable affordances (close, back, search).",
@@ -62,17 +79,17 @@
   "dosDonts": {
     "dos": [
       "Add aria-hidden=\"true\" on the inner Material Symbols span when the icon is decorative",
-      "Pick a size from the documented enum \u2014 don't introduce one-off sizes"
+      "Pick a size from the documented enum — don't introduce one-off sizes"
     ],
     "donts": [
-      "Don't use icon-wrapper for shapes or illustrations \u2014 only for Material Symbols icons",
+      "Don't use icon-wrapper for shapes or illustrations — only for Material Symbols icons",
       "Don't put icon-wrapper inside a button when the host component already handles icon sizing (e.g. Button, Dropdown)"
     ]
   },
   "accessibility": {
     "keyboard": [
       {
-        "key": "\u2014",
+        "key": "—",
         "action": "Not focusable; place icon-wrapper inside an interactive element if needed"
       }
     ],

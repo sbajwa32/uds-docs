@@ -2,11 +2,12 @@
   "$schema": "../../../schemas/manifest.schema.json",
   "examples": [
     {
-      "id": "padding-variants",
-      "file": "padding-variants.html",
-      "label": "Padding variants",
+      "id": "web-component",
+      "file": "web-component.html",
+      "label": "Divider",
       "showInDocs": true,
-      "demoWeight": 3
+      "demoWeight": 3,
+      "description": "A visual separator."
     }
   ]
 }

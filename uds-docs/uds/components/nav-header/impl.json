@@ -3,48 +3,32 @@
   "jsFunc": null,
   "jsFile": null,
   "tokens": {
-    "Surface": [
+    "Color": [
       "--uds-color-surface-main",
-      "--uds-color-surface-interactive-subtle-hover"
-    ],
-    "Text": [
+      "--uds-color-surface-subtle",
+      "--uds-color-surface-interactive-default",
       "--uds-color-text-primary",
-      "--uds-color-text-secondary"
-    ],
-    "Icon": [
-      "--uds-color-icon-primary",
-      "--uds-color-icon-secondary",
-      "--uds-color-icon-interactive"
-    ],
-    "Border": [
+      "--uds-color-text-secondary",
+      "--uds-color-text-interactive",
+      "--uds-color-border-primary",
       "--uds-color-border-secondary",
-      "--uds-border-radius-container-full",
-      "--uds-border-radius-container-xl",
-      "--uds-border-radius-input"
-    ],
-    "Space": [
-      "--uds-space-025",
-      "--uds-space-050",
-      "--uds-space-075",
-      "--uds-space-100",
-      "--uds-space-150",
-      "--uds-space-200",
-      "--uds-space-250",
-      "--uds-space-300"
+      "--uds-color-border-outline-focus-visible"
     ],
     "Font": [
       "--uds-font-family",
       "--uds-font-size-base",
-      "--uds-font-size-xl",
-      "--uds-font-size-2xl",
-      "--uds-font-line-height-base",
-      "--uds-font-line-height-xl",
-      "--uds-font-weight-medium",
-      "--uds-font-weight-bold"
+      "--uds-font-weight-medium"
     ],
-    "Shadow": [
-      "--uds-shadow-depth-100"
+    "Space": [
+      "--uds-space-100",
+      "--uds-space-150",
+      "--uds-space-200",
+      "--uds-space-300"
+    ],
+    "Border": [
+      "--uds-border-radius-input",
+      "--uds-border-radius-container-md"
     ]
   },
-  "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\" />\n  <link href=\"https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined\" rel=\"stylesheet\" />\n  <link rel=\"stylesheet\" href=\"uds/uds.css\" />\n</head>\n<body>\n\n  <div class=\"udc-nav-header\">\n    <div class=\"udc-nav-header__left\">\n      <div class=\"udc-nav-logo\"><span class=\"material-symbols-outlined\" style=\"font-size:32px;\">apartment</span></div>\n      <div class=\"udc-nav-title-area\">\n        <span class=\"material-symbols-outlined\">dashboard</span>\n        Boardroom\n        <span class=\"material-symbols-outlined udc-nav-title-area__chevron\">keyboard_arrow_down</span>\n      </div>\n    </div>\n    <div class=\"udc-nav-header__center\">\n      <div class=\"udc-nav-search\">\n        <span class=\"material-symbols-outlined\">auto_awesome</span>\n        <input class=\"udc-nav-search__input\" type=\"text\" placeholder=\"Search or ask a question\">\n      </div>\n    </div>\n    <div class=\"udc-nav-header__right\">\n      <div class=\"udc-nav-account\">\n        <button class=\"udc-button-ghost\" data-icon-only aria-label=\"Notifications\"><span class=\"material-symbols-outlined\">notifications</span></button>\n        <button class=\"udc-button-ghost\" data-icon-only aria-label=\"Settings\"><span class=\"material-symbols-outlined\">settings</span></button>\n        <button class=\"udc-button-ghost\" data-icon-only aria-label=\"Account\"><span class=\"material-symbols-outlined\">account_circle</span></button>\n      </div>\n    </div>\n  </div>\n\n</body>\n</html>"
+  "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\" />\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n  <link href=\"https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined\" rel=\"stylesheet\" />\n  <link rel=\"stylesheet\" href=\"uds/uds.css\" />\n  <script type=\"module\" src=\"web-components.js\"></script>\n  <title>nav-header</title>\n</head>\n<body>\n<udc-nav-header>\n  <span slot=\"brand\">Boardroom</span>\n  <udc-button slot=\"actions\" variant=\"ghost\" leading-icon=\"account_circle\">Profile</udc-button>\n</udc-nav-header>\n</body>\n</html>"
 }

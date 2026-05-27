@@ -4,19 +4,71 @@
   "title": "Notification",
   "description": "An inline or prominent banner that communicates status, warnings, or important information.",
   "whenToUse": "To communicate system status, warnings, or important context. Info (neutral info), success (confirmation), warning (caution), error (critical).",
-  "whenNotToUse": "For transient feedback \u2014 use a toast instead. For blocking confirmations \u2014 use a dialog.",
-  "acceptanceCriteria": [],
+  "whenNotToUse": "For transient feedback — use a toast instead. For blocking confirmations — use a dialog.",
+  "acceptanceCriteria": [
+    "Public API uses <udc-notification> Web Component tag."
+  ],
   "dependencies": {
     "css": [
-      "uds/components/notification.css"
+      "uds/uds.css"
     ],
     "js": [
-      "uds/components/notification.js"
+      "web-components.js"
     ]
   },
-  "props": [],
-  "events": [],
-  "slots": [],
+  "props": [
+    {
+      "name": "tone",
+      "type": "enum",
+      "default": "info",
+      "required": false,
+      "description": "Message tone.",
+      "enum": [
+        "info",
+        "success",
+        "warning",
+        "error"
+      ]
+    },
+    {
+      "name": "variant",
+      "type": "enum",
+      "default": "subtle",
+      "required": false,
+      "description": "Visual emphasis.",
+      "enum": [
+        "subtle",
+        "prominent"
+      ]
+    },
+    {
+      "name": "inline",
+      "type": "boolean",
+      "default": false,
+      "required": false,
+      "description": "Renders inline without full container styling."
+    },
+    {
+      "name": "dismissible",
+      "type": "boolean",
+      "default": false,
+      "required": false,
+      "description": "Shows a dismiss control."
+    }
+  ],
+  "events": [
+    {
+      "name": "udc-dismiss",
+      "description": "Fires when dismissed.",
+      "payload": "{ reason }"
+    }
+  ],
+  "slots": [
+    {
+      "name": "default",
+      "description": "Notification message."
+    }
+  ],
   "states": [],
   "contentGuidelines": null,
   "commonlyPairedWith": [],
