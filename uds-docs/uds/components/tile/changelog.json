@@ -11,6 +11,21 @@
       "version": "0.3",
       "type": "changed",
       "text": "Figma tile coverage confirmed: default/hover/focused/selected/disabled states"
+    },
+    {
+      "version": "0.3",
+      "type": "changed",
+      "text": "Replaced documented examples, implementation reference, and playground output with the Web Component API."
+    },
+    {
+      "version": "0.3",
+      "type": "changed",
+      "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
+    },
+    {
+      "version": "0.3",
+      "type": "changed",
+      "text": "Ported the full tile CSS into the `<udc-tile>` shadow DOM with BEM `.udc-tile__content` / `__label` / `__required` / `__body` / `__chevron` siblings. Chevron icon now uses `--uds-font-size-2xl`. Hover, selected (info-subtle bg + 2px interactive border), focus-visible ring, and disabled (opacity 0.5, chevron hidden) all match the original. Added an interactive playground (label, body lines, required, chevron, state)."
     }
   ]
 }

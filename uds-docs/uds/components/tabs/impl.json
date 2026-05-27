@@ -1,30 +1,34 @@
 {
   "$schema": "../../schemas/impl.schema.json",
-  "jsFunc": "initTabs",
-  "jsFile": "uds/components/tabs/tabs.js",
+  "jsFunc": null,
+  "jsFile": null,
   "tokens": {
     "Color": [
+      "--uds-color-surface-main",
+      "--uds-color-surface-subtle",
+      "--uds-color-surface-interactive-default",
       "--uds-color-text-primary",
-      "--uds-color-text-disabled",
+      "--uds-color-text-secondary",
       "--uds-color-text-interactive",
-      "--uds-color-surface-interactive-subtle-hover",
       "--uds-color-border-primary",
-      "--uds-color-border-disabled",
-      "--uds-color-border-interactive",
-      "--uds-color-border-interactive-hover",
+      "--uds-color-border-secondary",
       "--uds-color-border-outline-focus-visible"
     ],
     "Font": [
       "--uds-font-family",
       "--uds-font-size-base",
-      "--uds-font-line-height-base",
       "--uds-font-weight-medium"
     ],
     "Space": [
       "--uds-space-100",
+      "--uds-space-150",
       "--uds-space-200",
       "--uds-space-300"
+    ],
+    "Border": [
+      "--uds-border-radius-input",
+      "--uds-border-radius-container-md"
     ]
   },
-  "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\" />\n  <link rel=\"stylesheet\" href=\"uds/uds.css\" />\n</head>\n<body>\n\n  <div class=\"udc-tabs\" role=\"tablist\">\n    <button class=\"udc-tab\" role=\"tab\" aria-selected=\"true\" aria-controls=\"panel-1\" id=\"tab-1\">Overview</button>\n    <button class=\"udc-tab\" role=\"tab\" aria-selected=\"false\" aria-controls=\"panel-2\" id=\"tab-2\">Details</button>\n    <button class=\"udc-tab\" role=\"tab\" aria-selected=\"false\" aria-controls=\"panel-3\" id=\"tab-3\" disabled>Disabled</button>\n  </div>\n\n  <div id=\"panel-1\" role=\"tabpanel\" aria-labelledby=\"tab-1\">Overview content</div>\n  <div id=\"panel-2\" role=\"tabpanel\" aria-labelledby=\"tab-2\" hidden>Details content</div>\n  <div id=\"panel-3\" role=\"tabpanel\" aria-labelledby=\"tab-3\" hidden>Disabled content</div>\n\n  <script src=\"uds/uds.js\"></script>\n</body>\n</html>"
+  "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\" />\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n  <link href=\"https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined\" rel=\"stylesheet\" />\n  <link rel=\"stylesheet\" href=\"uds/uds.css\" />\n  <script type=\"module\" src=\"web-components.js\"></script>\n  <title>tabs</title>\n</head>\n<body>\n<udc-tabs selected-panel=\"overview\">\n  <udc-tab panel=\"overview\">Overview</udc-tab>\n  <udc-tab panel=\"details\">Details</udc-tab>\n  <udc-tab-panel panel=\"overview\">Overview content</udc-tab-panel>\n  <udc-tab-panel panel=\"details\">Details content</udc-tab-panel>\n</udc-tabs>\n</body>\n</html>"
 }

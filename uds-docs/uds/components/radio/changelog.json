@@ -11,6 +11,21 @@
       "version": "0.3",
       "type": "changed",
       "text": "Figma radio coverage confirmed: radio button states including selected/error/disabled/hover/active combinations plus 2-5 option radio groups"
+    },
+    {
+      "version": "0.3",
+      "type": "changed",
+      "text": "Replaced documented examples, implementation reference, and playground output with the Web Component API."
+    },
+    {
+      "version": "0.3",
+      "type": "changed",
+      "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
+    },
+    {
+      "version": "0.3",
+      "type": "changed",
+      "text": "Ported the full radio CSS into `<udc-radio>` + `<udc-radio-group>` shadow DOM (20×20 ring, 12×12 center dot, selected/hover/focus/disabled/error states with text-interactive recolor and required dot alignment). RadioGroup now manages selection via the `value` attribute and emits `udc-change`; individual radios bubble `udc-radio-change`. Rebuilt the playground with the original options/disabled/error controls."
     }
   ]
 }

@@ -2,18 +2,12 @@
   "$schema": "../../../schemas/manifest.schema.json",
   "examples": [
     {
-      "id": "top-default",
-      "file": "top-default.html",
-      "label": "Top (default)",
+      "id": "web-component",
+      "file": "web-component.html",
+      "label": "Tooltip",
       "showInDocs": true,
-      "demoWeight": 3
-    },
-    {
-      "id": "positions",
-      "file": "positions.html",
-      "label": "Positions",
-      "showInDocs": true,
-      "demoWeight": 1
+      "demoWeight": 3,
+      "description": "A trigger/content tooltip."
     }
   ]
 }

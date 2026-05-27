@@ -5,16 +5,25 @@
   "description": "A breadcrumb shows the user's location within a hierarchical structure and provides links back to each level.",
   "whenToUse": "On pages deep within a hierarchy (3+ levels deep). To help users understand where they are and navigate back.",
   "whenNotToUse": "On top-level pages. When there is no meaningful hierarchy.",
-  "acceptanceCriteria": [],
+  "acceptanceCriteria": [
+    "Public API uses <udc-breadcrumb> Web Component tag."
+  ],
   "dependencies": {
     "css": [
-      "uds/components/breadcrumb.css"
+      "uds/uds.css"
     ],
-    "js": []
+    "js": [
+      "web-components.js"
+    ]
   },
   "props": [],
   "events": [],
-  "slots": [],
+  "slots": [
+    {
+      "name": "default",
+      "description": "Breadcrumb links and current page item."
+    }
+  ],
   "states": [],
   "contentGuidelines": null,
   "commonlyPairedWith": [],

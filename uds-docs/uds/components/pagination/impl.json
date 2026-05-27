@@ -5,27 +5,30 @@
   "tokens": {
     "Color": [
       "--uds-color-surface-main",
+      "--uds-color-surface-subtle",
       "--uds-color-surface-interactive-default",
-      "--uds-color-surface-interactive-subtle-hover",
       "--uds-color-text-primary",
-      "--uds-color-text-inverse",
       "--uds-color-text-secondary",
+      "--uds-color-text-interactive",
       "--uds-color-border-primary",
-      "--uds-color-border-interactive"
+      "--uds-color-border-secondary",
+      "--uds-color-border-outline-focus-visible"
     ],
     "Font": [
       "--uds-font-family",
-      "--uds-font-size-sm",
+      "--uds-font-size-base",
       "--uds-font-weight-medium"
     ],
     "Space": [
-      "--uds-space-050",
       "--uds-space-100",
-      "--uds-space-200"
+      "--uds-space-150",
+      "--uds-space-200",
+      "--uds-space-300"
     ],
     "Border": [
-      "--uds-border-radius-input"
+      "--uds-border-radius-input",
+      "--uds-border-radius-container-md"
     ]
   },
-  "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head><meta charset=\"UTF-8\" /><link href=\"https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined\" rel=\"stylesheet\" /><link rel=\"stylesheet\" href=\"uds/uds.css\" /></head>\n<body>\n  <nav class=\"udc-pagination\" aria-label=\"Pagination\"><div class=\"udc-pagination__pages\"><button class=\"udc-pagination__button\" aria-current=\"page\">1</button><button class=\"udc-pagination__button\">2</button></div></nav>\n</body>\n</html>"
+  "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\" />\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n  <link href=\"https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined\" rel=\"stylesheet\" />\n  <link rel=\"stylesheet\" href=\"uds/uds.css\" />\n  <script type=\"module\" src=\"web-components.js\"></script>\n  <title>pagination</title>\n</head>\n<body>\n<udc-pagination page=\"1\" total-pages=\"10\"></udc-pagination>\n</body>\n</html>"
 }

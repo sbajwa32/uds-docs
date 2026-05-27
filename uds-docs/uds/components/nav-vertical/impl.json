@@ -1,45 +1,34 @@
 {
   "$schema": "../../schemas/impl.schema.json",
-  "jsFunc": "initNavVertical",
-  "jsFile": "uds/components/nav-vertical/nav-vertical.js",
+  "jsFunc": null,
+  "jsFile": null,
   "tokens": {
-    "Surface": [
-      "--uds-color-surface-interactive-none",
-      "--uds-color-surface-interactive-subtle-hover",
-      "--uds-color-surface-interactive-subtle-active",
-      "--uds-color-surface-interactive-active",
-      "--uds-color-surface-interactive-default"
-    ],
-    "Text": [
+    "Color": [
+      "--uds-color-surface-main",
+      "--uds-color-surface-subtle",
+      "--uds-color-surface-interactive-default",
       "--uds-color-text-primary",
-      "--uds-color-text-inverse",
+      "--uds-color-text-secondary",
       "--uds-color-text-interactive",
-      "--uds-color-text-interactive-hover",
-      "--uds-color-text-disabled"
-    ],
-    "Icon": [
-      "--uds-color-icon-primary",
-      "--uds-color-icon-interactive",
-      "--uds-color-icon-inverse",
-      "--uds-color-icon-disabled"
-    ],
-    "Border": [
-      "--uds-color-border-outline-focus-visible",
-      "--uds-border-radius-input",
-      "--uds-border-radius-container-full"
-    ],
-    "Space": [
-      "--uds-space-075",
-      "--uds-space-100",
-      "--uds-space-150",
-      "--uds-space-200"
+      "--uds-color-border-primary",
+      "--uds-color-border-secondary",
+      "--uds-color-border-outline-focus-visible"
     ],
     "Font": [
       "--uds-font-family",
       "--uds-font-size-base",
-      "--uds-font-line-height-base",
       "--uds-font-weight-medium"
+    ],
+    "Space": [
+      "--uds-space-100",
+      "--uds-space-150",
+      "--uds-space-200",
+      "--uds-space-300"
+    ],
+    "Border": [
+      "--uds-border-radius-input",
+      "--uds-border-radius-container-md"
     ]
   },
-  "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\" />\n  <link href=\"https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined\" rel=\"stylesheet\" />\n  <link rel=\"stylesheet\" href=\"uds/uds.css\" />\n</head>\n<body>\n\n  <nav class=\"udc-nav-vertical\" aria-label=\"Main navigation\">\n    <button class=\"udc-nav-button\" aria-current=\"page\">\n      <span class=\"material-symbols-outlined\">space_dashboard</span>\n      <span class=\"udc-nav-button__label\">Dashboard</span>\n    </button>\n    <button class=\"udc-nav-button\">\n      <span class=\"material-symbols-outlined\">book</span>\n      <span class=\"udc-nav-button__label\">Leasing / CRM</span>\n    </button>\n  </nav>\n\n  <!-- Without leading icons -->\n  <nav class=\"udc-nav-vertical\" data-leading-icons=\"false\">\n    <button class=\"udc-nav-button\" aria-current=\"page\">\n      <span class=\"udc-nav-button__label\">Dashboard</span>\n    </button>\n  </nav>\n\n  <script src=\"uds/uds.js\"></script>\n</body>\n</html>"
+  "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\" />\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n  <link href=\"https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined\" rel=\"stylesheet\" />\n  <link rel=\"stylesheet\" href=\"uds/uds.css\" />\n  <script type=\"module\" src=\"web-components.js\"></script>\n  <title>nav-vertical</title>\n</head>\n<body>\n<udc-nav-vertical aria-label=\"Main navigation\">\n  <udc-nav-item href=\"/dashboard\" current>Dashboard</udc-nav-item>\n  <udc-nav-item href=\"/leases\">Leases</udc-nav-item>\n</udc-nav-vertical>\n</body>\n</html>"
 }

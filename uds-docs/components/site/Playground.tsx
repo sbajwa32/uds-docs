@@ -17,6 +17,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 
+import { WEB_COMPONENT_EXAMPLES } from '@/data/web-component-examples';
 import {
   udsResolve,
   getComponentImpl,
@@ -24,6 +25,7 @@ import {
   type ComponentImpl,
   type ComponentSpec,
 } from '@/lib/uds-data';
+import { registerUdsComponents } from '@uds/web-components';
 import { useUdsVersion } from './UdsVersionProvider';
 import { DocsCodeBlock, DocsStateMessage } from './ui';
 
@@ -74,9 +76,18 @@ interface LoadState {
 }
 
 export function Playground({ componentId }: { componentId: string }) {
-  const { fetchVersion } = useUdsVersion();
+  const { fetchVersion, isArchive } = useUdsVersion();
   const [load, setLoad] = useState<LoadState>({ config: null, loading: true, error: null });
   const [state, setState] = useState<Record<string, unknown>>({});
+  const webComponentExample = !isArchive ? WEB_COMPONENT_EXAMPLES[componentId]?.[0] ?? null : null;
+
+  // Make sure the live `<udc-*>` tags inside the preview pane get upgraded.
+  // Safe to call repeatedly — registration is idempotent.
+  useEffect(() => {
+    if (!isArchive) {
+      registerUdsComponents();
+    }
+  }, [isArchive]);
 
   // Dynamic import of the per-component playground.js. Anchored at
   // document.baseURI so the import works from any deploy URL (production +
@@ -146,6 +157,33 @@ export function Playground({ componentId }: { componentId: string }) {
     );
   }
   if (!load.config) {
+    // No playground.js exists. If we have a static Web Component example,
+    // fall back to that — show the tag for reference, no interactive controls.
+    if (webComponentExample) {
+      return (
+        <div>
+          <div className="sg-example-only-banner">
+            <span className="material-symbols-outlined">code_blocks</span>
+            <span>
+              <strong>Web Component API.</strong> This playground shows the target
+              component tag for the live docs view.
+            </span>
+          </div>
+          <div className="ds-playground-layout">
+            <div className="ds-playground-left">
+              <div
+                className="ds-playground-preview"
+                dangerouslySetInnerHTML={{ __html: webComponentExample.html }}
+              />
+            </div>
+            <div className="ds-playground-right">
+              <DocsCodeBlock code={webComponentExample.html} language="html" />
+              <ImplementationReference componentId={componentId} />
+            </div>
+          </div>
+        </div>
+      );
+    }
     return (
       <DocsStateMessage>
         No playground is configured for <code>{componentId}</code>.
@@ -158,8 +196,17 @@ export function Playground({ componentId }: { componentId: string }) {
       <div className="sg-example-only-banner">
         <span className="material-symbols-outlined">code_blocks</span>
         <span>
-          <strong>Example only.</strong> All code on this page is reference.
-          Production components live in Storybook.
+          {webComponentExample ? (
+            <>
+              <strong>Web Component API.</strong> Adjust the controls to preview
+              <code> &lt;udc-{componentId}&gt;</code> live.
+            </>
+          ) : (
+            <>
+              <strong>Example only.</strong> All code on this page is reference.
+              Production components live in Storybook.
+            </>
+          )}
         </span>
       </div>
 

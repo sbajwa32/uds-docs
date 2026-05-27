@@ -232,6 +232,18 @@
           "text": "Figma variant matrix confirmed: 2 sizes (Default/Small), 5 variants (Info/Secondary/Success/Error/Warning), and Prominent true/false"
         },
         {
+          "type": "changed",
+          "text": "Replaced documented examples, implementation reference, and playground output with the Web Component API."
+        },
+        {
+          "type": "changed",
+          "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
+        },
+        {
+          "type": "changed",
+          "text": "Rebuilt the playground with interactive controls (tone, variant, size, label) for `<udc-badge>`. The existing shadow-DOM CSS port (5 tones \u00d7 prominent/subtle \u00d7 default/sm) already matched the original `badge.css`."
+        },
+        {
           "type": "fixed",
           "text": "Fixed invisible text on the secondary prominent variant. The CSS paired `surface-bold` (light gray in light mode) with `text-inverse` (near-white in light mode) \u2014 contrast was ~1.07:1, basically invisible. Switched to `text-primary` for a contrast of ~9.7:1 in light mode and ~10:1 in dark mode. Affected the changelog component-name pills and per-component changelog type labels."
         }
@@ -240,90 +252,270 @@
         {
           "type": "changed",
           "text": "Figma variant matrix confirmed: framed/frameless, depth on/off, 2-6 link groups, current/default/disabled link states, and open-in-new-window affordance"
+        },
+        {
+          "type": "changed",
+          "text": "Replaced documented examples, implementation reference, and playground output with the Web Component API."
+        },
+        {
+          "type": "changed",
+          "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
+        },
+        {
+          "type": "changed",
+          "text": "Ported the full breadcrumb CSS into the `<udc-breadcrumb>` shadow DOM (pill container with surface-main bg + border-tertiary + container-xl radius, chevron-right separator drawn via SVG mask-image, text-interactive-neutral links with hover underline, bold text-primary current page, frameless variant). Component accepts an `items` array attribute and renders the `<ol>` automatically; falls back to slotted content. Rebuilt the playground with items count and frameless controls."
         }
       ],
       "Button": [
         {
           "type": "changed",
           "text": "Figma variant matrix confirmed for primary/secondary/ghost buttons: destructive true/false, default/small sizes, default/hover/active/selected/disabled states, leading/trailing icons, icon-only, and horizontal/vertical button groups"
+        },
+        {
+          "type": "changed",
+          "text": "Replaced documented examples, implementation reference, and playground output with the Web Component API."
+        },
+        {
+          "type": "changed",
+          "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
+        },
+        {
+          "type": "changed",
+          "text": "Ported the full button CSS into the `<udc-button>` shadow DOM with `variant` (primary/secondary/ghost), `size` (default/sm), `color` (default/danger/success/warning/neutral), `leading-icon`, `trailing-icon`, `icon-only`, `selected`, and `disabled`. Rebuilt the playground with the original 12 controls (variant, size, color, leading/trailing icon toggle + picker, icon-only + icon, disabled, selected, label). Fixed a Lit empty-string reflection bug that was forcing every button to 12px padding on all sides."
         }
       ],
       "Checkbox": [
         {
           "type": "changed",
           "text": "Figma variant matrix confirmed for checkbox and multiline checkbox: selected true/false plus default/hover/active/focused/selected/disabled/error states"
+        },
+        {
+          "type": "changed",
+          "text": "Replaced documented examples, implementation reference, and playground output with the Web Component API."
+        },
+        {
+          "type": "changed",
+          "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
+        },
+        {
+          "type": "changed",
+          "text": "Ported the full checkbox CSS into the `<udc-checkbox>` shadow DOM (SVG-mask checkmark, hover/focus/disabled/error treatments) and rebuilt the playground with the original 4 controls plus indeterminate and required toggles."
         }
       ],
       "Chip": [
         {
           "type": "changed",
           "text": "Figma variant matrix confirmed: default/filter/input/dropdown variants, selected true/false, and default/hover/active/focused/focused-on-active states"
+        },
+        {
+          "type": "changed",
+          "text": "Replaced documented examples, implementation reference, and playground output with the Web Component API."
+        },
+        {
+          "type": "changed",
+          "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
+        },
+        {
+          "type": "changed",
+          "text": "Ported the full chip CSS into the `<udc-chip>` shadow DOM (BEM `.udc-chip__leading-icon` / `__label` / `__trailing-icon` with `--uds-font-size-lg` icon sizing, hover/active/focus rings, surface-interactive-active selected state with inverse text + icons, dropdown variant trailing-chevron smaller). Rebuilt the playground with variant/label/selected/leading-icon/disabled controls."
         }
       ],
       "Combobox": [
         {
           "type": "added",
           "text": "Placeholder page for searchable text-entry selection component from Figma 0.3"
+        },
+        {
+          "type": "changed",
+          "text": "Replaced documented examples, implementation reference, and playground output with the Web Component API."
+        },
+        {
+          "type": "changed",
+          "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
+        },
+        {
+          "type": "changed",
+          "text": "`<udc-combobox>` now aliases the rebuilt `<udc-dropdown>` Web Component, so it inherits the full shadow-DOM styling (label, leading icon, placeholder, chevron, helper text, error/disabled treatments, listbox panel). Added an interactive playground with the same control surface as Dropdown. Filtering/autocomplete behavior on top of the alias is still pending Figma source."
         }
       ],
       "Data Table": [
         {
           "type": "changed",
           "text": "Figma data-table coverage expanded: text/dropdown/ghost-button/checkbox/badge cell types, header cells, 1-14 columns, 2-14 rows, alignment, leading/trailing icons, dividers, prominent text, and error highlighting"
+        },
+        {
+          "type": "changed",
+          "text": "Replaced documented examples, implementation reference, and playground output with the Web Component API."
+        },
+        {
+          "type": "changed",
+          "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
+        },
+        {
+          "type": "changed",
+          "text": "`<udc-data-table>` now renders the table itself in shadow DOM driven by `columns` + `rows` JSON attributes (rather than expecting consumers to author the inner `<table>` markup). Ports the original data-table.css inside shadow DOM \u2014 56px sticky header row with surface-alt bg + bold text, 44px body rows with hover/selected/striped surfaces, alignment helpers, prominent text, optional checkbox column with select-all, sortable headers with Material Symbols indicator. Emits `udc-sort-change` and `udc-selection-change`."
         }
       ],
       "Data View": [
         {
           "type": "added",
           "text": "Placeholder page for non-table record collection layouts from Figma 0.3"
+        },
+        {
+          "type": "changed",
+          "text": "Replaced documented examples, implementation reference, and playground output with the Web Component API."
+        },
+        {
+          "type": "changed",
+          "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
+        },
+        {
+          "type": "changed",
+          "text": "`<udc-data-view>` now ships a card-style container in shadow DOM (surface-main bg, border-secondary, container-md radius, space-300 padding) with header + body + actions slot groups. The original `data-view.css` was placeholder-only in 0.3; this fills in a token-bound default. Added an interactive playground (heading, body content shape, show-actions)."
         }
       ],
       "Date Picker": [
         {
           "type": "added",
           "text": "Placeholder page for calendar date-entry component from Figma 0.3"
+        },
+        {
+          "type": "changed",
+          "text": "Replaced documented examples, implementation reference, and playground output with the Web Component API."
+        },
+        {
+          "type": "changed",
+          "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
+        },
+        {
+          "type": "changed",
+          "text": "`<udc-date-picker>` now ships the same field chrome as `<udc-text-input>` (label, leading calendar icon, helper text, focus ring, error/disabled states), wraps the browser-native `<input type=\"date\">` popover, and accepts `min` / `max` bounds. Added an interactive playground (state, label, required, helper, value, min, max). Figma source for the custom calendar popover is still pending."
         }
       ],
       "Dialog": [
         {
           "type": "changed",
           "text": "Figma dialog component supports 1-4 slot configurations plus header and footer subcomponents"
+        },
+        {
+          "type": "changed",
+          "text": "Replaced documented examples, implementation reference, and playground output with the Web Component API."
+        },
+        {
+          "type": "changed",
+          "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
+        },
+        {
+          "type": "changed",
+          "text": "Ported the full dialog CSS into the `<udc-dialog>` shadow DOM (480px container, container-xl radius, shadow-depth-500, subtle header background, border-bottom divider, scrollable body, right-aligned footer). Backdrop click + Escape close. Focus trap with Tab cycling. Added an interactive playground (heading, content slots count, primary/secondary button labels) emitting `<udc-dialog>` markup with `<udc-button slot=\"actions\">` siblings."
         }
       ],
       "Divider": [
         {
           "type": "changed",
           "text": "Figma divider coverage confirmed for sm, md, lg, and xl padding variants"
+        },
+        {
+          "type": "changed",
+          "text": "Replaced documented examples, implementation reference, and playground output with the Web Component API."
+        },
+        {
+          "type": "changed",
+          "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
+        },
+        {
+          "type": "changed",
+          "text": "Ported the full divider CSS into the `<udc-divider>` shadow DOM (1px border-tertiary stroke, container-full radius, sm/md/lg/xl padding mapped to `--uds-space-050/100/150/200`). Replaces the prior generic horizontal/vertical implementation. Added an interactive playground with the padding select."
         }
       ],
       "Dropdown": [
         {
           "type": "changed",
           "text": "Figma dropdown coverage confirmed: default/disabled/error field states plus dropdown item active/default/focused/hover states"
+        },
+        {
+          "type": "changed",
+          "text": "Replaced documented examples, implementation reference, and playground output with the Web Component API."
+        },
+        {
+          "type": "changed",
+          "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
+        },
+        {
+          "type": "changed",
+          "text": "Ported the full dropdown CSS into the `<udc-dropdown>` shadow DOM and rebuilt the playground with the original 13 controls (state, disabled, show-label, label text, required, leading icon, placeholder, helper text, counter text, options count). Restores visual and interactive parity with the pre-Web-Components dropdown."
         }
       ],
       "Icon Wrapper": [
         {
           "type": "changed",
           "text": "Figma icon wrapper coverage confirmed for 16, 20, 24, 32, 48, and 64px sizes"
+        },
+        {
+          "type": "changed",
+          "text": "Replaced documented examples, implementation reference, and playground output with the Web Component API."
+        },
+        {
+          "type": "changed",
+          "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
+        },
+        {
+          "type": "changed",
+          "text": "Ported the full icon-wrapper CSS into the `<udc-icon-wrapper>` shadow DOM with the original size matrix (16/20/24/32/48/64 padded containers with corresponding inner icon sizes) and a `color` attribute that maps to `--uds-color-icon-*` tokens. Replaces the prior info/success/warning/error tone-pill behaviour. Added an interactive playground with icon, size, and color controls."
         }
       ],
       "Label": [
         {
           "type": "added",
           "text": "Blocked form-control label component with multiline/basic/extended features, default/disabled/error/interactive/success variants, token-first CSS, examples, code, playground, and Demo Builder coverage"
+        },
+        {
+          "type": "changed",
+          "text": "Replaced documented examples, implementation reference, and playground output with the Web Component API."
+        },
+        {
+          "type": "changed",
+          "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
+        },
+        {
+          "type": "changed",
+          "text": "Ported the full label CSS into the `<udc-label>` shadow DOM with the full variant matrix (default/disabled/error/interactive/success), small size, prominent (bold) weight, alignment (start/middle/right), fill-frame, and multiline support. Required dot rendered after the slot content. Rebuilt the playground with text, variant, required, small, and prominent controls."
         }
       ],
       "Link": [
         {
           "type": "added",
           "text": "In-progress navigational link component with default/current page/disabled states, optional open-in-new-window affordance, token-first CSS, examples, code, playground, and Demo Builder coverage"
+        },
+        {
+          "type": "changed",
+          "text": "Replaced documented examples, implementation reference, and playground output with the Web Component API."
+        },
+        {
+          "type": "changed",
+          "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
+        },
+        {
+          "type": "changed",
+          "text": "Ported the full link CSS into the `<udc-link>` shadow DOM (text-interactive color, underline with 0.18em offset, hover/active/focus states, disabled treatment). Added `current` (aria-current=page), `new-window` (auto-sets target/rel plus open_in_new icon), `leading-icon`, and `trailing-icon` attributes. Rebuilt the playground with label, href, current, disabled, new-window, and leading/trailing icon controls."
         }
       ],
       "List": [
         {
           "type": "changed",
           "text": "Figma list coverage confirmed: 1-10 item lists, draggable and non-draggable item variants, leading/trailing icons, and default/hover/active/focused/selected states"
+        },
+        {
+          "type": "changed",
+          "text": "Replaced documented examples, implementation reference, and playground output with the Web Component API."
+        },
+        {
+          "type": "changed",
+          "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
+        },
+        {
+          "type": "changed",
+          "text": "Ported the full list CSS into `<udc-list>` + `<udc-list-item>` shadow DOM (48px row height, BEM `.udc-list-item__leading-icon` / `__label` / `__trailing-icon` with `--uds-font-size-2xl` icons, hover/active/selected/focus treatments matching `surface-interactive-*` tokens, padding-left/right shrinks when icons are present). Selectable lists expose `role=\"listbox\"` and items get `role=\"option\"`. Rebuilt the playground with items, leading/trailing icon toggles, selected item, and selectable controls."
         }
       ],
       "Nav Header": [
@@ -346,6 +538,18 @@
         {
           "type": "changed",
           "text": "spec.json knownIssues expanded with three new entries: (a) the new `_udc-nav-header_logo-pill` component on the Figma page (id 6399:13744, 98\u00d748 brand vector + 'ResMan' text label) is NOT wired into the canonical udc-nav-header Variant=Default; treating as design exploration pending designer confirmation; (b) the logo `Outline=True` variant (id 6403:39132, light-fill brand vector) is defined in Figma but not exposed as a doc-side prop \u2014 deferred pending designer direction; (c) standalone `_udc-nav-header_dropdown` (6019:32094) and `_udc-nav-header_nav-tile` (5498:2340) components still exist on the nav-header page as orphans (not nested anywhere); the bento concept was removed from the canonical contract but the sub-components weren't deleted from the page; no doc-side surface for these orphans."
+        },
+        {
+          "type": "changed",
+          "text": "Replaced documented examples, implementation reference, and playground output with the Web Component API."
+        },
+        {
+          "type": "changed",
+          "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
+        },
+        {
+          "type": "changed",
+          "text": "Ported the full nav-header CSS into the `<udc-nav-header>` shadow DOM. The component now renders the canonical anatomy (logo, title-area pill, center search, My Work button, account button group) as a single opinionated Web Component driven by `app-name`, `title-only`, `show-search`, `show-mywork`, `mywork-badge`, `logo-icon`, and `title-icon` attributes. Slot escape hatches (`logo`, `title-icon`, `title`, `search`, `mywork`, `account`) let consumers override individual sections without forking the CSS. Rebuilt the playground with the original controls."
         },
         {
           "type": "fixed",
@@ -416,60 +620,208 @@
         {
           "type": "changed",
           "text": ".cursor/figma/state/components.snapshot.json nav-vertical entry refreshed from placeholder seed values. variantProperties was {} \u2014 now `Leading Icons: [true, false]`. nestedInstances was [] \u2014 now records the udc-list instance (6598:8558 -> main 5195:894) that wraps the 7 _udc-list_item rows; this is the structural detail the previous snapshot missed entirely. fingerprint hashes upgraded from `seed:6598:8553` / `seed:6598:8555` / `not-captured` to `captured:2026-05-12:*` markers. tokenBindings stays [] (snapshot convention) but the per-state token-binding tables for container, default, hover, active, selected, and focused list-items are documented in the inspector report."
+        },
+        {
+          "type": "changed",
+          "text": "Replaced documented examples, implementation reference, and playground output with the Web Component API."
+        },
+        {
+          "type": "changed",
+          "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
+        },
+        {
+          "type": "changed",
+          "text": "Ported the full nav-vertical CSS into `<udc-nav-vertical>` + `<udc-nav-item>` shadow DOM. The container drives `variant` (list/rail) and `leading-icons` on its children. List items render as full-width 48px rows with hover/selected (surface-interactive-active + text-inverse) treatments; rail items stack icon-over-label with a 2px active indicator bar on the left. Rebuilt the playground with variant, leading-icons, item-count, and selected-item controls."
         }
       ],
       "Notification": [
         {
           "type": "changed",
           "text": "Figma notification coverage confirmed: info/success/error/warning variants, inline true/false, and prominent true/false"
+        },
+        {
+          "type": "changed",
+          "text": "Replaced documented examples, implementation reference, and playground output with the Web Component API."
+        },
+        {
+          "type": "changed",
+          "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
+        },
+        {
+          "type": "changed",
+          "text": "Ported the full notification CSS into the `<udc-notification>` shadow DOM with BEM `.udc-notification__icon` / `__text` / `__close` siblings. Restored the dedicated `--uds-color-icon-*` token for the leading icon (separate from the text color), the `--uds-font-size-xl` close-button glyph sizing, and the prominent + inline variants. Rebuilt the playground with tone, style (subtle/prominent/inline), message, and dismissible controls."
         }
       ],
       "Pagination": [
         {
           "type": "added",
           "text": "Blocked paginated navigation component with default/active states, rows-per-page context, token-first CSS, examples, code, playground, and Demo Builder coverage"
+        },
+        {
+          "type": "changed",
+          "text": "Replaced documented examples, implementation reference, and playground output with the Web Component API."
+        },
+        {
+          "type": "changed",
+          "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
+        },
+        {
+          "type": "changed",
+          "text": "Ported the full pagination CSS into the `<udc-pagination>` shadow DOM (32px page buttons with border-primary, hover surface-interactive-subtle-hover, active page in surface-interactive-default with text-inverse, focus ring, and the meta row for rows-per-page + range). Component now numbers its own buttons based on `page` / `total-pages`, collapses long ranges with ellipsis, and exposes `udc-page-change` events. Rebuilt the playground with current-page, total-pages, and show-meta controls."
         }
       ],
       "Radio": [
         {
           "type": "changed",
           "text": "Figma radio coverage confirmed: radio button states including selected/error/disabled/hover/active combinations plus 2-5 option radio groups"
+        },
+        {
+          "type": "changed",
+          "text": "Replaced documented examples, implementation reference, and playground output with the Web Component API."
+        },
+        {
+          "type": "changed",
+          "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
+        },
+        {
+          "type": "changed",
+          "text": "Ported the full radio CSS into `<udc-radio>` + `<udc-radio-group>` shadow DOM (20\u00d720 ring, 12\u00d712 center dot, selected/hover/focus/disabled/error states with text-interactive recolor and required dot alignment). RadioGroup now manages selection via the `value` attribute and emits `udc-change`; individual radios bubble `udc-radio-change`. Rebuilt the playground with the original options/disabled/error controls."
         }
       ],
       "Search": [
         {
           "type": "changed",
           "text": "Figma search bar coverage confirmed: default/hover/focused/active/error-active states"
+        },
+        {
+          "type": "changed",
+          "text": "Replaced documented examples, implementation reference, and playground output with the Web Component API."
+        },
+        {
+          "type": "changed",
+          "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
+        },
+        {
+          "type": "changed",
+          "text": "Ported the full search CSS into the `<udc-search>` shadow DOM (search-icon leading slot, hover background, focus ring on the wrapper, clear button that appears when the input has a value, error and disabled treatments) and rebuilt the playground with placeholder, initial value, state, and disabled controls."
+        }
+      ],
+      "Spacer": [
+        {
+          "type": "changed",
+          "text": "Replaced documented examples, implementation reference, and playground output with the Web Component API."
+        },
+        {
+          "type": "changed",
+          "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
+        },
+        {
+          "type": "changed",
+          "text": "Ported the full spacer CSS into the `<udc-spacer>` shadow DOM with the original `size` token-step API (050/075/100/150/200/300/400/500/600) and the 100\u00d7100 Figma default. Replaces the prior xs/sm/md/lg/xl t-shirt sizing. Added an interactive playground with the size select."
         }
       ],
       "Tabs": [
         {
           "type": "changed",
           "text": "Figma tab coverage confirmed: default/small sizes, 2-6 tab groups, selected and disabled states, plus hover/focus/active-on-selected variants"
+        },
+        {
+          "type": "changed",
+          "text": "Replaced documented examples, implementation reference, and playground output with the Web Component API."
+        },
+        {
+          "type": "changed",
+          "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
+        },
+        {
+          "type": "changed",
+          "text": "Rebuilt the playground with the original tab-count, size (default/sm), and disabled-tab controls. The existing `<udc-tabs>` / `<udc-tab>` / `<udc-tab-panel>` shadow DOM already shipped the original tabs.css (border-bottom tablist, 2px interactive border on selected, hover surface-interactive-subtle-hover, focus outline, sm size with tighter vertical padding) plus the keyboard navigation (Arrow/Home/End) and `udc-tab-change` event."
         }
       ],
       "Text Area": [
         {
           "type": "added",
           "text": "Multi-line text-entry component with default/hover/focused/active/error-focused states, token-first CSS, examples, code, playground, and Demo Builder coverage"
+        },
+        {
+          "type": "changed",
+          "text": "Replaced documented examples, implementation reference, and playground output with the Web Component API."
+        },
+        {
+          "type": "changed",
+          "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
+        },
+        {
+          "type": "changed",
+          "text": "Ported the full text-area CSS into the `<udc-text-area>` shadow DOM (88px min-height field, hover/focus ring on the field, error and disabled treatments, helper row with counter). Rebuilt the playground with the original label/placeholder/state controls plus disabled, required, helper text, max-length, and counter toggle."
         }
       ],
       "Text Input": [
         {
           "type": "changed",
           "text": "Figma text input coverage confirmed: field default/disabled/error states and wrapper default/active/error states"
+        },
+        {
+          "type": "changed",
+          "text": "Replaced documented examples, implementation reference, and playground output with the Web Component API."
+        },
+        {
+          "type": "changed",
+          "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
+        },
+        {
+          "type": "changed",
+          "text": "Ported the full text-input CSS into the `<udc-text-input>` shadow DOM (field border, focus ring, error recolor, disabled treatment, leading icon, trailing button hover/active/focus) and rebuilt the playground with the original 14 controls (state, disabled, show-label, label, required, leading icon, trailing button + icon, placeholder, show-helper, helper text, show-counter, max-length). Restores visual and interactive parity with the pre-Web-Components text input."
         }
       ],
       "Tile": [
         {
           "type": "changed",
           "text": "Figma tile coverage confirmed: default/hover/focused/selected/disabled states"
+        },
+        {
+          "type": "changed",
+          "text": "Replaced documented examples, implementation reference, and playground output with the Web Component API."
+        },
+        {
+          "type": "changed",
+          "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
+        },
+        {
+          "type": "changed",
+          "text": "Ported the full tile CSS into the `<udc-tile>` shadow DOM with BEM `.udc-tile__content` / `__label` / `__required` / `__body` / `__chevron` siblings. Chevron icon now uses `--uds-font-size-2xl`. Hover, selected (info-subtle bg + 2px interactive border), focus-visible ring, and disabled (opacity 0.5, chevron hidden) all match the original. Added an interactive playground (label, body lines, required, chevron, state)."
         }
       ],
       "Toggle": [
         {
           "type": "added",
           "text": "Immediate on/off setting control with active true/false and disabled variants, token-first CSS, examples, code, playground, and Demo Builder coverage"
+        },
+        {
+          "type": "changed",
+          "text": "Replaced documented examples, implementation reference, and playground output with the Web Component API."
+        },
+        {
+          "type": "changed",
+          "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
+        },
+        {
+          "type": "changed",
+          "text": "Ported the full toggle CSS into the `<udc-toggle>` shadow DOM (52\u00d732 track, 20\u00d720 thumb with shadow-depth-100, translateX(20px) when active, focus ring, disabled treatment) and rebuilt the playground with the original label/checked/disabled controls. Extracted Toggle into its own component file."
+        }
+      ],
+      "Tooltip": [
+        {
+          "type": "changed",
+          "text": "Replaced documented examples, implementation reference, and playground output with the Web Component API."
+        },
+        {
+          "type": "changed",
+          "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
+        },
+        {
+          "type": "changed",
+          "text": "Ported the full tooltip CSS into the `<udc-tooltip>` shadow DOM \u2014 light `surface-main` background with `shadow-depth-300`, `text-primary` content, 4 positions (top/bottom/left/right), and visibility driven by `:hover` / `:focus-within` / `open`. Added an interactive playground (tooltip text, position, always-open) emitting `<udc-tooltip>` markup with a `<udc-button slot=\"trigger\">`."
         }
       ]
     }

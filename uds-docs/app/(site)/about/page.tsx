@@ -112,8 +112,8 @@ const lifecycleSteps: LifecycleStep[] = [
     ownerIcon: 'code',
     description: (
       <>
-        Product apps install <code>uds-core</code> for tokens and register the Storybook web components. The component
-        appears in real products. Bug reports and enhancement requests flow back via the <strong>Report Issue</strong>{' '}
+        Product apps import the UDS CSS bundle for tokens and register the Web Components. The component appears in
+        real products. Bug reports and enhancement requests flow back via the <strong>Report Issue</strong>{' '}
         button on each component page.
       </>
     ),

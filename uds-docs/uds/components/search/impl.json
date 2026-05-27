@@ -1,41 +1,34 @@
 {
   "$schema": "../../schemas/impl.schema.json",
-  "jsFunc": "initSearch",
-  "jsFile": "uds/components/search/search.js",
+  "jsFunc": null,
+  "jsFile": null,
   "tokens": {
-    "Surface": [
+    "Color": [
       "--uds-color-surface-main",
       "--uds-color-surface-subtle",
-      "--uds-color-surface-interactive-none",
-      "--uds-color-surface-interactive-subtle-hover"
-    ],
-    "Text": [
+      "--uds-color-surface-interactive-default",
       "--uds-color-text-primary",
-      "--uds-color-text-secondary"
-    ],
-    "Icon": [
-      "--uds-color-icon-secondary"
-    ],
-    "Border": [
+      "--uds-color-text-secondary",
+      "--uds-color-text-interactive",
       "--uds-color-border-primary",
-      "--uds-color-border-outline-focus-visible",
-      "--uds-color-border-error",
-      "--uds-border-radius-input"
-    ],
-    "Space": [
-      "--uds-space-025",
-      "--uds-space-050",
-      "--uds-space-075",
-      "--uds-space-100",
-      "--uds-space-600"
+      "--uds-color-border-secondary",
+      "--uds-color-border-outline-focus-visible"
     ],
     "Font": [
       "--uds-font-family",
       "--uds-font-size-base",
-      "--uds-font-size-2xl",
-      "--uds-font-weight-regular",
-      "--uds-font-line-height-base"
+      "--uds-font-weight-medium"
+    ],
+    "Space": [
+      "--uds-space-100",
+      "--uds-space-150",
+      "--uds-space-200",
+      "--uds-space-300"
+    ],
+    "Border": [
+      "--uds-border-radius-input",
+      "--uds-border-radius-container-md"
     ]
   },
-  "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\" />\n  <link href=\"https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined\" rel=\"stylesheet\" />\n  <link rel=\"stylesheet\" href=\"uds/uds.css\" />\n</head>\n<body>\n\n  <div class=\"udc-search\">\n    <div class=\"udc-search__field\">\n      <span class=\"udc-search__icon\"><span class=\"material-symbols-outlined\">search</span></span>\n      <input type=\"search\" placeholder=\"Search...\" />\n      <button class=\"udc-search__clear\" aria-label=\"Clear\"><span class=\"material-symbols-outlined\">clear</span></button>\n    </div>\n  </div>\n\n  <script src=\"uds/uds.js\"></script>\n</body>\n</html>"
+  "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\" />\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n  <link href=\"https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined\" rel=\"stylesheet\" />\n  <link rel=\"stylesheet\" href=\"uds/uds.css\" />\n  <script type=\"module\" src=\"web-components.js\"></script>\n  <title>search</title>\n</head>\n<body>\n<udc-search label=\"Search tenants\" placeholder=\"Search by name\"></udc-search>\n</body>\n</html>"
 }

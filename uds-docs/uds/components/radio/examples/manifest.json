@@ -2,25 +2,12 @@
   "$schema": "../../../schemas/manifest.schema.json",
   "examples": [
     {
-      "id": "default-group",
-      "file": "default-group.html",
-      "label": "Default group",
+      "id": "web-component",
+      "file": "web-component.html",
+      "label": "Radio Group",
       "showInDocs": true,
-      "demoWeight": 3
-    },
-    {
-      "id": "disabled",
-      "file": "disabled.html",
-      "label": "Disabled",
-      "showInDocs": true,
-      "demoWeight": 1
-    },
-    {
-      "id": "error-state",
-      "file": "error-state.html",
-      "label": "Error state",
-      "showInDocs": true,
-      "demoWeight": 1
+      "demoWeight": 3,
+      "description": "A grouped set of radio options."
     }
   ]
 }

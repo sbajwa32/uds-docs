@@ -719,8 +719,7 @@ function BrowseToolbar({
             <button
               key={k}
               type="button"
-              className="udc-chip cc-kind-chip"
-              data-variant="filter"
+              className="cc-kind-chip"
               data-cc-kind={k}
               aria-selected={active}
               onClick={() =>
@@ -735,12 +734,12 @@ function BrowseToolbar({
                 })
               }
             >
-              <span className="udc-chip__leading-icon">
+              <span className="cc-kind-chip__leading-icon">
                 <span className="material-symbols-outlined" aria-hidden="true">
                   check
                 </span>
               </span>
-              <span className="udc-chip__label">{KIND_LABEL[k]}</span>
+              <span className="cc-kind-chip__label">{KIND_LABEL[k]}</span>
             </button>
           );
         })}

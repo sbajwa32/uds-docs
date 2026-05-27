@@ -4,25 +4,31 @@
   "jsFile": null,
   "tokens": {
     "Color": [
+      "--uds-color-surface-main",
+      "--uds-color-surface-subtle",
       "--uds-color-surface-interactive-default",
-      "--uds-color-surface-interactive-disabled",
-      "--uds-color-surface-white",
       "--uds-color-text-primary",
-      "--uds-color-text-disabled",
+      "--uds-color-text-secondary",
+      "--uds-color-text-interactive",
       "--uds-color-border-primary",
-      "--uds-color-border-interactive",
-      "--uds-color-border-disabled"
+      "--uds-color-border-secondary",
+      "--uds-color-border-outline-focus-visible"
+    ],
+    "Font": [
+      "--uds-font-family",
+      "--uds-font-size-base",
+      "--uds-font-weight-medium"
     ],
     "Space": [
-      "--uds-space-075",
-      "--uds-space-100"
+      "--uds-space-100",
+      "--uds-space-150",
+      "--uds-space-200",
+      "--uds-space-300"
     ],
     "Border": [
-      "--uds-border-radius-container-full"
-    ],
-    "Shadow": [
-      "--uds-shadow-depth-100"
+      "--uds-border-radius-input",
+      "--uds-border-radius-container-md"
     ]
   },
-  "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head><meta charset=\"UTF-8\" /><link rel=\"stylesheet\" href=\"uds/uds.css\" /></head>\n<body>\n  <button class=\"udc-toggle\" role=\"switch\" aria-checked=\"true\"><span class=\"udc-toggle__control\"><span class=\"udc-toggle__thumb\"></span></span><span class=\"udc-toggle__label\">Email notifications</span></button>\n</body>\n</html>"
+  "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\" />\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n  <link href=\"https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined\" rel=\"stylesheet\" />\n  <link rel=\"stylesheet\" href=\"uds/uds.css\" />\n  <script type=\"module\" src=\"web-components.js\"></script>\n  <title>toggle</title>\n</head>\n<body>\n<udc-toggle name=\"notifications\" checked>Email notifications</udc-toggle>\n</body>\n</html>"
 }

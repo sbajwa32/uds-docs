@@ -6,6 +6,7 @@
   "whenToUse": "At the top of every authenticated page in the app shell. To house the brand mark, current page title, and primary global actions.",
   "whenNotToUse": "On marketing or landing pages (use a simpler header). On mobile-only views, consider a collapsible pattern.",
   "acceptanceCriteria": [
+    "Public API uses <udc-nav-header> Web Component tag.",
     "Outer element uses <header role=\"banner\">.",
     "Inner content uses a 3-column grid (left, center, right) constrained to max-width 1440px.",
     "Icon-only ghost buttons in the account pill have aria-label.",
@@ -16,44 +17,44 @@
   ],
   "dependencies": {
     "css": [
-      "uds/components/nav-header.css"
+      "uds/uds.css"
     ],
     "js": [
-      "uds/components/nav-header.js"
+      "web-components.js"
     ]
   },
-  "props": [
-    {
-      "name": "showSearch",
-      "type": "boolean",
-      "default": true,
-      "description": "When true, renders the centered search field. Mirrors the Figma `Show Search Box` boolean on the udc-nav-header component set."
-    },
-    {
-      "name": "showMyWork",
-      "type": "boolean",
-      "default": true,
-      "description": "When true, renders the My Work pill (with notification badge) in the right region. Mirrors the Figma `Show My Work` boolean on the udc-nav-header component set."
-    },
-    {
-      "name": "titleOnly",
-      "type": "boolean",
-      "default": false,
-      "description": "When true, the title-area renders as a bare page title (paragraph/xl-bold, no leading icon, no chevron, transparent pill chrome, radius 8). Markup: apply `data-title-only=\"true\"` to `.udc-nav-title-area`. Mirrors the Figma `Title Only=True` variant on the `_udc-nav-header_title-area` set (5586:8859)."
-    }
-  ],
+  "props": [],
   "events": [],
   "slots": [
-    { "name": "brand",        "description": "Logo / brand mark on the far left. Figma binds this to surface/brand-bold. Figma source: `_udc-nav-header_logo` (6403:39131) with `Outline: False | True` variants." },
-    { "name": "title-area",   "description": "Page-title pill displaying icon + page title + chevron, OR a bare page title (Title Only=True). CSS: `.udc-nav-title-area`. Figma source: `_udc-nav-header_title-area` (5586:8858)." },
-    { "name": "center",       "description": "Centered region — by default a search field. Hidden when showSearch=false." },
-    { "name": "actions",      "description": "Right-side primary actions. By default the My Work pill; hidden when showMyWork=false." },
-    { "name": "account",      "description": "Right-side account-actions pill containing three icon-only ghost buttons." }
+    {
+      "name": "brand",
+      "description": "Brand/title area."
+    },
+    {
+      "name": "default",
+      "description": "Navigation content."
+    },
+    {
+      "name": "actions",
+      "description": "Right-side actions."
+    }
   ],
   "states": [
-    { "name": "default",     "description": "Default rendering of the header at full width.", "hasVisual": true },
-    { "name": "title-only",  "description": "Title-area renders as a bare paragraph/xl-bold page title with no pill chrome. Toggled via `data-title-only=\"true\"` on `.udc-nav-title-area`. Mirrors Figma `Title Only=True` (5586:8859).", "hasVisual": true },
-    { "name": "not-applicable", "description": "Figma does not define hover / focus / disabled states at the header level. Those states are inherited from nested components (search, button-ghost, badge).", "hasVisual": false }
+    {
+      "name": "default",
+      "description": "Default rendering of the header at full width.",
+      "hasVisual": true
+    },
+    {
+      "name": "title-only",
+      "description": "Title-area renders as a bare paragraph/xl-bold page title with no pill chrome. Toggled via `data-title-only=\"true\"` on `.udc-nav-title-area`. Mirrors Figma `Title Only=True` (5586:8859).",
+      "hasVisual": true
+    },
+    {
+      "name": "not-applicable",
+      "description": "Figma does not define hover / focus / disabled states at the header level. Those states are inherited from nested components (search, button-ghost, badge).",
+      "hasVisual": false
+    }
   ],
   "contentGuidelines": null,
   "commonlyPairedWith": [
@@ -68,20 +69,55 @@
   },
   "accessibility": {
     "keyboard": [
-      { "key": "Tab",            "action": "Move focus through nav header items" },
-      { "key": "Enter / Space",  "action": "Activate focused button or link" }
+      {
+        "key": "Tab",
+        "action": "Move focus through nav header items"
+      },
+      {
+        "key": "Enter / Space",
+        "action": "Activate focused button or link"
+      }
     ],
     "screenReader": [
-      { "trigger": "Page load",                          "announcement": "Outer container exposes role=\"banner\" so the header is identified as a landmark." },
-      { "trigger": "Focus moves to an icon-only button", "announcement": "Each icon-only ghost button in the account pill exposes an aria-label describing its action." },
-      { "trigger": "My Work pill receives focus",        "announcement": "Badge count is exposed via accessible name (e.g. \"My Work, 5 unread\") rather than a bare number." }
+      {
+        "trigger": "Page load",
+        "announcement": "Outer container exposes role=\"banner\" so the header is identified as a landmark."
+      },
+      {
+        "trigger": "Focus moves to an icon-only button",
+        "announcement": "Each icon-only ghost button in the account pill exposes an aria-label describing its action."
+      },
+      {
+        "trigger": "My Work pill receives focus",
+        "announcement": "Badge count is exposed via accessible name (e.g. \"My Work, 5 unread\") rather than a bare number."
+      }
     ],
     "wcag": [
-      { "criterion": "1.3.1", "level": "A",  "howMet": "Semantic <header> + landmark role; account actions are real buttons." },
-      { "criterion": "1.4.3", "level": "AA", "howMet": "Text and meaningful icon contrast meets 4.5:1 (text) / 3:1 (non-text). Currently unverified — see Figma Notes for divergences between Figma intent and CSS." },
-      { "criterion": "2.1.1", "level": "A",  "howMet": "All interactive elements are keyboard-reachable in DOM order." },
-      { "criterion": "2.4.7", "level": "AA", "howMet": "Visible focus indicators on all focusable elements (account pill icon-only buttons inherit from button-ghost)." },
-      { "criterion": "4.1.2", "level": "A",  "howMet": "Icon-only ghost buttons require aria-label; My Work badge exposes accessible-name count." }
+      {
+        "criterion": "1.3.1",
+        "level": "A",
+        "howMet": "Semantic <header> + landmark role; account actions are real buttons."
+      },
+      {
+        "criterion": "1.4.3",
+        "level": "AA",
+        "howMet": "Text and meaningful icon contrast meets 4.5:1 (text) / 3:1 (non-text). Currently unverified — see Figma Notes for divergences between Figma intent and CSS."
+      },
+      {
+        "criterion": "2.1.1",
+        "level": "A",
+        "howMet": "All interactive elements are keyboard-reachable in DOM order."
+      },
+      {
+        "criterion": "2.4.7",
+        "level": "AA",
+        "howMet": "Visible focus indicators on all focusable elements (account pill icon-only buttons inherit from button-ghost)."
+      },
+      {
+        "criterion": "4.1.2",
+        "level": "A",
+        "howMet": "Icon-only ghost buttons require aria-label; My Work badge exposes accessible-name count."
+      }
     ],
     "contrast": []
   },

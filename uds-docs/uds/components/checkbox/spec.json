@@ -5,18 +5,85 @@
   "description": "A checkbox lets users select one or more options from a set.",
   "whenToUse": "Multiple selections from a set. Binary on/off toggles (terms agreement, opt-in).",
   "whenNotToUse": "For mutually exclusive choices, use a radio group instead.",
-  "acceptanceCriteria": [],
+  "acceptanceCriteria": [
+    "Public API uses <udc-checkbox> Web Component tag."
+  ],
   "dependencies": {
     "css": [
-      "uds/components/checkbox.css"
+      "uds/uds.css"
     ],
     "js": [
-      "uds/components/checkbox.js"
+      "web-components.js"
     ]
   },
-  "props": [],
-  "events": [],
-  "slots": [],
+  "props": [
+    {
+      "name": "name",
+      "type": "string",
+      "default": null,
+      "required": false,
+      "description": "Form field name."
+    },
+    {
+      "name": "value",
+      "type": "string",
+      "default": "on",
+      "required": false,
+      "description": "Submitted value."
+    },
+    {
+      "name": "checked",
+      "type": "boolean",
+      "default": false,
+      "required": false,
+      "description": "Checked state."
+    },
+    {
+      "name": "indeterminate",
+      "type": "boolean",
+      "default": false,
+      "required": false,
+      "description": "Mixed state."
+    },
+    {
+      "name": "required",
+      "type": "boolean",
+      "default": false,
+      "required": false,
+      "description": "Marks required."
+    },
+    {
+      "name": "disabled",
+      "type": "boolean",
+      "default": false,
+      "required": false,
+      "description": "Disabled state."
+    },
+    {
+      "name": "state",
+      "type": "enum",
+      "default": "default",
+      "required": false,
+      "description": "Validation state.",
+      "enum": [
+        "default",
+        "error"
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "udc-change",
+      "description": "Fires when checked changes.",
+      "payload": "{ checked, value }"
+    }
+  ],
+  "slots": [
+    {
+      "name": "default",
+      "description": "Checkbox label."
+    }
+  ],
   "states": [],
   "contentGuidelines": null,
   "commonlyPairedWith": [],
@@ -53,5 +120,5 @@
   "figmaNodeId": "6010:28999",
   "figmaPageNodeId": "5445-5056",
   "storybookSlug": null,
-  "_legacyAccessibilityNotes": "Uses native <input type=\"checkbox\"> for screen reader support. The visible indicator is purely decorative \u2014 the native input handles interaction."
+  "_legacyAccessibilityNotes": "Uses native <input type=\"checkbox\"> for screen reader support. The visible indicator is purely decorative — the native input handles interaction."
 }

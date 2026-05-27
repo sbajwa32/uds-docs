@@ -5,18 +5,53 @@
   "description": "Tabs organize content into multiple panels where only one panel is visible at a time.",
   "whenToUse": "To switch between related views of the same content. When all tabs belong to the same context.",
   "whenNotToUse": "For step-by-step flows, use a wizard instead. For navigation between pages, use nav.",
-  "acceptanceCriteria": [],
+  "acceptanceCriteria": [
+    "Public API uses <udc-tabs>, <udc-tab>, <udc-tab-panel> Web Component tags."
+  ],
   "dependencies": {
     "css": [
-      "uds/components/tab-horizontal.css"
+      "uds/uds.css"
     ],
     "js": [
-      "uds/components/tabs.js"
+      "web-components.js"
     ]
   },
-  "props": [],
-  "events": [],
-  "slots": [],
+  "props": [
+    {
+      "name": "selected-panel",
+      "type": "string",
+      "default": null,
+      "required": false,
+      "description": "Currently selected panel id."
+    },
+    {
+      "name": "panel",
+      "type": "string",
+      "default": null,
+      "required": false,
+      "description": "Panel id used by udc-tab and udc-tab-panel."
+    },
+    {
+      "name": "disabled",
+      "type": "boolean",
+      "default": false,
+      "required": false,
+      "description": "Disables a tab."
+    }
+  ],
+  "events": [
+    {
+      "name": "udc-tab-change",
+      "description": "Fires when selected panel changes.",
+      "payload": "{ panel }"
+    }
+  ],
+  "slots": [
+    {
+      "name": "default",
+      "description": "Tabs, tab panels, and panel content."
+    }
+  ],
   "states": [],
   "contentGuidelines": null,
   "commonlyPairedWith": [],

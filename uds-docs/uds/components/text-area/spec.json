@@ -6,6 +6,7 @@
   "whenToUse": "Use for comments, descriptions, notes, and other text that can span multiple lines.",
   "whenNotToUse": "For single-line values such as names, emails, or short search queries, use Text Input.",
   "acceptanceCriteria": [
+    "Public API uses <udc-text-area> Web Component tag.",
     "Default/hover/focused/active/error-focused states render",
     "Visible label is always present",
     "Helper text and counter render below the field",
@@ -14,80 +15,110 @@
   ],
   "dependencies": {
     "css": [
-      "uds/components/text-area.css"
+      "uds/uds.css"
     ],
-    "js": []
+    "js": [
+      "web-components.js"
+    ]
   },
   "props": [
     {
-      "name": "value",
+      "name": "name",
       "type": "string",
-      "description": "Current text value."
+      "default": null,
+      "required": false,
+      "description": "Form field name."
     },
     {
-      "name": "placeholder",
+      "name": "value",
       "type": "string",
-      "description": "Hint text when empty."
+      "default": "",
+      "required": false,
+      "description": "Current value."
     },
     {
       "name": "label",
       "type": "string",
-      "required": true,
+      "default": null,
+      "required": false,
       "description": "Visible label."
     },
     {
-      "name": "helperText",
+      "name": "helper-text",
       "type": "string",
-      "description": "Supporting or error text."
+      "default": null,
+      "required": false,
+      "description": "Helper or error text."
     },
     {
-      "name": "maxLength",
-      "type": "number",
-      "description": "Character counter limit."
+      "name": "placeholder",
+      "type": "string",
+      "default": null,
+      "required": false,
+      "description": "Placeholder."
     },
     {
-      "name": "data-state",
+      "name": "state",
       "type": "enum",
+      "default": "default",
+      "required": false,
+      "description": "Validation state.",
       "enum": [
         "default",
-        "hover",
-        "focused",
-        "active",
-        "error-focused"
-      ],
-      "default": "default",
-      "description": "Visual state from Figma matrix."
+        "error"
+      ]
+    },
+    {
+      "name": "rows",
+      "type": "number",
+      "default": 4,
+      "required": false,
+      "description": "Visible rows."
+    },
+    {
+      "name": "required",
+      "type": "boolean",
+      "default": false,
+      "required": false,
+      "description": "Marks required."
     },
     {
       "name": "disabled",
       "type": "boolean",
       "default": false,
-      "description": "Disables text entry."
+      "required": false,
+      "description": "Disabled state."
+    },
+    {
+      "name": "max-length",
+      "type": "number",
+      "default": null,
+      "required": false,
+      "description": "Character counter max."
     }
   ],
   "events": [
     {
-      "name": "input",
-      "description": "Fires as text changes",
-      "payload": "{ value: string }"
+      "name": "udc-input",
+      "description": "Fires on input.",
+      "payload": "{ value }"
     },
     {
-      "name": "change",
-      "description": "Fires after committed value changes",
-      "payload": "{ value: string }"
-    },
-    {
-      "name": "focus",
-      "description": "Fires on focus",
-      "payload": "FocusEvent"
-    },
-    {
-      "name": "blur",
-      "description": "Fires on blur",
-      "payload": "FocusEvent"
+      "name": "udc-change",
+      "description": "Fires on committed change.",
+      "payload": "{ value }"
     }
   ],
-  "slots": [],
+  "slots": [
+    {
+      "name": "label",
+      "description": "Custom label content."
+    },
+    {
+      "name": "helper",
+      "description": "Custom helper content."
+    }
+  ],
   "states": [
     {
       "name": "default",

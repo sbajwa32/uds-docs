@@ -11,6 +11,21 @@
       "version": "0.3",
       "type": "changed",
       "text": "Figma tab coverage confirmed: default/small sizes, 2-6 tab groups, selected and disabled states, plus hover/focus/active-on-selected variants"
+    },
+    {
+      "version": "0.3",
+      "type": "changed",
+      "text": "Replaced documented examples, implementation reference, and playground output with the Web Component API."
+    },
+    {
+      "version": "0.3",
+      "type": "changed",
+      "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
+    },
+    {
+      "version": "0.3",
+      "type": "changed",
+      "text": "Rebuilt the playground with the original tab-count, size (default/sm), and disabled-tab controls. The existing `<udc-tabs>` / `<udc-tab>` / `<udc-tab-panel>` shadow DOM already shipped the original tabs.css (border-bottom tablist, 2px interactive border on selected, hover surface-interactive-subtle-hover, focus outline, sm size with tighter vertical padding) plus the keyboard navigation (Arrow/Home/End) and `udc-tab-change` event."
     }
   ]
 }

@@ -2,18 +2,12 @@
   "$schema": "../../../schemas/manifest.schema.json",
   "examples": [
     {
-      "id": "default",
-      "file": "default.html",
-      "label": "Default",
+      "id": "web-component",
+      "file": "web-component.html",
+      "label": "Search",
       "showInDocs": true,
-      "demoWeight": 3
-    },
-    {
-      "id": "error-state",
-      "file": "error-state.html",
-      "label": "Error state",
-      "showInDocs": true,
-      "demoWeight": 1
+      "demoWeight": 3,
+      "description": "A form-associated search field."
     }
   ]
 }

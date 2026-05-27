@@ -9,15 +9,15 @@ export default function AiAssistClient() {
   return (
     <div className="sg-page-content">
       <div className="ai-context-summary" style={{ display: 'none' }} aria-hidden="true">
-        {`UDS (Urban Design System) — CSS-first design system.
-ARCHITECTURE: Tokens published as 'uds-core' on npm. Components published as framework-agnostic web components in the UDS Storybook. The doc site is the design specification — all HTML/CSS/JS shown here is example only.
+        {`UDS (Urban Design System) — token-first design system with a Web Components component API.
+ARCHITECTURE: Tokens ship as semantic CSS custom properties. Components ship as framework-agnostic Web Components, with React wrappers available for React apps. The doc site is the design specification.
 CRITICAL RULES:
 1. NEVER use --uds-primitive-* tokens. Only semantic tokens (--uds-color-*, --uds-space-*, --uds-font-*).
 2. NEVER hardcode colors (#xxx), spacing (16px), or fonts ('Inter'). Always use var(--uds-*).
-3. For production component code in any framework, use the Storybook web components (e.g. <udc-button>, <udc-dialog>). Do not copy doc-site example HTML into framework projects as production code.
-Tokens install: npm install uds-core, then import 'uds-core/uds.css'.
+3. For component code in any framework, use the Web Component tags (e.g. <udc-button>, <udc-text-input>) or React wrappers from @uds/react.
+Tokens install: import the UDS CSS bundle so semantic tokens are available.
 Icons: Material Symbols Outlined from Google Fonts CDN.
-Component prefix: udc- (e.g. udc-button-primary, udc-dropdown, udc-data-table).
+Component tag prefix: udc- (e.g. <udc-button>, <udc-notification>, <udc-tabs>).
 Theming: set data-color-scheme="dark" on html for dark mode. Semantic tokens adapt automatically.
 Pattern mapping: toast→udc-notification, modal→udc-dialog, select→udc-dropdown, tag→udc-chip, status→udc-badge, card→udc-tile, sidebar→udc-nav-vertical, topbar→udc-nav-header.
 Full JSON context: https://udsdocs.com/ai-context.json
@@ -42,7 +42,7 @@ Storybook (production components): see Storybook URL on the doc site.`}
         <DocsTabPanel value="overview">
           <DocsSection>
             <h3 className="ds-section__title">What is UDS?</h3>
-            <p className="ds-section__description">UDS (Urban Design System) is a CSS-first design system with semantic tokens and BEM-style components. It works with any stack — HTML, React, Vue, Angular, Svelte — no framework dependency.</p>
+            <p className="ds-section__description">UDS (Urban Design System) is a token-first design system with framework-agnostic Web Components. It works with any stack — HTML, React, Vue, Angular, Svelte — with React wrappers available for React apps.</p>
           </DocsSection>
 
           <DocsSection>
@@ -51,77 +51,46 @@ Storybook (production components): see Storybook URL on the doc site.`}
             <ul style={{ fontSize: 'var(--uds-font-size-base)', lineHeight: 1.8, color: 'var(--uds-color-text-primary)', paddingLeft: 'var(--uds-space-250)' }}>
               <li><strong>Machine-readable context:</strong> Fetch <a href="ai-context.json" style={{ color: 'var(--uds-color-text-interactive)' }}>ai-context.json</a> for the complete token list, component catalog, and framework rules in structured JSON.</li>
               <li><strong>Cursor rule:</strong> Download <code >uds-design-system.mdc</code> and place it in <code >.cursor/rules/</code> — it contains everything inline.</li>
-              <li><strong>Install UDS:</strong> <code >npm install uds-core</code> then <code >{"import 'uds-core/uds.css'"}</code></li>
+              <li><strong>Install UDS:</strong> import the UDS CSS bundle, register <code>@uds/web-components</code>, and use <code>@uds/react</code> wrappers in React apps.</li>
               <li><strong>Icons:</strong> Material Symbols Outlined from Google Fonts CDN.</li>
             </ul>
           </DocsSection>
 
           <div className="sg-subsection" style={{ display: 'flex', gap: 'var(--uds-space-200)', flexWrap: 'wrap' }}>
-            <button className="udc-button-primary" id="sg-download-mdc-btn" style={{ display: 'inline-flex', alignItems: 'center', gap: 'var(--uds-space-100)' }}>
+            <a href="uds-design-system.mdc" download style={{ display: 'inline-flex', alignItems: 'center', gap: 'var(--uds-space-100)', padding: 'var(--uds-space-150) var(--uds-space-200)', borderRadius: 'var(--uds-border-radius-input)', background: 'var(--uds-color-surface-interactive-default)', color: 'var(--uds-color-text-inverse)', textDecoration: 'none', fontWeight: 'var(--uds-font-weight-medium)' }}>
               <span className="material-symbols-outlined" style={{ fontSize: 'var(--uds-font-size-xl)' }}>download</span>Download Cursor Rule (.mdc)
-            </button>
-            <a href="ai-context.json" target="_blank" className="udc-button-secondary" style={{ display: 'inline-flex', alignItems: 'center', gap: 'var(--uds-space-100)', textDecoration: 'none' }}>
+            </a>
+            <a href="ai-context.json" target="_blank" style={{ display: 'inline-flex', alignItems: 'center', gap: 'var(--uds-space-100)', padding: 'var(--uds-space-150) var(--uds-space-200)', borderRadius: 'var(--uds-border-radius-input)', border: '1px solid var(--uds-color-border-interactive)', color: 'var(--uds-color-text-interactive)', textDecoration: 'none', fontWeight: 'var(--uds-font-weight-medium)' }}>
               <span className="material-symbols-outlined" style={{ fontSize: 'var(--uds-font-size-xl)' }}>data_object</span>View ai-context.json
             </a>
           </div>
 
           <DocsSection>
             <h3 className="ds-section__title">Full Example — Tenant Dashboard</h3>
-            <p className="ds-section__description">Here&apos;s how UDS components compose together in a real page:</p>
-            <DocsCodeBlock code={`<!-- Nav Header -->
-<div class="udc-nav-header">
-  <div class="udc-nav-header__left">
-    <div class="udc-nav-logo">...</div>
-  </div>
-  <div class="udc-nav-header__right">
-    <button class="udc-button-ghost" data-icon-only>
-      <span class="material-symbols-outlined">notifications</span>
-    </button>
-  </div>
-</div>
+            <p className="ds-section__description">Here&apos;s the target component API using the parallel Web Components package:</p>
+            <DocsCodeBlock code={`import './uds/uds.css';
+import { registerUdsComponents } from '@uds/web-components';
 
-<!-- App Shell -->
-<div style="display:flex;">
-  <!-- Sidebar -->
-  <nav class="udc-nav-vertical">
-    <button class="udc-nav-button" aria-selected="true">
-      <span class="material-symbols-outlined">space_dashboard</span>
-      <span class="udc-nav-button__label">Dashboard</span>
-    </button>
-  </nav>
+registerUdsComponents();
 
-  <!-- Main Content -->
-  <main style="flex:1;padding:var(--uds-space-300);">
-    <!-- Breadcrumb -->
-    <nav class="udc-breadcrumb" aria-label="Breadcrumb">
-      <ol><li><a href="#">Home</a></li><li aria-current="page">Dashboard</li></ol>
-    </nav>
+<udc-notification tone="info" dismissible>
+  3 invoices are pending review.
+</udc-notification>
 
-    <!-- Notification -->
-    <div class="udc-notification" data-variant="info">
-      <span class="udc-notification__icon"><span class="material-symbols-outlined">info</span></span>
-      <span class="udc-notification__text">3 invoices pending review.</span>
-    </div>
-
-    <!-- Search + Filter Chips -->
-    <div class="udc-search">...</div>
-    <button class="udc-chip" data-variant="filter" aria-selected="true">
-      <span class="udc-chip__label">All</span>
-    </button>
-
-    <!-- Data Table -->
-    <div class="udc-data-table">
-      <table>
-        <thead><tr><th>Tenant</th><th>Status</th><th>Balance</th></tr></thead>
-        <tbody><tr>
-          <td>Brian Smith</td>
-          <td><span class="udc-badge" data-variant="success">Active</span></td>
-          <td>$0.00</td>
-        </tr></tbody>
-      </table>
-    </div>
-  </main>
-</div>`} language="html" />
+<udc-tabs selected-panel="profile">
+  <udc-tab panel="profile">Profile</udc-tab>
+  <udc-tab panel="settings">Settings</udc-tab>
+  <udc-tab-panel panel="profile">
+    <udc-text-input label="Full name" helper-text="First and last name required"></udc-text-input>
+    <udc-checkbox name="verified">Verified tenant</udc-checkbox>
+    <udc-chip variant="filter" selected>Active</udc-chip>
+    <udc-badge tone="success">In good standing</udc-badge>
+    <udc-button variant="primary">Save</udc-button>
+  </udc-tab-panel>
+  <udc-tab-panel panel="settings">
+    <udc-tile label="Notifications" description="Send updates by email" selectable></udc-tile>
+  </udc-tab-panel>
+</udc-tabs>`} language="html" />
           </DocsSection>
         </DocsTabPanel>
 
@@ -234,10 +203,10 @@ box-shadow: 0 4px 12px rgba(0,0,0,0.08);`} language="css" />
           <DocsSection>
             <h3 className="ds-section__title">For Production Code</h3>
             <ul style={{ fontSize: 'var(--uds-font-size-base)', lineHeight: 1.8, paddingLeft: 'var(--uds-space-250)' }}>
-              <li>The HTML examples on this site are <strong>example only</strong> — they show the design intent (markup shape, classes, ARIA, keyboard behavior).</li>
-              <li>Use the framework-agnostic <strong>web components from the UDS Storybook</strong> in production projects (any framework).</li>
+              <li>Use the framework-agnostic <strong>Web Component tags</strong> as the component API once each component has landed.</li>
+              <li>Use the <strong>React wrappers</strong> for React apps; they render the same Web Components.</li>
               <li>Per-component spec is in <code >{'uds/components/<component>/spec.json'}</code> on this site — fetch it for acceptance criteria, props, events, slots, accessibility.</li>
-              <li>Vanilla HTML projects can use <code >uds/uds.css</code> + <code >uds/uds.js</code> directly with the example markup as a fallback.</li>
+              <li>The current class-based docs examples stay in place only until the Web Component cutover is complete.</li>
             </ul>
           </DocsSection>
 
@@ -252,7 +221,7 @@ DO:    color: var(--uds-color-text-interactive);
 
           <DocsSection>
             <h3 className="ds-section__title">Keyboard Patterns</h3>
-            <p className="ds-section__description">Every interactive UDS component must support these keyboard interactions. The Storybook web components implement them; vanilla-HTML pages get them from <code >uds.js</code>.</p>
+            <p className="ds-section__description">Every interactive UDS Web Component must own its keyboard behavior instead of relying on consumers to wire it manually.</p>
             <table className="ds-table">
               <thead><tr><th>Component</th><th>Keyboard Behavior</th></tr></thead>
               <tbody>

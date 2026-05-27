@@ -6,6 +6,7 @@
   "whenToUse": "Use when content is split into discrete pages and users need positional awareness within the set.",
   "whenNotToUse": "For small lists, show all items. For continuous feeds, consider load more or infinite scrolling patterns outside UDS.",
   "acceptanceCriteria": [
+    "Public API uses <udc-pagination> Web Component tag.",
     "Default and active page states render",
     "Current page uses aria-current=\"page\"",
     "Previous/next controls are keyboard reachable",
@@ -14,44 +15,33 @@
   ],
   "dependencies": {
     "css": [
-      "uds/components/pagination.css"
+      "uds/uds.css"
     ],
-    "js": []
+    "js": [
+      "web-components.js"
+    ]
   },
   "props": [
     {
       "name": "page",
       "type": "number",
       "default": 1,
+      "required": false,
       "description": "Current page."
     },
     {
-      "name": "pageCount",
+      "name": "total-pages",
       "type": "number",
+      "default": 1,
+      "required": false,
       "description": "Total pages."
-    },
-    {
-      "name": "pageSize",
-      "type": "number",
-      "description": "Rows per page."
-    },
-    {
-      "name": "disabled",
-      "type": "boolean",
-      "default": false,
-      "description": "Disables pagination controls."
     }
   ],
   "events": [
     {
-      "name": "page-change",
-      "description": "Fires when page changes",
-      "payload": "{ page: number }"
-    },
-    {
-      "name": "page-size-change",
-      "description": "Fires when rows per page changes",
-      "payload": "{ pageSize: number }"
+      "name": "udc-page-change",
+      "description": "Fires when page changes.",
+      "payload": "{ page }"
     }
   ],
   "slots": [],

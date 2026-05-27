@@ -336,22 +336,6 @@
   min-height: 80px;
 }
 
-/* Forced-state classes for previews that can't show real :hover / :focus */
-.sg-dl-force-hover.udc-text-input__field,
-.sg-dl-force-hover .udc-text-input__field {
-  border-color: var(--uds-color-border-outline-hover) !important;
-}
-.sg-dl-force-focus.udc-text-input__field,
-.sg-dl-force-focus .udc-text-input__field {
-  border-color: var(--uds-color-border-primary) !important;
-  box-shadow: 0 0 0 1px var(--uds-color-surface-main),
-              0 0 0 3px var(--uds-color-border-outline-focus-visible) !important;
-}
-.sg-dl-force-readonly.udc-text-input__field,
-.sg-dl-force-readonly .udc-text-input__field {
-  background-color: var(--uds-color-surface-subtle) !important;
-}
-
 /* Elevation scale preview */
 .sg-dl-elev-grid {
   display: grid;
@@ -438,8 +422,3 @@
   line-height: 1.5;
 }
 
-/* Preview component sizing — keep them compact */
-.sg-dl-preview .udc-text-input { max-width: 280px; }
-.sg-dl-preview .udc-button-primary,
-.sg-dl-preview .udc-button-secondary,
-.sg-dl-preview .udc-button-ghost { max-width: fit-content; }

@@ -1,0 +1,29 @@
+{
+  "name": "@uds/react",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "React wrappers for UDS Web Components.",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@lit/react": "^1.0.8",
+    "@uds/web-components": "file:../uds-web-components"
+  },
+  "peerDependencies": {
+    "react": ">=18"
+  }
+}

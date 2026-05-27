@@ -72,6 +72,42 @@
   flex-shrink: 0;
 }
 
+.sg-theme-option-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 32px;
+  padding: var(--uds-space-075) var(--uds-space-150);
+  border: 1px solid var(--uds-color-border-interactive);
+  border-radius: var(--uds-border-radius-input);
+  background: var(--uds-color-surface-main);
+  color: var(--uds-color-text-interactive);
+  font-family: var(--uds-font-family);
+  font-size: var(--uds-font-size-sm);
+  font-weight: var(--uds-font-weight-medium);
+  cursor: pointer;
+}
+
+.sg-theme-option-btn[data-active='true'] {
+  background: var(--uds-color-surface-interactive-default);
+  border-color: var(--uds-color-surface-interactive-default);
+  color: var(--uds-color-text-inverse);
+}
+
+.sg-theme-option-btn:hover {
+  background: var(--uds-color-surface-interactive-subtle-hover);
+}
+
+.sg-theme-option-btn[data-active='true']:hover {
+  background: var(--uds-color-surface-interactive-hover);
+  border-color: var(--uds-color-surface-interactive-hover);
+}
+
+.sg-theme-option-btn:focus-visible {
+  outline: none;
+  box-shadow: var(--ds-focus-ring);
+}
+
 /* --------------------------------------------------------------------------
    Theme toggle button (gear icon in the brand bar)
    -------------------------------------------------------------------------- */

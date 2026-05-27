@@ -2,25 +2,12 @@
   "$schema": "../../../schemas/manifest.schema.json",
   "examples": [
     {
-      "id": "prominent-filled",
-      "file": "prominent-filled.html",
-      "label": "Prominent (filled)",
+      "id": "web-component",
+      "file": "web-component.html",
+      "label": "Badge",
       "showInDocs": true,
-      "demoWeight": 3
-    },
-    {
-      "id": "subtle",
-      "file": "subtle.html",
-      "label": "Subtle",
-      "showInDocs": true,
-      "demoWeight": 1
-    },
-    {
-      "id": "small-size",
-      "file": "small-size.html",
-      "label": "Small size",
-      "showInDocs": true,
-      "demoWeight": 1
+      "demoWeight": 3,
+      "description": "A static status label."
     }
   ]
 }

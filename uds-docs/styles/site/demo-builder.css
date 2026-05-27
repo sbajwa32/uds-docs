@@ -3,9 +3,25 @@
    needed by the toolbar Refresh-data button. The .sg-demo-btn (construction
    icon in the brand bar) already lives in styles/site/header.css. */
 
+.sg-demo-dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: var(--uds-z-index-modal);
+  display: grid;
+  place-items: center;
+  padding: var(--uds-space-300);
+  background: var(--uds-overlay-backdrop, rgb(0 0 0 / 45%));
+}
+
 .sg-demo-dialog {
   max-width: 720px;
   width: calc(100vw - 48px);
+  max-height: calc(100vh - 48px);
+  overflow: auto;
+  padding: var(--uds-space-300);
+  border-radius: var(--uds-border-radius-container-md);
+  background: var(--uds-color-surface-main);
+  box-shadow: var(--uds-shadow-depth-500);
   /* Reset the inherited color cascade: the Build Demo trigger lives in
      .sg-brand-bar (the dark navy top bar), which sets `color: rgb(245,
      245, 245)` so its own children render as white text. The dialog is
@@ -15,8 +31,104 @@
      Re-anchor on the standard text-primary token. */
   color: var(--uds-color-text-primary);
 }
-.sg-demo-dialog .udc-dialog__body {
+
+.sg-demo-dialog__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--uds-space-200);
+  margin-bottom: var(--uds-space-250);
+}
+
+.sg-demo-dialog__title {
+  margin: 0;
+  color: var(--uds-color-text-primary);
   font-family: var(--uds-font-family);
+  font-size: var(--uds-font-size-xl);
+  font-weight: var(--uds-font-weight-bold);
+  line-height: var(--uds-font-line-height-400);
+}
+
+.sg-demo-dialog__close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: var(--uds-border-radius-input);
+  background: transparent;
+  color: var(--uds-color-icon-secondary);
+  cursor: pointer;
+}
+
+.sg-demo-dialog__close:hover {
+  background: var(--uds-color-surface-subtle);
+  color: var(--uds-color-icon-primary);
+}
+
+.sg-demo-dialog__close:focus-visible {
+  outline: none;
+  box-shadow: var(--ds-focus-ring);
+}
+
+.sg-demo-dialog__body {
+  font-family: var(--uds-font-family);
+}
+
+.sg-demo-dialog__footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--uds-space-100);
+  margin-top: var(--uds-space-300);
+}
+
+.sg-demo-action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: var(--uds-space-100) var(--uds-space-200);
+  border: 1px solid var(--uds-color-border-interactive);
+  border-radius: var(--uds-border-radius-input);
+  background: var(--uds-color-surface-main);
+  color: var(--uds-color-text-interactive);
+  font-family: var(--uds-font-family);
+  font-size: var(--uds-font-size-base);
+  font-weight: var(--uds-font-weight-medium);
+  cursor: pointer;
+}
+
+.sg-demo-action-btn--sm {
+  min-height: 32px;
+  padding: var(--uds-space-075) var(--uds-space-150);
+  font-size: var(--uds-font-size-sm);
+}
+
+.sg-demo-action-btn--primary {
+  background: var(--uds-color-surface-interactive-default);
+  border-color: var(--uds-color-surface-interactive-default);
+  color: var(--uds-color-text-inverse);
+}
+
+.sg-demo-action-btn:hover:not(:disabled) {
+  background: var(--uds-color-surface-interactive-subtle-hover);
+}
+
+.sg-demo-action-btn--primary:hover:not(:disabled) {
+  background: var(--uds-color-surface-interactive-hover);
+  border-color: var(--uds-color-surface-interactive-hover);
+}
+
+.sg-demo-action-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.sg-demo-action-btn:focus-visible {
+  outline: none;
+  box-shadow: var(--ds-focus-ring);
 }
 
 .sg-demo-history {

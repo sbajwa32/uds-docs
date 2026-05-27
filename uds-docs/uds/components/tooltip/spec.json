@@ -2,19 +2,53 @@
   "$schema": "../../schemas/spec.schema.json",
   "component": "tooltip",
   "title": "Tooltip",
-  "description": "A tooltip shows supplemental information on hover or focus of a trigger element. CSS-only \u2014 no JS required.",
+  "description": "A tooltip shows supplemental information on hover or focus of a trigger element. CSS-only — no JS required.",
   "whenToUse": "For icon-only button labels. For abbreviations or terms requiring explanation. For short hints on sparse UIs.",
-  "whenNotToUse": "For critical information the user must see \u2014 use inline text or a notification. For interactive content \u2014 tooltips should not contain buttons or links.",
-  "acceptanceCriteria": [],
+  "whenNotToUse": "For critical information the user must see — use inline text or a notification. For interactive content — tooltips should not contain buttons or links.",
+  "acceptanceCriteria": [
+    "Public API uses <udc-tooltip> Web Component tag."
+  ],
   "dependencies": {
     "css": [
-      "uds/components/tooltip.css"
+      "uds/uds.css"
     ],
-    "js": []
+    "js": [
+      "web-components.js"
+    ]
   },
-  "props": [],
+  "props": [
+    {
+      "name": "open",
+      "type": "boolean",
+      "default": false,
+      "required": false,
+      "description": "Open state."
+    },
+    {
+      "name": "position",
+      "type": "enum",
+      "default": "top",
+      "required": false,
+      "description": "Tooltip position.",
+      "enum": [
+        "top",
+        "bottom",
+        "left",
+        "right"
+      ]
+    }
+  ],
   "events": [],
-  "slots": [],
+  "slots": [
+    {
+      "name": "trigger",
+      "description": "Trigger element."
+    },
+    {
+      "name": "default",
+      "description": "Tooltip content."
+    }
+  ],
   "states": [],
   "contentGuidelines": null,
   "commonlyPairedWith": [],
@@ -26,7 +60,7 @@
     "keyboard": [
       {
         "key": "Tab",
-        "action": "Focus the wrapped element \u2014 tooltip appears on focus"
+        "action": "Focus the wrapped element — tooltip appears on focus"
       },
       {
         "key": "Escape",

@@ -2,11 +2,12 @@
   "$schema": "../../../schemas/manifest.schema.json",
   "examples": [
     {
-      "id": "default",
-      "file": "default.html",
-      "label": "Default",
+      "id": "web-component",
+      "file": "web-component.html",
+      "label": "Data View",
       "showInDocs": true,
-      "demoWeight": 3
+      "demoWeight": 3,
+      "description": "A structured content view."
     }
   ]
 }

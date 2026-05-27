@@ -6,6 +6,21 @@
       "version": "0.3",
       "type": "added",
       "text": "Placeholder page for calendar date-entry component from Figma 0.3"
+    },
+    {
+      "version": "0.3",
+      "type": "changed",
+      "text": "Replaced documented examples, implementation reference, and playground output with the Web Component API."
+    },
+    {
+      "version": "0.3",
+      "type": "changed",
+      "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
+    },
+    {
+      "version": "0.3",
+      "type": "changed",
+      "text": "`<udc-date-picker>` now ships the same field chrome as `<udc-text-input>` (label, leading calendar icon, helper text, focus ring, error/disabled states), wraps the browser-native `<input type=\"date\">` popover, and accepts `min` / `max` bounds. Added an interactive playground (state, label, required, helper, value, min, max). Figma source for the custom calendar popover is still pending."
     }
   ]
 }

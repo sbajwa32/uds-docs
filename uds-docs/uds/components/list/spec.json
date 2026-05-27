@@ -4,19 +4,54 @@
   "title": "List",
   "description": "A vertical list of items, optionally selectable and with leading/trailing icons.",
   "whenToUse": "For secondary navigation, menu items, or selectable lists. When items have labels plus optional icons.",
-  "whenNotToUse": "For tabular data \u2014 use Data Table. For primary navigation \u2014 use Nav Vertical.",
-  "acceptanceCriteria": [],
+  "whenNotToUse": "For tabular data — use Data Table. For primary navigation — use Nav Vertical.",
+  "acceptanceCriteria": [
+    "Public API uses <udc-list>, <udc-list-item> Web Component tags."
+  ],
   "dependencies": {
     "css": [
-      "uds/components/list.css"
+      "uds/uds.css"
     ],
     "js": [
-      "uds/components/list.js"
+      "web-components.js"
     ]
   },
-  "props": [],
-  "events": [],
-  "slots": [],
+  "props": [
+    {
+      "name": "selectable",
+      "type": "boolean",
+      "default": false,
+      "required": false,
+      "description": "Listbox mode."
+    },
+    {
+      "name": "selected",
+      "type": "boolean",
+      "default": false,
+      "required": false,
+      "description": "Item selected state."
+    },
+    {
+      "name": "value",
+      "type": "string",
+      "default": null,
+      "required": false,
+      "description": "Item value."
+    }
+  ],
+  "events": [
+    {
+      "name": "udc-list-item-select",
+      "description": "Fires when an item is selected.",
+      "payload": "{ value, selected }"
+    }
+  ],
+  "slots": [
+    {
+      "name": "default",
+      "description": "List items."
+    }
+  ],
   "states": [],
   "contentGuidelines": null,
   "commonlyPairedWith": [],

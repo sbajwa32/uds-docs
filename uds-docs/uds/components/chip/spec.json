@@ -4,19 +4,71 @@
   "title": "Chip",
   "description": "A chip is a compact, interactive element for filters, input tokens, or selection.",
   "whenToUse": "For filter selection (multi-select filters). For input tokens (tags, emails, assignees). For dropdown triggers in dense UIs.",
-  "whenNotToUse": "For status or category labels \u2014 use Badge. For primary actions \u2014 use Button.",
-  "acceptanceCriteria": [],
+  "whenNotToUse": "For status or category labels — use Badge. For primary actions — use Button.",
+  "acceptanceCriteria": [
+    "Public API uses <udc-chip> Web Component tag."
+  ],
   "dependencies": {
     "css": [
-      "uds/components/chip.css"
+      "uds/uds.css"
     ],
     "js": [
-      "uds/components/chip.js"
+      "web-components.js"
     ]
   },
-  "props": [],
-  "events": [],
-  "slots": [],
+  "props": [
+    {
+      "name": "variant",
+      "type": "enum",
+      "default": "filter",
+      "required": false,
+      "description": "Chip behavior pattern.",
+      "enum": [
+        "filter",
+        "input",
+        "dropdown"
+      ]
+    },
+    {
+      "name": "selected",
+      "type": "boolean",
+      "default": false,
+      "required": false,
+      "description": "Selected filter state."
+    },
+    {
+      "name": "removable",
+      "type": "boolean",
+      "default": false,
+      "required": false,
+      "description": "Shows dismiss affordance."
+    },
+    {
+      "name": "disabled",
+      "type": "boolean",
+      "default": false,
+      "required": false,
+      "description": "Disables interaction."
+    }
+  ],
+  "events": [
+    {
+      "name": "udc-chip-toggle",
+      "description": "Fires when a filter chip changes selected state.",
+      "payload": "{ selected, variant }"
+    },
+    {
+      "name": "udc-dismiss",
+      "description": "Fires when a removable chip is dismissed.",
+      "payload": "{ reason }"
+    }
+  ],
+  "slots": [
+    {
+      "name": "default",
+      "description": "Chip label."
+    }
+  ],
   "states": [],
   "contentGuidelines": null,
   "commonlyPairedWith": [],

@@ -2,12 +2,12 @@
   "$schema": "../../../schemas/manifest.schema.json",
   "examples": [
     {
-      "id": "default",
-      "file": "default.html",
-      "label": "Default",
+      "id": "web-component",
+      "file": "web-component.html",
+      "label": "Pagination",
       "showInDocs": true,
       "demoWeight": 3,
-      "description": "Pagination provides page buttons, current page state, and rows-per-page context."
+      "description": "Previous/next page navigation."
     }
   ]
 }

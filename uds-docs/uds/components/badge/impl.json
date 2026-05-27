@@ -4,39 +4,31 @@
   "jsFile": null,
   "tokens": {
     "Color": [
-      "--uds-color-surface-alt",
-      "--uds-color-surface-bold",
-      "--uds-color-surface-info",
-      "--uds-color-surface-info-subtle",
-      "--uds-color-surface-success",
-      "--uds-color-surface-success-subtle",
-      "--uds-color-surface-error",
-      "--uds-color-surface-error-subtle",
-      "--uds-color-surface-warning",
-      "--uds-color-surface-warning-subtle",
-      "--uds-color-text-inverse",
+      "--uds-color-surface-main",
+      "--uds-color-surface-subtle",
+      "--uds-color-surface-interactive-default",
+      "--uds-color-text-primary",
       "--uds-color-text-secondary",
-      "--uds-color-text-info",
-      "--uds-color-text-success",
-      "--uds-color-text-error",
-      "--uds-color-text-warning"
+      "--uds-color-text-interactive",
+      "--uds-color-border-primary",
+      "--uds-color-border-secondary",
+      "--uds-color-border-outline-focus-visible"
     ],
     "Font": [
       "--uds-font-family",
-      "--uds-font-size-xs",
       "--uds-font-size-base",
-      "--uds-font-line-height-sm",
-      "--uds-font-line-height-base",
-      "--uds-font-weight-regular"
+      "--uds-font-weight-medium"
     ],
     "Space": [
-      "--uds-space-025",
-      "--uds-space-050",
-      "--uds-space-100"
+      "--uds-space-100",
+      "--uds-space-150",
+      "--uds-space-200",
+      "--uds-space-300"
     ],
     "Border": [
-      "--uds-border-radius-container-sm"
+      "--uds-border-radius-input",
+      "--uds-border-radius-container-md"
     ]
   },
-  "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\" />\n  <link rel=\"stylesheet\" href=\"uds/uds.css\" />\n</head>\n<body>\n\n  <span class=\"udc-badge\">Default</span>\n  <span class=\"udc-badge\" data-variant=\"success\">Active</span>\n  <span class=\"udc-badge\" data-variant=\"error\">Failed</span>\n  <span class=\"udc-badge\" data-variant=\"warning\">Pending</span>\n  <span class=\"udc-badge\" data-variant=\"secondary\">Draft</span>\n\n  <!-- Subtle / tinted -->\n  <span class=\"udc-badge\" data-prominent=\"false\">Info</span>\n  <span class=\"udc-badge\" data-variant=\"success\" data-prominent=\"false\">Active</span>\n\n  <!-- Small -->\n  <span class=\"udc-badge\" data-size=\"sm\">Sm</span>\n\n</body>\n</html>"
+  "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\" />\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n  <link href=\"https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined\" rel=\"stylesheet\" />\n  <link rel=\"stylesheet\" href=\"uds/uds.css\" />\n  <script type=\"module\" src=\"web-components.js\"></script>\n  <title>badge</title>\n</head>\n<body>\n<udc-badge tone=\"success\">Active</udc-badge>\n<udc-badge tone=\"warning\">Pending</udc-badge>\n<udc-badge tone=\"error\">Overdue</udc-badge>\n</body>\n</html>"
 }

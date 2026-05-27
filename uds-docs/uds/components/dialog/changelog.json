@@ -11,6 +11,21 @@
       "version": "0.3",
       "type": "changed",
       "text": "Figma dialog component supports 1-4 slot configurations plus header and footer subcomponents"
+    },
+    {
+      "version": "0.3",
+      "type": "changed",
+      "text": "Replaced documented examples, implementation reference, and playground output with the Web Component API."
+    },
+    {
+      "version": "0.3",
+      "type": "changed",
+      "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
+    },
+    {
+      "version": "0.3",
+      "type": "changed",
+      "text": "Ported the full dialog CSS into the `<udc-dialog>` shadow DOM (480px container, container-xl radius, shadow-depth-500, subtle header background, border-bottom divider, scrollable body, right-aligned footer). Backdrop click + Escape close. Focus trap with Tab cycling. Added an interactive playground (heading, content slots count, primary/secondary button labels) emitting `<udc-dialog>` markup with `<udc-button slot=\"actions\">` siblings."
     }
   ]
 }

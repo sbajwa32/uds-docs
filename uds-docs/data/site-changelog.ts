@@ -1144,5 +1144,202 @@ export const SITE_CHANGELOG: SiteChangelogEntry[] = [
       changes: [
         { type: 'fixed', text: 'Published the AI Assist context JSON and Cursor rule file with the static site export.' }
       ]
+    },
+    {
+      version: 'SITE 2026.05.27.4',
+      date: '2026-05-27',
+      changes: [
+        { type: 'added', text: 'Started the parallel Web Components foundation for the next UDS API. Every documented component now has an initial Lit-based tag and React wrapper, while the current component pages stay on the existing examples until the full public cutover is ready.' },
+        { type: 'changed', text: 'Updated the UDS source payload and current docs experience around the Web Component API. Component specs, examples, implementation references, playgrounds, Examples, Code, Playground, Design Language previews, Getting Started, Recipes, Templates, AI Assist, the AI context JSON, and the downloadable Cursor rule now point teams toward Web Components and React wrappers. Demo Builder emits standalone Web Component demos, docs-site widgets no longer rely on the old UDS class hooks, and an audit keeps copied guidance from drifting back to the old class-based API.' }
+      ]
+    },
+    {
+      version: 'SITE 2026.05.27.5',
+      date: '2026-05-27',
+      changes: [
+        { type: 'fixed', text: 'Restored the Dropdown playground and visual styling to match the pre-rewrite version. The `<udc-dropdown>` Web Component now ships the original border, hover, focus, error, and disabled treatments inside its shadow DOM, and the playground tab brings back all 13 interactive controls (state, label, required, leading icon, helper text, counter, options count). First component in the visual-parity pilot — the other documented components still need the same treatment.' }
+      ]
+    },
+    {
+      version: 'SITE 2026.05.27.6',
+      date: '2026-05-27',
+      changes: [
+        { type: 'fixed', text: 'Restored the Text Input playground and visual styling. The `<udc-text-input>` Web Component now carries the field border, focus ring, error recolor, disabled treatment, leading icon, and trailing button hover/active/focus inside its shadow DOM, and the playground tab brings back all 14 interactive controls. Second component in the visual-parity sweep.' }
+      ]
+    },
+    {
+      version: 'SITE 2026.05.27.7',
+      date: '2026-05-27',
+      changes: [
+        { type: 'fixed', text: 'Restored the Button playground and visual styling. `<udc-button>` now ships the full variant matrix (primary/secondary/ghost × default/danger/success/warning/neutral), small size, leading/trailing icons, icon-only square mode, and the selected/disabled states inside its shadow DOM. Playground brings back all 12 original controls. Also fixed an empty-string attribute reflection bug that was forcing every button to 12px padding on all sides.' }
+      ]
+    },
+    {
+      version: 'SITE 2026.05.27.8',
+      date: '2026-05-27',
+      changes: [
+        { type: 'fixed', text: 'Restored the Checkbox visual styling and playground. `<udc-checkbox>` now uses the SVG-mask checkmark and ships the hover/focus/disabled/error treatments inside shadow DOM, and the playground brings back checked, indeterminate, disabled, required, error, and label controls.' }
+      ]
+    },
+    {
+      version: 'SITE 2026.05.27.9',
+      date: '2026-05-27',
+      changes: [
+        { type: 'fixed', text: 'Restored the Toggle visual styling and playground. `<udc-toggle>` now uses the proper 52×32 track with a 20×20 thumb that translates 20px when active, plus the focus ring and disabled treatment, and the playground brings back the label, checked, and disabled controls.' }
+      ]
+    },
+    {
+      version: 'SITE 2026.05.27.10',
+      date: '2026-05-27',
+      changes: [
+        { type: 'fixed', text: 'Restored the Radio visual styling and group behavior. `<udc-radio>` and `<udc-radio-group>` now carry the original 20×20 ring + 12×12 center dot, the text-interactive recolor when selected, hover/focus/disabled treatments, error state, and the group legend. RadioGroup syncs selection through its `value` attribute. Playground brings back options-count, disabled, and error controls.' }
+      ]
+    },
+    {
+      version: 'SITE 2026.05.27.11',
+      date: '2026-05-27',
+      changes: [
+        { type: 'changed', text: 'Combobox now inherits the rebuilt Dropdown shadow DOM, so the page renders with the proper label, leading icon, chevron, helper text, error and disabled treatments. Added an interactive playground mirroring the Dropdown control surface. Filtering and autocomplete on top of the alias still need a real Figma source — Combobox was placeholder-only in 0.3.' }
+      ]
+    },
+    {
+      version: 'SITE 2026.05.27.12',
+      date: '2026-05-27',
+      changes: [
+        { type: 'changed', text: 'Date Picker now matches the Text Input field chrome — label, calendar leading icon, helper text, focus ring, error and disabled treatments — with a browser-native date popover. Added an interactive playground (state, label, required, helper, value, min, max). The custom calendar popover is still pending a Figma source.' }
+      ]
+    },
+    {
+      version: 'SITE 2026.05.27.13',
+      date: '2026-05-27',
+      changes: [
+        { type: 'fixed', text: 'Restored the Text Area visual styling and playground. `<udc-text-area>` now carries the 88px min-height field, hover/focus ring, error and disabled treatments, and helper row with character counter. Playground brings back state, label, placeholder, disabled, required, helper text, max-length, and counter controls.' }
+      ]
+    },
+    {
+      version: 'SITE 2026.05.27.14',
+      date: '2026-05-27',
+      changes: [
+        { type: 'fixed', text: 'Restored the Search visual styling and playground. `<udc-search>` now ships the leading search icon, hover surface change, focus ring on the wrapper, and a clear button that appears once the input has a value. Playground brings back placeholder, initial value, state, and disabled controls.' }
+      ]
+    },
+    {
+      version: 'SITE 2026.05.27.15',
+      date: '2026-05-27',
+      changes: [
+        { type: 'fixed', text: 'Restored the Label visual styling and playground. `<udc-label>` now carries the full variant matrix (default/disabled/error/interactive/success), small size, prominent (bold) weight, alignment, fill-frame, multiline, and the required dot. Playground brings back text, variant, required, small, and prominent controls.' }
+      ]
+    },
+    {
+      version: 'SITE 2026.05.27.16',
+      date: '2026-05-27',
+      changes: [
+        { type: 'fixed', text: 'Restored the Link visual styling and playground. `<udc-link>` now ships the text-interactive color, underline at the correct offset, hover/active/focus rings, disabled treatment, current-page indicator, and the new-window affordance (auto-sets target/rel + open_in_new icon). Playground brings back label, href, current, disabled, new-window, and leading/trailing icon controls.' }
+      ]
+    },
+    {
+      version: 'SITE 2026.05.27.17',
+      date: '2026-05-27',
+      changes: [
+        { type: 'fixed', text: 'Restored the Badge playground. `<udc-badge>` already shipped the 5-tone × prominent/subtle × default/sm matrix in its shadow DOM — the playground tab now brings back tone, variant, size, and label controls.' }
+      ]
+    },
+    {
+      version: 'SITE 2026.05.27.18',
+      date: '2026-05-27',
+      changes: [
+        { type: 'fixed', text: 'Restored the Chip visual styling and playground. `<udc-chip>` now ships the BEM leading-icon/label/trailing-icon structure with `--uds-font-size-lg` icon sizing, hover/active/focus rings, the surface-interactive-active selected state with inverse text + icons, and a smaller trailing chevron for the dropdown variant. Playground brings back variant, label, selected, leading-icon, and disabled controls.' }
+      ]
+    },
+    {
+      version: 'SITE 2026.05.27.19',
+      date: '2026-05-27',
+      changes: [
+        { type: 'fixed', text: 'Restored the Notification visual styling and playground. `<udc-notification>` now ships the dedicated icon-* color token for the leading icon, the larger close-button glyph sizing, and the subtle/prominent/inline variants across all four tones. Playground brings back tone, style, message, and dismissible controls.' }
+      ]
+    },
+    {
+      version: 'SITE 2026.05.27.20',
+      date: '2026-05-27',
+      changes: [
+        { type: 'fixed', text: 'Restored the Tooltip visual styling and playground. `<udc-tooltip>` now uses the light surface-main bubble with shadow-depth-300 (was a dark inverse pill) and supports top/bottom/left/right positions. Playground brings back the tooltip text, position, and an always-open toggle.' }
+      ]
+    },
+    {
+      version: 'SITE 2026.05.27.21',
+      date: '2026-05-27',
+      changes: [
+        { type: 'fixed', text: 'Restored the Dialog visual styling and playground. `<udc-dialog>` now uses the 480px container with container-xl radius, shadow-depth-500, the subtle header background with a border-bottom divider, a scrollable body, and a right-aligned actions footer. Playground brings back heading, content slot count, and primary/secondary button labels.' }
+      ]
+    },
+    {
+      version: 'SITE 2026.05.27.22',
+      date: '2026-05-27',
+      changes: [
+        { type: 'fixed', text: 'Restored the Tabs playground. `<udc-tabs>` already shipped the tablist border, the 2px interactive border on selected, hover/focus treatments, the small size, and keyboard navigation in its shadow DOM — the playground tab now brings back tab-count, size, and disabled-tab controls.' }
+      ]
+    },
+    {
+      version: 'SITE 2026.05.27.23',
+      date: '2026-05-27',
+      changes: [
+        { type: 'fixed', text: 'Restored the Tile visual styling and playground. `<udc-tile>` now uses BEM `.udc-tile__content` / `__label` / `__body` / `__chevron` inside its shadow DOM, with the larger chevron glyph, hover surface change, selected (info-subtle bg + 2px interactive border), focus-visible ring, and disabled treatment. Playground brings back label, body lines, required-dot, chevron, and state controls.' }
+      ]
+    },
+    {
+      version: 'SITE 2026.05.27.24',
+      date: '2026-05-27',
+      changes: [
+        { type: 'fixed', text: 'Restored the Nav Header visual styling and playground. `<udc-nav-header>` now renders the full canonical anatomy (logo, title-area pill, center search, My Work button, account group) as a single opinionated Web Component driven by `app-name`, `title-only`, `show-search`, `show-mywork`, and `mywork-badge` attributes. Slot escape hatches let consumers override individual sections without forking the CSS.' }
+      ]
+    },
+    {
+      version: 'SITE 2026.05.27.25',
+      date: '2026-05-27',
+      changes: [
+        { type: 'fixed', text: 'Restored the Nav Vertical visual styling and playground. `<udc-nav-vertical>` + `<udc-nav-item>` ship the list (full-width 48px rows) and rail (icon-over-label with active indicator bar) variants, leading-icons toggle, hover/selected/focus treatments, and `aria-current` selection. Playground brings back variant, leading icons, item count, and selected-item controls.' }
+      ]
+    },
+    {
+      version: 'SITE 2026.05.27.26',
+      date: '2026-05-27',
+      changes: [
+        { type: 'fixed', text: 'Restored the Breadcrumb visual styling and playground. `<udc-breadcrumb>` now ships the pill container, the SVG chevron-right separators, text-interactive-neutral links with hover underline, bold current-page styling, and the frameless variant. Component accepts an `items` array attribute or slotted content. Playground brings back items-count and frameless controls.' }
+      ]
+    },
+    {
+      version: 'SITE 2026.05.27.27',
+      date: '2026-05-27',
+      changes: [
+        { type: 'fixed', text: 'Restored the Pagination visual styling and playground. `<udc-pagination>` now ships the 32px numbered page buttons, surface-interactive-default active page, focus ring, chevron previous/next, ellipsis for large ranges, and the rows-per-page + range meta row (was a single previous/next + status row before). Playground brings back current-page, total-pages, and show-meta controls.' }
+      ]
+    },
+    {
+      version: 'SITE 2026.05.27.28',
+      date: '2026-05-27',
+      changes: [
+        { type: 'fixed', text: 'Restored the List visual styling and playground. `<udc-list>` + `<udc-list-item>` now ship the 48px rows, BEM leading-icon/label/trailing-icon structure with --uds-font-size-2xl icons, hover/active/selected/focus treatments, and proper listbox/option roles when the list is `selectable`. Playground brings back item count, leading/trailing icon pickers, selected-item, and selectable controls.' }
+      ]
+    },
+    {
+      version: 'SITE 2026.05.27.29',
+      date: '2026-05-27',
+      changes: [
+        { type: 'fixed', text: 'Restored the Data Table visual styling and playground. `<udc-data-table>` now renders the table itself in shadow DOM from `columns` + `rows` JSON attributes — no need to author the inner `<table>` markup — and ports the original sticky header row, striped/selected/hover row treatments, prominent text, alignment helpers, checkbox column with select-all, and the sortable header indicator. Playground brings back row count, striped, selectable, and initial-sort controls.' }
+      ]
+    },
+    {
+      version: 'SITE 2026.05.27.30',
+      date: '2026-05-27',
+      changes: [
+        { type: 'changed', text: 'Data View now ships a card-style container with header, body, and actions slot groups inside `<udc-data-view>` shadow DOM (surface-main bg, container-md radius, header / footer dividers). The original Figma source was placeholder-only in 0.3, so this is a sensible token-bound default. Added an interactive playground (heading, body shape, show-actions).' }
+      ]
+    },
+    {
+      version: 'SITE 2026.05.27.31',
+      date: '2026-05-27',
+      changes: [
+        { type: 'fixed', text: 'Restored the Divider, Spacer, and Icon Wrapper atoms. `<udc-divider>` now uses the border-tertiary stroke + sm/md/lg/xl padding; `<udc-spacer>` ports the original size-step API (050/075/100/150/200/300/400/500/600) with the 100×100 Figma default; `<udc-icon-wrapper>` ships the 16/20/24/32/48/64 size matrix with a `color` attribute mapped to `--uds-color-icon-*` tokens. Playgrounds for all three components are restored. This completes the visual-parity sweep — every documented component now ships the full original styling and an interactive playground inside its shadow DOM.' }
+      ]
     }
 ];

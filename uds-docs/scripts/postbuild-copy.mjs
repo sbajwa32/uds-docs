@@ -22,6 +22,12 @@ const COPIES = [
   { src: 'versions.json', dest: 'out/versions.json', kind: 'file', label: 'versions manifest' },
   { src: 'ai-context.json', dest: 'out/ai-context.json', kind: 'file', label: 'AI context JSON' },
   { src: 'uds-design-system.mdc', dest: 'out/uds-design-system.mdc', kind: 'file', label: 'Cursor rule download' },
+  {
+    src: 'packages/uds-web-components/dist/web-components.js',
+    dest: 'out/web-components.js',
+    kind: 'file',
+    label: 'UDS Web Components browser bundle',
+  },
 ];
 
 // Note: the per-component playground.js modules under uds/components/<id>/

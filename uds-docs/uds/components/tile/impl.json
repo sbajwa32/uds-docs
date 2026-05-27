@@ -1,39 +1,34 @@
 {
   "$schema": "../../schemas/impl.schema.json",
-  "jsFunc": "initTile",
-  "jsFile": "uds/components/tile/tile.js",
+  "jsFunc": null,
+  "jsFile": null,
   "tokens": {
-    "Surface": [
+    "Color": [
       "--uds-color-surface-main",
-      "--uds-color-surface-interactive-subtle",
-      "--uds-color-surface-info-subtle"
-    ],
-    "Text": [
+      "--uds-color-surface-subtle",
+      "--uds-color-surface-interactive-default",
       "--uds-color-text-primary",
-      "--uds-color-text-error"
-    ],
-    "Icon": [
-      "--uds-color-icon-secondary"
-    ],
-    "Border": [
+      "--uds-color-text-secondary",
+      "--uds-color-text-interactive",
       "--uds-color-border-primary",
-      "--uds-color-border-interactive",
-      "--uds-color-border-disabled",
-      "--uds-color-border-outline-focus-visible",
-      "--uds-border-radius-input"
-    ],
-    "Space": [
-      "--uds-space-050",
-      "--uds-space-100",
-      "--uds-space-200"
+      "--uds-color-border-secondary",
+      "--uds-color-border-outline-focus-visible"
     ],
     "Font": [
       "--uds-font-family",
       "--uds-font-size-base",
-      "--uds-font-weight-bold",
-      "--uds-font-weight-regular",
-      "--uds-font-line-height-base"
+      "--uds-font-weight-medium"
+    ],
+    "Space": [
+      "--uds-space-100",
+      "--uds-space-150",
+      "--uds-space-200",
+      "--uds-space-300"
+    ],
+    "Border": [
+      "--uds-border-radius-input",
+      "--uds-border-radius-container-md"
     ]
   },
-  "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\" />\n  <link href=\"https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined\" rel=\"stylesheet\" />\n  <link rel=\"stylesheet\" href=\"uds/uds.css\" />\n</head>\n<body>\n\n  <div class=\"udc-tile\" tabindex=\"0\">\n    <div class=\"udc-tile__content\">\n      <div class=\"udc-tile__label\">Upload CSV<span class=\"udc-tile__required\"></span></div>\n      <div class=\"udc-tile__body\">Import residents from a spreadsheet</div>\n    </div>\n    <span class=\"udc-tile__chevron\">\n      <span class=\"material-symbols-outlined\">chevron_right</span>\n    </span>\n  </div>\n\n  <script src=\"uds/uds.js\"></script>\n</body>\n</html>"
+  "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\" />\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n  <link href=\"https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined\" rel=\"stylesheet\" />\n  <link rel=\"stylesheet\" href=\"uds/uds.css\" />\n  <script type=\"module\" src=\"web-components.js\"></script>\n  <title>tile</title>\n</head>\n<body>\n<udc-tile\n  label=\"Upload CSV\"\n  description=\"Import tenants from a spreadsheet\"\n  selectable\n></udc-tile>\n</body>\n</html>"
 }

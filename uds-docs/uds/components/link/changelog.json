@@ -6,6 +6,21 @@
       "version": "0.3",
       "type": "added",
       "text": "In-progress navigational link component with default/current page/disabled states, optional open-in-new-window affordance, token-first CSS, examples, code, playground, and Demo Builder coverage"
+    },
+    {
+      "version": "0.3",
+      "type": "changed",
+      "text": "Replaced documented examples, implementation reference, and playground output with the Web Component API."
+    },
+    {
+      "version": "0.3",
+      "type": "changed",
+      "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
+    },
+    {
+      "version": "0.3",
+      "type": "changed",
+      "text": "Ported the full link CSS into the `<udc-link>` shadow DOM (text-interactive color, underline with 0.18em offset, hover/active/focus states, disabled treatment). Added `current` (aria-current=page), `new-window` (auto-sets target/rel plus open_in_new icon), `leading-icon`, and `trailing-icon` attributes. Rebuilt the playground with label, href, current, disabled, new-window, and leading/trailing icon controls."
     }
   ]
 }

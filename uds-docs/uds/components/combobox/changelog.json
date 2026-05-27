@@ -6,6 +6,21 @@
       "version": "0.3",
       "type": "added",
       "text": "Placeholder page for searchable text-entry selection component from Figma 0.3"
+    },
+    {
+      "version": "0.3",
+      "type": "changed",
+      "text": "Replaced documented examples, implementation reference, and playground output with the Web Component API."
+    },
+    {
+      "version": "0.3",
+      "type": "changed",
+      "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
+    },
+    {
+      "version": "0.3",
+      "type": "changed",
+      "text": "`<udc-combobox>` now aliases the rebuilt `<udc-dropdown>` Web Component, so it inherits the full shadow-DOM styling (label, leading icon, placeholder, chevron, helper text, error/disabled treatments, listbox panel). Added an interactive playground with the same control surface as Dropdown. Filtering/autocomplete behavior on top of the alias is still pending Figma source."
     }
   ]
 }

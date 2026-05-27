@@ -6,6 +6,21 @@
       "version": "0.3",
       "type": "added",
       "text": "Placeholder page for non-table record collection layouts from Figma 0.3"
+    },
+    {
+      "version": "0.3",
+      "type": "changed",
+      "text": "Replaced documented examples, implementation reference, and playground output with the Web Component API."
+    },
+    {
+      "version": "0.3",
+      "type": "changed",
+      "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
+    },
+    {
+      "version": "0.3",
+      "type": "changed",
+      "text": "`<udc-data-view>` now ships a card-style container in shadow DOM (surface-main bg, border-secondary, container-md radius, space-300 padding) with header + body + actions slot groups. The original `data-view.css` was placeholder-only in 0.3; this fills in a token-bound default. Added an interactive playground (heading, body content shape, show-actions)."
     }
   ]
 }

@@ -6,6 +6,21 @@
       "version": "0.1",
       "type": "added",
       "text": "Spacing utility component"
+    },
+    {
+      "version": "0.3",
+      "type": "changed",
+      "text": "Replaced documented examples, implementation reference, and playground output with the Web Component API."
+    },
+    {
+      "version": "0.3",
+      "type": "changed",
+      "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
+    },
+    {
+      "version": "0.3",
+      "type": "changed",
+      "text": "Ported the full spacer CSS into the `<udc-spacer>` shadow DOM with the original `size` token-step API (050/075/100/150/200/300/400/500/600) and the 100×100 Figma default. Replaces the prior xs/sm/md/lg/xl t-shirt sizing. Added an interactive playground with the size select."
     }
   ]
 }

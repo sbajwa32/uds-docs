@@ -11,6 +11,21 @@
       "version": "0.3",
       "type": "changed",
       "text": "Figma variant matrix confirmed: default/filter/input/dropdown variants, selected true/false, and default/hover/active/focused/focused-on-active states"
+    },
+    {
+      "version": "0.3",
+      "type": "changed",
+      "text": "Replaced documented examples, implementation reference, and playground output with the Web Component API."
+    },
+    {
+      "version": "0.3",
+      "type": "changed",
+      "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
+    },
+    {
+      "version": "0.3",
+      "type": "changed",
+      "text": "Ported the full chip CSS into the `<udc-chip>` shadow DOM (BEM `.udc-chip__leading-icon` / `__label` / `__trailing-icon` with `--uds-font-size-lg` icon sizing, hover/active/focus rings, surface-interactive-active selected state with inverse text + icons, dropdown variant trailing-chevron smaller). Rebuilt the playground with variant/label/selected/leading-icon/disabled controls."
     }
   ]
 }

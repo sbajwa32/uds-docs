@@ -6,6 +6,7 @@
   "whenToUse": "Use for binary settings that take effect immediately, such as enabling a preference.",
   "whenNotToUse": "For selecting one option from a group, use Radio. For submitting a form decision, use Checkbox or Button.",
   "acceptanceCriteria": [
+    "Public API uses <udc-toggle> Web Component tag.",
     "On/off and disabled variants render",
     "Space toggles the switch",
     "State is exposed with role=\"switch\" and aria-checked",
@@ -14,37 +15,55 @@
   ],
   "dependencies": {
     "css": [
-      "uds/components/toggle.css"
+      "uds/uds.css"
     ],
-    "js": []
+    "js": [
+      "web-components.js"
+    ]
   },
   "props": [
+    {
+      "name": "name",
+      "type": "string",
+      "default": null,
+      "required": false,
+      "description": "Form field name."
+    },
+    {
+      "name": "value",
+      "type": "string",
+      "default": "on",
+      "required": false,
+      "description": "Submitted value."
+    },
     {
       "name": "checked",
       "type": "boolean",
       "default": false,
-      "description": "On/off value."
+      "required": false,
+      "description": "Switch state."
     },
     {
       "name": "disabled",
       "type": "boolean",
       "default": false,
-      "description": "Disables interaction."
-    },
-    {
-      "name": "aria-label",
-      "type": "string",
-      "description": "Accessible label when visible label is absent."
+      "required": false,
+      "description": "Disabled state."
     }
   ],
   "events": [
     {
-      "name": "change",
-      "description": "Fires when the checked value changes",
-      "payload": "{ checked: boolean }"
+      "name": "udc-change",
+      "description": "Fires when checked changes.",
+      "payload": "{ checked, value }"
     }
   ],
-  "slots": [],
+  "slots": [
+    {
+      "name": "default",
+      "description": "Toggle label."
+    }
+  ],
   "states": [
     {
       "name": "default",

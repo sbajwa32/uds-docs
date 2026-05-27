@@ -2,25 +2,12 @@
   "$schema": "../../../schemas/manifest.schema.json",
   "examples": [
     {
-      "id": "default",
-      "file": "default.html",
-      "label": "Default",
+      "id": "web-component",
+      "file": "web-component.html",
+      "label": "Tile",
       "showInDocs": true,
-      "demoWeight": 3
-    },
-    {
-      "id": "multiple-body-lines",
-      "file": "multiple-body-lines.html",
-      "label": "Multiple body lines",
-      "showInDocs": true,
-      "demoWeight": 1
-    },
-    {
-      "id": "without-chevron",
-      "file": "without-chevron.html",
-      "label": "Without chevron",
-      "showInDocs": true,
-      "demoWeight": 1
+      "demoWeight": 3,
+      "description": "A selectable card-like option."
     }
   ]
 }

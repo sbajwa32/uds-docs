@@ -1,0 +1,167 @@
+import { LitElement, PropertyValues, css, html, nothing } from 'lit';
+
+import { emitUdsEvent } from '../events';
+import { focusRing, hostBlock, hostInline, materialIconStyles } from '../styles';
+
+export interface UdsValueChangeDetail {
+  value: string;
+}
+
+export interface UdsCheckedChangeDetail {
+  checked: boolean;
+  value: string;
+}
+
+export interface UdsSortChangeDetail {
+  key: string;
+  direction: 'asc' | 'desc' | 'none';
+}
+
+const fieldChrome = css`
+  .field {
+    display: flex;
+    align-items: center;
+    gap: var(--uds-space-075, 6px);
+    min-height: var(--uds-space-600, 48px);
+    padding: var(--uds-space-075, 6px) var(--uds-space-100, 8px);
+    background: var(--uds-color-surface-main, #fff);
+    border: 1px solid var(--uds-color-border-primary, #d4d4d4);
+    border-radius: var(--uds-border-radius-input, 8px);
+    color: var(--uds-color-text-primary, #171717);
+  }
+
+  .field:focus-within {
+    box-shadow: 0 0 0 2px var(--uds-color-surface-white, #fff),
+      0 0 0 4px var(--uds-color-border-outline-focus-visible, #2563eb);
+  }
+
+  input,
+  textarea,
+  select {
+    width: 100%;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    font-size: var(--uds-font-size-base, 16px);
+  }
+
+  .label {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--uds-space-050, 4px);
+    color: var(--uds-color-text-primary, #171717);
+    font-size: var(--uds-font-size-sm, 14px);
+    font-weight: var(--uds-font-weight-medium, 500);
+  }
+
+  .helper {
+    color: var(--uds-color-text-secondary, #525252);
+    font-size: var(--uds-font-size-xs, 12px);
+  }
+
+  :host([state='error']) .field {
+    border-color: var(--uds-color-border-error, #b42318);
+  }
+
+  :host([state='error']) .label,
+  :host([state='error']) .helper {
+    color: var(--uds-color-text-error, #b42318);
+  }
+`;
+
+function formInternals(host: HTMLElement): ElementInternals | null {
+  const candidate = host as HTMLElement & { attachInternals?: () => ElementInternals };
+  return typeof candidate.attachInternals === 'function' ? candidate.attachInternals() : null;
+}
+
+// Divider, Spacer, IconWrapper live in their own files (extracted with full CSS port).
+export { UdsDividerElement } from './divider';
+export type { UdsDividerPadding } from './divider';
+export { UdsSpacerElement } from './spacer';
+export type { UdsSpacerSize } from './spacer';
+export { UdsIconWrapperElement } from './icon-wrapper';
+export type { UdsIconWrapperSize, UdsIconWrapperColor } from './icon-wrapper';
+
+// Label lives in ./label.ts (extracted with the full CSS port).
+export { UdsLabelElement } from './label';
+export type { UdsLabelVariant, UdsLabelSize, UdsLabelAlign } from './label';
+
+// Link lives in ./link.ts (extracted with the full CSS port).
+export { UdsLinkElement } from './link';
+
+// TextArea lives in ./text-area.ts (extracted with the full CSS port).
+export { UdsTextAreaElement } from './text-area';
+export type { UdsTextAreaChangeDetail, UdsTextAreaState } from './text-area';
+
+// Toggle lives in ./toggle.ts (extracted with the full CSS port).
+export { UdsToggleElement } from './toggle';
+export type { UdsToggleChangeDetail } from './toggle';
+
+// Radio + RadioGroup live in ./radio.ts (extracted with the full CSS port).
+export { UdsRadioElement, UdsRadioGroupElement } from './radio';
+export type { UdsRadioChangeDetail, UdsRadioState } from './radio';
+
+// Search lives in ./search.ts (extracted with the full CSS port).
+export { UdsSearchElement } from './search';
+export type { UdsSearchChangeDetail, UdsSearchState } from './search';
+
+// Breadcrumb lives in ./breadcrumb.ts (extracted with the full CSS port).
+export { UdsBreadcrumbElement } from './breadcrumb';
+export type { BreadcrumbItem } from './breadcrumb';
+
+// List + ListItem live in ./list.ts (extracted with the full CSS port).
+export { UdsListElement, UdsListItemElement } from './list';
+export type { UdsListItemSelectDetail } from './list';
+
+// Pagination lives in ./pagination.ts (extracted with the full CSS port).
+export { UdsPaginationElement } from './pagination';
+
+// Tooltip lives in ./tooltip.ts (extracted with the full CSS port).
+export { UdsTooltipElement } from './tooltip';
+export type { UdsTooltipPosition } from './tooltip';
+
+// Dialog lives in ./dialog.ts (extracted with the full CSS port).
+export { UdsDialogElement } from './dialog';
+
+// Dropdown + DropdownItem live in ./dropdown.ts (extracted with the full CSS port).
+// Re-export so existing imports from './components/remaining' keep working.
+export { UdsDropdownElement, UdsDropdownItemElement } from './dropdown';
+export type { UdsDropdownChangeDetail, UdsDropdownState } from './dropdown';
+
+import { UdsDropdownElement as _UdsDropdownElement, UdsDropdownItemElement as _UdsDropdownItemElement } from './dropdown';
+
+/** Combobox is currently a Dropdown alias; full filtering/autocomplete arrives later. */
+export class UdsComboboxElement extends _UdsDropdownElement {}
+export class UdsComboboxOptionElement extends _UdsDropdownItemElement {}
+
+// DatePicker lives in ./date-picker.ts (extracted with full field chrome).
+export { UdsDatePickerElement } from './date-picker';
+export type { UdsDatePickerChangeDetail, UdsDatePickerState } from './date-picker';
+
+// DataTable lives in ./data-table.ts (extracted with the full CSS port).
+export { UdsDataTableElement } from './data-table';
+export type {
+  UdsDataTableColumn,
+  UdsDataTableRow,
+  UdsDataTableCell,
+  UdsDataTableSortChangeDetail,
+  UdsDataTableSortDirection,
+} from './data-table';
+
+// DataView lives in ./data-view.ts (extracted with full CSS).
+export { UdsDataViewElement } from './data-view';
+
+// NavHeader lives in ./nav-header.ts (extracted with the full canonical anatomy).
+export { UdsNavHeaderElement } from './nav-header';
+
+// NavVertical + NavItem live in ./nav-vertical.ts (extracted with full CSS port).
+export { UdsNavVerticalElement, UdsNavItemElement } from './nav-vertical';
+
+declare global {
+  interface HTMLElementTagNameMap {
+    'udc-combobox': UdsComboboxElement;
+    'udc-combobox-option': UdsComboboxOptionElement;
+  }
+}

@@ -4,19 +4,68 @@
   "title": "Tile",
   "description": "A selectable tile presents a choice with a label and optional description. Commonly used for mutually exclusive options in a card-like layout.",
   "whenToUse": "For visual, card-like option selection (e.g. \"Upload CSV / Manual Entry / API Sync\"). When you want more prominence than radio buttons.",
-  "whenNotToUse": "For simple text-only choices \u2014 use radio buttons. For navigation \u2014 use nav.",
-  "acceptanceCriteria": [],
+  "whenNotToUse": "For simple text-only choices — use radio buttons. For navigation — use nav.",
+  "acceptanceCriteria": [
+    "Public API uses <udc-tile> Web Component tag."
+  ],
   "dependencies": {
     "css": [
-      "uds/components/tile.css"
+      "uds/uds.css"
     ],
     "js": [
-      "uds/components/tile.js"
+      "web-components.js"
     ]
   },
-  "props": [],
-  "events": [],
-  "slots": [],
+  "props": [
+    {
+      "name": "label",
+      "type": "string",
+      "default": null,
+      "required": false,
+      "description": "Tile title."
+    },
+    {
+      "name": "description",
+      "type": "string",
+      "default": null,
+      "required": false,
+      "description": "Supporting body text."
+    },
+    {
+      "name": "selectable",
+      "type": "boolean",
+      "default": false,
+      "required": false,
+      "description": "Allows selection."
+    },
+    {
+      "name": "selected",
+      "type": "boolean",
+      "default": false,
+      "required": false,
+      "description": "Selected state."
+    },
+    {
+      "name": "disabled",
+      "type": "boolean",
+      "default": false,
+      "required": false,
+      "description": "Disabled state."
+    }
+  ],
+  "events": [
+    {
+      "name": "udc-tile-toggle",
+      "description": "Fires when selectable tile toggles.",
+      "payload": "{ selected }"
+    }
+  ],
+  "slots": [
+    {
+      "name": "default",
+      "description": "Custom tile content."
+    }
+  ],
   "states": [],
   "contentGuidelines": null,
   "commonlyPairedWith": [],

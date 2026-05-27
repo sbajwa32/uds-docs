@@ -11,6 +11,21 @@
       "version": "0.3",
       "type": "changed",
       "text": "Figma search bar coverage confirmed: default/hover/focused/active/error-active states"
+    },
+    {
+      "version": "0.3",
+      "type": "changed",
+      "text": "Replaced documented examples, implementation reference, and playground output with the Web Component API."
+    },
+    {
+      "version": "0.3",
+      "type": "changed",
+      "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
+    },
+    {
+      "version": "0.3",
+      "type": "changed",
+      "text": "Ported the full search CSS into the `<udc-search>` shadow DOM (search-icon leading slot, hover background, focus ring on the wrapper, clear button that appears when the input has a value, error and disabled treatments) and rebuilt the playground with placeholder, initial value, state, and disabled controls."
     }
   ]
 }

@@ -2,12 +2,12 @@
   "$schema": "../../../schemas/manifest.schema.json",
   "examples": [
     {
-      "id": "default-and-error",
-      "file": "default-and-error.html",
-      "label": "Default and error",
+      "id": "web-component",
+      "file": "web-component.html",
+      "label": "Text Area",
       "showInDocs": true,
       "demoWeight": 3,
-      "description": "Text Area uses the same label/helper/counter model as Text Input, with multi-line entry states from Figma."
+      "description": "A form-associated multiline field."
     }
   ]
 }

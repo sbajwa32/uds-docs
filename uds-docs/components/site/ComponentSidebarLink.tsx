@@ -195,7 +195,7 @@ function SidebarTooltip({
   return (
     <span
       id={id}
-      className="udc-tooltip sg-sidebar-portal-tooltip"
+      className="sg-sidebar-portal-tooltip"
       role="tooltip"
       data-visible="true"
       style={{ top }}

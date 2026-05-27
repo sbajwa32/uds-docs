@@ -10,7 +10,7 @@
     {
       "version": "0.2",
       "type": "deprecated",
-      "text": "Replaced by Nav Header and Nav Vertical \u2014 update imports to nav-header.css + nav-vertical.css"
+      "text": "Replaced by Nav Header and Nav Vertical — update imports to nav-header.css + nav-vertical.css"
     },
     {
       "version": "0.2",
@@ -35,37 +35,37 @@
     {
       "version": "0.3",
       "type": "changed",
-      "text": "Mirrored Figma sub-component rename _udc-nav-header_bentobutton \u2192 _udc-nav-header_title-area (id 5586:8858 preserved). CSS public-contract rename: .udc-nav-bento-button \u2192 .udc-nav-title-area, .udc-nav-bento-button__chevron \u2192 .udc-nav-title-area__chevron. Spec slot bento (trigger) \u2192 title-area. Dropdown panel intentionally kept as .udc-nav-bento because Figma still calls that component _udc-nav-header_dropdown."
+      "text": "Mirrored Figma sub-component rename _udc-nav-header_bentobutton → _udc-nav-header_title-area (id 5586:8858 preserved). CSS public-contract rename: .udc-nav-bento-button → .udc-nav-title-area, .udc-nav-bento-button__chevron → .udc-nav-title-area__chevron. Spec slot bento (trigger) → title-area. Dropdown panel intentionally kept as .udc-nav-bento because Figma still calls that component _udc-nav-header_dropdown."
     },
     {
       "version": "0.3",
       "type": "fixed",
-      "text": "Chevron color realigned with Figma: --uds-color-icon-secondary \u2192 --uds-color-icon-primary."
+      "text": "Chevron color realigned with Figma: --uds-color-icon-secondary → --uds-color-icon-primary."
     },
     {
       "version": "0.3",
       "type": "fixed",
-      "text": "Bento trigger icon + chevron size realigned with Figma: 20px literal \u2192 --uds-font-size-2xl (24px) \u2014 matches udc-icon-wrapper Size=24px."
+      "text": "Bento trigger icon + chevron size realigned with Figma: 20px literal → --uds-font-size-2xl (24px) — matches udc-icon-wrapper Size=24px."
     },
     {
       "version": "0.3",
       "type": "fixed",
-      "text": "Bento dropdown shadow realigned with Figma: --uds-shadow-bento \u2192 --uds-shadow-depth-300."
+      "text": "Bento dropdown shadow realigned with Figma: --uds-shadow-bento → --uds-shadow-depth-300."
     },
     {
       "version": "0.3",
       "type": "fixed",
-      "text": "Bento dropdown footer realigned with Figma: 14px / text-interactive \u2192 12px / text-primary (--uds-font-size-sm + --uds-color-text-primary)."
+      "text": "Bento dropdown footer realigned with Figma: 14px / text-interactive → 12px / text-primary (--uds-font-size-sm + --uds-color-text-primary)."
     },
     {
       "version": "0.3",
       "type": "fixed",
-      "text": "Nav-tile font size: 10px literal \u2192 --uds-font-size-sm (12px). Removes a token-usage violation and matches Figma font/size/sm."
+      "text": "Nav-tile font size: 10px literal → --uds-font-size-sm (12px). Removes a token-usage violation and matches Figma font/size/sm."
     },
     {
       "version": "0.3",
       "type": "fixed",
-      "text": "Nav-tile background and foreground: always-blue \u2192 transparent default (interactive-none + text-interactive + icon-interactive) with aria-current=\"page\" driving the blue + text-inverse selected state. Hover split between subtle-hover (default) and interactive-hover (selected). Matches Figma two-state tile anatomy."
+      "text": "Nav-tile background and foreground: always-blue → transparent default (interactive-none + text-interactive + icon-interactive) with aria-current=\"page\" driving the blue + text-inverse selected state. Hover split between subtle-hover (default) and interactive-hover (selected). Matches Figma two-state tile anatomy."
     },
     {
       "version": "0.3",
@@ -75,7 +75,7 @@
     {
       "version": "0.3",
       "type": "fixed",
-      "text": "aria-label on icon-only ghost buttons in account-actions pill \u2014 Notifications / Settings / Account \u2014 added to examples/default.html, playground render strings (HTML + Vue), and impl.json reference HTML."
+      "text": "aria-label on icon-only ghost buttons in account-actions pill — Notifications / Settings / Account — added to examples/default.html, playground render strings (HTML + Vue), and impl.json reference HTML."
     },
     {
       "version": "0.3",
@@ -121,6 +121,21 @@
       "version": "0.3",
       "type": "changed",
       "text": "spec.json knownIssues expanded with three new entries: (a) the new `_udc-nav-header_logo-pill` component on the Figma page (id 6399:13744, 98×48 brand vector + 'ResMan' text label) is NOT wired into the canonical udc-nav-header Variant=Default; treating as design exploration pending designer confirmation; (b) the logo `Outline=True` variant (id 6403:39132, light-fill brand vector) is defined in Figma but not exposed as a doc-side prop — deferred pending designer direction; (c) standalone `_udc-nav-header_dropdown` (6019:32094) and `_udc-nav-header_nav-tile` (5498:2340) components still exist on the nav-header page as orphans (not nested anywhere); the bento concept was removed from the canonical contract but the sub-components weren't deleted from the page; no doc-side surface for these orphans."
+    },
+    {
+      "version": "0.3",
+      "type": "changed",
+      "text": "Replaced documented examples, implementation reference, and playground output with the Web Component API."
+    },
+    {
+      "version": "0.3",
+      "type": "changed",
+      "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
+    },
+    {
+      "version": "0.3",
+      "type": "changed",
+      "text": "Ported the full nav-header CSS into the `<udc-nav-header>` shadow DOM. The component now renders the canonical anatomy (logo, title-area pill, center search, My Work button, account button group) as a single opinionated Web Component driven by `app-name`, `title-only`, `show-search`, `show-mywork`, `mywork-badge`, `logo-icon`, and `title-icon` attributes. Slot escape hatches (`logo`, `title-icon`, `title`, `search`, `mywork`, `account`) let consumers override individual sections without forking the CSS. Rebuilt the playground with the original controls."
     }
   ]
 }

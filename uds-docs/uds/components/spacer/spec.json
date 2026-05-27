@@ -6,43 +6,45 @@
   "whenToUse": "When CSS gap or margin is not available (e.g. in a flow where children cannot be flex/grid items). To enforce a specific token-sized gap.",
   "whenNotToUse": "When you can use CSS gap or margin with tokens directly. Prefer CSS layout properties.",
   "acceptanceCriteria": [
-    "Renders the correct gap for every size token (050\u2013600)",
+    "Public API uses <udc-spacer> Web Component tag.",
+    "Renders the correct gap for every size token (050–600)",
     "Both vertical and horizontal axes apply the token to the correct dimension",
     "Spacer takes no space when its size token resolves to 0",
     "Spacer is not focusable and produces no SR output"
   ],
   "dependencies": {
     "css": [
-      "uds/components/spacer.css"
+      "uds/uds.css"
     ],
-    "js": []
+    "js": [
+      "web-components.js"
+    ]
   },
   "props": [
     {
-      "name": "data-axis",
+      "name": "size",
       "type": "enum",
+      "default": "md",
+      "required": false,
+      "description": "Spacing size.",
       "enum": [
-        "horizontal",
-        "vertical"
-      ],
-      "default": "vertical",
-      "description": "Whether the spacer adds vertical or horizontal whitespace"
+        "xs",
+        "sm",
+        "md",
+        "lg",
+        "xl"
+      ]
     },
     {
-      "name": "data-size",
+      "name": "axis",
       "type": "enum",
+      "default": "block",
+      "required": false,
+      "description": "Spacing direction.",
       "enum": [
-        "050",
-        "100",
-        "150",
-        "200",
-        "300",
-        "400",
-        "500",
-        "600"
-      ],
-      "default": "300",
-      "description": "Spacing token to apply, mapping to --uds-space-{N}"
+        "block",
+        "inline"
+      ]
     }
   ],
   "events": [],
@@ -67,14 +69,14 @@
     ],
     "donts": [
       "Don't put interactive content inside a spacer",
-      "Don't use spacer to push elements to the edges \u2014 use flex/grid alignment instead",
-      "Don't introduce custom sizes \u2014 pick from the documented spacing scale"
+      "Don't use spacer to push elements to the edges — use flex/grid alignment instead",
+      "Don't introduce custom sizes — pick from the documented spacing scale"
     ]
   },
   "accessibility": {
     "keyboard": [
       {
-        "key": "\u2014",
+        "key": "—",
         "action": "Not focusable; the spacer is decorative whitespace"
       }
     ],

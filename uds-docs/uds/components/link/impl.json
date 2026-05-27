@@ -4,10 +4,14 @@
   "jsFile": null,
   "tokens": {
     "Color": [
+      "--uds-color-surface-main",
+      "--uds-color-surface-subtle",
+      "--uds-color-surface-interactive-default",
+      "--uds-color-text-primary",
+      "--uds-color-text-secondary",
       "--uds-color-text-interactive",
-      "--uds-color-text-interactive-hover",
-      "--uds-color-text-interactive-active",
-      "--uds-color-text-disabled",
+      "--uds-color-border-primary",
+      "--uds-color-border-secondary",
       "--uds-color-border-outline-focus-visible"
     ],
     "Font": [
@@ -16,11 +20,15 @@
       "--uds-font-weight-medium"
     ],
     "Space": [
-      "--uds-space-050"
+      "--uds-space-100",
+      "--uds-space-150",
+      "--uds-space-200",
+      "--uds-space-300"
     ],
     "Border": [
-      "--uds-border-radius-container-sm"
+      "--uds-border-radius-input",
+      "--uds-border-radius-container-md"
     ]
   },
-  "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head><meta charset=\"UTF-8\" /><link rel=\"stylesheet\" href=\"uds/uds.css\" /></head>\n<body>\n  <a class=\"udc-link\" href=\"#\">View property</a>\n</body>\n</html>"
+  "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\" />\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n  <link href=\"https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined\" rel=\"stylesheet\" />\n  <link rel=\"stylesheet\" href=\"uds/uds.css\" />\n  <script type=\"module\" src=\"web-components.js\"></script>\n  <title>link</title>\n</head>\n<body>\n<udc-link href=\"/leases\" trailing-icon=\"chevron_right\">View leases</udc-link>\n</body>\n</html>"
 }

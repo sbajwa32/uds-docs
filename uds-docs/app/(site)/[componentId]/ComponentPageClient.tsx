@@ -19,6 +19,7 @@
 import { useEffect, useState } from 'react';
 
 import { DocsStateMessage, DocsTab, DocsTabPanel, DocsTabs } from '@/components/site/ui';
+import { WEB_COMPONENT_EXAMPLES } from '@/data/web-component-examples';
 import {
   getComponentSpec,
   getComponentStatus,
@@ -45,19 +46,6 @@ import { ExamplesTab } from './ExamplesTab';
 import { FigmaNotesTab } from './FigmaNotesTab';
 
 type TabKey = 'examples' | 'code' | 'guidelines' | 'figma-notes' | 'changelog' | 'playground';
-
-// Components that ship spec/CSS/examples but no interactive Playground yet.
-// Mirrors the on-disk truth: `ls uds/components/*/playground.js` excludes
-// these three. Listed here rather than runtime-probed because:
-//   - Static export can't easily ship a "does this file exist?" probe
-//   - The list rarely changes (lifecycle status governs it)
-//   - Wrong-positive shows the Playground tab and the user clicks into a
-//     dynamic-import error; wrong-negative just hides a feature
-const COMPONENTS_WITHOUT_PLAYGROUND = new Set<string>([
-  'combobox',
-  'data-view',
-  'date-picker',
-]);
 
 interface ComponentData {
   spec: ComponentSpec;
@@ -177,12 +165,9 @@ export function ComponentPageClient({ componentId }: { componentId: string }) {
   // Conditionally show Figma Notes tab only when the component has notes.
   const showFigmaNotes = !!(figmaNotes?.notes && figmaNotes.notes.length > 0);
 
-  // Playground tab is conditional. Hidden when:
-  //   (a) the component doesn't ship a playground.js (deferred components)
-  //   (b) we're viewing an archive — archive snapshots don't include
-  //       playground modules, so dynamic-import would fail
-  const showPlayground =
-    !isArchive && !COMPONENTS_WITHOUT_PLAYGROUND.has(componentId);
+  // Live docs use Web Component examples as the playground source. Archive
+  // views stay hidden because old snapshots don't ship the new package.
+  const showPlayground = !isArchive && !!WEB_COMPONENT_EXAMPLES[componentId];
 
   // If the user landed on the Playground tab via a stale URL/state and the
   // tab no longer exists for this component, snap back to Examples.

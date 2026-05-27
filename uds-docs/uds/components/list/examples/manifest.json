@@ -2,32 +2,12 @@
   "$schema": "../../../schemas/manifest.schema.json",
   "examples": [
     {
-      "id": "basic-list",
-      "file": "basic-list.html",
-      "label": "Basic list",
+      "id": "web-component",
+      "file": "web-component.html",
+      "label": "List",
       "showInDocs": true,
-      "demoWeight": 3
-    },
-    {
-      "id": "with-leading-icons",
-      "file": "with-leading-icons.html",
-      "label": "With leading icons",
-      "showInDocs": true,
-      "demoWeight": 1
-    },
-    {
-      "id": "with-trailing-icons",
-      "file": "with-trailing-icons.html",
-      "label": "With trailing icons",
-      "showInDocs": true,
-      "demoWeight": 1
-    },
-    {
-      "id": "both-icons",
-      "file": "both-icons.html",
-      "label": "Both icons",
-      "showInDocs": true,
-      "demoWeight": 1
+      "demoWeight": 3,
+      "description": "A selectable list."
     }
   ]
 }

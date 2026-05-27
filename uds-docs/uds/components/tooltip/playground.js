@@ -1,23 +1,38 @@
-// Playground config for the tooltip component.
-// Extracted from app.js PLAYGROUNDS during the UDS repo restructure.
+// Playground config for the <udc-tooltip> Web Component.
+
+function escAttr(v) {
+  return String(v ?? '').replace(/&/g, '&amp;').replace(/"/g, '&quot;');
+}
+function escText(v) {
+  return String(v ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
 export default {
-      controls: [
-        { key: 'text', label: 'Tooltip text', type: 'text', default: 'Helpful tooltip information' },
-        { key: 'position', label: 'Position', type: 'select', default: 'top', options: [
-          { value: 'top', label: 'Top' }, { value: 'bottom', label: 'Bottom' },
-          { value: 'left', label: 'Left' }, { value: 'right', label: 'Right' }
-        ]}
+  controls: [
+    { key: 'text', label: 'Tooltip text', type: 'text', default: 'Helpful tooltip information' },
+    {
+      key: 'position',
+      label: 'Position',
+      type: 'select',
+      default: 'top',
+      options: [
+        { value: 'top', label: 'Top' },
+        { value: 'bottom', label: 'Bottom' },
+        { value: 'left', label: 'Left' },
+        { value: 'right', label: 'Right' },
       ],
-      render(s) {
-        var posAttr = s.position !== 'top' ? ' data-position="' + s.position + '"' : '';
-        var code = '<span class="udc-tooltip-wrapper">\n  <button class="udc-button-secondary">Hover me</button>\n  <span class="udc-tooltip" role="tooltip"' + posAttr + '>' + s.text + '</span>\n</span>';
-        var padStyle = s.position === 'top' ? 'padding-top:60px;' : s.position === 'bottom' ? 'padding-bottom:60px;' : s.position === 'left' ? 'padding-left:160px;' : 'padding-right:160px;';
-        var html = '<div style="display:flex;justify-content:center;' + padStyle + '">' + code + '</div>';
+    },
+    { key: 'open', label: 'Always open (preview only)', type: 'checkbox', default: true },
+  ],
+  render(s) {
+    const attrs = [];
+    if (s.position && s.position !== 'top') attrs.push(`position="${escAttr(s.position)}"`);
+    if (s.open) attrs.push('open');
+    const attrStr = attrs.length ? ` ${attrs.join(' ')}` : '';
 
-        var reactCode = "function TooltipDemo() {\n  return (\n    <span className=\"udc-tooltip-wrapper\">\n      <button className=\"udc-button-secondary\">Hover me</button>\n      <span className=\"udc-tooltip\" role=\"tooltip\"" + posAttr + ">\n        " + s.text + "\n      </span>\n    </span>\n  );\n}";
-
-        var vueCode = "<script setup>\ndefineProps({ text: String, position: String });\n</script>\n\n<template>\n  <span class=\"udc-tooltip-wrapper\">\n    <slot />\n    <span class=\"udc-tooltip\" role=\"tooltip\"" + posAttr + ">\n      " + s.text + "\n    </span>\n  </span>\n</template>";
-
-        return { html: html, code: code };
-      }
-    };
+    const padStyle = s.position === 'top' ? 'padding-top:64px;' : s.position === 'bottom' ? 'padding-bottom:64px;' : s.position === 'left' ? 'padding-left:200px;' : 'padding-right:200px;';
+    const inner = `<udc-tooltip${attrStr}>\n  <udc-button slot="trigger" variant="secondary">Hover me</udc-button>\n  ${escText(s.text)}\n</udc-tooltip>`;
+    const html = `<div style="display:flex;justify-content:center;${padStyle}">${inner}</div>`;
+    return { html, code: inner };
+  },
+};

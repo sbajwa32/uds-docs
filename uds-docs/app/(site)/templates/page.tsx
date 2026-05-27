@@ -6,17 +6,18 @@ const templates = [
   {
     title: 'App shell',
     description: 'Nav Header + Nav Vertical + main content. Use as the base layout for every authenticated page.',
-    code: `<div class="udc-nav-header">
-  <div class="udc-nav-header__left">…brand + bento…</div>
-  <div class="udc-nav-header__center">…breadcrumb / search…</div>
-  <div class="udc-nav-header__right">…notifications, account…</div>
-</div>
+    code: `<udc-nav-header>
+  <span slot="brand">…brand…</span>
+  <udc-search slot="actions" label="Search" placeholder="Search"></udc-search>
+  <udc-button slot="actions" variant="ghost" leading-icon="account_circle">Account</udc-button>
+</udc-nav-header>
 
 <div style="display:flex;min-height:calc(100vh - 64px);">
-  <nav class="udc-nav-vertical" aria-label="Main" style="width:240px;
+  <udc-nav-vertical aria-label="Main" style="width:240px;
        border-right:1px solid var(--uds-color-border-secondary);">
-    …nav buttons…
-  </nav>
+    <udc-nav-item href="/dashboard" current>Dashboard</udc-nav-item>
+    <udc-nav-item href="/leases">Leases</udc-nav-item>
+  </udc-nav-vertical>
   <main style="flex:1;padding:var(--uds-space-300);overflow-y:auto;">
     …page content…
   </main>
@@ -29,19 +30,24 @@ const templates = [
   <h1>Settings</h1>
 </header>
 
-<div class="udc-tabs" role="tablist">…</div>
+<udc-tabs selected-panel="general">
+  <udc-tab panel="general">General</udc-tab>
+  <udc-tab panel="notifications">Notifications</udc-tab>
+</udc-tabs>
 
 <form style="max-width:640px;display:flex;flex-direction:column;
               gap:var(--uds-space-200);">
-  …udc-text-input, udc-dropdown, udc-checkbox…
+  <udc-text-input label="Display name"></udc-text-input>
+  <udc-dropdown label="Property"></udc-dropdown>
+  <udc-checkbox name="summary">Send weekly summary email</udc-checkbox>
 </form>
 
 <div style="position:sticky;bottom:0;display:flex;gap:var(--uds-space-100);
             justify-content:flex-end;padding:var(--uds-space-200);
             background:var(--uds-color-surface-main);
             border-top:1px solid var(--uds-color-border-secondary);">
-  <button class="udc-button-secondary">Cancel</button>
-  <button class="udc-button-primary">Save changes</button>
+  <udc-button variant="secondary">Cancel</udc-button>
+  <udc-button variant="primary">Save changes</udc-button>
 </div>`,
   },
   {
@@ -49,19 +55,15 @@ const templates = [
     description: 'Filter bar (Search + Chips) + Data Table + pagination.',
     code: `<div style="display:flex;gap:var(--uds-space-150);
             margin-bottom:var(--uds-space-200);">
-  <div class="udc-search" style="flex:1;">…</div>
-  <button class="udc-chip" data-variant="filter">Active</button>
+  <udc-search style="flex:1;" label="Search"></udc-search>
+  <udc-chip variant="filter">Active</udc-chip>
 </div>
 
-<div class="udc-data-table">
+<udc-data-table>
   <table>…</table>
-</div>
+</udc-data-table>
 
-<nav style="display:flex;justify-content:flex-end;
-            gap:var(--uds-space-100);margin-top:var(--uds-space-200);"
-     aria-label="Pagination">
-  …pagination buttons…
-</nav>`,
+<udc-pagination page="1" total-pages="10"></udc-pagination>`,
   },
   {
     title: 'Marketing landing',
@@ -74,12 +76,12 @@ const templates = [
                 text-align:center;">
   <h1 class="uds-text-heading-xl">…</h1>
   <p>…</p>
-  <button class="udc-button-primary">Get started</button>
+  <udc-button variant="primary">Get started</udc-button>
 </section>
 
 <section style="display:grid;grid-template-columns:repeat(3,1fr);
                 gap:var(--uds-space-300);padding:var(--uds-space-500);">
-  …udc-tile cards…
+  <udc-tile label="Feature" description="Feature description"></udc-tile>
 </section>`,
   },
 ];

@@ -11,6 +11,21 @@
       "version": "0.3",
       "type": "changed",
       "text": "Figma icon wrapper coverage confirmed for 16, 20, 24, 32, 48, and 64px sizes"
+    },
+    {
+      "version": "0.3",
+      "type": "changed",
+      "text": "Replaced documented examples, implementation reference, and playground output with the Web Component API."
+    },
+    {
+      "version": "0.3",
+      "type": "changed",
+      "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
+    },
+    {
+      "version": "0.3",
+      "type": "changed",
+      "text": "Ported the full icon-wrapper CSS into the `<udc-icon-wrapper>` shadow DOM with the original size matrix (16/20/24/32/48/64 padded containers with corresponding inner icon sizes) and a `color` attribute that maps to `--uds-color-icon-*` tokens. Replaces the prior info/success/warning/error tone-pill behaviour. Added an interactive playground with icon, size, and color controls."
     }
   ]
 }

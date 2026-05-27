@@ -918,6 +918,10 @@
   font-size: var(--uds-font-size-sm);
   line-height: var(--uds-font-line-height-sm);
   z-index: var(--uds-z-index-tooltip);
+  border-radius: var(--uds-border-radius-input);
+  background: var(--uds-color-surface-inverse, #171717);
+  color: var(--uds-color-text-inverse, #fff);
+  box-shadow: var(--uds-shadow-depth-300);
   opacity: 0;
   visibility: hidden;
   pointer-events: none;

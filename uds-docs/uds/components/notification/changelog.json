@@ -11,6 +11,21 @@
       "version": "0.3",
       "type": "changed",
       "text": "Figma notification coverage confirmed: info/success/error/warning variants, inline true/false, and prominent true/false"
+    },
+    {
+      "version": "0.3",
+      "type": "changed",
+      "text": "Replaced documented examples, implementation reference, and playground output with the Web Component API."
+    },
+    {
+      "version": "0.3",
+      "type": "changed",
+      "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
+    },
+    {
+      "version": "0.3",
+      "type": "changed",
+      "text": "Ported the full notification CSS into the `<udc-notification>` shadow DOM with BEM `.udc-notification__icon` / `__text` / `__close` siblings. Restored the dedicated `--uds-color-icon-*` token for the leading icon (separate from the text color), the `--uds-font-size-xl` close-button glyph sizing, and the prominent + inline variants. Rebuilt the playground with tone, style (subtle/prominent/inline), message, and dismissible controls."
     }
   ]
 }

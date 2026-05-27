@@ -2,19 +2,12 @@
   "$schema": "../../../schemas/manifest.schema.json",
   "examples": [
     {
-      "id": "default",
-      "file": "default.html",
-      "label": "Default",
+      "id": "web-component",
+      "file": "web-component.html",
+      "label": "Nav Header",
       "showInDocs": true,
-      "demoWeight": 5
-    },
-    {
-      "id": "title-only",
-      "file": "title-only.html",
-      "label": "Title Only",
-      "description": "Bare page-title variant of the title-area (Figma _udc-nav-header_title-area Title Only=True). No pill chrome — just the page title rendered at paragraph/xl-bold. Use when the page does not need a current-page indicator pill in the header.",
-      "showInDocs": true,
-      "demoWeight": 2
+      "demoWeight": 3,
+      "description": "A top application header."
     }
   ]
 }

@@ -6,6 +6,21 @@
       "version": "0.2",
       "type": "added",
       "text": "CSS-only text popover on hover/focus with top/bottom/left/right positioning"
+    },
+    {
+      "version": "0.3",
+      "type": "changed",
+      "text": "Replaced documented examples, implementation reference, and playground output with the Web Component API."
+    },
+    {
+      "version": "0.3",
+      "type": "changed",
+      "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
+    },
+    {
+      "version": "0.3",
+      "type": "changed",
+      "text": "Ported the full tooltip CSS into the `<udc-tooltip>` shadow DOM — light `surface-main` background with `shadow-depth-300`, `text-primary` content, 4 positions (top/bottom/left/right), and visibility driven by `:hover` / `:focus-within` / `open`. Added an interactive playground (tooltip text, position, always-open) emitting `<udc-tooltip>` markup with a `<udc-button slot=\"trigger\">`."
     }
   ]
 }
