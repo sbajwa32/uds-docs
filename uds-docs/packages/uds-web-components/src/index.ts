@@ -14,6 +14,7 @@ export { UdsDatePickerElement, type UdsDatePickerChangeDetail, type UdsDatePicke
 export { UdsDropdownElement, UdsDropdownItemElement, type UdsDropdownChangeDetail, type UdsDropdownState } from './components/dropdown';
 export { UdsNotificationElement, type UdsNotificationTone, type UdsNotificationVariant } from './components/notification';
 export { UdsRadioElement, UdsRadioGroupElement, type UdsRadioChangeDetail, type UdsRadioState } from './components/radio';
+export { UdsSearchElement, type UdsSearchChangeDetail, type UdsSearchState } from './components/search';
 export { UdsTextAreaElement, type UdsTextAreaChangeDetail, type UdsTextAreaState } from './components/text-area';
 export { UdsToggleElement, type UdsToggleChangeDetail } from './components/toggle';
 export {
@@ -33,7 +34,6 @@ export {
   UdsNavItemElement,
   UdsNavVerticalElement,
   UdsPaginationElement,
-  UdsSearchElement,
   UdsSpacerElement,
   UdsTooltipElement,
   type UdsCheckedChangeDetail,

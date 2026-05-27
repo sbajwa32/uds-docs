@@ -1215,5 +1215,12 @@ export const SITE_CHANGELOG: SiteChangelogEntry[] = [
       changes: [
         { type: 'fixed', text: 'Restored the Text Area visual styling and playground. `<udc-text-area>` now carries the 88px min-height field, hover/focus ring, error and disabled treatments, and helper row with character counter. Playground brings back state, label, placeholder, disabled, required, helper text, max-length, and counter controls.' }
       ]
+    },
+    {
+      version: 'SITE 2026.05.27.14',
+      date: '2026-05-27',
+      changes: [
+        { type: 'fixed', text: 'Restored the Search visual styling and playground. `<udc-search>` now ships the leading search icon, hover surface change, focus ring on the wrapper, and a clear button that appears once the input has a value. Playground brings back placeholder, initial value, state, and disabled controls.' }
+      ]
     }
 ];

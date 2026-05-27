@@ -6,6 +6,7 @@ import { UdsDatePickerElement } from './components/date-picker';
 import { UdsDropdownElement, UdsDropdownItemElement } from './components/dropdown';
 import { UdsNotificationElement } from './components/notification';
 import { UdsRadioElement, UdsRadioGroupElement } from './components/radio';
+import { UdsSearchElement } from './components/search';
 import { UdsTextAreaElement } from './components/text-area';
 import { UdsToggleElement } from './components/toggle';
 import {
@@ -25,7 +26,6 @@ import {
   UdsNavItemElement,
   UdsNavVerticalElement,
   UdsPaginationElement,
-  UdsSearchElement,
   UdsSpacerElement,
   UdsTooltipElement,
 } from './components/remaining';

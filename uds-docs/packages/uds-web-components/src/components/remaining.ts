@@ -289,40 +289,9 @@ export type { UdsToggleChangeDetail } from './toggle';
 export { UdsRadioElement, UdsRadioGroupElement } from './radio';
 export type { UdsRadioChangeDetail, UdsRadioState } from './radio';
 
-export class UdsSearchElement extends LitElement {
-  static formAssociated = true;
-  static properties = {
-    name: { type: String, reflect: true },
-    value: { type: String, reflect: true },
-    label: { type: String, reflect: true },
-    placeholder: { type: String, reflect: true },
-  };
-
-  name = '';
-  value = '';
-  label = 'Search';
-  placeholder = 'Search';
-  private readonly internals = formInternals(this);
-
-  static styles = [hostBlock, materialIconStyles, fieldChrome];
-
-  protected updated(changed: PropertyValues<this>) {
-    if (changed.has('value')) this.internals?.setFormValue(this.value);
-  }
-
-  render() {
-    return html`<label part="label" class="label">${this.label}</label><div part="field" class="field"><span class="material-symbols-outlined" aria-hidden="true">search</span><input part="input" type="search" .value=${this.value} name=${this.name || nothing} placeholder=${this.placeholder} @input=${this.handleInput} @change=${this.handleChange} /></div>`;
-  }
-
-  private handleInput(event: Event) {
-    this.value = (event.currentTarget as HTMLInputElement).value;
-    emitUdsEvent<UdsValueChangeDetail>(this, 'udc-input', { value: this.value });
-  }
-
-  private handleChange() {
-    emitUdsEvent<UdsValueChangeDetail>(this, 'udc-change', { value: this.value });
-  }
-}
+// Search lives in ./search.ts (extracted with the full CSS port).
+export { UdsSearchElement } from './search';
+export type { UdsSearchChangeDetail, UdsSearchState } from './search';
 
 export class UdsBreadcrumbElement extends LitElement {
   static styles = [hostBlock, css`nav { color: var(--uds-color-text-secondary, #525252); font-size: var(--uds-font-size-sm, 14px); } ::slotted(*) { margin-right: var(--uds-space-075, 6px); }`];
@@ -565,7 +534,6 @@ declare global {
     'udc-icon-wrapper': UdsIconWrapperElement;
     'udc-label': UdsLabelElement;
     'udc-link': UdsLinkElement;
-    'udc-search': UdsSearchElement;
     'udc-breadcrumb': UdsBreadcrumbElement;
     'udc-list': UdsListElement;
     'udc-list-item': UdsListItemElement;
