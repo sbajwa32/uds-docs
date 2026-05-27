@@ -1320,5 +1320,12 @@ export const SITE_CHANGELOG: SiteChangelogEntry[] = [
       changes: [
         { type: 'fixed', text: 'Restored the List visual styling and playground. `<udc-list>` + `<udc-list-item>` now ship the 48px rows, BEM leading-icon/label/trailing-icon structure with --uds-font-size-2xl icons, hover/active/selected/focus treatments, and proper listbox/option roles when the list is `selectable`. Playground brings back item count, leading/trailing icon pickers, selected-item, and selectable controls.' }
       ]
+    },
+    {
+      version: 'SITE 2026.05.27.29',
+      date: '2026-05-27',
+      changes: [
+        { type: 'fixed', text: 'Restored the Data Table visual styling and playground. `<udc-data-table>` now renders the table itself in shadow DOM from `columns` + `rows` JSON attributes — no need to author the inner `<table>` markup — and ports the original sticky header row, striped/selected/hover row treatments, prominent text, alignment helpers, checkbox column with select-all, and the sortable header indicator. Playground brings back row count, striped, selectable, and initial-sort controls.' }
+      ]
     }
 ];

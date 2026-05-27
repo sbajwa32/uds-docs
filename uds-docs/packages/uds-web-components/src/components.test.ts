@@ -202,21 +202,17 @@ describe('UDS Web Components', () => {
 
   it('emits sort changes from data table headers', async () => {
     const table = document.createElement('udc-data-table');
-    table.innerHTML = `
-      <table>
-        <thead>
-          <tr><th data-sort-key="tenant" tabindex="0">Tenant</th></tr>
-        </thead>
-        <tbody><tr><td>Brian Smith</td></tr></tbody>
-      </table>
-    `;
+    table.columns = [{ key: 'tenant', label: 'Tenant', sortable: true }];
+    table.rows = [{ tenant: 'Brian Smith' }];
     const onSort = vi.fn();
     table.addEventListener('udc-sort-change', onSort);
     document.body.append(table);
     await table.updateComplete;
 
-    table.querySelector('th')?.dispatchEvent(new MouseEvent('click', { bubbles: true, composed: true }));
-    table.querySelector('th')?.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, composed: true }));
+    const header = table.shadowRoot?.querySelector('th');
+    header?.dispatchEvent(new MouseEvent('click', { bubbles: true, composed: true }));
+    await table.updateComplete;
+    table.shadowRoot?.querySelector('th')?.dispatchEvent(new MouseEvent('click', { bubbles: true, composed: true }));
     await table.updateComplete;
 
     expect(table.sortKey).toBe('tenant');

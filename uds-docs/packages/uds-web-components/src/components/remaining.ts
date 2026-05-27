@@ -240,63 +240,15 @@ export class UdsComboboxOptionElement extends _UdsDropdownItemElement {}
 export { UdsDatePickerElement } from './date-picker';
 export type { UdsDatePickerChangeDetail, UdsDatePickerState } from './date-picker';
 
-export class UdsDataTableElement extends LitElement {
-  static properties = {
-    sortKey: { type: String, attribute: 'sort-key', reflect: true },
-    sortDirection: { type: String, attribute: 'sort-direction', reflect: true },
-  };
-
-  sortKey = '';
-  sortDirection: 'asc' | 'desc' | 'none' = 'none';
-
-  static styles = [hostBlock, css`.wrap { overflow: auto; border: 1px solid var(--uds-color-border-secondary, #e5e5e5); border-radius: var(--uds-border-radius-card, 12px); } ::slotted(table) { width: 100%; border-collapse: collapse; }`];
-  connectedCallback() {
-    super.connectedCallback();
-    this.addEventListener('click', this.handleSortClick);
-    this.addEventListener('keydown', this.handleSortKeydown);
-  }
-
-  disconnectedCallback() {
-    this.removeEventListener('click', this.handleSortClick);
-    this.removeEventListener('keydown', this.handleSortKeydown);
-    super.disconnectedCallback();
-  }
-
-  render() {
-    return html`<div part="wrapper" class="wrap"><slot></slot></div>`;
-  }
-
-  private handleSortClick = (event: Event) => {
-    const header = (event.target as Element | null)?.closest?.('th[data-sort-key]');
-    if (!header || !this.contains(header)) return;
-    this.setSort(header.getAttribute('data-sort-key') || '');
-  };
-
-  private handleSortKeydown = (event: Event) => {
-    const keyboardEvent = event as KeyboardEvent;
-    if (keyboardEvent.key !== 'Enter' && keyboardEvent.key !== ' ') return;
-    const header = (keyboardEvent.target as Element | null)?.closest?.('th[data-sort-key]');
-    if (!header || !this.contains(header)) return;
-    keyboardEvent.preventDefault();
-    this.setSort(header.getAttribute('data-sort-key') || '');
-  };
-
-  private setSort(key: string) {
-    if (!key) return;
-    const nextDirection =
-      this.sortKey !== key || this.sortDirection === 'none'
-        ? 'asc'
-        : this.sortDirection === 'asc'
-          ? 'desc'
-          : 'none';
-    this.sortKey = nextDirection === 'none' ? '' : key;
-    this.sortDirection = nextDirection;
-    emitUdsEvent<UdsSortChangeDetail>(this, 'udc-sort-change', {
-      key,
-      direction: nextDirection,
-    });
-  }
-}
+// DataTable lives in ./data-table.ts (extracted with the full CSS port).
+export { UdsDataTableElement } from './data-table';
+export type {
+  UdsDataTableColumn,
+  UdsDataTableRow,
+  UdsDataTableCell,
+  UdsDataTableSortChangeDetail,
+  UdsDataTableSortDirection,
+} from './data-table';
 
 export class UdsDataViewElement extends LitElement {
   static styles = [hostBlock, css`.root { display: grid; gap: var(--uds-space-200, 16px); padding: var(--uds-space-300, 24px); border: 1px solid var(--uds-color-border-secondary, #e5e5e5); border-radius: var(--uds-border-radius-card, 12px); background: var(--uds-color-surface-main, #fff); }`];
@@ -318,7 +270,6 @@ declare global {
     'udc-icon-wrapper': UdsIconWrapperElement;
     'udc-combobox': UdsComboboxElement;
     'udc-combobox-option': UdsComboboxOptionElement;
-    'udc-data-table': UdsDataTableElement;
     'udc-data-view': UdsDataViewElement;
   }
 }

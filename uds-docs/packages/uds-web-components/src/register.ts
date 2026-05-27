@@ -3,6 +3,7 @@ import { UdsBreadcrumbElement } from './components/breadcrumb';
 import { UdsButtonElement } from './components/button';
 import { UdsCheckboxElement } from './components/checkbox';
 import { UdsChipElement } from './components/chip';
+import { UdsDataTableElement } from './components/data-table';
 import { UdsDatePickerElement } from './components/date-picker';
 import { UdsDialogElement } from './components/dialog';
 import { UdsDropdownElement, UdsDropdownItemElement } from './components/dropdown';
@@ -21,7 +22,6 @@ import { UdsTooltipElement } from './components/tooltip';
 import {
   UdsComboboxElement,
   UdsComboboxOptionElement,
-  UdsDataTableElement,
   UdsDataViewElement,
   UdsDividerElement,
   UdsIconWrapperElement,
