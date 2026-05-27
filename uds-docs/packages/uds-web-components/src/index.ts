@@ -16,6 +16,7 @@ export { UdsDialogElement } from './components/dialog';
 export { UdsDropdownElement, UdsDropdownItemElement, type UdsDropdownChangeDetail, type UdsDropdownState } from './components/dropdown';
 export { UdsLabelElement, type UdsLabelAlign, type UdsLabelSize, type UdsLabelVariant } from './components/label';
 export { UdsLinkElement } from './components/link';
+export { UdsListElement, UdsListItemElement, type UdsListItemSelectDetail } from './components/list';
 export { UdsNavHeaderElement } from './components/nav-header';
 export { UdsNavItemElement, UdsNavVerticalElement } from './components/nav-vertical';
 export { UdsNotificationElement, type UdsNotificationTone, type UdsNotificationVariant } from './components/notification';
@@ -32,8 +33,6 @@ export {
   UdsDataViewElement,
   UdsDividerElement,
   UdsIconWrapperElement,
-  UdsListElement,
-  UdsListItemElement,
   UdsSpacerElement,
   type UdsCheckedChangeDetail,
   type UdsSortChangeDetail,

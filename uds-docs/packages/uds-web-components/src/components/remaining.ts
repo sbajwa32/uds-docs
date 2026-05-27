@@ -211,33 +211,9 @@ export type { UdsSearchChangeDetail, UdsSearchState } from './search';
 export { UdsBreadcrumbElement } from './breadcrumb';
 export type { BreadcrumbItem } from './breadcrumb';
 
-export class UdsListElement extends LitElement {
-  static properties = {
-    selectable: { type: Boolean, reflect: true },
-  };
-  selectable = false;
-  static styles = [hostBlock, css`.list { display: grid; gap: var(--uds-space-050, 4px); }`];
-  render() {
-    return html`<div part="list" class="list" role=${this.selectable ? 'listbox' : 'list'}><slot></slot></div>`;
-  }
-}
-
-export class UdsListItemElement extends LitElement {
-  static properties = {
-    selected: { type: Boolean, reflect: true },
-    value: { type: String, reflect: true },
-  };
-  selected = false;
-  value = '';
-  static styles = [hostBlock, css`button { width: 100%; text-align: left; padding: var(--uds-space-150, 12px); border: 1px solid var(--uds-color-border-secondary, #e5e5e5); border-radius: var(--uds-border-radius-input, 8px); background: var(--uds-color-surface-main, #fff); color: var(--uds-color-text-primary, #171717); font: inherit; } :host([selected]) button { border-color: var(--uds-color-border-interactive, #005ff0); background: var(--uds-color-surface-interactive-subtle-active, #eef5ff); }`, focusRing];
-  render() {
-    return html`<button part="item" role="option" aria-selected=${this.selected ? 'true' : 'false'} @click=${this.handleClick}><slot></slot></button>`;
-  }
-  private handleClick() {
-    this.selected = !this.selected;
-    emitUdsEvent(this, 'udc-list-item-select', { value: this.value, selected: this.selected });
-  }
-}
+// List + ListItem live in ./list.ts (extracted with the full CSS port).
+export { UdsListElement, UdsListItemElement } from './list';
+export type { UdsListItemSelectDetail } from './list';
 
 // Pagination lives in ./pagination.ts (extracted with the full CSS port).
 export { UdsPaginationElement } from './pagination';
@@ -340,8 +316,6 @@ declare global {
     'udc-divider': UdsDividerElement;
     'udc-spacer': UdsSpacerElement;
     'udc-icon-wrapper': UdsIconWrapperElement;
-    'udc-list': UdsListElement;
-    'udc-list-item': UdsListItemElement;
     'udc-combobox': UdsComboboxElement;
     'udc-combobox-option': UdsComboboxOptionElement;
     'udc-data-table': UdsDataTableElement;

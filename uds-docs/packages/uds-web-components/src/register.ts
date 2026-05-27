@@ -8,6 +8,7 @@ import { UdsDialogElement } from './components/dialog';
 import { UdsDropdownElement, UdsDropdownItemElement } from './components/dropdown';
 import { UdsLabelElement } from './components/label';
 import { UdsLinkElement } from './components/link';
+import { UdsListElement, UdsListItemElement } from './components/list';
 import { UdsNavHeaderElement } from './components/nav-header';
 import { UdsNavItemElement, UdsNavVerticalElement } from './components/nav-vertical';
 import { UdsNotificationElement } from './components/notification';
@@ -24,8 +25,6 @@ import {
   UdsDataViewElement,
   UdsDividerElement,
   UdsIconWrapperElement,
-  UdsListElement,
-  UdsListItemElement,
   UdsSpacerElement,
 } from './components/remaining';
 import { UdsTabsElement, UdsTabElement, UdsTabPanelElement } from './components/tabs';

@@ -1313,5 +1313,12 @@ export const SITE_CHANGELOG: SiteChangelogEntry[] = [
       changes: [
         { type: 'fixed', text: 'Restored the Pagination visual styling and playground. `<udc-pagination>` now ships the 32px numbered page buttons, surface-interactive-default active page, focus ring, chevron previous/next, ellipsis for large ranges, and the rows-per-page + range meta row (was a single previous/next + status row before). Playground brings back current-page, total-pages, and show-meta controls.' }
       ]
+    },
+    {
+      version: 'SITE 2026.05.27.28',
+      date: '2026-05-27',
+      changes: [
+        { type: 'fixed', text: 'Restored the List visual styling and playground. `<udc-list>` + `<udc-list-item>` now ship the 48px rows, BEM leading-icon/label/trailing-icon structure with --uds-font-size-2xl icons, hover/active/selected/focus treatments, and proper listbox/option roles when the list is `selectable`. Playground brings back item count, leading/trailing icon pickers, selected-item, and selectable controls.' }
+      ]
     }
 ];

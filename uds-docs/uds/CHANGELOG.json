@@ -496,6 +496,10 @@
         {
           "type": "changed",
           "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
+        },
+        {
+          "type": "changed",
+          "text": "Ported the full list CSS into `<udc-list>` + `<udc-list-item>` shadow DOM (48px row height, BEM `.udc-list-item__leading-icon` / `__label` / `__trailing-icon` with `--uds-font-size-2xl` icons, hover/active/selected/focus treatments matching `surface-interactive-*` tokens, padding-left/right shrinks when icons are present). Selectable lists expose `role=\"listbox\"` and items get `role=\"option\"`. Rebuilt the playground with items, leading/trailing icon toggles, selected item, and selectable controls."
         }
       ],
       "Nav Header": [
