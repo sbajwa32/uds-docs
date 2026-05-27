@@ -18,6 +18,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { WEB_COMPONENT_EXAMPLES } from '@/data/web-component-examples';
+import { MATERIAL_ICONS } from '@/lib/material-icons';
 import {
   udsResolve,
   getComponentImpl,
@@ -439,6 +440,11 @@ function TokensPanel({ tokens }: { tokens: Record<string, string[]> }) {
   );
 }
 
+// Max number of icons rendered in the dropdown. Matches the legacy
+// vanilla picker (docs/app.js `MAX_RESULTS = 60`) — bumping much higher
+// makes the dropdown sluggish on lower-end laptops.
+const ICON_PICKER_MAX_RESULTS = 60;
+
 function IconPickerControl({
   value,
   onChange,
@@ -446,40 +452,102 @@ function IconPickerControl({
   value: string;
   onChange: (v: string) => void;
 }) {
-  const [editing, setEditing] = useState(false);
-  const inputRef = useRef<HTMLInputElement | null>(null);
+  const [open, setOpen] = useState(false);
+  const [query, setQuery] = useState('');
+  const wrapRef = useRef<HTMLDivElement | null>(null);
+  const searchRef = useRef<HTMLInputElement | null>(null);
+
+  const display = value || 'info';
+
+  // Filter against the full Material Symbols vocabulary, capped at
+  // ICON_PICKER_MAX_RESULTS so the dropdown doesn't render thousands of
+  // glyphs at once. Empty query falls back to the first N icons so the
+  // dropdown isn't blank when first opened.
+  const matches = useMemo<readonly string[]>(() => {
+    const normalized = query.trim().toLowerCase().replace(/\s+/g, '_');
+    const source = normalized
+      ? MATERIAL_ICONS.filter((n) => n.includes(normalized))
+      : MATERIAL_ICONS;
+    return source.slice(0, ICON_PICKER_MAX_RESULTS);
+  }, [query]);
 
   useEffect(() => {
-    if (editing) inputRef.current?.focus();
-  }, [editing]);
+    if (open) {
+      setQuery('');
+      requestAnimationFrame(() => searchRef.current?.focus());
+    }
+  }, [open]);
 
-  if (editing) {
-    return (
-      <input
-        ref={inputRef}
-        type="text"
-        className="ds-playground-input"
-        placeholder="Material symbol name (e.g. add)"
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        onBlur={() => setEditing(false)}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === 'Escape') setEditing(false);
-        }}
-      />
-    );
-  }
+  // Close on outside-click + Escape, matching the legacy picker behavior.
+  useEffect(() => {
+    if (!open) return;
+    function handleOutsideClick(event: MouseEvent) {
+      if (wrapRef.current && !wrapRef.current.contains(event.target as Node)) {
+        setOpen(false);
+      }
+    }
+    function handleKey(event: KeyboardEvent) {
+      if (event.key === 'Escape') setOpen(false);
+    }
+    document.addEventListener('click', handleOutsideClick);
+    document.addEventListener('keydown', handleKey);
+    return () => {
+      document.removeEventListener('click', handleOutsideClick);
+      document.removeEventListener('keydown', handleKey);
+    };
+  }, [open]);
 
   return (
-    <button
-      type="button"
-      className="sg-icon-picker-trigger"
-      onClick={() => setEditing(true)}
-      title="Click to type a different Material Symbol name"
-    >
-      <span className="material-symbols-outlined">{value || 'info'}</span>
-      <span className="sg-icon-picker-name">{value || 'info'}</span>
-    </button>
+    <div className="sg-icon-picker" ref={wrapRef}>
+      <button
+        type="button"
+        className="sg-icon-picker-trigger"
+        onClick={(event) => {
+          event.stopPropagation();
+          setOpen((prev) => !prev);
+        }}
+        aria-expanded={open}
+        aria-haspopup="listbox"
+      >
+        <span className="material-symbols-outlined">{display}</span>
+        <span className="sg-icon-picker-name">{display}</span>
+      </button>
+      {open ? (
+        <div className="sg-icon-picker-dropdown" role="dialog">
+          <input
+            ref={searchRef}
+            type="text"
+            className="sg-icon-picker-search"
+            placeholder="Search icons…"
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            onClick={(event) => event.stopPropagation()}
+          />
+          <div className="sg-icon-picker-results" role="listbox">
+            {matches.length === 0 ? (
+              <div className="sg-icon-picker-empty">No icons found</div>
+            ) : (
+              matches.map((name) => (
+                <button
+                  key={name}
+                  type="button"
+                  role="option"
+                  aria-selected={name === value}
+                  className={`sg-icon-picker-item${name === value ? ' active' : ''}`}
+                  onClick={() => {
+                    onChange(name);
+                    setOpen(false);
+                  }}
+                >
+                  <span className="material-symbols-outlined">{name}</span>
+                  <span>{name}</span>
+                </button>
+              ))
+            )}
+          </div>
+        </div>
+      ) : null}
+    </div>
   );
 }
 
@@ -572,14 +640,11 @@ function ControlInput({
         />
       );
     case 'icon-search':
-      // Legacy parity (without the searchable dropdown yet): a button-style
-      // trigger displaying `<glyph> <name>` so designers see what the icon
-      // will look like in the live preview. Clicking the trigger swaps to a
-      // text input for typing a new symbol name; the live Material Symbols
-      // font renders any value as a glyph immediately. The full searchable
-      // picker (legacy buildIconPicker) is a follow-up that needs the
-      // 63KB MATERIAL_ICONS list to load.
-      return <IconPickerControl value={String(value ?? '')} onChange={onChange} />;
+      // Searchable Material Symbols picker. Trigger button displays the
+      // current glyph + name; clicking opens a dropdown with a search
+      // input and the filtered icon list, capped to 60 results at a time.
+      // Matches the legacy `buildIconPicker` (docs/app.js) behavior.
+      return <IconPickerControl value={String(value ?? '')} onChange={(v) => onChange(v)} />;
     default:
       return null;
   }
