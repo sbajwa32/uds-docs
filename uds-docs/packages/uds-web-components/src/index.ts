@@ -11,6 +11,7 @@ export {
 export { UdsCheckboxElement, type UdsCheckboxChangeDetail } from './components/checkbox';
 export { UdsChipElement, type UdsChipToggleDetail, type UdsChipVariant, type UdsDismissDetail } from './components/chip';
 export { UdsDatePickerElement, type UdsDatePickerChangeDetail, type UdsDatePickerState } from './components/date-picker';
+export { UdsDialogElement } from './components/dialog';
 export { UdsDropdownElement, UdsDropdownItemElement, type UdsDropdownChangeDetail, type UdsDropdownState } from './components/dropdown';
 export { UdsLabelElement, type UdsLabelAlign, type UdsLabelSize, type UdsLabelVariant } from './components/label';
 export { UdsLinkElement } from './components/link';
@@ -26,7 +27,6 @@ export {
   UdsComboboxOptionElement,
   UdsDataTableElement,
   UdsDataViewElement,
-  UdsDialogElement,
   UdsDividerElement,
   UdsIconWrapperElement,
   UdsListElement,

@@ -3,6 +3,7 @@ import { UdsButtonElement } from './components/button';
 import { UdsCheckboxElement } from './components/checkbox';
 import { UdsChipElement } from './components/chip';
 import { UdsDatePickerElement } from './components/date-picker';
+import { UdsDialogElement } from './components/dialog';
 import { UdsDropdownElement, UdsDropdownItemElement } from './components/dropdown';
 import { UdsLabelElement } from './components/label';
 import { UdsLinkElement } from './components/link';
@@ -18,7 +19,6 @@ import {
   UdsComboboxOptionElement,
   UdsDataTableElement,
   UdsDataViewElement,
-  UdsDialogElement,
   UdsDividerElement,
   UdsIconWrapperElement,
   UdsListElement,

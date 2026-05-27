@@ -267,58 +267,8 @@ export class UdsPaginationElement extends LitElement {
 export { UdsTooltipElement } from './tooltip';
 export type { UdsTooltipPosition } from './tooltip';
 
-export class UdsDialogElement extends LitElement {
-  static properties = {
-    open: { type: Boolean, reflect: true },
-    heading: { type: String, reflect: true },
-  };
-  open = false;
-  heading = '';
-  static styles = [hostBlock, css`:host(:not([open])) { display: none; } .backdrop { position: fixed; inset: 0; z-index: 50; display: grid; place-items: center; background: rgb(0 0 0 / 45%); } .dialog { width: min(560px, calc(100vw - 32px)); padding: var(--uds-space-300, 24px); border-radius: var(--uds-border-radius-card, 12px); background: var(--uds-color-surface-main, #fff); color: var(--uds-color-text-primary, #171717); box-shadow: var(--uds-shadow-depth-400, 0 16px 40px rgb(0 0 0 / 20%)); } header { display: flex; justify-content: space-between; gap: var(--uds-space-200, 16px); }`];
-  protected updated(changed: PropertyValues<this>) {
-    if (changed.has('open') && this.open) {
-      queueMicrotask(() => this.focusFirstElement());
-    }
-  }
-  render() {
-    return html`<div part="backdrop" class="backdrop" @click=${this.handleBackdrop} @keydown=${this.handleKeydown}><section part="dialog" class="dialog" role="dialog" aria-modal="true" aria-label=${this.heading || nothing}><header><h2>${this.heading}<slot name="heading"></slot></h2><button part="close" type="button" @click=${this.close}>Close</button></header><slot></slot><footer part="actions"><slot name="actions"></slot></footer></section></div>`;
-  }
-  private handleBackdrop(event: Event) {
-    if (event.target === event.currentTarget) this.close();
-  }
-  private handleKeydown(event: KeyboardEvent) {
-    if (event.key === 'Escape') {
-      event.preventDefault();
-      this.close();
-      return;
-    }
-    if (event.key !== 'Tab') return;
-    const focusable = this.focusableElements();
-    if (focusable.length === 0) return;
-    const first = focusable[0];
-    const last = focusable[focusable.length - 1];
-    if (event.shiftKey && document.activeElement === first) {
-      event.preventDefault();
-      last.focus();
-    } else if (!event.shiftKey && document.activeElement === last) {
-      event.preventDefault();
-      first.focus();
-    }
-  }
-  private focusFirstElement() {
-    this.focusableElements()[0]?.focus();
-  }
-  private focusableElements(): HTMLElement[] {
-    const selectors = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
-    const shadowItems = Array.from(this.renderRoot.querySelectorAll<HTMLElement>(selectors));
-    const slottedItems = Array.from(this.querySelectorAll<HTMLElement>(selectors));
-    return [...shadowItems, ...slottedItems].filter((el) => !el.hasAttribute('disabled') && el.tabIndex !== -1);
-  }
-  close() {
-    this.open = false;
-    emitUdsEvent(this, 'udc-close', {});
-  }
-}
+// Dialog lives in ./dialog.ts (extracted with the full CSS port).
+export { UdsDialogElement } from './dialog';
 
 // Dropdown + DropdownItem live in ./dropdown.ts (extracted with the full CSS port).
 // Re-export so existing imports from './components/remaining' keep working.
@@ -436,7 +386,6 @@ declare global {
     'udc-list': UdsListElement;
     'udc-list-item': UdsListItemElement;
     'udc-pagination': UdsPaginationElement;
-    'udc-dialog': UdsDialogElement;
     'udc-combobox': UdsComboboxElement;
     'udc-combobox-option': UdsComboboxOptionElement;
     'udc-data-table': UdsDataTableElement;

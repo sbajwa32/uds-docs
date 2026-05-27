@@ -392,6 +392,10 @@
         {
           "type": "changed",
           "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
+        },
+        {
+          "type": "changed",
+          "text": "Ported the full dialog CSS into the `<udc-dialog>` shadow DOM (480px container, container-xl radius, shadow-depth-500, subtle header background, border-bottom divider, scrollable body, right-aligned footer). Backdrop click + Escape close. Focus trap with Tab cycling. Added an interactive playground (heading, content slots count, primary/secondary button labels) emitting `<udc-dialog>` markup with `<udc-button slot=\"actions\">` siblings."
         }
       ],
       "Divider": [

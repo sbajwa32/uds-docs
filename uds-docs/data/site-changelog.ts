@@ -1264,5 +1264,12 @@ export const SITE_CHANGELOG: SiteChangelogEntry[] = [
       changes: [
         { type: 'fixed', text: 'Restored the Tooltip visual styling and playground. `<udc-tooltip>` now uses the light surface-main bubble with shadow-depth-300 (was a dark inverse pill) and supports top/bottom/left/right positions. Playground brings back the tooltip text, position, and an always-open toggle.' }
       ]
+    },
+    {
+      version: 'SITE 2026.05.27.21',
+      date: '2026-05-27',
+      changes: [
+        { type: 'fixed', text: 'Restored the Dialog visual styling and playground. `<udc-dialog>` now uses the 480px container with container-xl radius, shadow-depth-500, the subtle header background with a border-bottom divider, a scrollable body, and a right-aligned actions footer. Playground brings back heading, content slot count, and primary/secondary button labels.' }
+      ]
     }
 ];
