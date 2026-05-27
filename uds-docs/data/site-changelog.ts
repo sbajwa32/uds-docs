@@ -1299,5 +1299,12 @@ export const SITE_CHANGELOG: SiteChangelogEntry[] = [
       changes: [
         { type: 'fixed', text: 'Restored the Nav Vertical visual styling and playground. `<udc-nav-vertical>` + `<udc-nav-item>` ship the list (full-width 48px rows) and rail (icon-over-label with active indicator bar) variants, leading-icons toggle, hover/selected/focus treatments, and `aria-current` selection. Playground brings back variant, leading icons, item count, and selected-item controls.' }
       ]
+    },
+    {
+      version: 'SITE 2026.05.27.26',
+      date: '2026-05-27',
+      changes: [
+        { type: 'fixed', text: 'Restored the Breadcrumb visual styling and playground. `<udc-breadcrumb>` now ships the pill container, the SVG chevron-right separators, text-interactive-neutral links with hover underline, bold current-page styling, and the frameless variant. Component accepts an `items` array attribute or slotted content. Playground brings back items-count and frameless controls.' }
+      ]
     }
 ];

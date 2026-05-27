@@ -1,4 +1,5 @@
 import { UdsBadgeElement } from './components/badge';
+import { UdsBreadcrumbElement } from './components/breadcrumb';
 import { UdsButtonElement } from './components/button';
 import { UdsCheckboxElement } from './components/checkbox';
 import { UdsChipElement } from './components/chip';
@@ -16,7 +17,6 @@ import { UdsTextAreaElement } from './components/text-area';
 import { UdsToggleElement } from './components/toggle';
 import { UdsTooltipElement } from './components/tooltip';
 import {
-  UdsBreadcrumbElement,
   UdsComboboxElement,
   UdsComboboxOptionElement,
   UdsDataTableElement,

@@ -260,6 +260,10 @@
         {
           "type": "changed",
           "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
+        },
+        {
+          "type": "changed",
+          "text": "Ported the full breadcrumb CSS into the `<udc-breadcrumb>` shadow DOM (pill container with surface-main bg + border-tertiary + container-xl radius, chevron-right separator drawn via SVG mask-image, text-interactive-neutral links with hover underline, bold text-primary current page, frameless variant). Component accepts an `items` array attribute and renders the `<ol>` automatically; falls back to slotted content. Rebuilt the playground with items count and frameless controls."
         }
       ],
       "Button": [

@@ -1,6 +1,7 @@
 export { registerUdsComponents } from './register';
 
 export { UdsBadgeElement, type UdsBadgeSize, type UdsBadgeTone, type UdsBadgeVariant } from './components/badge';
+export { UdsBreadcrumbElement, type BreadcrumbItem } from './components/breadcrumb';
 export {
   UdsButtonElement,
   type UdsButtonColor,
@@ -24,7 +25,6 @@ export { UdsTextAreaElement, type UdsTextAreaChangeDetail, type UdsTextAreaState
 export { UdsToggleElement, type UdsToggleChangeDetail } from './components/toggle';
 export { UdsTooltipElement, type UdsTooltipPosition } from './components/tooltip';
 export {
-  UdsBreadcrumbElement,
   UdsComboboxElement,
   UdsComboboxOptionElement,
   UdsDataTableElement,

@@ -211,12 +211,9 @@ export type { UdsRadioChangeDetail, UdsRadioState } from './radio';
 export { UdsSearchElement } from './search';
 export type { UdsSearchChangeDetail, UdsSearchState } from './search';
 
-export class UdsBreadcrumbElement extends LitElement {
-  static styles = [hostBlock, css`nav { color: var(--uds-color-text-secondary, #525252); font-size: var(--uds-font-size-sm, 14px); } ::slotted(*) { margin-right: var(--uds-space-075, 6px); }`];
-  render() {
-    return html`<nav part="nav" aria-label="Breadcrumb"><slot></slot></nav>`;
-  }
-}
+// Breadcrumb lives in ./breadcrumb.ts (extracted with the full CSS port).
+export { UdsBreadcrumbElement } from './breadcrumb';
+export type { BreadcrumbItem } from './breadcrumb';
 
 export class UdsListElement extends LitElement {
   static properties = {
@@ -361,7 +358,6 @@ declare global {
     'udc-divider': UdsDividerElement;
     'udc-spacer': UdsSpacerElement;
     'udc-icon-wrapper': UdsIconWrapperElement;
-    'udc-breadcrumb': UdsBreadcrumbElement;
     'udc-list': UdsListElement;
     'udc-list-item': UdsListItemElement;
     'udc-pagination': UdsPaginationElement;
