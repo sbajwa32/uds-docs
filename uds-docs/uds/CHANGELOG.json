@@ -672,6 +672,10 @@
         {
           "type": "changed",
           "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
+        },
+        {
+          "type": "changed",
+          "text": "Ported the full text-input CSS into the `<udc-text-input>` shadow DOM (field border, focus ring, error recolor, disabled treatment, leading icon, trailing button hover/active/focus) and rebuilt the playground with the original 14 controls (state, disabled, show-label, label, required, leading icon, trailing button + icon, placeholder, show-helper, helper text, show-counter, max-length). Restores visual and interactive parity with the pre-Web-Components text input."
         }
       ],
       "Tile": [

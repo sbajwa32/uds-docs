@@ -34,8 +34,11 @@ export const WEB_COMPONENT_EXAMPLES: Record<string, RenderedExample[]> = {
       description: 'A form-associated text field.',
       html: `<udc-text-input
   name="email"
+  show-label
   label="Email address"
   type="email"
+  placeholder="you@example.com"
+  show-helper
   helper-text="We'll never share your email."
   required
 ></udc-text-input>`,

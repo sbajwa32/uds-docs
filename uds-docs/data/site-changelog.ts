@@ -1159,5 +1159,12 @@ export const SITE_CHANGELOG: SiteChangelogEntry[] = [
       changes: [
         { type: 'fixed', text: 'Restored the Dropdown playground and visual styling to match the pre-rewrite version. The `<udc-dropdown>` Web Component now ships the original border, hover, focus, error, and disabled treatments inside its shadow DOM, and the playground tab brings back all 13 interactive controls (state, label, required, leading icon, helper text, counter, options count). First component in the visual-parity pilot — the other documented components still need the same treatment.' }
       ]
+    },
+    {
+      version: 'SITE 2026.05.27.6',
+      date: '2026-05-27',
+      changes: [
+        { type: 'fixed', text: 'Restored the Text Input playground and visual styling. The `<udc-text-input>` Web Component now carries the field border, focus ring, error recolor, disabled treatment, leading icon, and trailing button hover/active/focus inside its shadow DOM, and the playground tab brings back all 14 interactive controls. Second component in the visual-parity sweep.' }
+      ]
     }
 ];
