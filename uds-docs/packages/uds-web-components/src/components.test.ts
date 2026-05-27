@@ -157,9 +157,8 @@ describe('UDS Web Components', () => {
     searchControl!.value = 'Lease';
     searchControl!.dispatchEvent(new InputEvent('input', { bubbles: true, composed: true }));
 
-    const toggleControl = toggle.shadowRoot?.querySelector('input');
-    toggleControl!.checked = true;
-    toggleControl!.dispatchEvent(new Event('change', { bubbles: true, composed: true }));
+    const toggleControl = toggle.shadowRoot?.querySelector('button');
+    toggleControl!.click();
     await textarea.updateComplete;
     await search.updateComplete;
     await toggle.updateComplete;

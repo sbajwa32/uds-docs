@@ -712,6 +712,10 @@
         {
           "type": "changed",
           "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
+        },
+        {
+          "type": "changed",
+          "text": "Ported the full toggle CSS into the `<udc-toggle>` shadow DOM (52\u00d732 track, 20\u00d720 thumb with shadow-depth-100, translateX(20px) when active, focus ring, disabled treatment) and rebuilt the playground with the original label/checked/disabled controls. Extracted Toggle into its own component file."
         }
       ],
       "Tooltip": [

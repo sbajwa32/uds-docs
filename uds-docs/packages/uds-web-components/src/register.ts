@@ -4,6 +4,7 @@ import { UdsCheckboxElement } from './components/checkbox';
 import { UdsChipElement } from './components/chip';
 import { UdsDropdownElement, UdsDropdownItemElement } from './components/dropdown';
 import { UdsNotificationElement } from './components/notification';
+import { UdsToggleElement } from './components/toggle';
 import {
   UdsBreadcrumbElement,
   UdsComboboxElement,
@@ -27,7 +28,6 @@ import {
   UdsSearchElement,
   UdsSpacerElement,
   UdsTextAreaElement,
-  UdsToggleElement,
   UdsTooltipElement,
 } from './components/remaining';
 import { UdsTabsElement, UdsTabElement, UdsTabPanelElement } from './components/tabs';

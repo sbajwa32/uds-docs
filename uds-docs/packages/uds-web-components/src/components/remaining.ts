@@ -342,53 +342,9 @@ export class UdsTextAreaElement extends LitElement {
   }
 }
 
-export class UdsToggleElement extends LitElement {
-  static formAssociated = true;
-  static properties = {
-    name: { type: String, reflect: true },
-    value: { type: String, reflect: true },
-    checked: { type: Boolean, reflect: true },
-    disabled: { type: Boolean, reflect: true },
-  };
-
-  name = '';
-  value = 'on';
-  checked = false;
-  disabled = false;
-  private readonly internals = formInternals(this);
-
-  static styles = [
-    hostInline,
-    css`
-      label { display: inline-flex; align-items: center; gap: var(--uds-space-100, 8px); cursor: pointer; color: var(--uds-color-text-primary, #171717); }
-      .track { width: 44px; height: 24px; border-radius: 999px; background: var(--uds-color-surface-interactive-disabled, #d4d4d4); padding: 2px; transition: background 120ms ease; }
-      .thumb { display: block; width: 20px; height: 20px; border-radius: 50%; background: var(--uds-color-surface-main, #fff); transition: transform 120ms ease; box-shadow: var(--uds-shadow-depth-100, 0 1px 2px rgb(0 0 0 / 16%)); }
-      :host([checked]) .track { background: var(--uds-color-surface-interactive-default, #005ff0); }
-      :host([checked]) .thumb { transform: translateX(20px); }
-      input { position: absolute; opacity: 0; }
-    `,
-    focusRing,
-  ];
-
-  protected updated(changed: PropertyValues<this>) {
-    if (changed.has('checked') || changed.has('value')) this.internals?.setFormValue(this.checked ? this.value : null);
-  }
-
-  render() {
-    return html`
-      <label part="label">
-        <input part="input" type="checkbox" role="switch" ?checked=${this.checked} ?disabled=${this.disabled} @change=${this.handleChange} />
-        <span part="track" class="track"><span part="thumb" class="thumb"></span></span>
-        <slot></slot>
-      </label>
-    `;
-  }
-
-  private handleChange(event: Event) {
-    this.checked = (event.currentTarget as HTMLInputElement).checked;
-    emitUdsEvent<UdsCheckedChangeDetail>(this, 'udc-change', { checked: this.checked, value: this.value });
-  }
-}
+// Toggle lives in ./toggle.ts (extracted with the full CSS port).
+export { UdsToggleElement } from './toggle';
+export type { UdsToggleChangeDetail } from './toggle';
 
 export class UdsRadioGroupElement extends LitElement {
   static formAssociated = true;
@@ -747,7 +703,6 @@ declare global {
     'udc-label': UdsLabelElement;
     'udc-link': UdsLinkElement;
     'udc-text-area': UdsTextAreaElement;
-    'udc-toggle': UdsToggleElement;
     'udc-radio-group': UdsRadioGroupElement;
     'udc-radio': UdsRadioElement;
     'udc-search': UdsSearchElement;

@@ -1180,5 +1180,12 @@ export const SITE_CHANGELOG: SiteChangelogEntry[] = [
       changes: [
         { type: 'fixed', text: 'Restored the Checkbox visual styling and playground. `<udc-checkbox>` now uses the SVG-mask checkmark and ships the hover/focus/disabled/error treatments inside shadow DOM, and the playground brings back checked, indeterminate, disabled, required, error, and label controls.' }
       ]
+    },
+    {
+      version: 'SITE 2026.05.27.9',
+      date: '2026-05-27',
+      changes: [
+        { type: 'fixed', text: 'Restored the Toggle visual styling and playground. `<udc-toggle>` now uses the proper 52×32 track with a 20×20 thumb that translates 20px when active, plus the focus ring and disabled treatment, and the playground brings back the label, checked, and disabled controls.' }
+      ]
     }
 ];
