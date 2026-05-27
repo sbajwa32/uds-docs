@@ -1,14 +1,14 @@
 {
   "name": "UDS — Urban Design System",
-  "version": "0.2",
-  "docsUrl": "https://sbajwa32.github.io/uds-docs/",
+  "version": "0.3",
+  "docsUrl": "https://udsdocs.com/",
   "storybookUrl": "https://storybook.example.com",
   "description": "CSS-first design system. The doc site is the design specification (this file + the human-facing pages). Production framework-agnostic web components live in Storybook. All code shown on the doc site is example-only — reference, not production.",
   "exampleOnlyNote": "All HTML/CSS/JS snippets in this file and on the doc site are EXAMPLES. They show the design intent (markup shape, classes, ARIA, keyboard behavior). For production framework code (React, Vue, Svelte, Angular, vanilla custom-element consumers), use the framework-agnostic web components in the UDS Storybook.",
   "install": {
     "tokens_npm": "npm install uds-core",
     "tokens_css_import": "import 'uds-core/uds.css';",
-    "tokens_cdn": "https://sbajwa32.github.io/uds-docs/uds/uds.css",
+    "tokens_cdn": "https://udsdocs.com/uds/uds.css",
     "components_storybook": "See storybookUrl — register custom elements once, use the tags in any framework"
   },
   "required_fonts": {
@@ -98,8 +98,8 @@
     { "id": "icon-wrapper", "classes": ["udc-icon-wrapper"], "variants": ["data-size=\"16|20|24|32|48\""], "html": "<span class=\"udc-icon-wrapper\" data-size=\"24\"><span class=\"material-symbols-outlined\">info</span></span>" }
   ],
   "specSourceOfTruth": {
-    "perComponentJson": "https://sbajwa32.github.io/uds-docs/content/<component>.json",
-    "schema": "https://sbajwa32.github.io/uds-docs/content/schema.json",
+    "perComponentJson": "https://udsdocs.com/uds/components/<component>/spec.json",
+    "schema": "https://udsdocs.com/uds/schemas/spec.schema.json",
     "fields": ["description", "whenToUse", "whenNotToUse", "acceptanceCriteria", "dependencies", "props", "events", "slots", "states", "contentGuidelines", "commonlyPairedWith", "dosDonts", "accessibility", "knownIssues", "performance", "owner", "draft", "figmaNodeId", "storybookSlug"],
     "note": "When generating a component implementation, fetch the JSON for that component and align with its acceptanceCriteria, props, events, slots, and accessibility. The component summaries above show the markup shape; the JSON has the full handoff spec."
   },
@@ -166,7 +166,7 @@
     "NEVER use --uds-primitive-* tokens. Only semantic tokens.",
     "NEVER hardcode colors, spacing, or fonts. Always var(--uds-*).",
     "DO NOT copy the example HTML in this file as production framework code. For React/Vue/etc., use the framework-agnostic web components from Storybook.",
-    "When in doubt about behavior or props, fetch content/<component>.json — it has the full spec."
+    "When in doubt about behavior or props, fetch uds/components/<component>/spec.json — it has the full spec."
   ],
   "iconGuidance": {
     "udc-icon-wrapper": "Use for standalone icons needing standardized sizing (16/20/24/32/48px)",

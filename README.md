@@ -3,53 +3,49 @@
 Design-to-engineering specification for the Urban Design System (UDS), the
 shared design system used by Boardroom and adjacent property-management apps.
 
-The site lives at <https://sbajwa32.github.io/uds-docs/> and is hosted via
-GitHub Pages.
+The site lives at <https://udsdocs.com/> and is hosted on Cloudflare Pages.
 
 ## What's in this repo
 
 The repo cleanly separates the **design system** from the **documentation
 site that documents it**:
 
-- **`uds/`** — the design system itself. Tokens (CSS custom properties),
+- **`uds-docs/uds/`** — the design system itself. Tokens (CSS custom properties),
   per-component CSS/JS, component specs, examples. Self-contained — anyone
   can copy this folder into another project to consume the design system.
-- **`docs/`** — the documentation site. Routing, page rendering, the Demo
-  Builder, the Token Search modal, the Playground engine. Consumes `uds/`.
+- **`uds-docs/app/`, `uds-docs/components/`, `uds-docs/lib/`, `uds-docs/styles/`** —
+  the Next.js documentation site. Routing, page rendering, the Demo Builder,
+  the Token Search modal, and the Playground engine all live there.
 - **`scripts/`** — repo-level tooling: release management, audits, the
   changelog aggregator, prune-version, screenshot tooling.
-- **`versions/`** — frozen UDS-only snapshots per release.
-- **`index.html`** — SPA entry point at the repo root (the GitHub Pages
-  artifact root).
+- **`uds-docs/versions/`** — frozen UDS-only snapshots per release.
 
 See [AGENTS.md](./AGENTS.md) for the full repo layout and detailed
 contribution guidelines.
 
 ## Quick start
 
-The site is static — no build step, no bundler, no framework.
+The site is a static Next.js export.
 
 ### Run locally
 
 ```bash
 cd uds-docs
-python3 -m http.server 4000
-# Open http://localhost:4000/
+npm install
+npm run dev
+# Open http://localhost:3000/
 ```
 
-That's it. Edit any file, refresh the browser.
+For a production-style check, run `npm run build` from `uds-docs/`.
 
 ### Make a SITE change
 
-1. `bash uds-docs/bump-site.sh` (preflight — bumps SITE version)
-2. Edit whatever
-3. Add a `SITE_CHANGELOG` entry in `docs/data/site-changelog.js` matching
-   the new version
-4. Cache-bust `docs/app.js` / `uds/uds.css` etc. in `index.html` if those
-   files changed
-5. `git add -A && git commit -m "..." && git push`
+1. Edit the docs-site files.
+2. Add a `SITE_CHANGELOG` entry in `uds-docs/data/site-changelog.ts`.
+3. Run `npm run build` from `uds-docs/`.
+4. `git add -A && git commit -m "..." && git push`
 
-GitHub Actions auto-deploys on push to `main`.
+Cloudflare Pages auto-deploys the static export on push to `main`.
 
 ### Update a UDS component
 
@@ -65,7 +61,7 @@ Every component is one folder under `uds/components/<id>/` containing:
 - `examples/*.html` + `manifest.json` — example variants used by both
   the docs page Examples tab AND the Demo Builder
 
-Pick the file, edit, re-run the audits, bump SITE, commit. Detailed flow
+Pick the file, edit, re-run the audits, add changelog entries, commit. Detailed flow
 in [AGENTS.md](./AGENTS.md).
 
 ### Bump UDS to a new release
@@ -80,12 +76,12 @@ Snapshots the current `uds/` into `versions/0.3/uds/`, bumps
 
 ## Design system layers
 
-- **Tokens** (`uds/tokens/`) — primitives (raw color/font palette),
+- **Tokens** (`uds-docs/uds/tokens/`) — primitives (raw color/font palette),
   semantic tokens (named role aliases), font scale, layers (z-index scale).
-- **Components** (`uds/components/<id>/`) — CSS-only or CSS+JS. All
+- **Components** (`uds-docs/uds/components/<id>/`) — CSS-only or CSS+JS. All
   framework-agnostic vanilla web components / utility classes.
-- **Documentation** (`docs/`) — the SPA that renders specs, examples,
-  guidelines, playgrounds, the Demo Builder, the Token Search modal.
+- **Documentation** (`uds-docs/app/`) — the React app that renders specs,
+  examples, guidelines, playgrounds, the Demo Builder, and the Token Search modal.
 
 Production framework wrappers (React, Vue, etc.) for each component live
 in the UDS Storybook repo, NOT this repo. This repo is the **specification**.
@@ -94,11 +90,11 @@ in the UDS Storybook repo, NOT this repo. This repo is the **specification**.
 
 The version dropdown in the header sets `?uds=X.Y` on the URL and the
 modern docs site renders the archive by reading data through the
-`udsResolve()` helper. Bug fixes to the docs UI flow automatically to
+`lib/uds-data.ts` fetchers. Bug fixes to the docs UI flow automatically to
 historical views; only the UDS data itself is frozen per release.
 
 ```
-http://localhost:4000/?uds=0.2#/button
+http://localhost:3000/button?uds=0.2
 ```
 
 A yellow banner appears at the top of the page when an archived version
@@ -121,7 +117,7 @@ CI workflow in `.github/workflows/audits.yml` runs all of these on every PR.
 
 The repo supports **6 theme combinations** (Base/ResMan/AnyoneHome ×
 Light/Dark, plus Inhabit Light). Use the **Contrast Checker** tool on
-the docs site (`#/contrast-checker`) to evaluate token pairings across
+the docs site (`/contrast-checker`) to evaluate token pairings across
 all themes from resolved CSS variables. Token changes flow through Figma
 first — see `.cursor/rules/uds-source-of-truth.mdc`.
 

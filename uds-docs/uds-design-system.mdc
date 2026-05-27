@@ -14,9 +14,9 @@ You are building UI with the **Urban Design System (UDS)**. UDS has two layers:
 2. **NEVER hardcode colors, spacing, or fonts.** No `#171717`, no `16px`, no `'Inter'`. Always `var(--uds-*)`.
 3. **For components, prefer the Storybook web components.** The HTML examples in this rule show the *design intent* (markup, classes, ARIA, keyboard behavior) — they're a reference. For production code, use `<udc-button>`, `<udc-dialog>`, etc. from Storybook unless you're writing the web component itself.
 
-**Docs (design spec):** https://sbajwa32.github.io/uds-docs/
-**AI context (JSON):** https://sbajwa32.github.io/uds-docs/ai-context.json
-**Per-component spec:** https://sbajwa32.github.io/uds-docs/content/<component>.json (acceptance criteria, props, events, slots, states, accessibility)
+**Docs (design spec):** https://udsdocs.com/
+**AI context (JSON):** https://udsdocs.com/ai-context.json
+**Per-component spec:** https://udsdocs.com/uds/components/<component>/spec.json (acceptance criteria, props, events, slots, states, accessibility)
 **Storybook (production components):** https://storybook.example.com — TODO: update once live
 **Tokens install:** `npm install uds-core` then `import 'uds-core/uds.css'`
 **Icons:** Material Symbols Outlined — browse at https://fonts.google.com/icons
@@ -549,9 +549,9 @@ Before returning ANY code, verify:
 
 ## When You Need More Detail
 
-- **Full per-component spec** (acceptance criteria, props, events, slots, states, accessibility): fetch `https://sbajwa32.github.io/uds-docs/content/<component>.json`
-- **Live token values**: fetch `https://sbajwa32.github.io/uds-docs/uds/uds.css`
-- **Design rationale, do/don'ts, recipes**: browse the doc site at https://sbajwa32.github.io/uds-docs/
+- **Full per-component spec** (acceptance criteria, props, events, slots, states, accessibility): fetch `https://udsdocs.com/uds/components/<component>/spec.json`
+- **Live token values**: fetch `https://udsdocs.com/uds/uds.css`
+- **Design rationale, do/don'ts, recipes**: browse the doc site at https://udsdocs.com/
 - **Production component implementation**: use the UDS Storybook web components
 
 ## REMEMBER

@@ -82,7 +82,7 @@ async function main() {
   for (const id of COMPONENTS) {
     await send('Page.navigate', { url: `http://localhost:${SERVE_PORT}/${id}` });
     await sleep(1500);
-    await evaluate(`document.querySelector('.sg-page-tab[data-tab="code"]')?.click()`);
+    await evaluate(`document.querySelector('.ds-tab[id$="-tab-code"]')?.click()`);
     await sleep(800);
     const state = await evaluate(`
       (() => {

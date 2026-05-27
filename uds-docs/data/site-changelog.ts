@@ -1,5 +1,5 @@
-// Ported from docs/data/site-changelog.js during Chunk 06a of the docs Next.js migration.
-// The original JS file is preserved on disk until Chunk 17 deletes the legacy docs/.
+// Docs-site changelog rendered on the Changelog page Site tab.
+// Newest entries go last; the renderer reverses them for display.
 
 export type SiteChangelogChangeType = 'added' | 'changed' | 'fixed' | 'removed' | 'deprecated';
 
@@ -1121,6 +1121,21 @@ export const SITE_CHANGELOG: SiteChangelogEntry[] = [
       date: '2026-05-26',
       changes: [
         { type: 'added', text: 'Added a reusable Cursor workflow for code-first component labs. You can now say “Lab me an Avatar” to start a hidden draft playground before promoting the direction to Figma.' }
+      ]
+    },
+    {
+      version: 'SITE 2026.05.27.1',
+      date: '2026-05-27',
+      changes: [
+        { type: 'removed', text: 'Removed stale migration CSS and dead docs-site stubs left after the React docs UI rebuild.' },
+        { type: 'fixed', text: 'Updated AI Assist, Getting Started, Cursor Workflows, and smoke scripts to point at the Cloudflare site, current spec paths, and ds-* tab selectors.' }
+      ]
+    },
+    {
+      version: 'SITE 2026.05.27.2',
+      date: '2026-05-27',
+      changes: [
+        { type: 'fixed', text: 'Cleared the PostCSS security advisory in the docs-site dependency tree.' }
       ]
     }
 ];

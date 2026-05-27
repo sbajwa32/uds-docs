@@ -163,7 +163,7 @@ async function main() {
     // Click the tab.
     const clicked = await evaluate(`
       (() => {
-        const tab = document.querySelector('.sg-page-tab[data-tab="${tab}"]');
+        const tab = document.querySelector('.ds-tab[id$="-tab-${tab}"]');
         if (!tab) return { ok: false, reason: 'tab-not-found' };
         tab.click();
         return { ok: true };
@@ -177,7 +177,7 @@ async function main() {
 
     const state = await evaluate(`
       (() => {
-        const activePanel = document.querySelector('div[hidden="false"], div:not([hidden]) > .sg-example-block, div:not([hidden]) > .sg-figma-note, div:not([hidden]) > .sg-gl-group, div:not([hidden]) > .sg-cl-stream, div:not([hidden]) > .sg-playground-layout, div:not([hidden]) > .sg-code-block');
+        const activePanel = document.querySelector('div[role="tabpanel"]:not([hidden])');
         // Just get the visible main content text snapshot.
         const main = document.querySelector('main');
         const text = main ? main.innerText : '';

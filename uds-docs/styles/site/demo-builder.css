@@ -125,7 +125,7 @@
   display: inline-block;
   width: 14px;
   height: 14px;
-  border: 2px solid rgba(255, 255, 255, 0.3);
+  border: 2px solid color-mix(in srgb, var(--uds-color-text-inverse) 30%, transparent);
   border-top-color: var(--uds-color-text-inverse);
   border-radius: 50%;
   animation: sg-spin 0.6s linear infinite;
@@ -179,7 +179,7 @@
 }
 
 .sg-demo-overlay-toolbar__btn {
-  background: rgba(255, 255, 255, 0.15);
+  background: color-mix(in srgb, var(--uds-color-text-inverse) 15%, transparent);
   border: none;
   color: inherit;
   padding: 4px 12px;
@@ -192,7 +192,7 @@
   gap: 6px;
 }
 .sg-demo-overlay-toolbar__btn:hover {
-  background: rgba(255, 255, 255, 0.25);
+  background: color-mix(in srgb, var(--uds-color-text-inverse) 25%, transparent);
 }
 .sg-demo-overlay-toolbar__btn[disabled] {
   opacity: 0.6;

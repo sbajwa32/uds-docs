@@ -36,10 +36,10 @@ const npmInstallCode = 'npm install uds-core';
 const npmImportCode = `// In your entry file (main.jsx, main.js, etc.)
 import 'uds-core/uds.css';`;
 
-const cdnCode = `<link rel="stylesheet" href="https://sbajwa32.github.io/uds-docs/uds/uds.css" />
-<script src="https://sbajwa32.github.io/uds-docs/uds/uds.js"></script>`;
+const cdnCode = `<link rel="stylesheet" href="https://udsdocs.com/uds/uds.css" />
+<script src="https://udsdocs.com/uds/uds.js"></script>`;
 
-const pinnedVersionCode = '<link rel="stylesheet" href="https://sbajwa32.github.io/uds-docs/versions/0.2/uds/uds.css" />';
+const pinnedVersionCode = '<link rel="stylesheet" href="https://udsdocs.com/versions/0.2/uds/uds.css" />';
 
 const aiAssistPathCode = 'your-project/.cursor/rules/uds-design-system.mdc';
 
@@ -51,24 +51,17 @@ const fileStructureCode = `uds/
 │   ├── semantic.css     ← themed color, spacing, font tokens
 │   └── text-styles.css  ← typography utility classes
 └── components/
-    ├── button.css                  ← CSS-only
-    ├── text-input.css  + .js       ← validation, counter, clear
-    ├── checkbox.css    + .js       ← indeterminate support
-    ├── radio.css                   ← CSS-only
-    ├── dropdown.css    + .js       ← open/close, select, keyboard
-    ├── tabs.js  (tab-horizontal.css)  ← click, arrows, ARIA
-    ├── notification.css + .js      ← dismiss
-    ├── dialog.css      + .js       ← backdrop, Escape
-    ├── tile.css        + .js       ← toggle selected
-    ├── list.css        + .js       ← single select, keyboard
-    ├── data-table.css  + .js       ← checkbox all, sort
-    ├── nav-header.css  + .js       ← bento dropdown
-    ├── nav-vertical.css + .js      ← sidebar selection
-    ├── badge.css                   ← CSS-only
-    ├── divider.css                 ← CSS-only
-    ├── icon-wrapper.css            ← CSS-only
-    ├── spacer.css                  ← CSS-only
-    └── breadcrumb.css              ← CSS-only`;
+    ├── button/
+    │   ├── button.css              ← component styles
+    │   ├── spec.json               ← Guidelines data
+    │   ├── impl.json               ← Code-tab reference data
+    │   ├── playground.js           ← interactive playground config
+    │   └── examples/*.html         ← example markup
+    ├── text-input/
+    │   ├── text-input.css
+    │   ├── text-input.js
+    │   └── ...
+    └── ...`;
 
 const tokenLayerCode = `<head>
   <!-- Material Symbols icon font (required for icons) -->

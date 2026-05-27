@@ -15,6 +15,7 @@
 //   8. Implementation Reference (impl.json) — JS function + tokens used
 
 import type { ComponentSpec, ComponentImpl } from '@/lib/uds-data';
+import { VersionedLink } from '@/components/site/VersionedLink';
 
 interface SpecPropEntry {
   name: string;
@@ -315,9 +316,9 @@ function PairedWithSection({ ids }: { ids: string[] }) {
       <ul className="ds-guideline-paired">
         {ids.map((id) => (
           <li key={id}>
-            <a className="sg-page-link" href={`/${id}`}>
+            <VersionedLink className="sg-page-link" href={`/${id}`}>
               {id}
-            </a>
+            </VersionedLink>
           </li>
         ))}
       </ul>
