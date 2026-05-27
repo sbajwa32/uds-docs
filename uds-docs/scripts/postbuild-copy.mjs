@@ -2,9 +2,9 @@
 // Copies the runtime-required UDS payload into the Next.js static-export output.
 //
 // Next.js with `output: 'export'` only emits the React app to `out/`. The docs site
-// also fetches UDS data and assets from sibling folders (`uds/`, `versions/`) and a
-// top-level `versions.json` manifest at runtime; those are not part of the React
-// build but must be served from the same origin. This script publishes them.
+// also fetches UDS data and assets from sibling folders (`uds/`, `versions/`),
+// top-level runtime manifests, and AI-assist files; those are not part of the
+// React build but must be served from the same origin. This script publishes them.
 //
 // Run from `uds-docs/` (the directory where `npm run build` runs). Wired as the
 // `postbuild` npm script in package.json so it executes automatically after build.
@@ -20,6 +20,8 @@ const COPIES = [
   { src: 'uds', dest: 'out/uds', kind: 'dir', label: 'UDS design system payload' },
   { src: 'versions', dest: 'out/versions', kind: 'dir', label: 'UDS version archives' },
   { src: 'versions.json', dest: 'out/versions.json', kind: 'file', label: 'versions manifest' },
+  { src: 'ai-context.json', dest: 'out/ai-context.json', kind: 'file', label: 'AI context JSON' },
+  { src: 'uds-design-system.mdc', dest: 'out/uds-design-system.mdc', kind: 'file', label: 'Cursor rule download' },
 ];
 
 // Note: the per-component playground.js modules under uds/components/<id>/

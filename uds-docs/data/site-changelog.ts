@@ -1137,5 +1137,12 @@ export const SITE_CHANGELOG: SiteChangelogEntry[] = [
       changes: [
         { type: 'fixed', text: 'Cleared the PostCSS security advisory in the docs-site dependency tree.' }
       ]
+    },
+    {
+      version: 'SITE 2026.05.27.3',
+      date: '2026-05-27',
+      changes: [
+        { type: 'fixed', text: 'Published the AI Assist context JSON and Cursor rule file with the static site export.' }
+      ]
     }
 ];
