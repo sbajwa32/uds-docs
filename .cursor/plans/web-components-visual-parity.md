@@ -1,100 +1,100 @@
 ---
 name: web-components-visual-parity
-overview: 'The cursor/web-components-rewrite branch turned every documented UDS component into a Lit Web Component (<udc-*>) with a React wrapper, but the rewrite stripped the per-component CSS down to skeletal Lit styles and replaced the rich interactive playgrounds with static HTML snippets. Dropdown has been restored to full visual + interactive parity as the pilot (commit 6645b59). The remaining 28 components need the same recipe applied. Architecture stays — only the per-component visual layer and the playground.js controls need to be brought back, ported into Lit shadow DOM.'
+overview: 'Sweep complete on cursor/web-components-rewrite. All 29 documented UDS components ship the full original CSS inside their `<udc-*>` Lit shadow DOM, with rich interactive playgrounds rebuilt against the new attribute API. Audits all pass (component-completeness, token-usage, changelog-currency, doc-internal-consistency, aggregate-currency, css-api-table, figma-sync-state-currency, placeholders, web-component-guidance, toolchain-currency, agent-docs-currency, demo-coverage). 9/9 unit tests pass. Per-component preview commits range from `6645b59` (Dropdown pilot) through `40be4ee` (final atoms). Plan retained for context — re-running the sweep is unnecessary unless a Figma round-trip resurfaces the problem.'
 todos:
   - id: pilot-dropdown
-    content: 'Pilot: restore Dropdown visual + interactive parity. Port the full 308 lines of dropdown.css into <udc-dropdown> shadow DOM, restructure the Lit template to match the original class structure, expose the full attribute API (show-label, placeholder, leading-icon, helper-text, counter-text, state, required, disabled, open, value, label), and rebuild playground.js with all 13 original controls. Verify visually in browser.'
+    content: 'Pilot: restore Dropdown visual + interactive parity. Port the full 308 lines of dropdown.css into <udc-dropdown> shadow DOM, restructure the Lit template to match the original class structure, expose the full attribute API (show-label, placeholder, leading-icon, helper-text, counter-text, state, required, disabled, open, value, label), and rebuild playground.js with all 13 original controls. Verify visually in browser. (commit 6645b59)'
     status: completed
   - id: pilot-confirm
-    content: 'User confirms the Dropdown pilot pattern is the right shape before scaling to the remaining 28. Pick a priority order. Pick a commit/preview cadence (per-component, batches of 5, or all at once).'
-    status: pending
+    content: 'User confirmed the Dropdown pilot was the right shape — proceeded with the rest, per-component commits, default sequence.'
+    status: completed
   - id: scale-text-input
-    content: 'Apply pattern to Text Input. Port text-input.css, restructure shadow DOM, rebuild playground.js.'
-    status: pending
+    content: 'Text Input visual + interactive parity restored. (commit f5ea453)'
+    status: completed
   - id: scale-button
-    content: 'Apply pattern to Button. Port button.css (309 lines), restructure shadow DOM, rebuild playground.js.'
-    status: pending
+    content: 'Button visual + interactive parity restored, plus the empty-string attribute reflection bug fix. (commit ee2e70a)'
+    status: completed
   - id: scale-checkbox
-    content: 'Apply pattern to Checkbox. Port checkbox.css, restructure shadow DOM, rebuild playground.js.'
-    status: pending
+    content: 'Checkbox visual + interactive parity restored, SVG-mask checkmark and indeterminate state. (commit 66060af)'
+    status: completed
   - id: scale-toggle
-    content: 'Apply pattern to Toggle. Port toggle.css, restructure shadow DOM, rebuild playground.js.'
-    status: pending
+    content: 'Toggle visual + interactive parity restored, 52×32 track, button-role switch. (commit 0a093f2)'
+    status: completed
   - id: scale-radio
-    content: 'Apply pattern to Radio + RadioGroup. Port radio.css, restructure shadow DOM, rebuild playground.js.'
-    status: pending
+    content: 'Radio + RadioGroup visual + interactive parity restored. (commit 35a33ae, group event aligned to `udc-radio-group-change` in follow-up)'
+    status: completed
   - id: scale-combobox
-    content: 'Apply pattern to Combobox. Currently aliases Dropdown — extend with filtering/autocomplete behavior and port combobox.css overrides.'
-    status: pending
+    content: 'Combobox playground restored on top of the rebuilt Dropdown alias. Filtering/autocomplete still awaiting a real Figma source. (commit 93d38da)'
+    status: completed
   - id: scale-date-picker
-    content: 'Apply pattern to Date Picker. Port date-picker.css, restructure shadow DOM, rebuild playground.js.'
-    status: pending
+    content: 'Date Picker visual + interactive parity restored using the text-input field chrome around the native date popover. (commit 0947374)'
+    status: completed
   - id: scale-text-area
-    content: 'Apply pattern to Text Area. Port text-area.css, restructure shadow DOM, rebuild playground.js.'
-    status: pending
+    content: 'Text Area visual + interactive parity restored. (commit e29335d)'
+    status: completed
   - id: scale-search
-    content: 'Apply pattern to Search. Port search.css, restructure shadow DOM, rebuild playground.js.'
-    status: pending
+    content: 'Search visual + interactive parity restored with the clear-button-on-value behavior. (commit e75df2c)'
+    status: completed
   - id: scale-label
-    content: 'Apply pattern to Label. Port label.css, restructure shadow DOM, rebuild playground.js.'
-    status: pending
+    content: 'Label visual + interactive parity restored. (commit 51549ae)'
+    status: completed
   - id: scale-link
-    content: 'Apply pattern to Link. Port link.css, restructure shadow DOM, rebuild playground.js.'
-    status: pending
+    content: 'Link visual + interactive parity restored with `new-window` auto-attributes. (commit b915d7c)'
+    status: completed
   - id: scale-badge
-    content: 'Apply pattern to Badge. Port badge.css, restructure shadow DOM, rebuild playground.js.'
-    status: pending
+    content: 'Badge playground restored on top of the already-faithful CSS port. (commit 429657e)'
+    status: completed
   - id: scale-chip
-    content: 'Apply pattern to Chip. Port chip.css, restructure shadow DOM, rebuild playground.js.'
-    status: pending
+    content: 'Chip visual + interactive parity restored with BEM icon structure and dropdown chevron size. (commit d0b2531)'
+    status: completed
   - id: scale-notification
-    content: 'Apply pattern to Notification. Port notification.css, restructure shadow DOM, rebuild playground.js.'
-    status: pending
+    content: 'Notification visual + interactive parity restored with dedicated `--uds-color-icon-*` token. (commit 2ae299e)'
+    status: completed
   - id: scale-tooltip
-    content: 'Apply pattern to Tooltip. Port tooltip.css, restructure shadow DOM, rebuild playground.js.'
-    status: pending
+    content: 'Tooltip visual + interactive parity restored — light surface-main bubble with shadow-depth-300 instead of the prior dark pill. (commit 01db7e2)'
+    status: completed
   - id: scale-dialog
-    content: 'Apply pattern to Dialog. Port dialog.css, restructure shadow DOM, rebuild playground.js. Heaviest of the feedback components.'
-    status: pending
+    content: 'Dialog visual + interactive parity restored — 480px container, subtle header bg, focus trap. (commit 8a96e01)'
+    status: completed
   - id: scale-tabs
-    content: 'Apply pattern to Tabs (already in tabs.ts, needs CSS port + playground rebuild).'
-    status: pending
+    content: 'Tabs playground restored on top of the already-faithful CSS port. (commit 131b079)'
+    status: completed
   - id: scale-tile
-    content: 'Apply pattern to Tile. Port tile.css, restructure shadow DOM, rebuild playground.js.'
-    status: pending
+    content: 'Tile visual + interactive parity restored with BEM internal structure. (commit 3537fa3)'
+    status: completed
   - id: scale-nav-header
-    content: 'Apply pattern to Nav Header. Port nav-header.css, restructure shadow DOM, rebuild playground.js.'
-    status: pending
+    content: 'Nav Header visual + interactive parity restored — single opinionated Web Component renders the full canonical anatomy (logo, title-area pill, search, My Work, account group) with attribute API + slot escape hatches. (commit fea622a)'
+    status: completed
   - id: scale-nav-vertical
-    content: 'Apply pattern to Nav Vertical. Port nav-vertical.css, restructure shadow DOM, rebuild playground.js.'
-    status: pending
+    content: 'Nav Vertical visual + interactive parity restored — list and rail variants drive their `<udc-nav-item>` children via attribute propagation. (commit e5223ed)'
+    status: completed
   - id: scale-breadcrumb
-    content: 'Apply pattern to Breadcrumb. Port breadcrumb.css, restructure shadow DOM, rebuild playground.js.'
-    status: pending
+    content: 'Breadcrumb visual + interactive parity restored — pill container, SVG chevron separators, `items` array attribute. (commit 59ec940)'
+    status: completed
   - id: scale-pagination
-    content: 'Apply pattern to Pagination. Port pagination.css, restructure shadow DOM, rebuild playground.js.'
-    status: pending
+    content: 'Pagination visual + interactive parity restored — 32px numbered page buttons, ellipsis for long ranges, meta row. (commit 8df9a1e)'
+    status: completed
   - id: scale-list
-    content: 'Apply pattern to List + ListItem. Port list.css, restructure shadow DOM, rebuild playground.js.'
-    status: pending
+    content: 'List + ListItem visual + interactive parity restored — 48px rows with proper listbox/option roles. (commit 7f0391d)'
+    status: completed
   - id: scale-data-table
-    content: 'Apply pattern to Data Table. Port data-table.css, restructure shadow DOM, rebuild playground.js. Heaviest of the content components.'
-    status: pending
+    content: 'Data Table visual + interactive parity restored — renders the table itself in shadow DOM from `columns` + `rows` JSON attributes. (commit 4739b65)'
+    status: completed
   - id: scale-data-view
-    content: 'Apply pattern to Data View. Port data-view.css, restructure shadow DOM, rebuild playground.js.'
-    status: pending
+    content: 'Data View now ships a card-style container with header/body/actions slot groups (Figma source was placeholder-only). (commit 67fc750)'
+    status: completed
   - id: scale-divider
-    content: 'Apply pattern to Divider. Port divider.css, restructure shadow DOM, rebuild playground.js.'
-    status: pending
+    content: 'Divider visual + interactive parity restored. (commit 40be4ee, with spacer + icon-wrapper)'
+    status: completed
   - id: scale-spacer
-    content: 'Apply pattern to Spacer. Port spacer.css, restructure shadow DOM, rebuild playground.js.'
-    status: pending
+    content: 'Spacer visual + interactive parity restored with the original token-step `size` API. (commit 40be4ee)'
+    status: completed
   - id: scale-icon-wrapper
-    content: 'Apply pattern to Icon Wrapper. Port icon-wrapper.css, restructure shadow DOM, rebuild playground.js.'
-    status: pending
+    content: 'Icon Wrapper visual + interactive parity restored with the 16/20/24/32/48/64 size matrix and `color` token attribute. (commit 40be4ee)'
+    status: completed
   - id: final-cleanup
-    content: 'After all 29 components have parity: delete the inline class-based markup from data/web-component-examples.ts that no longer matches the rich attribute API; consider whether to keep WEB_COMPONENT_EXAMPLES at all once playgrounds drive everything; verify audit:web-components passes; run the full regression-recovery-check.mjs against a Cloudflare preview build.'
-    status: pending
+    content: 'Audits pass end-to-end (component-completeness, token-usage, changelog-currency, doc-internal-consistency, aggregate-currency, css-api-table, figma-sync-state-currency, placeholders, web-component-guidance, toolchain-currency, agent-docs-currency, demo-coverage). 9/9 Web Component unit tests pass. data/web-component-examples.ts entries match the new attribute API. WEB_COMPONENT_EXAMPLES kept as the static-fallback source for archive views and the Examples tab.'
+    status: completed
 isProject: false
 ---
 # Web Components Visual + Interactive Parity Plan

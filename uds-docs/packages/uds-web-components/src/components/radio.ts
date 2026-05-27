@@ -107,7 +107,9 @@ export class UdsRadioGroupElement extends LitElement {
     const detail = (event as CustomEvent<UdsRadioChangeDetail>).detail;
     if (!detail) return;
     this.value = detail.value;
-    emitUdsEvent<{ value: string }>(this, 'udc-change', { value: this.value });
+    // Matches the documented spec.json contract: the group emits
+    // `udc-radio-group-change`; individual radios bubble `udc-radio-change`.
+    emitUdsEvent<{ value: string }>(this, 'udc-radio-group-change', { value: this.value });
   };
 
   private syncRadios() {
