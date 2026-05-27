@@ -1,7 +1,7 @@
 {
   "name": "uds-core",
-  "version": "0.2.0",
-  "description": "UDS (Urban Design System) token layer. Semantic CSS custom properties for colors, spacing, type, borders, and shadows. Components ship through the Web Components bundle.",
+  "version": "0.3.0",
+  "description": "UDS (Urban Design System) token layer. Semantic CSS custom properties for colors, spacing, type, borders, and shadows. Component implementations ship in the @uds/web-components package.",
   "keywords": [
     "design-system",
     "css",
@@ -12,10 +12,8 @@
   "author": "UDS Team",
   "license": "MIT",
   "style": "uds.css",
-  "main": "uds.js",
   "files": [
     "uds.css",
-    "uds.js",
     "tokens/",
     "components/"
   ],
@@ -23,5 +21,5 @@
     "type": "git",
     "url": "https://github.com/sbajwa32/uds-docs"
   },
-  "homepage": "https://sbajwa32.github.io/uds-docs/"
+  "homepage": "https://udsdocs.com"
 }
