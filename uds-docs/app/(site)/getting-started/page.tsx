@@ -39,32 +39,33 @@ import { registerUdsComponents } from '@uds/web-components';
 
 registerUdsComponents();`;
 
-const cdnCode = `<link rel="stylesheet" href="https://udsdocs.com/uds/uds.css" />
-<!-- Web Component registration bundle will replace the legacy uds.js path at public cutover. -->`;
+const cdnCode = `<!-- Tokens (themes + spacing + typography) -->
+<link rel="stylesheet" href="https://udsdocs.com/uds/uds.css" />
+
+<!-- Web Components bundle (defines <udc-*> custom elements) -->
+<script type="module" src="https://udsdocs.com/web-components.js"></script>`;
 
 const pinnedVersionCode = '<link rel="stylesheet" href="https://udsdocs.com/versions/0.2/uds/uds.css" />';
 
 const aiAssistPathCode = 'your-project/.cursor/rules/uds-design-system.mdc';
 
 const fileStructureCode = `uds/
-├── uds.css              ← master stylesheet (imports all component CSS)
-├── uds.js               ← legacy orchestrator kept until Web Component cutover
+├── uds.css              ← token entrypoint (imports tokens/*.css)
 ├── tokens/
 │   ├── primitives.css   ← raw color palette
 │   ├── semantic.css     ← themed color, spacing, font tokens
+│   ├── layers.css       ← z-index + elevation tokens
 │   └── text-styles.css  ← typography utility classes
 └── components/
     ├── button/
-    │   ├── button.css              ← component styles
     │   ├── spec.json               ← Guidelines data
     │   ├── impl.json               ← Code-tab reference data
     │   ├── playground.js           ← interactive playground config
     │   └── examples/*.html         ← example markup
-    ├── text-input/
-    │   ├── text-input.css
-    │   ├── text-input.js
-    │   └── ...
-    └── ...`;
+    └── ...
+
+web-components.js        ← defines every <udc-*> custom element
+                           (component CSS lives inside shadow DOM)`;
 
 const tokenLayerCode = `<head>
   <!-- Material Symbols icon font (required for icons) -->

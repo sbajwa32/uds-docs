@@ -111,9 +111,9 @@ export function DemoBuilder() {
     [],
   );
 
-  // Archive snapshots don't carry the interactive JS modules the demo
-  // builder needs (per-component examples + uds.js orchestrator are loaded
-  // from live paths). Hide the trigger in archive mode rather than ship a
+  // Archive snapshots don't carry the per-component examples the demo
+  // builder needs (the `<udc-*>` Web Components bundle is loaded from live
+  // paths regardless). Hide the trigger in archive mode rather than ship a
   // broken preview. Matches the legacy behavior that hides .sg-demo-btn
   // when `isViewingHistorical()`. The early return sits below the hooks
   // so we don't violate Rules of Hooks when archive flips.

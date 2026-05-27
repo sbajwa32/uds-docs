@@ -1,10 +1,11 @@
 // ZIP download for the Demo Builder. Bundles the generated demo HTML
-// + the runnable UDS payload (tokens + per-component CSS/JS) at `uds/`.
+// + the runnable UDS payload (tokens + `web-components.js`) at `uds/`.
 //
-// Direct port of `downloadDemoProject` from docs/modules/demo-builder/zip.js.
-// The file list was hand-curated in the legacy module (UDS_FILES); we
-// preserve that here. Chunk 17 will revisit whether to walk
-// `uds/components/` dynamically.
+// Post-Web-Components rewrite: per-component CSS lives inside each
+// `<udc-*>` shadow DOM (compiled into `web-components.js`), so the ZIP
+// only needs the token layer and the bundle. The pre-rewrite layout
+// shipped 39 hand-curated per-component CSS + JS files; those don't
+// exist any more.
 
 import type JSZipType from 'jszip';
 
@@ -21,46 +22,15 @@ async function loadJSZip(): Promise<typeof JSZipType> {
   return cachedJsZip;
 }
 
+// Files that always ship with a UDS download: the master CSS entrypoint
+// + every token CSS file it imports. Component styling is in
+// `web-components.js` (bundled separately via `bundleWebComponentsBundle`).
 const UDS_FILES: ReadonlyArray<string> = [
   'uds.css',
-  'uds.js',
   'tokens/primitives.css',
   'tokens/semantic.css',
+  'tokens/layers.css',
   'tokens/text-styles.css',
-  'components/button.css',
-  'components/text-input.css',
-  'components/text-input.js',
-  'components/checkbox.css',
-  'components/checkbox.js',
-  'components/radio.css',
-  'components/badge.css',
-  'components/divider.css',
-  'components/icon-wrapper.css',
-  'components/spacer.css',
-  'components/breadcrumb.css',
-  'components/tab-horizontal.css',
-  'components/tabs.js',
-  'components/dropdown.css',
-  'components/dropdown.js',
-  'components/nav-header.css',
-  'components/nav-header.js',
-  'components/nav-vertical.css',
-  'components/nav-vertical.js',
-  'components/notification.css',
-  'components/notification.js',
-  'components/dialog.css',
-  'components/dialog.js',
-  'components/tile.css',
-  'components/tile.js',
-  'components/list.css',
-  'components/list.js',
-  'components/data-table.css',
-  'components/data-table.js',
-  'components/chip.css',
-  'components/chip.js',
-  'components/search.css',
-  'components/search.js',
-  'components/tooltip.css',
 ];
 
 async function bundleWebComponentsBundle(zip: JSZipType, origin: string): Promise<void> {
