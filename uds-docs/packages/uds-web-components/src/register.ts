@@ -7,6 +7,7 @@ import { UdsDialogElement } from './components/dialog';
 import { UdsDropdownElement, UdsDropdownItemElement } from './components/dropdown';
 import { UdsLabelElement } from './components/label';
 import { UdsLinkElement } from './components/link';
+import { UdsNavHeaderElement } from './components/nav-header';
 import { UdsNotificationElement } from './components/notification';
 import { UdsRadioElement, UdsRadioGroupElement } from './components/radio';
 import { UdsSearchElement } from './components/search';
@@ -23,7 +24,6 @@ import {
   UdsIconWrapperElement,
   UdsListElement,
   UdsListItemElement,
-  UdsNavHeaderElement,
   UdsNavItemElement,
   UdsNavVerticalElement,
   UdsPaginationElement,

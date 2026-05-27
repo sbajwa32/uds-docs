@@ -350,12 +350,8 @@ export class UdsDataViewElement extends LitElement {
   }
 }
 
-export class UdsNavHeaderElement extends LitElement {
-  static styles = [hostBlock, css`header { display: flex; align-items: center; justify-content: space-between; gap: var(--uds-space-200, 16px); padding: var(--uds-space-150, 12px) var(--uds-space-300, 24px); background: var(--uds-color-surface-main, #fff); border-bottom: 1px solid var(--uds-color-border-secondary, #e5e5e5); }`];
-  render() {
-    return html`<header part="header"><div part="brand"><slot name="brand"></slot></div><nav part="nav"><slot></slot></nav><div part="actions"><slot name="actions"></slot></div></header>`;
-  }
-}
+// NavHeader lives in ./nav-header.ts (extracted with the full canonical anatomy).
+export { UdsNavHeaderElement } from './nav-header';
 
 export class UdsNavVerticalElement extends LitElement {
   static styles = [hostBlock, css`nav { display: grid; gap: var(--uds-space-050, 4px); }`];
@@ -390,7 +386,6 @@ declare global {
     'udc-combobox-option': UdsComboboxOptionElement;
     'udc-data-table': UdsDataTableElement;
     'udc-data-view': UdsDataViewElement;
-    'udc-nav-header': UdsNavHeaderElement;
     'udc-nav-vertical': UdsNavVerticalElement;
     'udc-nav-item': UdsNavItemElement;
   }

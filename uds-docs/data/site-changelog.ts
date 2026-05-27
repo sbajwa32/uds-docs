@@ -1285,5 +1285,12 @@ export const SITE_CHANGELOG: SiteChangelogEntry[] = [
       changes: [
         { type: 'fixed', text: 'Restored the Tile visual styling and playground. `<udc-tile>` now uses BEM `.udc-tile__content` / `__label` / `__body` / `__chevron` inside its shadow DOM, with the larger chevron glyph, hover surface change, selected (info-subtle bg + 2px interactive border), focus-visible ring, and disabled treatment. Playground brings back label, body lines, required-dot, chevron, and state controls.' }
       ]
+    },
+    {
+      version: 'SITE 2026.05.27.24',
+      date: '2026-05-27',
+      changes: [
+        { type: 'fixed', text: 'Restored the Nav Header visual styling and playground. `<udc-nav-header>` now renders the full canonical anatomy (logo, title-area pill, center search, My Work button, account group) as a single opinionated Web Component driven by `app-name`, `title-only`, `show-search`, `show-mywork`, and `mywork-badge` attributes. Slot escape hatches let consumers override individual sections without forking the CSS.' }
+      ]
     }
 ];

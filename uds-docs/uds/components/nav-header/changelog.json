@@ -131,6 +131,11 @@
       "version": "0.3",
       "type": "changed",
       "text": "Cleared legacy per-component behavior references; behavior now lives in the shared Web Components bundle."
+    },
+    {
+      "version": "0.3",
+      "type": "changed",
+      "text": "Ported the full nav-header CSS into the `<udc-nav-header>` shadow DOM. The component now renders the canonical anatomy (logo, title-area pill, center search, My Work button, account button group) as a single opinionated Web Component driven by `app-name`, `title-only`, `show-search`, `show-mywork`, `mywork-badge`, `logo-icon`, and `title-icon` attributes. Slot escape hatches (`logo`, `title-icon`, `title`, `search`, `mywork`, `account`) let consumers override individual sections without forking the CSS. Rebuilt the playground with the original controls."
     }
   ]
 }
