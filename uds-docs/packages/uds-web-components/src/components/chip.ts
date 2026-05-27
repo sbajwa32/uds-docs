@@ -1,7 +1,7 @@
 import { LitElement, css, html, nothing } from 'lit';
 
 import { emitUdsEvent } from '../events';
-import { focusRing, hostInline, materialIconStyles } from '../styles';
+import { hostInline, materialIconStyles } from '../styles';
 
 export type UdsChipVariant = 'default' | 'filter' | 'input' | 'dropdown';
 
@@ -14,6 +14,22 @@ export interface UdsDismissDetail {
   reason: 'click' | 'keyboard';
 }
 
+/**
+ * `<udc-chip>` — interactive chip used for filters, input tokens, and
+ * dropdown triggers.
+ *
+ * Public attributes/properties:
+ *   variant       — "default" | "filter" | "input" | "dropdown"
+ *   selected      — boolean; filter/dropdown variants toggle on click
+ *   disabled      — boolean
+ *   removable     — boolean (renders close icon, fires `udc-dismiss`)
+ *   leading-icon  — Material Symbols name before the label
+ *   trailing-icon — Material Symbols name after the label (override)
+ *
+ * Events:
+ *   udc-chip-toggle  — fires when filter/dropdown chip toggles selected
+ *   udc-dismiss      — fires when an input chip is dismissed (cancelable)
+ */
 export class UdsChipElement extends LitElement {
   static properties = {
     variant: { type: String, reflect: true },
@@ -31,79 +47,145 @@ export class UdsChipElement extends LitElement {
   leadingIcon = '';
   trailingIcon = '';
 
+  /**
+   * Full CSS port from `uds/components/chip/chip.css` on main.
+   */
   static styles = [
     hostInline,
     materialIconStyles,
     css`
-      button {
+      :host {
+        display: inline-flex;
+        font-family: var(--uds-font-family);
+      }
+
+      .udc-chip {
         display: inline-flex;
         align-items: center;
-        gap: var(--uds-space-100, 8px);
-        padding: var(--uds-space-050, 4px) var(--uds-space-100, 8px);
-        border: 1px solid var(--uds-color-border-primary, #d4d4d4);
+        gap: var(--uds-space-100);
+        padding: var(--uds-space-050) var(--uds-space-100);
+        border: 1px solid var(--uds-color-border-primary);
         border-radius: var(--uds-border-radius-container, 999px);
-        background: var(--uds-color-surface-interactive-none, transparent);
-        color: var(--uds-color-text-primary, #171717);
+        background-color: var(--uds-color-surface-interactive-none, transparent);
+        font-family: var(--uds-font-family);
+        font-size: var(--uds-font-size-base);
+        font-weight: var(--uds-font-weight-regular);
+        line-height: var(--uds-font-line-height-base);
+        color: var(--uds-color-text-primary);
         cursor: pointer;
         overflow: hidden;
         white-space: nowrap;
-        font: inherit;
-        font-size: var(--uds-font-size-base, 16px);
-        line-height: var(--uds-font-line-height-base, 1.5);
-        appearance: none;
         outline: none;
-        transition: background-color 120ms ease, border-color 120ms ease, color 120ms ease;
+        transition: background-color 120ms ease, border-color 120ms ease,
+          color 120ms ease;
+        -webkit-appearance: none;
+        appearance: none;
       }
 
-      button:hover:not(:disabled) {
-        background: var(--uds-color-surface-interactive-subtle-hover, rgb(31 111 235 / 10%));
+      .udc-chip__label {
+        text-align: center;
       }
 
-      button:active:not(:disabled) {
-        background: var(--uds-color-surface-interactive-subtle-active, rgb(31 111 235 / 16%));
-      }
-
-      button[aria-selected='true'] {
-        background: var(--uds-color-surface-interactive-active, #174ea6);
-        border-color: var(--uds-color-surface-interactive-active, #174ea6);
-        color: var(--uds-color-text-inverse, #fff);
-      }
-
-      button[aria-selected='true']:hover:not(:disabled) {
-        background: var(--uds-color-surface-interactive-hover, #1a5dcc);
-        border-color: var(--uds-color-surface-interactive-hover, #1a5dcc);
-      }
-
-      button:disabled {
-        color: var(--uds-color-text-disabled, #a3a3a3);
-        border-color: var(--uds-color-border-disabled, #d4d4d4);
-        cursor: not-allowed;
-      }
-
-      .icon {
-        display: inline-flex;
+      .udc-chip__leading-icon,
+      .udc-chip__trailing-icon {
+        display: flex;
         align-items: center;
         flex-shrink: 0;
       }
+
+      .udc-chip__leading-icon .material-symbols-outlined,
+      .udc-chip__trailing-icon .material-symbols-outlined {
+        font-size: var(--uds-font-size-lg, 18px);
+        line-height: 1;
+      }
+
+      /* Hover */
+      .udc-chip:hover:not(:disabled) {
+        background-color: var(--uds-color-surface-interactive-subtle-hover);
+      }
+
+      /* Active */
+      .udc-chip:active:not(:disabled) {
+        background-color: var(--uds-color-surface-interactive-subtle-active);
+      }
+
+      /* Focus */
+      .udc-chip:focus-visible {
+        box-shadow:
+          0 0 0 2px var(--uds-color-surface-main),
+          0 0 0 4px var(--uds-color-border-outline-focus-visible);
+      }
+
+      /* Selected */
+      :host([selected]) .udc-chip {
+        background-color: var(--uds-color-surface-interactive-active);
+        border-color: var(--uds-color-surface-interactive-active);
+        color: var(--uds-color-text-inverse);
+      }
+
+      :host([selected]) .udc-chip:hover:not(:disabled) {
+        background-color: var(--uds-color-surface-interactive-hover);
+        border-color: var(--uds-color-surface-interactive-hover);
+      }
+
+      :host([selected]) .udc-chip__leading-icon,
+      :host([selected]) .udc-chip__trailing-icon {
+        color: var(--uds-color-icon-inverse);
+      }
+
+      /* Disabled */
+      .udc-chip:disabled {
+        color: var(--uds-color-text-disabled);
+        border-color: var(--uds-color-border-disabled);
+        cursor: not-allowed;
+      }
+
+      /* Dropdown variant — slightly smaller trailing icon */
+      :host([variant='dropdown'])
+        .udc-chip__trailing-icon
+        .material-symbols-outlined {
+        font-size: var(--uds-font-size-md, 16px);
+      }
     `,
-    focusRing,
   ];
 
   render() {
-    const trailing = this.trailingIcon || (this.variant === 'dropdown' ? 'expand_more' : this.removable ? 'close' : '');
+    const trailing =
+      this.trailingIcon ||
+      (this.variant === 'dropdown'
+        ? 'keyboard_arrow_down'
+        : this.removable || this.variant === 'input'
+          ? 'close'
+          : '');
 
     return html`
       <button
+        class="udc-chip"
         part="chip"
         type="button"
         ?disabled=${this.disabled}
         aria-selected=${this.isSelectable ? String(this.selected) : nothing}
+        aria-pressed=${this.isSelectable ? String(this.selected) : nothing}
         @click=${this.handleClick}
         @keydown=${this.handleKeydown}
       >
-        ${this.leadingIcon ? html`<span part="leading-icon" class="icon material-symbols-outlined" aria-hidden="true">${this.leadingIcon}</span>` : nothing}
-        <span part="label"><slot></slot></span>
-        ${trailing ? html`<span part="trailing-icon" class="icon material-symbols-outlined" aria-hidden="true">${trailing}</span>` : nothing}
+        ${this.leadingIcon
+          ? html`<span
+              class="udc-chip__leading-icon"
+              part="leading-icon"
+              aria-hidden="true"
+              ><span class="material-symbols-outlined">${this.leadingIcon}</span></span
+            >`
+          : nothing}
+        <span class="udc-chip__label" part="label"><slot></slot></span>
+        ${trailing
+          ? html`<span
+              class="udc-chip__trailing-icon"
+              part="trailing-icon"
+              aria-hidden="true"
+              ><span class="material-symbols-outlined">${trailing}</span></span
+            >`
+          : nothing}
       </button>
     `;
   }
@@ -128,14 +210,22 @@ export class UdsChipElement extends LitElement {
 
   private handleKeydown(event: KeyboardEvent) {
     if (this.disabled) return;
-    if ((event.key === 'Delete' || event.key === 'Backspace') && (this.removable || this.variant === 'input')) {
+    if (
+      (event.key === 'Delete' || event.key === 'Backspace') &&
+      (this.removable || this.variant === 'input')
+    ) {
       event.preventDefault();
       this.dismiss('keyboard');
     }
   }
 
   private dismiss(reason: UdsDismissDetail['reason']) {
-    const event = emitUdsEvent<UdsDismissDetail>(this, 'udc-dismiss', { reason }, { cancelable: true });
+    const event = emitUdsEvent<UdsDismissDetail>(
+      this,
+      'udc-dismiss',
+      { reason },
+      { cancelable: true },
+    );
     if (!event.defaultPrevented) this.remove();
   }
 }

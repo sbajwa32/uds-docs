@@ -1243,5 +1243,12 @@ export const SITE_CHANGELOG: SiteChangelogEntry[] = [
       changes: [
         { type: 'fixed', text: 'Restored the Badge playground. `<udc-badge>` already shipped the 5-tone × prominent/subtle × default/sm matrix in its shadow DOM — the playground tab now brings back tone, variant, size, and label controls.' }
       ]
+    },
+    {
+      version: 'SITE 2026.05.27.18',
+      date: '2026-05-27',
+      changes: [
+        { type: 'fixed', text: 'Restored the Chip visual styling and playground. `<udc-chip>` now ships the BEM leading-icon/label/trailing-icon structure with `--uds-font-size-lg` icon sizing, hover/active/focus rings, the surface-interactive-active selected state with inverse text + icons, and a smaller trailing chevron for the dropdown variant. Playground brings back variant, label, selected, leading-icon, and disabled controls.' }
+      ]
     }
 ];
