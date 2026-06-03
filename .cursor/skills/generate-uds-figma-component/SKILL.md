@@ -1,7 +1,7 @@
 ---
 name: generate-uds-figma-component
 description: UDS Component Factory. Drafts a token-bound UDS component set directly inside the UDS Components Figma file on a brand-new `🟠 <Title> {Cursor}{Ignore}` page. Use when the user says "generate a UDS component for X", "factory me an Avatar", "draft a new UDS component called Y", "build a UDS component for Z in Figma", or "use the component factory to start <Title>". Stops at Figma — never writes to `uds-docs/uds/`. Docs landing is the existing `uds-updated` skill, run later by the designer.
-lastUpdated: 2026-06-03T20:03:00Z
+lastUpdated: 2026-06-03T20:15:45Z
 ---
 
 # UDS Component Factory — Generate UDS Figma Component
@@ -491,6 +491,15 @@ Persist the proposed model to
    udc-label rebuild initially dropped its icon + badge slots; catch
    that by diffing the new component's property surface against the
    original before declaring it done.
+   **A restored/added slot's DEFAULT instance must be size- and
+   emphasis-appropriate for the host.** Reuse the original component's
+   default slot variant (or pick a fitting small one) — don't grab the
+   first/largest variant of the swapped component. A label-sized host
+   defaults to a 16px icon-wrapper and a SMALL, non-prominent badge,
+   not a 24px icon and a full prominent badge (which dominates the
+   label). And size the host layout so the text HUGS + wraps past a
+   `maxWidth` rather than `FILL` — `FILL` shoves a trailing slot to the
+   far edge with an awkward gap.
    Common reuse set: `udc-label`, `udc-icon-wrapper`, `udc-button`,
    `udc-text-input`, `udc-chip`, `udc-badge`, `udc-card`,
    `udc-notification`.
