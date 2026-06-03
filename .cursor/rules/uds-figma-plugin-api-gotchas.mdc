@@ -1,8 +1,8 @@
 ---
-description: Plugin API gotchas learned from UDS factory and sync work. Local-file component identity, INSTANCE_SWAP default formats, hidden auto-layout fills, resize-vs-sizing-mode ordering, per-side padding binding, effect-style binding, remote-library token/style discovery. Auto-attaches to anything that calls `use_figma`.
+description: Plugin API gotchas learned from UDS factory and sync work. Local-file component identity, INSTANCE_SWAP default formats, hidden auto-layout fills, resize-vs-sizing-mode ordering, per-side padding binding, effect-style binding, remote-library token/style discovery, text-wrap sizing. Auto-attaches to anything that calls `use_figma`.
 alwaysApply: false
 globs: ["**/*"]
-lastUpdated: 2026-06-03T17:47:37Z
+lastUpdated: 2026-06-03T17:52:50Z
 ---
 
 # UDS Figma Plugin API Gotchas
@@ -327,13 +327,57 @@ its in-file `VariableID:…` via `getVariableByIdAsync` instead of
 re-importing. Re-import by key only for tokens/styles the file isn't
 using yet (e.g. binding a brand-new elevation style to a popover).
 
+## 8. Variable-length copy must WRAP — `textAutoResize = 'WIDTH_AND_HEIGHT'` overflows on long content
+
+A text node created/cloned with the default `textAutoResize =
+'WIDTH_AND_HEIGHT'` grows horizontally to fit its content and never
+wraps. For a fixed label that's fine. For any node that holds
+**variable-length copy** — helper/error text, descriptions, option
+supporting text, the value/input line — it means a long string blows
+past the component's width instead of wrapping onto a second line. The
+field still renders fine with the short default string, so it passes a
+casual look and only breaks when real (long) copy lands.
+
+### Rule
+
+A copy-bearing text node inside a width-bound auto-layout component
+MUST be set to wrap:
+
+- `textNode.textAutoResize = 'HEIGHT'`  (fixed width, grows in height)
+- `textNode.layoutSizingHorizontal = 'FILL'`  (take the row's width)
+- and the node's row/parent must hug height
+  (`layoutSizingVertical = 'HUG'`) so the wrapped second line shows
+  instead of clipping.
+
+The component needs a definite width for wrapping to have a bound — a
+`FIXED`-width root (or a `FILL` chain up to one) gives the text a width
+to wrap within. A fully width-HUGGING component has no wrap point, so
+the auto-width text is the only thing setting the width; fixing wrap
+there means giving the component a real width first.
+
+### Wrong → correct
+
+```js
+// WRONG — helper text auto-grows in width, overflows on long copy
+helper.textAutoResize = 'WIDTH_AND_HEIGHT';   // default — never wraps
+
+// CORRECT — fixed width, wraps to height; row hugs the extra line
+helper.textAutoResize = 'HEIGHT';
+helper.layoutSizingHorizontal = 'FILL';
+helperRow.layoutSizingVertical = 'HUG';
+```
+
+This bit the Combobox helper text — the same root cause as a missing
+editable value property: text nodes built for the short demo string,
+not for real content.
+
 ## Related
 
 - `figma-use` skill (active Figma plugin skill)
   — base Plugin API rules. These gotchas should eventually upstream
   into that skill's `references/gotchas.md`.
 - [`generate-uds-figma-component`](../skills/generate-uds-figma-component/SKILL.md)
-  — the factory skill that surfaced these. Phase B uses all seven
+  — the factory skill that surfaced these. Phase B uses all eight
   patterns above.
 - [`uds-figma-factory-quality.mdc`](./uds-figma-factory-quality.mdc) —
   the companion factory-quality rule (state design contract, audit

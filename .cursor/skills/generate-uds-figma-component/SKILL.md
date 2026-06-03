@@ -1,7 +1,7 @@
 ---
 name: generate-uds-figma-component
 description: UDS Component Factory. Drafts a token-bound UDS component set directly inside the UDS Components Figma file on a brand-new `🟠 <Title> {Cursor}{Ignore}` page. Use when the user says "generate a UDS component for X", "factory me an Avatar", "draft a new UDS component called Y", "build a UDS component for Z in Figma", or "use the component factory to start <Title>". Stops at Figma — never writes to `uds-docs/uds/`. Docs landing is the existing `uds-updated` skill, run later by the designer.
-lastUpdated: 2026-06-03T17:47:37Z
+lastUpdated: 2026-06-03T17:52:50Z
 ---
 
 # UDS Component Factory — Generate UDS Figma Component
@@ -869,6 +869,15 @@ structured report with two sections.
  decides which strategy applies; the file must follow it
  consistently. Color binding is checked separately under "Token
  bindings" since color is not part of typography styles.
+- **Text wrap.** Every copy-bearing text node (helper/error text,
+ descriptions, option supporting text, the value/input line) MUST be
+ `textAutoResize='HEIGHT'` + `layoutSizingHorizontal='FILL'` inside a
+ width-bound parent — never the default `WIDTH_AND_HEIGHT` auto-width,
+ which overflows the component on long content instead of wrapping.
+ Auto-width copy nodes: N at `<nodeIds>`. Fixed short labels are
+ exempt. See
+ [`uds-figma-plugin-api-gotchas.mdc`](../../rules/uds-figma-plugin-api-gotchas.mdc)
+ §8.
 - **Variant matrix.** Generated variant axes and values vs. the
  approved model. Match / mismatch report. For container-of-N
  components, this includes the `count` variant axis — each enumerated
