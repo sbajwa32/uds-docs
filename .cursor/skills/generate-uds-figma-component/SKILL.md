@@ -1,7 +1,7 @@
 ---
 name: generate-uds-figma-component
 description: UDS Component Factory. Drafts a token-bound UDS component set directly inside the UDS Components Figma file on a brand-new `🟠 <Title> {Cursor}{Ignore}` page. Use when the user says "generate a UDS component for X", "factory me an Avatar", "draft a new UDS component called Y", "build a UDS component for Z in Figma", or "use the component factory to start <Title>". Stops at Figma — never writes to `uds-docs/uds/`. Docs landing is the existing `uds-updated` skill, run later by the designer.
-lastUpdated: 2026-06-03T17:42:56Z
+lastUpdated: 2026-06-03T17:47:37Z
 ---
 
 # UDS Component Factory — Generate UDS Figma Component
@@ -412,11 +412,15 @@ Persist the proposed model to
        - Inventing a new local pattern for something a published
          primitive already covers.
      For each property, list `propName`, `defaultValue` (the
-     component KEY of the appropriate wrapper / primitive — wrapper
-     KEY when one exists in the design system, raw library
-     component KEY only when no wrapper applies), and which
-     instance node the property links to via
-     `componentPropertyReferences = { mainComponent: propName }`.
+     appropriate wrapper / primitive — wrapper when one exists in the
+     design system, raw library component only when no wrapper
+     applies), and which instance node the property links to via
+     `componentPropertyReferences = { mainComponent: propName }`. The
+     `defaultValue` FORMAT depends on where the target lives: in-file
+     node ID for a local wrapper (`udc-icon-wrapper` is local), the
+     published KEY only for a remote-library target — see
+     [`uds-figma-plugin-api-gotchas.mdc`](../../rules/uds-figma-plugin-api-gotchas.mdc)
+     §2.
 
      **Per-variant defaults follow component anatomy and state
      semantics**, not a single property-level default. For a
@@ -645,7 +649,9 @@ rule 15: re-capture node IDs from the state ledger, do not guess):
 componentSet.addComponentProperty('label',        'TEXT',          'Step label');
 componentSet.addComponentProperty('description',  'TEXT',          'Optional description');
 componentSet.addComponentProperty('showDescription','BOOLEAN',      true);
-componentSet.addComponentProperty('leadingIcon',  'INSTANCE_SWAP', materialCheckComponentKey);
+// INSTANCE_SWAP default: local target = node ID (NOT the published key).
+// Recover via: (await someInstance.getMainComponentAsync()).id
+componentSet.addComponentProperty('leadingIcon',  'INSTANCE_SWAP', iconWrapperNodeId);
 
 // 2. Link the property to the node(s) it controls. The propName must
 //    match the registration. For variant-scoped components, walk each
@@ -691,9 +697,17 @@ Key rules:
   the property reference on that variant's node, or (b) split the
   node into two — one bound to the property, one with the baked-in
   glyph — and use BOOLEAN visibility to toggle which one shows.
-- **INSTANCE_SWAP default values are component KEYS, not IDs.** Use
-  the `componentKey` returned by `search_design_system` (it persists
-  across files); component `id` values are file-scoped.
+- **INSTANCE_SWAP default-value format depends on where the swap
+  target lives** (see
+  [`uds-figma-plugin-api-gotchas.mdc`](../../rules/uds-figma-plugin-api-gotchas.mdc)
+  §2). A **local** target (same file — e.g. `udc-icon-wrapper`, which
+  lives on a page in `UDS Components`) takes the in-file **node ID**
+  (`5657:6767`), recovered via
+  `await instance.getMainComponentAsync()` → `.id`. A **remote**
+  (subscribed-library) target takes the published **KEY**. Passing a
+  key for a local target throws `Property value is incompatible with
+  component property type` — that error means the format is
+  mis-scoped, not that the property type is wrong.
 
 If the component is a container of repeating instances (per the
 "Container count axis" model section), build **one variant per

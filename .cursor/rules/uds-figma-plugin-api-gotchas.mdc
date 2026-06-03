@@ -1,8 +1,8 @@
 ---
-description: Plugin API gotchas learned from UDS factory and sync work. Local-file component identity, INSTANCE_SWAP default formats, hidden auto-layout fills, resize-vs-sizing-mode ordering, per-side padding binding, effect-style binding. Auto-attaches to anything that calls `use_figma`.
+description: Plugin API gotchas learned from UDS factory and sync work. Local-file component identity, INSTANCE_SWAP default formats, hidden auto-layout fills, resize-vs-sizing-mode ordering, per-side padding binding, effect-style binding, remote-library token/style discovery. Auto-attaches to anything that calls `use_figma`.
 alwaysApply: false
 globs: ["**/*"]
-lastUpdated: 2026-05-26T23:02:20Z
+lastUpdated: 2026-06-03T17:47:37Z
 ---
 
 # UDS Figma Plugin API Gotchas
@@ -285,13 +285,55 @@ trivially "bound" in the vacuous sense; nodes with a style attached
 but custom effect overrides on top should be flagged as a separate
 "effect style overridden" finding.
 
+## 7. UDS tokens, effect styles, and text styles are REMOTE — `getLocal*Async` returns empty
+
+UDS Components subscribes the **UDS Tokens** library. Every color
+variable, effect style (`uds/effect/elevation/depth-*`), and text
+style (`uds/text/*`) lives in that remote library, NOT locally in the
+UDS Components file. Consequence:
+
+- `await figma.variables.getLocalVariablesAsync('COLOR')` → `[]`
+- `await figma.getLocalEffectStylesAsync()` → `[]`
+- `await figma.getLocalTextStylesAsync()` → `[]`
+
+Reading empty from those does NOT mean the tokens/styles don't exist —
+it means they're remote. Concluding "there's no elevation style, I'll
+hardcode `node.effects = [...]`" is the trap (and it violates §6). The
+factory hit exactly this: `getLocalEffectStylesAsync()` returned `0`,
+but `uds/effect/elevation/depth-100..500` were in the library the whole
+time.
+
+### Discover + bind remote tokens/styles
+
+1. **Discover** via `search_design_system` scoped to the UDS Tokens
+   library key (`includeVariables` / `includeStyles: true`). Keyword
+   the query well — an effect-style sweep needs `elevation` / `shadow`
+   / `depth`; a color sweep needs the role word. The result carries the
+   `key`.
+2. **Import** into the file before binding. Mind the namespaces:
+   - Variables: `const v = await figma.variables.importVariableByKeyAsync(KEY)`
+     — note `figma.variables.`; bare `figma.importVariableByKeyAsync`
+     does NOT exist and throws
+     `no such property 'importVariableByKeyAsync'`.
+   - Effect / text styles: `const s = await figma.importStyleByKeyAsync(KEY)`
+     — this one IS on the `figma` root.
+3. **Bind** the imported object: `node.setBoundVariable(prop, v)` /
+   `figma.variables.setBoundVariableForPaint(paint, 'color', v)` /
+   `await node.setEffectStyleIdAsync(s.id)` /
+   `await textNode.setTextStyleIdAsync(s.id)`.
+
+A token already used elsewhere in the file is already imported — reuse
+its in-file `VariableID:…` via `getVariableByIdAsync` instead of
+re-importing. Re-import by key only for tokens/styles the file isn't
+using yet (e.g. binding a brand-new elevation style to a popover).
+
 ## Related
 
 - `figma-use` skill (active Figma plugin skill)
   — base Plugin API rules. These gotchas should eventually upstream
   into that skill's `references/gotchas.md`.
 - [`generate-uds-figma-component`](../skills/generate-uds-figma-component/SKILL.md)
-  — the factory skill that surfaced these. Phase B uses all six
+  — the factory skill that surfaced these. Phase B uses all seven
   patterns above.
 - [`uds-figma-factory-quality.mdc`](./uds-figma-factory-quality.mdc) —
   the companion factory-quality rule (state design contract, audit
