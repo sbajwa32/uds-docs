@@ -1,7 +1,7 @@
 ---
 name: generate-uds-figma-component
 description: UDS Component Factory. Drafts a token-bound UDS component set directly inside the UDS Components Figma file on a brand-new `🟠 <Title> {Cursor}{Ignore}` page. Use when the user says "generate a UDS component for X", "factory me an Avatar", "draft a new UDS component called Y", "build a UDS component for Z in Figma", or "use the component factory to start <Title>". Stops at Figma — never writes to `uds-docs/uds/`. Docs landing is the existing `uds-updated` skill, run later by the designer.
-lastUpdated: 2026-06-03T18:36:15Z
+lastUpdated: 2026-06-03T20:03:00Z
 ---
 
 # UDS Component Factory — Generate UDS Figma Component
@@ -481,6 +481,16 @@ Persist the proposed model to
    from the parent (e.g. its label text isn't exposed), surface that
    as a finding — the fix is to improve that component (a separate
    `{Cursor}` draft), not to bypass it with raw nodes.
+   **When you rebuild or improve an existing component as a successor
+   draft, FIRST enumerate its full surface — every entry in
+   `componentPropertyDefinitions` (props, slots, INSTANCE_SWAPs,
+   variant axes) and every named region — and make the successor a
+   SUPERSET. Never silently drop capability.** A from-scratch rebuild
+   that's missing features the original had (a leading-icon slot, a
+   right-slot/badge, a tone) is a regression, not an improvement. The
+   udc-label rebuild initially dropped its icon + badge slots; catch
+   that by diffing the new component's property surface against the
+   original before declaring it done.
    Common reuse set: `udc-label`, `udc-icon-wrapper`, `udc-button`,
    `udc-text-input`, `udc-chip`, `udc-badge`, `udc-card`,
    `udc-notification`.
