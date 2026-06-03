@@ -1,7 +1,7 @@
 ---
 name: generate-uds-figma-component
 description: UDS Component Factory. Drafts a token-bound UDS component set directly inside the UDS Components Figma file on a brand-new `🟠 <Title> {Cursor}{Ignore}` page. Use when the user says "generate a UDS component for X", "factory me an Avatar", "draft a new UDS component called Y", "build a UDS component for Z in Figma", or "use the component factory to start <Title>". Stops at Figma — never writes to `uds-docs/uds/`. Docs landing is the existing `uds-updated` skill, run later by the designer.
-lastUpdated: 2026-06-03T17:52:50Z
+lastUpdated: 2026-06-03T18:36:15Z
 ---
 
 # UDS Component Factory — Generate UDS Figma Component
@@ -461,9 +461,29 @@ Persist the proposed model to
  variant baked in (e.g. `hasConnector=false` on the last step) so
  the designer doesn't have to manually correct it after dropping in
  the stepper.
-- **Sibling reuse** — components to reuse as nested instances
- (`Button`, `Text Input`, `Card`, `Notification`, `Icon Wrapper`,
- `Badge`, etc.).
+- **Sibling reuse — reach for an existing DS component for EVERY
+ standard affordance, never rebuild one from raw nodes.** The factory
+ nests existing UDS components as instances rather than re-drawing
+ their anatomy. This is not just icons:
+   - **Field label → `udc-label`** (NOT a raw text node + a separate
+     required-dot ellipse). `udc-label` already owns the required
+     indicator, the error/disabled/success tones, and multiline
+     wrapping — rebuilding it as raw text strands all of that and
+     drifts from the design system. The Combobox draft originally
+     shipped a raw `label` + `required-dot`; that was the miss this
+     rule prevents.
+   - **Icons → `udc-icon-wrapper`** (per the INSTANCE_SWAP rules above).
+   - **Badges/counts → `udc-badge`; inline actions → `udc-button`;
+     selectable tokens → `udc-chip`;** etc.
+   Before drawing any sub-part, check `uds-docs/uds/components.json`
+   for an existing component that covers it and nest that instead.
+   If the existing component is missing a property you need to drive
+   from the parent (e.g. its label text isn't exposed), surface that
+   as a finding — the fix is to improve that component (a separate
+   `{Cursor}` draft), not to bypass it with raw nodes.
+   Common reuse set: `udc-label`, `udc-icon-wrapper`, `udc-button`,
+   `udc-text-input`, `udc-chip`, `udc-badge`, `udc-card`,
+   `udc-notification`.
 - **Assumptions and acceptance criteria** — plain-language list the
  designer can scan in under a minute. Acceptance criteria must be
  contract-tied, not generic: name the `<udc-<id>>` tag, the variants
@@ -929,6 +949,12 @@ structured report with two sections.
  component for that category exists in the subscribed libraries
  are flagged as candidate gaps. Designer judges whether each is
  intentional decoration vs. a missed icon-wrapper instance.
+ **Also flag raw rebuilds of an existing DS component:** a field
+ label drawn as a raw text node (+ a sibling required-dot) where
+ `udc-label` exists, an inline button drawn as a raw frame where
+ `udc-button` exists, etc. Any sub-part a published UDS component
+ already covers MUST be a nested instance of that component, not
+ raw nodes — per the Phase A "Sibling reuse" rule.
 - **Class-required state coverage.** Every state the component's class
  requires (per
  [`uds-component-checklist.mdc`](../../rules/uds-component-checklist.mdc)
