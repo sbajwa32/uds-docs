@@ -2,7 +2,7 @@
 description: Plugin API gotchas learned from UDS factory and sync work. Local-file component identity, INSTANCE_SWAP default formats, hidden auto-layout fills, resize-vs-sizing-mode ordering, per-side padding binding, effect-style binding, remote-library token/style discovery, text-wrap sizing. Auto-attaches to anything that calls `use_figma`.
 alwaysApply: false
 globs: ["**/*"]
-lastUpdated: 2026-06-03T17:52:50Z
+lastUpdated: 2026-06-03T19:04:58Z
 ---
 
 # UDS Figma Plugin API Gotchas
@@ -370,6 +370,30 @@ helperRow.layoutSizingVertical = 'HUG';
 This bit the Combobox helper text — the same root cause as a missing
 editable value property: text nodes built for the short demo string,
 not for real content.
+
+### Responsive wrap needs a `minWidth` guard
+
+A `FILL`/`layoutGrow=1` text node that wraps (`textAutoResize='HEIGHT'`)
+will collapse to **per-character** wrapping ("L / a / b / e / l") when
+its container gets narrow — e.g. when it shares a row with a trailing
+affordance (a required dot, a counter) that eats the width. Set a
+`minWidth` on the text node (e.g. `textNode.minWidth = 40`) so it wraps
+word-by-word and never degrades to one glyph per line. This is what
+makes a wrapping label/field actually responsive.
+
+### Do NOT collapse a variant axis that encodes incompatible modes
+
+The cloned `udc-label` had a `Multiline` axis (False=hug, True=wrap).
+"Simplifying" by collapsing it into a single always-wrap mode broke the
+component: a `FILL` wrapping label cannot also sit inline with a
+trailing required dot / "(optional)" without collapsing or leaving an
+ugly gap — hug and wrap are genuinely different modes, which is exactly
+why the axis existed. Before collapsing any axis, check whether its
+values represent mutually-incompatible layouts; if they do, keep the
+axis. And when a cloned/inherited structure keeps fighting an
+edit (nested-instance sizing that won't reset cleanly), stop patching
+it and rebuild the component from scratch — that's faster and cleaner
+than wrestling the clone.
 
 ## Related
 
