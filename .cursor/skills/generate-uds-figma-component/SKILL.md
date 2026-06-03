@@ -1,7 +1,7 @@
 ---
 name: generate-uds-figma-component
 description: UDS Component Factory. Drafts a token-bound UDS component set directly inside the UDS Components Figma file on a brand-new `🟠 <Title> {Cursor}{Ignore}` page. Use when the user says "generate a UDS component for X", "factory me an Avatar", "draft a new UDS component called Y", "build a UDS component for Z in Figma", or "use the component factory to start <Title>". Stops at Figma — never writes to `uds-docs/uds/`. Docs landing is the existing `uds-updated` skill, run later by the designer.
-lastUpdated: 2026-06-03T16:24:32Z
+lastUpdated: 2026-06-03T16:57:13Z
 ---
 
 # UDS Component Factory — Generate UDS Figma Component
@@ -29,9 +29,11 @@ contract; the phases below are the operational implementation.
    The `{Ignore}` does the filtering, so every UDS automation already
    skips these pages — no rule changes required.
 2. **Existing-page collision.** If a `<Title> {Cursor}{Ignore}` page
-   already exists for this title, the factory inspects it and asks the
-   user BEFORE destroying or rebuilding anything. It never
-   auto-rebuilds over prior work.
+   already exists, the factory inspects it to decide whether to
+   resume/extend or rebuild. Because the `{Cursor}` tag is a standing
+   write grant (decision #5), rebuilding does NOT require fresh
+   permission — but the factory reports what it found and its plan
+   before writing.
 3. **Stoplight prefix while in review.** The page is born with `🟠`
    (in-progress). When the designer accepts and moves it to mainline,
    the rename drops `{Cursor}{Ignore}` and updates the stoplight —
@@ -42,6 +44,12 @@ contract; the phases below are the operational implementation.
    — component drafts on a `{Cursor}{Ignore}` page in `UDS Components`.
    Any write to a page without that suffix requires explicit per-target
    user direction.
+5. **The `{Cursor}` tag = standing write grant.** Any page whose name
+   contains `{Cursor}` is Cursor's to create, modify, rebuild, or
+   delete nodes on — freely, without per-action permission — until the
+   user removes the `{Cursor}` tag. The factory never removes the
+   `{Cursor}` / `{Ignore}` tags itself; that rename is the designer's
+   ownership/acceptance gesture and revokes the grant.
 
 ## Mandatory prerequisite skills
 
@@ -147,9 +155,10 @@ The component target is always the `UDS Components` file, file key
    the existing component instead (different workflow), or override.
 5. **Check existing-page collision.** List the pages of `UDS Components`
    and check whether a page named `<anyPrefix> <Title> {Cursor}{Ignore}`
-   already exists for this title. If it does, do NOT touch it yet —
-   ask the user (per locked decision #2 above) whether to
-   inspect-and-resume, destroy-and-rebuild, or pick a new title.
+   already exists. If it does, inspect it and decide whether to
+   resume/extend or rebuild (per locked decisions #2 and #5). The
+   `{Cursor}` tag means you don't need fresh permission to rebuild —
+   but report what's there and your plan before writing.
 6. **Locate or create the resume-state file.** State path is
    `.cursor/state/component-factory/<componentId>.md`. If it exists,
    read it and resume from where the prior session left off; do not
@@ -1025,9 +1034,11 @@ rebuild the page from scratch unless the designer explicitly asks
 - **Don't invent tokens.** If the model's token plan needs something
   that isn't in UDS Tokens, STOP and ask the user to add it via the
   UDS Tokens Figma file + `import-figma-tokens`.
-- **Don't proceed if the existing-page collision check found a
-  pre-existing `<Title> {Cursor}{Ignore}` page.** Ask the user first
-  (locked decision #2 above).
+- **Don't remove the `{Cursor}` or `{Ignore}` tags from a page.** That
+  rename is the designer's acceptance gesture and revokes Cursor's
+  standing write grant (locked decision #5). A pre-existing
+  `{Cursor}{Ignore}` page may be rebuilt without asking — inspect it
+  and report your plan first.
 - **Don't skip the Phase B.5 verification.** The quality-gate report
   in Phase C does not run on unverified work.
 
