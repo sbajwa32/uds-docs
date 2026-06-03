@@ -2,7 +2,7 @@
 description: Required preflight for any task that reads or writes UDS Figma files.
 globs: ["**/*"]
 alwaysApply: false
-lastUpdated: 2026-05-12T18:41:50Z
+lastUpdated: 2026-06-03T16:09:15Z
 ---
 
 # UDS Figma Preflight
@@ -26,7 +26,7 @@ Before doing any Figma-derived analysis or write, report:
 Figma preflight:
 - Tokens file version: X.Y or unavailable
 - Components file version: X.Y or unavailable
-- Site UDS_VERSION: X.Y
+- Site UDS version: X.Y (from uds-docs/uds/version.json)
 - Version mismatch: yes/no
 - Figma capability check: pass/partial/fail
 - Action: continue / dry-run only / pause for release flow
@@ -41,8 +41,9 @@ Figma preflight:
 3. Find the page named `UDS Version: X.Y` among the non-ignored pages.
 4. Parse `X.Y`.
 5. Read the current UDS version from `uds-docs/uds/version.json` (the
-   `version` field). The legacy `UDS_VERSION` constant in `app.js` is gone
-   (Phase 8) — `app.js` now fetches `version.json` at boot.
+   `version` field). The Next.js app reads this at boot via
+   `lib/uds-data.ts`; the legacy vanilla `app.js` and its `UDS_VERSION`
+   constant were deleted in the Next.js migration (Chunk 17).
 6. If either Figma version is higher than the site version, pause normal work
    and follow `uds-release-workflow.mdc`.
 

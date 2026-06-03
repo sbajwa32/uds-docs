@@ -1,7 +1,7 @@
 ---
 name: generate-uds-figma-component
 description: UDS Component Factory. Drafts a token-bound UDS component set directly inside the UDS Components Figma file on a brand-new `🟠 <Title> {Cursor}{Ignore}` page. Use when the user says "generate a UDS component for X", "factory me an Avatar", "draft a new UDS component called Y", "build a UDS component for Z in Figma", or "use the component factory to start <Title>". Stops at Figma — never writes to `uds-docs/uds/`. Docs landing is the existing `uds-updated` skill, run later by the designer.
-lastUpdated: 2026-05-26T23:02:20Z
+lastUpdated: 2026-06-03T16:09:15Z
 ---
 
 # UDS Component Factory — Generate UDS Figma Component
@@ -18,10 +18,30 @@ rename, docs scaffold, status sync, and changelog are NOT in scope —
 those happen later via the existing
 [`uds-updated`](../uds-updated/SKILL.md) skill, designer-initiated.
 
-The full spec for this skill lives in the plan at
-[`.cursor/plans/uds-component-factory.md`](../../plans/uds-component-factory.md).
-That plan is the source of truth for scope, locked decisions, and
-risks; the steps below are the operational implementation.
+## Locked decisions
+
+These four decisions govern the factory's behavior. They are the
+contract; the phases below are the operational implementation.
+
+1. **Marker convention.** The factory creates pages in `UDS Components`
+   named `🟠 <Title> {Cursor}{Ignore}` — orange/in-progress stoplight
+   prefix + `{Cursor}` designer label + `{Ignore}` exclusion marker.
+   The `{Ignore}` does the filtering, so every UDS automation already
+   skips these pages — no rule changes required.
+2. **Existing-page collision.** If a `<Title> {Cursor}{Ignore}` page
+   already exists for this title, the factory inspects it and asks the
+   user BEFORE destroying or rebuilding anything. It never
+   auto-rebuilds over prior work.
+3. **Stoplight prefix while in review.** The page is born with `🟠`
+   (in-progress). When the designer accepts and moves it to mainline,
+   the rename drops `{Cursor}{Ignore}` and updates the stoplight —
+   `🟠 Avatar {Cursor}{Ignore}` becomes `🟡 Avatar` (review) or
+   `🟢 Avatar` (production). The factory never performs that rename.
+4. **Write safety.** The factory's only write scope is scope #4 in
+   [`uds-figma-write-safety.mdc`](../../rules/uds-figma-write-safety.mdc)
+   — component drafts on a `{Cursor}{Ignore}` page in `UDS Components`.
+   Any write to a page without that suffix requires explicit per-target
+   user direction.
 
 ## Mandatory prerequisite skills
 
@@ -89,7 +109,7 @@ from context:
 | `componentId` | Yes | kebab-case (e.g. `avatar`). Must NOT collide with an existing entry in [`uds-docs/uds/components.json`](../../../uds-docs/uds/components.json). |
 | `brief` | Yes | Short prose describing purpose, when-to-use, when-not-to-use, and any non-obvious constraints. The factory expands this into the full model in Phase A. |
 | `siblings` | Optional | Up to 3 component IDs to use as anatomy/state/accessibility references. Default: factory picks the closest siblings from `components.json` based on the brief. |
-| `pageBaseline` | Default `🟠` | Stoplight prefix for the new page. Defaults to `🟠` (in-progress) per [locked decision #3 in the plan](../../plans/uds-component-factory.md#2-locked-decisions-this-conversation). |
+| `pageBaseline` | Default `🟠` | Stoplight prefix for the new page. Defaults to `🟠` (in-progress) per locked decision #3 above. |
 
 The component target is always the `UDS Components` file, file key
 `1XJoUJgtNpw4R0IIT3VjoK`. The skill never writes to `UDS Tokens`.
@@ -121,9 +141,8 @@ The component target is always the `UDS Components` file, file key
 5. **Check existing-page collision.** List the pages of `UDS Components`
    and check whether a page named `<anyPrefix> <Title> {Cursor}{Ignore}`
    already exists for this title. If it does, do NOT touch it yet —
-   ask the user (per [locked decision #2 in the plan](../../plans/uds-component-factory.md#2-locked-decisions-this-conversation))
-   whether to inspect-and-resume, destroy-and-rebuild, or pick a new
-   title.
+   ask the user (per locked decision #2 above) whether to
+   inspect-and-resume, destroy-and-rebuild, or pick a new title.
 6. **Locate or create the resume-state file.** State path is
    `.cursor/state/component-factory/<componentId>.md`. If it exists,
    read it and resume from where the prior session left off; do not
@@ -760,7 +779,8 @@ happens next is NOT this skill's responsibility:
  "UDS updated", "Figma updated", "sync UDS from Figma"). That
  workflow handles `new-component` scaffold,
  `sync-figma-component-spec`, `link-figma-nodes`, status sync,
- changelog, cache-bust, commit, push.
+ changelog, commit, and push. (Cloudflare and Next handle cache
+ freshness post-migration — there's no cache-bust step.)
 - Optionally, the designer may run
  [`figma-component-card`](../figma-component-card/SKILL.md) to build
  the seven-section page layout in Figma. Independent of this
@@ -796,7 +816,7 @@ place — cleanup is optional, since `.cursor/state/` is gitignored.
 If the designer says "iterate" / "revise" after Phase C, return to
 Phase B with the requested changes and re-run B.5 + Phase C. Do not
 rebuild the page from scratch unless the designer explicitly asks
-(per [locked decision #2](../../plans/uds-component-factory.md#2-locked-decisions-this-conversation)).
+(per locked decision #2 above).
 
 ## Output principles
 
@@ -836,14 +856,12 @@ rebuild the page from scratch unless the designer explicitly asks
   UDS Tokens Figma file + `import-figma-tokens`.
 - **Don't proceed if the existing-page collision check found a
   pre-existing `<Title> {Cursor}{Ignore}` page.** Ask the user first
-  ([locked decision #2](../../plans/uds-component-factory.md#2-locked-decisions-this-conversation)).
+  (locked decision #2 above).
 - **Don't skip the Phase B.5 verification.** The quality-gate report
   in Phase C does not run on unverified work.
 
 ## See also
 
-- [Plan: UDS Component Factory](../../plans/uds-component-factory.md)
-  — full scope, locked decisions, risks, pilot defaults, kill criteria.
 - `figma-use` (active Figma plugin skill)
   — Plugin API rules.
 - `figma-generate-library` (active Figma plugin skill)
