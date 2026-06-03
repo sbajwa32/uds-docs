@@ -74,7 +74,7 @@ the manual fallback when the hook hasn't run.
 | Skill | Last updated (UTC) | Description |
 |---|---|---|
 | [`figma-component-card`](./skills/figma-component-card/SKILL.md) | `2026-05-26T23:02:20Z` | Build or update the canonical "component card" canvas layout on a UDS component page in Figma. Use when the user says "build/update the… |
-| [`generate-uds-figma-component`](./skills/generate-uds-figma-component/SKILL.md) | `2026-06-03T16:57:13Z` | UDS Component Factory. Drafts a token-bound UDS component set directly inside the UDS Components Figma file on a brand-new `🟠 <Title>… |
+| [`generate-uds-figma-component`](./skills/generate-uds-figma-component/SKILL.md) | `2026-06-03T17:42:56Z` | UDS Component Factory. Drafts a token-bound UDS component set directly inside the UDS Components Figma file on a brand-new `🟠 <Title>… |
 | [`import-figma-tokens`](./skills/import-figma-tokens/SKILL.md) | `2026-05-24T09:19:52Z` | Import UDS token changes from the UDS Tokens Figma file. Uses direct Figma Variables reads first and token ZIP exports only as fallback.… |
 | [`link-figma-nodes`](./skills/link-figma-nodes/SKILL.md) | `2026-05-27T22:21:24Z` | Populate figmaNodeId and figmaPageNodeId fields in per-component spec.json files from canonical UDS Components Figma nodes. Use when Figma… |
 | [`new-component`](./skills/new-component/SKILL.md) | `2026-05-27T22:21:24Z` | Scaffold a new UDS component end to end. Creates uds/components/<id>/ with all required files (CSS stub, spec.json, status.json,… |

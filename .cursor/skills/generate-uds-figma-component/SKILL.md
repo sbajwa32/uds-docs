@@ -1,7 +1,7 @@
 ---
 name: generate-uds-figma-component
 description: UDS Component Factory. Drafts a token-bound UDS component set directly inside the UDS Components Figma file on a brand-new `🟠 <Title> {Cursor}{Ignore}` page. Use when the user says "generate a UDS component for X", "factory me an Avatar", "draft a new UDS component called Y", "build a UDS component for Z in Figma", or "use the component factory to start <Title>". Stops at Figma — never writes to `uds-docs/uds/`. Docs landing is the existing `uds-updated` skill, run later by the designer.
-lastUpdated: 2026-06-03T16:57:13Z
+lastUpdated: 2026-06-03T17:42:56Z
 ---
 
 # UDS Component Factory — Generate UDS Figma Component
@@ -376,6 +376,17 @@ Persist the proposed model to
      every text node not bound to an icon glyph gets a TEXT property.
      For each, list `propName`, `defaultValue`, and which node(s) the
      property links to via `componentPropertyReferences = { characters: propName }`.
+     **Non-skippable: the editable entry node of any text-entry
+     component** (the input/value text of an Input, Text Area,
+     Combobox, Search, Date Picker, etc.) MUST get a TEXT property — it
+     is the component's primary editable surface, so it is never a
+     candidate for omission. Differing baked-in display text across
+     variants (placeholder vs. a selected value vs. a multi "Add…"
+     hint) is NOT a reason to skip the property: bind the property
+     anyway with a sensible default; per-variant display differences
+     are demo cosmetics, not a contract. The earlier Combobox draft
+     shipped without this property — that was the miss this rule
+     prevents.
    - **BOOLEAN properties** — every show/hide region (optional icons,
      optional descriptions, dividers, dismiss affordances, helper
      text, support indicators). For each, list `propName`,
@@ -858,7 +869,11 @@ structured report with two sections.
  detection: text nodes whose name suggests editable copy (`label`,
  `description`, `title`, `caption`, `count`, `body`, `helper`, etc.)
  lacking a `characters` reference are flagged as *candidate* gaps —
- designer judges whether each is intentionally decorative.
+ designer judges whether each is intentionally decorative. **Hard
+ failure (not a candidate): the editable entry node of a text-entry
+ component** (`value`, `input`, `value-text`, search/entry field)
+ without a `characters` TEXT-property reference fails this gate
+ outright, per the non-skippable rule in Phase A.
 - **Per-variant INSTANCE_SWAP defaults.** For every component property
  of type `INSTANCE_SWAP` registered on the set, walk every variant
  and compare its current swap target against the per-variant default
