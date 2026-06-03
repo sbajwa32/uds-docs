@@ -2,7 +2,7 @@
 name: figma-component-inspector
 description: Deep-inspects a single UDS component in the UDS Components Figma file by reading node trees, component sets, variants, layer details, token bindings, nested instances, and doc-site parity. Bidirectional — reports both Figma-side gaps (mismatches, missing) and doc-site surplus (artifacts with no Figma counterpart), plus a snapshot delta against the prior captured state to surface deletions and renames. Open Figma findings that need designer attention are surfaced as structured entries in uds/components/<id>/figmanotes.json (not free-text in spec.json knownIssues), classified by `kind` so they auto-prune on the next inspection when resolved. Read-only; never modifies files or Figma. Use when updating a component spec, investigating a component mismatch, or before syncing Figma component changes into docs.
 model: inherit
-lastUpdated: 2026-05-27T22:21:24Z
+lastUpdated: 2026-06-03T16:24:32Z
 ---
 
 # Figma Component Inspector
@@ -129,6 +129,21 @@ Only call something a prop/state if it is supported by one of:
 - existing Web Component attribute/property
 - current JSON schema/content
 - explicit component description
+
+If the component description contains a delimited
+`<<UDS-FACTORY-CONTRACT v1>> … <<END-UDS-FACTORY-CONTRACT>>` block
+(written by the `generate-uds-figma-component` factory), treat it as an
+explicit, Figma-authored declaration of the component's non-drawable
+contract. Parse it as a high-confidence source for the fields the node
+tree alone cannot supply: `events[]`, CSS `parts`,
+`accessibility.keyboard[]` / `screenReader[]`, and
+`acceptanceCriteria[]`, plus the `Class` and the `States` baseline
+(each marked supported or `notApplicable`). This is reading an authored
+artifact, not inventing from intuition, so it does not violate the "do
+not backfill from intuition" rule. Report each field parsed from the
+block with its source noted as `factory-contract` so the sync step can
+apply it. If the block is malformed, report it as a finding and fall
+back to node-tree evidence only.
 
 ### 4. Extract anatomy and dependencies
 

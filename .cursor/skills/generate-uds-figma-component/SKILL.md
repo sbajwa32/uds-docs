@@ -1,7 +1,7 @@
 ---
 name: generate-uds-figma-component
 description: UDS Component Factory. Drafts a token-bound UDS component set directly inside the UDS Components Figma file on a brand-new `🟠 <Title> {Cursor}{Ignore}` page. Use when the user says "generate a UDS component for X", "factory me an Avatar", "draft a new UDS component called Y", "build a UDS component for Z in Figma", or "use the component factory to start <Title>". Stops at Figma — never writes to `uds-docs/uds/`. Docs landing is the existing `uds-updated` skill, run later by the designer.
-lastUpdated: 2026-06-03T16:09:15Z
+lastUpdated: 2026-06-03T16:24:32Z
 ---
 
 # UDS Component Factory — Generate UDS Figma Component
@@ -97,6 +97,13 @@ under. If any of them is unread in the current session, read them now:
   rule (section 7), and component / subcomponent name (sections 8,
   9). The factory picks names from this framework rather than
   inheriting whatever the closest sibling happens to use.
+- [`uds-component-checklist.mdc`](../../rules/uds-component-checklist.mdc)
+  — the completeness rulebook. Defines the component class taxonomy
+  and, per class, which states and which API surface (events, parts,
+  slots) are REQUIRED vs. `notApplicable`. The factory uses this to
+  decide what "complete" means for the component being drafted — it is
+  the spine of the Phase A model, not an afterthought. A draft that
+  skips a class-required state or event is incomplete.
 
 ## Inputs
 
@@ -167,6 +174,14 @@ sibling specs are larger, read only the sections you need (`anatomy`,
 - [`uds-token-architecture.mdc`](../../rules/uds-token-architecture.mdc)
   — token-role contract (which token role binds to which CSS variable
   family).
+- [`uds-component-checklist.mdc`](../../rules/uds-component-checklist.mdc)
+  — the component class taxonomy and the per-class required-state /
+  required-API baseline. Read this BEFORE drafting the model; it
+  decides what a complete version of this component must include.
+- [`uds-docs/uds/components/button/spec.json`](../../../uds-docs/uds/components/button/spec.json)
+  — the bar for a fleshed-out contract (`props`, `events`, `slots`,
+  `states`, full `accessibility`, contract-tied `acceptanceCriteria`).
+  Use it as the completeness reference, not a thing to copy.
 
 ### Discovery sweep (run before drafting the model)
 
@@ -193,10 +208,26 @@ bundled Text Styles bind via `setTextStyleIdAsync`.
 Persist the proposed model to
 `.cursor/state/component-factory/<componentId>.md`. Sections:
 
+- **Component class** — classify the component as exactly one of
+ `layout`, `display`, `action`, `form`, `navigation`, `feedback`, or
+ `data` per
+ [`uds-component-checklist.mdc`](../../rules/uds-component-checklist.mdc)
+ §"Component class". This is the FIRST decision in the model because it
+ drives the required-state baseline and the required API surface
+ (events, parts) for every section below. Completeness is judged
+ against this class, not picked ad hoc.
 - **Purpose** — why this component exists.
 - **When to use** / **When not to use** — paired guidance.
-- **Anatomy** — root, label, icon/content slots, helper text, action
- area, supporting parts.
+- **Anatomy, slots, and parts** — root, label, icon/content regions,
+ helper text, action area, supporting parts. Formalize this into two
+ lists the docs contract needs:
+   - **Slots** — every content region a consumer fills, named as a
+     slot contract (`default` plus named regions like `leading`,
+     `trailing`, `helper`). Maps to `spec.json` `slots[]`.
+   - **CSS parts** — internal regions worth exposing via `::part()`
+     for external styling (e.g. `field`, `icon`, `helper`). Maps to
+     the Web Component `parts` surface. If none apply, say so
+     explicitly rather than omitting the list.
 - **Subcomponent classification** — for every distinct Figma component
  set the factory plans to build, declare exactly one of:
    - **Main component** — the design unit a designer reaches for in
@@ -239,15 +270,36 @@ Persist the proposed model to
  state vs a property, section 7 covers Title Case in Figma. Don't
  inherit a sibling's name if the sibling disagrees with the
  framework — the framework wins.
-- **State matrix** — pick state names from section 1 of
- [`uds-naming-conventions.mdc`](../../rules/uds-naming-conventions.mdc).
- The eight standard states are Default, Hover, Pressed, Focus,
- Selected, Disabled, Loading, Error, plus the conditional Empty
- and Read-only when applicable. The reserved-words distinction
- between Selected, Checked (form controls), and Current
- (navigation) is in the same section.
-- **Accessibility plan** — keyboard, focus, screen reader, disabled /
- loading / error behaviors.
+- **State matrix (class-driven)** — start from the component class's
+ required-state baseline in
+ [`uds-component-checklist.mdc`](../../rules/uds-component-checklist.mdc)
+ §"State baseline", NOT from a generic list. That baseline is
+ conditional on class: form controls require `error` / `required` /
+ `disabled` (and `readonly` if text-entry); selectable controls
+ require `checked` / `selected`; disclosure controls require
+ `expanded` / `collapsed`; data / search surfaces require `empty`;
+ pointer-interactive controls require `hover`; keyboard-focusable
+ controls require `focus-visible`; actions/toggles/tabs require
+ `active` / `pressed`. For EVERY state the class requires, mark it
+ either supported (it WILL be built as a Figma variant in Phase B) or
+ `notApplicable` with a one-line reason. Never silently omit a
+ class-required state. Pick the exact state NAMES from section 1 of
+ [`uds-naming-conventions.mdc`](../../rules/uds-naming-conventions.mdc)
+ (including its Selected / Checked / Current reserved-word
+ distinction). Maps to `spec.json` `states[]`.
+- **Accessibility plan** — keyboard, focus, screen reader, and
+ disabled / loading / error behaviors, derived from the component
+ class and node structure (never from screenshots). Maps to
+ `spec.json` `accessibility.keyboard[]` / `screenReader[]` / `wcag[]`.
+- **Events** — every custom event the finished Web Component will
+ dispatch: `name`, when it fires, and payload shape. Derive from the
+ class — `action` → `click`; `form` → `change` / `input`; `feedback`
+ → `dismiss` / `open` / `close`; `navigation` → `select`; etc. Figma
+ cannot draw an event, so this list lives only in the model and in the
+ component-description contract written in Phase B (B.3.5) — but it is
+ REQUIRED for any class that dispatches events. If the class
+ genuinely dispatches none, state that explicitly. Maps to `spec.json`
+ `events[]`.
 - **Token plan** — explicit role-to-token map, e.g.
  `background.default = --uds-color-surface-interactive-default`. Every
  visual property the component will bind belongs in this map. If a
@@ -389,7 +441,33 @@ Persist the proposed model to
  (`Button`, `Text Input`, `Card`, `Notification`, `Icon Wrapper`,
  `Badge`, etc.).
 - **Assumptions and acceptance criteria** — plain-language list the
- designer can scan in under a minute.
+ designer can scan in under a minute. Acceptance criteria must be
+ contract-tied, not generic: name the `<udc-<id>>` tag, the variants
+ that must render, each required state's distinct visual, the focus
+ token, the events that must fire, and the key keyboard / screen-reader
+ behavior — the way a fleshed-out component's `acceptanceCriteria[]`
+ reads (see `uds-docs/uds/components/button/spec.json` for the bar).
+ Maps to `spec.json` `acceptanceCriteria[]`.
+
+### The drawable vs. non-drawable contract
+
+Figma can draw variants, states, anatomy, slots, and nested instances.
+It CANNOT draw events, `::part()` exposure, keyboard / screen-reader
+behavior, or the acceptance checklist. Those non-drawable parts are
+still required for a complete component, so the factory handles them in
+two places:
+
+1. They live in the model file (sections above), so the designer
+   reviews them at the approval gate.
+2. Phase B writes them into the Figma component's **description** as a
+   delimited factory-contract block (step B.3.5). The
+   [`figma-component-inspector`](../../agents/figma-component-inspector.md)
+   reads the component description, so when the designer later runs
+   [`uds-updated`](../uds-updated/SKILL.md) the contract round-trips
+   into `spec.json` (`events[]`, `slots[]`, `accessibility`,
+   `acceptanceCriteria[]`) instead of landing empty. This is the
+   synergy: the factory authors the full web-component contract once,
+   and the docs sync consumes it.
 
 ### Approval gate (mandatory before Phase B)
 
@@ -464,10 +542,17 @@ and you can re-run after fixing the cause.
   Phase A model picked a name that doesn't appear in the framework
   for a category the framework covers, fix it before this step
   rather than encoding the drift into Figma.
-- Build variants and states with auto-layout. Defaults: containers hug
-  content unless a fixed dimension is part of the spec; **every used
-  spacing property is bound per side** (see below); flat structure
-  preferred unless nesting is required.
+- Build variants and states with auto-layout. **Build every state the
+  Phase A model marked supported for the component's class** — not just
+  the visually obvious ones. A `form` draft must include `error`,
+  `required`, and (if supported) `readonly` as real variants; a
+  selectable control must include `selected` / `checked`; a disclosure
+  control must include `expanded` / `collapsed`; a data/search surface
+  must include `empty`. States the model marked `notApplicable` are
+  skipped (their reason rides in the B.3.5 contract block). Defaults:
+  containers hug content unless a fixed dimension is part of the spec;
+  **every used spacing property is bound per side** (see below); flat
+  structure preferred unless nesting is required.
 - **Per-side spacing binding (all five properties).** The Plugin API
   has no `paddingHorizontal` / `paddingVertical` shorthand — auto-layout
   exposes `paddingTop`, `paddingBottom`, `paddingLeft`, `paddingRight`,
@@ -611,6 +696,59 @@ when they drop the parent component into a layout.
   also bind it to a variable. The literal is the design-time fallback;
   the binding is what survives mode flips.
 
+### B.3.5 — Author the factory contract into the component description
+
+Write the non-drawable contract (the parts Figma can't represent
+visually) into the component set's `description` field so it
+round-trips into `spec.json` when the designer later runs
+[`uds-updated`](../uds-updated/SKILL.md). Setting the description of a
+component that lives on the `{Cursor}{Ignore}` draft page is covered by
+scope #4 — it's part of building the draft, not a separate write
+target. Use a delimited block so the inspector can find and parse it
+and the designer can edit or delete it freely:
+
+```text
+<<UDS-FACTORY-CONTRACT v1>>
+Component: <Title> (<id>)
+Class: <layout|display|action|form|navigation|feedback|data>
+Events:
+  - <name> — <when it fires> — payload: <shape>
+  (or: none (class does not dispatch))
+Slots:
+  - <name> — <what it holds>
+Parts:
+  - <name> — <region exposed for ::part() styling>
+  (or: none)
+States (class baseline):
+  - <state> — supported | notApplicable: <reason>
+Keyboard:
+  - <key> — <action>
+Screen reader:
+  - <trigger> — <announcement>
+Acceptance criteria:
+  - <contract-tied item>
+Designer: edit or remove this block freely — it's a factory draft.
+<<END-UDS-FACTORY-CONTRACT>>
+```
+
+Rules:
+
+- **Human-readable.** A designer sees this in Figma's asset panel.
+  Keep it as the plain-text block above, not a JSON dump.
+- **No silent omission.** Every section appears. If a section doesn't
+  apply, write `none` or `none (class does not dispatch)` rather than
+  dropping the heading — the inspector relies on the section being
+  present.
+- **Keep it consistent with the model file.** The block is the
+  description's copy of the model's non-drawable sections (class,
+  events, slots, parts, states, accessibility, acceptance). If you
+  revise the model on iterate, rewrite the block too.
+- **Single round-trip source.** This block is the only place the
+  inspector can read events, parts, keyboard, and acceptance for a
+  brand-new component (there's no Web Component source yet). If it's
+  missing or malformed, those `spec.json` fields land empty on first
+  sync.
+
 ### B.4 — Required write summary
 
 After the build, emit ONE Figma write summary per the
@@ -648,6 +786,10 @@ and the `figma-use` "always read IDs from the state ledger" rule:
    present in the metadata response. Any missing or duplicate ID
    STOPS the run for investigation — Phase C does not run on
    unverified work.
+4. Confirm the component set's `description` contains a well-formed
+   `<<UDS-FACTORY-CONTRACT v1>> … <<END-UDS-FACTORY-CONTRACT>>` block
+   (B.3.5) with every section present. A missing or malformed block
+   STOPS the run — the contract round-trip depends on it.
 
 ## Phase C — Quality-gate report
 
@@ -740,6 +882,29 @@ structured report with two sections.
  component for that category exists in the subscribed libraries
  are flagged as candidate gaps. Designer judges whether each is
  intentional decoration vs. a missed icon-wrapper instance.
+- **Class-required state coverage.** Every state the component's class
+ requires (per
+ [`uds-component-checklist.mdc`](../../rules/uds-component-checklist.mdc)
+ §"State baseline") MUST be present as a Figma variant OR marked
+ `notApplicable` with a reason in the contract block. Required states
+ with neither a variant nor a `notApplicable` reason: N at `<list>`.
+ This is the gate that stops a `form` draft shipping without `error` /
+ `required`, or a disclosure control without `expanded` / `collapsed`.
+- **Events planned.** For any class that dispatches events (`action`,
+ `form`, `feedback`, `navigation`, …), the contract block's `Events`
+ section MUST list at least one event or the explicit `none (class
+ does not dispatch)`. An empty `Events` section on a class that should
+ have them: fail.
+- **Contract block present and well-formed.** The component
+ description MUST contain a `<<UDS-FACTORY-CONTRACT v1>> …
+ <<END-UDS-FACTORY-CONTRACT>>` block with all sections present (Class,
+ Events, Slots, Parts, States, Keyboard, Screen reader, Acceptance) —
+ each either filled or explicitly `none` / `notApplicable`. Missing or
+ malformed: fail. The `spec.json` round-trip via `uds-updated` depends
+ on this block.
+- **Slots and parts enumerated.** The contract block's `Slots` and
+ `Parts` sections must each be filled or explicitly `none`. An empty
+ (not `none`) section is a gap.
 
 If any tool-emitted gate fires with non-zero findings, the skill
 reports the issue and proposes a fix. Design-changing, destructive, or
@@ -842,6 +1007,12 @@ rebuild the page from scratch unless the designer explicitly asks
   [`import-figma-tokens`](../import-figma-tokens/SKILL.md).
 - **Don't auto-rename the page** to drop `{Cursor}{Ignore}` or to
   change the stoplight. That's the designer's acceptance gesture.
+- **Don't ship a draft with an incomplete behavior contract for a
+  class that requires one.** A `form` component with no `error` /
+  `required` states, an `action` / `feedback` component with no events,
+  or any draft missing the B.3.5 contract block is incomplete — fix it
+  before Phase D, or record an explicit `notApplicable` reason in the
+  contract.
 - **Don't run [`new-component`](../new-component/SKILL.md),
   [`sync-figma-component-spec`](../sync-figma-component-spec/SKILL.md),
   [`link-figma-nodes`](../link-figma-nodes/SKILL.md), or any

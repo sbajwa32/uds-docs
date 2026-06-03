@@ -1,7 +1,7 @@
 ---
 name: sync-figma-component-spec
 description: Update a UDS component's per-component artifacts (spec.json, CSS, examples, impl.json, playground.js, figmanotes.json) from a deep Figma component inspection. Bidirectional — consumes the inspector's `Doc-site surplus` + `Snapshot delta` sections to propose removals (deleted slots/events/states/CSS/JS/examples) as classified `potentially-breaking` or `destructive` findings that default to ask-user, AND consumes the inspector's `Figma Notes evaluation` section to update `figmanotes.json` (auto-prune resolved notes, add new ones). Use for prompts like "sync Button from Figma" or after figma-component-inspector reports high-confidence changes.
-lastUpdated: 2026-05-27T22:21:24Z
+lastUpdated: 2026-06-03T16:24:32Z
 ---
 
 # Sync Figma Component Spec
@@ -147,6 +147,19 @@ Map inspector output to schema fields in `uds-docs/uds/components/<id>/spec.json
 
 Do not overwrite non-empty fields with lower-confidence text. Additions are
 preferred over rewrites.
+
+**Factory-contract source.** When the inspector reports fields sourced
+from a `factory-contract` block — the `generate-uds-figma-component`
+factory wrote the component's non-drawable contract into its Figma
+description — treat those `events[]`, `slots[]`, `parts`,
+`accessibility.*`, `states[]`, and `acceptanceCriteria[]` values as
+high-confidence authored input, not intuition. On a first sync of a
+factory-drafted component these are usually the ONLY source for
+events / parts / keyboard (there is no Web Component source yet), and
+landing them is the round-trip the factory was designed for. Still
+classify per `uds-figma-change-classification.mdc`: additions are
+non-breaking and auto-apply at high confidence; anything that would
+remove or rename an existing field follows the normal ask-user path.
 
 ### 5.5. Build proposed removals (REVERSE MAPPING — mandatory)
 
