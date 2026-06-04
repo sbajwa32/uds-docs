@@ -2,7 +2,7 @@
 description: Plugin API gotchas learned from UDS factory and sync work. Local-file component identity, INSTANCE_SWAP default formats, hidden auto-layout fills, resize-vs-sizing-mode ordering, per-side padding binding, effect-style binding, remote-library token/style discovery, text-wrap sizing. Auto-attaches to anything that calls `use_figma`.
 alwaysApply: false
 globs: ["**/*"]
-lastUpdated: 2026-06-03T19:04:58Z
+lastUpdated: 2026-06-04T19:58:39Z
 ---
 
 # UDS Figma Plugin API Gotchas
@@ -395,13 +395,130 @@ edit (nested-instance sizing that won't reset cleanly), stop patching
 it and rebuild the component from scratch — that's faster and cleaner
 than wrestling the clone.
 
+## 9. Bound-variable paints can still render their literal fallback — bake the resolved value
+
+`figma.variables.setBoundVariableForPaint({ type:'SOLID', color:{r:0,g:0,b:0} }, 'color', v)`
+returns a paint that *binds* the variable but keeps whatever literal
+`color` you passed (here black) as the design-time fallback. Two
+situations make that literal show up on canvas instead of the resolved
+token value:
+
+- **Component / variant ROOT fills** render the literal fallback, not
+  the live-resolved variable, in screenshots and on canvas. (Child
+  frames resolve live; the component node itself shows the baked
+  literal.)
+- **Re-binding a variable a node already had** — e.g. you `clone()` a
+  component whose root is bound to `surface-main`, then re-assign
+  `fills=[bind(surfaceMain)]` — keeps the literal you passed (black)
+  rather than re-baking the resolved value. Binding a *different*
+  variable bakes the resolved literal correctly, which is why the bug
+  looks selective: only the same-variable rebinds go black.
+
+Net effect from the factory: every Default/Focus variant root (rebound
+to the same `surface-main` the base already had) rendered solid black,
+while Hover/Selected (different vars) were fine.
+
+### Rule
+
+Bake the resolved value into the literal `color` AND keep the binding:
+
+```js
+// WRONG — literal stays black; variant root renders black
+node.fills = [figma.variables.setBoundVariableForPaint(
+  { type:'SOLID', color:{ r:0, g:0, b:0 } }, 'color', v)];
+
+// CORRECT — resolve for this node, bake the literal, keep the binding
+const rgb = v.resolveForConsumer(node).value;   // { r, g, b, a }
+node.fills = [{
+  type: 'SOLID',
+  color: { r: rgb.r, g: rgb.g, b: rgb.b },
+  boundVariables: { color: { type: 'VARIABLE_ALIAS', id: v.id } }
+}];
+```
+
+A whole-set fix is a post-pass that walks every node's `fills` /
+`strokes`, and for each paint with `boundVariables.color`, rebuilds it
+with the resolved literal. Cheap and idempotent.
+
+## 10. Component `description` HTML-escapes `<`/`>` — use `descriptionMarkdown`
+
+Setting `componentSet.description = '<<UDS-FACTORY-CONTRACT v1>> …'`
+stores `&lt;&lt;UDS-FACTORY-CONTRACT v1&gt;&gt;` — the `description`
+setter HTML-escapes angle brackets. Any reader matching the literal
+`<<UDS-FACTORY-CONTRACT v1>>` delimiter (the
+[`figma-component-inspector`](../agents/figma-component-inspector.md)
+contract-block parser) then misses the block, and the round-trip into
+`spec.json` lands empty.
+
+`descriptionMarkdown` stores the literal text (`<<` survives). Write the
+factory-contract block via `node.descriptionMarkdown`, and verify:
+
+```js
+node.descriptionMarkdown = block;
+if (node.descriptionMarkdown.indexOf('<<UDS-FACTORY-CONTRACT v1>>') < 0)
+  throw 'contract delimiter was escaped/lost';
+```
+
+`description` is the escaped HTML render of the markdown; treat
+`descriptionMarkdown` as the source of truth.
+
+## 11. `setEffectStyleIdAsync('')` leaves a stale effect literal — clear with `effects = []`
+
+Detaching an effect style does not remove the effect. After
+`await node.setEffectStyleIdAsync('')`, `node.effects` still holds the
+previous style's shadow as a raw literal, so the node both renders a
+shadow you meant to drop AND fails the "raw effects literal, no effect
+style" gate (§6).
+
+```js
+// WRONG — detaches the style but keeps a stale raw drop-shadow
+await node.setEffectStyleIdAsync('');
+
+// CORRECT — to make a node intentionally flat (no elevation)
+node.effects = [];
+```
+
+Use `setEffectStyleIdAsync(otherStyle.id)` to *change* elevation; use
+`effects = []` to *remove* it.
+
+## 12. Nesting a DS component is not enough — expose it (`isExposedInstance`) to surface its properties
+
+A nested instance's own component properties (e.g. `udc-icon-wrapper`'s
+`Icon` glyph-swap and `Size`) do NOT appear on the parent component's
+instance panel by default. Adding a top-level `INSTANCE_SWAP` property
+on the parent swaps the *whole wrapper* for another component — it does
+not let the designer change the glyph inside the wrapper, which is
+almost always what they actually want. (Factory miss: the Metric Card
+`trendIcon` swap replaced the wrapper but exposed no way to pick the
+glyph.)
+
+To surface the nested wrapper's own controls, set
+`isExposedInstance = true` on the nested instance (writable on primary
+instances inside a `ComponentNode` / `ComponentSetNode`; set it on the
+instance in *every* variant):
+
+```js
+const icon = variant.findOne(n => n.name === 'icon' && n.type === 'INSTANCE');
+icon.isExposedInstance = true;   // surfaces the wrapper's Icon + Size on the parent
+```
+
+Verify by instantiating the set and reading `instance.exposedInstances`
+→ each should list the wrapper's `componentProperties` (`Icon#…`,
+`Size`). Prefer exposing the nested glyph/size controls over a
+whole-wrapper `INSTANCE_SWAP` when the intent is "swap the glyph"; keep
+both only if replacing the entire wrapper is a real use case.
+
+Component-specific corollary: `udc-icon-wrapper`'s rendered glyph color
+lives on the `Union` `BOOLEAN_OPERATION` child (a bound paint), not the
+deepest `VECTOR`. To tint a wrapper per tone, rebind that node's fill.
+
 ## Related
 
 - `figma-use` skill (active Figma plugin skill)
   — base Plugin API rules. These gotchas should eventually upstream
   into that skill's `references/gotchas.md`.
 - [`generate-uds-figma-component`](../skills/generate-uds-figma-component/SKILL.md)
-  — the factory skill that surfaced these. Phase B uses all eight
+  — the factory skill that surfaced these. Phase B uses all twelve
   patterns above.
 - [`uds-figma-factory-quality.mdc`](./uds-figma-factory-quality.mdc) —
   the companion factory-quality rule (state design contract, audit

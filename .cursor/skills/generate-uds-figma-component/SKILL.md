@@ -1,7 +1,7 @@
 ---
 name: generate-uds-figma-component
 description: UDS Component Factory. Drafts a token-bound UDS component set directly inside the UDS Components Figma file on a brand-new `🟠 <Title> {Cursor}{Ignore}` page. Use when the user says "generate a UDS component for X", "factory me an Avatar", "draft a new UDS component called Y", "build a UDS component for Z in Figma", or "use the component factory to start <Title>". Stops at Figma — never writes to `uds-docs/uds/`. Docs landing is the existing `uds-updated` skill, run later by the designer.
-lastUpdated: 2026-06-03T20:15:45Z
+lastUpdated: 2026-06-04T19:58:39Z
 ---
 
 # UDS Component Factory — Generate UDS Figma Component
@@ -394,7 +394,12 @@ Persist the proposed model to
      `componentPropertyReferences = { visible: propName }`.
    - **INSTANCE_SWAP properties** — every nested instance a designer
      would reasonably swap (icons, avatars, slot fillers, leading /
-     trailing adornments). When the design system or its subscribed
+     trailing adornments). For a nested DS *wrapper* whose own purpose
+     is to swap its content (e.g. `udc-icon-wrapper`'s glyph), prefer
+     EXPOSING the nested instance (Phase B.2.6 / gotchas §12) so its own
+     `Icon` / `Size` controls surface on the parent — a whole-wrapper
+     `INSTANCE_SWAP` only replaces the wrapper, not the glyph, which is
+     rarely what the designer wants. When the design system or its subscribed
      libraries provide a wrapper or primitive for a category, the
      factory MUST nest that wrapper as the default INSTANCE_SWAP
      component. Do NOT fall back to:
@@ -646,7 +651,11 @@ and you can re-run after fixing the cause.
   binding the style routinely ship visually-shadowed nodes whose
   values don't match any depth step at all. See
   [`uds-figma-plugin-api-gotchas.mdc`](../../rules/uds-figma-plugin-api-gotchas.mdc)
-  §6 for the wrong/correct contract and audit signature.
+  §6 for the wrong/correct contract and audit signature. To make a node
+  intentionally FLAT (no elevation), set `node.effects = []` —
+  `setEffectStyleIdAsync('')` only detaches the style and leaves the
+  prior shadow as a raw literal that fails the Phase C effect gate
+  (gotchas §11).
 - Bind fills, strokes, **typography**, spacing (per the per-side rule
   above), radius, **and effects** (per the effect-style rule above)
   to UDS Tokens via the role-to-token map from Phase A. For typography
@@ -658,6 +667,16 @@ and you can re-run after fixing the cause.
 - Use the actual library variable / style keys returned by
   `get_libraries` + `search_design_system` — never hardcode hex
   values into bound paints.
+- **Bake the resolved value into every bound paint's literal `color`.**
+  A paint from `setBoundVariableForPaint` keeps the literal fallback you
+  passed, and component / variant ROOT fills render that literal (not
+  the live-resolved token) — and re-binding a variable a cloned node
+  already had keeps the stale literal. Build the paint as
+  `{ type:'SOLID', color: v.resolveForConsumer(node).value, boundVariables:{ color:{ type:'VARIABLE_ALIAS', id: v.id } } }`,
+  or run a post-pass that re-bakes every bound fill/stroke from its
+  resolved value. Skipping this is the "black variant roots" bug. See
+  [`uds-figma-plugin-api-gotchas.mdc`](../../rules/uds-figma-plugin-api-gotchas.mdc)
+  §9.
 - Use existing UDS components as nested instances where the model says
   to (per Phase A "Sibling reuse").
 - **For every icon slot the model enumerates, nest the appropriate
@@ -757,6 +776,35 @@ on the last step in a horizontal stepper). The designer should not
 have to manually fix anything about the terminal-position instance
 when they drop the parent component into a layout.
 
+### B.2.6 — Expose nested DS-component instances
+
+Nesting a UDS component (e.g. `udc-icon-wrapper`) does NOT surface its
+own properties on the parent. By default a designer selecting your
+component sees nothing of the wrapper's `Icon` glyph-swap or `Size`, and
+a top-level `INSTANCE_SWAP` (B.2.5) only swaps the *whole wrapper*, not
+the glyph inside it. For every nested DS instance whose own controls a
+designer should reach, set `isExposedInstance = true` on that instance
+in EVERY variant:
+
+```js
+for (const variant of componentSet.children) {
+  for (const nm of ['icon', 'trend-icon']) {
+    const inst = variant.findOne(n => n.name === nm && n.type === 'INSTANCE');
+    if (inst) inst.isExposedInstance = true;   // surfaces its Icon + Size on the parent
+  }
+}
+```
+
+Verify: instantiate the set and confirm `instance.exposedInstances`
+lists each wrapper's `componentProperties` (`Icon#…`, `Size`). If B.2.5
+registered a whole-wrapper `INSTANCE_SWAP` for the same instance, drop
+it (`componentSet.deleteComponentProperty(name)`) unless replacing the
+entire wrapper is a real use case — exposing the glyph/size control is
+what designers want, and keeping both clutters the panel. This was the
+Metric Card `trendIcon` miss. See
+[`uds-figma-plugin-api-gotchas.mdc`](../../rules/uds-figma-plugin-api-gotchas.mdc)
+§12.
+
 ### B.3 — Token discipline
 
 - If a needed token is missing from UDS Tokens, STOP and ask. New
@@ -772,7 +820,7 @@ when they drop the parent component into a layout.
 ### B.3.5 — Author the factory contract into the component description
 
 Write the non-drawable contract (the parts Figma can't represent
-visually) into the component set's `description` field so it
+visually) into the component set's `descriptionMarkdown` field so it
 round-trips into `spec.json` when the designer later runs
 [`uds-updated`](../uds-updated/SKILL.md). Setting the description of a
 component that lives on the `{Cursor}{Ignore}` draft page is covered by
@@ -806,6 +854,14 @@ Designer: edit or remove this block freely — it's a factory draft.
 
 Rules:
 
+- **Write via `descriptionMarkdown`, NOT `description`.** The plain
+  `description` setter HTML-escapes `<`/`>` (`<<` becomes `&lt;&lt;`),
+  which breaks the `<<UDS-FACTORY-CONTRACT v1>>` delimiter the inspector
+  matches and lands the `spec.json` fields empty. `descriptionMarkdown`
+  stores the literal brackets — after writing, verify
+  `node.descriptionMarkdown.indexOf('<<UDS-FACTORY-CONTRACT v1>>') >= 0`.
+  See [`uds-figma-plugin-api-gotchas.mdc`](../../rules/uds-figma-plugin-api-gotchas.mdc)
+  §10.
 - **Human-readable.** A designer sees this in Figma's asset panel.
   Keep it as the plain-text block above, not a JSON dump.
 - **No silent omission.** Every section appears. If a section doesn't
@@ -859,10 +915,11 @@ and the `figma-use` "always read IDs from the state ledger" rule:
    present in the metadata response. Any missing or duplicate ID
    STOPS the run for investigation — Phase C does not run on
    unverified work.
-4. Confirm the component set's `description` contains a well-formed
-   `<<UDS-FACTORY-CONTRACT v1>> … <<END-UDS-FACTORY-CONTRACT>>` block
-   (B.3.5) with every section present. A missing or malformed block
-   STOPS the run — the contract round-trip depends on it.
+4. Confirm the component set's `descriptionMarkdown` contains a
+   well-formed `<<UDS-FACTORY-CONTRACT v1>> … <<END-UDS-FACTORY-CONTRACT>>`
+   block (B.3.5) with every section present, with literal `<<` delimiters
+   (not HTML-escaped `&lt;&lt;` — gotchas §10). A missing or malformed
+   block STOPS the run — the contract round-trip depends on it.
 
 ## Phase C — Quality-gate report
 
@@ -988,7 +1045,7 @@ structured report with two sections.
  does not dispatch)`. An empty `Events` section on a class that should
  have them: fail.
 - **Contract block present and well-formed.** The component
- description MUST contain a `<<UDS-FACTORY-CONTRACT v1>> …
+ `descriptionMarkdown` MUST contain a `<<UDS-FACTORY-CONTRACT v1>> …
  <<END-UDS-FACTORY-CONTRACT>>` block with all sections present (Class,
  Events, Slots, Parts, States, Keyboard, Screen reader, Acceptance) —
  each either filled or explicitly `none` / `notApplicable`. Missing or
