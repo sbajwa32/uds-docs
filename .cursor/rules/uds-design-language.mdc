@@ -2,7 +2,7 @@
 description: How every UDS component handles each state, extracted from current Figma/docs component evidence and Web Component source. State constructions (Default/Hover/Active/Focus/Filled/Selected/Error/Disabled/Read-only/Loading), focus-ring patterns and when to use each, surface treatments, elevation/shadow scale, border-radius scale, density/sizing patterns, selection treatments. Component-specific overrides documented per state. Differences between components flagged for designer review. The factory and any new-component skill should bind state visuals to the constructions in this doc rather than re-deriving them.
 alwaysApply: false
 globs: ["**/*"]
-lastUpdated: 2026-05-27T22:21:24Z
+lastUpdated: 2026-06-04T20:35:00Z
 ---
 
 # UDS Design Language
@@ -309,12 +309,16 @@ gapped ring.
 ```
 Is the element inside a clipped container (overflow:hidden)?
 ├── Yes  → Use construction B (box-shadow) bound to surface-main
-└── No
-    │
-    Is the element a large card / tile?
-    ├── Yes → Use construction C (single ring, no gap)
-    └── No  → Use construction A (outline + offset)  ← default
+└── No   → Use construction A (outline + offset), 2px gap  ← default
 ```
+
+A **gapped** ring is the standard for every element — large containers
+(cards, tiles) included. The earlier "large card / tile → construction
+C, single ring, no gap" branch is **superseded** per designer direction
+(2026-06-04): a card's focus ring should sit in a 2 px gap *outside* the
+card edge, not hug it as a borderless ring. Tile's existing 3 px
+single-ring (C) stays documented as a legacy construction pending a
+Figma → code round trip.
 
 ### 6.3 In every construction
 
@@ -323,8 +327,9 @@ Is the element inside a clipped container (overflow:hidden)?
   trailing icon buttons), checkboxes, radios.
 - The ring is **2 px thick** for form fields (text-input, dropdown,
   text-area, search).
-- The ring is **3 px thick** for tiles (single-ring construction).
-- The gap (in A or B) is **1–2 px**.
+- The ring is **3 px thick** for tile's legacy single-ring (C); new
+  large containers (cards) use construction A's 2 px gapped ring (§6.2).
+- The gap (in A or B) is **2 px** (the system standard).
 - The ring uses `:focus-visible`, not `:focus`. Always.
 - Error doesn't recolor the focus ring (it stays blue — see §2.1).
 

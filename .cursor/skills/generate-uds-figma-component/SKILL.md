@@ -1,7 +1,7 @@
 ---
 name: generate-uds-figma-component
 description: UDS Component Factory. Drafts a token-bound UDS component set directly inside the UDS Components Figma file on a brand-new `🟠 <Title> {Cursor}{Ignore}` page. Use when the user says "generate a UDS component for X", "factory me an Avatar", "draft a new UDS component called Y", "build a UDS component for Z in Figma", or "use the component factory to start <Title>". Stops at Figma — never writes to `uds-docs/uds/`. Docs landing is the existing `uds-updated` skill, run later by the designer.
-lastUpdated: 2026-06-04T20:22:47Z
+lastUpdated: 2026-06-04T20:35:00Z
 ---
 
 # UDS Component Factory — Generate UDS Figma Component
@@ -698,6 +698,16 @@ and you can re-run after fixing the cause.
   shipped green on the Error card). See
   [`uds-figma-factory-quality.mdc`](../../rules/uds-figma-factory-quality.mdc)
   §6.
+- **Focus / ring states are an offset, gapped, resizing ring — never a
+  thickened border.** Build a `focus-outline` child frame (absolute,
+  `STRETCH` constraints, inset −(gap + ring), `fills = []`, stroke
+  `outline-focus-visible`, `strokeAlign = 'INSIDE'`, concentric radius,
+  parent `clipsContent = false`); **2 px gap** is the standard.
+  Thickening the element's own border in the focus color is wrong (the
+  Metric Card focus miss). See
+  [`uds-figma-factory-quality.mdc`](../../rules/uds-figma-factory-quality.mdc)
+  §1 and
+  [`uds-design-language.mdc`](../../rules/uds-design-language.mdc) §6.
 - Use existing UDS components as nested instances where the model says
   to (per Phase A "Sibling reuse").
 - **For every icon slot the model enumerates, nest the appropriate
@@ -1034,6 +1044,13 @@ structured report with two sections.
  The color analogue of the per-variant INSTANCE_SWAP gate — see
  [`uds-figma-factory-quality.mdc`](../../rules/uds-figma-factory-quality.mdc)
  §6 (the Metric Card "trend stuck green" failure).
+- **Focus / ring construction.** Any Focus (or ring-style) variant MUST
+ contain an offset `focus-outline` ring child (absolute, gapped,
+ `outline-focus-visible` stroke, resizing), not merely a thickened
+ border on the element root. Focus variants whose only change from
+ Default is a heavier / recolored root border: N. See
+ [`uds-figma-factory-quality.mdc`](../../rules/uds-figma-factory-quality.mdc)
+ §1 and [`uds-design-language.mdc`](../../rules/uds-design-language.mdc) §6.
 - **Layer hygiene.** Unnamed nodes: N. Generic names (`Frame N`,
  `Rectangle N`): N. Orphan top-level nodes on the page: N.
 - **Auto-layout coverage.** Frames without auto-layout: N at

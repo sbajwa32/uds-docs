@@ -2,7 +2,7 @@
 description: Process quality rules for any factory-style Figma build (generate-uds-figma-component, new-component, future factories). State design contract (specify visuals not just tokens), mandatory machine-verified audits, variant grid layout reflects axis semantics, visible anatomy by default, dependency manifest before write. Design-system-agnostic — the specific UDS visual constructions live in uds-design-language.mdc.
 alwaysApply: false
 globs: [".cursor/skills/generate-uds-figma-component/**", ".cursor/skills/new-component/**", ".cursor/skills/figma-component-card/**"]
-lastUpdated: 2026-06-04T20:22:47Z
+lastUpdated: 2026-06-04T20:35:00Z
 ---
 
 # Figma Factory Quality
@@ -68,6 +68,33 @@ stacked effects (e.g. a focus ring with a gap layer). Two stacked drop
 shadows render differently depending on which is in front; specifying
 "spread=1 surface-main + spread=3 outline-focus" without saying which
 is on top is ambiguous.
+
+### Focus / ring states are an offset, gapped, resizing ring — not a border
+
+A focus (or any ring-style selection) state is NOT a thickened border on
+the element. It is a separate ring that sits in a gap *outside* the
+element edge and **resizes with the element**. Thickening the element's
+own border (1 px → 2 px in the focus color) reads as a heavier border,
+not a focus ring — it was the Metric Card focus miss.
+
+Canonical values live in
+[`uds-design-language.mdc`](./uds-design-language.mdc) §6 (ring color
+`border-outline-focus-visible`, **2 px gap**, gapped construction for
+every element including cards). The Figma build of construction A
+(CSS `outline` + `outline-offset`) is:
+
+- An absolute-positioned `focus-outline` frame, child of the element.
+- `layoutPositioning = 'ABSOLUTE'` + `constraints = { horizontal:
+  'STRETCH', vertical: 'STRETCH' }` so it tracks the element's size.
+- Inset by −(gap + ringWeight) on every side (2 px gap + 2 px ring →
+  `x = y = −4`, size = element + 8).
+- `fills = []`, stroke bound to `outline-focus-visible`,
+  `strokeAlign = 'INSIDE'`, corner radius bound concentric to the
+  element's (element radius + inset).
+- Parent `clipsContent = false` so the ring renders outside the bounds.
+
+The element keeps its normal Default border underneath, and you build
+this ring for every focus (and ring-style) variant — per tone.
 
 ### Source the canonical visuals from the design language doc
 
