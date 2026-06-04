@@ -1380,5 +1380,12 @@ export const SITE_CHANGELOG: SiteChangelogEntry[] = [
       changes: [
         { type: 'fixed', text: 'Ran a second stale-stack pass and cleaned remaining active references in generated type descriptions, spec-audit guidance, current React comments, token-probe helpers, and component-manifest tooling. Historical changelog and migration records were left intact as history.' }
       ]
+    },
+    {
+      version: 'SITE 2026.06.04.1',
+      date: '2026-06-04',
+      changes: [
+        { type: 'changed', text: 'Cursor Workflows: the UDS component factory now names its Figma draft pages with the lowercase component id (e.g. `metric-card`), matching the mainline component pages, instead of a Title-Case label. Updated the factory card copy to match.' }
+      ]
     }
 ];

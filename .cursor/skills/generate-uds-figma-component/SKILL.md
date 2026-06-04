@@ -1,13 +1,13 @@
 ---
 name: generate-uds-figma-component
-description: UDS Component Factory. Drafts a token-bound UDS component set directly inside the UDS Components Figma file on a brand-new `🟠 <Title> {Cursor}{Ignore}` page. Use when the user says "generate a UDS component for X", "factory me an Avatar", "draft a new UDS component called Y", "build a UDS component for Z in Figma", or "use the component factory to start <Title>". Stops at Figma — never writes to `uds-docs/uds/`. Docs landing is the existing `uds-updated` skill, run later by the designer.
-lastUpdated: 2026-06-04T20:35:00Z
+description: UDS Component Factory. Drafts a token-bound UDS component set directly inside the UDS Components Figma file on a brand-new `🟠 <id> {Cursor}{Ignore}` page. Use when the user says "generate a UDS component for X", "factory me an Avatar", "draft a new UDS component called Y", "build a UDS component for Z in Figma", or "use the component factory to start <Title>". Stops at Figma — never writes to `uds-docs/uds/`. Docs landing is the existing `uds-updated` skill, run later by the designer.
+lastUpdated: 2026-06-04T21:23:48Z
 ---
 
 # UDS Component Factory — Generate UDS Figma Component
 
 This skill takes a short component brief and returns a strong, token-bound
-Figma component set on a brand-new `🟠 <Title> {Cursor}{Ignore}` page in the
+Figma component set on a brand-new `🟠 <id> {Cursor}{Ignore}` page in the
 [`UDS Components`](https://www.figma.com/file/1XJoUJgtNpw4R0IIT3VjoK)
 file. The designer remains the design lead and the approval authority;
 the factory handles the repetitive construction, quality checks, and
@@ -24,11 +24,13 @@ These four decisions govern the factory's behavior. They are the
 contract; the phases below are the operational implementation.
 
 1. **Marker convention.** The factory creates pages in `UDS Components`
-   named `🟠 <Title> {Cursor}{Ignore}` — orange/in-progress stoplight
-   prefix + `{Cursor}` designer label + `{Ignore}` exclusion marker.
+   named `🟠 <id> {Cursor}{Ignore}` — orange/in-progress stoplight
+   prefix + the lowercase kebab `componentId` (matching mainline UDS
+   Components pages like `badge`, `data-table`, `icon-wrapper`), then
+   the `{Cursor}` designer label + `{Ignore}` exclusion marker.
    The `{Ignore}` does the filtering, so every UDS automation already
    skips these pages — no rule changes required.
-2. **Existing-page collision.** If a `<Title> {Cursor}{Ignore}` page
+2. **Existing-page collision.** If a `<id> {Cursor}{Ignore}` page
    already exists, the factory inspects it to decide whether to
    resume/extend or rebuild. Because the `{Cursor}` tag is a standing
    write grant (decision #5), rebuilding does NOT require fresh
@@ -37,8 +39,8 @@ contract; the phases below are the operational implementation.
 3. **Stoplight prefix while in review.** The page is born with `🟠`
    (in-progress). When the designer accepts and moves it to mainline,
    the rename drops `{Cursor}{Ignore}` and updates the stoplight —
-   `🟠 Avatar {Cursor}{Ignore}` becomes `🟡 Avatar` (review) or
-   `🟢 Avatar` (production). The factory never performs that rename.
+   `🟠 avatar {Cursor}{Ignore}` becomes `🟡 avatar` (review) or
+   `🟢 avatar` (production). The factory never performs that rename.
 4. **Write safety.** The factory's only write scope is scope #4 in
    [`uds-figma-write-safety.mdc`](../../rules/uds-figma-write-safety.mdc)
    — component drafts on a `{Cursor}{Ignore}` page in `UDS Components`.
@@ -120,8 +122,8 @@ from context:
 
 | Input | Required | Notes |
 |---|---|---|
-| `componentTitle` | Yes | Title Case (e.g. `Avatar`, `Banner`, `Stepper`). Used in the page name and the component-set node name. |
-| `componentId` | Yes | kebab-case (e.g. `avatar`). Must NOT collide with an existing entry in [`uds-docs/uds/components.json`](../../../uds-docs/uds/components.json). |
+| `componentTitle` | Yes | Title Case (e.g. `Avatar`, `Banner`, `Stepper`). The human-facing title for `spec.json` / docs — NOT used for the Figma page or set name (those use `componentId`). |
+| `componentId` | Yes | kebab-case (e.g. `avatar`). Used for the Figma page name (`🟠 <id> {Cursor}{Ignore}`, matching mainline UDS Components pages) and the component-set node name (`udc-<id>`). Must NOT collide with an existing entry in [`uds-docs/uds/components.json`](../../../uds-docs/uds/components.json). |
 | `brief` | Yes | Short prose describing purpose, when-to-use, when-not-to-use, and any non-obvious constraints. The factory expands this into the full model in Phase A. |
 | `siblings` | Optional | Up to 3 component IDs to use as anatomy/state/accessibility references. Default: factory picks the closest siblings from `components.json` based on the brief. |
 | `pageBaseline` | Default `🟠` | Stoplight prefix for the new page. Defaults to `🟠` (in-progress) per locked decision #3 above. |
@@ -154,7 +156,7 @@ The component target is always the `UDS Components` file, file key
    is, stop and ask whether the user wants to use a different id, sync
    the existing component instead (different workflow), or override.
 5. **Check existing-page collision.** List the pages of `UDS Components`
-   and check whether a page named `<anyPrefix> <Title> {Cursor}{Ignore}`
+   and check whether a page named `<anyPrefix> <id> {Cursor}{Ignore}`
    already exists. If it does, inspect it and decide whether to
    resume/extend or rebuild (per locked decisions #2 and #5). The
    `{Cursor}` tag means you don't need fresh permission to rebuild —
@@ -589,8 +591,10 @@ and you can re-run after fixing the cause.
 
 ### B.1 — Create the page
 
-- Page name: `<pageBaseline> <componentTitle> {Cursor}{Ignore}`. With
-  the default baseline that's `🟠 <Title> {Cursor}{Ignore}`.
+- Page name: `<pageBaseline> <componentId> {Cursor}{Ignore}` — the
+  lowercase kebab id, matching mainline UDS Components pages (`badge`,
+  `data-table`, `icon-wrapper`). With the default baseline that's
+  `🟠 <id> {Cursor}{Ignore}` (e.g. `🟠 metric-card {Cursor}{Ignore}`).
 - The `{Ignore}` marker takes the page out of every UDS automation
   ([`figma-inventory`](../../agents/figma-inventory.md),
   [`sync-figma-component-status`](../sync-figma-component-status/SKILL.md),
@@ -920,7 +924,7 @@ After the build, emit ONE Figma write summary per the
 
 - File: UDS Components
 - File key: 1XJoUJgtNpw4R0IIT3VjoK
-- Page: 🟠 <Title> {Cursor}{Ignore}  (newly created)
+- Page: 🟠 <id> {Cursor}{Ignore}  (newly created)
 - Node/frame: udc-<componentId>  (component set)
 - Operation: create
 - Old value: (page did not exist)
