@@ -2,7 +2,7 @@
 description: Process quality rules for any factory-style Figma build (generate-uds-figma-component, new-component, future factories). State design contract (specify visuals not just tokens), mandatory machine-verified audits, variant grid layout reflects axis semantics, visible anatomy by default, dependency manifest before write. Design-system-agnostic — the specific UDS visual constructions live in uds-design-language.mdc.
 alwaysApply: false
 globs: [".cursor/skills/generate-uds-figma-component/**", ".cursor/skills/new-component/**", ".cursor/skills/figma-component-card/**"]
-lastUpdated: 2026-05-27T22:21:24Z
+lastUpdated: 2026-06-04T20:22:47Z
 ---
 
 # Figma Factory Quality
@@ -136,7 +136,16 @@ A read-only `use_figma` call that:
    never baked in via `setProperties` per variant. The model file
    under `.cursor/state/component-factory/<componentId>.md` is the
    source of truth for "what each variant should default to."
-6. Returns a structured object with the count of unbound items and
+6. **Tone-bearing adornment coverage.** For every component with a
+   `Tone` (or status) variant axis, walk each tone variant and report
+   any color-carrying adornment (status dot, secondary / leading icon
+   glyph, trend icon + text, accent bar) whose bound color token does
+   NOT belong to that variant's tone family (`text-{tone}` /
+   `icon-{tone}` / `surface-{tone}`; Neutral → `*-secondary`,
+   Disabled → `*-disabled`). Catches the "trend stuck `success` green
+   across all five tones" failure from the Metric Card run, where the
+   surface and chip retinted per tone but the cloned trend did not.
+7. Returns a structured object with the count of unbound items and
    their `{ ownerVariant, nodeId, nodeName, kind }` per check.
 
 The Phase C report's tool-emitted gates table is populated from that
@@ -278,6 +287,50 @@ const DEPS = {
 Each Phase B call re-imports the variables/styles it needs by KEY
 and re-fetches local components by node ID. No script writes raw hex
 or hard-coded styling.
+
+## 6. Tone-bearing adornments resolve to each variant's tone
+
+When a component has a `Tone` / status / emphasis variant axis, EVERY
+color-carrying adornment inside it — status dot, secondary or leading
+icon glyph, trend indicator, accent bar — must be re-bound **per
+variant** to that variant's tone token. A factory that builds one base
+variant and clones it across tones carries the base's single tone into
+every clone unless each adornment is explicitly re-bound.
+
+Failure mode: the Metric Card factory baked the trend indicator
+`success` (green) on the base, cloned it across all five tones, and
+re-tinted only the chip / dot / main glyph — so the Error-tone card
+shipped a green trend with no way to change it from the panel.
+
+Rules:
+
+- **Re-bind every tone-bearing adornment per variant**, not just the
+  primary surface. Bind to that tone's family: `text-{tone}` /
+  `icon-{tone}` / `surface-{tone}` (Neutral → `*-secondary`,
+  Disabled → `*-disabled`).
+- **Set semantic / directional glyph defaults per tone** where the
+  glyph carries meaning: a trend defaults to `trending_up` for positive
+  tones (Neutral / Info / Success) and `trending_down` for negative
+  tones (Warning / Error); a status icon defaults to `check_circle` for
+  Success, `error` for Error, etc.
+- **Context-appropriate default glyphs, not the wrapper's stock
+  placeholder.** A nested `udc-icon-wrapper` left at its default ships
+  the same `add_circle_outline` plus everywhere. Pick a glyph that fits
+  the demo content (a leads metric → `people_outline`; a revenue metric
+  → `payments`; a trend → the directional arrow above). That default is
+  the starting point the exposed control
+  ([`uds-figma-plugin-api-gotchas.mdc`](./uds-figma-plugin-api-gotchas.mdc)
+  §12) hands the designer.
+- **If color or direction is genuinely independent of tone** (a trend
+  can fall on a Success card), don't hardcode it — expose a control (a
+  `Direction` variant or a property) and record it in the Phase A
+  model. The default still follows tone; the control lets a designer
+  override.
+
+This is the color / glyph analogue of §2 check 5 (per-variant
+INSTANCE_SWAP defaults): the wiring being present is not enough; each
+variant's tone-bearing parts must actually resolve to that variant's
+meaning. §2 check 6 makes it machine-detectable.
 
 ## Related
 

@@ -1,7 +1,7 @@
 ---
 name: generate-uds-figma-component
 description: UDS Component Factory. Drafts a token-bound UDS component set directly inside the UDS Components Figma file on a brand-new `🟠 <Title> {Cursor}{Ignore}` page. Use when the user says "generate a UDS component for X", "factory me an Avatar", "draft a new UDS component called Y", "build a UDS component for Z in Figma", or "use the component factory to start <Title>". Stops at Figma — never writes to `uds-docs/uds/`. Docs landing is the existing `uds-updated` skill, run later by the designer.
-lastUpdated: 2026-06-04T19:58:39Z
+lastUpdated: 2026-06-04T20:22:47Z
 ---
 
 # UDS Component Factory — Generate UDS Figma Component
@@ -439,6 +439,17 @@ Persist the proposed model to
      `warning_amber`, etc. State-specific defaults are baked into
      each variant via `setProperties` during the Phase B build, not
      hand-overridden by designers each time.
+
+     For a component with a `Tone` axis, the same per-variant discipline
+     applies to COLOR and to context: every tone-bearing adornment
+     (status dot, secondary icon glyph, trend) defaults to that
+     variant's tone family, and meaningful glyphs follow tone (a trend
+     → `trending_up` for positive tones, `trending_down` for negative).
+     Choose context-appropriate default glyphs over the wrapper's stock
+     placeholder (a leads metric → `people_outline`, not
+     `add_circle_outline`). See
+     [`uds-figma-factory-quality.mdc`](../../rules/uds-figma-factory-quality.mdc)
+     §6.
 - **Container count axis (if the component is a container of N
  repeating instances)** — if the component is a *container of N
  repeating instances of the same sub-component* (stepper, breadcrumb,
@@ -677,6 +688,16 @@ and you can re-run after fixing the cause.
   resolved value. Skipping this is the "black variant roots" bug. See
   [`uds-figma-plugin-api-gotchas.mdc`](../../rules/uds-figma-plugin-api-gotchas.mdc)
   §9.
+- **Re-bind every tone-bearing adornment per variant.** When you clone
+  a base variant across a `Tone` axis, retint not just the surface but
+  EVERY color-carrying adornment — status dot, secondary / leading icon
+  glyph, trend icon + text, accent bar — to that variant's tone family,
+  and set meaningful glyph defaults per tone (trend → `trending_up` for
+  positive tones, `trending_down` for negative). A clone-and-retint that
+  misses one leaves it stuck on the base tone (the Metric Card trend
+  shipped green on the Error card). See
+  [`uds-figma-factory-quality.mdc`](../../rules/uds-figma-factory-quality.mdc)
+  §6.
 - Use existing UDS components as nested instances where the model says
   to (per Phase A "Sibling reuse").
 - **For every icon slot the model enumerates, nest the appropriate
@@ -1005,6 +1026,14 @@ structured report with two sections.
  in via `setProperties`. The model file under
  `.cursor/state/component-factory/<componentId>.md` is the source of
  truth for "what each variant should default to."
+- **Tone-bearing adornment coverage.** For a component with a `Tone`
+ axis, every color-carrying adornment (status dot, secondary / leading
+ icon glyph, trend icon + text, accent bar) MUST resolve to its
+ variant's tone family, not a single baked tone. Adornments bound to a
+ tone token that doesn't match the variant's tone: N at `<variantIds>`.
+ The color analogue of the per-variant INSTANCE_SWAP gate — see
+ [`uds-figma-factory-quality.mdc`](../../rules/uds-figma-factory-quality.mdc)
+ §6 (the Metric Card "trend stuck green" failure).
 - **Layer hygiene.** Unnamed nodes: N. Generic names (`Frame N`,
  `Rectangle N`): N. Orphan top-level nodes on the page: N.
 - **Auto-layout coverage.** Frames without auto-layout: N at
