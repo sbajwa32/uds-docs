@@ -2,7 +2,7 @@
 description: Process quality rules for any factory-style Figma build (generate-uds-figma-component, new-component, future factories). State design contract (specify visuals not just tokens), mandatory machine-verified audits, variant grid layout reflects axis semantics, visible anatomy by default, dependency manifest before write. Design-system-agnostic — the specific UDS visual constructions live in uds-design-language.mdc.
 alwaysApply: false
 globs: [".cursor/skills/generate-uds-figma-component/**", ".cursor/skills/new-component/**", ".cursor/skills/figma-component-card/**"]
-lastUpdated: 2026-06-07T21:46:52Z
+lastUpdated: 2026-06-07T22:31:49Z
 ---
 
 # Figma Factory Quality
@@ -96,6 +96,13 @@ every element including cards). The Figma build of construction A
 The element keeps its normal Default border underneath, and you build
 this ring for every focus (and ring-style) variant — per tone.
 
+When an audit or inspection looks for this ring, match it
+**structurally** (absolute frame, empty fills, stroke bound to
+`outline-focus-visible`), never by a name substring — `/outline/`
+collides with Material glyph names like `people_outline`
+([`uds-figma-plugin-api-gotchas.mdc`](./uds-figma-plugin-api-gotchas.mdc)
+§15).
+
 ### Source the canonical visuals from the design language doc
 
 For UDS factory runs specifically: don't re-derive state visuals from
@@ -185,6 +192,32 @@ A read-only `use_figma` call that:
    each.
 8. Returns a structured object with the count of unbound items and
    their `{ ownerVariant, nodeId, nodeName, kind }` per check.
+
+#### Attribute every node to its owning component first (applies to ALL checks)
+
+Every check above that inspects the host component's OWN nodes — cruft,
+focus-ring construction, layer hygiene, exposure, raw fills — must first
+exclude nodes that belong to a **nested DS instance**. A node returned
+by `host.findAll(...)` can be owned by a nested `udc-*` instance (its
+ring, its padding, its internal frames), and flagging it against the
+host is a false positive. `skipInvisibleInstanceChildren = true` does
+NOT reliably exclude these, and a `n.type !== 'INSTANCE'` filter misses
+the case where the node itself is a plain frame but its *ancestor* is
+the instance. Walk the parent chain and skip the node if any ancestor
+is an `INSTANCE` (recipe in
+[`uds-figma-plugin-api-gotchas.mdc`](./uds-figma-plugin-api-gotchas.mdc)
+§14).
+
+The focus-ring gate specifically must detect the ring **structurally**
+(absolute-positioned frame, empty fills, stroke bound to
+`outline-focus-visible`), NOT by a name substring like `/outline/` —
+Material glyph names (`people_outline`, `add_circle_outline`) collide
+with it (gotchas §15).
+
+Failure mode: the Metric Card stamp-only upgrade audit flagged the
+nested overflow button's own hidden focus ring as host cruft and tried
+to delete it (atomic rollback). The ancestor-instance check and
+structural ring detection both prevent this class of false positive.
 
 The Phase C report's tool-emitted gates table is populated from that
 return value. If the audit hasn't run, the report can't be emitted.

@@ -2,7 +2,7 @@
 description: When and how to bump the UDS factory build version, how it's stamped onto generated components, and how it carries into docs. The build version (YYYY.MM.DD.N, in .cursor/figma/state/factory-version.json) is the factory's OUTPUT vintage — distinct from per-file lastUpdated (every edit) and the contract-block format version (v1). Auto-attaches when a factory file is edited so the bump discipline is in front of you.
 globs: [".cursor/skills/generate-uds-figma-component/**", ".cursor/rules/uds-figma-factory-quality.mdc", ".cursor/rules/uds-figma-plugin-api-gotchas.mdc", ".cursor/rules/uds-design-language.mdc", ".cursor/rules/uds-naming-conventions.mdc"]
 alwaysApply: false
-lastUpdated: 2026-06-07T21:46:52Z
+lastUpdated: 2026-06-07T22:31:49Z
 ---
 
 # UDS Factory Versioning
@@ -86,17 +86,38 @@ not fuzzy. Adding a label = the `labels` entry AND its detector.
   `Factory-version: <version>` line in the `<<UDS-FACTORY-CONTRACT>>`
   block. The stamp survives the designer's acceptance rename — it lives
   on the node, not the page name.
+- **`built_at` vs `run_id`:** `built_at` is the date of the factory write
+  that produced the current stamped state; `run_id` records the creation
+  run (and is what cleanup tooling maps to). On a **stamp-only catch-up**
+  (re-emit/upgrade, not a fresh build), bump `factory_version` to the
+  current bar and `built_at` to the upgrade date, but **keep the original
+  `run_id`** — do not mint a new one for an in-place upgrade. The three
+  fields then read coherently: `run_id` = birth run, `built_at` = last
+  factory write, `factory_version` = bar met.
 - **Docs:** `sync-figma-component-spec` / `uds-updated` copies it into
   `spec.json` `provenance.factoryVersion`.
 
 ## Drift is reported, never auto-applied on a live component
 
 A behind-version component is REPORTED. Upgrades follow the maintenance
-loop: free regenerate for un-accepted `{Cursor}` drafts; review-gated
-inspect → diff → propose → approve for live components, where NOTHING
-applies without per-change approval (additive and breaking alike); no
-writes at all for `{Frozen}` components. The factory never silently
-rewrites (`uds-source-of-truth.mdc`).
+loop, picking the lightest sufficient action:
+
+- **Un-accepted `{Cursor}` drafts** — free write (scope #4). Prefer a
+  **stamp-only catch-up** for the common case: an unstamped
+  (pre-versioning) draft that audits as already-at-bar just needs the
+  `factory_version` / `built_at` plugin data and the `Factory-version:`
+  contract line — not a teardown. Apply scoped fixes only for the bar
+  items that actually fail, then stamp. Full regenerate only when the
+  draft is structurally behind or the designer asks. (Run the audit with
+  the host-vs-nested attribution + structural ring-detection guards from
+  [`uds-figma-plugin-api-gotchas.mdc`](./uds-figma-plugin-api-gotchas.mdc)
+  §14–§15 so a nested component's own parts aren't misread as cruft.)
+- **Live components** — review-gated inspect → diff → propose → approve,
+  where NOTHING applies without per-change approval (additive and
+  breaking alike).
+- **`{Frozen}` components** — reported as behind, no writes at all.
+
+The factory never silently rewrites (`uds-source-of-truth.mdc`).
 
 ## Editing this rule
 

@@ -2,7 +2,7 @@
 name: figma-component-inspector
 description: Deep-inspects a single UDS component in the UDS Components Figma file by reading node trees, component sets, variants, layer details, token bindings, nested instances, and doc-site parity. Bidirectional — reports both Figma-side gaps (mismatches, missing) and doc-site surplus (artifacts with no Figma counterpart), plus a snapshot delta against the prior captured state to surface deletions and renames. Open Figma findings that need designer attention are surfaced as structured entries in uds/components/<id>/figmanotes.json (not free-text in spec.json knownIssues), classified by `kind` so they auto-prune on the next inspection when resolved. Read-only; never modifies files or Figma. Use when updating a component spec, investigating a component mismatch, or before syncing Figma component changes into docs.
 model: inherit
-lastUpdated: 2026-06-07T21:55:38Z
+lastUpdated: 2026-06-07T22:31:49Z
 ---
 
 # Figma Component Inspector
@@ -474,6 +474,24 @@ docs pages by default.
 - If node-tree or variant data is unavailable, report low confidence.
 - If multiple canonical nodes match, stop and ask.
 - Do not invent props, slots, states, or token bindings.
+- **Attribute every node to its owning component.** When deciding
+  whether a node is part of THIS component vs. a nested DS instance,
+  walk the node's parent chain and treat it as instance-owned if any
+  ancestor is an `INSTANCE`. `skipInvisibleInstanceChildren` and a
+  `type !== 'INSTANCE'` filter are both insufficient — a nested
+  component's own focus ring, padding, or internal frames can otherwise
+  be misreported as the host's structure or as doc-site surplus/cruft.
+  See [`uds-figma-plugin-api-gotchas.mdc`](../rules/uds-figma-plugin-api-gotchas.mdc)
+  §14. Detect focus rings (and similar state elements) structurally —
+  absolute frame, empty fills, stroke bound to `outline-focus-visible` —
+  never by a name substring like `/outline/`, which collides with
+  Material glyph names such as `people_outline` (gotchas §15).
+- **Aggregate nested-instance reporting.** List each distinct nested
+  instance ONCE (keyed by name + main component) with the variants it
+  appears in — not one row per occurrence across the variant matrix. A
+  multi-variant set (e.g. 24 variants) repeats the same handful of
+  nested instances and a flat per-occurrence dump overflows the
+  response.
 - Do not recommend leaving a public implementation-ready component as
   scaffold-only. It needs Examples, Code, CSS, and spec coverage.
 - Do not omit the §"Doc-site surplus", §"Snapshot delta", or §"Figma

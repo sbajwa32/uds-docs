@@ -2,7 +2,7 @@
 description: Required preflight for any task that reads or writes UDS Figma files.
 globs: ["**/*"]
 alwaysApply: false
-lastUpdated: 2026-06-07T22:06:24Z
+lastUpdated: 2026-06-07T22:31:49Z
 ---
 
 # UDS Figma Preflight
@@ -34,7 +34,13 @@ Figma preflight:
 
 ## Version detection
 
-1. List pages in each relevant Figma file.
+1. List pages in each relevant Figma file. Enumerate via the Plugin API
+   (`figma.root.children` through `use_figma`), NOT `get_metadata` with
+   no `nodeId` — the latter's top-level page list has been observed to
+   under-report (it returned only the `UDS Version: 0.3` page for
+   `UDS Components` while `figma.root.children` returned all ~55 pages).
+   Treat a `get_metadata` page list as possibly partial and confirm via
+   the Plugin API before concluding a page is missing.
 2. Filter out any page whose name contains `{Ignore}`. Ignored pages are not
    part of UDS sync, inventory, release detection, component inspection,
    status sync, deletion detection, or new-component detection.

@@ -2,7 +2,7 @@
 description: Plugin API gotchas learned from UDS factory and sync work. Local-file component identity, INSTANCE_SWAP default formats, hidden auto-layout fills, resize-vs-sizing-mode ordering, per-side padding binding, effect-style binding, remote-library token/style discovery, text-wrap sizing. Auto-attaches to anything that calls `use_figma`.
 alwaysApply: false
 globs: ["**/*"]
-lastUpdated: 2026-06-07T21:46:52Z
+lastUpdated: 2026-06-07T22:31:49Z
 ---
 
 # UDS Figma Plugin API Gotchas
@@ -562,14 +562,88 @@ menu.isExposedInstance = true;               // re-expose if it was exposed
 This was the Metric Card overflow-menu fix (primary → ghost icon-only
 with a `more_vert` glyph).
 
+## 14. A host-component audit must attribute each node to its owning instance — `skipInvisibleInstanceChildren` is not enough
+
+When you audit a component's OWN anatomy — looking for stray/cruft
+nodes, focus rings, layer-hygiene violations, or exposure coverage — a
+node returned by `host.findAll(...)` may belong to a **nested DS
+instance**, not the host. Flagging it as the host's is a false positive.
+
+`figma.skipInvisibleInstanceChildren = true` is NOT a reliable filter
+for this. It did not keep a hidden `focus outline` frame *inside* a
+nested `udc-button-ghost` instance out of `findAll` on the host
+component set. Filtering only `n.type !== 'INSTANCE'` is also
+insufficient — the offending node was a plain `FRAME`; it was its
+*ancestor* that was the instance.
+
+### Rule
+
+Before treating a node as the host's own, walk its parent chain and
+skip it if ANY ancestor is an `INSTANCE`:
+
+```js
+function ownedByNestedInstance(node, hostRoot) {
+  let p = node.parent;
+  while (p && p !== hostRoot) {
+    if (p.type === 'INSTANCE') return true;   // belongs to a nested DS component
+    p = p.parent;
+  }
+  return false;
+}
+// host-own audit:
+const ownNodes = host.findAll(n => !ownedByNestedInstance(n, host));
+```
+
+Failure mode: the Metric Card stamp-only upgrade audit flagged the
+overflow button's OWN hidden focus ring (`focus outline`, 44×56, parent
+`button`, owned by `udc-button-ghost`) as host cruft and tried to
+delete it — `n.remove()` threw `Removing this node is not allowed`
+(instance-owned), atomic rollback, no change. The tell that it was
+button-owned, not host cruft: it was present only in variants that
+carried the nested `menu` button and absent from the `Add` variant
+(which has no menu). An ancestor-instance check would have excluded it
+up front.
+
+## 15. Detect state elements structurally, not by name substring — Material glyph names collide
+
+Searching for a focus ring (or any state element) by name with a
+substring like `/focus|ring|outline/i` collides with Material Symbols
+glyph instance names: `people_outline`, `add_circle_outline` both
+contain `outline`; other passes collide with `more_vert`,
+`trending_up` / `trending_down`, etc. `findOne` then returns a GLYPH
+instead of the ring and the audit silently inspects the wrong node.
+
+### Rule
+
+Detect a focus ring by its STRUCTURE, not its name:
+
+```js
+function isFocusRing(n) {
+  return n.type === 'FRAME'
+    && n.layoutPositioning === 'ABSOLUTE'
+    && Array.isArray(n.fills) && n.fills.length === 0
+    && Array.isArray(n.strokes) && n.strokes[0]
+    && n.strokes[0].boundVariables
+    && n.strokes[0].boundVariables.color;   // bound to outline-focus-visible
+}
+```
+
+Naming corollary: keep ring layer names distinct and consistent
+(`focus-outline`, hyphenated) and never rely on the name for detection.
+The Metric Card draft carries two similarly-named rings — the card's own
+`focus-outline` (hyphen, card-sized, on Focus variants) and the nested
+button's `focus outline` (space, 44×56) — which is exactly why a
+substring match is unsafe.
+
 ## Related
 
 - `figma-use` skill (active Figma plugin skill)
   — base Plugin API rules. These gotchas should eventually upstream
   into that skill's `references/gotchas.md`.
 - [`generate-uds-figma-component`](../skills/generate-uds-figma-component/SKILL.md)
-  — the factory skill that surfaced these. Phase B uses all twelve
-  patterns above.
+  — the factory skill that surfaced these. Phase B uses the build
+  patterns (§1–§13); the audit/maintenance patterns (§14–§15) apply to
+  the Phase C gates and the maintenance-mode drift audit.
 - [`uds-figma-factory-quality.mdc`](./uds-figma-factory-quality.mdc) —
   the companion factory-quality rule (state design contract, audit
   discipline, variant grid layout, etc.).

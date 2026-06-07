@@ -1,7 +1,7 @@
 ---
 name: generate-uds-figma-component
 description: UDS Component Factory. Drafts a token-bound UDS component set directly inside the UDS Components Figma file on a brand-new `🟠 <id> {Cursor}{Ignore}` page. Use when the user says "generate a UDS component for X", "factory me an Avatar", "draft a new UDS component called Y", "build a UDS component for Z in Figma", or "use the component factory to start <Title>". Stops at Figma — never writes to `uds-docs/uds/`. Docs landing is the existing `uds-updated` skill, run later by the designer.
-lastUpdated: 2026-06-07T22:06:24Z
+lastUpdated: 2026-06-07T22:31:49Z
 ---
 
 # UDS Component Factory — Generate UDS Figma Component
@@ -984,9 +984,20 @@ componentSet.setSharedPluginData('dsb', 'built_at', '<YYYY-MM-DD>');  // today: 
 
 The `Factory-version:` line in the B.3.5 contract block carries the same
 `fv` string for humans. The stamp lives on the NODE, so it survives the
-designer's acceptance rename. `built_at` is the actual build date — NOT
-the same as `factory_version` (the factory's vintage; a component built
-months after the factory last changed still carries the older vintage).
+designer's acceptance rename. `built_at` is the date of the factory
+write that produced the current stamped state — NOT the same as
+`factory_version` (the factory's vintage; a component built months after
+the factory last changed still carries the older vintage).
+
+**On a stamp-only catch-up (re-emit/upgrade), not a fresh build:** set
+`factory_version` to the current bar, set `built_at` to the upgrade date
+(today — the date of this factory write), and **keep the original
+`run_id`** unchanged. `run_id` records the creation run and is what
+cleanup tooling maps to; do not mint a new one for an in-place upgrade.
+The three fields then read coherently: `run_id` = birth run, `built_at`
+= last factory write, `factory_version` = bar met. (Metric Card example:
+`run_id` stayed `metric-card-2026-06-04`, `built_at` became `2026-06-07`,
+`factory_version` became `2026.06.07.1`.)
 See [`uds-factory-versioning.mdc`](../../rules/uds-factory-versioning.mdc).
 
 ### B.4 — Required write summary
@@ -1301,6 +1312,37 @@ pattern, pointed in the Figma-write direction:
 4. **Apply on approval**, writing only the approved scoped change to the
    live page — NOT a free rebuild. Emit the standard write summary
    (write-safety §"Required before/after report").
+
+### Stamp-only catch-up for a pre-versioning draft
+
+The most common drift case is NOT a behind-the-bar rebuild — it's an
+**unstamped `{Cursor}` draft** built before the stamping machinery
+existed (no `factory_version` plugin data, no `Factory-version:` contract
+line) that already meets the current bar in substance. Forcing a
+from-scratch teardown there is wasteful and risks dropping capability
+([`uds-source-of-truth.mdc`](../../rules/uds-source-of-truth.mdc) — never
+silently rewrite a build that's already correct).
+
+For such a draft, run the maintenance audit (inspect → diff) and pick the
+lightest sufficient action:
+
+- **Already compliant** — every applicable bar item passes (focus-ring
+  construction, per-variant tone rebinding, nested-instance exposure,
+  secondary-affordance emphasis/glyph, state-vs-kind hygiene,
+  behavioral-prop contract): do a **targeted stamp-and-verify**. Write
+  the `factory_version` + `built_at` plugin data (B.3.6) and insert the
+  `Factory-version:` line into the contract block (B.3.5), then re-run
+  B.5 verification. No geometry, token, or variant changes.
+- **Partially behind** — apply only the scoped fixes for the failing
+  items, then stamp.
+
+Both are `{Cursor}` scratch writes (scope #4, free) — surgical, not a
+rebuild. Only fall back to a full regenerate when the audit shows the
+draft is structurally behind or the designer explicitly asks for one.
+Run the audit with the host-vs-nested attribution and structural
+ring-detection guards
+([`uds-figma-plugin-api-gotchas.mdc`](../../rules/uds-figma-plugin-api-gotchas.mdc)
+§14–§15) so a nested component's own parts aren't misread as draft cruft.
 
 **Excluded:** a `{Frozen}` / `{NoFactory}` page is reported as behind but
 never written — the designer has marked it hands-off
