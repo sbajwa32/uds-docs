@@ -14,10 +14,11 @@ import { DocsTab, DocsTabPanel, DocsTabs } from '@/components/site/ui';
 import { DocsBadge, DocsCard, DocsPageHeader, DocsSection } from '@/components/site/ui';
 
 
-type TabKey = 'workflows' | 'rules' | 'skills' | 'subagents' | 'audits' | 'add';
+type TabKey = 'workflows' | 'factory' | 'rules' | 'skills' | 'subagents' | 'audits' | 'add';
 
 const TABS: { value: TabKey; label: string }[] = [
   { value: 'workflows', label: 'Workflows' },
+  { value: 'factory', label: 'Factory' },
   { value: 'rules', label: 'Rules' },
   { value: 'skills', label: 'Skills' },
   { value: 'subagents', label: 'Subagents' },
@@ -158,7 +159,7 @@ export function CursorWorkflowsClient() {
               <p className="sg-cw-concept-analogy">Like &quot;always wear a seatbelt.&quot;</p>
               <div className="sg-cw-concept-meta">
                 <code>.cursor/rules/</code>
-                <span className="sg-cw-concept-count">20</span>
+                <span className="sg-cw-concept-count">22</span>
               </div>
             </DocsCard>
           </div>
@@ -558,10 +559,153 @@ export function CursorWorkflowsClient() {
           </DocsTabPanel>
 
           {/* ============================================================
+              TAB PANEL: Factory (plain-English deep dive)
+              ============================================================ */}
+          <DocsTabPanel value="factory">
+            <p className="sg-subsection-desc" style={{ marginBottom: 'var(--uds-space-300)' }}>
+              The Component Factory turns a plain-English brief into a real, token-correct component drafted directly in Figma. You describe what you want; it builds the whole variant set &mdash; every state, every tone, every nested icon and button &mdash; bound to UDS tokens, on its own draft page. You stay the designer and the approver. The factory does the repetitive construction and checks its own work before handing it back.
+            </p>
+
+            {/* LIFECYCLE */}
+            <div className="sg-cw-group">
+              <header className="sg-cw-group-header">
+                <h4 className="sg-cw-group-name">The life of a factory component</h4>
+              </header>
+              <p className="sg-cw-group-desc">From a sentence to a documented component. You&apos;re in control at every gate &mdash; nothing becomes &quot;real&quot; without your say-so.</p>
+
+              <ol className="sg-cw-steps">
+                <li className="sg-cw-step">
+                  <span className="sg-cw-step-num">1</span>
+                  <div className="sg-cw-step-body">
+                    <h5 className="sg-cw-step-title">You describe it</h5>
+                    <p className="sg-cw-step-desc">A sentence or two: what the component is, when to use it, anything unusual. Say something like &quot;factory me a Metric Card.&quot; That&apos;s the whole input.</p>
+                  </div>
+                </li>
+                <li className="sg-cw-step">
+                  <span className="sg-cw-step-num">2</span>
+                  <div className="sg-cw-step-body">
+                    <h5 className="sg-cw-step-title">It drafts in Figma, on its own page</h5>
+                    <p className="sg-cw-step-desc">The factory builds the component on a brand-new draft page in the UDS Components file. The page name carries two tags: <code>{'{Cursor}'}</code> means &quot;the factory may edit this freely&quot; and <code>{'{Ignore}'}</code> means &quot;keep this hidden from the rest of the tooling&quot; &mdash; so a half-finished draft never shows up in the live library or the docs site by accident.</p>
+                  </div>
+                </li>
+                <li className="sg-cw-step">
+                  <span className="sg-cw-step-num">3</span>
+                  <div className="sg-cw-step-body">
+                    <h5 className="sg-cw-step-title">It checks its own work</h5>
+                    <p className="sg-cw-step-desc">Before handing back, the factory runs a quality report and tells you what&apos;s solid and what still needs a designer&apos;s eye. The first draft is meant to be a strong starting point, not the finished article.</p>
+                  </div>
+                </li>
+                <li className="sg-cw-step">
+                  <span className="sg-cw-step-num">4</span>
+                  <div className="sg-cw-step-body">
+                    <h5 className="sg-cw-step-title">You review and accept</h5>
+                    <p className="sg-cw-step-desc">You look it over in Figma and tweak whatever you want. When you&apos;re happy, you <strong>accept it by renaming the page</strong> &mdash; drop the <code>{'{Cursor}'}{'{Ignore}'}</code> tags and set the status color. That rename is your signature; the factory never does it for you.</p>
+                  </div>
+                </li>
+                <li className="sg-cw-step">
+                  <span className="sg-cw-step-num">5</span>
+                  <div className="sg-cw-step-body">
+                    <h5 className="sg-cw-step-title">The docs site catches up</h5>
+                    <p className="sg-cw-step-desc">Later, when you say &quot;UDS updated,&quot; the normal Figma&ndash;to&ndash;docs sync picks up the accepted component and creates its docs page, spec, and changelog entry. The factory itself stops at Figma.</p>
+                  </div>
+                </li>
+              </ol>
+            </div>
+
+            {/* FOUR PHASES */}
+            <div className="sg-cw-group">
+              <header className="sg-cw-group-header">
+                <h4 className="sg-cw-group-name">What happens under the hood</h4>
+                <span className="sg-cw-group-count">4</span>
+              </header>
+              <p className="sg-cw-group-desc">The factory works in four phases. The only one that needs you is the first &mdash; you approve the plan before anything is built.</p>
+
+              <div className="sg-cw-cards">
+                <DocsCard className="sg-cw-card">
+                  <header className="sg-cw-card-head"><span className="sg-cw-card-name">A &mdash; Plan &amp; agree</span></header>
+                  <p className="sg-cw-card-body">The factory expands your brief into a full plan: which states and tones it&apos;ll build, what each part is, which existing UDS pieces it&apos;ll reuse, and which tokens it&apos;ll bind. It shows you the plan and <strong>waits for the word &quot;approved&quot;</strong> before touching Figma. No surprises.</p>
+                </DocsCard>
+                <DocsCard className="sg-cw-card">
+                  <header className="sg-cw-card-head"><span className="sg-cw-card-name">B &mdash; Build in Figma</span></header>
+                  <p className="sg-cw-card-body">It constructs the component set on the draft page &mdash; every variant, bound to UDS color / spacing / type / elevation tokens, reusing real UDS parts (icons, buttons) rather than redrawing them. It also writes a hidden &quot;contract&quot; note on the component describing the bits Figma can&apos;t draw (keyboard behavior, events, accessibility).</p>
+                </DocsCard>
+                <DocsCard className="sg-cw-card">
+                  <header className="sg-cw-card-head"><span className="sg-cw-card-name">C &mdash; Quality report</span></header>
+                  <p className="sg-cw-card-body">It audits its own build by machine &mdash; not from memory &mdash; and reports the counts: any hardcoded colors, any unbound spacing, any missing focus rings, any controls a designer should be able to reach. You get an honest &quot;here&apos;s what&apos;s solid, here&apos;s what to review.&quot;</p>
+                </DocsCard>
+                <DocsCard className="sg-cw-card">
+                  <header className="sg-cw-card-head"><span className="sg-cw-card-name">D &mdash; Hand-off</span></header>
+                  <p className="sg-cw-card-body">The factory&apos;s job ends. It leaves the draft on its <code>{'{Cursor}'}{'{Ignore}'}</code> page for you. Accepting it (the rename) and landing it in the docs site (&quot;UDS updated&quot;) are your moves, on your schedule.</p>
+                </DocsCard>
+              </div>
+            </div>
+
+            {/* WHY YOU CAN TRUST IT */}
+            <div className="sg-cw-group">
+              <header className="sg-cw-group-header">
+                <h4 className="sg-cw-group-name">Why you can trust the draft</h4>
+              </header>
+              <p className="sg-cw-group-desc">The factory holds itself to the same bar a careful designer would &mdash; and proves it by machine, not by claiming it.</p>
+
+              <div className="sg-cw-cards">
+                <DocsCard className="sg-cw-card">
+                  <header className="sg-cw-card-head"><span className="sg-cw-card-name">Real tokens, never hardcoded</span></header>
+                  <p className="sg-cw-card-body">Every color, spacing, radius, type style, and shadow is bound to a UDS token &mdash; so the component re-themes correctly and never ships a stray hex value.</p>
+                </DocsCard>
+                <DocsCard className="sg-cw-card">
+                  <header className="sg-cw-card-head"><span className="sg-cw-card-name">Proper focus rings</span></header>
+                  <p className="sg-cw-card-body">Focus is a real offset ring with a gap, not a thickened border &mdash; the keyboard-accessibility detail that&apos;s easy to fake and easy to get wrong.</p>
+                </DocsCard>
+                <DocsCard className="sg-cw-card">
+                  <header className="sg-cw-card-head"><span className="sg-cw-card-name">Colors follow tone</span></header>
+                  <p className="sg-cw-card-body">On a component with Info / Success / Warning / Error tones, every colored part &mdash; dot, chip, icon, trend &mdash; recolors to match its tone, not just the main surface.</p>
+                </DocsCard>
+                <DocsCard className="sg-cw-card">
+                  <header className="sg-cw-card-head"><span className="sg-cw-card-name">Controls you can reach</span></header>
+                  <p className="sg-cw-card-body">Nested pieces (icons, an overflow menu) expose their own controls on the component, so you can swap a glyph or toggle a part without diving through layers.</p>
+                </DocsCard>
+                <DocsCard className="sg-cw-card">
+                  <header className="sg-cw-card-head"><span className="sg-cw-card-name">Built from real UDS parts</span></header>
+                  <p className="sg-cw-card-body">It reuses the actual UDS icon and button components rather than redrawing them &mdash; so the draft stays in the design system&apos;s dialect from the start.</p>
+                </DocsCard>
+                <DocsCard className="sg-cw-card">
+                  <header className="sg-cw-card-head"><span className="sg-cw-card-name">It checks, then claims</span></header>
+                  <p className="sg-cw-card-body">The quality report comes from a machine pass over the finished build, so &quot;zero hardcoded colors&quot; means zero &mdash; not &quot;I think so.&quot;</p>
+                </DocsCard>
+              </div>
+            </div>
+
+            {/* WHAT IT WON'T DO */}
+            <div className="sg-cw-group">
+              <header className="sg-cw-group-header">
+                <h4 className="sg-cw-group-name">What it won&apos;t do</h4>
+              </header>
+              <p className="sg-cw-group-desc">The guardrails matter as much as the output. The factory:</p>
+              <ul style={{ fontSize: 'var(--uds-font-size-sm)', color: 'var(--uds-color-text-secondary)', lineHeight: 1.6, paddingLeft: 'var(--uds-space-300)', marginTop: 'var(--uds-space-100)' }}>
+                <li><strong>Stops at Figma.</strong> It drafts the component; it never edits the docs site or the design-system files itself. That happens later, on your &quot;UDS updated.&quot;</li>
+                <li><strong>Never accepts its own work.</strong> The draft stays a draft until <em>you</em> rename the page. The factory won&apos;t drop the tags for you.</li>
+                <li><strong>Never invents a token.</strong> If a color or size it needs doesn&apos;t exist in UDS yet, it stops and tells you, rather than making one up.</li>
+              </ul>
+            </div>
+
+            {/* START IT */}
+            <div className="sg-cw-prompts" style={{ marginTop: 'var(--uds-space-300)' }}>
+              <DocsCard className="sg-cw-prompt" elevated>
+                <div className="sg-cw-prompt-say"><span className="material-symbols-outlined">chat</span>&quot;Factory me a Metric Card&quot;</div>
+                <p className="sg-cw-prompt-body"><strong>Start the factory.</strong>Describe the component you want; Cursor drafts it in Figma on a new draft page and hands you the quality report. Accept it by renaming the page when you&apos;re happy.</p>
+                <div className="sg-cw-prompt-uses">
+                  <span className="sg-cw-prompt-uses-label">Uses</span>
+                  <code>generate-uds-figma-component</code>
+                </div>
+              </DocsCard>
+            </div>
+          </DocsTabPanel>
+
+          {/* ============================================================
               TAB PANEL: Rules
               ============================================================ */}
           <DocsTabPanel value="rules">
-            <p className="sg-subsection-desc" style={{ marginBottom: 'var(--uds-space-300)' }}>20 rules total &mdash; 8 always-on (loaded into Cursor&apos;s context on every task) and 12 glob-scoped (loaded only when files matching the rule&apos;s glob are in context, or when a skill explicitly references the rule).</p>
+            <p className="sg-subsection-desc" style={{ marginBottom: 'var(--uds-space-300)' }}>22 rules total &mdash; 8 always-on (loaded into Cursor&apos;s context on every task) and 14 glob-scoped (loaded only when files matching the rule&apos;s glob are in context, or when a skill explicitly references the rule).</p>
 
             {/* ALWAYS-ON RULES */}
             <div className="sg-cw-group">
@@ -626,7 +770,7 @@ export function CursorWorkflowsClient() {
             <div className="sg-cw-group">
               <header className="sg-cw-group-header">
                 <h4 className="sg-cw-group-name">Glob-scoped</h4>
-                <span className="sg-cw-group-count">13</span>
+                <span className="sg-cw-group-count">14</span>
               </header>
               <p className="sg-cw-group-desc">Loaded only when files matching the rule&apos;s glob are in context, or when a skill explicitly references the rule.</p>
 
@@ -707,6 +851,12 @@ export function CursorWorkflowsClient() {
                   <header className="sg-cw-card-head"><code className="sg-cw-card-name">uds-naming-conventions</code><span className="sg-cw-pill sg-cw-pill--scoped">Loads on any task</span></header>
                   <p className="sg-cw-card-body">The design-system-level naming framework. Locks the canonical vocabulary every UDS component reaches for across ten categories: states (Default / Hover / Pressed / Focus / Selected / Disabled / Loading / Error, plus Empty + Read-only when applicable, plus Checked + Current as reserved words), sizes (Small / Medium / Large), tones (Info / Success / Warning / Error / Neutral), emphasis (Primary / Secondary / Tertiary for ranked importance vs Bold / Default / Subtle for tuning loudness), parts of a component (Leading / Trailing, Header / Body / Footer), the state-vs-variant-vs-property litmus test, casing rules, component and subcomponent naming, and lifecycle status. Companion to <code>uds-design-language</code> &mdash; design-language covers <em>how things look</em>, this rule covers <em>what we call them</em>. Factory and <code>new-component</code> pick names from this framework rather than guessing from siblings.</p>
                   <footer className="sg-cw-card-foot"><a className="sg-cw-card-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/rules/uds-naming-conventions.mdc" target="_blank" rel="noopener noreferrer">Open file<span className="material-symbols-outlined">open_in_new</span></a></footer>
+                </DocsCard>
+
+                <DocsCard className="sg-cw-card">
+                  <header className="sg-cw-card-head"><code className="sg-cw-card-name">uds-factory-docs-currency</code><span className="sg-cw-pill sg-cw-pill--scoped">Loads on factory skills</span></header>
+                  <p className="sg-cw-card-body">Keeps the plain-English <strong>Factory</strong> tab on this page honest. When a change to the factory skillset (<code>generate-uds-figma-component</code>, <code>uds-figma-factory-quality</code>, <code>uds-figma-plugin-api-gotchas</code>) changes something a designer would notice &mdash; a phase, a quality gate, the lifecycle, a trigger prompt &mdash; the Factory tab and a SITE_CHANGELOG entry update in the same change. Internal-only edits don&apos;t. An audit can confirm the page <em>mentions</em> the factory files; keeping the prose <em>accurate</em> is the editor&apos;s job.</p>
+                  <footer className="sg-cw-card-foot"><a className="sg-cw-card-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/rules/uds-factory-docs-currency.mdc" target="_blank" rel="noopener noreferrer">Open file<span className="material-symbols-outlined">open_in_new</span></a></footer>
                 </DocsCard>
               </div>
             </div>

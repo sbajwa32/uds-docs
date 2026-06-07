@@ -1,7 +1,7 @@
 ---
 name: generate-uds-figma-component
 description: UDS Component Factory. Drafts a token-bound UDS component set directly inside the UDS Components Figma file on a brand-new `🟠 <id> {Cursor}{Ignore}` page. Use when the user says "generate a UDS component for X", "factory me an Avatar", "draft a new UDS component called Y", "build a UDS component for Z in Figma", or "use the component factory to start <Title>". Stops at Figma — never writes to `uds-docs/uds/`. Docs landing is the existing `uds-updated` skill, run later by the designer.
-lastUpdated: 2026-06-04T21:23:48Z
+lastUpdated: 2026-06-04T22:03:53Z
 ---
 
 # UDS Component Factory — Generate UDS Figma Component
@@ -297,7 +297,14 @@ Persist the proposed model to
  class-required state. Pick the exact state NAMES from section 1 of
  [`uds-naming-conventions.mdc`](../../rules/uds-naming-conventions.mdc)
  (including its Selected / Checked / Current reserved-word
- distinction). Maps to `spec.json` `states[]`.
+ distinction). Maps to `spec.json` `states[]`. **Keep the `State` axis
+ to genuine interaction/data states — a value that changes the
+ component's PURPOSE or MODE (an "add a metric" tile, a compose-vs-read
+ mode) is a `Kind`/`Type` axis, not a state. The Metric Card originally
+ carried `Add` as a `State` value; it's a distinct affordance and now
+ lives on a `Kind = Metric | Add` axis. See
+ [`uds-figma-factory-quality.mdc`](../../rules/uds-figma-factory-quality.mdc)
+ §"State vs. kind."
 - **Accessibility plan** — keyboard, focus, screen reader, and
  disabled / loading / error behaviors, derived from the component
  class and node structure (never from screenshots). Maps to
@@ -518,6 +525,16 @@ Persist the proposed model to
    label). And size the host layout so the text HUGS + wraps past a
    `maxWidth` rather than `FILL` — `FILL` shoves a trailing slot to the
    far edge with an awkward gap.
+   **For multi-emphasis components (Button), pick the emphasis that
+   matches the affordance's prominence — secondary/utility affordances
+   take the LOW-emphasis set.** An overflow menu, a dismiss button, or
+   an inline card action is a `udc-button-ghost` (or tertiary)
+   icon-only instance, NOT `udc-button-primary` — a filled accent
+   button screams for attention a utility control shouldn't. Pair it
+   with a context-appropriate default glyph (overflow → `more_vert`,
+   dismiss → `close`), never the wrapper's stock `add_circle_outline`
+   placeholder. The Metric Card overflow shipped as a primary button
+   carrying `add_circle_outline` — wrong emphasis AND wrong glyph.
    Common reuse set: `udc-label`, `udc-icon-wrapper`, `udc-button`,
    `udc-text-input`, `udc-chip`, `udc-badge`, `udc-card`,
    `udc-notification`.
@@ -819,7 +836,17 @@ component sees nothing of the wrapper's `Icon` glyph-swap or `Size`, and
 a top-level `INSTANCE_SWAP` (B.2.5) only swaps the *whole wrapper*, not
 the glyph inside it. For every nested DS instance whose own controls a
 designer should reach, set `isExposedInstance = true` on that instance
-in EVERY variant:
+in EVERY variant.
+
+**Enumerate ALL nested DS instances first, then expose each — partial
+coverage is the trap.** List every nested wrapper/button/adornment the
+component carries (leading icon, trend icon, overflow menu, dismiss
+button, …) and expose each one. Exposing the primary icon while
+forgetting the secondary instances (the overflow `menu` and the `trend`
+icon both shipped unexposed) was the Metric Card miss — the designer
+could change the headline icon but not the menu glyph or the trend
+direction. The Phase C "nested-instance exposure coverage" gate makes
+this machine-checkable.
 
 ```js
 for (const variant of componentSet.children) {
@@ -867,6 +894,9 @@ and the designer can edit or delete it freely:
 <<UDS-FACTORY-CONTRACT v1>>
 Component: <Title> (<id>)
 Class: <layout|display|action|form|navigation|feedback|data>
+Props (behavioral, non-drawable):
+  - <name> (<type>, default <value>) — <behavior; which states/events it gates>
+  (or: none)
 Events:
   - <name> — <when it fires> — payload: <shape>
   (or: none (class does not dispatch))
@@ -899,6 +929,17 @@ Rules:
   §10.
 - **Human-readable.** A designer sees this in Figma's asset panel.
   Keep it as the plain-text block above, not a JSON dump.
+- **Behavioral props go in the `Props (behavioral, non-drawable)`
+  section, NOT as no-op Figma BOOLEANs.** A prop that changes runtime
+  behavior but has no visual node to toggle — `selectable`, `href`,
+  `loading` as an aria-state, etc. — has no honest Figma component
+  property to bind to. Registering it as an unlinked BOOLEAN fails the
+  Phase C property-wiring gate (a BOOLEAN with no `visible` reference).
+  Record it here instead; this is the only round-trip source for props
+  that aren't drawable component properties. Drawable props
+  (`showIcon`, `label`, `leadingIcon`) stay as real Figma
+  TEXT/BOOLEAN/INSTANCE_SWAP properties and are NOT duplicated here.
+  This was the Metric Card `selectable` gap.
 - **No silent omission.** Every section appears. If a section doesn't
   apply, write `none` or `none (class does not dispatch)` rather than
   dropping the heading — the inspector relies on the section being
@@ -1048,6 +1089,21 @@ structured report with two sections.
  The color analogue of the per-variant INSTANCE_SWAP gate — see
  [`uds-figma-factory-quality.mdc`](../../rules/uds-figma-factory-quality.mdc)
  §6 (the Metric Card "trend stuck green" failure).
+- **Nested-instance exposure coverage.** Every nested DS instance the
+ model marked as designer-reachable (B.2.6) MUST have
+ `isExposedInstance = true` in EVERY variant. Instantiate the set and
+ confirm `instance.exposedInstances` lists each one. Designer-reachable
+ nested instances missing exposure: N at `<variantIds/names>`. Catches
+ the partial-coverage trap — the primary icon exposed but the overflow
+ menu / trend icon left unexposed (the Metric Card miss).
+- **Behavioral props captured.** Every behavioral prop the model lists
+ (props that change runtime behavior but have no drawable Figma
+ property — `selectable`, `href`, etc.) MUST appear in the contract
+ block's `Props (behavioral, non-drawable)` section. A modelled
+ behavioral prop absent from the contract block: fail. Conversely, a
+ no-op Figma BOOLEAN registered for a behavioral prop (a BOOLEAN with
+ no `visible` reference) fails the property-wiring gate above — record
+ it in the contract instead.
 - **Focus / ring construction.** Any Focus (or ring-style) variant MUST
  contain an offset `focus-outline` ring child (absolute, gapped,
  `outline-focus-visible` stroke, resizing), not merely a thickened

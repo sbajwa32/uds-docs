@@ -1,0 +1,73 @@
+---
+description: Keep the docs-site plain-English Component Factory explainer current when the factory skillset changes. The Factory tab on the cursor-workflows page is the non-developer's "how the factory works"; a user-facing change to the factory skill or its governing rules must update that tab plus a SITE_CHANGELOG entry, in designer voice.
+globs: [".cursor/skills/generate-uds-figma-component/**", ".cursor/rules/uds-figma-factory-quality.mdc", ".cursor/rules/uds-figma-plugin-api-gotchas.mdc"]
+alwaysApply: false
+lastUpdated: 2026-06-07T21:27:07Z
+---
+
+# UDS Factory Docs Currency
+
+The docs site explains the Component Factory in plain English on the
+**Factory tab** of the Cursor Workflows page
+([`uds-docs/app/(site)/cursor-workflows/CursorWorkflowsClient.tsx`](../../uds-docs/app/(site)/cursor-workflows/CursorWorkflowsClient.tsx)).
+That tab is the non-developer's "how the factory works" — lifecycle, the
+four phases, the quality gates, the tag model, what it won't do. This
+rule keeps it honest when the factory itself changes.
+
+## When you MUST update the Factory tab
+
+If a change to the factory skillset —
+[`generate-uds-figma-component/SKILL.md`](../skills/generate-uds-figma-component/SKILL.md),
+[`uds-figma-factory-quality.mdc`](./uds-figma-factory-quality.mdc), or
+[`uds-figma-plugin-api-gotchas.mdc`](./uds-figma-plugin-api-gotchas.mdc)
+— changes something a **designer would notice**, update the Factory tab
+in the same change. That includes:
+
+- a new or changed phase (A / B / C / D) or what the designer does at it
+- a new or changed quality gate the "Why you can trust the draft"
+  section summarizes
+- a changed lifecycle step (how drafts are accepted, how the docs site
+  catches up, the page-naming / tag behavior)
+- a changed trigger prompt or a change to "What it won't do"
+
+Then add a `SITE_CHANGELOG` entry per
+[`uds-site-changelog.mdc`](./uds-site-changelog.mdc), in designer voice
+per [`communication-style.mdc`](./communication-style.mdc) — the tab is
+rendered page copy for humans, not an implementation log.
+
+## When you DON'T
+
+Internal-only edits that leave what the factory produces (and how a
+designer interacts with it) unchanged — prose clarifications, wording,
+examples, `lastUpdated`-only bumps — do NOT require a Factory-tab
+update. The bar is "would a designer reading the tab notice this is now
+wrong or incomplete?"
+
+## Accuracy is a human check
+
+[`scripts/audit-agent-docs-currency.sh`](../../scripts/audit-agent-docs-currency.sh)
+verifies the page *references* the factory files (and this rule), so a
+renamed or deleted file can't silently strand the docs. It CANNOT verify
+the prose is *accurate* — an audit can't read intent. After any
+user-facing factory change, re-read the Factory tab and confirm it still
+matches reality. That judgment is the editor's, not the audit's.
+
+## Editing this rule
+
+This file lives under `.cursor/rules/`, so
+[`uds-rule-discipline.mdc`](./uds-rule-discipline.mdc) applies: bump
+`lastUpdated:` and run `bash scripts/regenerate-toolchain.sh` when you
+edit it, and keep its card on the Cursor Workflows Rules tab.
+
+## Related
+
+- [`generate-uds-figma-component`](../skills/generate-uds-figma-component/SKILL.md)
+  — the factory skill this documents
+- [`uds-figma-factory-quality.mdc`](./uds-figma-factory-quality.mdc) —
+  the quality bar the tab summarizes in plain language
+- [`uds-site-changelog.mdc`](./uds-site-changelog.mdc) — the
+  SITE_CHANGELOG discipline
+- [`communication-style.mdc`](./communication-style.mdc) — designer
+  voice for the tab prose
+- [`uds-rule-discipline.mdc`](./uds-rule-discipline.mdc) — toolchain
+  bookkeeping when editing this rule

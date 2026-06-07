@@ -2,7 +2,7 @@
 description: Process quality rules for any factory-style Figma build (generate-uds-figma-component, new-component, future factories). State design contract (specify visuals not just tokens), mandatory machine-verified audits, variant grid layout reflects axis semantics, visible anatomy by default, dependency manifest before write. Design-system-agnostic — the specific UDS visual constructions live in uds-design-language.mdc.
 alwaysApply: false
 globs: [".cursor/skills/generate-uds-figma-component/**", ".cursor/skills/new-component/**", ".cursor/skills/figma-component-card/**"]
-lastUpdated: 2026-06-04T20:35:00Z
+lastUpdated: 2026-06-04T22:03:53Z
 ---
 
 # Figma Factory Quality
@@ -172,7 +172,18 @@ A read-only `use_figma` call that:
    Disabled → `*-disabled`). Catches the "trend stuck `success` green
    across all five tones" failure from the Metric Card run, where the
    surface and chip retinted per tone but the cloned trend did not.
-7. Returns a structured object with the count of unbound items and
+7. **Nested-instance exposure coverage.** For every nested DS instance
+   the model marked designer-reachable, walk every variant and report
+   any where `isExposedInstance !== true`. Instantiate the set once and
+   confirm `instance.exposedInstances` lists each reachable wrapper.
+   Catches the partial-coverage trap where the primary icon is exposed
+   but a secondary affordance is not — the Metric Card run exposed the
+   headline icon but left the overflow `menu` and the `trend` icon
+   unexposed, so the designer couldn't change the menu glyph or the
+   trend direction. Exposing the main icon is necessary, not
+   sufficient: enumerate ALL reachable nested instances and expose
+   each.
+8. Returns a structured object with the count of unbound items and
    their `{ ownerVariant, nodeId, nodeName, kind }` per check.
 
 The Phase C report's tool-emitted gates table is populated from that
@@ -358,6 +369,63 @@ This is the color / glyph analogue of §2 check 5 (per-variant
 INSTANCE_SWAP defaults): the wiring being present is not enough; each
 variant's tone-bearing parts must actually resolve to that variant's
 meaning. §2 check 6 makes it machine-detectable.
+
+## 7. Secondary affordances use the right emphasis and default glyph
+
+When a component nests a multi-emphasis sibling (most commonly a
+Button) for a UTILITY affordance — an overflow menu, a dismiss button,
+an inline card action — the factory must pick the emphasis that matches
+the affordance's prominence, not the factory's default.
+
+Rules:
+
+- **Utility/secondary affordances take the LOW-emphasis set.** An
+  overflow menu or dismiss control is a `udc-button-ghost` (or
+  tertiary) icon-only instance, never `udc-button-primary`. A filled
+  accent button demands attention that a utility control should not —
+  it competes with the component's actual content.
+- **Set a context-appropriate default glyph**, never the icon wrapper's
+  stock placeholder. Overflow → `more_vert` (or `more_horiz`); dismiss
+  → `close`; expand → `expand_more`. The placeholder
+  `add_circle_outline` on a non-add control is always wrong.
+- **This generalizes §6's glyph rule from icons to nested buttons.**
+  The same "context-appropriate default, not the stock placeholder"
+  discipline applies to every nested DS instance that carries meaning,
+  whether it's a bare `udc-icon-wrapper` or a button that contains one.
+
+Failure mode: the Metric Card overflow shipped as a
+`udc-button-primary` (filled accent) carrying the `add_circle_outline`
+placeholder glyph — wrong emphasis AND wrong glyph on a control that
+should read as a quiet three-dots ghost button. The fix swapped it to
+`udc-button-ghost` icon-only with a `more_vert` default.
+
+## 8. State vs. kind / type — keep the State axis to states
+
+A variant value that changes the component's *interaction or data
+state* (Default / Hover / Focus / Selected / Disabled / Loading /
+Empty / Error) belongs on the `State` axis. A value that changes the
+component's *purpose or mode* — a tile that adds a new item, a
+compose-vs-read mode, a "ghost/placeholder" creation affordance —
+is a different KIND of the component and belongs on its own `Kind` /
+`Type` axis.
+
+Why it matters:
+
+- Overloading `State` with a mode makes the axis lie: a designer
+  scanning the `State` dropdown reads `Add` as if it were an
+  interaction state of a populated card, when it's actually a separate
+  affordance with its own anatomy.
+- It also corrupts the state-coverage reasoning: the class-required
+  state baseline (§ skill State matrix) is computed against real
+  states; a mode masquerading as a state inflates or distorts that
+  count.
+
+Failure mode: the Metric Card carried `Add` as a `State` value beside
+`Default` / `Hover` / `Empty`. `Add` is a distinct add-a-metric
+affordance, not a state of an existing metric — it was moved to a
+`Kind = Metric | Add` axis, leaving `State` to genuine states. When in
+doubt, ask: "is this the same component reacting, or a different thing
+the component can be?" The first is a state; the second is a kind.
 
 ## Related
 

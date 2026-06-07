@@ -1387,5 +1387,12 @@ export const SITE_CHANGELOG: SiteChangelogEntry[] = [
       changes: [
         { type: 'changed', text: 'Cursor Workflows: the UDS component factory now names its Figma draft pages with the lowercase component id (e.g. `metric-card`), matching the mainline component pages, instead of a Title-Case label. Updated the factory card copy to match.' }
       ]
+    },
+    {
+      version: 'SITE 2026.06.07.1',
+      date: '2026-06-07',
+      changes: [
+        { type: 'added', text: 'Added a plain-English Factory tab to the Cursor Workflows page that walks through how the Component Factory works end to end — the draft-to-accepted lifecycle, the four build phases, why the output is trustworthy, what the page-name tags mean, and what the factory won\u2019t do. Written for designers, no code required.' }
+      ]
     }
 ];

@@ -1,7 +1,7 @@
 ---
 name: sync-figma-component-spec
 description: Update a UDS component's per-component artifacts (spec.json, CSS, examples, impl.json, playground.js, figmanotes.json) from a deep Figma component inspection. Bidirectional — consumes the inspector's `Doc-site surplus` + `Snapshot delta` sections to propose removals (deleted slots/events/states/CSS/JS/examples) as classified `potentially-breaking` or `destructive` findings that default to ask-user, AND consumes the inspector's `Figma Notes evaluation` section to update `figmanotes.json` (auto-prune resolved notes, add new ones). Use for prompts like "sync Button from Figma" or after figma-component-inspector reports high-confidence changes.
-lastUpdated: 2026-06-03T16:24:32Z
+lastUpdated: 2026-06-07T20:26:28Z
 ---
 
 # Sync Figma Component Spec
@@ -133,6 +133,7 @@ Map inspector output to schema fields in `uds-docs/uds/components/<id>/spec.json
 | Inspector finding | spec.json field |
 |---|---|
 | variant properties / instance-level booleans | `props[]` |
+| factory-contract `Props (behavioral)` (no Figma property — e.g. `selectable`) | `props[]` |
 | emitted interactions | `events[]` |
 | anatomy / content regions | `slots[]` |
 | variant states (default / hover / focused / disabled / selected / open / ...) | `states[]` |
@@ -151,9 +152,11 @@ preferred over rewrites.
 **Factory-contract source.** When the inspector reports fields sourced
 from a `factory-contract` block — the `generate-uds-figma-component`
 factory wrote the component's non-drawable contract into its Figma
-description — treat those `events[]`, `slots[]`, `parts`,
-`accessibility.*`, `states[]`, and `acceptanceCriteria[]` values as
-high-confidence authored input, not intuition. On a first sync of a
+description — treat those `events[]`, `slots[]`, `parts`, behavioral
+`props[]` (from the block's `Props (behavioral, non-drawable)` section,
+e.g. `selectable`), `accessibility.*`, `states[]`, and
+`acceptanceCriteria[]` values as high-confidence authored input, not
+intuition. On a first sync of a
 factory-drafted component these are usually the ONLY source for
 events / parts / keyboard (there is no Web Component source yet), and
 landing them is the round-trip the factory was designed for. Still
@@ -169,6 +172,14 @@ nestedInstance / variantProperty / variant-value, produce a removal
 proposal. Every row carries the full classification finding shape from
 `.cursor/rules/uds-figma-change-classification.mdc` — `Confidence` /
 `Risk` / `Reason` / `Default action`:
+
+**Do not propose removing a field the inspector tagged `attested` via
+the factory-contract block.** A behavioral prop (`selectable`) or a
+contract-declared event / slot / state that has no variant property and
+no Web Component source yet is still attested (Figma authored it into
+the contract block) — it is NOT surplus. Proposing its removal would
+undo exactly what the prior sync landed. Only act on entries the
+inspector tagged `unattested-by-figma`.
 
 | Surplus finding | File change | Risk class |
 |---|---|---|

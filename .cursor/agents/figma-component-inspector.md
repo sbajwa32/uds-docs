@@ -2,7 +2,7 @@
 name: figma-component-inspector
 description: Deep-inspects a single UDS component in the UDS Components Figma file by reading node trees, component sets, variants, layer details, token bindings, nested instances, and doc-site parity. Bidirectional — reports both Figma-side gaps (mismatches, missing) and doc-site surplus (artifacts with no Figma counterpart), plus a snapshot delta against the prior captured state to surface deletions and renames. Open Figma findings that need designer attention are surfaced as structured entries in uds/components/<id>/figmanotes.json (not free-text in spec.json knownIssues), classified by `kind` so they auto-prune on the next inspection when resolved. Read-only; never modifies files or Figma. Use when updating a component spec, investigating a component mismatch, or before syncing Figma component changes into docs.
 model: inherit
-lastUpdated: 2026-06-03T16:24:32Z
+lastUpdated: 2026-06-07T20:26:28Z
 ---
 
 # Figma Component Inspector
@@ -135,10 +135,24 @@ If the component description contains a delimited
 (written by the `generate-uds-figma-component` factory), treat it as an
 explicit, Figma-authored declaration of the component's non-drawable
 contract. Parse it as a high-confidence source for the fields the node
-tree alone cannot supply: `events[]`, CSS `parts`,
-`accessibility.keyboard[]` / `screenReader[]`, and
-`acceptanceCriteria[]`, plus the `Class` and the `States` baseline
-(each marked supported or `notApplicable`). This is reading an authored
+tree alone cannot supply: `events[]`, `slots[]`, CSS `parts`,
+behavioral `props[]`, `accessibility.keyboard[]` / `screenReader[]`,
+and `acceptanceCriteria[]`, plus the `Class` and the `States` baseline
+(each marked supported or `notApplicable`).
+
+Behavioral props come from the block's `Props (behavioral,
+non-drawable)` section — props that change runtime behavior but have no
+drawable Figma component property to read (e.g. `selectable`, `href`).
+Parse each line of the form `- <name> (<type>, default <value>) —
+<description>` into a `props[]` entry `{ name, type, default,
+required: false, description }`, where `type` is one of the schema's
+`'string' | 'boolean' | 'number' | 'enum' | 'object'`. These are NOT
+duplicated as Figma component properties — drawable props
+(`showIcon`, `label`, `leadingIcon`) still come from the variant /
+instance properties read in §3 above; the behavioral section is only
+for the ones with no Figma property.
+
+This is reading an authored
 artifact, not inventing from intuition, so it does not violate the "do
 not backfill from intuition" rule. Report each field parsed from the
 block with its source noted as `factory-contract` so the sync step can
@@ -227,6 +241,20 @@ and tag each as `attested` / `unattested-by-figma` / `infrastructure`:
 use it for purely positional/wrapper classes like `.udc-<id>-wrapper`.
 Every `unattested-by-figma` entry is a finding with `Confidence` / `Risk`
 / `Reason` / `Default action` per `uds-figma-change-classification.mdc`.
+
+**A field declared in the `<<UDS-FACTORY-CONTRACT v1>>` block counts as
+`attested` — tag it, do not flag it as surplus.** The block is
+Figma-authored, so a `props[]` / `events[]` / `slots[]` / `states[]` /
+`parts` / `acceptanceCriteria[]` entry whose only attestation is the
+contract block is `attested` (source: `factory-contract`), NOT
+`unattested-by-figma`. This is the common case for a freshly-synced
+factory draft: a behavioral prop like `selectable` and a custom event
+like `udc-metric-card-select` exist in the contract block but have no
+variant property and no Web Component source yet. Flagging them as
+surplus would propose removing exactly what the previous sync just
+landed — a round-trip thrash. Once the Web Component is built, those
+fields gain a second attestation (the source) and stay attested either
+way.
 
 If the report omits this pass it is incomplete and must be re-run.
 

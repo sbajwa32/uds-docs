@@ -2,7 +2,7 @@
 description: Plugin API gotchas learned from UDS factory and sync work. Local-file component identity, INSTANCE_SWAP default formats, hidden auto-layout fills, resize-vs-sizing-mode ordering, per-side padding binding, effect-style binding, remote-library token/style discovery, text-wrap sizing. Auto-attaches to anything that calls `use_figma`.
 alwaysApply: false
 globs: ["**/*"]
-lastUpdated: 2026-06-04T19:58:39Z
+lastUpdated: 2026-06-04T22:03:53Z
 ---
 
 # UDS Figma Plugin API Gotchas
@@ -511,6 +511,56 @@ both only if replacing the entire wrapper is a real use case.
 Component-specific corollary: `udc-icon-wrapper`'s rendered glyph color
 lives on the `Union` `BOOLEAN_OPERATION` child (a bound paint), not the
 deepest `VECTOR`. To tint a wrapper per tone, rebind that node's fill.
+
+## 13. Setting an icon-wrapper `Icon` swap to a library glyph: import once, swap by NODE ID
+
+To put a library icon (a Material Symbols glyph, etc.) into a nested
+`udc-icon-wrapper`'s `Icon` INSTANCE_SWAP property, the glyph must first
+exist **in-file**, and the swap value is that in-file component's
+**node ID** — not the published key:
+
+```js
+// 1. Import the icon set ONCE — capture the returned set; reuse it.
+const mv = await figma.importComponentSetByKeyAsync(MORE_VERT_SET_KEY);
+const outlined = mv.children.find(c => /Outlined/.test(c.name)); // a COMPONENT
+// 2. Set the wrapper's Icon property to the imported variant's NODE ID.
+const key = Object.keys(iconWrapper.componentProperties).find(k => /^Icon/.test(k));
+iconWrapper.setProperties({ [key]: outlined.id });   // e.g. '8836:4' — CORRECT
+```
+
+Two error signatures, both from `setProperties` on the icon swap:
+
+| Passed value | Error | Why |
+|---|---|---|
+| Published component **key** (`'9abc28…'`) | `Property value is incompatible with component property type` | §2 mis-scope. This property's existing default is an in-file node id, so its targets are LOCAL — it wants a node id, not a remote key. |
+| A **node id that doesn't exist** (stale, or from a rolled-back atomic call) | `Value for instance swap component property is invalid` | The id format is accepted but resolves to no valid swap target. A prior `use_figma` that errored rolled back its import, so the id it returned is dead. |
+
+`importComponentSetByKeyAsync` is **not idempotent** — every call mints
+a fresh in-file copy (you'll get `8832:2`, then `8836:2`, …). Import
+once, capture the set id, reuse it across the whole run; don't
+re-import per variant or you litter the file with duplicate icon sets.
+The icon-wrapper's `Icon` `preferredValues` is a soft UI hint (it
+points at one example set), not a hard restriction — any in-file glyph
+component works as the value.
+
+### Swapping a nested instance to a different component SET preserves the node but reapply its property references
+
+To change a nested instance's emphasis (e.g. `udc-button-primary` →
+`udc-button-ghost`), use `instance.swapComponent(targetVariant)` with a
+specific variant COMPONENT (not the set). The instance node id is
+preserved, but defensively capture and reapply its
+`componentPropertyReferences` after the swap so a parent-driven binding
+(e.g. `visible: showMenu`) survives:
+
+```js
+const refs = Object.assign({}, menu.componentPropertyReferences);
+menu.swapComponent(ghostIconOnlyVariant);   // a COMPONENT, e.g. '5140:846'
+menu.componentPropertyReferences = refs;     // re-pin visible:showMenu etc.
+menu.isExposedInstance = true;               // re-expose if it was exposed
+```
+
+This was the Metric Card overflow-menu fix (primary → ghost icon-only
+with a `more_vert` glyph).
 
 ## Related
 
