@@ -1401,5 +1401,12 @@ export const SITE_CHANGELOG: SiteChangelogEntry[] = [
       changes: [
         { type: 'added', text: 'Documented a new `uds-factory-versioning` rule on the Cursor Workflows page. It stamps every factory-built component with the factory\u2019s version (a date) so we can tell which components were built to an older quality bar, and keeps being-behind a reported finding rather than a silent change. Foundation only — the stamping and drift report land in follow-up changes.' }
       ]
+    },
+    {
+      version: 'SITE 2026.06.07.3',
+      date: '2026-06-07',
+      changes: [
+        { type: 'added', text: 'The component spec gained an optional `provenance` field — records which factory version (and run) built a component, carried over from Figma when it lands. It\u2019s metadata only and renders nowhere; it gives the factory drift report a way to tell which components are behind. Regenerated the typed spec definitions to match.' }
+      ]
     }
 ];

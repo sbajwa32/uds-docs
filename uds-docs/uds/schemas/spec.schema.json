@@ -179,6 +179,18 @@
       "properties": {
         "exampleId": { "type": "string", "description": "ID of an entry in this component's examples/manifest.json" }
       }
+    },
+
+    "provenance": {
+      "type": ["object", "null"],
+      "description": "Factory build provenance — which version of the component factory produced the Figma source this spec was synced from. Metadata only; not rendered. Written by sync-figma-component-spec / uds-updated from the component-set stamp. See .cursor/rules/uds-factory-versioning.mdc.",
+      "properties": {
+        "factoryVersion": { "type": "string", "description": "Factory build vintage (YYYY.MM.DD.N) that built the Figma source — the date the factory's output last changed, NOT the build date." },
+        "contractVersion": { "type": "string", "description": "Contract-block format version, e.g. 'v1'." },
+        "runId": { "type": "string", "description": "Factory run id, e.g. 'metric-card-2026-06-04'." },
+        "builtAt": { "type": "string", "description": "Date the component was actually built (YYYY-MM-DD); distinct from factoryVersion." },
+        "landedFrom": { "type": "string", "description": "Figma component-set node id the component was synced from (optional)." }
+      }
     }
   },
   "required": ["component"]

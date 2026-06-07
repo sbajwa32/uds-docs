@@ -1,7 +1,7 @@
 ---
 name: sync-figma-component-spec
 description: Update a UDS component's per-component artifacts (spec.json, CSS, examples, impl.json, playground.js, figmanotes.json) from a deep Figma component inspection. Bidirectional — consumes the inspector's `Doc-site surplus` + `Snapshot delta` sections to propose removals (deleted slots/events/states/CSS/JS/examples) as classified `potentially-breaking` or `destructive` findings that default to ask-user, AND consumes the inspector's `Figma Notes evaluation` section to update `figmanotes.json` (auto-prune resolved notes, add new ones). Use for prompts like "sync Button from Figma" or after figma-component-inspector reports high-confidence changes.
-lastUpdated: 2026-06-07T20:26:28Z
+lastUpdated: 2026-06-07T22:00:41Z
 ---
 
 # Sync Figma Component Spec
@@ -134,6 +134,7 @@ Map inspector output to schema fields in `uds-docs/uds/components/<id>/spec.json
 |---|---|
 | variant properties / instance-level booleans | `props[]` |
 | factory-contract `Props (behavioral)` (no Figma property — e.g. `selectable`) | `props[]` |
+| factory build-version stamp (inspector Preflight: `factory_version`, `built_at`, `run_id`) | `provenance` |
 | emitted interactions | `events[]` |
 | anatomy / content regions | `slots[]` |
 | variant states (default / hover / focused / disabled / selected / open / ...) | `states[]` |
@@ -163,6 +164,15 @@ landing them is the round-trip the factory was designed for. Still
 classify per `uds-figma-change-classification.mdc`: additions are
 non-breaking and auto-apply at high confidence; anything that would
 remove or rename an existing field follows the normal ask-user path.
+
+**Provenance.** When the inspector's Preflight reports a factory
+build-version stamp (`factory_version`, `built_at`, `run_id` from the
+component-set), write it into `spec.json` `provenance`
+(`factoryVersion`, `builtAt`, `runId`, optional `landedFrom`). This is
+non-breaking metadata and auto-applies at high confidence — it records
+which factory vintage built the Figma source so drift detection and
+later upgrades have lineage. If the component is unstamped
+(pre-versioning), leave `provenance` absent; don't fabricate one.
 
 ### 5.5. Build proposed removals (REVERSE MAPPING — mandatory)
 

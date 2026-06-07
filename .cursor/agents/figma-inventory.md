@@ -2,7 +2,7 @@
 name: figma-inventory
 description: Read-only inventory of UDS Figma files. Lists versions, component pages, statuses, new/missing components, node fingerprints, and doc-site coverage. Use for "what changed in Figma?", "status sync", "new components", or the first phase of "UDS updated".
 model: inherit
-lastUpdated: 2026-05-27T22:21:24Z
+lastUpdated: 2026-06-07T22:00:41Z
 ---
 
 # Figma Inventory
@@ -36,6 +36,7 @@ write to Figma or repository files.
 - Component manifest: `uds-docs/uds/components.json`
 - Component specs: each `uds-docs/uds/components/<id>/spec.json` (`figmaNodeId`, `figmaPageNodeId`)
 - Previous snapshot: `.cursor/figma/state/components.snapshot.json`
+- Factory version: `.cursor/figma/state/factory-version.json` (current `version`, the newest-first `changelog`, and the `labels` registry)
 
 ## Procedure
 
@@ -71,7 +72,20 @@ write to Figma or repository files.
   - generated component routes from `uds-docs/uds/components.json`
    - per-component `spec.json` `component`, `title`, `figmaNodeId`, `figmaPageNodeId` for each entry in `uds-docs/uds/components.json`
 7. Compare against `.cursor/figma/state/components.snapshot.json` if present.
-8. Classify every finding using `.cursor/rules/uds-figma-change-classification.mdc`.
+8. **Factory-version drift.** Read the current factory `version` and
+   `changelog` from `.cursor/figma/state/factory-version.json`. For each
+   LIVE component (non-`{Ignore}`, non-`{Cursor}`) whose component set
+   carries a `factory_version` plugin-data stamp, find its entry in the
+   changelog and collect the entries newer than it. Keep a newer entry
+   only if one of its `affects[]` labels matches the component's
+   anatomy — evaluate each label with its detector (the `labels` map
+   names them: `nests-button` = nests a `udc-button*`; `tone-axis` = has
+   a Tone variant property; `focusable` = has a focus state; `all` =
+   always true). An unstamped live component is pre-versioning
+   ("rebuild to assess"). A `{Frozen}` / `{NoFactory}` page is reported
+   as behind but marked hands-off — never propose an upgrade for it.
+   This pass is read-only and reports; it never writes Figma or files.
+9. Classify every finding using `.cursor/rules/uds-figma-change-classification.mdc`.
 
 ## Stoplight mapping
 
@@ -112,6 +126,15 @@ it as `unknown` and confidence low.
 ## Component-set variant coverage
 | Component | Component sets | Variant properties / values | Public docs impact | Confidence |
 |---|---|---|---|---|
+
+## Factory version drift
+| Component | Built vintage | Current vintage | Applicable changes (affects[] matched) | Frozen? |
+|---|---|---|---|---|
+
+(One row per live component. Unstamped → "pre-versioning". `{Frozen}` →
+list applicable changes but mark hands-off. If none are behind, state
+"All live components current." If versioning isn't in use yet, state
+"Factory versioning not active.")
 
 ## Components requiring deep inspection
 1. ...

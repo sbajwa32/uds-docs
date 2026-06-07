@@ -264,6 +264,32 @@ export interface UDSComponentSpecSchema {
     exampleId?: string;
     [k: string]: unknown;
   } | null;
+  /**
+   * Factory build provenance — which version of the component factory produced the Figma source this spec was synced from. Metadata only; not rendered. Written by sync-figma-component-spec / uds-updated from the component-set stamp. See .cursor/rules/uds-factory-versioning.mdc.
+   */
+  provenance?: {
+    /**
+     * Factory build vintage (YYYY.MM.DD.N) that built the Figma source — the date the factory's output last changed, NOT the build date.
+     */
+    factoryVersion?: string;
+    /**
+     * Contract-block format version, e.g. 'v1'.
+     */
+    contractVersion?: string;
+    /**
+     * Factory run id, e.g. 'metric-card-2026-06-04'.
+     */
+    runId?: string;
+    /**
+     * Date the component was actually built (YYYY-MM-DD); distinct from factoryVersion.
+     */
+    builtAt?: string;
+    /**
+     * Figma component-set node id the component was synced from (optional).
+     */
+    landedFrom?: string;
+    [k: string]: unknown;
+  } | null;
   [k: string]: unknown;
 }
 
