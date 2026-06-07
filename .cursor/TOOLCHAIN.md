@@ -76,7 +76,7 @@ the manual fallback when the hook hasn't run.
 | Skill | Last updated (UTC) | Description |
 |---|---|---|
 | [`figma-component-card`](./skills/figma-component-card/SKILL.md) | `2026-05-26T23:02:20Z` | Build or update the canonical "component card" canvas layout on a UDS component page in Figma. Use when the user says "build/update the… |
-| [`generate-uds-figma-component`](./skills/generate-uds-figma-component/SKILL.md) | `2026-06-07T21:46:52Z` | UDS Component Factory. Drafts a token-bound UDS component set directly inside the UDS Components Figma file on a brand-new `🟠 <id>… |
+| [`generate-uds-figma-component`](./skills/generate-uds-figma-component/SKILL.md) | `2026-06-07T21:55:38Z` | UDS Component Factory. Drafts a token-bound UDS component set directly inside the UDS Components Figma file on a brand-new `🟠 <id>… |
 | [`import-figma-tokens`](./skills/import-figma-tokens/SKILL.md) | `2026-05-24T09:19:52Z` | Import UDS token changes from the UDS Tokens Figma file. Uses direct Figma Variables reads first and token ZIP exports only as fallback.… |
 | [`link-figma-nodes`](./skills/link-figma-nodes/SKILL.md) | `2026-05-27T22:21:24Z` | Populate figmaNodeId and figmaPageNodeId fields in per-component spec.json files from canonical UDS Components Figma nodes. Use when Figma… |
 | [`new-component`](./skills/new-component/SKILL.md) | `2026-05-27T22:21:24Z` | Scaffold a new UDS component end to end. Creates uds/components/<id>/ with all required files (CSS stub, spec.json, status.json,… |
@@ -92,7 +92,7 @@ the manual fallback when the hook hasn't run.
 |---|---|---|
 | [`figma-capability-check`](./agents/figma-capability-check.md) | `2026-05-12T18:41:50Z` | Read-only probe that reports what the current Figma integration can actually access for UDS Tokens and UDS Components. Use before relying… |
 | [`figma-component-card-audit`](./agents/figma-component-card-audit.md) | `2026-05-12T19:49:37Z` | Audits one or all UDS component pages in a Figma file against the canonical component-card spec. Verifies structure, token bindings, status… |
-| [`figma-component-inspector`](./agents/figma-component-inspector.md) | `2026-06-07T20:26:28Z` | Deep-inspects a single UDS component in the UDS Components Figma file by reading node trees, component sets, variants, layer details, token… |
+| [`figma-component-inspector`](./agents/figma-component-inspector.md) | `2026-06-07T21:55:38Z` | Deep-inspects a single UDS component in the UDS Components Figma file by reading node trees, component sets, variants, layer details, token… |
 | [`figma-inventory`](./agents/figma-inventory.md) | `2026-05-27T22:21:24Z` | Read-only inventory of UDS Figma files. Lists versions, component pages, statuses, new/missing components, node fingerprints, and doc-site… |
 | [`figma-spec-gap`](./agents/figma-spec-gap.md) | `2026-05-27T22:21:24Z` | Read-only agent that compares UDS Components Figma coverage against the doc site's component JSON specs, sidebar pages, figmaNodeId fields,… |
 | [`figma-token-audit`](./agents/figma-token-audit.md) | `2026-05-12T18:41:50Z` | Directly reads the UDS Tokens Figma Variables structure, validates it against the token architecture contract, diffs it against the last… |

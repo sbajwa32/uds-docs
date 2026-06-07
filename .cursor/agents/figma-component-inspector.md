@@ -2,7 +2,7 @@
 name: figma-component-inspector
 description: Deep-inspects a single UDS component in the UDS Components Figma file by reading node trees, component sets, variants, layer details, token bindings, nested instances, and doc-site parity. Bidirectional — reports both Figma-side gaps (mismatches, missing) and doc-site surplus (artifacts with no Figma counterpart), plus a snapshot delta against the prior captured state to surface deletions and renames. Open Figma findings that need designer attention are surfaced as structured entries in uds/components/<id>/figmanotes.json (not free-text in spec.json knownIssues), classified by `kind` so they auto-prune on the next inspection when resolved. Read-only; never modifies files or Figma. Use when updating a component spec, investigating a component mismatch, or before syncing Figma component changes into docs.
 model: inherit
-lastUpdated: 2026-06-07T20:26:28Z
+lastUpdated: 2026-06-07T21:55:38Z
 ---
 
 # Figma Component Inspector
@@ -158,6 +158,18 @@ not backfill from intuition" rule. Report each field parsed from the
 block with its source noted as `factory-contract` so the sync step can
 apply it. If the block is malformed, report it as a finding and fall
 back to node-tree evidence only.
+
+**Read the factory build-version stamp.** The factory writes its build
+vintage in two places on the main component-set node: shared plugin data
+`getSharedPluginData('dsb','factory_version')` (and `built_at`), and a
+`Factory-version:` line in the contract block. Capture both and report
+the value in the §"Preflight" output. If the two disagree, report it as
+a finding (the plugin data is authoritative). This is what lets the sync
+step carry the vintage into `spec.json` `provenance` and lets drift
+detection tell whether the component is behind the current factory bar.
+A component with no stamp is pre-versioning — report it as such, not as
+an error. See
+[`uds-factory-versioning.mdc`](../rules/uds-factory-versioning.mdc).
 
 ### 4. Extract anatomy and dependencies
 
@@ -345,6 +357,7 @@ when there are no proposals — say `No new notes proposed.` explicitly.
 - Components file version: X.Y
 - Site UDS_VERSION: X.Y
 - Mismatch: yes/no
+- Factory build version: YYYY.MM.DD.N (from the component-set stamp) | unstamped (pre-versioning)
 
 ## Confidence summary
 - Overall confidence: high | medium | low

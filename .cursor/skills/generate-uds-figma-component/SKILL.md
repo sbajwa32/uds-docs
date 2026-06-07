@@ -1,7 +1,7 @@
 ---
 name: generate-uds-figma-component
 description: UDS Component Factory. Drafts a token-bound UDS component set directly inside the UDS Components Figma file on a brand-new `🟠 <id> {Cursor}{Ignore}` page. Use when the user says "generate a UDS component for X", "factory me an Avatar", "draft a new UDS component called Y", "build a UDS component for Z in Figma", or "use the component factory to start <Title>". Stops at Figma — never writes to `uds-docs/uds/`. Docs landing is the existing `uds-updated` skill, run later by the designer.
-lastUpdated: 2026-06-07T21:46:52Z
+lastUpdated: 2026-06-07T21:55:38Z
 ---
 
 # UDS Component Factory — Generate UDS Figma Component
@@ -167,6 +167,13 @@ The component target is always the `UDS Components` file, file key
    overwrite the model. If it does not exist, you'll create it during
    Phase A. (`.cursor/state/` is gitignored — proposals are runtime
    state, not committed history.)
+7. **Read the current factory build version.** Open
+   [`.cursor/figma/state/factory-version.json`](../../figma/state/factory-version.json)
+   and hold its `version` (e.g. `2026.06.07.1`). You stamp it onto the
+   component set in Phase B (B.3.6) and write the matching
+   `Factory-version:` line into the contract block (B.3.5). This is the
+   factory's vintage, not today's date — see
+   [`uds-factory-versioning.mdc`](../../rules/uds-factory-versioning.mdc).
 
 ## Phase A — Brief to model (no Figma writes)
 
@@ -894,6 +901,7 @@ and the designer can edit or delete it freely:
 <<UDS-FACTORY-CONTRACT v1>>
 Component: <Title> (<id>)
 Class: <layout|display|action|form|navigation|feedback|data>
+Factory-version: <YYYY.MM.DD.N>
 Props (behavioral, non-drawable):
   - <name> (<type>, default <value>) — <behavior; which states/events it gates>
   (or: none)
@@ -953,6 +961,33 @@ Rules:
   brand-new component (there's no Web Component source yet). If it's
   missing or malformed, those `spec.json` fields land empty on first
   sync.
+- **The `Factory-version:` line records the build vintage.** Copy the
+  value from `.cursor/figma/state/factory-version.json` `version` (read
+  in pre-flight step 7). It MUST match the `factory_version` plugin-data
+  stamp written in B.3.6 — same string, two places (human-readable line
+  + machine-readable plugin data). See
+  [`uds-factory-versioning.mdc`](../../rules/uds-factory-versioning.mdc).
+
+### B.3.6 — Stamp the build version
+
+After authoring the contract block, stamp the factory build version onto
+the **main component-set node** (`udc-<id>`) so drift detection and the
+docs round-trip can read it later. Two plugin-data writes, same `dsb`
+namespace `run_id` already uses:
+
+```js
+const fv = '<YYYY.MM.DD.N>';            // from factory-version.json, pre-flight step 7
+componentSet.setSharedPluginData('dsb', 'factory_version', fv);
+componentSet.setSharedPluginData('dsb', 'built_at', '<YYYY-MM-DD>');  // today: date -u +%Y-%m-%d
+// run_id is already set per the figma-generate-library state ledger
+```
+
+The `Factory-version:` line in the B.3.5 contract block carries the same
+`fv` string for humans. The stamp lives on the NODE, so it survives the
+designer's acceptance rename. `built_at` is the actual build date — NOT
+the same as `factory_version` (the factory's vintage; a component built
+months after the factory last changed still carries the older vintage).
+See [`uds-factory-versioning.mdc`](../../rules/uds-factory-versioning.mdc).
 
 ### B.4 — Required write summary
 
@@ -996,6 +1031,11 @@ and the `figma-use` "always read IDs from the state ledger" rule:
    block (B.3.5) with every section present, with literal `<<` delimiters
    (not HTML-escaped `&lt;&lt;` — gotchas §10). A missing or malformed
    block STOPS the run — the contract round-trip depends on it.
+5. Confirm the build-version stamp (B.3.6): the component set's
+   `getSharedPluginData('dsb','factory_version')` returns the
+   `factory-version.json` `version`, and the contract block's
+   `Factory-version:` line matches it. A missing or mismatched stamp is
+   a Phase C gate failure.
 
 ## Phase C — Quality-gate report
 
@@ -1007,6 +1047,11 @@ structured report with two sections.
 
 - **Token bindings.** Raw color/fill/stroke values found: N. Unbound
  corner radii: N at `<nodeIds>`.
+- **Build version stamped.** The main component set's `factory_version`
+ plugin data and the contract block's `Factory-version:` line both equal
+ the current `.cursor/figma/state/factory-version.json` `version`.
+ Missing or mismatched: fail. (`built_at` plugin data is also set to the
+ build date.)
 - **Per-side spacing bindings.** Every auto-layout frame the factory
  created MUST have all five spacing properties (`paddingTop`,
  `paddingBottom`, `paddingLeft`, `paddingRight`, `itemSpacing`) bound
