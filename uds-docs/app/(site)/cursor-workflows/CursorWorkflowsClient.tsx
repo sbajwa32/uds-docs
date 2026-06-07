@@ -159,7 +159,7 @@ export function CursorWorkflowsClient() {
               <p className="sg-cw-concept-analogy">Like &quot;always wear a seatbelt.&quot;</p>
               <div className="sg-cw-concept-meta">
                 <code>.cursor/rules/</code>
-                <span className="sg-cw-concept-count">22</span>
+                <span className="sg-cw-concept-count">23</span>
               </div>
             </DocsCard>
           </div>
@@ -705,7 +705,7 @@ export function CursorWorkflowsClient() {
               TAB PANEL: Rules
               ============================================================ */}
           <DocsTabPanel value="rules">
-            <p className="sg-subsection-desc" style={{ marginBottom: 'var(--uds-space-300)' }}>22 rules total &mdash; 8 always-on (loaded into Cursor&apos;s context on every task) and 14 glob-scoped (loaded only when files matching the rule&apos;s glob are in context, or when a skill explicitly references the rule).</p>
+            <p className="sg-subsection-desc" style={{ marginBottom: 'var(--uds-space-300)' }}>23 rules total &mdash; 8 always-on (loaded into Cursor&apos;s context on every task) and 15 glob-scoped (loaded only when files matching the rule&apos;s glob are in context, or when a skill explicitly references the rule).</p>
 
             {/* ALWAYS-ON RULES */}
             <div className="sg-cw-group">
@@ -770,7 +770,7 @@ export function CursorWorkflowsClient() {
             <div className="sg-cw-group">
               <header className="sg-cw-group-header">
                 <h4 className="sg-cw-group-name">Glob-scoped</h4>
-                <span className="sg-cw-group-count">14</span>
+                <span className="sg-cw-group-count">15</span>
               </header>
               <p className="sg-cw-group-desc">Loaded only when files matching the rule&apos;s glob are in context, or when a skill explicitly references the rule.</p>
 
@@ -857,6 +857,12 @@ export function CursorWorkflowsClient() {
                   <header className="sg-cw-card-head"><code className="sg-cw-card-name">uds-factory-docs-currency</code><span className="sg-cw-pill sg-cw-pill--scoped">Loads on factory skills</span></header>
                   <p className="sg-cw-card-body">Keeps the plain-English <strong>Factory</strong> tab on this page honest. When a change to the factory skillset (<code>generate-uds-figma-component</code>, <code>uds-figma-factory-quality</code>, <code>uds-figma-plugin-api-gotchas</code>) changes something a designer would notice &mdash; a phase, a quality gate, the lifecycle, a trigger prompt &mdash; the Factory tab and a SITE_CHANGELOG entry update in the same change. Internal-only edits don&apos;t. An audit can confirm the page <em>mentions</em> the factory files; keeping the prose <em>accurate</em> is the editor&apos;s job.</p>
                   <footer className="sg-cw-card-foot"><a className="sg-cw-card-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/rules/uds-factory-docs-currency.mdc" target="_blank" rel="noopener noreferrer">Open file<span className="material-symbols-outlined">open_in_new</span></a></footer>
+                </DocsCard>
+
+                <DocsCard className="sg-cw-card">
+                  <header className="sg-cw-card-head"><code className="sg-cw-card-name">uds-factory-versioning</code><span className="sg-cw-pill sg-cw-pill--scoped">Loads on factory skills</span></header>
+                  <p className="sg-cw-card-body">Stamps every factory-built component with the factory&apos;s version &mdash; a date, <code>YYYY.MM.DD.N</code> &mdash; so you can tell which components were built to an older quality bar. Defines when the version bumps (only when factory output changes, not on every edit), how it&apos;s stamped in Figma and carried into <code>spec.json</code>, and the rule that being behind is always <em>reported</em>, never silently applied to a live component. Source of truth: <code>.cursor/figma/state/factory-version.json</code>.</p>
+                  <footer className="sg-cw-card-foot"><a className="sg-cw-card-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/rules/uds-factory-versioning.mdc" target="_blank" rel="noopener noreferrer">Open file<span className="material-symbols-outlined">open_in_new</span></a></footer>
                 </DocsCard>
               </div>
             </div>

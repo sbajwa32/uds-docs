@@ -1,0 +1,19 @@
+{
+  "$comment": "UDS factory build version — the factory's OUTPUT vintage, distinct from per-file lastUpdated and the contract-block format version (v1). See .cursor/rules/uds-factory-versioning.mdc. Version format YYYY.MM.DD.N; changelog newest-first; drift compares by changelog position, not string math. `labels` is the human-readable registry of affects[] tags; the drift pass carries a real detector per label.",
+  "version": "2026.06.07.1",
+  "changelog": [
+    {
+      "version": "2026.06.07.1",
+      "date": "2026-06-07",
+      "breaking": false,
+      "affects": ["all"],
+      "summary": "First versioned factory. Gapped offset focus ring; per-variant tone-bearing adornment rebinding; secondary-affordance ghost emphasis + contextual default glyph; behavioral props captured in the contract block; nested-instance exposure coverage for every reachable instance; state-vs-kind axis hygiene."
+    }
+  ],
+  "labels": {
+    "all": "every component",
+    "nests-button": "component nests any udc-button* instance",
+    "tone-axis": "component set has a Tone variant axis",
+    "focusable": "component has a focus / focus-visible state"
+  }
+}

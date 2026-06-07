@@ -2,7 +2,7 @@
 description: Plugin API gotchas learned from UDS factory and sync work. Local-file component identity, INSTANCE_SWAP default formats, hidden auto-layout fills, resize-vs-sizing-mode ordering, per-side padding binding, effect-style binding, remote-library token/style discovery, text-wrap sizing. Auto-attaches to anything that calls `use_figma`.
 alwaysApply: false
 globs: ["**/*"]
-lastUpdated: 2026-06-04T22:03:53Z
+lastUpdated: 2026-06-07T21:46:52Z
 ---
 
 # UDS Figma Plugin API Gotchas

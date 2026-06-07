@@ -1,0 +1,121 @@
+---
+description: When and how to bump the UDS factory build version, how it's stamped onto generated components, and how it carries into docs. The build version (YYYY.MM.DD.N, in .cursor/figma/state/factory-version.json) is the factory's OUTPUT vintage — distinct from per-file lastUpdated (every edit) and the contract-block format version (v1). Auto-attaches when a factory file is edited so the bump discipline is in front of you.
+globs: [".cursor/skills/generate-uds-figma-component/**", ".cursor/rules/uds-figma-factory-quality.mdc", ".cursor/rules/uds-figma-plugin-api-gotchas.mdc", ".cursor/rules/uds-design-language.mdc", ".cursor/rules/uds-naming-conventions.mdc"]
+alwaysApply: false
+lastUpdated: 2026-06-07T21:46:52Z
+---
+
+# UDS Factory Versioning
+
+The factory build version answers one question: "was this component
+built under the current factory's output bar, or an older one?" It is
+the factory's **vintage** — the date its output last changed — stamped
+onto every component the factory builds. It is NOT the component's build
+date (that's `built_at`).
+
+## Three version axes — do not conflate
+
+| Axis | Lives in | Bumps when |
+|---|---|---|
+| `lastUpdated` (per file) | each rule/skill/agent frontmatter | the file is edited at all |
+| Contract format version (`v1`) | the `<<UDS-FACTORY-CONTRACT>>` delimiter | the block's parsable shape changes |
+| **Factory build version** (`YYYY.MM.DD.N`) | `.cursor/figma/state/factory-version.json` | the factory's OUTPUT changes |
+
+Format-version (`v1`) policy: adding a contract-block section is additive
+(readers tolerate a missing section), so it stays `v1`; only a breaking
+re-shape bumps to `v2`.
+
+## When to bump the build version
+
+Bump when a change to any factory file —
+[`generate-uds-figma-component/SKILL.md`](../skills/generate-uds-figma-component/SKILL.md),
+[`uds-figma-factory-quality.mdc`](./uds-figma-factory-quality.mdc),
+[`uds-figma-plugin-api-gotchas.mdc`](./uds-figma-plugin-api-gotchas.mdc),
+[`uds-design-language.mdc`](./uds-design-language.mdc), or
+[`uds-naming-conventions.mdc`](./uds-naming-conventions.mdc) — changes
+what a factory run PRODUCES:
+
+- a new or changed Phase C quality gate
+- a new construction pattern (focus ring, skeleton, …)
+- a new or changed contract-block section
+- a changed default (emphasis, glyph, token-binding policy)
+- a changed variant-axis convention
+
+(`uds-design-language` and `uds-naming-conventions` are in this rule's
+globs so editing them surfaces this reminder — but they're broad rules;
+bump only when the edit actually changes factory output, not for an
+unrelated tweak.)
+
+Each such change mints a new `YYYY.MM.DD.N` (increment `N` for a second
+output change the same day). The number is chronological — mark the
+changelog entry `breaking: true` for a removal / rename / contract-shape
+change that can invalidate a prior draft, `false` for an additive
+improvement. Severity lives in the flag, not the digits.
+
+## When NOT to bump
+
+Prose clarifications, typos, reordering, examples, or any edit that
+leaves factory output identical. These bump `lastUpdated` only.
+
+## How to bump
+
+1. Set `version` in `.cursor/figma/state/factory-version.json` to a fresh
+   `YYYY.MM.DD.N` (date from `date -u +%Y.%m.%d`).
+2. Prepend a changelog entry (newest first): `version`, `date`
+   (`date -u +%Y-%m-%d`), `breaking` (true/false), `affects[]` (anatomy
+   tags, or `["all"]`), `summary` (plain-language, 1–2 sentences).
+3. If the entry uses a NEW `affects[]` label, add it to the `labels` map
+   (English meaning) AND add its detector to the drift pass.
+4. The factory reads `version` at build time and stamps it (plugin data
+   + contract-block `Factory-version:` line).
+
+## How `affects[]` matching works
+
+`affects[]` entries are named labels (`nests-button`, `tone-axis`,
+`all`, …). The `labels` map in `factory-version.json` is the
+human-readable registry — what each label means. The matching is done by
+the drift pass, which carries a real detector per label (keyed by name)
+that reads the component's actual anatomy as `figma-component-inspector`
+extracts it (nested instances, variant axes, states). Matching is exact,
+not fuzzy. Adding a label = the `labels` entry AND its detector.
+
+## How it's stamped and carried
+
+- **Figma:** `setSharedPluginData('dsb','factory_version', <version>)` on
+  the main component-set node (`udc-<id>`), plus a
+  `Factory-version: <version>` line in the `<<UDS-FACTORY-CONTRACT>>`
+  block. The stamp survives the designer's acceptance rename — it lives
+  on the node, not the page name.
+- **Docs:** `sync-figma-component-spec` / `uds-updated` copies it into
+  `spec.json` `provenance.factoryVersion`.
+
+## Drift is reported, never auto-applied on a live component
+
+A behind-version component is REPORTED. Upgrades follow the maintenance
+loop: free regenerate for un-accepted `{Cursor}` drafts; review-gated
+inspect → diff → propose → approve for live components, where NOTHING
+applies without per-change approval (additive and breaking alike); no
+writes at all for `{Frozen}` components. The factory never silently
+rewrites (`uds-source-of-truth.mdc`).
+
+## Editing this rule
+
+Lives under `.cursor/rules/`, so
+[`uds-rule-discipline.mdc`](./uds-rule-discipline.mdc) applies: bump
+`lastUpdated:` and run `bash scripts/regenerate-toolchain.sh` when you
+edit it, and keep its card on the Cursor Workflows Rules tab.
+
+## Related
+
+- [`generate-uds-figma-component`](../skills/generate-uds-figma-component/SKILL.md)
+  — stamps at build time
+- [`uds-figma-factory-quality.mdc`](./uds-figma-factory-quality.mdc) —
+  the output bar each version encodes
+- [`figma-inventory`](../agents/figma-inventory.md) — the drift-report
+  consumer
+- [`sync-figma-component-spec`](../skills/sync-figma-component-spec/SKILL.md)
+  — carries the stamp into `spec.json`
+- [`uds-figma-write-safety.mdc`](./uds-figma-write-safety.mdc) — the
+  permission tiers the maintenance loop respects
+- [`uds-source-of-truth.mdc`](./uds-source-of-truth.mdc) — why upgrades
+  are proposals, not rewrites

@@ -1,7 +1,7 @@
 ---
 name: generate-uds-figma-component
 description: UDS Component Factory. Drafts a token-bound UDS component set directly inside the UDS Components Figma file on a brand-new `🟠 <id> {Cursor}{Ignore}` page. Use when the user says "generate a UDS component for X", "factory me an Avatar", "draft a new UDS component called Y", "build a UDS component for Z in Figma", or "use the component factory to start <Title>". Stops at Figma — never writes to `uds-docs/uds/`. Docs landing is the existing `uds-updated` skill, run later by the designer.
-lastUpdated: 2026-06-04T22:03:53Z
+lastUpdated: 2026-06-07T21:46:52Z
 ---
 
 # UDS Component Factory — Generate UDS Figma Component
