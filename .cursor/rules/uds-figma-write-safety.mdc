@@ -1,7 +1,7 @@
 ---
 description: Prevents accidental Figma mutations during UDS sync work. Read-only is the default; writes are explicitly scoped and summarized.
 alwaysApply: true
-lastUpdated: 2026-06-03T16:57:13Z
+lastUpdated: 2026-06-07T22:06:24Z
 ---
 
 # UDS Figma Write Safety
@@ -65,6 +65,28 @@ The only routine Figma write scopes are:
      the `{Cursor}` / `{Ignore}` tags (that rename is the designer's
      acceptance gesture).
 
+5. **Factory maintenance upgrades to a live component page**
+   - Allowed only when the user explicitly directs a factory upgrade /
+     maintenance run for a named live component (e.g. "upgrade
+     metric-card to the current factory bar"), or confirms a specific
+     change from a `figma-inventory` factory-version drift report. This
+     is NOT a standing grant.
+   - Target MUST be a LIVE component page in `UDS Components` — no
+     `{Cursor}`, no `{Ignore}`. (Draft writes are scope #4 and are free;
+     this scope is the gated, accepted-component path.)
+   - **Per-change approval, never silent.** Every change is proposed and
+     applied only on the user's explicit OK of that specific change —
+     additive and breaking alike. Nothing auto-applies on a live page.
+     The factory writes ONLY the approved scoped change, never a free
+     rebuild.
+   - A designer hand-edit (the live component differs from what the
+     factory would produce) is surfaced, never overwritten.
+   - A page tagged `{Frozen}` / `{NoFactory}` is excluded — reported as
+     behind, never written (see `.cursor/rules/uds-figma-preflight.mdc`).
+   - Every write emits the standard before/after/rollback summary.
+   - Driven by the `generate-uds-figma-component` maintenance mode and
+     `.cursor/rules/uds-factory-versioning.mdc`.
+
 All other Figma writes require a direct user instruction that names the
 target object or operation.
 
@@ -104,4 +126,7 @@ sync.
 - `.cursor/skills/sync-figma-release-notes/SKILL.md` — uses scope #1
 - `.cursor/skills/sync-figma-component-status/SKILL.md` — uses scope #2
 - `.cursor/skills/generate-uds-figma-component/SKILL.md` — uses scope #4
-  (component drafts on `{Cursor}{Ignore}` pages)
+  (component drafts on `{Cursor}{Ignore}` pages) and scope #5 (gated
+  upgrades to live components, per `.cursor/rules/uds-factory-versioning.mdc`)
+- `.cursor/rules/uds-factory-versioning.mdc` — defines the build version
+  whose drift triggers scope #5 maintenance upgrades

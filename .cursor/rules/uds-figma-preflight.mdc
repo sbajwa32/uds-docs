@@ -2,7 +2,7 @@
 description: Required preflight for any task that reads or writes UDS Figma files.
 globs: ["**/*"]
 alwaysApply: false
-lastUpdated: 2026-06-03T16:09:15Z
+lastUpdated: 2026-06-07T22:06:24Z
 ---
 
 # UDS Figma Preflight
@@ -66,6 +66,26 @@ Rules:
   asks for that page by name and acknowledges it is ignored.
 - If an ignored page looks like a duplicate of a live component, mention only
   that it was skipped; do not use it as evidence.
+
+## Frozen pages (factory-maintenance opt-out)
+
+A page whose name contains `{Frozen}` (or `{NoFactory}`) is a LIVE component
+the designer has marked hands-off for the **component factory's maintenance
+upgrades only**. Unlike `{Ignore}`, it is NOT removed from the system:
+
+- It stays in inventory, status sync, new/deleted detection, release-note
+  selection, and component inspection — it is a real, live component and is
+  counted everywhere a normal live component is.
+- The ONLY thing `{Frozen}` changes: the factory's maintenance mode and the
+  `figma-inventory` factory-version drift pass still REPORT it as behind if it
+  is, but propose and write NO upgrades to it. See
+  `.cursor/rules/uds-figma-write-safety.mdc` scope #5 and
+  `.cursor/rules/uds-factory-versioning.mdc`.
+- Removing `{Frozen}` re-enrolls the component in factory maintenance.
+
+The three page-name axes are independent: `{Cursor}` = permission (free
+write), `{Ignore}` = visibility (hidden from automation), `{Frozen}` =
+maintenance (factory proposes no upgrades). A page can carry any combination.
 
 ## Stoplight status mapping
 

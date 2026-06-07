@@ -609,6 +609,13 @@ export function CursorWorkflowsClient() {
                     <p className="sg-cw-step-desc">Later, when you say &quot;UDS updated,&quot; the normal Figma&ndash;to&ndash;docs sync picks up the accepted component and creates its docs page, spec, and changelog entry. The factory itself stops at Figma.</p>
                   </div>
                 </li>
+                <li className="sg-cw-step">
+                  <span className="sg-cw-step-num">6</span>
+                  <div className="sg-cw-step-body">
+                    <h5 className="sg-cw-step-title">It stays current (later)</h5>
+                    <p className="sg-cw-step-desc">As the factory improves, an approved component can fall behind the newer quality bar. The factory can then propose updates to bring it current &mdash; but every change waits for your approval, nothing is automatic on a live component, and you can tag one <code>{'{Frozen}'}</code> to opt it out of factory updates entirely while keeping it in the docs.</p>
+                  </div>
+                </li>
               </ol>
             </div>
 
@@ -748,7 +755,7 @@ export function CursorWorkflowsClient() {
 
                 <DocsCard className="sg-cw-card">
                   <header className="sg-cw-card-head"><code className="sg-cw-card-name">uds-figma-write-safety</code><span className="sg-cw-pill sg-cw-pill--always"><span className="material-symbols-outlined">visibility</span>Always on</span></header>
-                  <p className="sg-cw-card-body">Figma writes are denied by default. Only four scopes ever apply: release-notes frames, status page prefixes, cover-page version text, and component drafts on a <code>{'{Cursor}{Ignore}'}</code> page. Every write produces a before / after / rollback summary.</p>
+                  <p className="sg-cw-card-body">Figma writes are denied by default. Only five scopes ever apply: release-notes frames, status page prefixes, cover-page version text, component drafts on a <code>{'{Cursor}{Ignore}'}</code> page (free), and gated upgrades to a live component (each change needs explicit approval). Every write produces a before / after / rollback summary.</p>
                   <footer className="sg-cw-card-foot"><a className="sg-cw-card-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/rules/uds-figma-write-safety.mdc" target="_blank" rel="noopener noreferrer">Open file<span className="material-symbols-outlined">open_in_new</span></a></footer>
                 </DocsCard>
 

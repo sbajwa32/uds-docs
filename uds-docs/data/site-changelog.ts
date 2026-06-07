@@ -1408,5 +1408,12 @@ export const SITE_CHANGELOG: SiteChangelogEntry[] = [
       changes: [
         { type: 'added', text: 'The component spec gained an optional `provenance` field — records which factory version (and run) built a component, carried over from Figma when it lands. It\u2019s metadata only and renders nowhere; it gives the factory drift report a way to tell which components are behind. Regenerated the typed spec definitions to match.' }
       ]
+    },
+    {
+      version: 'SITE 2026.06.07.4',
+      date: '2026-06-07',
+      changes: [
+        { type: 'changed', text: 'The Component Factory can now help maintain already-approved components, not just build new drafts: it proposes updates to bring a live component up to the current quality bar, with every change waiting for your approval — nothing automatic. Documented this on the Factory tab (a new "stays current" lifecycle step) and a `{Frozen}` tag to opt a hand-tuned component out. The Figma write-safety card now lists five write scopes instead of four.' }
+      ]
     }
 ];

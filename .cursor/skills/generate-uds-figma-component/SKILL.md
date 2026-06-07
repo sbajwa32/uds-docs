@@ -1,7 +1,7 @@
 ---
 name: generate-uds-figma-component
 description: UDS Component Factory. Drafts a token-bound UDS component set directly inside the UDS Components Figma file on a brand-new `🟠 <id> {Cursor}{Ignore}` page. Use when the user says "generate a UDS component for X", "factory me an Avatar", "draft a new UDS component called Y", "build a UDS component for Z in Figma", or "use the component factory to start <Title>". Stops at Figma — never writes to `uds-docs/uds/`. Docs landing is the existing `uds-updated` skill, run later by the designer.
-lastUpdated: 2026-06-07T21:55:38Z
+lastUpdated: 2026-06-07T22:06:24Z
 ---
 
 # UDS Component Factory — Generate UDS Figma Component
@@ -1231,10 +1231,13 @@ Production-ready is a higher bar that happens later, after designer
 rename + the eventual `uds-updated` run. The factory does not chase
 it.
 
-## Phase D — Designer hand-off (factory done)
+## Phase D — Designer hand-off + enrollment in maintenance
 
-When the designer accepts the draft, factory's job is done. What
-happens next is NOT this skill's responsibility:
+When the designer accepts the draft (renames the page to drop
+`{Cursor}{Ignore}`), the factory's DRAFT job is done — and the component
+is now a live library member, enrolled in review-gated maintenance (see
+"Maintenance mode" below). What happens next is NOT the draft skill's
+responsibility:
 
 - The designer renames the page in `UDS Components` to drop
  `{Cursor}{Ignore}` and update the stoplight prefix to whatever
@@ -1266,7 +1269,47 @@ The model proposal at `.cursor/state/component-factory/<componentId>.md`
 can be deleted once the component has landed in docs, or left in
 place — cleanup is optional, since `.cursor/state/` is gitignored.
 
-## Procedure (single-component, the only mode in this version)
+## Maintenance mode — keeping live components current
+
+Once a component is live (accepted: no `{Cursor}`, no `{Ignore}`), the
+factory can help keep it current as the factory's output bar moves. This
+is the consumer side of
+[`uds-factory-versioning.mdc`](../../rules/uds-factory-versioning.mdc).
+It is invoked deliberately — e.g. "upgrade metric-card to the current
+factory bar", or as a follow-up to a
+[`figma-inventory`](../../agents/figma-inventory.md) factory-version
+drift report — never automatically.
+
+The loop reuses the existing inspect → classify → propose → approve
+pattern, pointed in the Figma-write direction:
+
+1. **Inspect** the live component with
+   [`figma-component-inspector`](../../agents/figma-component-inspector.md):
+   current structure, token bindings, contract block, and the
+   `factory_version` stamp.
+2. **Diff** the stamp against `.cursor/figma/state/factory-version.json`:
+   pull the newer changelog entries whose `affects[]` labels match the
+   component's anatomy. Each is a concrete, scoped change.
+3. **Propose every change for approval — nothing on a live component
+   auto-applies.** A live page is gated (write-safety **scope #5**): the
+   factory writes nothing without explicit per-change approval. The
+   `breaking` flag only changes how a change is presented — additive
+   (`breaking:false`) is a plain "apply this?"; `breaking:true` stops and
+   flags the risk it could invalidate hand-edits. Both wait for approval.
+   Where the live component diverges from what the factory would produce
+   (a designer hand-edit), surface it; never overwrite it.
+4. **Apply on approval**, writing only the approved scoped change to the
+   live page — NOT a free rebuild. Emit the standard write summary
+   (write-safety §"Required before/after report").
+
+**Excluded:** a `{Frozen}` / `{NoFactory}` page is reported as behind but
+never written — the designer has marked it hands-off
+(`uds-figma-preflight.mdc`). An un-accepted `{Cursor}` draft uses the
+free regenerate-for-review path instead (it's scratch, not gated). The
+`{Cursor}` free-write grant (scope #4) remains scratch-only; maintenance
+writes to live pages are the gated scope #5.
+
+## Procedure (single-component draft, the default mode)
 
 1. **Pre-flight** (above).
 2. **Phase A** — read brief + siblings + tokens, persist model to
