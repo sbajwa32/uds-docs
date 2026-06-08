@@ -2,7 +2,7 @@
 description: Process quality rules for any factory-style Figma build (generate-uds-figma-component, new-component, future factories). State design contract (specify visuals not just tokens), mandatory machine-verified audits, variant grid layout reflects axis semantics, visible anatomy by default, dependency manifest before write. Design-system-agnostic — the specific UDS visual constructions live in uds-design-language.mdc.
 alwaysApply: false
 globs: [".cursor/skills/generate-uds-figma-component/**", ".cursor/skills/new-component/**", ".cursor/skills/figma-component-card/**"]
-lastUpdated: 2026-06-07T22:31:49Z
+lastUpdated: 2026-06-08T19:37:39Z
 ---
 
 # Figma Factory Quality
@@ -218,6 +218,30 @@ Failure mode: the Metric Card stamp-only upgrade audit flagged the
 nested overflow button's own hidden focus ring as host cruft and tried
 to delete it (atomic rollback). The ancestor-instance check and
 structural ring detection both prevent this class of false positive.
+
+#### Naming-convention gate (validate against the naming framework)
+
+Every variant-axis name and every state / selection value the factory
+emits MUST come from the design system's naming framework. For UDS that's
+the canonical lists in
+[`uds-naming-conventions.mdc`](./uds-naming-conventions.mdc) — §1 states
+(`Default` / `Hovered` / `Focused` / `Pressed` / `Selected` / `Disabled`
+/ `Loading` / `Error` / `Empty` / `Read-only` / `Dragged` /
+`Indeterminate` / `Checked` / `Current`), §2 sizes, §3 tones, §4
+emphasis. The audit walks each component set's
+`componentPropertyDefinitions` and reports every VARIANT-axis value not
+in the canonical set (the framework rule carries the drift→fix table —
+`Hover`→`Hovered`, `Focus`/lowercase `focused`→`Focused`,
+`Active`→`Pressed`-or-`Current`, a toggle on-state `Selected`→`Checked`,
+any lowercase Figma value → Title Case). A rename is classified
+`potentially-breaking` per
+[`uds-figma-change-classification.mdc`](./uds-figma-change-classification.mdc)
+and defaults to ask-user — never silently renamed. This gate is what
+stops a new or re-factoried draft re-introducing the
+`Focus`/`focused`/`Active`/`Selected`-on-a-toggle drift the older drafts
+shipped. The gate is design-system-agnostic in shape — point it at
+whatever naming framework the system defines; the canonical values live
+in that rule, not here.
 
 The Phase C report's tool-emitted gates table is populated from that
 return value. If the audit hasn't run, the report can't be emitted.

@@ -2,7 +2,7 @@
 description: The design-system-level naming framework for UDS. Locks the canonical vocabulary for states, sizes, tones, emphasis, parts of a component, the state-vs-variant-vs-property meta-rule, casing and word choice, component names, subcomponents, and lifecycle status. Designer-voiced, concept-first. Companion to uds-design-language.mdc — design-language covers *how things look* per state, this rule covers *what we call them*. Factory, new-component, and the spec sync skills should pick names from this framework instead of guessing from siblings.
 alwaysApply: false
 globs: ["**/*"]
-lastUpdated: 2026-05-22T19:10:35Z
+lastUpdated: 2026-06-08T19:37:39Z
 ---
 
 # UDS Naming Framework
@@ -25,8 +25,11 @@ last resort and gets flagged for designer review.
 
 ## 1. States
 
-The canonical interaction states every component should think about
-when it's designed and documented.
+The canonical interaction and selection states every component should
+think about when it's designed and documented. Names describe **the
+state the element is in** — read each as "the element is ___" — so the
+set stays grammatically uniform (Hovered, Focused, Pressed, Selected,
+Disabled), not a mix of bare verbs and adjectives.
 
 **The eight standard states**, every component reaches for these
 names when applicable:
@@ -34,20 +37,22 @@ names when applicable:
 | Name | What it means |
 |---|---|
 | **Default** | The resting state. No interaction in progress. |
-| **Hover** | Pointer is over the component, not yet clicked. |
+| **Hovered** | Pointer is over the component, not yet clicked. |
+| **Focused** | Keyboard focus is on the component. |
 | **Pressed** | Mouse-down or finger-down. Briefly. |
-| **Focus** | Keyboard focus is on the component. |
 | **Selected** | This is the chosen one in a group of equivalent options. |
 | **Disabled** | Interaction temporarily unavailable. |
 | **Loading** | Waiting for something to finish. |
 | **Error** | Validation failed or something went wrong. |
 
-**Two conditional states**, only used when the component supports them:
+**Four conditional states**, only used when the component supports them:
 
 | Name | What it means |
 |---|---|
 | **Empty** | The component has nothing to display yet — empty table, empty dropdown, empty search results. |
 | **Read-only** | The user can see the value but can't change it. The system owns it. |
+| **Dragged** | The component is being dragged. |
+| **Indeterminate** | A mixed / partial state — e.g. a parent checkbox whose children are only partly checked. |
 
 **Two reserved words** that should not get mixed up with "Selected":
 
@@ -66,12 +71,58 @@ This split mirrors what the web platform already calls these things,
 so what designers write on a Figma variant and what shows up in code
 agree.
 
-### Why these eight
+### The adjective form ("state the element is in")
 
-Material, Carbon, and Polaris all converge on this set with minor
-wording differences. Our own Design Language doc already drew the
-Pressed-vs-Checked-vs-Selected-vs-Current line in section 11 — this
-rule names the same distinction at the spec level.
+State names use the past-participle / adjective form so every one reads
+as "the element is ___": Hovered, Focused, Pressed, Selected, Checked,
+Disabled, Dragged. That's why it's **Hovered / Focused**, not Hover /
+Focus — the bare verbs read as unfinished and fail the "is ___" test.
+
+Event names are the opposite — present tense, see §7 — because an event
+is a *moment*, not a *condition*: the `focus` event is what puts the
+element into the `Focused` state. Don't conflate the two layers.
+
+### Why this set — and how it maps to Material
+
+Material, Carbon, and Polaris converge on this set with minor wording
+differences. The Material cross-walk:
+
+| UDS | Material | Note |
+|---|---|---|
+| **Hovered** | Hovered | Material's component docs use the same adjective form |
+| **Focused** | Focused | same |
+| **Pressed** | Pressed (a.k.a. Press) | same |
+| **Selected** | Selected | one chosen among mutually-exclusive options |
+| **Checked** | Checked | on/off of a toggleable control (checkbox, radio, switch, multi-select segmented) |
+| **Current** | **Activated** | UDS diverges on purpose — `Current` maps to the web's `aria-current="page"`, clearer than Material's "Activated" |
+| **Dragged** | Dragged | drag operations |
+| **Indeterminate** | Indeterminate | checkbox mixed state |
+
+Our Design Language doc drew the Pressed-vs-Checked-vs-Selected-vs-Current
+line in section 11 — this rule names the same distinction at the spec
+level.
+
+### Canonical values (the naming gate reads this)
+
+A component's `State` axis values, and any selection axis, must come from
+this flat set:
+
+`Default` · `Hovered` · `Focused` · `Pressed` · `Selected` · `Disabled`
+· `Loading` · `Error` · `Empty` · `Read-only` · `Dragged` ·
+`Indeterminate` · `Checked` · `Current`.
+
+Common drift → fix, flagged automatically by the naming gate (per
+[`uds-figma-factory-quality.mdc`](./uds-figma-factory-quality.mdc) §2 and
+the [`figma-component-inspector`](../agents/figma-component-inspector.md)):
+
+| Drifted value | Canonical |
+|---|---|
+| `Hover` | `Hovered` |
+| `Focus` / `focused` (lowercase) | `Focused` |
+| `Active` | `Pressed` (mouse-down) **or** `Current` (nav) — pick by meaning |
+| `Selected` on a toggle/checkbox on-state | `Checked` |
+| `Activated` | `Current` |
+| any lowercase value in Figma | Title Case it (§7) |
 
 ---
 
@@ -289,20 +340,20 @@ Title Case for everything a designer sees in the variant panel:
 
 - Variant property names — `Size`, `Variant`, `Tone`.
 - Variant property values — `Small`, `Medium`, `Large`; `Primary`,
- `Secondary`, `Tertiary`; `Hover`, `Pressed`, `Disabled`.
-- State names on a States variant property — `Default`, `Hover`,
- `Pressed`, `Focus`.
+ `Secondary`, `Tertiary`; `Hovered`, `Pressed`, `Disabled`.
+- State names on a States variant property — `Default`, `Hovered`,
+ `Pressed`, `Focused`.
 
-Reading `hover` in a variant panel feels under-set, like an
-unfinished label. Title Case is what Figma's own asset picker does
-and what designers expect.
+Reading `hovered` in a variant panel feels under-set when it's
+lowercase, like an unfinished label. Title Case is what Figma's own
+asset picker does and what designers expect.
 
 ### In code
 
 Lowercase with hyphens between words for the same names when they
 land on HTML or CSS:
 
-- `data-size="small"`, `data-state="hover"`, `data-tone="success"`.
+- `data-size="small"`, `data-state="hovered"`, `data-tone="success"`.
 
 The rule: take the Figma name, lowercase it, hyphenate any spaces.
 "Read-only" stays as `read-only`; "Loading" becomes `loading`.

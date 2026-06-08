@@ -2,7 +2,7 @@
 name: figma-component-inspector
 description: Deep-inspects a single UDS component in the UDS Components Figma file by reading node trees, component sets, variants, layer details, token bindings, nested instances, and doc-site parity. Bidirectional — reports both Figma-side gaps (mismatches, missing) and doc-site surplus (artifacts with no Figma counterpart), plus a snapshot delta against the prior captured state to surface deletions and renames. Open Figma findings that need designer attention are surfaced as structured entries in uds/components/<id>/figmanotes.json (not free-text in spec.json knownIssues), classified by `kind` so they auto-prune on the next inspection when resolved. Read-only; never modifies files or Figma. Use when updating a component spec, investigating a component mismatch, or before syncing Figma component changes into docs.
 model: inherit
-lastUpdated: 2026-06-07T22:31:49Z
+lastUpdated: 2026-06-08T19:37:39Z
 ---
 
 # Figma Component Inspector
@@ -492,6 +492,16 @@ docs pages by default.
   multi-variant set (e.g. 24 variants) repeats the same handful of
   nested instances and a flat per-occurrence dump overflows the
   response.
+- **Naming-convention check.** Compare every variant-axis name and every
+  state / selection value against the canonical lists in
+  [`uds-naming-conventions.mdc`](../rules/uds-naming-conventions.mdc)
+  §1–§4. Report any non-canonical value as a finding with its canonical
+  replacement (`Hover`→`Hovered`, `Focus`/lowercase `focused`→`Focused`,
+  `Active`→`Pressed` or `Current`, a toggle on-state
+  `Selected`→`Checked`, any lowercase Figma value → Title Case),
+  classified `potentially-breaking` (a variant rename) → ask-user. Never
+  treat a non-canonical name as ground truth for `spec.json` `states[]`;
+  surface the rename instead.
 - Do not recommend leaving a public implementation-ready component as
   scaffold-only. It needs Examples, Code, CSS, and spec coverage.
 - Do not omit the §"Doc-site surplus", §"Snapshot delta", or §"Figma
