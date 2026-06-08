@@ -2,7 +2,7 @@
 description: When and how to bump the UDS factory build version, how it's stamped onto generated components, and how it carries into docs. The build version (YYYY.MM.DD.N, in .cursor/figma/state/factory-version.json) is the factory's OUTPUT vintage — distinct from per-file lastUpdated (every edit) and the contract-block format version (v1). Auto-attaches when a factory file is edited so the bump discipline is in front of you.
 globs: [".cursor/skills/generate-uds-figma-component/**", ".cursor/rules/uds-figma-factory-quality.mdc", ".cursor/rules/uds-figma-plugin-api-gotchas.mdc", ".cursor/rules/uds-design-language.mdc", ".cursor/rules/uds-naming-conventions.mdc"]
 alwaysApply: false
-lastUpdated: 2026-06-07T22:31:49Z
+lastUpdated: 2026-06-08T19:58:16Z
 ---
 
 # UDS Factory Versioning
@@ -118,6 +118,24 @@ loop, picking the lightest sufficient action:
 - **`{Frozen}` components** — reported as behind, no writes at all.
 
 The factory never silently rewrites (`uds-source-of-truth.mdc`).
+
+## CI enforcement
+
+`scripts/audit-factory-version-currency.sh` (wired into
+`.github/workflows/audits.yml`) fails CI when a commit after the audit
+baseline touches any of the five factory files above WITHOUT bumping
+`.cursor/figma/state/factory-version.json` in the same commit. The escape
+for a genuinely output-neutral edit (prose, typo, reordering,
+audit/process-only) is a `[no-factory-bump: <reason>]` tag in the commit
+message — same shape as `audit-changelog-currency.sh`'s `[no-changelog:
+...]`. The audit can't judge whether output *actually* changed; it forces
+the decision to be made in-commit and reviewed, instead of relying on the
+author to remember it.
+
+**Bump in the SAME commit as the factory-file edit.** A bump that lands one
+commit later still trips the audit on the earlier commit (this rule + the
+naming-convention change shipped that way once, in `9a14a58` then
+`a96d0bd`, and is grandfathered by the baseline — don't repeat it).
 
 ## Editing this rule
 

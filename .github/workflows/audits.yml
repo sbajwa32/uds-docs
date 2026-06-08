@@ -73,6 +73,13 @@ jobs:
       - name: Figma card template recipe currency
         run: bash scripts/audit-figma-card-template.sh
 
+      # Fails if a factory file (skill / factory-quality / plugin-api-gotchas /
+      # design-language / naming-conventions) changed without bumping
+      # .cursor/figma/state/factory-version.json in the same commit. Escape:
+      # '[no-factory-bump: <reason>]' for output-neutral edits.
+      - name: Factory version currency
+        run: bash scripts/audit-factory-version-currency.sh
+
       # Round-trip checks — these compare against /tmp/baseline-data which
       # only exists in the cloud agent VM. Skip in CI but keep the script
       # available for human runs. (Round-trip drift is caught by the four
