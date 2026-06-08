@@ -1,7 +1,14 @@
 {
   "$comment": "UDS factory build version — the factory's OUTPUT vintage, distinct from per-file lastUpdated and the contract-block format version (v1). See .cursor/rules/uds-factory-versioning.mdc. Version format YYYY.MM.DD.N; changelog newest-first; drift compares by changelog position, not string math. `labels` is the human-readable registry of affects[] tags; the drift pass carries a real detector per label.",
-  "version": "2026.06.07.1",
+  "version": "2026.06.08.1",
   "changelog": [
+    {
+      "version": "2026.06.08.1",
+      "date": "2026-06-08",
+      "breaking": true,
+      "affects": ["all"],
+      "summary": "Canonical state names moved to the adjective form (Hover->Hovered, Focus->Focused) and gained Dragged + Indeterminate conditional states; new Phase C naming-convention gate flags any non-canonical variant/state value. New runs emit the canonical names; components built under 2026.06.07.1 are flagged for rename + re-stamp."
+    },
     {
       "version": "2026.06.07.1",
       "date": "2026-06-07",
