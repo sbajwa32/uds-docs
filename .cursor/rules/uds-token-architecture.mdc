@@ -2,7 +2,7 @@
 description: Canonical UDS Tokens Figma variable architecture and CSS output contract. Direct Figma Variables reads are primary; ZIP exports are fallback only.
 globs: ["uds-docs/uds/tokens/**/*.css", "uds-docs/styles/**/*.css", "uds-docs/packages/uds-web-components/src/**/*.ts"]
 alwaysApply: false
-lastUpdated: 2026-05-27T22:21:24Z
+lastUpdated: 2026-06-08T20:03:30Z
 ---
 
 # UDS Token Architecture
@@ -180,6 +180,30 @@ Use the same prefix pattern:
 - Text style classes in `text-styles.css` consume semantic font tokens.
 
 Do not flatten semantic aliases to raw hex/px values unless direct Figma data cannot expose aliases and the user approves fallback generation.
+
+## Don't claim a token is missing — verify first
+
+Before telling a user, or writing into a report, that a token doesn't
+exist, CHECK. Read `uds-docs/uds/tokens/semantic.css` / `primitives.css`,
+or run `search_design_system` against the UDS Tokens library. Asserting
+absence from memory is a recurring error — the 2px focus-gap token was
+twice reported as "missing" when `--uds-space-025` (2px) was in
+`semantic.css` the whole time.
+
+For reference, the default-mode spacing scale in `semantic.css` is
+continuous and finer than people remember:
+
+`space-0` (0) · `space-025` (2px) · `space-050` (4px) · `space-075`
+(6px) · `space-100` (8px) · `space-125` (10px) · `space-150` (12px) ·
+`space-175` (14px) · `space-200` (16px) · `space-250` (20px) · `space-300`
+(24px) · … continuing in 4px-ish steps up to `space-1250` (100px). So a
+2px gap binds to `space-025`, a 6px gap to `space-075`, and so on. The
+`[data-density="comfortable"]` mode re-maps these (e.g. `space-025`
+resolves to 6px there) — so bind the variable, never the resolved px.
+
+This applies to every token family, not just spacing: verify color,
+radius, and effect-style names against the tokens CSS / library before
+declaring a gap.
 
 ## Architecture validation gate
 

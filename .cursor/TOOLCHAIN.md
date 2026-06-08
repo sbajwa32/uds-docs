@@ -52,7 +52,7 @@ the manual fallback when the hook hasn't run.
 | [`uds-content-schema.mdc`](./rules/uds-content-schema.mdc) | `2026-05-24T09:19:52Z` | When editing per-component spec content, edit the spec.json INSIDE that component's folder. The Guidelines tab is rendered from that JSON… |
 | [`uds-design-language.mdc`](./rules/uds-design-language.mdc) | `2026-06-04T20:35:00Z` | How every UDS component handles each state, extracted from current Figma/docs component evidence and Web Component source. State… |
 | [`uds-factory-docs-currency.mdc`](./rules/uds-factory-docs-currency.mdc) | `2026-06-07T21:27:07Z` | Keep the docs-site plain-English Component Factory explainer current when the factory skillset changes. The Factory tab on the… |
-| [`uds-factory-versioning.mdc`](./rules/uds-factory-versioning.mdc) | `2026-06-08T19:58:16Z` | When and how to bump the UDS factory build version, how it's stamped onto generated components, and how it carries into docs. The build… |
+| [`uds-factory-versioning.mdc`](./rules/uds-factory-versioning.mdc) | `2026-06-08T20:03:30Z` | When and how to bump the UDS factory build version, how it's stamped onto generated components, and how it carries into docs. The build… |
 | [`uds-figma-change-classification.mdc`](./rules/uds-figma-change-classification.mdc) | `2026-05-12T18:41:50Z` | Classifies Figma-derived token and component changes by confidence and breaking-change risk before anything is applied. |
 | [`uds-figma-component-card-update.mdc`](./rules/uds-figma-component-card-update.mdc) | `2026-05-12T19:49:37Z` | Update-mode companion to uds-figma-component-card.mdc. Defines what to do when the figma-component-card skill is re-run on a page that… |
 | [`uds-figma-component-card.mdc`](./rules/uds-figma-component-card.mdc) | `2026-05-21T16:08:00Z` | Canonical card layout for UDS Components Figma pages. Defines the seven-card structure, token bindings, and read-only contract against… |
@@ -68,7 +68,7 @@ the manual fallback when the hook hasn't run.
 | [`uds-rule-discipline.mdc`](./rules/uds-rule-discipline.mdc) | `2026-05-27T22:21:24Z` | Discipline that fires whenever you edit a Cursor rule, skill, or subagent file. Bump that file's `lastUpdated:` frontmatter and update the… |
 | [`uds-site-changelog.mdc`](./rules/uds-site-changelog.mdc) | `2026-05-24T08:55:00Z` | Whenever you change anything inside uds-docs/, add a SITE_CHANGELOG entry to data/site-changelog.ts. The Voice and length section is what… |
 | [`uds-source-of-truth.mdc`](./rules/uds-source-of-truth.mdc) | `2026-05-24T08:55:00Z` | Figma is the source of truth for everything under uds-docs/uds/ — tokens, component CSS, specs, examples, schemas, all of it. Agents must… |
-| [`uds-token-architecture.mdc`](./rules/uds-token-architecture.mdc) | `2026-05-27T22:21:24Z` | Canonical UDS Tokens Figma variable architecture and CSS output contract. Direct Figma Variables reads are primary; ZIP exports are… |
+| [`uds-token-architecture.mdc`](./rules/uds-token-architecture.mdc) | `2026-06-08T20:03:30Z` | Canonical UDS Tokens Figma variable architecture and CSS output contract. Direct Figma Variables reads are primary; ZIP exports are… |
 | [`uds-token-first-css.mdc`](./rules/uds-token-first-css.mdc) | `2026-05-27T22:21:24Z` | Enforces UDS token usage in all CSS — no hardcoded colors, spacing, fonts, or radii. |
 
 ## Skills (10)

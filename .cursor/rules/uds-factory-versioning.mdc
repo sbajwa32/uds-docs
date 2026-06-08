@@ -2,7 +2,7 @@
 description: When and how to bump the UDS factory build version, how it's stamped onto generated components, and how it carries into docs. The build version (YYYY.MM.DD.N, in .cursor/figma/state/factory-version.json) is the factory's OUTPUT vintage — distinct from per-file lastUpdated (every edit) and the contract-block format version (v1). Auto-attaches when a factory file is edited so the bump discipline is in front of you.
 globs: [".cursor/skills/generate-uds-figma-component/**", ".cursor/rules/uds-figma-factory-quality.mdc", ".cursor/rules/uds-figma-plugin-api-gotchas.mdc", ".cursor/rules/uds-design-language.mdc", ".cursor/rules/uds-naming-conventions.mdc"]
 alwaysApply: false
-lastUpdated: 2026-06-08T19:58:16Z
+lastUpdated: 2026-06-08T20:03:30Z
 ---
 
 # UDS Factory Versioning
@@ -68,6 +68,19 @@ leaves factory output identical. These bump `lastUpdated` only.
    (English meaning) AND add its detector to the drift pass.
 4. The factory reads `version` at build time and stamps it (plugin data
    + contract-block `Factory-version:` line).
+
+### Ordering: bump before you stamp
+
+If your own pending change is what moves the bar (editing
+`uds-naming-conventions.mdc`, a Phase C gate in
+`uds-figma-factory-quality.mdc`, etc.), bump the version FIRST — in the
+same commit as the factory-file edit (the CI audit requires this; see
+"CI enforcement") — and only THEN stamp or re-stamp drafts, at the NEW
+version. Stamping drafts at the old bar and bumping afterward means
+re-stamping everything you just touched. That happened once: metric-card
+/ combobox / toggle / stepper were stamped at `2026.06.07.1`, the naming
+change then moved the bar, and all four had to be re-stamped to
+`2026.06.08.1`. Decide the bar, then stamp.
 
 ## How `affects[]` matching works
 
