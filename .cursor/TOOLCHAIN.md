@@ -47,7 +47,7 @@ the manual fallback when the hook hasn't run.
 
 | File | Last updated (UTC) | Description |
 |---|---|---|
-| [`communication-style.mdc`](./rules/communication-style.mdc) | `2026-05-27T22:21:24Z` | Default chat tone for this repo + voice for human-facing docs prose. Talk to the user as a senior product designer, not a developer —… |
+| [`communication-style.mdc`](./rules/communication-style.mdc) | `2026-06-08T20:05:59Z` | Default chat tone for this repo + voice for human-facing docs prose. Talk to the user as a senior product designer, not a developer —… |
 | [`uds-component-checklist.mdc`](./rules/uds-component-checklist.mdc) | `2026-05-27T22:21:24Z` | Standard UDS component contract. Every component must be evaluated against the same anatomy, API, state, accessibility, example,… |
 | [`uds-content-schema.mdc`](./rules/uds-content-schema.mdc) | `2026-05-24T09:19:52Z` | When editing per-component spec content, edit the spec.json INSIDE that component's folder. The Guidelines tab is rendered from that JSON… |
 | [`uds-design-language.mdc`](./rules/uds-design-language.mdc) | `2026-06-04T20:35:00Z` | How every UDS component handles each state, extracted from current Figma/docs component evidence and Web Component source. State… |
