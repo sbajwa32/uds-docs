@@ -2,7 +2,7 @@
 description: How every UDS component handles each state, extracted from current Figma/docs component evidence and Web Component source. State constructions (Default/Hover/Active/Focus/Filled/Selected/Error/Disabled/Read-only/Loading), focus-ring patterns and when to use each, surface treatments, elevation/shadow scale, border-radius scale, density/sizing patterns, selection treatments. Component-specific overrides documented per state. Differences between components flagged for designer review. The factory and any new-component skill should bind state visuals to the constructions in this doc rather than re-deriving them.
 alwaysApply: false
 globs: ["**/*"]
-lastUpdated: 2026-06-09T15:18:38Z
+lastUpdated: 2026-06-09T15:56:20Z
 ---
 
 # UDS Design Language
@@ -468,9 +468,9 @@ container, center the control.
 |---|---|---|---|
 | Control container height | 48 px (control vertically centered) | `space-600` | all form controls |
 | Visible control | fills 48 px (fields) / 18 px box (checkbox) / 20 px ring (radio) / 52 × 32 px (toggle) | — | per control type |
-| Input text | 16 px regular | `font-size-base` | text fields |
-| Label | nested `udc-label` default (14 px / 20 px) | the label component, not a px | all |
-| Helper | 12 px | `font-size-xs` | all |
+| Input text | 14 px regular (default scale) | `font-size-base` | text fields |
+| Label | nested `udc-label` default (14 px / 20 px, default scale) | the label component, not a px | all |
+| Helper | 10 px (default scale) | `font-size-xs` | all |
 | Label → control gap | 4 px | `space-050` | all |
 | Control → helper gap | 4 px | `space-050` | all |
 | Multi-line min (text area) | 88 px | — | text area |
@@ -485,23 +485,34 @@ checkbox / radio / toggle put it _beside_ the control. Single-line
 alignment is about the control containers; the label _style_ (the nested
 `udc-label`) is what stays shared across all of them.
 
-**Density and mobile are orthogonal to these values:**
+**Font scale, density, and mobile are user settings — design at default,
+not in tiers:**
 
-- The `sm` density track (`data-size="sm"`, a user/app preference) may
-  tighten the container on desktop; it is not a per-control design
-  decision the factory authors.
-- On mobile the 48 px container is a touch-target floor (≥ 44 px
-  WCAG/Apple) and input text never drops below 16 px (prevents iOS
-  Safari zoom-on-focus). Mobile is full-width layout, not a size tier.
+- UDS exposes a **font scale** (larger / default / smaller) and a **UI
+  density** control as _runtime user settings_ in the consuming app —
+  the same idea as OS text-size or browser zoom. They belong to the
+  user, not the factory. Author every component at the **default** scale
+  and density; the app re-derives the other modes from the same tokens.
+- The px values above are therefore the **default-scale** resolutions of
+  their tokens. The larger scale raises them (`xs` 10 → 12, `base` 14 →
+  16) and smaller lowers them (`xs` 10 → 8). Pin to the token, not the
+  px — and never hand-build a "larger" or "smaller" version.
+- Mobile is a full-width **layout** concern, not a size tier. A user who
+  needs bigger text on a phone changes the font scale; the factory does
+  not ship a separate mobile size.
 
 **Known gaps (Figma source-of-truth — surfaced, never auto-fixed):**
 
 - Checkbox / radio currently size their hit area at ~24 px and the
   toggle at 32 px — below the 48 px container and the 44 px touch floor.
   Closing this needs a Figma + component change, not an autonomous edit.
-- The Figma text style `label/base-medium` renders 14 px but the code
-  `.uds-text-label-base-medium` is 16 px; reconcile via
-  `import-figma-tokens`.
+- The code token files (`uds/tokens/*.css`) carry the **larger**-scale
+  type values as if they were the only value (`font-size-base` 16,
+  `font-size-xs` 12, `label/base-medium` 16), but Figma's **default**
+  scale is 14 / 10 / 14. Code is missing the font-scale modes entirely.
+  Reconcile on the next `import-figma-tokens` so default scale is the
+  baseline and larger/smaller derive from it — don't "fix" individual
+  Figma nodes to match the code.
 - Text area's outer gap is 6 px (`space-075`) vs 4 px elsewhere;
   standardize on the next sync.
 
