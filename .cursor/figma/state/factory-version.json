@@ -1,7 +1,36 @@
 {
   "$comment": "UDS factory build version — the factory's OUTPUT vintage, distinct from per-file lastUpdated and the contract-block format version (v1). See .cursor/rules/uds-factory-versioning.mdc. Version format YYYY.MM.DD.N; changelog newest-first; drift compares by changelog position, not string math. `labels` is the human-readable registry of affects[] tags; the drift pass carries a real detector per label.",
-  "version": "2026.06.08.1",
+  "version": "2026.06.09.4",
   "changelog": [
+    {
+      "version": "2026.06.09.4",
+      "date": "2026-06-09",
+      "breaking": true,
+      "affects": ["iconized-states", "field-popover"],
+      "summary": "Two construction contracts from the combobox 2026-06-08 review. (1) Icon-tone split — color an icon by what it means. Content/contextual icons (leading/search glyph) follow the full tone: Error->icon-error, Disabled->icon-disabled, Read-only->icon-secondary. Control affordances (chevron, clear, stepper caret) follow usability not validity: they stay neutral/icon-interactive in Error (a red chevron is wrong), grey to icon-disabled when Disabled, and hide/mute in Read-only. Rule of thumb: Error tone splits the icons (content follows, controls don't); Disabled tone hits everything. The combobox shipped every icon pinned to icon-interactive across all states. (2) Field popover overlay — a field's open menu/listbox is an absolute overlay anchored to the field's bottom edge (clipsContent=false on the variant), not an in-flow sibling after the helper row; the combobox open state wedged the helper between the field and its menu (field bottom y72 -> helper y76 -> menu y92). Also enforced: read-only fields sit on surface-subtle (already design-language §3.2 canon) — the combobox read-only had mirrored Default. Phase C check 6 now splits content vs control adornments, and new check 10 flags in-flow (non-overlay) open menus. Fields with icons or popovers built before this version are flagged behind — re-tone their icons per state and re-anchor their open menu."
+    },
+    {
+      "version": "2026.06.09.3",
+      "date": "2026-06-09",
+      "breaking": true,
+      "affects": ["labeled-field"],
+      "summary": "Field labels nest udc-label AND forward its properties. This supersedes the 2026.06.09.2 'host-owned label' direction, which was wrong — replacing the nested label with raw TEXT threw away udc-label's editable text / required / optional / leading-icon / right-slot (badge) properties and would force rebuilding them in every field. The standard is now: nest udc-label, then make its properties reachable by the consumer via isExposedInstance=true (or hoist text/required to top-level host props), and drive the nested label's tone from host state (Error->tone=Error, Disabled->tone=Disabled). The earlier size drift (paragraph/sm-medium 12px vs label/base-medium 14px) was the draft udc-label binding the wrong text style, not a nesting problem — fixed in the label component. New Phase C label-forwarding gate flags raw-text field labels, nested-but-unexposed labels (the original combobox defect), and labels whose tone doesn't track state. Labeled fields built before this version (text-input, search drafts that nest udc-label without forwarding) are flagged behind — expose the nested label's properties."
+    },
+    {
+      "version": "2026.06.09.2",
+      "date": "2026-06-09",
+      "breaking": true,
+      "affects": ["labeled-field"],
+      "superseded-by": "2026.06.09.3",
+      "summary": "[SUPERSEDED by 2026.06.09.3 — do not build to this] Briefly required form components to OWN their field label as host-owned TEXT instead of nesting udc-label. Reverted same day: host-owned labels strand udc-label's text/required/icon/badge property surface. The real fix is nest-and-forward (see .3)."
+    },
+    {
+      "version": "2026.06.09.1",
+      "date": "2026-06-09",
+      "breaking": true,
+      "affects": ["focusable"],
+      "summary": "Hardened the focus-ring gate from presence-only to construction-verified: the offset ring MUST use STRETCH/STRETCH constraints (never MIN, which pins it at a fixed size), be parented to the focused element box (not the variant wrapper), overlay via negative inset without changing the box footprint, and have an unclipped ancestor chain up to and including the component set. Focusable components built before this version are flagged behind — re-verify the ring resizes and isn't clipped."
+    },
     {
       "version": "2026.06.08.1",
       "date": "2026-06-08",
@@ -21,6 +50,9 @@
     "all": "every component",
     "nests-button": "component nests any udc-button* instance",
     "tone-axis": "component set has a Tone variant axis",
-    "focusable": "component has a focus / focus-visible state"
+    "focusable": "component has a focus / focus-visible state",
+    "labeled-field": "component is a labeled field/control whose label must be a nested udc-label instance with its properties forwarded (exposed or hoisted), not raw text and not unexposed",
+    "iconized-states": "component with content and/or control icons across Error/Disabled/Read-only states — content icons follow tone (Error->icon-error, Disabled->icon-disabled, Read-only->icon-secondary), control affordances follow usability (neutral in Error, icon-disabled when Disabled, hidden/muted in Read-only)",
+    "field-popover": "component opens a menu/listbox/popover that must be an absolute overlay anchored to the field's bottom edge (combobox, select, dropdown, autocomplete, date-picker), never an in-flow sibling after the helper row"
   }
 }

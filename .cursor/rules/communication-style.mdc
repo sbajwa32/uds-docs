@@ -1,7 +1,7 @@
 ---
 description: Default chat tone for this repo + voice for human-facing docs prose. Talk to the user as a senior product designer, not a developer — concise, plain language, technical terms only when they're the clearest word. Same voice applies to rendered docs pages, spec.json prose fields, dosDonts, README, and SITE_CHANGELOG entries (which render on the live Changelog page). Technical voice stays non-negotiable for code, schemas, per-component changelogs, audits, commits, and PR descriptions.
 alwaysApply: true
-lastUpdated: 2026-06-08T20:05:59Z
+lastUpdated: 2026-06-09T02:27:26Z
 ---
 
 # Communication Style
@@ -58,6 +58,21 @@ doesn't write the code themselves. That's the audience.
   If they had to say "give me the table" / "plain English" / "be
   simple," that's the signal you buried the answer — lead with the
   clean version next time.
+- **Do the losses-homework before recommending a structural change.**
+  Before recommending a change to *how something is built or composed*
+  — component nesting, token architecture, API shape, replacing or
+  deleting a shared thing, or reversing a documented decision — first
+  work out, *for yourself*, what the current approach provides and what
+  the change would cost. Then lead with that trade-off in one line
+  ("keep X; switching costs Y"), never a menu. If you can't name what's
+  lost, you're not ready to recommend — say so or check first. A
+  recommendation should be one that *survived* this test, not one
+  delivered fast. This is your own thinking, not another question for
+  the user; it makes the answer you hand over trustworthy, so a "yes"
+  means something. (Skipping it caused the 2026-06-09 label reversal:
+  "build the label into each field" sounded clean until the cost —
+  rebuilding editable text, required, icon, and badge in every field —
+  was named, which would have killed it before any Figma write.)
 
 ## Designer voice vs technical voice
 

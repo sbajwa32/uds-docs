@@ -1,7 +1,7 @@
 ---
 name: generate-uds-figma-component
 description: UDS Component Factory. Drafts a token-bound UDS component set directly inside the UDS Components Figma file on a brand-new `🟠 <id> {Cursor}{Ignore}` page. Use when the user says "generate a UDS component for X", "factory me an Avatar", "draft a new UDS component called Y", "build a UDS component for Z in Figma", or "use the component factory to start <Title>". Stops at Figma — never writes to `uds-docs/uds/`. Docs landing is the existing `uds-updated` skill, run later by the designer.
-lastUpdated: 2026-06-07T22:31:49Z
+lastUpdated: 2026-06-09T03:05:16Z
 ---
 
 # UDS Component Factory — Generate UDS Figma Component
@@ -497,13 +497,28 @@ Persist the proposed model to
  standard affordance, never rebuild one from raw nodes.** The factory
  nests existing UDS components as instances rather than re-drawing
  their anatomy. This is not just icons:
-   - **Field label → `udc-label`** (NOT a raw text node + a separate
-     required-dot ellipse). `udc-label` already owns the required
-     indicator, the error/disabled/success tones, and multiline
-     wrapping — rebuilding it as raw text strands all of that and
-     drifts from the design system. The Combobox draft originally
-     shipped a raw `label` + `required-dot`; that was the miss this
-     rule prevents.
+   - **Field label → nested `udc-label`, with its properties forwarded.**
+     A labeled field or control (text-input, dropdown, combobox,
+     text-area, search, checkbox, radio, toggle, …) nests `udc-label`
+     (NOT a raw text node + a separate required-dot). `udc-label` already
+     owns the editable text, the required / optional indicators, the
+     leading-icon and right-slot (badge) affordances, and the tone
+     colors — rebuilding it as raw text strands all of that. **Nesting
+     alone is not enough: forward the label's properties to the consumer**
+     — set `isExposedInstance = true` on the nested instance (surfaces
+     text / required / icon / right-slot in the host's right panel), or
+     hoist the key ones (`text`, `required`) to top-level host
+     properties. Drive the nested label's `tone` from host state (Error
+     → `tone=Error`, Disabled → `tone=Disabled`). The 2026-06-08/09
+     combobox failed BOTH ways first — nested-but-unforwarded (no
+     editable label props in the panel), then host-owned raw text (threw
+     the props away). The size drift (`paragraph/sm-medium` 12 px vs
+     `label/base-medium` 14 px) was the draft `udc-label` binding the
+     wrong text style, NOT a reason to abandon nesting — fix it in the
+     label component once and every field inherits it. See
+     [`uds-figma-factory-quality.mdc`](../../rules/uds-figma-factory-quality.mdc)
+     §9. The standalone `udc-label` also serves labels NOT wired to a
+     built-in field (section headings, labels over custom controls).
    - **Icons → `udc-icon-wrapper`** (per the INSTANCE_SWAP rules above).
    - **Badges/counts → `udc-badge`; inline actions → `udc-button`;
      selectable tokens → `udc-chip`;** etc.
@@ -544,7 +559,8 @@ Persist the proposed model to
    carrying `add_circle_outline` — wrong emphasis AND wrong glyph.
    Common reuse set: `udc-label`, `udc-icon-wrapper`, `udc-button`,
    `udc-text-input`, `udc-chip`, `udc-badge`, `udc-card`,
-   `udc-notification`.
+   `udc-notification`. (Field labels nest `udc-label` AND forward its
+   properties — see the field-label bullet above.)
 - **Assumptions and acceptance criteria** — plain-language list the
  designer can scan in under a minute. Acceptance criteria must be
  contract-tied, not generic: name the `<udc-<id>>` tag, the variants
@@ -1137,14 +1153,21 @@ structured report with two sections.
  in via `setProperties`. The model file under
  `.cursor/state/component-factory/<componentId>.md` is the source of
  truth for "what each variant should default to."
-- **Tone-bearing adornment coverage.** For a component with a `Tone`
- axis, every color-carrying adornment (status dot, secondary / leading
- icon glyph, trend icon + text, accent bar) MUST resolve to its
- variant's tone family, not a single baked tone. Adornments bound to a
- tone token that doesn't match the variant's tone: N at `<variantIds>`.
- The color analogue of the per-variant INSTANCE_SWAP gate — see
+- **Tone-bearing adornment coverage (content vs control split).** For a
+ component with a `Tone` / status / state axis, walk each variant and
+ check color-carrying adornments by role. **Content / status adornments**
+ (status dot, leading / secondary icon glyph, trend icon + text, accent
+ bar) MUST resolve to that variant's tone family (Neutral → `*-secondary`,
+ Disabled → `*-disabled`); content icons NOT following tone in
+ Error / Disabled / Read-only: N at `<variantIds>`. **Control affordances**
+ (chevron, clear / dismiss, stepper caret) follow usability not validity —
+ they MUST be `icon-disabled` on Disabled, but stay neutral /
+ `icon-interactive` on Error (a red chevron is the bug, not the fix; do
+ NOT flag it). Control affordances still `icon-interactive` on a Disabled
+ variant: N at `<variantIds>` (the combobox 2026-06-08 miss — every icon
+ pinned to `icon-interactive` across all states). See
  [`uds-figma-factory-quality.mdc`](../../rules/uds-figma-factory-quality.mdc)
- §6 (the Metric Card "trend stuck green" failure).
+ §6 and §2 check 6 (extends the per-variant INSTANCE_SWAP gate to color).
 - **Nested-instance exposure coverage.** Every nested DS instance the
  model marked as designer-reachable (B.2.6) MUST have
  `isExposedInstance = true` in EVERY variant. Instantiate the set and
@@ -1161,12 +1184,36 @@ structured report with two sections.
  no `visible` reference) fails the property-wiring gate above — record
  it in the contract instead.
 - **Focus / ring construction.** Any Focus (or ring-style) variant MUST
- contain an offset `focus-outline` ring child (absolute, gapped,
- `outline-focus-visible` stroke, resizing), not merely a thickened
- border on the element root. Focus variants whose only change from
- Default is a heavier / recolored root border: N. See
- [`uds-figma-factory-quality.mdc`](../../rules/uds-figma-factory-quality.mdc)
- §1 and [`uds-design-language.mdc`](../../rules/uds-design-language.mdc) §6.
+  contain an offset `focus-outline` ring (absolute, gapped,
+  `outline-focus-visible` stroke), not merely a thickened border on the
+  element root. Focus variants whose only change from Default is a
+  heavier / recolored root border: N. **Find the ring candidate by its
+  focus-bound stroke or a `focus`-prefixed empty-fill stroked frame —
+  NOT by requiring `ABSOLUTE` position**, or a mis-built in-layout ring
+  reads as "0 rings" and the variant falsely passes (the toggle
+  2026-06-09 `focus-wrapper` was `AUTO`-positioned and slipped an
+  absolute-only finder). **Then verify the ring is built to contract —
+  "resizing" and "unclipped" are properties to check, not words to
+  assert** (the combobox 2026-06-08 build shipped a `MIN`/`MIN`, clipped
+  ring that passed the old presence-only check):
+  - `constraints={horizontal:'STRETCH', vertical:'STRETCH'}` always
+    (the resize guarantee). Rings pinned `MIN`/`CENTER`/`MAX` (don't
+    resize with the box): N at `<ringIds>`. `layoutPositioning='ABSOLUTE'`
+    only when the ring's parent is an auto-layout frame; a ring in a
+    plain-frame box (e.g. the toggle track) is correctly `AUTO`+STRETCH —
+    don't flag it.
+  - Negative inset (`x<0`, `y<0`, size ≈ box + 2·|inset|): rings that
+    add to the box footprint instead of overlaying outside it: N.
+  - Unclipped ancestor chain — walk ring → element box → variant →
+    component set; any ancestor with `clipsContent=true` shaves the
+    ring: N at `<nodeIds>`.
+  - Ring parented to the focused element box (bordered field/trigger),
+    not the variant wrapper: violations: N.
+
+  See
+  [`uds-figma-factory-quality.mdc`](../../rules/uds-figma-factory-quality.mdc)
+  §1 and §2 (check 8) and
+  [`uds-design-language.mdc`](../../rules/uds-design-language.mdc) §6.
 - **Layer hygiene.** Unnamed nodes: N. Generic names (`Frame N`,
  `Rectangle N`): N. Orphan top-level nodes on the page: N.
 - **Auto-layout coverage.** Frames without auto-layout: N at
@@ -1192,7 +1239,36 @@ structured report with two sections.
  `udc-label` exists, an inline button drawn as a raw frame where
  `udc-button` exists, etc. Any sub-part a published UDS component
  already covers MUST be a nested instance of that component, not
- raw nodes — per the Phase A "Sibling reuse" rule.
+ raw nodes — per the Phase A "Sibling reuse" rule. For field labels,
+ nesting is necessary but not sufficient — the nested `udc-label`
+ must also forward its properties (caught by the Label-forwarding
+ gate below).
+- **Label nesting + forwarding (form/labeled components).** For any
+ component whose class is a labeled field or control, the field label
+ MUST be a nested `udc-label` instance whose properties are forwarded
+ to the consumer. Three findings: (1) field labels drawn as raw TEXT
+ (or text + required-dot) where `udc-label` exists: N. (2) nested
+ `udc-label` instances that are NEITHER `isExposedInstance=true` NOR
+ have their key props (`text`, `required`, leading-icon, right-slot)
+ hoisted to the host set — so the consumer can't edit them: N at
+ `<list>`. (3) nested labels whose `tone` doesn't track host state
+ (Error variant not driving `tone=Error`, Disabled not `tone=Disabled`):
+ N. Exempt the standalone `udc-label` set itself. See
+ [`uds-figma-factory-quality.mdc`](../../rules/uds-figma-factory-quality.mdc)
+ §9. This is the gate that catches BOTH the original combobox
+ (nested-but-unforwarded — no editable label props) and the
+ host-owned overcorrection (raw text that threw the props away).
+- **Field popover overlay (field-with-menu components).** For any
+ component whose class opens a menu / listbox / popover (combobox,
+ select, dropdown, autocomplete, date-picker), every open variant's open
+ surface MUST be an overlay anchored to the field, not an in-flow sibling
+ after the helper row. Open menus that are in-flow auto-layout children
+ (`layoutPositioning !== 'ABSOLUTE'`) sitting after the helper, or
+ anchored with a gap below the field's bottom edge: N at `<variantIds>`.
+ The combobox 2026-06-08 open state wedged the helper between the field
+ and its menu — it failed this. See
+ [`uds-figma-factory-quality.mdc`](../../rules/uds-figma-factory-quality.mdc)
+ §10 and §2 check 10.
 - **Class-required state coverage.** Every state the component's class
  requires (per
  [`uds-component-checklist.mdc`](../../rules/uds-component-checklist.mdc)

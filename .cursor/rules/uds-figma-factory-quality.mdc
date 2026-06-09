@@ -2,7 +2,7 @@
 description: Process quality rules for any factory-style Figma build (generate-uds-figma-component, new-component, future factories). State design contract (specify visuals not just tokens), mandatory machine-verified audits, variant grid layout reflects axis semantics, visible anatomy by default, dependency manifest before write. Design-system-agnostic — the specific UDS visual constructions live in uds-design-language.mdc.
 alwaysApply: false
 globs: [".cursor/skills/generate-uds-figma-component/**", ".cursor/skills/new-component/**", ".cursor/skills/figma-component-card/**"]
-lastUpdated: 2026-06-08T19:37:39Z
+lastUpdated: 2026-06-09T03:05:16Z
 ---
 
 # Figma Factory Quality
@@ -83,18 +83,55 @@ Canonical values live in
 every element including cards). The Figma build of construction A
 (CSS `outline` + `outline-offset`) is:
 
-- An absolute-positioned `focus-outline` frame, child of the element.
-- `layoutPositioning = 'ABSOLUTE'` + `constraints = { horizontal:
-  'STRETCH', vertical: 'STRETCH' }` so it tracks the element's size.
+- An absolute-positioned `focus-outline` frame, child of **the focused
+  element box itself** — the bordered field / trigger / control that
+  takes focus, NOT the variant wrapper or any label+field+helper stack
+  around it. Parenting the ring to the outer wrapper makes it track the
+  wrapper's size and vertical extent instead of the box, so it drifts
+  off the box the moment the wrapper grows (a wrapped label, a helper
+  row). The ring rings the box; it lives inside the box.
+- Non-flow positioning that depends on the box's layout type: when the
+  box is an **auto-layout frame**, set `layoutPositioning = 'ABSOLUTE'`
+  so the ring doesn't join the layout flow (the combobox field is
+  auto-layout). When the box is a **plain (non-auto-layout) frame**, the
+  ring is just a normally-positioned child — do NOT set
+  `layoutPositioning = 'ABSOLUTE'` (non-auto-layout children don't flow,
+  and setting it there can throw); the toggle track is a plain frame, so
+  its ring is correctly `AUTO`-positioned + constraints-driven.
+- `constraints = { horizontal: 'STRETCH', vertical: 'STRETCH' }` on both
+  axes is mandatory **in both cases** — this is what makes the ring
+  resize with the box. `MIN` (or any non-`STRETCH` value) pins the ring
+  at a fixed size so it stops resizing — the combobox 2026-06-08 miss
+  shipped a `MIN` `328×56` ring that didn't grow when the field widened.
+  A focus variant whose ring constraints are not `STRETCH`/`STRETCH`
+  fails the gate.
 - Inset by −(gap + ringWeight) on every side (2 px gap + 2 px ring →
   `x = y = −4`, size = element + 8).
 - `fills = []`, stroke bound to `outline-focus-visible`,
   `strokeAlign = 'INSIDE'`, corner radius bound concentric to the
   element's (element radius + inset).
-- Parent `clipsContent = false` so the ring renders outside the bounds.
+- **`clipsContent = false` on every ancestor up to and including the
+  component set** — not just the immediate parent. The ring renders
+  *outside* the box bounds via its negative inset, so any one clipping
+  ancestor shaves it wherever the variant sits flush to that ancestor's
+  edge. The combobox 2026-06-08 miss had the immediate parent unclipped
+  but the field box AND the enclosing component set both clipping, so
+  the ring was cut at the set's left edge (and top/bottom on the option
+  set). Walk element box → variant → component set and confirm every one
+  is `clipsContent = false`.
 
 The element keeps its normal Default border underneath, and you build
 this ring for every focus (and ring-style) variant — per tone.
+
+### The ring is a pure overlay — it never changes the box footprint
+
+Because the ring is absolute-positioned with a negative inset, it must
+never add to the element's size. Every variant's box stays the **same
+size** whether or not it carries a ring — a Focused variant is exactly
+as wide and tall as its Default sibling. Do NOT widen / pad a variant to
+"make room" for the ring; the ring overlays outside the box and the
+sibling-consistent footprint is the contract. If a ring appears clipped,
+the fix is an unclipped ancestor chain (above), never a resized box.
 
 When an audit or inspection looks for this ring, match it
 **structurally** (absolute frame, empty fills, stroke bound to
@@ -170,15 +207,25 @@ A read-only `use_figma` call that:
    never baked in via `setProperties` per variant. The model file
    under `.cursor/state/component-factory/<componentId>.md` is the
    source of truth for "what each variant should default to."
-6. **Tone-bearing adornment coverage.** For every component with a
-   `Tone` (or status) variant axis, walk each tone variant and report
-   any color-carrying adornment (status dot, secondary / leading icon
-   glyph, trend icon + text, accent bar) whose bound color token does
-   NOT belong to that variant's tone family (`text-{tone}` /
-   `icon-{tone}` / `surface-{tone}`; Neutral → `*-secondary`,
-   Disabled → `*-disabled`). Catches the "trend stuck `success` green
-   across all five tones" failure from the Metric Card run, where the
-   surface and chip retinted per tone but the cloned trend did not.
+6. **Tone-bearing adornment coverage (content vs control split).** For
+   every component with a `Tone` / status / state variant axis, walk each
+   tone/state variant and check each color-carrying adornment against the
+   §6 content-vs-control rule:
+   - **Content / status adornments** (status dot, leading or secondary
+     icon glyph, trend icon + text, accent bar) must bind that variant's
+     tone family (`text-{tone}` / `icon-{tone}` / `surface-{tone}`;
+     Neutral → `*-secondary`, Disabled → `*-disabled`). Report any bound
+     to a foreign tone, and any content icon NOT following tone on
+     Error / Disabled / Read-only. Catches the "trend stuck `success`
+     green across all five tones" Metric Card failure.
+   - **Control affordances** (chevron, clear / dismiss button, stepper
+     caret — interactive control icons) follow usability, not validity:
+     they MUST be `icon-disabled` on a Disabled variant, but are EXPECTED
+     to stay neutral / `icon-interactive` on an Error variant — do NOT
+     flag a non-tone control color in Error (a red chevron is the bug,
+     not the fix). Report a control affordance still `icon-interactive`
+     on a Disabled variant (the combobox 2026-06-08 miss, where every
+     icon was pinned to `icon-interactive` across all states).
 7. **Nested-instance exposure coverage.** For every nested DS instance
    the model marked designer-reachable, walk every variant and report
    any where `isExposedInstance !== true`. Instantiate the set once and
@@ -190,8 +237,83 @@ A read-only `use_figma` call that:
    trend direction. Exposing the main icon is necessary, not
    sufficient: enumerate ALL reachable nested instances and expose
    each.
-8. Returns a structured object with the count of unbound items and
-   their `{ ownerVariant, nodeId, nodeName, kind }` per check.
+8. **Focus-ring construction.** For every focus / ring-style variant,
+   FIND the ring candidate **without pre-filtering on position** — match
+   any descendant whose stroke is bound to `outline-focus-visible`, or an
+   empty-fill stroked frame whose name starts with `focus`
+   (`focus-outline`, `focus-wrapper`, …). Do NOT require
+   `ABSOLUTE` in the *finder* — that's the property being tested, and a
+   finder that requires it makes a mis-built in-layout ring invisible and
+   the variant falsely pass with "0 rings" (the toggle 2026-06-09 blind
+   spot: its ring was an `AUTO`-positioned `focus-wrapper`, so an
+   absolute-only finder reported none). Never match by a bare `/outline/`
+   name (collides with Material glyphs like `people_outline`). A focus
+   variant with NO candidate ring fails (missing or thickened-border-only
+   focus). For each candidate found, verify it is actually built to the
+   §1 contract, not just present:
+   - `constraints.horizontal === 'STRETCH'` AND `constraints.vertical ===
+     'STRETCH'` (the resize guarantee, required regardless of box type).
+     Report any ring pinned `MIN` / `CENTER` / `MAX` — it does not resize
+     with the box.
+   - `layoutPositioning === 'ABSOLUTE'` **only when the ring's parent is
+     an auto-layout frame** (a flow child there is wrong). When the
+     parent is a plain non-auto-layout frame, the ring is correctly
+     `AUTO` + constraints-driven — do NOT flag it. Requiring `ABSOLUTE`
+     unconditionally false-positives on plain-frame boxes like the toggle
+     track (its ring is `AUTO`/`STRETCH` and correct).
+   - Negative inset on every side (`x < 0`, `y < 0`, size ≈ box + 2·|inset|).
+   - No clipping ancestor: walk the ring's parent chain up to and
+     including the component set and report any node with
+     `clipsContent === true`.
+   - The ring's nearest non-absolute ancestor is the focused element box
+     (the bordered field/trigger), not the variant wrapper.
+   "Resizing" is a property to verify, not a word to assert — the
+   combobox 2026-06-08 build shipped a `MIN`/`MIN`, clipped ring that
+   passed the older presence-only gate. Report
+   `{ ownerVariant, ringId, failing: [...] }` per ring.
+9. **Label nesting + forwarding (form/labeled components).** For any
+   component whose model class is a labeled field or control (the §9
+   list), walk every variant and verify the field label is a **nested
+   `udc-label` instance whose properties are forwarded to the
+   consumer** — not raw text, and not a nested-but-unreachable instance:
+   - Report any field label that is a raw TEXT node (or a raw
+     text+required-dot pair) where `udc-label` exists. A field label
+     drawn as raw text FAILS — it strands `udc-label`'s text / required
+     / optional / leading-icon / right-slot properties and re-drifts its
+     own text style. (This is the host-owned mistake of 2026-06-09 — the
+     combobox shipped a static "Label" text node with no editable
+     properties.)
+   - For each nested `udc-label` instance, report whether its properties
+     are reachable by the consumer: `isExposedInstance === true` OR the
+     key properties (`text`, `required`, leading-icon, right-slot) are
+     hoisted to top-level component properties on the host set. A nested
+     label that is NEITHER exposed NOR hoisted FAILS — the consumer
+     can't edit the label text, toggle required, or set the icon/badge
+     (the original pre-2026-06-09 combobox defect). Resolve the main via
+     `getMainComponentAsync()` and confirm the set name is `udc-label`;
+     don't match on layer name alone.
+   - Report whether the nested label's `tone` tracks the host's state
+     (Error variant → `tone=Error`, Disabled → `tone=Disabled`). A
+     field label stuck at `tone=Default` on an Error/Disabled variant
+     fails.
+   - This check does NOT fire when the component **being built is the
+     standalone `udc-label` itself** — exempt a component set named
+     `udc-label`.
+   Report `{ ownerVariant, nodeId, kind: 'raw-text-field-label' | 'unforwarded-nested-label' | 'tone-not-tracking-state', detail }`.
+10. **Field popover overlay (field-with-menu components).** For any
+    component whose model opens a menu / listbox / popover (combobox,
+    select, dropdown, autocomplete, date-picker), walk every open variant
+    and verify the open surface is an overlay anchored to the field, not
+    an in-flow sibling after the helper row. Report any open variant
+    whose listbox/menu is an in-flow auto-layout child
+    (`layoutPositioning !== 'ABSOLUTE'`) sitting after the helper row, or
+    whose anchor leaves a gap between the field's bottom edge and the menu
+    top. The combobox 2026-06-08 build shipped the menu as the last flow
+    child after the helper row (field bottom y72 → helper y76 → menu y92)
+    — it failed this. See §10. Report
+    `{ ownerVariant, menuNodeId, kind: 'menu-in-flow' | 'menu-not-anchored-to-field' }`.
+11. Returns a structured object with the count of unbound items and
+    their `{ ownerVariant, nodeId, nodeName, kind }` per check.
 
 #### Attribute every node to its owning component first (applies to ALL checks)
 
@@ -343,7 +465,8 @@ A single `use_figma` call that returns one structured object containing:
 - **Local nested-component IDs** — every UDS primitive the build will
   instantiate (e.g. `udc-icon-wrapper` set ID, default variant ID, key;
   same for `udc-label`, `udc-button-ghost`, `udc-support_required-dot`,
-  etc.).
+  etc.). For a labeled field/control, `udc-label` IS one of these — its
+  label is a nested, forwarded `udc-label` instance, not raw text (§9).
 - **Library variable KEYs** — every token the build will bind (color,
   border, space, font, radius).
 - **Library style KEYs** — every text style and effect style the build
@@ -422,6 +545,35 @@ Rules:
   model. The default still follows tone; the control lets a designer
   override.
 
+### Not every icon follows tone the same way — content vs control
+
+Color an icon by what it *means*. A field carries two kinds of icon and
+they react to tone differently:
+
+- **Content / contextual icons** — a leading search glyph, a field's
+  descriptive icon. These belong to the field's content layer and follow
+  the **full tone**: Error → `icon-error`, Disabled → `icon-disabled`,
+  Read-only → `icon-secondary` (muted). If the value text goes
+  `text-error`, the content icon goes `icon-error` with it. Leaving it
+  neutral while the border, label, and text are all red reads as
+  disconnected.
+- **Control affordances** — a chevron, a clear / dismiss button, a
+  stepper caret. These are about *interaction*, not *validity*, so they
+  follow whether the field is **usable**, not whether it's **valid**:
+  - Error → **unchanged** (stay `icon-interactive` / neutral). A red
+    chevron signals nothing useful; validity is carried by the border,
+    label, value text, and message — not the controls.
+  - Disabled → `icon-disabled` (a disabled field greys everything,
+    controls included).
+  - Read-only → hidden or muted (the control isn't operable).
+
+Rule of thumb: **Error tone splits the icons (content follows, controls
+don't); Disabled tone hits everything.** This was the combobox
+2026-06-08 miss — every icon (leading glyph, clear, chevron) was pinned
+to `icon-interactive` across all states, so the chevron stayed bright
+blue on a disabled field and the leading search glyph stayed blue in
+error.
+
 This is the color / glyph analogue of §2 check 5 (per-variant
 INSTANCE_SWAP defaults): the wiring being present is not enough; each
 variant's tone-bearing parts must actually resolve to that variant's
@@ -483,6 +635,105 @@ affordance, not a state of an existing metric — it was moved to a
 `Kind = Metric | Add` axis, leaving `State` to genuine states. When in
 doubt, ask: "is this the same component reacting, or a different thing
 the component can be?" The first is a state; the second is a kind.
+
+## 9. Form components nest the Label component — and forward its properties
+
+A labeled field or control (text-input, dropdown, combobox, text-area,
+search, checkbox, radio, toggle, switch, … — anything whose anatomy
+includes a label tied to a control) renders its label as a **nested
+`udc-label` instance**, not raw text. This is the §"Sibling reuse" rule
+applied: `udc-label` already owns the label's editable text, the
+required / optional indicators, the leading-icon and right-slot
+(badge) affordances, and the tone colors. Rebuilding any of that as raw
+nodes strands those features and lets the label's text style drift.
+
+But nesting alone is not enough. The 2026-06-08/09 combobox proved both
+failure modes:
+
+1. **Nested-but-unforwarded** (the original defect). The label was a
+   nested `udc-label`, but none of its properties were reachable from
+   the combobox's right panel — the consumer couldn't edit the label
+   text, toggle required, or set the icon/badge. A nested label whose
+   properties aren't forwarded is barely better than raw text.
+2. **Host-owned overcorrection** (the wrong fix). Replacing the nested
+   label with a raw TEXT node "to avoid drift" threw away every one of
+   those properties — editable text, required, optional, leading icon,
+   right-slot badge — and would force rebuilding all of them in every
+   field. That's a regression dressed as a simplification.
+
+The standard is **nest AND forward**. The earlier drift (label at
+`paragraph/sm-medium` 12 px instead of `label/base-medium` 14 px) was
+never caused by nesting — it was the draft `udc-label` itself binding
+the wrong text style. Fix the label component once, and every field
+that nests it inherits the fix.
+
+### What "nest and forward" means concretely
+
+- The label region is an `INSTANCE` of `udc-label` parented at the top
+  of the host's anatomy (a `udc-support_required-dot` primitive may
+  still be nested inside the label as its own dot — that's the label's
+  internal business).
+- The nested label's properties are **reachable by the consumer**:
+  either set `isExposedInstance = true` on the instance (surfaces
+  text / required / optional / leading-icon / right-slot under the
+  label section in the right panel), OR hoist the key ones (at minimum
+  `text`, ideally `required`) to top-level component properties on the
+  host set. Exposure is the simpler, complete default; hoist when the
+  host already hoists sibling text props (the combobox hoists
+  `helperText`, so hoisting `Label` text matches that convention).
+- The nested label's **`tone` tracks the host's state**: the Error
+  variant drives `tone=Error` (red + bold via `label/base-bold`),
+  Disabled drives `tone=Disabled` (greyed). The label component owns
+  the per-tone text style + color; the host only selects the tone.
+- The `udc-label` component itself must bind a `uds/text/label/*` style
+  (`label/base-medium` default, `label/base-bold` for the Error tone).
+  If it's bound to a `paragraph/*` or other family, that's a bug in the
+  label component — fix it there, not by abandoning nesting.
+
+### Keep the standalone Label correct and reusable
+
+Because every field nests it, `udc-label` is high-leverage: one fix
+propagates everywhere. It also still serves the standalone case — a
+label not wired to a built-in field (a group/section heading, a label
+over a custom or non-UDS control). Don't strand it, don't duplicate it,
+and don't silently drop its property surface when improving it (diff
+the successor's `componentPropertyDefinitions` against the original — a
+rebuild missing a slot or tone is a regression, not an improvement).
+
+## 10. A field's popover / menu is an overlay anchored to the field
+
+When a field opens a menu, listbox, calendar, or any popover (combobox,
+select, dropdown, autocomplete, date-picker, …), the open surface is an
+**overlay anchored to the field** — NOT an in-flow sibling stacked after
+the helper row.
+
+In real behavior the menu pops directly under the field and floats over
+whatever sits below it (the helper text, the page content). Modeling it
+as the next in-flow child after the helper row pushes the menu *below*
+the helper, leaving an awkward gap with the helper text wedged between
+the field and its own menu. That was the combobox 2026-06-08 open-state
+miss (field bottom y72 → helper y76 → menu y92).
+
+### The Figma construction
+
+- The listbox/menu is `layoutPositioning = 'ABSOLUTE'` on the variant
+  frame, anchored at the field's bottom edge (`y = field.y +
+  field.height + gap`, `x = field.x`), width matched to the field
+  (`constraints = { horizontal: 'STRETCH', vertical: 'MIN' }`).
+- Because it's absolute, it does NOT push the helper row — the helper
+  stays in flow under the field and the open menu overlays on top of it,
+  exactly as it renders in the browser.
+- `clipsContent = false` on the variant so the overlay renders past the
+  collapsed auto-layout bounds.
+- Reordering the menu to sit in-flow directly under the field with the
+  helper pushed *below the menu* is NOT the fix — it relocates the helper
+  between closed and open and still treats the menu as flow content.
+  Anchor it as an overlay.
+
+This is the same "pure overlay, anchored to its box, never changes the
+flow" principle as the focus ring (§1) — a popover and a focus ring are
+both overlays on the field, not members of its layout stack. §2 check 10
+makes it machine-detectable.
 
 ## Related
 
