@@ -1,7 +1,7 @@
 ---
 name: generate-uds-figma-component
 description: UDS Component Factory. Drafts a token-bound UDS component set directly inside the UDS Components Figma file on a brand-new `🟠 <id> {Cursor}{Ignore}` page. Use when the user says "generate a UDS component for X", "factory me an Avatar", "draft a new UDS component called Y", "build a UDS component for Z in Figma", or "use the component factory to start <Title>". Stops at Figma — never writes to `uds-docs/uds/`. Docs landing is the existing `uds-updated` skill, run later by the designer.
-lastUpdated: 2026-06-09T15:18:38Z
+lastUpdated: 2026-06-09T16:10:05Z
 ---
 
 # UDS Component Factory — Generate UDS Figma Component
@@ -758,11 +758,19 @@ and you can re-run after fixing the cause.
   the visible control — fill it for a text field, center the smaller box
   for a checkbox / radio / toggle (never a 48 px-tall checkbox). Label =
   nested `udc-label` at the contract label style; helper = contract helper
-  style; label/helper gaps = contract gap. Density and mobile are not
-  per-control build decisions. See
+  style; label/helper gaps = contract gap. **Author at default scale and
+  density** — font scale (`larger`/`default`/`smaller`) and density
+  (`comfortable`) are runtime user settings, not per-control build
+  decisions, and the contract's px (input 14, helper 10, label 14) are
+  the default-scale resolutions — don't bake in the larger-scale 16/12.
+  Resolve token values through the alias chain + modes, never from a
+  rendered size. See
   [`uds-figma-factory-quality.mdc`](../../rules/uds-figma-factory-quality.mdc)
-  §11 and
-  [`uds-design-language.mdc`](../../rules/uds-design-language.mdc) §10.
+  §11,
+  [`uds-design-language.mdc`](../../rules/uds-design-language.mdc) §10
+  ("Design at default scale and density"), and
+  [`uds-token-architecture.mdc`](../../rules/uds-token-architecture.mdc)
+  §"Don't claim a token value — resolve it first".
 - Use existing UDS components as nested instances where the model says
   to (per Phase A "Sibling reuse").
 - **For every icon slot the model enumerates, nest the appropriate

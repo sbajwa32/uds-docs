@@ -2,7 +2,7 @@
 description: How every UDS component handles each state, extracted from current Figma/docs component evidence and Web Component source. State constructions (Default/Hover/Active/Focus/Filled/Selected/Error/Disabled/Read-only/Loading), focus-ring patterns and when to use each, surface treatments, elevation/shadow scale, border-radius scale, density/sizing patterns, selection treatments. Component-specific overrides documented per state. Differences between components flagged for designer review. The factory and any new-component skill should bind state visuals to the constructions in this doc rather than re-deriving them.
 alwaysApply: false
 globs: ["**/*"]
-lastUpdated: 2026-06-09T15:56:20Z
+lastUpdated: 2026-06-09T16:10:05Z
 ---
 
 # UDS Design Language
@@ -431,6 +431,20 @@ Pattern: form/button family uses `input`. Surface family uses
 ---
 
 ## 10. Density / sizing patterns
+
+**Design at default scale and density — they are user settings, not
+design tiers.** UDS exposes a **font scale** (`larger` / `default` /
+`smaller`, via `[data-font-scale]`) and a **density** control
+(`comfortable`, via `[data-density]`) as runtime preferences in the
+consuming app — the type/spacing equivalent of OS text-size or browser
+zoom. They belong to the user. Author every component, token binding, and
+metric at the **default** scale and density; the app re-derives the other
+modes from the same variables. Never hand-build a "larger," "smaller," or
+"comfortable" variant, and never quote a non-default resolved px as the
+value — bind the token (see
+[`uds-token-architecture.mdc`](./uds-token-architecture.mdc) §"Don't
+claim a token value — resolve it first"). The `sm` track below is a
+component **size** prop, not the font-scale/density user settings.
 
 UDS supports two density tracks:
 

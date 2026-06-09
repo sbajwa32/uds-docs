@@ -2,7 +2,7 @@
 description: Process quality rules for any factory-style Figma build (generate-uds-figma-component, new-component, future factories). State design contract (specify visuals not just tokens), mandatory machine-verified audits, variant grid layout reflects axis semantics, visible anatomy by default, dependency manifest before write. Design-system-agnostic — the specific UDS visual constructions live in uds-design-language.mdc.
 alwaysApply: false
 globs: [".cursor/skills/generate-uds-figma-component/**", ".cursor/skills/new-component/**", ".cursor/skills/figma-component-card/**"]
-lastUpdated: 2026-06-09T15:18:38Z
+lastUpdated: 2026-06-09T16:10:05Z
 ---
 
 # Figma Factory Quality
@@ -781,10 +781,14 @@ Rules:
   fail.
 - **Label is the shared nested `udc-label`** (per §9), at the contract's
   label style — never a per-control raw text style.
-- **Density and mobile are out of scope for the per-control build.**
-  Density is a user/app preference; mobile is form-level layout plus the
-  ≥ 16 px input-text invariant. The factory authors the one canonical
-  control, not density tiers.
+- **Font scale, density, and mobile are out of scope for the per-control
+  build.** Font scale (`larger`/`default`/`smaller`) and density
+  (`comfortable`) are runtime user settings; mobile is form-level layout.
+  Author the one canonical control at **default** scale and density —
+  never per-scale/density variants, and never bake a non-default resolved
+  px (e.g. the larger-scale 16px input) in as "the" value. See
+  [`uds-design-language.mdc`](./uds-design-language.mdc) §10 "Design at
+  default scale and density."
 
 §2 check 11 makes conformance machine-detectable.
 

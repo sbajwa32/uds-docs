@@ -2,7 +2,7 @@
 description: Canonical UDS Tokens Figma variable architecture and CSS output contract. Direct Figma Variables reads are primary; ZIP exports are fallback only.
 globs: ["uds-docs/uds/tokens/**/*.css", "uds-docs/styles/**/*.css", "uds-docs/packages/uds-web-components/src/**/*.ts"]
 alwaysApply: false
-lastUpdated: 2026-06-08T20:03:30Z
+lastUpdated: 2026-06-09T16:10:05Z
 ---
 
 # UDS Token Architecture
@@ -204,6 +204,36 @@ resolves to 6px there) — so bind the variable, never the resolved px.
 This applies to every token family, not just spacing: verify color,
 radius, and effect-style names against the tokens CSS / library before
 declaring a gap.
+
+## Don't claim a token value (or a "drift") — resolve it first
+
+A rendered size is not a token value. Before stating what a token
+resolves to — or reporting that Figma and code "disagree" — resolve the
+variable properly:
+
+1. **Follow the alias chain to a concrete number.** A semantic
+   font-size or space token aliases through collections
+   (`uds-font` → `uds-font-scale` → `_uds-primitive`) before it lands on
+   a literal. Walk it with `getVariableByIdAsync` until you hit a number
+   — don't infer the value from a node's rendered `fontSize` or from a
+   screenshot.
+2. **Enumerate the modes.** Type sizes route through `uds-font-scale`
+   (`larger` / `default` / `smaller`) and spacing through `uds-space`
+   density (`comfortable`). One token has several values. Report the
+   **default**-mode value as the baseline, and name the other modes only
+   if they matter — never quote one mode as "the" value.
+3. **Code CSS is downstream, not the source.** `uds/tokens/*.css` is
+   generated from Figma and can carry a single non-default scale baked
+   in. It currently ships the *larger*-scale type values
+   (`font-size-base` 16, `font-size-xs` 12, `label/base-medium` 16) while
+   Figma's default scale is 14 / 10 / 14. Never lift a px from the code
+   CSS to "correct" Figma — Figma's default scale is the source;
+   reconcile the other direction via `import-figma-tokens`.
+
+This is the value-side partner of "Don't claim a token is missing." The
+helper-text "10 vs 12" investigation flip-flopped twice because the value
+was inferred from a rendered size instead of resolved through the
+font-scale modes — default `xs` is 10px, `larger` 12px, `smaller` 8px.
 
 ## Architecture validation gate
 
