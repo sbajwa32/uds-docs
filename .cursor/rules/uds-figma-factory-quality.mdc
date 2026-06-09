@@ -2,7 +2,7 @@
 description: Process quality rules for any factory-style Figma build (generate-uds-figma-component, new-component, future factories). State design contract (specify visuals not just tokens), mandatory machine-verified audits, variant grid layout reflects axis semantics, visible anatomy by default, dependency manifest before write. Design-system-agnostic — the specific UDS visual constructions live in uds-design-language.mdc.
 alwaysApply: false
 globs: [".cursor/skills/generate-uds-figma-component/**", ".cursor/skills/new-component/**", ".cursor/skills/figma-component-card/**"]
-lastUpdated: 2026-06-09T03:05:16Z
+lastUpdated: 2026-06-09T15:18:38Z
 ---
 
 # Figma Factory Quality
@@ -312,7 +312,24 @@ A read-only `use_figma` call that:
     child after the helper row (field bottom y72 → helper y76 → menu y92)
     — it failed this. See §10. Report
     `{ ownerVariant, menuNodeId, kind: 'menu-in-flow' | 'menu-not-anchored-to-field' }`.
-11. Returns a structured object with the count of unbound items and
+11. **Field-metrics conformance (field/control components).** For any
+    component whose model class is a field or form control (text input,
+    search, dropdown, combobox, text area, date picker, checkbox, radio,
+    toggle), verify it conforms to the design-language field-metrics
+    contract ([`uds-design-language.mdc`](./uds-design-language.mdc) §10):
+    - the control's alignment/touch container equals the contract height
+      (48 px for UDS) with the visible control vertically centered.
+      Report a visible control stretched to the container height (a giant
+      checkbox) AND a container shorter than the contract (the ~24 px
+      checkbox / ~32 px toggle that breaks single-line alignment and the
+      touch floor).
+    - the label is the nested `udc-label` at the contract label style
+      (defers to check 9 for nesting/forwarding; this check verifies the
+      style matches the contract).
+    - the helper text matches the contract helper style, and the
+      label→control and control→helper gaps match the contract gap.
+    Report `{ ownerVariant, nodeId, kind: 'container-height' | 'control-stretched' | 'label-style' | 'helper-style' | 'gap', expected, actual }`.
+12. Returns a structured object with the count of unbound items and
     their `{ ownerVariant, nodeId, nodeName, kind }` per check.
 
 #### Attribute every node to its owning component first (applies to ALL checks)
@@ -734,6 +751,42 @@ This is the same "pure overlay, anchored to its box, never changes the
 flow" principle as the focus ring (§1) — a popover and a focus ring are
 both overlays on the field, not members of its layout stack. §2 check 10
 makes it machine-detectable.
+
+## 11. Form controls conform to the shared field-metrics contract
+
+Fields and form controls aren't sized in isolation — they bind to the
+design system's single field-metrics contract so a form of mixed controls
+lines up and every control clears the touch-target minimum. For UDS that
+contract is [`uds-design-language.mdc`](./uds-design-language.mdc) §10
+("Field & control metrics contract").
+
+The load-bearing idea: **what aligns is the control _container_, not the
+visible control.** A text field fills the shared container height; a
+checkbox / radio / toggle centers a smaller visible control inside the
+same container. So the factory sizes the container to the contract and
+centers the control — it never stretches a checkbox to the field height.
+
+Rules:
+
+- **Read the contract in Phase A.** When the component's class is a field
+  or form control, bind the Phase A model's container height, label
+  style, helper style, and label/helper gaps to the design-language
+  field-metrics values — don't re-derive them per component (that's how
+  the fields drifted before the contract existed).
+- **Container height, not visible-control height.** Size the alignment /
+  touch container to the contract (48 px for UDS) and vertically center
+  the visible control. A control whose visible box is stretched to the
+  container height (a giant checkbox), or whose container is shorter than
+  the contract (a ~24 px checkbox that breaks alignment + touch), both
+  fail.
+- **Label is the shared nested `udc-label`** (per §9), at the contract's
+  label style — never a per-control raw text style.
+- **Density and mobile are out of scope for the per-control build.**
+  Density is a user/app preference; mobile is form-level layout plus the
+  ≥ 16 px input-text invariant. The factory authors the one canonical
+  control, not density tiers.
+
+§2 check 11 makes conformance machine-detectable.
 
 ## Related
 

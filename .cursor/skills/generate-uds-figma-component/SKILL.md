@@ -1,7 +1,7 @@
 ---
 name: generate-uds-figma-component
 description: UDS Component Factory. Drafts a token-bound UDS component set directly inside the UDS Components Figma file on a brand-new `🟠 <id> {Cursor}{Ignore}` page. Use when the user says "generate a UDS component for X", "factory me an Avatar", "draft a new UDS component called Y", "build a UDS component for Z in Figma", or "use the component factory to start <Title>". Stops at Figma — never writes to `uds-docs/uds/`. Docs landing is the existing `uds-updated` skill, run later by the designer.
-lastUpdated: 2026-06-09T03:05:16Z
+lastUpdated: 2026-06-09T15:18:38Z
 ---
 
 # UDS Component Factory — Generate UDS Figma Component
@@ -752,6 +752,17 @@ and you can re-run after fixing the cause.
   [`uds-figma-factory-quality.mdc`](../../rules/uds-figma-factory-quality.mdc)
   §1 and
   [`uds-design-language.mdc`](../../rules/uds-design-language.mdc) §6.
+- **Field / form-control sizing follows the field-metrics contract.**
+  When the component is a field or form control, size its alignment/touch
+  container to the contract height (48 px for UDS) and vertically center
+  the visible control — fill it for a text field, center the smaller box
+  for a checkbox / radio / toggle (never a 48 px-tall checkbox). Label =
+  nested `udc-label` at the contract label style; helper = contract helper
+  style; label/helper gaps = contract gap. Density and mobile are not
+  per-control build decisions. See
+  [`uds-figma-factory-quality.mdc`](../../rules/uds-figma-factory-quality.mdc)
+  §11 and
+  [`uds-design-language.mdc`](../../rules/uds-design-language.mdc) §10.
 - Use existing UDS components as nested instances where the model says
   to (per Phase A "Sibling reuse").
 - **For every icon slot the model enumerates, nest the appropriate
@@ -1269,6 +1280,19 @@ structured report with two sections.
  and its menu — it failed this. See
  [`uds-figma-factory-quality.mdc`](../../rules/uds-figma-factory-quality.mdc)
  §10 and §2 check 10.
+- **Field-metrics conformance (field/control components).** For any
+ component whose class is a field or form control, verify it matches the
+ design-language field-metrics contract: alignment/touch container =
+ contract height (48 px for UDS) with the visible control centered.
+ Controls whose container is shorter than the contract (the ~24 px
+ checkbox / ~32 px toggle — breaks single-line alignment + the 44 px
+ touch floor), or whose visible box is stretched to the container height
+ (a giant checkbox): N at `<variantIds>`. Label not at the contract label
+ style, helper not at the contract helper style, or label/helper gaps off
+ the contract gap: N. See
+ [`uds-figma-factory-quality.mdc`](../../rules/uds-figma-factory-quality.mdc)
+ §11 and §2 check 11, and
+ [`uds-design-language.mdc`](../../rules/uds-design-language.mdc) §10.
 - **Class-required state coverage.** Every state the component's class
  requires (per
  [`uds-component-checklist.mdc`](../../rules/uds-component-checklist.mdc)

@@ -2,7 +2,7 @@
 description: How every UDS component handles each state, extracted from current Figma/docs component evidence and Web Component source. State constructions (Default/Hover/Active/Focus/Filled/Selected/Error/Disabled/Read-only/Loading), focus-ring patterns and when to use each, surface treatments, elevation/shadow scale, border-radius scale, density/sizing patterns, selection treatments. Component-specific overrides documented per state. Differences between components flagged for designer review. The factory and any new-component skill should bind state visuals to the constructions in this doc rather than re-deriving them.
 alwaysApply: false
 globs: ["**/*"]
-lastUpdated: 2026-06-04T20:35:00Z
+lastUpdated: 2026-06-09T15:18:38Z
 ---
 
 # UDS Design Language
@@ -445,11 +445,65 @@ UDS supports two density tracks:
 |---|---|---|
 | Button | `padding: var(--uds-space-150) var(--uds-space-200)` (12 × 16 px) | `padding: var(--uds-space-075) var(--uds-space-150)` (6 × 12 px) |
 | Tab | `padding: var(--uds-space-200) var(--uds-space-300)` (16 × 24 px) | `padding-top/bottom: var(--uds-space-100)` (8 px) |
-| Text input (proposed, Figma factory draft) | min-height 48 px, padding 6 px / 8 px, font `font-size-base` | min-height 36 px, padding 4 px / 6 px, font `font-size-sm` |
+| Text field / dropdown / combobox | 48 px container, `font-size-base` input — see the Field & control metrics contract below | tighter vertical padding; 16 px input retained; ≥ 44 px on touch |
 | Badge | full padding, font-size-base | `padding: var(--uds-space-025) var(--uds-space-050)`, `font-size-xs` |
 
 There is no `lg` size in UDS today. New components that need a bigger
 size should check with the designer before adding one.
+
+### Field & control metrics contract
+
+Every form control — text input, search, dropdown, combobox, text area,
+date picker, checkbox, radio, toggle — shares one set of metrics so
+controls line up when stacked in a form or placed on a single row, and
+so every control meets the touch-target minimum. Ratified 2026-06-09.
+
+**What aligns is the control _container_, not the visible control.** A
+text field's box fills the 48 px container; a checkbox's 18 px box, a
+radio's 20 px ring, and a toggle's 52 × 32 px switch are each centered
+_inside_ a 48 px container. Don't draw a 48 px-tall checkbox — size the
+container, center the control.
+
+| Metric | Value | Token | Applies to |
+|---|---|---|---|
+| Control container height | 48 px (control vertically centered) | `space-600` | all form controls |
+| Visible control | fills 48 px (fields) / 18 px box (checkbox) / 20 px ring (radio) / 52 × 32 px (toggle) | — | per control type |
+| Input text | 16 px regular | `font-size-base` | text fields |
+| Label | nested `udc-label` default (14 px / 20 px) | the label component, not a px | all |
+| Helper | 12 px | `font-size-xs` | all |
+| Label → control gap | 4 px | `space-050` | all |
+| Control → helper gap | 4 px | `space-050` | all |
+| Multi-line min (text area) | 88 px | — | text area |
+
+Label is pinned to "the `udc-label` default," not a px value — so if the
+label size ever changes, every control inherits it and they stay
+consistent structurally rather than by coincidence.
+
+**Label placement differs by control type and that is intentional, not
+drift.** Field / dropdown / combobox put the label _above_ the control;
+checkbox / radio / toggle put it _beside_ the control. Single-line
+alignment is about the control containers; the label _style_ (the nested
+`udc-label`) is what stays shared across all of them.
+
+**Density and mobile are orthogonal to these values:**
+
+- The `sm` density track (`data-size="sm"`, a user/app preference) may
+  tighten the container on desktop; it is not a per-control design
+  decision the factory authors.
+- On mobile the 48 px container is a touch-target floor (≥ 44 px
+  WCAG/Apple) and input text never drops below 16 px (prevents iOS
+  Safari zoom-on-focus). Mobile is full-width layout, not a size tier.
+
+**Known gaps (Figma source-of-truth — surfaced, never auto-fixed):**
+
+- Checkbox / radio currently size their hit area at ~24 px and the
+  toggle at 32 px — below the 48 px container and the 44 px touch floor.
+  Closing this needs a Figma + component change, not an autonomous edit.
+- The Figma text style `label/base-medium` renders 14 px but the code
+  `.uds-text-label-base-medium` is 16 px; reconcile via
+  `import-figma-tokens`.
+- Text area's outer gap is 6 px (`space-075`) vs 4 px elsewhere;
+  standardize on the next sync.
 
 ---
 
