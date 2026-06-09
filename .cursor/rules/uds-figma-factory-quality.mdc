@@ -2,7 +2,7 @@
 description: Process quality rules for any factory-style Figma build (generate-uds-figma-component, new-component, future factories). State design contract (specify visuals not just tokens), mandatory machine-verified audits, variant grid layout reflects axis semantics, visible anatomy by default, dependency manifest before write. Design-system-agnostic — the specific UDS visual constructions live in uds-design-language.mdc.
 alwaysApply: false
 globs: [".cursor/skills/generate-uds-figma-component/**", ".cursor/skills/new-component/**", ".cursor/skills/figma-component-card/**"]
-lastUpdated: 2026-06-09T16:44:22Z
+lastUpdated: 2026-06-09T16:58:54Z
 ---
 
 # Figma Factory Quality
@@ -338,7 +338,43 @@ A read-only `use_figma` call that:
     - the helper text matches the contract helper style, and the
       label→control and control→helper gaps match the contract gap.
     Report `{ ownerVariant, nodeId, kind: 'container-height' | 'control-stretched' | 'label-style' | 'helper-style' | 'gap', expected, actual }`.
-12. Returns a structured object with the count of unbound items and
+12. **Contract-block currency (every component with a contract).** The
+    `<<UDS-FACTORY-CONTRACT v1>>` block in `descriptionMarkdown` is a
+    derived view of the component — ANY section can drift, not just
+    states. Parse the block and verify every machine-checkable section
+    against the live component set:
+    - **Variant axes.** Each `Variant axes:` line (`<Axis> — v1 | v2 …`)
+      must match `componentPropertyDefinitions[Axis].variantOptions`
+      exactly — same axis names, same value set, verbatim casing. A
+      renamed value the block didn't follow (metric-card variants renamed
+      to `Hovered`/`Focused` while the block still read `Hover`/`Focus`)
+      fails here.
+    - **States baseline.** Every value of the `State` axis must appear in
+      the block's `States` section (as supported or `notApplicable`), and
+      every state the block lists `supported` must be a real `State`
+      option. Drift either way fails.
+    - **Parts.** Each `Parts:` entry should name a region that exists as a
+      node in the component (a layer/frame of that name). A listed part
+      with no matching node is stale.
+    - **Depends on (nested half).** Every first-class `udc-*` instance
+      nested in the component (via `findAllWithCriteria` INSTANCE →
+      `mainComponent` name, excluding this component's own `_udc-<id>_*`
+      subparts) must appear in `Depends on`, and vice versa. A nested
+      `udc-*` missing from the list (or a listed `nested` dep no longer
+      present) fails. The "opens in popover / reveals" relationships are
+      author-supplied and not failed for absence.
+    - **Factory-version line.** The block's `Factory-version:` must equal
+      the `factory_version` plugin-data stamp on the component.
+    - **Required new sections.** The block must contain `Summary:` and
+      `Depends on:` (added in factory-version 2026.06.09.7). Absence of
+      either fails — a pre-2026.06.09.7 block is stale by definition.
+    The prose sections (Summary text, behavioral Props, Events, Keyboard,
+    Screen reader, Acceptance) are presence-checked only — non-empty and
+    not a stub — because Figma can't verify their correctness; their
+    currency is enforced by the regenerate-on-touch discipline
+    ([`uds-factory-versioning.mdc`](./uds-factory-versioning.mdc)). Report
+    `{ component, kind: 'variant-axis-drift' | 'state-drift' | 'part-missing' | 'depends-on-drift' | 'factory-version-mismatch' | 'missing-summary' | 'missing-depends-on' | 'empty-prose-section', section, expected, actual }`.
+13. Returns a structured object with the count of unbound items and
     their `{ ownerVariant, nodeId, nodeName, kind }` per check.
 
 #### Attribute every node to its owning component first (applies to ALL checks)

@@ -2,7 +2,7 @@
 description: When and how to bump the UDS factory build version, how it's stamped onto generated components, and how it carries into docs. The build version (YYYY.MM.DD.N, in .cursor/figma/state/factory-version.json) is the factory's OUTPUT vintage — distinct from per-file lastUpdated (every edit) and the contract-block format version (v1). Auto-attaches when a factory file is edited so the bump discipline is in front of you.
 globs: [".cursor/skills/generate-uds-figma-component/**", ".cursor/rules/uds-figma-factory-quality.mdc", ".cursor/rules/uds-figma-plugin-api-gotchas.mdc", ".cursor/rules/uds-design-language.mdc", ".cursor/rules/uds-naming-conventions.mdc"]
 alwaysApply: false
-lastUpdated: 2026-06-08T20:03:30Z
+lastUpdated: 2026-06-09T16:58:54Z
 ---
 
 # UDS Factory Versioning
@@ -109,6 +109,36 @@ not fuzzy. Adding a label = the `labels` entry AND its detector.
   factory write, `factory_version` = bar met.
 - **Docs:** `sync-figma-component-spec` / `uds-updated` copies it into
   `spec.json` `provenance.factoryVersion`.
+
+## Touching a component regenerates its contract
+
+The `<<UDS-FACTORY-CONTRACT v1>>` block is a **derived view** of the
+live component, not a separate document you edit by hand. Any section
+can go stale, not just `States` — a renamed variant value, an added or
+removed state, a swapped nested component, a changed prop, a reworded
+behavior. So the contract is part of the stamped output state:
+
+- **Any write to a component regenerates the WHOLE block** from the
+  component's current anatomy, then re-stamps (`built_at` + the bar's
+  `factory_version`). Never patch a single line and leave the rest.
+  `Variant axes` and `States` are copied verbatim from
+  `componentPropertyDefinitions`; `Depends on` (the nested half) from the
+  actual nested `udc-*` instances; `Summary` and the behavioral sections
+  are rewritten to match current behavior.
+- **A stamp-only catch-up still regenerates the block.** Even when the
+  geometry already meets the bar and you're only updating plugin data,
+  re-derive the contract — the pre-versioning drafts often have no block
+  at all, or a block missing `Summary` / `Depends on`, or one whose
+  variant/state lines predate a rename.
+- **The currency gate enforces the machine-checkable half**
+  ([`uds-figma-factory-quality.mdc`](./uds-figma-factory-quality.mdc) §2
+  check 12): variant axes, states, parts, nested deps, and the
+  `Factory-version:` line must match the live component. The prose half
+  (Summary, Events, Keyboard, SR, Acceptance, behavioral Props) can't be
+  machine-verified — this regenerate-on-touch discipline is what keeps it
+  honest. The metric-card 2026-06-09 drift (variants renamed to
+  `Hovered`/`Focused`, block still reading `Hover`/`Focus`) is the exact
+  failure both halves exist to prevent.
 
 ## Drift is reported, never auto-applied on a live component
 

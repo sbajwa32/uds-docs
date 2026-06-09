@@ -1,7 +1,14 @@
 {
   "$comment": "UDS factory build version — the factory's OUTPUT vintage, distinct from per-file lastUpdated and the contract-block format version (v1). See .cursor/rules/uds-factory-versioning.mdc. Version format YYYY.MM.DD.N; changelog newest-first; drift compares by changelog position, not string math. `labels` is the human-readable registry of affects[] tags; the drift pass carries a real detector per label.",
-  "version": "2026.06.09.6",
+  "version": "2026.06.09.7",
   "changelog": [
+    {
+      "version": "2026.06.09.7",
+      "date": "2026-06-09",
+      "breaking": true,
+      "affects": ["all"],
+      "summary": "Contract block gains two required sections and a currency gate. (1) Summary — a 1-2 sentence plain-language 'what this is / does', sits right under Factory-version. (2) Depends on — the other UDS components this one relies on, with the relationship: structural deps (a udc-* nested as an instance) AND behavioral deps (a component this one opens/reveals, e.g. date-picker -> udc-calendar 'opens in popover'). Variant axes is now formalized in the template too. (3) Currency: the block is a DERIVED VIEW of the live component — any section can go stale, not just States. New Phase C check 12 verifies the machine-checkable half against the actual component set every run: Variant axes must match componentPropertyDefinitions verbatim (this is the metric-card Hover-vs-Hovered drift), States baseline must cover the State axis, Parts must name real regions, Depends on (nested half) must match the nested udc-* instances, and Factory-version: must equal the plugin-data stamp. The prose half (Summary, Events, Keyboard, SR, Acceptance, behavioral Props) is presence-checked and kept current by a new discipline: touching a component regenerates the WHOLE block, never one line, then re-stamps (factory-versioning 'Touching a component regenerates its contract'). Every component built before this version is flagged behind — its block is missing Summary/Depends on and may carry stale variant/state lines; regenerate and re-stamp. Pre-versioning drafts with no block at all (calendar) get one authored on first touch."
+    },
     {
       "version": "2026.06.09.6",
       "date": "2026-06-09",

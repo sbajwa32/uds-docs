@@ -1,7 +1,7 @@
 ---
 name: generate-uds-figma-component
 description: UDS Component Factory. Drafts a token-bound UDS component set directly inside the UDS Components Figma file on a brand-new `🟠 <id> {Cursor}{Ignore}` page. Use when the user says "generate a UDS component for X", "factory me an Avatar", "draft a new UDS component called Y", "build a UDS component for Z in Figma", or "use the component factory to start <Title>". Stops at Figma — never writes to `uds-docs/uds/`. Docs landing is the existing `uds-updated` skill, run later by the designer.
-lastUpdated: 2026-06-09T16:10:05Z
+lastUpdated: 2026-06-09T16:58:54Z
 ---
 
 # UDS Component Factory — Generate UDS Figma Component
@@ -937,6 +937,12 @@ and the designer can edit or delete it freely:
 Component: <Title> (<id>)
 Class: <layout|display|action|form|navigation|feedback|data>
 Factory-version: <YYYY.MM.DD.N>
+Summary: <1–2 plain-language sentences: what the component is and what it does>
+Depends on:
+  - <udc-foo> — <relationship: nested | opens in popover | composed in slot>
+  (or: none)
+Variant axes:
+  - <Axis> — <Value> | <Value> | …   (verbatim from the component's variant options)
 Props (behavioral, non-drawable):
   - <name> (<type>, default <value>) — <behavior; which states/events it gates>
   (or: none)
@@ -987,10 +993,33 @@ Rules:
   apply, write `none` or `none (class does not dispatch)` rather than
   dropping the heading — the inspector relies on the section being
   present.
-- **Keep it consistent with the model file.** The block is the
-  description's copy of the model's non-drawable sections (class,
-  events, slots, parts, states, accessibility, acceptance). If you
-  revise the model on iterate, rewrite the block too.
+- **Summary is plain-language and sits right under `Factory-version:`.**
+  One or two sentences a designer reads first: what the component is and
+  what it does. Not a feature list, not implementation. (e.g. "A compact
+  dashboard card showing one labeled metric in five tones; optionally
+  selectable to act as a filter.")
+- **`Depends on:` lists the other UDS components this one relies on, with
+  the relationship.** Cover both *structural* dependencies (a `udc-*`
+  nested as an instance — `udc-icon-wrapper — nested`) and *behavioral*
+  ones (a component this one opens or reveals — `udc-calendar — opens in
+  popover`). The nested-instance half is machine-checkable (see the
+  currency rule below); the "opens / reveals" half is author-supplied
+  because Figma can't infer runtime behavior. Internal `_udc-<id>_*`
+  subparts of THIS component are not dependencies — only other
+  first-class `udc-*` components are. `none` if it composes nothing.
+- **Regenerate the WHOLE block on ANY touch — never patch one line.**
+  The block is a derived view of the live component; every section can go
+  stale, not just states. Whenever you touch the component — rename a
+  variant value, add/remove a state, change props/slots/events, swap a
+  nested component, or revise behavior — rewrite the entire block from
+  the component's current state and re-stamp (`built_at` + the bar's
+  `factory_version`). The metric-card 2026-06-09 drift (variants renamed
+  to `Hovered`/`Focused`, contract still reading `Hover`/`Focus`) is
+  exactly the failure this prevents. `Variant axes` and `States` are
+  copied VERBATIM from `componentPropertyDefinitions`; `Depends on`
+  (nested half) from the actual nested `udc-*` instances. See
+  [`uds-factory-versioning.mdc`](../../rules/uds-factory-versioning.mdc)
+  "Touching a component regenerates its contract."
 - **Single round-trip source.** This block is the only place the
   inspector can read events, parts, keyboard, and acceptance for a
   brand-new component (there's no Web Component source yet). If it's
@@ -1316,14 +1345,29 @@ structured report with two sections.
  have them: fail.
 - **Contract block present and well-formed.** The component
  `descriptionMarkdown` MUST contain a `<<UDS-FACTORY-CONTRACT v1>> …
- <<END-UDS-FACTORY-CONTRACT>>` block with all sections present (Class,
- Events, Slots, Parts, States, Keyboard, Screen reader, Acceptance) —
- each either filled or explicitly `none` / `notApplicable`. Missing or
- malformed: fail. The `spec.json` round-trip via `uds-updated` depends
- on this block.
+ <<END-UDS-FACTORY-CONTRACT>>` block with all sections present (Summary,
+ Depends on, Variant axes, Class, Props, Events, Slots, Parts, States,
+ Keyboard, Screen reader, Acceptance) — each either filled or explicitly
+ `none` / `notApplicable`. Missing or malformed: fail. A block missing
+ `Summary` or `Depends on` (the sections added in 2026.06.09.7) fails.
+ The `spec.json` round-trip via `uds-updated` depends on this block.
 - **Slots and parts enumerated.** The contract block's `Slots` and
  `Parts` sections must each be filled or explicitly `none`. An empty
  (not `none`) section is a gap.
+- **Contract currency (block matches the live component).** The
+ machine-checkable sections MUST agree with the component's actual
+ anatomy — see [`uds-figma-factory-quality.mdc`](../../rules/uds-figma-factory-quality.mdc)
+ §2 check 12. `Variant axes` lines must match
+ `componentPropertyDefinitions` (every axis, every value — the
+ metric-card `Hover` vs `Hovered` drift fails here); `States` baseline
+ must cover the State axis options; `Parts` must name real regions;
+ `Depends on` (nested half) must match the nested `udc-*` instances; the
+ `Factory-version:` line must equal the `factory_version` plugin-data
+ stamp. Any mismatch = stale contract = fail. The prose sections
+ (Summary, behavioral Props, Events, Keyboard, Screen reader,
+ Acceptance) can't be auto-verified — their currency rides on the
+ "Regenerate the WHOLE block on ANY touch" rule in the contract section
+ and [`uds-factory-versioning.mdc`](../../rules/uds-factory-versioning.mdc).
 
 If any tool-emitted gate fires with non-zero findings, the skill
 reports the issue and proposes a fix. Design-changing, destructive, or
