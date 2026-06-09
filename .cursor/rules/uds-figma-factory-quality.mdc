@@ -2,7 +2,7 @@
 description: Process quality rules for any factory-style Figma build (generate-uds-figma-component, new-component, future factories). State design contract (specify visuals not just tokens), mandatory machine-verified audits, variant grid layout reflects axis semantics, visible anatomy by default, dependency manifest before write. Design-system-agnostic — the specific UDS visual constructions live in uds-design-language.mdc.
 alwaysApply: false
 globs: [".cursor/skills/generate-uds-figma-component/**", ".cursor/skills/new-component/**", ".cursor/skills/figma-component-card/**"]
-lastUpdated: 2026-06-09T16:10:05Z
+lastUpdated: 2026-06-09T16:44:22Z
 ---
 
 # Figma Factory Quality
@@ -267,6 +267,15 @@ A read-only `use_figma` call that:
      `clipsContent === true`.
    - The ring's nearest non-absolute ancestor is the focused element box
      (the bordered field/trigger), not the variant wrapper.
+   - **Grid-cell edge-ring exception.** A small cell tiled into a dense
+     repeating grid (the `_udc-calendar-day` cell, and analogous tiled
+     subcomponents) may instead carry the focus indicator as an **edge
+     ring** — a stroke bound to `outline-focus-visible` on the focus
+     variant's root box, no offset frame. Recognize that as a valid
+     construction for grid cells and do NOT flag it as "missing ring" or
+     "thickened-border-only." Carve-out is grid-cells-only: an edge ring
+     on a normal inline control (button, field, link, checkbox) still
+     fails — those use the gapped offset (design-language §6.2, §6.4).
    "Resizing" is a property to verify, not a word to assert — the
    combobox 2026-06-08 build shipped a `MIN`/`MIN`, clipped ring that
    passed the older presence-only gate. Report

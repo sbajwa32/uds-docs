@@ -2,7 +2,7 @@
 description: How every UDS component handles each state, extracted from current Figma/docs component evidence and Web Component source. State constructions (Default/Hover/Active/Focus/Filled/Selected/Error/Disabled/Read-only/Loading), focus-ring patterns and when to use each, surface treatments, elevation/shadow scale, border-radius scale, density/sizing patterns, selection treatments. Component-specific overrides documented per state. Differences between components flagged for designer review. The factory and any new-component skill should bind state visuals to the constructions in this doc rather than re-deriving them.
 alwaysApply: false
 globs: ["**/*"]
-lastUpdated: 2026-06-09T16:10:05Z
+lastUpdated: 2026-06-09T16:44:22Z
 ---
 
 # UDS Design Language
@@ -332,6 +332,27 @@ Figma → code round trip.
 - The gap (in A or B) is **2 px** (the system standard).
 - The ring uses `:focus-visible`, not `:focus`. Always.
 - Error doesn't recolor the focus ring (it stays blue — see §2.1).
+
+### 6.4 Grid-cell exception — edge ring
+
+A focusable cell tiled into a **dense grid** — calendar day cells, and
+any analogous small repeating cell — may use an **edge ring** instead of
+the gapped offset (A) or overlay constructions: a 2 px stroke bound to
+`border-outline-focus-visible` on the cell box itself, no offset, no
+separate ring frame.
+
+**Why:** the offset ring needs clear room outside the box. Calendar day
+cells are 36 px on a 4 px grid gap; a 2 px-gap + 2 px-ring offset would
+fill the entire gap and collide with the neighbouring cell. An edge ring
+on the cell reads cleanly without crowding its neighbours.
+
+**Scope — narrow on purpose:** this is only for small cells in a dense
+repeating grid where an offset ring can't fit. A normal inline control
+(button, field, link, checkbox, the trailing icon button inside a field)
+still uses construction A's gapped offset — an edge ring on those is the
+"thickened border" anti-pattern the focus-ring gate exists to catch.
+Ring colour (`border-outline-focus-visible`), 2 px thickness, and
+`:focus-visible` (not `:focus`) are unchanged.
 
 ---
 

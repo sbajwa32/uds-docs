@@ -1,7 +1,14 @@
 {
   "$comment": "UDS factory build version — the factory's OUTPUT vintage, distinct from per-file lastUpdated and the contract-block format version (v1). See .cursor/rules/uds-factory-versioning.mdc. Version format YYYY.MM.DD.N; changelog newest-first; drift compares by changelog position, not string math. `labels` is the human-readable registry of affects[] tags; the drift pass carries a real detector per label.",
-  "version": "2026.06.09.5",
+  "version": "2026.06.09.6",
   "changelog": [
+    {
+      "version": "2026.06.09.6",
+      "date": "2026-06-09",
+      "breaking": false,
+      "affects": ["focusable"],
+      "summary": "Grid-cell focus-ring exception (design-language §6.4). A focusable cell tiled into a dense repeating grid — calendar day cells and analogous small tiled subcomponents — may carry its focus indicator as an EDGE RING (a 2px stroke bound to outline-focus-visible on the cell box, no offset, no separate ring frame) instead of the canonical gapped offset overlay. Reason: a 36px day cell on a 4px grid gap has no room for a 2px-gap + 2px-ring offset without colliding with its neighbour. Narrow carve-out: grid cells only — a normal inline control (button, field, link, checkbox, trailing icon button) still uses the gapped offset, and an edge ring there remains the thickened-border anti-pattern the focus-ring gate catches. Phase C check 8 now recognizes a bound-outline-focus-visible edge stroke on a grid cell as conforming. Surfaced from the calendar review; calendar day cells stamped to this bar with the edge ring documented, not rebuilt."
+    },
     {
       "version": "2026.06.09.5",
       "date": "2026-06-09",
