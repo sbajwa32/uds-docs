@@ -1,7 +1,7 @@
 ---
 name: generate-uds-figma-component
 description: UDS Component Factory. Drafts a token-bound UDS component set directly inside the UDS Components Figma file on a brand-new `🟠 <id> {Cursor}{Ignore}` page. Use when the user says "generate a UDS component for X", "factory me an Avatar", "draft a new UDS component called Y", "build a UDS component for Z in Figma", or "use the component factory to start <Title>". Stops at Figma — never writes to `uds-docs/uds/`. Docs landing is the existing `uds-updated` skill, run later by the designer.
-lastUpdated: 2026-06-09T17:07:29Z
+lastUpdated: 2026-06-09T19:18:31Z
 ---
 
 # UDS Component Factory — Generate UDS Figma Component
@@ -287,7 +287,14 @@ Persist the proposed model to
  component), section 6 covers when something is a variant vs a
  state vs a property, section 7 covers Title Case in Figma. Don't
  inherit a sibling's name if the sibling disagrees with the
- framework — the framework wins.
+ framework — the framework wins. **One concern per axis:** `State`
+ holds interaction/selection states only; disclosure (open vs closed),
+ content presence (empty vs filled vs results), kind, size, and tone are
+ each their own axis. A compound value like `Open-Empty` / `Open-Typed`
+ is two concerns mushed into one — split it (the global-search
+ 2026-06-09 mush). See
+ [`uds-figma-factory-quality.mdc`](../../rules/uds-figma-factory-quality.mdc)
+ §8.
 - **State matrix (class-driven)** — start from the component class's
  required-state baseline in
  [`uds-component-checklist.mdc`](../../rules/uds-component-checklist.mdc)
@@ -890,6 +897,24 @@ could change the headline icon but not the menu glyph or the trend
 direction. The Phase C "nested-instance exposure coverage" gate makes
 this machine-checkable.
 
+**No sealed controls — ask "what does a consumer need to set?" of EVERY
+nested instance, not just icons.** This isn't only about icon wrappers.
+Any nested instance that carries its own controls — a first-class
+`udc-*` component, or a `_udc-<id>_*` subpart with its own variant axis,
+editable text, meaningful boolean, or instance-swap — must forward those
+controls (expose it, or hoist its key props to top-level host
+properties). A component whose nested controls are all sealed looks
+finished but can't be driven: the global-search 2026-06-09 build passed
+every other gate while shipping its `_udc-global-search_trigger`
+(`State`, `Filled`, placeholder, value) and `_udc-global-search_popover`
+(content variant) sealed, so a consumer could only toggle `Open`. As you
+nest, decide for each instance what a consumer would need to set and
+forward exactly that. The only exemption is purely decorative or
+structural nesting (a static divider, a fixed ornamental glyph) — that
+reports as a soft review note in Phase C, not a failure. The proactive
+half of the exposure gate flags every sealed control-bearing instance
+even if the model never marked it reachable.
+
 ```js
 for (const variant of componentSet.children) {
   for (const nm of ['icon', 'trend-icon']) {
@@ -943,6 +968,9 @@ Depends on:
   (or: none)
 Variant axes:
   - <Axis> — <Value> | <Value> | …   (verbatim from the component's variant options)
+Exposed properties (forwarded to the consumer panel):
+  - <nested instance> → <prop> (<type>) — <what it controls>
+  (or: none — component forwards nothing beyond its own top-level props)
 Props (behavioral, non-drawable):
   - <name> (<type>, default <value>) — <behavior; which states/events it gates>
   (or: none)
@@ -1007,6 +1035,18 @@ Rules:
   because Figma can't infer runtime behavior. Internal `_udc-<id>_*`
   subparts of THIS component are not dependencies — only other
   first-class `udc-*` components are. `none` if it composes nothing.
+- **`Exposed properties:` lists what a consumer can set on the
+  top-level instance — the API made visible.** Beyond the component's
+  own top-level `componentPropertyDefinitions` (the `Variant axes` and
+  drawable Props), record every control forwarded from a nested instance
+  marked `isExposedInstance = true`, as `<nested instance> → <prop>`.
+  This is machine-checked against the live exposure (§2 check 12): a
+  control-bearing nested instance that's sealed must NOT be claimed here,
+  and an exposed one must NOT be omitted. The section exists so "this
+  component ships sealed" is visible on the page instead of discovered
+  when a designer tries to use it — the global-search 2026-06-09 miss
+  (only `Open` was reachable). Write `none` only when the component
+  genuinely forwards nothing beyond its top-level props.
 - **Regenerate the WHOLE block on ANY touch — never patch one line.**
   The block is a derived view of the live component; every section can go
   stale, not just states. Whenever you touch the component — rename a
@@ -1232,6 +1272,18 @@ structured report with two sections.
  nested instances missing exposure: N at `<variantIds/names>`. Catches
  the partial-coverage trap — the primary icon exposed but the overflow
  menu / trend icon left unexposed (the Metric Card miss).
+ **Proactive half — sealed controls (don't trust the model).** Also walk
+ every nested instance independently and flag any **control-bearing** one
+ (a first-class `udc-*`, or a `_udc-<id>_*` subpart with its own variant
+ axis / editable TEXT / meaningful BOOLEAN / INSTANCE_SWAP) that is
+ NEITHER `isExposedInstance=true` NOR has its props hoisted to the host:
+ sealed control-bearing instances: N at `<nodeIds>`. The global-search
+ 2026-06-09 build passed every gate while its trigger
+ (State/Filled/placeholder/value) and popover (content) were sealed —
+ only `Open` was reachable. Soft carve-out: a purely decorative /
+ structural nested instance is a review note, not a fail. See
+ [`uds-figma-factory-quality.mdc`](../../rules/uds-figma-factory-quality.mdc)
+ §2 check 7.
 - **Behavioral props captured.** Every behavioral prop the model lists
  (props that change runtime behavior but have no drawable Figma
  property — `selectable`, `href`, etc.) MUST appear in the contract
@@ -1355,10 +1407,11 @@ structured report with two sections.
 - **Contract block present and well-formed.** The component
  `descriptionMarkdown` MUST contain a `<<UDS-FACTORY-CONTRACT v1>> …
  <<END-UDS-FACTORY-CONTRACT>>` block with all sections present (Summary,
- Depends on, Variant axes, Class, Props, Events, Slots, Parts, States,
- Keyboard, Screen reader, Acceptance) — each either filled or explicitly
- `none` / `notApplicable`. Missing or malformed: fail. A block missing
- `Summary` or `Depends on` (the sections added in 2026.06.09.7) fails.
+ Depends on, Variant axes, Exposed properties, Class, Props, Events,
+ Slots, Parts, States, Keyboard, Screen reader, Acceptance) — each
+ either filled or explicitly `none` / `notApplicable`. Missing or
+ malformed: fail. A block missing `Summary` or `Depends on` (added in
+ 2026.06.09.7) or `Exposed properties` (added in 2026.06.09.8) fails.
  The `spec.json` round-trip via `uds-updated` depends on this block.
  First-class components only — internal `_udc-<id>*` subparts are exempt
  (documented inside the parent's block; see the contract rules above).

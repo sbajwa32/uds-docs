@@ -2,7 +2,7 @@
 description: The design-system-level naming framework for UDS. Locks the canonical vocabulary for states, sizes, tones, emphasis, parts of a component, the state-vs-variant-vs-property meta-rule, casing and word choice, component names, subcomponents, and lifecycle status. Designer-voiced, concept-first. Companion to uds-design-language.mdc — design-language covers *how things look* per state, this rule covers *what we call them*. Factory, new-component, and the spec sync skills should pick names from this framework instead of guessing from siblings.
 alwaysApply: false
 globs: ["**/*"]
-lastUpdated: 2026-06-08T19:37:39Z
+lastUpdated: 2026-06-09T19:18:31Z
 ---
 
 # UDS Naming Framework
@@ -123,6 +123,26 @@ the [`figma-component-inspector`](../agents/figma-component-inspector.md)):
 | `Selected` on a toggle/checkbox on-state | `Checked` |
 | `Activated` | `Current` |
 | any lowercase value in Figma | Title Case it (§7) |
+
+### One concern per axis (State is interaction-only)
+
+The `State` axis holds interaction and selection states and nothing
+else. Disclosure (open vs closed), content presence (empty vs filled vs
+results), kind / mode, size, and tone are each their OWN axis — never
+folded into `State`. A value that joins two concerns with a hyphen
+(`Open-Empty`, `Open-Typed`) is the tell: two dimensions in one name,
+and on the `State` axis it's always wrong (canonical states never carry
+a hyphen). Split it.
+
+The factory enforces this — see
+[`uds-figma-factory-quality.mdc`](./uds-figma-factory-quality.mdc) §8
+and the naming-convention gate's compound-value smell test (hyphen on
+`State` = hard fail; hyphen elsewhere = soft review, since
+`Parent-collapsed` on a `Kind` axis is one legitimate concept). The
+global-search draft mushed `State = Closed | Open-Empty | Open-Typed`
+into one axis; it was split into `Open` (disclosure), the trigger's
+`State` (interaction) + `Filled` (content), and the popover's `Variant`
+(content).
 
 ---
 

@@ -2,7 +2,7 @@
 description: Process quality rules for any factory-style Figma build (generate-uds-figma-component, new-component, future factories). State design contract (specify visuals not just tokens), mandatory machine-verified audits, variant grid layout reflects axis semantics, visible anatomy by default, dependency manifest before write. Design-system-agnostic — the specific UDS visual constructions live in uds-design-language.mdc.
 alwaysApply: false
 globs: [".cursor/skills/generate-uds-figma-component/**", ".cursor/skills/new-component/**", ".cursor/skills/figma-component-card/**"]
-lastUpdated: 2026-06-09T16:58:54Z
+lastUpdated: 2026-06-09T19:18:31Z
 ---
 
 # Figma Factory Quality
@@ -237,6 +237,30 @@ A read-only `use_figma` call that:
    trend direction. Exposing the main icon is necessary, not
    sufficient: enumerate ALL reachable nested instances and expose
    each.
+
+   **Proactive half — sealed control-bearing instances (don't trust the
+   model).** The check above only fires on instances the model *flagged*
+   reachable, so a pre-versioning draft or a forgotten instance slips
+   through invisibly. ALSO walk every nested instance independently and
+   classify it: an instance is **control-bearing** if it is a
+   first-class `udc-*` component OR a `_udc-<id>_*` subpart that carries
+   its own consumer-relevant `componentPropertyDefinitions` — a VARIANT
+   axis, an editable TEXT prop, a meaningful BOOLEAN, or an
+   INSTANCE_SWAP. A control-bearing instance that is NEITHER
+   `isExposedInstance === true` NOR has those props hoisted to top-level
+   host properties is **sealed** — a component that looks finished but
+   can't be driven. This is the global-search 2026-06-09 miss: it passed
+   every other gate while its nested `_udc-global-search_trigger`
+   (`State`, `Filled`, placeholder, value) and `_udc-global-search_popover`
+   (content variant) were sealed, so a consumer could only toggle `Open`.
+   **Carve-out — soft flag, not hard fail:** a purely decorative or
+   structural nested instance with no consumer reason to set anything (a
+   static divider, an ornamental fixed glyph) reports as a review note,
+   not a failure. The judgment ("would a consumer need to set this?")
+   stays with the designer; the gate's job is to make every sealed
+   control-bearing instance visible, not to force-expose ornament.
+   Report `{ component, nodeId, nodeName, kind: 'sealed-controls' |
+   'sealed-controls-review', availableProps }`.
 8. **Focus-ring construction.** For every focus / ring-style variant,
    FIND the ring candidate **without pre-filtering on position** — match
    any descendant whose stroke is bound to `outline-focus-visible`, or an
@@ -366,14 +390,24 @@ A read-only `use_figma` call that:
     - **Factory-version line.** The block's `Factory-version:` must equal
       the `factory_version` plugin-data stamp on the component.
     - **Required new sections.** The block must contain `Summary:` and
-      `Depends on:` (added in factory-version 2026.06.09.7). Absence of
-      either fails — a pre-2026.06.09.7 block is stale by definition.
+      `Depends on:` (added in factory-version 2026.06.09.7) and
+      `Exposed properties:` (added in 2026.06.09.8). Absence of any of
+      the three fails — a pre-2026.06.09.8 block is stale by definition.
+    - **Exposed properties (vs the live exposure).** The
+      `Exposed properties:` section lists what a consumer can set on the
+      top-level instance. Its entries must match the controls actually
+      exposed on the component — top-level `componentPropertyDefinitions`
+      plus the forwarded props of every nested instance with
+      `isExposedInstance === true`. A control-bearing nested instance the
+      block claims exposed but that is sealed (check 7), or an exposed
+      instance the block omits, fails. `none` is only valid when the
+      component genuinely forwards nothing beyond its own top-level props.
     The prose sections (Summary text, behavioral Props, Events, Keyboard,
     Screen reader, Acceptance) are presence-checked only — non-empty and
     not a stub — because Figma can't verify their correctness; their
     currency is enforced by the regenerate-on-touch discipline
     ([`uds-factory-versioning.mdc`](./uds-factory-versioning.mdc)). Report
-    `{ component, kind: 'variant-axis-drift' | 'state-drift' | 'part-missing' | 'depends-on-drift' | 'factory-version-mismatch' | 'missing-summary' | 'missing-depends-on' | 'empty-prose-section', section, expected, actual }`.
+    `{ component, kind: 'variant-axis-drift' | 'state-drift' | 'part-missing' | 'depends-on-drift' | 'factory-version-mismatch' | 'missing-summary' | 'missing-depends-on' | 'missing-exposed-properties' | 'exposed-properties-drift' | 'empty-prose-section', section, expected, actual }`.
 13. Returns a structured object with the count of unbound items and
     their `{ ownerVariant, nodeId, nodeName, kind }` per check.
 
@@ -426,6 +460,19 @@ stops a new or re-factoried draft re-introducing the
 shipped. The gate is design-system-agnostic in shape — point it at
 whatever naming framework the system defines; the canonical values live
 in that rule, not here.
+
+**Compound-value smell test (one-concern-per-axis, §8).** Beyond the
+canonical-value check, the gate flags variant values that mush two
+concerns into one axis. A hyphenated value on the **`State` axis**
+(`Open-Empty`, `Open-Typed`) is a HARD fail: canonical states never
+contain a hyphen, so a hyphen there is always two dimensions wearing one
+name (the global-search 2026-06-09 mush — disclosure + content +
+interaction in a single `State`). A hyphenated value on **any other
+axis** is a SOFT review flag, not a fail — some are one legitimate
+concept (`Parent-collapsed` on a `Kind` axis). The fix is to split the
+concern into its own axis per §8, classified `potentially-breaking` (a
+variant restructure) and defaulting to ask-user. Report
+`{ component, axis, value, kind: 'mushed-state-axis' | 'compound-value-review' }`.
 
 The Phase C report's tool-emitted gates table is populated from that
 return value. If the audit hasn't run, the report can't be emitted.
@@ -670,33 +717,63 @@ placeholder glyph — wrong emphasis AND wrong glyph on a control that
 should read as a quiet three-dots ghost button. The fix swapped it to
 `udc-button-ghost` icon-only with a `more_vert` default.
 
-## 8. State vs. kind / type — keep the State axis to states
+## 8. One concern per axis — State stays interaction-only
 
-A variant value that changes the component's *interaction or data
-state* (Default / Hover / Focus / Selected / Disabled / Loading /
-Empty / Error) belongs on the `State` axis. A value that changes the
-component's *purpose or mode* — a tile that adds a new item, a
-compose-vs-read mode, a "ghost/placeholder" creation affordance —
-is a different KIND of the component and belongs on its own `Kind` /
-`Type` axis.
+Each variant axis encodes exactly ONE concern. A variant value that
+changes the component's *interaction or selection state* (Default /
+Hovered / Focused / Pressed / Selected / Disabled / Loading / Empty /
+Error) belongs on the `State` axis — and only those belong there. Every
+other concern is its own axis:
+
+| Concern | Axis (example) | Values |
+|---|---|---|
+| Interaction / selection state | `State` | Default · Hovered · Focused · Pressed · Selected · Disabled · Error · Empty (the canonical set, naming §1) |
+| Disclosure (open vs closed) | `Open` (boolean) | False · True |
+| Content / data presence | `Filled` (boolean) or `Variant` | False · True, or Empty · Results |
+| Kind / mode / purpose | `Kind` / `Type` | Metric · Add; Leaf · Parent · Child |
+| Size | `Size` | Small · Medium · Large (naming §2) |
+| Tone / status | `Tone` | Neutral · Info · Success · Warning · Danger (naming §3) |
 
 Why it matters:
 
-- Overloading `State` with a mode makes the axis lie: a designer
-  scanning the `State` dropdown reads `Add` as if it were an
-  interaction state of a populated card, when it's actually a separate
-  affordance with its own anatomy.
-- It also corrupts the state-coverage reasoning: the class-required
-  state baseline (§ skill State matrix) is computed against real
-  states; a mode masquerading as a state inflates or distorts that
-  count.
+- Overloading `State` with another concern makes the axis lie: a
+  designer scanning the `State` dropdown reads `Add` as if it were an
+  interaction state of a populated card, or `Open-Empty` as if "open"
+  were a state — when each is really a separate dimension.
+- It corrupts the state-coverage reasoning: the class-required state
+  baseline (§ skill State matrix) is computed against real states; a
+  mode or a disclosure value masquerading as a state inflates or
+  distorts that count.
+- A mushed axis can't be machine-checked against the canonical state
+  vocabulary, and the contract block's `States` section stops meaning
+  anything.
 
-Failure mode: the Metric Card carried `Add` as a `State` value beside
-`Default` / `Hover` / `Empty`. `Add` is a distinct add-a-metric
-affordance, not a state of an existing metric — it was moved to a
-`Kind = Metric | Add` axis, leaving `State` to genuine states. When in
-doubt, ask: "is this the same component reacting, or a different thing
-the component can be?" The first is a state; the second is a kind.
+**The compound-value smell test.** A variant value that joins two
+concerns with a hyphen — `Open-Empty`, `Open-Typed`, a `Closed` sitting
+beside `Open-*` — is the dead giveaway of a mushed axis: two dimensions
+wearing one name. Split it. A hyphen isn't *always* a mush
+(`Parent-collapsed` is one legitimate `Kind` value), so the gate splits
+hard from soft: a hyphen on the `State` axis is a hard fail (canonical
+states never contain one); a hyphen on any other axis is a soft review
+flag (naming-convention gate, §2).
+
+Failure modes:
+
+- **Metric Card** carried `Add` as a `State` value beside `Default` /
+  `Hover` / `Empty`. `Add` is a distinct add-a-metric affordance, not a
+  state of an existing metric — it was moved to a `Kind = Metric | Add`
+  axis, leaving `State` to genuine states.
+- **global-search (2026-06-09)** carried `State = Closed | Open-Empty |
+  Open-Typed` — three concerns (disclosure, content presence,
+  interaction) jammed into one axis. It was split into `Open`
+  (False/True, disclosure), the trigger's `State`
+  (Default/Hovered/Focused, interaction) + `Filled` (False/True, content
+  presence), and the popover's `Variant` (Empty/Results, content).
+
+When in doubt, ask: "is this the same component *reacting*, a *different
+thing* the component can be, whether it's *open*, or whether it *has
+content*?" Reacting → `State`. Different thing → `Kind`. Open →
+disclosure axis. Has content → content axis.
 
 ## 9. Form components nest the Label component — and forward its properties
 
