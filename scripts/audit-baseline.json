@@ -7,9 +7,9 @@
   },
   "audit-factory-version-currency": {
     "_comment": "Tracks whether commits that touch a FACTORY file (the five files whose edits can change factory OUTPUT, per uds-factory-versioning.mdc) also bump .cursor/figma/state/factory-version.json in the same commit. Pre-baseline history is grandfathered. New factory-file commits after the baseline must bump the version OR carry '[no-factory-bump: <reason>]' in the message. Re-baseline only on a deliberate decision.",
-    "baseline": "a96d0bd8feffd2e64f5242e85406977f107d3b63",
-    "baselineDate": "2026-06-08",
-    "baselineNote": "Set to the 2026.06.08.1 bump commit. Grandfathers the two pre-audit factory-file commits that didn't bump in-commit: 91d15e9 (audit/process-only, output-neutral) and 9a14a58 (the naming change whose bump landed one commit later in a96d0bd). Going forward, factory-file edits bump in the same commit or use the [no-factory-bump:] escape."
+    "baseline": "07dc149b4ddf5a9246eb2c397fb1f22af463b4f4",
+    "baselineDate": "2026-06-09",
+    "baselineNote": "Moved from a96d0bd (2026.06.08.1 bump) to 07dc149. Grandfathers two output-neutral factory-file commits that corrected the field-metrics docs without bumping (and without the [no-factory-bump:] tag, which should have been used): 38364325 (design-language field-metrics 16/12 -> default-scale 14/10) and 07dc149 (resolve-token-value rule + design-at-default principle + factory-quality/skill pointers). These changed documentation/guidance only — the factory binds tokens, so a field always emitted font-size-base (14px at default scale); the '16px' was a wrong annotation of the larger-scale resolution, never a built value. The 2026.06.09.5 bar entry's numbers were corrected in the same sweep. Going forward, factory-file edits bump in the same commit or use the [no-factory-bump:] escape."
   },
   "audit-css-api-table": {
     "_comment": "Components whose Code-tab API data in uds-docs/data/component-api/<id>.ts disagrees with retained <id>.css udc-* selectors as of 2026-05-12. The audit fails ONLY for components NOT in this tolerated list; new drift still fails. To remove an entry from this list, fix the API data or the retained CSS payload to match.",
