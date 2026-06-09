@@ -1,7 +1,7 @@
 ---
 name: generate-uds-figma-component
 description: UDS Component Factory. Drafts a token-bound UDS component set directly inside the UDS Components Figma file on a brand-new `🟠 <id> {Cursor}{Ignore}` page. Use when the user says "generate a UDS component for X", "factory me an Avatar", "draft a new UDS component called Y", "build a UDS component for Z in Figma", or "use the component factory to start <Title>". Stops at Figma — never writes to `uds-docs/uds/`. Docs landing is the existing `uds-updated` skill, run later by the designer.
-lastUpdated: 2026-06-09T16:58:54Z
+lastUpdated: 2026-06-09T17:07:29Z
 ---
 
 # UDS Component Factory — Generate UDS Figma Component
@@ -1020,6 +1020,15 @@ Rules:
   (nested half) from the actual nested `udc-*` instances. See
   [`uds-factory-versioning.mdc`](../../rules/uds-factory-versioning.mdc)
   "Touching a component regenerates its contract."
+- **Internal `_udc-<id>*` subparts don't carry their own block.** A
+  subcomponent that exists only inside one parent (the `_udc-calendar-day`
+  cell set inside `udc-calendar`) is documented INSIDE the parent's
+  contract — its variant axes/states go in the parent's `Parts` + `States`
+  sections, as the calendar block does for the day cell. The subpart still
+  carries the `factory_version` plugin-data stamp (so drift detection
+  works on it), but it is exempt from the "contract block present" gate.
+  Only first-class `udc-*` components (the ones that round-trip to
+  `spec.json` via `uds-updated`) require their own block.
 - **Single round-trip source.** This block is the only place the
   inspector can read events, parts, keyboard, and acceptance for a
   brand-new component (there's no Web Component source yet). If it's
@@ -1351,6 +1360,8 @@ structured report with two sections.
  `none` / `notApplicable`. Missing or malformed: fail. A block missing
  `Summary` or `Depends on` (the sections added in 2026.06.09.7) fails.
  The `spec.json` round-trip via `uds-updated` depends on this block.
+ First-class components only — internal `_udc-<id>*` subparts are exempt
+ (documented inside the parent's block; see the contract rules above).
 - **Slots and parts enumerated.** The contract block's `Slots` and
  `Parts` sections must each be filled or explicitly `none`. An empty
  (not `none`) section is a gap.
