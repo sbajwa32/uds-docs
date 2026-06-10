@@ -2,7 +2,7 @@
 description: Process quality rules for any factory-style Figma build (generate-uds-figma-component, new-component, future factories). State design contract (specify visuals not just tokens), mandatory machine-verified audits, variant grid layout reflects axis semantics, visible anatomy by default, dependency manifest before write. Design-system-agnostic — the specific UDS visual constructions live in uds-design-language.mdc.
 alwaysApply: false
 globs: [".cursor/skills/generate-uds-figma-component/**", ".cursor/skills/new-component/**", ".cursor/skills/figma-component-card/**"]
-lastUpdated: 2026-06-09T19:18:31Z
+lastUpdated: 2026-06-10T17:48:22Z
 ---
 
 # Figma Factory Quality
@@ -461,6 +461,16 @@ shipped. The gate is design-system-agnostic in shape — point it at
 whatever naming framework the system defines; the canonical values live
 in that rule, not here.
 
+Membership is the test, not surface shape: a value fails because it is
+not in the canonical set, hyphen or no hyphen. A clean SINGLE word that
+names a different concern — `Editing` (a mode), `Open` / `Expanded`
+(disclosure), `Selected` on a toggle on-state — fails this membership
+check even though the hyphen smell test below would wave it through. The
+hyphen test catches *compound* mushes (`Open-Empty`); this membership
+check catches *single-word* ones. Both must run — the data-field
+2026-06-10 `State = … | Editing` slipped a hand-rolled Phase C that ran
+neither half.
+
 **Compound-value smell test (one-concern-per-axis, §8).** Beyond the
 canonical-value check, the gate flags variant values that mush two
 concerns into one axis. A hyphenated value on the **`State` axis**
@@ -730,7 +740,7 @@ other concern is its own axis:
 | Interaction / selection state | `State` | Default · Hovered · Focused · Pressed · Selected · Disabled · Error · Empty (the canonical set, naming §1) |
 | Disclosure (open vs closed) | `Open` (boolean) | False · True |
 | Content / data presence | `Filled` (boolean) or `Variant` | False · True, or Empty · Results |
-| Kind / mode / purpose | `Kind` / `Type` | Metric · Add; Leaf · Parent · Child |
+| Kind / mode / purpose | `Kind` / `Type` / `Mode` | Metric · Add; Leaf · Parent · Child; Display · Editing (a view-vs-edit `Mode` axis) |
 | Size | `Size` | Small · Medium · Large (naming §2) |
 | Tone / status | `Tone` | Neutral · Info · Success · Warning · Danger (naming §3) |
 
@@ -769,6 +779,18 @@ Failure modes:
   (False/True, disclosure), the trigger's `State`
   (Default/Hovered/Focused, interaction) + `Filled` (False/True, content
   presence), and the popover's `Variant` (Empty/Results, content).
+- **data-field (2026-06-10)** carried `State = Default | … | Editing`.
+  `Editing` is a *mode* — the field viewing its value vs. showing its
+  inline editor — not an interaction state; it was split onto a `Mode`
+  axis (`Display | Editing`), leaving `State` to genuine states. The
+  same build also buried `Empty` as a behavioral, non-drawable prop even
+  though `Empty` is a canonical *drawable* conditional state (the "—"
+  placeholder), so it was promoted to a real `State` variant. Two
+  lessons: a single non-canonical word on `State` is a mode/disclosure
+  in disguise (the §2 membership check, not the hyphen test, is what
+  catches it); and a canonical *drawable* state (Empty / Read-only /
+  Loading / Error) declared behavioral-only is a smell — draw it or
+  justify why not.
 
 When in doubt, ask: "is this the same component *reacting*, a *different
 thing* the component can be, whether it's *open*, or whether it *has
@@ -913,6 +935,37 @@ Rules:
   default scale and density."
 
 §2 check 11 makes conformance machine-detectable.
+
+## 12. Action pairs — Cancel + primary order and alignment
+
+When a component nests a confirm / dismiss button pair — Cancel + Save,
+Cancel + Apply, an inline editor's save/cancel — two construction rules
+apply, and the factory must enforce both:
+
+- **Primary goes on the right, dismiss on its left.** Save / Apply /
+  Confirm (the primary) is the right-most button; Cancel (the secondary
+  / ghost) sits to its left. This is the UDS dialog footer convention
+  ("the primary action sits bottom-right, secondary to its left" —
+  `dialog/spec.json`) and the Button guidance ("Cancel on the left,
+  primary on the right" — `button/spec.json`). It is not dialog-only —
+  any nested Cancel + primary pair follows it. Cancel stays
+  ghost / secondary: discarding an in-progress edit is not a destructive
+  action and gets no danger treatment (UDS has no Danger tone — naming
+  §3).
+- **The action row matches the control it sits under.** When the pair
+  sits beneath a full-width control (an inline editor's input, a dialog
+  body), the row must `layoutSizingHorizontal='FILL'` to the control's
+  width and right-align its cluster (`primaryAxisAlignItems='MAX'`), so
+  the primary's right edge lands on the control's right edge. A row left
+  in `HUG` + `MIN` floats the primary mid-width, detached from the field
+  edge — the data-field 2026-06-10 inline editor shipped exactly that (a
+  248px hug row under a 260px input, Save stranded in the middle) until
+  it was caught by eye, not by a gate.
+
+The skill's Phase C action-pair gate makes both machine-detectable: for
+any nested Cancel + primary button pair it flags (a) the primary not
+being right-most, and (b) a pair-bearing row that hugs / left-aligns
+under a wider sibling control instead of filling + right-aligning.
 
 ## Related
 

@@ -1,7 +1,7 @@
 ---
 name: generate-uds-figma-component
 description: UDS Component Factory. Drafts a token-bound UDS component set directly inside the UDS Components Figma file on a brand-new `🟠 <id> {Cursor}{Ignore}` page. Use when the user says "generate a UDS component for X", "factory me an Avatar", "draft a new UDS component called Y", "build a UDS component for Z in Figma", or "use the component factory to start <Title>". Stops at Figma — never writes to `uds-docs/uds/`. Docs landing is the existing `uds-updated` skill, run later by the designer.
-lastUpdated: 2026-06-09T19:18:31Z
+lastUpdated: 2026-06-10T17:48:22Z
 ---
 
 # UDS Component Factory — Generate UDS Figma Component
@@ -1223,6 +1223,26 @@ structured report with two sections.
  approved model. Match / mismatch report. For container-of-N
  components, this includes the `count` variant axis — each enumerated
  count value MUST be present as a variant.
+- **Naming-convention gate (canonical axis values).** Walk the set's
+ `componentPropertyDefinitions` and check every `State`-axis (and any
+ selection-axis) value against the canonical set from
+ [`uds-naming-conventions.mdc`](../../rules/uds-naming-conventions.mdc)
+ §1: `Default` · `Hovered` · `Focused` · `Pressed` · `Selected` ·
+ `Disabled` · `Loading` · `Error` · `Empty` · `Read-only` · `Dragged` ·
+ `Indeterminate` · `Checked` · `Current`. A `State` value outside this
+ set is a HARD fail — and NOT only the hyphenated compounds the §8
+ smell test catches (`Open-Empty`): a clean-looking SINGLE word that
+ names a different concern (`Editing` = a mode, `Open` / `Expanded` =
+ disclosure, `Selected` on a toggle on-state) fails by membership too,
+ because it is a mode / disclosure / kind wearing a state's clothes and
+ belongs on its own axis (§8). Non-canonical State values: N at
+ `<variantIds>`. A rename classifies `potentially-breaking` (ask-user),
+ never silent. This gate is a NON-SKIPPABLE line item, not an optional
+ walk: the data-field 2026-06-10 build shipped `State = … | Editing`
+ and passed a hand-rolled Phase C that simply omitted this check — that
+ omission is why it is enumerated here, mirroring
+ [`uds-figma-factory-quality.mdc`](../../rules/uds-figma-factory-quality.mdc)
+ §2 (naming-convention gate) and §8.
 - **Property wiring.** Component properties registered on the set vs.
  the approved model's "Inspector-editable properties" lists.
  Match / mismatch per list (TEXT / BOOLEAN / INSTANCE_SWAP). For each
@@ -1391,6 +1411,22 @@ structured report with two sections.
  [`uds-figma-factory-quality.mdc`](../../rules/uds-figma-factory-quality.mdc)
  §11 and §2 check 11, and
  [`uds-design-language.mdc`](../../rules/uds-design-language.mdc) §10.
+- **Action-pair order + alignment (Cancel + primary pairs).** For any
+ component that nests a confirm / dismiss button pair (Cancel + Save /
+ Apply / Confirm — e.g. an inline editor, a dialog footer), check two
+ things. (a) Order: the primary (Save / Apply / Confirm) is the
+ right-most button, the dismiss (Cancel, ghost / secondary) to its
+ left. Pairs with the primary left of the dismiss: N at `<nodeIds>`.
+ (b) Alignment: when the pair's row sits under a full-width control, the
+ row MUST `layoutSizingHorizontal='FILL'` the control's width and
+ right-align (`primaryAxisAlignItems='MAX'`) so the primary's right edge
+ meets the control edge. Pair rows left in `HUG` + `MIN` under a wider
+ sibling (primary floats mid-width): N at `<nodeIds>`. The data-field
+ 2026-06-10 inline editor shipped both faults (Save on the left; a 248px
+ hug row under a 260px input) — caught by eye, not a gate, which is why
+ this is now enumerated. See
+ [`uds-figma-factory-quality.mdc`](../../rules/uds-figma-factory-quality.mdc)
+ §12.
 - **Class-required state coverage.** Every state the component's class
  requires (per
  [`uds-component-checklist.mdc`](../../rules/uds-component-checklist.mdc)
