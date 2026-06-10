@@ -1,8 +1,8 @@
 ---
-description: Plugin API gotchas learned from UDS factory and sync work. Local-file component identity, INSTANCE_SWAP default formats, hidden auto-layout fills, resize-vs-sizing-mode ordering, per-side padding binding, effect-style binding, remote-library token/style discovery, text-wrap sizing. Auto-attaches to anything that calls `use_figma`.
+description: Plugin API gotchas learned from UDS factory and sync work. Local-file component identity, INSTANCE_SWAP default formats, hidden auto-layout fills, resize-vs-sizing-mode ordering, per-side padding binding, effect-style binding, remote-library token/style discovery, text-wrap sizing, swapping past a nested set with authoring errors, and cross-call page-context (clone/createInstance parent to currentPage). Auto-attaches to anything that calls `use_figma`.
 alwaysApply: false
 globs: ["**/*"]
-lastUpdated: 2026-06-07T22:31:49Z
+lastUpdated: 2026-06-10T18:02:36Z
 ---
 
 # UDS Figma Plugin API Gotchas
@@ -562,6 +562,46 @@ menu.isExposedInstance = true;               // re-expose if it was exposed
 This was the Metric Card overflow-menu fix (primary → ghost icon-only
 with a `more_vert` glyph).
 
+### A nested set with authoring errors blocks `setProperties` — swap if you can, flag if you can't
+
+If a nested component SET carries internal authoring errors, *every*
+property-layer API against it throws — not just the read. Both of these
+fail:
+
+- `nestedSet.componentPropertyDefinitions` → `in get_componentPropertyDefinitions: Component set has existing errors`
+- `nestedInstance.setProperties({ ... })` on an instance of that set → same class of failure
+
+`udc-badge` (`5794:7948`) is the known UDS case: the error originates on
+the badge set, and **anything that nests a badge inherits the failure**
+(an accordion row's status pill, a nav "My Work" count pill, etc.). It is
+NOT a bug in the host component — see
+`.cursor/figma/state/last-sync.json` for the prior attribution.
+
+The fallback is `instance.swapComponent(targetVariant)` (§13 above): it
+bypasses the property layer and writes the swap directly, so a straight
+variant change still works — e.g. swapping the badge to its subtle
+(non-prominent) variant.
+
+But `swapComponent` is a **partial** fallback, not a cure. When you can't
+resolve the exact target variant safely — e.g. flipping the badge's tone
+to neutral on a Disabled row, where the errored set makes reliable
+variant lookup untrustworthy — do NOT force it. Flag it as a Phase C
+finding and let the designer fix the source set. The accordion-item
+Disabled variants shipped with the green Success badge for exactly this
+reason: swap-to-subtle succeeded, tone-to-neutral was flagged rather than
+forced.
+
+```js
+// WRONG — the badge set has authoring errors; this throws.
+badgeInstance.setProperties({ 'Prominent': 'False', 'Variant': 'Neutral' });
+
+// PARTIAL FALLBACK — a direct swap to a known-good variant works…
+badgeInstance.swapComponent(subtleSuccessVariant);   // OK: subtle style applied
+
+// …but when the right target can't be pinned down safely, don't guess —
+// leave the visual as-is and report it in the Phase C gate.
+```
+
 ## 14. A host-component audit must attribute each node to its owning instance — `skipInvisibleInstanceChildren` is not enough
 
 When you audit a component's OWN anatomy — looking for stray/cruft
@@ -634,6 +674,86 @@ The Metric Card draft carries two similarly-named rings — the card's own
 `focus-outline` (hyphen, card-sized, on Focus variants) and the nested
 button's `focus outline` (space, 44×56) — which is exactly why a
 substring match is unsafe.
+
+## 16. `currentPage` resets every call — `clone()` / `createInstance()` parent there, so multi-call builds leak onto a live page
+
+`figma.currentPage` is reset at the start of **every** `use_figma` call to
+whatever page is open in the editor. It is NOT the value you set with
+`setCurrentPageAsync` in a previous call, and NOT reliably "the first
+page" (the
+[`figma-component-card` gotchas](../skills/figma-component-card/references/gotchas.md)
+say "first page" — the factory observed it land on whatever page the
+editor had active, a *live* page). Never assume the page persists across
+calls.
+
+This matters because `node.clone()` and `component.createInstance()`
+parent the new node to `currentPage` unless you immediately `appendChild`
+it somewhere else. So in a fresh call, cloning a base that lives on your
+draft page drops the clones onto the editor's active page — often the live
+library page.
+
+### Symptoms
+
+- A later `figma.combineAsVariants(nodes, parent)` throws
+  `in combineAsVariants: Grouped nodes must be in the same page as the parent`
+  — the clones and the intended parent are on different pages.
+- Stray clones (plus any side-effect nodes from a call that threw and
+  rolled back partway) sit on the **live** page as orphans. This is a real
+  write outside the draft sandbox, not a cosmetic glitch.
+
+### Rule
+
+1. Do the **clone → reparent → combine** sequence inside a SINGLE
+   `use_figma` call, so the page context can't reset mid-flow.
+2. `await figma.setCurrentPageAsync(draftPage)` at the TOP of that call.
+3. Explicitly `draftPage.appendChild(node)` (or append to a frame on the
+   draft page) for every created/cloned node — do not trust `currentPage`
+   to keep them in the right place.
+4. After any multi-call build that errored partway, sweep the live page's
+   direct children for nodes tagged with your `run_id` and remove the
+   orphans. Cleanup is mandatory here, not optional.
+
+### Wrong → correct
+
+```js
+// WRONG — fresh call: currentPage is whatever's open (often a LIVE page).
+// clone() parents to currentPage, so the clones land off the draft page.
+const base = await figma.getNodeByIdAsync('9254:1');   // base variant on the draft page
+const clones = [];
+for (let i = 0; i < 9; i++) clones.push(base.clone()); // each clone → currentPage (live page!)
+figma.combineAsVariants([base, ...clones], draftPage);
+// Throws: Grouped nodes must be in the same page as the parent
+// …and leaves 9 orphan clones on the live page.
+
+// CORRECT — one call: pin the page, appendChild every node onto the draft, then combine
+const draft = await figma.getNodeByIdAsync(DRAFT_PAGE_ID);
+await figma.setCurrentPageAsync(draft);
+const base = await figma.getNodeByIdAsync('9254:1');
+const all = [base];
+for (let i = 0; i < 9; i++) {
+  const c = base.clone();
+  draft.appendChild(c);                                // explicit — never rely on currentPage
+  c.setSharedPluginData('dsb', 'run_id', RUN_ID);
+  all.push(c);
+}
+const set = figma.combineAsVariants(all, draft);
+```
+
+### Orphan sweep (run after a build that threw partway)
+
+```js
+const live = await figma.getNodeByIdAsync(LIVE_PAGE_ID);
+await live.loadAsync();
+for (const n of live.children) {
+  if (n.getSharedPluginData('dsb', 'run_id') === RUN_ID) n.remove();
+}
+```
+
+This bit the accordion-item build: nine cloned variants and an empty
+`_glyph-sources` frame + an orphan icon instance leaked onto the live
+`UDS Version: 0.3` page across separate calls, `combineAsVariants` failed
+on the page mismatch, and the strays had to be swept before Phase C could
+pass its leak check.
 
 ## Related
 
