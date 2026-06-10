@@ -2,7 +2,7 @@
 name: figma-component-inspector
 description: Deep-inspects a single UDS component in the UDS Components Figma file by reading node trees, component sets, variants, layer details, token bindings, nested instances, and doc-site parity. Bidirectional — reports both Figma-side gaps (mismatches, missing) and doc-site surplus (artifacts with no Figma counterpart), plus a snapshot delta against the prior captured state to surface deletions and renames. Open Figma findings that need designer attention are surfaced as structured entries in uds/components/<id>/figmanotes.json (not free-text in spec.json knownIssues), classified by `kind` so they auto-prune on the next inspection when resolved. Read-only; never modifies files or Figma. Use when updating a component spec, investigating a component mismatch, or before syncing Figma component changes into docs.
 model: inherit
-lastUpdated: 2026-06-08T19:37:39Z
+lastUpdated: 2026-06-10T18:15:54Z
 ---
 
 # Figma Component Inspector
@@ -95,6 +95,18 @@ If multiple canonical nodes are plausible, stop and report ambiguity. Do not
 guess.
 
 ### 2. Traverse node tree
+
+**Read strategy (cost control) — read first.** Begin with `get_metadata`
+on the PAGE node for the cheap structural map, then read the component SET
+and `_udc-<id>_*` sub-component SET definitions directly. NEVER recursively
+expand an assembled container-of-N example: a table with `Columns=N` /
+`Rows=N` axes (or any list/grid that scales with a count) fans out into
+thousands of nodes — the 2026-06-10 data-table inspection ran 76 min and
+returned nothing this way. The set definitions already hold the variant
+matrix, anatomy, and token bindings. If a read balloons or runs long, bail
+and fall back to metadata-first + per-set reads — never grind unbounded.
+See [`uds-figma-component-inspection.mdc`](../rules/uds-figma-component-inspection.mdc)
+§"Read strategy — metadata-first, inspect sets not assemblies".
 
 For canonical nodes, inspect:
 

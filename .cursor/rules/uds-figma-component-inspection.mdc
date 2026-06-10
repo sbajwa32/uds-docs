@@ -2,7 +2,7 @@
 description: Requires deep Figma node inspection for UDS Components; screenshots are supporting evidence only. Inspection is bidirectional — every doc-site artifact must be checked for a Figma counterpart, and every prior snapshot entry must be diffed against the new read.
 globs: ["uds-docs/**", ".cursor/**"]
 alwaysApply: false
-lastUpdated: 2026-05-27T22:21:24Z
+lastUpdated: 2026-06-10T18:15:54Z
 ---
 
 # UDS Figma Component Inspection
@@ -52,6 +52,30 @@ Figma, inspect the actual Figma node data:
    - `uds-docs/uds/components/<component>/<component>.css`
    - `uds-docs/uds/components/<component>/examples/*.html`
    - `uds-docs/uds/components/<component>/status.json` (the `current` field — replaces the legacy `COMPONENT_STATUS` table)
+
+## Read strategy — metadata-first, inspect sets not assemblies
+
+A deeply-composed component — especially a container-of-N (a table with
+`Columns=N` / `Rows=N` axes, a list/grid, or any page carrying fully
+assembled example instances) — will explode a naive recursive
+`get_design_context` traversal into thousands of nodes and can run many
+minutes with no output. Order the reads:
+
+1. Start with `get_metadata` on the PAGE node. One call returns the whole
+   structural map (ids, types, names, sizes) — every component set,
+   sub-component set, variant name and count. Read it before any deep read.
+2. Read SET definitions, never the assembled instance. Pull the variant
+   matrix, anatomy, and token bindings from each component SET and
+   `_udc-<id>_*` sub-component set node directly. Do NOT recursively expand
+   an assembled container-of-N — the column × row × cell-type fan-out is
+   the blow-up; the set definitions already hold the contract.
+3. Recognize the container-of-N trap up front. If `get_metadata` shows
+   `Columns=…` / `Rows=…` / `count` axes or large assembled tables, inspect
+   the small per-column / per-row / per-cell sets, not the N×M assembly.
+4. Time-box and bail out. If a read balloons or a traversal runs long, stop,
+   report what you have, and fall back to metadata-first + per-set reads.
+   Never grind unbounded. (Cost of the miss: the 2026-06-10 data-table
+   inspection ran 76 min and returned nothing this way.)
 
 ## Bidirectional inspection — mandatory
 

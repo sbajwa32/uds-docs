@@ -1415,5 +1415,12 @@ export const SITE_CHANGELOG: SiteChangelogEntry[] = [
       changes: [
         { type: 'changed', text: 'The Component Factory can now help maintain already-approved components, not just build new drafts: it proposes updates to bring a live component up to the current quality bar, with every change waiting for your approval — nothing automatic. Documented this on the Factory tab (a new "stays current" lifecycle step) and a `{Frozen}` tag to opt a hand-tuned component out. The Figma write-safety card now lists five write scopes instead of four.' }
       ]
+    },
+    {
+      version: 'SITE 2026.06.10.1',
+      date: '2026-06-10',
+      changes: [
+        { type: 'changed', text: 'The Cursor Workflows page now notes that the rule/skill/subagent discipline also sets a bar for what\u2019s worth writing down: a lesson should be a reusable rule that changes how a future task is handled, not just a one-off anecdote — and kept short without stripping the detail (triggers, exact names, paths, rationale) that makes it usable.' }
+      ]
     }
 ];

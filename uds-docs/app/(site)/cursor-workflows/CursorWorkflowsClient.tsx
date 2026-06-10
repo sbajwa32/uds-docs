@@ -832,7 +832,7 @@ export function CursorWorkflowsClient() {
 
                 <DocsCard className="sg-cw-card">
                   <header className="sg-cw-card-head"><code className="sg-cw-card-name">uds-rule-discipline</code><span className="sg-cw-pill sg-cw-pill--scoped">Loads on <span className="sg-cw-scope">.cursor/**</span></span></header>
-                  <p className="sg-cw-card-body">Fires whenever you edit a rule, skill, or subagent file. Bump that file&apos;s <code>lastUpdated:</code> in its YAML frontmatter and refresh the matching row in <code>.cursor/TOOLCHAIN.md</code> in the same commit. The toolchain equivalent of the SITE changelog discipline.</p>
+                  <p className="sg-cw-card-body">Fires whenever you edit a rule, skill, or subagent file. First it sets the bar for what&apos;s worth writing &mdash; a lesson should be a reusable rule, not just &quot;remember that one time,&quot; trimmed to the point but never stripped of the detail (triggers, exact names, paths, rationale) that makes it work. Then the bookkeeping: bump that file&apos;s <code>lastUpdated:</code> in its YAML frontmatter and refresh the matching row in <code>.cursor/TOOLCHAIN.md</code> in the same commit. The toolchain equivalent of the SITE changelog discipline.</p>
                   <footer className="sg-cw-card-foot"><a className="sg-cw-card-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/rules/uds-rule-discipline.mdc" target="_blank" rel="noopener noreferrer">Open file<span className="material-symbols-outlined">open_in_new</span></a></footer>
                 </DocsCard>
 

@@ -1,15 +1,54 @@
 ---
-description: Discipline that fires whenever you edit a Cursor rule, skill, or subagent file. Bump that file's `lastUpdated:` frontmatter and update the matching row in `.cursor/TOOLCHAIN.md` in the same commit. Mirrors the SITE_CHANGELOG discipline for the documentation site.
+description: Discipline that fires whenever you edit a Cursor rule, skill, or subagent file. First check the lesson earns its place — a transferable rule, not just an anecdote, with load-bearing context kept. Then do the bookkeeping: bump that file's `lastUpdated:` frontmatter and update the matching row in `.cursor/TOOLCHAIN.md` in the same commit. Mirrors the SITE_CHANGELOG discipline for the documentation site.
 alwaysApply: false
 globs: [".cursor/rules/**", ".cursor/skills/**", ".cursor/agents/**"]
-lastUpdated: 2026-05-27T22:21:24Z
+lastUpdated: 2026-06-10T18:21:23Z
 ---
 
 # Cursor Rule / Skill / Subagent Discipline
 
 If you are editing any file under `.cursor/rules/`, `.cursor/skills/`, or
 `.cursor/agents/`, the change is not done until you have ALSO performed
-two bookkeeping steps:
+two bookkeeping steps. But before the bookkeeping, clear the content bar
+below.
+
+## Before you write the lesson — does it earn its place?
+
+The two steps below keep the *index* honest. This one keeps the *content*
+honest. A rule/skill/subagent file is shared context loaded on real tasks,
+so every line competes for attention. Before adding a lesson, apply one
+test:
+
+**Would an agent doing a DIFFERENT task act differently because of it?**
+If yes, it's a transferable rule — keep it. If the only thing it adds is
+"remember that one time," it's clog — cut it, or fold it into an existing
+rule as a one-line example.
+
+Shape a lesson that passes:
+
+- **Lead with the general rule, not the story.** State the trigger (when it
+  applies), the action (what to do or not do), and — when it isn't obvious —
+  the "why." Those three are what make it reusable.
+- **Keep the incident to a one-line tripwire UNDER the rule** — never as the
+  rule itself, never as paragraphs. One dated anchor (e.g. "the 2026-06-10
+  data-table inspection ran 76 min and returned nothing") stops a future
+  agent from quietly deciding the rule is overkill; a blow-by-blow retelling
+  just costs attention.
+
+**Trimming is not stripping.** Cutting the story does NOT mean cutting the
+detail the lesson needs to work. Always keep:
+
+- the exact trigger / condition,
+- the concrete action,
+- the specific names, paths, token/prop names, API calls, and values
+  required to act — these ARE the lesson, not clog, even when they look
+  narrow,
+- enough rationale that the rule can't be misapplied or "optimized away."
+
+Cut only what doesn't change behavior: duplicate anecdotes making the same
+point, prose that just restates the rule, and incident narration past the
+one-line anchor. When unsure whether a detail is load-bearing, keep it — a
+lesson too terse to apply is worse than one slightly too long.
 
 ## 1. Bump `lastUpdated:` in the file's frontmatter
 
