@@ -2,7 +2,7 @@
 description: Plugin API gotchas learned from UDS factory and sync work. Local-file component identity, INSTANCE_SWAP default formats, hidden auto-layout fills, resize-vs-sizing-mode ordering, per-side padding binding, effect-style binding, remote-library token/style discovery, text-wrap sizing, swapping past a nested set with authoring errors, and cross-call page-context (clone/createInstance parent to currentPage). Auto-attaches to anything that calls `use_figma`.
 alwaysApply: false
 globs: ["**/*"]
-lastUpdated: 2026-06-10T18:02:36Z
+lastUpdated: 2026-06-12T19:55:36Z
 ---
 
 # UDS Figma Plugin API Gotchas
@@ -755,6 +755,47 @@ This bit the accordion-item build: nine cloned variants and an empty
 on the page mismatch, and the strays had to be swept before Phase C could
 pass its leak check.
 
+## 17. An empty auto-layout frame keeps its 100px creation default — a HUG axis can't shrink with no children
+
+When you use an empty frame as a flex spacer (the "push the last item to
+the right" trick in a horizontal toolbar / row), `figma.createFrame()`
+ships it at the default 100×100. Setting `layoutSizingHorizontal = 'FILL'`
+makes it grow along the main axis correctly — but if the CROSS axis is left
+at `HUG`, the frame has no children to hug down to, so it RETAINS the 100px
+default on that axis. In a parent whose counter-axis sizing is `HUG` /
+`AUTO` (especially with `counterAxisAlignItems = 'CENTER'`), the parent then
+sizes to the 100px spacer instead of the real content — a 36px button row
+silently becomes a 112px-tall strip.
+
+### Wrong → correct
+
+```js
+// WRONG — spacer grows horizontally but stays 100px tall, inflating the row
+const spacer = figma.createFrame();
+toolbar.appendChild(spacer);
+spacer.layoutSizingHorizontal = 'FILL';   // main axis: correct (grows)
+// cross axis left at HUG → empty frame keeps its 100px default → row hugs to 112px
+
+// CORRECT — fill the cross axis too so the spacer tracks real content height
+spacer.layoutSizingHorizontal = 'FILL';
+spacer.layoutSizingVertical   = 'FILL';    // now matches the 36px button row
+```
+
+### Rule
+
+A flex-spacer frame must be `FILL` on BOTH axes — main axis to grow, cross
+axis to track content — never left `HUG` on the cross axis. After building
+any auto-layout container, assert its measured cross-axis size ≈
+(tallest/widest real child + padding); a container ~100px larger than its
+largest real child is the empty-HUG-spacer smell. The Phase C
+layer-hygiene/spacing gates won't catch this — it's a sizing bug, not a
+binding bug — so the measured-size check is the tripwire.
+
+This bit the rich-text-editor 2026-06-11 build: a 112px toolbar (should
+have been 48px) because `toolbar-spacer` was `FILL` horizontal but `HUG`
+vertical, holding the 100px default; the centered toolbar sized to the
+spacer, not the buttons.
+
 ## Related
 
 - `figma-use` skill (active Figma plugin skill)
@@ -762,8 +803,8 @@ pass its leak check.
   into that skill's `references/gotchas.md`.
 - [`generate-uds-figma-component`](../skills/generate-uds-figma-component/SKILL.md)
   — the factory skill that surfaced these. Phase B uses the build
-  patterns (§1–§13); the audit/maintenance patterns (§14–§15) apply to
-  the Phase C gates and the maintenance-mode drift audit.
+  patterns (§1–§13, §17); the audit/maintenance patterns (§14–§15) apply
+  to the Phase C gates and the maintenance-mode drift audit.
 - [`uds-figma-factory-quality.mdc`](./uds-figma-factory-quality.mdc) —
   the companion factory-quality rule (state design contract, audit
   discipline, variant grid layout, etc.).

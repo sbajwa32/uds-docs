@@ -1,7 +1,7 @@
 ---
 name: generate-uds-figma-component
 description: UDS Component Factory. Drafts a token-bound UDS component set directly inside the UDS Components Figma file on a brand-new `🟠 <id> {Cursor}{Ignore}` page. Use when the user says "generate a UDS component for X", "factory me an Avatar", "draft a new UDS component called Y", "build a UDS component for Z in Figma", or "use the component factory to start <Title>". Stops at Figma — never writes to `uds-docs/uds/`. Docs landing is the existing `uds-updated` skill, run later by the designer.
-lastUpdated: 2026-06-10T17:48:22Z
+lastUpdated: 2026-06-12T19:55:36Z
 ---
 
 # UDS Component Factory — Generate UDS Figma Component
@@ -959,9 +959,9 @@ and the designer can edit or delete it freely:
 
 ```text
 <<UDS-FACTORY-CONTRACT v1>>
+Factory-version: <YYYY.MM.DD.N>
 Component: <Title> (<id>)
 Class: <layout|display|action|form|navigation|feedback|data>
-Factory-version: <YYYY.MM.DD.N>
 Summary: <1–2 plain-language sentences: what the component is and what it does>
 Depends on:
   - <udc-foo> — <relationship: nested | opens in popover | composed in slot>
@@ -982,8 +982,11 @@ Slots:
 Parts:
   - <name> — <region exposed for ::part() styling>
   (or: none)
-States (class baseline):
-  - <state> — supported | notApplicable: <reason>
+States (variant baseline):
+  - <state> — supported | notApplicable: <reason>   (verbatim from the State axis options)
+States (behavioral, non-drawable):
+  - <state> — supported | notApplicable: <reason>   (states NOT on the State axis: driven by another axis like Open/Content, or applied at runtime like loading)
+  (or: none)
 Keyboard:
   - <key> — <action>
 Screen reader:
@@ -1021,11 +1024,13 @@ Rules:
   apply, write `none` or `none (class does not dispatch)` rather than
   dropping the heading — the inspector relies on the section being
   present.
-- **Summary is plain-language and sits right under `Factory-version:`.**
-  One or two sentences a designer reads first: what the component is and
-  what it does. Not a feature list, not implementation. (e.g. "A compact
-  dashboard card showing one labeled metric in five tones; optionally
-  selectable to act as a filter.")
+- **Summary is plain-language and sits right under the identity lines
+  (`Component` / `Class`).** `Factory-version:` is now the FIRST line of
+  the block so a stale draft is obvious at a glance; the identity lines
+  and then the Summary follow. One or two sentences a designer reads
+  first: what the component is and what it does. Not a feature list, not
+  implementation. (e.g. "A compact dashboard card showing one labeled
+  metric in five tones; optionally selectable to act as a filter.")
 - **`Depends on:` lists the other UDS components this one relies on, with
   the relationship.** Cover both *structural* dependencies (a `udc-*`
   nested as an instance — `udc-icon-wrapper — nested`) and *behavioral*
@@ -1150,16 +1155,33 @@ and the `figma-use` "always read IDs from the state ledger" rule:
    present in the metadata response. Any missing or duplicate ID
    STOPS the run for investigation — Phase C does not run on
    unverified work.
-4. Confirm the component set's `descriptionMarkdown` contains a
-   well-formed `<<UDS-FACTORY-CONTRACT v1>> … <<END-UDS-FACTORY-CONTRACT>>`
-   block (B.3.5) with every section present, with literal `<<` delimiters
-   (not HTML-escaped `&lt;&lt;` — gotchas §10). A missing or malformed
-   block STOPS the run — the contract round-trip depends on it.
-5. Confirm the build-version stamp (B.3.6): the component set's
-   `getSharedPluginData('dsb','factory_version')` returns the
-   `factory-version.json` `version`, and the contract block's
-   `Factory-version:` line matches it. A missing or mismatched stamp is
-   a Phase C gate failure.
+4. **Run the deterministic gate harness — do NOT hand-roll which gates
+   to run.** Paste
+   [`references/phase-c-gate-check.js`](./references/phase-c-gate-check.js)
+   into a `use_figma` call with `SET_ID` set to the component set. It
+   returns `pass` / `failedHardGates` plus per-gate detail for token
+   bindings, per-side spacing, effect-style bindings, typography,
+   text-wrap, the canonical-naming gate, **property-wiring liveness**
+   (every registered property referenced by ≥1 node in every variant —
+   catches dead toggles), layer hygiene, the contract-block delimiters,
+   the version stamp, and a proactive sealed-control scan. `pass: false`
+   STOPS the run. The harness output populates the Phase C "Tool-emitted
+   gates" section directly — that section is no longer hand-assembled
+   from memory.
+
+   **The harness is necessary, not sufficient.** It clears only the
+   mechanical, model-independent gates. It does NOT clear the judgment /
+   model-dependent gates (variant matrix vs the approved model,
+   per-variant INSTANCE_SWAP defaults, tone-bearing adornment role-split,
+   the model's designer-reachable exposure list, visual correctness).
+   Complete `report.NOT_CHECKED_run_these_manually` as a SEPARATE pass —
+   a green harness is not a ship signal on its own.
+
+   Tripwire: a hand-rolled Phase C has now silently dropped a NON-SKIPPABLE
+   gate twice — the `State = … | Editing` naming miss (data-field
+   2026-06-10) and the dead `showExpand` BOOLEAN (rich-text-editor
+   2026-06-11). The harness exists so a skipped gate is a missing key in
+   the report, not a silent pass.
 
 ## Phase C — Quality-gate report
 
@@ -1168,6 +1190,20 @@ starting point + a clear report of what still needs review. Emit a
 structured report with two sections.
 
 ### Tool-emitted gates (deterministic — counts, not opinions)
+
+These are produced by running
+[`references/phase-c-gate-check.js`](./references/phase-c-gate-check.js)
+in B.5 step 4 — **run the harness, don't re-derive these by hand.** The
+script is the EXECUTABLE definition of the deterministic gates; the
+descriptions below explain what each means and must be reconciled with the
+script when either changes. The harness covers the model-INDEPENDENT
+gates: token bindings, per-side spacing, effect-style bindings,
+typography, text-wrap, canonical-naming, property-wiring liveness, layer
+hygiene, contract delimiters + version stamp, and the proactive
+sealed-control scan. The gates that need the approved Phase A model
+(variant matrix match, per-variant INSTANCE_SWAP defaults, tone-bearing
+adornment role-split, the model's designer-reachable exposure list)
+are NOT in the harness and stay a manual pass.
 
 - **Token bindings.** Raw color/fill/stroke values found: N. Unbound
  corner radii: N at `<nodeIds>`.
@@ -1257,7 +1293,12 @@ structured report with two sections.
  failure (not a candidate): the editable entry node of a text-entry
  component** (`value`, `input`, `value-text`, search/entry field)
  without a `characters` TEXT-property reference fails this gate
- outright, per the non-skippable rule in Phase A.
+ outright, per the non-skippable rule in Phase A. The harness reports
+ this as `propertyWiring.dead` (property referenced by zero variants)
+ and `propertyWiring.partial` (wired in some variants only). Tripwire:
+ the rich-text-editor 2026-06-11 build shipped a dead `showExpand`
+ BOOLEAN (registered, wired to no node) because its hand-rolled Phase C
+ skipped this gate — run the harness, don't eyeball it.
 - **Per-variant INSTANCE_SWAP defaults.** For every component property
  of type `INSTANCE_SWAP` registered on the set, walk every variant
  and compare its current swap target against the per-variant default
