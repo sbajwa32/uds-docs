@@ -1,8 +1,8 @@
 ---
-description: Process quality rules for any factory-style Figma build (generate-uds-figma-component, new-component, future factories). State design contract (specify visuals not just tokens), mandatory machine-verified audits, variant grid layout reflects axis semantics, visible anatomy by default, dependency manifest before write. Design-system-agnostic — the specific UDS visual constructions live in uds-design-language.mdc.
+description: Process quality rules for any factory-style Figma build (generate-uds-figma-component, new-component, future factories). State design contract (specify visuals not just tokens), mandatory machine-verified audits, variant grid layout reflects axis semantics, visible anatomy by default, dependency manifest before write, inverse-surface foreground flip, per-Kind state coverage, and recurring visual affordances baked into the component. Design-system-agnostic — the specific UDS visual constructions live in uds-design-language.mdc.
 alwaysApply: false
 globs: [".cursor/skills/generate-uds-figma-component/**", ".cursor/skills/new-component/**", ".cursor/skills/figma-component-card/**"]
-lastUpdated: 2026-06-10T17:48:22Z
+lastUpdated: 2026-06-16T16:30:05Z
 ---
 
 # Figma Factory Quality
@@ -226,6 +226,22 @@ A read-only `use_figma` call that:
      not the fix). Report a control affordance still `icon-interactive`
      on a Disabled variant (the combobox 2026-06-08 miss, where every
      icon was pinned to `icon-interactive` across all states).
+   - **Inverse / saturated surfaces (Selected / Pressed / Open /
+     prominent-tone).** On any variant whose surface fills to
+     `surface-interactive-default` / `-active` / `-hover`, a prominent
+     `surface-{tone}`, or `surface-inverse`, EVERY foreground must resolve
+     to the inverse family — text → `text-inverse`, and every icon /
+     chevron / dot → `icon-inverse` (SHAPE_FILL scope, never `text-inverse`
+     on an icon). Report any foreground on a filled surface still bound to a
+     non-inverse family (the nav-header 2026-06-16 miss: selected menu rows,
+     the pressed tile, and the open title-area all kept `icon-interactive`
+     glyphs that vanished into the blue fill). Determine "filled surface"
+     from the fill resolved on the node's OWN box or nearest
+     surface-painting ancestor — NOT from the presence of inverse text
+     elsewhere in the component (a white badge count on a light pill is not
+     the leading glyph's background; that false signal blanked the My-Work
+     `+` on 2026-06-16). See
+     [`uds-design-language.mdc`](./uds-design-language.mdc) §4.1.
 7. **Nested-instance exposure coverage.** For every nested DS instance
    the model marked designer-reachable, walk every variant and report
    any where `isExposedInstance !== true`. Instantiate the set once and
@@ -693,6 +709,35 @@ to `icon-interactive` across all states, so the chevron stayed bright
 blue on a disabled field and the leading search glyph stayed blue in
 error.
 
+### Inverse / saturated surfaces flip EVERY foreground
+
+Tone is one axis; surface saturation is another. The split above governs
+*which tone* an adornment takes. This governs what happens when a state
+**fills** the element. Any state whose surface becomes
+`surface-interactive-default` / `-active` / `-hover`, a prominent
+`surface-{tone}`, or `surface-inverse` — selected, pressed, open,
+checked, primary-at-rest — flips the WHOLE foreground to the inverse
+family at once: text → `text-inverse`, and icons / chevrons / dots →
+`icon-inverse`. Not just the label. A glyph left at `icon-interactive`
+(or any light token) on a saturated fill disappears into the background
+— the recurring nav-header 2026-06-16 failure across the selected menu
+row, the pressed tile, and the open title-area.
+
+Two corollaries the factory must hold:
+
+- **Scope matches the node.** Icons bind `icon-inverse` (SHAPE_FILL),
+  text binds `text-inverse` (TEXT_FILL). `text-inverse` on an icon looks
+  right and is wrong — cross-scoped and fragile.
+- **Detect the backing surface, not a sibling.** Decide an icon needs
+  inverse by resolving the fill of the element it actually sits on (own
+  box or nearest surface-painting ancestor), never "is there inverse text
+  somewhere in this component." A white count on a red badge inside a
+  light pill is not the leading glyph's background — that inference
+  blanked the My-Work `+` (white-on-white) on 2026-06-16.
+
+The canonical statement lives in
+[`uds-design-language.mdc`](./uds-design-language.mdc) §4.1.
+
 This is the color / glyph analogue of §2 check 5 (per-variant
 INSTANCE_SWAP defaults): the wiring being present is not enough; each
 variant's tone-bearing parts must actually resolve to that variant's
@@ -796,6 +841,31 @@ When in doubt, ask: "is this the same component *reacting*, a *different
 thing* the component can be, whether it's *open*, or whether it *has
 content*?" Reacting → `State`. Different thing → `Kind`. Open →
 disclosure axis. Has content → content axis.
+
+### State coverage is per interactive Kind, not global
+
+Once a component has BOTH a `Kind` / `Type` / `Mode` axis AND a `State`
+axis, the class-required state baseline applies to **each interactive
+Kind**, not to the set as a whole. "The `State` axis contains `Selected`
+*somewhere*" is not coverage — the question is whether each Kind that a
+user can select, press, or disable actually carries those states.
+
+The nav-header 2026-06-16 draft shipped this gap: leaf items had the full
+state set, but `Kind=Parent-collapsed` / `Parent-expanded` were missing
+`Selected` and `Disabled`, and the expanded parent had no `Hovered`. Each
+kind of menu row is independently interactive, so each needed the
+baseline — the partial coverage read as "this component is done" while
+half its kinds couldn't show selection or disablement.
+
+Rule: compute the required-state baseline (per the component class) and
+apply it to every interactive Kind. A Kind that genuinely can't take a
+state marks it `notApplicable` with a reason (a static `Kind=Divider`
+takes no states); silent omission for one Kind while another has the
+state is the smell. The skill's State-matrix model step and the Phase C
+"Class-required state coverage" gate both reason per (Kind × State) cell
+when a Kind axis is present — see
+[`generate-uds-figma-component`](../skills/generate-uds-figma-component/SKILL.md)
+§"State matrix (class-driven)".
 
 ## 9. Form components nest the Label component — and forward its properties
 
@@ -966,6 +1036,41 @@ The skill's Phase C action-pair gate makes both machine-detectable: for
 any nested Cancel + primary button pair it flags (a) the primary not
 being right-most, and (b) a pair-bearing row that hugs / left-aligns
 under a wider sibling control instead of filling + right-aligning.
+
+## 13. Recurring visual affordances belong in the component, not the composition
+
+A visual treatment that repeats across instances — a nesting / indent
+guide rail, a tree connector, a status accent bar, a grouping divider —
+must be **baked into the source component (or variant)**, never
+hand-placed as a free-floating absolute node in the assembled
+composition. A rail dropped as an absolute rectangle into the nav-list
+instance is brittle: it doesn't reflow when rows are added or reordered,
+it doesn't travel when the component is reused elsewhere, and it has to
+be re-drawn by hand every time. Built into the Child variant, it's
+intrinsic — every instance gets it for free and it tracks the row.
+
+This is the same principle §1 states for focus rings and §10 for
+popovers ("a pure overlay that lives in the box, anchored to it"),
+generalized to *structural* treatments: if it's part of what the
+component IS, it lives in the component.
+
+### When a baked-in rail meets a full-width highlight, inset the highlight
+
+A guide rail baked into a child variant collides with a full-width
+hover / selected / focus highlight — the pill paints over the rail. The
+fix is to **inset the highlight to clear the rail**, not to move the
+rail back out to the composition. Move the highlight off the variant's
+frame fill onto an inset `row-bg` rectangle (and inset the focus ring to
+match) so the rail reads continuously down the nesting column while the
+highlight sits inside it. The nav-header 2026-06-16 child rows did this:
+rail at the variant's left edge, hover/selected `row-bg` and focus ring
+inset to its right.
+
+Failure mode (nav-header 2026-06-16): the nesting rail first shipped as
+absolute rectangles placed in the nav-list composition. The designer
+flagged it ("the rail should be baked into the subcomponent, not an
+absolute-position treatment") — it was rebuilt into each Child variant,
+and the child highlights were inset to clear it.
 
 ## Related
 

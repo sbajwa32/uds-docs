@@ -1,8 +1,8 @@
 ---
-description: Plugin API gotchas learned from UDS factory and sync work. Local-file component identity, INSTANCE_SWAP default formats, hidden auto-layout fills, resize-vs-sizing-mode ordering, per-side padding binding, effect-style binding, remote-library token/style discovery, text-wrap sizing, swapping past a nested set with authoring errors, and cross-call page-context (clone/createInstance parent to currentPage). Auto-attaches to anything that calls `use_figma`.
+description: Plugin API gotchas learned from UDS factory and sync work. Local-file component identity, INSTANCE_SWAP default formats, hidden auto-layout fills, resize-vs-sizing-mode ordering, per-side padding binding, effect-style binding, remote-library token/style discovery, text-wrap sizing, swapping past a nested set with authoring errors, cross-call page-context (clone/createInstance parent to currentPage), and component-property visibility vs. instance overrides. Auto-attaches to anything that calls `use_figma`.
 alwaysApply: false
 globs: ["**/*"]
-lastUpdated: 2026-06-12T19:55:36Z
+lastUpdated: 2026-06-16T16:30:05Z
 ---
 
 # UDS Figma Plugin API Gotchas
@@ -539,6 +539,16 @@ Two error signatures, both from `setProperties` on the icon swap:
 a fresh in-file copy (you'll get `8832:2`, then `8836:2`, …). Import
 once, capture the set id, reuse it across the whole run; don't
 re-import per variant or you litter the file with duplicate icon sets.
+Those duplicates are **null-parented** — the imported set's `.parent` is
+`null` and it sits on no page — UNLIKE `clone()` / `createInstance()`,
+which land on `currentPage` (§16). So you can't find or sweep them by
+walking a page's children: an unreferenced re-import is an invisible
+orphan, and a referenced one is reachable only via an instance's
+`mainComponent.parent`. Prevention (import once) is the only clean fix —
+there's no after-the-fact page sweep. (Verified on the nav-header
+2026-06-16 cleanup: re-imports across calls left exactly the two
+referenced chevron sets reachable via their instances and zero litter on
+the draft page.)
 The icon-wrapper's `Icon` `preferredValues` is a soft UI hint (it
 points at one example set), not a hard restriction — any in-file glyph
 component works as the value.
@@ -795,6 +805,98 @@ This bit the rich-text-editor 2026-06-11 build: a 112px toolbar (should
 have been 48px) because `toolbar-spacer` was `FILL` horizontal but `HUG`
 vertical, holding the 100px default; the centered toolbar sized to the
 spacer, not the buttons.
+
+## 18. Visibility doesn't behave naively across the variant / instance / property boundary
+
+A node's `visible` interacts with component properties and instance
+overrides in two non-obvious ways. Both bit the nav-header 2026-06-16
+edit. They are the same underlying truth — `visible` is not a plain
+per-node boolean once a component property or an instance override is in
+play — seen from two directions.
+
+### 18a. Setting a variant's `.visible` mutates the bound property's default for the WHOLE set
+
+When a node's visibility is bound to a BOOLEAN component property (e.g.
+`Show Trailing`), the node's `visible` is no longer an independent
+per-variant value — it IS the property's default. Setting
+`variant.findOne(...).visible = true` inside one variant therefore
+flips the property default and turns the node on across **every**
+variant in the set, not just the one you touched.
+
+The error mode is silent: the script "succeeds," the variant you edited
+looks right, and the regression shows up on all the OTHER variants
+(every nav row sprouted a trailing chevron after one parent variant's
+trailing slot was set visible).
+
+```js
+// WRONG — trailing slot's visibility is bound to the `Show Trailing`
+// component property. This sets the PROPERTY DEFAULT, not this variant.
+const parent = await figma.getNodeByIdAsync('8360:89');
+parent.findOne(n => n.name === 'trailing-slot').visible = true;
+// → every variant in the set now shows its trailing slot.
+```
+
+The fix depends on what you actually want:
+
+- **Per-variant visibility that should follow a variant axis** (e.g.
+  only `Kind=Parent*` shows a chevron): the node should NOT be bound to
+  a shared toggle at all. Delete the component property, then set
+  `.visible` per variant — now each variant owns its own value.
+
+  ```js
+  const set = await figma.getNodeByIdAsync('8360:208');
+  set.deleteComponentProperty('Show Trailing#8360:60'); // unbind the shared toggle
+  for (const v of set.children) {
+    const t = v.findOne(n => n.name === 'trailing-slot');
+    if (t) t.visible = v.name.includes('Parent'); // per-variant, independent now
+  }
+  ```
+
+- **A consumer-facing toggle you want to keep**: change the property's
+  default with the property API, not by poking a node, and set the
+  default to the conservative value (usually `false`), then override
+  per *instance* (§18b), not per variant.
+
+  ```js
+  set.editComponentProperty('Show Trailing#8360:60', { defaultValue: false });
+  ```
+
+### 18b. Pre-existing instances carry their own `.visible` overrides that MASK a variant change
+
+The mirror image: after you fix a variant so a node SHOULD show, existing
+instances created earlier can still hide it, because an instance stores
+its own visibility override that wins over the main component. The
+variant looks fixed in the set but the assembled composition (the
+nav-list instance) still hides the chevron.
+
+```js
+// The set's parent variants now show the chevron, but this instance
+// was created earlier with a visible:false override on that node —
+// it still renders hidden.
+const navList = await figma.getNodeByIdAsync('8364:141');
+for (const row of navList.children) {
+  if (row.type !== 'INSTANCE') continue;
+  // re-assert the intended value per instance, OR reset overrides
+  const t = row.findOne(n => n.name === 'trailing-slot');
+  if (t) t.visible = /* the value this row should have */;
+}
+```
+
+Reset the instance override (or re-assert the intended value per
+instance), or recreate the instances from the fixed main. Don't assume a
+variant-level fix propagates to instances that predate it — overrides
+persist.
+
+### 18c. Delete the orphaned component property when you remove the node it drove
+
+Removing the node a component property pointed at (e.g. deleting a
+`caret-gutter` whose chevron was the `chevronSlot` INSTANCE_SWAP target)
+leaves a defunct property on the set. It clutters the instance panel and
+can throw on later property-layer calls. Sweep it:
+
+```js
+set.deleteComponentProperty('chevronSlot#8360:24'); // node it referenced is gone
+```
 
 ## Related
 

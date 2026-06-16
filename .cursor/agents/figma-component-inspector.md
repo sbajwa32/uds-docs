@@ -2,7 +2,7 @@
 name: figma-component-inspector
 description: Deep-inspects a single UDS component in the UDS Components Figma file by reading node trees, component sets, variants, layer details, token bindings, nested instances, and doc-site parity. Bidirectional — reports both Figma-side gaps (mismatches, missing) and doc-site surplus (artifacts with no Figma counterpart), plus a snapshot delta against the prior captured state to surface deletions and renames. Open Figma findings that need designer attention are surfaced as structured entries in uds/components/<id>/figmanotes.json (not free-text in spec.json knownIssues), classified by `kind` so they auto-prune on the next inspection when resolved. Read-only; never modifies files or Figma. Use when updating a component spec, investigating a component mismatch, or before syncing Figma component changes into docs.
 model: inherit
-lastUpdated: 2026-06-10T18:15:54Z
+lastUpdated: 2026-06-16T16:30:05Z
 ---
 
 # Figma Component Inspector
@@ -217,6 +217,15 @@ screenshots alone:
 - focus rings
 - disabled/error/loading/selected behavior
 - icon-only risks
+- inverse-surface foreground contrast: on any variant whose surface
+  resolves to `surface-interactive-default` / `-active` / `-hover`, a
+  prominent `surface-{tone}`, or `surface-inverse`, every foreground must
+  bind the inverse family (text → `text-inverse`, icons/chevrons/dots →
+  `icon-inverse`). Flag a glyph still bound to `icon-interactive` (or any
+  light token) on a filled surface — it disappears into the fill. Decide
+  the backing surface from the node's own/ancestor resolved fill, not from
+  inverse text elsewhere in the component. See
+  [`uds-design-language.mdc`](../rules/uds-design-language.mdc) §4.1.
 
 ### 7. Compare with doc site
 

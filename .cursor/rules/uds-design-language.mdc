@@ -2,7 +2,7 @@
 description: How every UDS component handles each state, extracted from current Figma/docs component evidence and Web Component source. State constructions (Default/Hover/Active/Focus/Filled/Selected/Error/Disabled/Read-only/Loading), focus-ring patterns and when to use each, surface treatments, elevation/shadow scale, border-radius scale, density/sizing patterns, selection treatments. Component-specific overrides documented per state. Differences between components flagged for designer review. The factory and any new-component skill should bind state visuals to the constructions in this doc rather than re-deriving them.
 alwaysApply: false
 globs: ["**/*"]
-lastUpdated: 2026-06-09T16:44:22Z
+lastUpdated: 2026-06-16T16:30:05Z
 ---
 
 # UDS Design Language
@@ -213,6 +213,43 @@ on selection (interactive-default or interactive-active bg). Outlined
 elements (tile, tabs, dropdown item, radio) gain a *colored marker*
 (border + tinted bg, or a dot, or a bottom underline) and recolor text
 to `text-interactive`.
+
+### 4.1 Inverse-surface contract (filled selection / pressed / open states)
+
+**Whenever a state fills the element with a saturated or inverse surface,
+EVERY foreground flips to the inverse family — text *and* icons *and*
+chevrons.** This is one rule, not a per-element special case. It applies
+to any state whose background becomes `surface-interactive-default`,
+`surface-interactive-active`, `surface-interactive-hover`, a status
+`surface-{tone}` (prominent), or `surface-inverse` — i.e. any state where
+the element goes dark/saturated and a light-on-light foreground would
+disappear.
+
+| Foreground | Token | Scope |
+|---|---|---|
+| Text / label | `text-inverse` | TEXT_FILL |
+| Icon glyph, chevron, status dot | `icon-inverse` | SHAPE_FILL |
+
+The chip-selected row in §4 is the exemplar — `bg → surface-interactive-active;
+text → text-inverse; icons → icon-inverse`. The same flip applies to a
+selected/pressed nav item, a pressed icon tile, an open title-area
+trigger, a primary button's icon — anything that fills.
+
+**Match the token scope to the node, never cross it.** An icon binds an
+`icon/*` token; text binds a `text/*` token. `text-inverse` on an icon
+is wrong even though it *looks* right — it's a TEXT_FILL-scoped variable
+on a SHAPE_FILL node, and it drifts the moment the two inverse values
+diverge. The inverse of an icon is `icon-inverse`, full stop.
+
+**Decide "needs inverse" from the surface actually behind the glyph, not
+from a sibling.** Resolve the fill of the element the icon sits on (its
+own box, or the nearest ancestor that paints a surface) and flip only
+when *that* surface is saturated/inverse. Do NOT infer "this component
+has inverse text somewhere, so the icon must go inverse" — a white count
+on a red badge inside an otherwise-light pill is not the leading icon's
+background. (That heuristic blanked the My-Work pill's `+` glyph on
+2026-06-16 — white-on-white — because the badge's inverse text fooled a
+component-wide sweep.)
 
 ---
 

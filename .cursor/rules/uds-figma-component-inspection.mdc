@@ -2,7 +2,7 @@
 description: Requires deep Figma node inspection for UDS Components; screenshots are supporting evidence only. Inspection is bidirectional — every doc-site artifact must be checked for a Figma counterpart, and every prior snapshot entry must be diffed against the new read.
 globs: ["uds-docs/**", ".cursor/**"]
 alwaysApply: false
-lastUpdated: 2026-06-10T18:15:54Z
+lastUpdated: 2026-06-16T16:30:05Z
 ---
 
 # UDS Figma Component Inspection
@@ -149,6 +149,26 @@ The release pass must capture, per component:
 The release changelog must reflect meaningful variant/state coverage across
 existing components, not only new component pages. If this pass has not been
 performed, the release is incomplete.
+
+## Inverse-surface foreground contrast
+
+Inspection runs the same inverse-surface check the factory enforces at
+build time — because an existing or pre-rule draft can ship a glyph that
+disappears into a saturated fill even though the build rule exists. For
+every variant whose surface resolves to `surface-interactive-default` /
+`-active` / `-hover`, a prominent `surface-{tone}`, or `surface-inverse`,
+verify EVERY foreground binds the inverse family: text → `text-inverse`,
+icons / chevrons / dots → `icon-inverse` (SHAPE_FILL scope; `text-inverse`
+on an icon is a cross-scope bug). Flag any foreground on a filled surface
+still bound to a non-inverse family (e.g. `icon-interactive` on a selected
+or pressed variant) as a mismatch in the `Doc-site comparison` /
+`Accessibility implications` output.
+
+Determine "filled surface" from the fill resolved on the node's OWN box
+or nearest surface-painting ancestor — never from the presence of inverse
+text elsewhere in the component. The canon is
+[`uds-design-language.mdc`](./uds-design-language.mdc) §4.1; the
+nav-header 2026-06-16 selected/pressed/open states are the failure case.
 
 ## Public page import depth
 

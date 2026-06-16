@@ -1,7 +1,7 @@
 ---
 name: generate-uds-figma-component
 description: UDS Component Factory. Drafts a token-bound UDS component set directly inside the UDS Components Figma file on a brand-new `🟠 <id> {Cursor}{Ignore}` page. Use when the user says "generate a UDS component for X", "factory me an Avatar", "draft a new UDS component called Y", "build a UDS component for Z in Figma", or "use the component factory to start <Title>". Stops at Figma — never writes to `uds-docs/uds/`. Docs landing is the existing `uds-updated` skill, run later by the designer.
-lastUpdated: 2026-06-12T19:55:36Z
+lastUpdated: 2026-06-16T16:30:05Z
 ---
 
 # UDS Component Factory — Generate UDS Figma Component
@@ -308,7 +308,16 @@ Persist the proposed model to
  `active` / `pressed`. For EVERY state the class requires, mark it
  either supported (it WILL be built as a Figma variant in Phase B) or
  `notApplicable` with a one-line reason. Never silently omit a
- class-required state. Pick the exact state NAMES from section 1 of
+ class-required state. **When the component ALSO has a `Kind` / `Type` /
+ `Mode` axis, apply this baseline to EACH interactive Kind — reason per
+ (Kind × State) cell, not once for the set.** A Kind that can't take a
+ state marks it `notApplicable` per kind (a static `Kind=Divider` takes
+ none); a state present for one interactive Kind but silently missing
+ for another is the gap — the nav-header 2026-06-16 parents shipped
+ without `Selected` / `Disabled` while leaves had them. See
+ [`uds-figma-factory-quality.mdc`](../../rules/uds-figma-factory-quality.mdc)
+ §"State coverage is per interactive Kind, not global". Pick the exact
+ state NAMES from section 1 of
  [`uds-naming-conventions.mdc`](../../rules/uds-naming-conventions.mdc)
  (including its Selected / Checked / Current reserved-word
  distinction). Maps to `spec.json` `states[]`. **Keep the `State` axis
@@ -1476,6 +1485,15 @@ are NOT in the harness and stay a manual pass.
  with neither a variant nor a `notApplicable` reason: N at `<list>`.
  This is the gate that stops a `form` draft shipping without `error` /
  `required`, or a disclosure control without `expanded` / `collapsed`.
+ **When a `Kind` / `Type` / `Mode` axis is present, reason per (Kind ×
+ State) cell, not globally:** a required state satisfied for one
+ interactive Kind but missing for another interactive Kind FAILS, the
+ same as if it were missing entirely. Report per Kind: `<Kind>` missing
+ `<state>`. This is what catches the nav-header 2026-06-16 gap (parents
+ missing `Selected` / `Disabled` while leaves carried the full set) —
+ "the State axis contains it somewhere" is not coverage. See
+ [`uds-figma-factory-quality.mdc`](../../rules/uds-figma-factory-quality.mdc)
+ §"State coverage is per interactive Kind, not global".
 - **Events planned.** For any class that dispatches events (`action`,
  `form`, `feedback`, `navigation`, …), the contract block's `Events`
  section MUST list at least one event or the explicit `none (class
