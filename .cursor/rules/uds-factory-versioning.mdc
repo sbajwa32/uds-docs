@@ -162,18 +162,47 @@ loop, picking the lightest sufficient action:
 
 The factory never silently rewrites (`uds-source-of-truth.mdc`).
 
-## CI enforcement
+## Enforcement (two layers)
+
+The same contract is enforced twice: once at commit time (the primary
+gate, can't be skipped) and once in CI (the backstop). Both check the
+identical condition — a commit touching one of the five factory files
+must EITHER also bump `.cursor/figma/state/factory-version.json` OR carry
+a `[no-factory-bump: <reason>]` escape tag for a genuinely output-neutral
+edit (prose, typo, reordering, audit/process-only) — same shape as
+`audit-changelog-currency.sh`'s `[no-changelog: ...]`. Neither layer can
+judge whether output *actually* changed; they force the decision to be
+made in-commit and reviewed, instead of relying on the author to remember
+it.
+
+### Commit-time guard (primary)
+
+`.cursor/hooks/factory-version-guard.sh` is a `beforeShellExecution`
+Cursor hook (wired in `.cursor/hooks.json`). When the agent runs a
+`git commit` that includes a dirty factory file, the guard returns
+`permission: deny` unless `factory-version.json` is also in the change
+set or the commit message carries `[no-factory-bump: ...]`. The commit is
+refused on the spot with a message naming the offending file and the two
+ways to proceed. It inspects both staged and unstaged changes (with
+`-uall`) so a chained `git add -A && git commit ...` is caught even though
+nothing is staged when the hook fires. It fails OPEN — any internal error
+allows the command — so a guard bug never blocks every commit; CI is the
+backstop in that case.
+
+This layer exists because a red CI check is advisory: it surfaces AFTER
+the work is in and someone has to notice it. Five factory edits after the
+2026.06.09.8 bump shipped exactly that way — each touched a factory file,
+none bumped, none tagged, and CI stayed red while the commits merged past
+it. The guard moves the decision to the moment of commit, where it can't
+be skipped.
+
+### CI audit (backstop)
 
 `scripts/audit-factory-version-currency.sh` (wired into
 `.github/workflows/audits.yml`) fails CI when a commit after the audit
-baseline touches any of the five factory files above WITHOUT bumping
-`.cursor/figma/state/factory-version.json` in the same commit. The escape
-for a genuinely output-neutral edit (prose, typo, reordering,
-audit/process-only) is a `[no-factory-bump: <reason>]` tag in the commit
-message — same shape as `audit-changelog-currency.sh`'s `[no-changelog:
-...]`. The audit can't judge whether output *actually* changed; it forces
-the decision to be made in-commit and reviewed, instead of relying on the
-author to remember it.
+baseline touches a factory file WITHOUT a same-commit bump or escape tag.
+It backstops any commit path that doesn't run through Cursor's shell (a
+human committing in a raw terminal, a guard that failed open).
 
 **Bump in the SAME commit as the factory-file edit.** A bump that lands one
 commit later still trips the audit on the earlier commit (this rule + the

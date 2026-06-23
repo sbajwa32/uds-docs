@@ -1,7 +1,14 @@
 {
   "$comment": "UDS factory build version — the factory's OUTPUT vintage, distinct from per-file lastUpdated and the contract-block format version (v1). See .cursor/rules/uds-factory-versioning.mdc. Version format YYYY.MM.DD.N; changelog newest-first; drift compares by changelog position, not string math. `labels` is the human-readable registry of affects[] tags; the drift pass carries a real detector per label.",
-  "version": "2026.06.09.8",
+  "version": "2026.06.23.1",
   "changelog": [
+    {
+      "version": "2026.06.23.1",
+      "date": "2026-06-23",
+      "breaking": true,
+      "affects": ["all"],
+      "summary": "Catch-up bump folding five factory edits that shipped unbumped since 2026.06.09.8 (the CI factory-version audit was red through all five; a new commit-time guard now blocks this class of miss at commit time). (1) Inverse-surface contract: any state that fills the surface (Selected/Pressed/Open, prominent tone, inverse) flips EVERY foreground to the inverse family — text->text-inverse, icons/chevrons/dots->icon-inverse (SHAPE_FILL scope, never text-inverse on an icon), decided from the node's real backing surface, not from inverse text elsewhere in the component. (2) Per-Kind state coverage: once a component has both a Kind/Type/Mode axis and a State axis, the class-required state baseline applies to EACH interactive Kind, reasoned per (Kind x State) cell, not globally. (3) Non-skippable canonical State-axis Phase C gate inlined into the skill's gate list + a runnable references/phase-c-gate-check.js harness so deterministic gates can't be silently dropped from a hand-rolled Phase C. (4) New construction rules in uds-figma-factory-quality.mdc: §12 action-pair order/alignment (Cancel left, primary right, row FILL+right-align), §13 recurring visual affordances baked into the component not the composition, §14 top-align icon-over-label cells, plus the §17 empty-spacer FILL gotcha. (5) Plugin-API gotchas: cross-call figma.currentPage reset/leak, nested-set authoring-error swap fallback. Every component built before this version is flagged behind — re-check inverse foregrounds and per-Kind state coverage, and confirm its contract block + version stamp are current."
+    },
     {
       "version": "2026.06.09.8",
       "date": "2026-06-09",

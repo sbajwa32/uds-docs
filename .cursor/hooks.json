@@ -6,6 +6,12 @@
         "command": ".cursor/hooks/sync-check.sh",
         "timeout": 8
       }
+    ],
+    "beforeShellExecution": [
+      {
+        "command": ".cursor/hooks/factory-version-guard.sh",
+        "timeout": 8
+      }
     ]
   }
 }
