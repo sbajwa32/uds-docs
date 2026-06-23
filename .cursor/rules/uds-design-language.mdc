@@ -2,7 +2,7 @@
 description: How every UDS component handles each state, extracted from current Figma/docs component evidence and Web Component source. State constructions (Default/Hover/Active/Focus/Filled/Selected/Error/Disabled/Read-only/Loading), focus-ring patterns and when to use each, surface treatments, elevation/shadow scale, border-radius scale, density/sizing patterns, selection treatments. Component-specific overrides documented per state. Differences between components flagged for designer review. The factory and any new-component skill should bind state visuals to the constructions in this doc rather than re-deriving them.
 alwaysApply: false
 globs: ["**/*"]
-lastUpdated: 2026-06-16T16:30:05Z
+lastUpdated: 2026-06-23T16:01:30Z
 ---
 
 # UDS Design Language
@@ -701,6 +701,14 @@ A few rules that apply across multiple sections above:
 - **Disabled elements have `pointer-events: none` AND `cursor:
   not-allowed`**. Both are required: pointer-events blocks click,
   cursor communicates the state to the user before they try.
+- **Icon-over-label cells top-align, never center.** In a fixed-height
+  cell that stacks an icon over a variable-length label (quick-action
+  tile, icon grid cell), vertically centering ties the icon's position
+  to the label's line count, so icons drift across a row of mixed one-
+  and two-line labels. Top-align the stack (`primaryAxisAlignItems =
+  MIN` in Figma) so the icon sits at one consistent position and the
+  label hangs below. See
+  [`uds-figma-factory-quality.mdc`](./uds-figma-factory-quality.mdc) §14.
 
 ---
 

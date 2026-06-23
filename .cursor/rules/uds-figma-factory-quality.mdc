@@ -1,8 +1,8 @@
 ---
-description: Process quality rules for any factory-style Figma build (generate-uds-figma-component, new-component, future factories). State design contract (specify visuals not just tokens), mandatory machine-verified audits, variant grid layout reflects axis semantics, visible anatomy by default, dependency manifest before write, inverse-surface foreground flip, per-Kind state coverage, and recurring visual affordances baked into the component. Design-system-agnostic — the specific UDS visual constructions live in uds-design-language.mdc.
+description: Process quality rules for any factory-style Figma build (generate-uds-figma-component, new-component, future factories). State design contract (specify visuals not just tokens), mandatory machine-verified audits, variant grid layout reflects axis semantics, visible anatomy by default, dependency manifest before write, inverse-surface foreground flip, per-Kind state coverage, recurring visual affordances baked into the component, and top-aligned icon-over-label cells. Design-system-agnostic — the specific UDS visual constructions live in uds-design-language.mdc.
 alwaysApply: false
 globs: [".cursor/skills/generate-uds-figma-component/**", ".cursor/skills/new-component/**", ".cursor/skills/figma-component-card/**"]
-lastUpdated: 2026-06-16T16:30:05Z
+lastUpdated: 2026-06-23T16:01:30Z
 ---
 
 # Figma Factory Quality
@@ -1071,6 +1071,41 @@ absolute rectangles placed in the nav-list composition. The designer
 flagged it ("the rail should be baked into the subcomponent, not an
 absolute-position treatment") — it was rebuilt into each Child variant,
 and the child highlights were inset to clear it.
+
+## 14. Cell content alignment — top-align icon-over-label cells, not center
+
+When a fixed-height cell stacks a fixed-size element (an icon) over a
+variable-length one (a label) — a quick-action tile, an icon grid cell,
+a stat card — vertically centering the stack
+(`primaryAxisAlignItems = 'CENTER'`) ties the icon's position to the
+label's line count. A row that mixes one-line and two-line labels then
+lands its icons at different heights, and the grid reads as misaligned
+even though every cell carries identical alignment settings. Top-align
+the stack (`primaryAxisAlignItems = 'MIN'`) so the icon sits at one
+consistent position and the label hangs below; the price is extra bottom
+whitespace under short labels, which is the conventional icon-grid look.
+
+Set it on the source component / variant, not the instances, so every
+cell inherits it and a later label edit can't reintroduce the drift.
+
+### Alignment consistency is (alignment mode × child intrinsic size), not the alignment property alone
+
+A uniform alignment enum across sibling cells does NOT guarantee aligned
+content when the children differ in size — a centered stack with a taller
+child sits its fixed element higher than a centered stack with a shorter
+one. Diagnose "looks off" by reading the *variable child's size*, not by
+eyeballing the render and not by confirming that the alignment enum
+matches across cells. The factory check: for any repeating
+icon-over-label cell, confirm the fixed element shares one position
+across siblings (e.g. icon `y` is equal in every cell), not merely that
+every cell says `CENTER`.
+
+Failure mode (nav-header 2026-06-16): the quick-tile grid centered each
+tile's icon+label stack, so one- and two-line labels put the icons at
+different heights across the row. It was first misdiagnosed from the
+render as a horizontal label-alignment problem before the real cause —
+centered stacks over variable-height labels — was found and fixed by
+top-aligning (`MIN`) the five tile variants.
 
 ## Related
 
