@@ -2,7 +2,7 @@
 description: Canonical UDS Tokens Figma variable architecture and CSS output contract. Direct Figma Variables reads are primary; ZIP exports are fallback only.
 globs: ["uds-docs/uds/tokens/**/*.css", "uds-docs/styles/**/*.css", "uds-docs/packages/uds-web-components/src/**/*.ts"]
 alwaysApply: false
-lastUpdated: 2026-06-09T16:10:05Z
+lastUpdated: 2026-06-23T16:23:57Z
 ---
 
 # UDS Token Architecture
@@ -170,6 +170,33 @@ Use the same prefix pattern:
 - `uds / font-scale / ...` -> `--uds-font-scale-...`
 - `uds / space / ...` -> `--uds-space-...`
 - `uds / border / ...` -> `--uds-border-...`
+
+### Trailing `*` = dynamic-token marker (NOT a typo)
+
+A trailing `*` on a Figma Variable name is a deliberate designer
+annotation meaning the token is **theme-dynamic** — its resolved value
+changes across `uds-color` theme modes — as opposed to a static token
+whose value is constant. It is part of the stored Variable name in
+Figma, but it is **not** part of the canonical token name.
+
+Rules:
+
+- **Strip the `*` for CSS generation and for any name matching.** The
+  transform drops it:
+  `uds / color / surface / interactive-default*` ->
+  `--uds-color-surface-interactive-default`. The CSS custom property
+  never contains `*` (it isn't valid in a property name).
+- **Never report a `*`-suffixed variable as a typo, duplicate, stray
+  rename, or "bug."** It is intentional. When matching a Figma binding
+  against `semantic.css` / `primitives.css` or a `figmaNodeId`, compare
+  the stripped name.
+- Example: `interactive-default*` is correctly theme-dynamic — it
+  resolves to `blue-70` (base light), `blue-50` (base dark),
+  `emerald-70` (anyonehome), `amber-70` (inhabit) in `semantic.css`.
+- Absence of `*` is **not** a guarantee a token is static (e.g.
+  `surface-success` / `surface-error` still vary by mode without the
+  marker). The `*` only ever adds the explicit "this is dynamic" signal;
+  it never removes one.
 
 ## Layering rules
 

@@ -68,7 +68,7 @@ the manual fallback when the hook hasn't run.
 | [`uds-rule-discipline.mdc`](./rules/uds-rule-discipline.mdc) | `2026-06-10T18:21:23Z` | Discipline that fires whenever you edit a Cursor rule, skill, or subagent file. First check the lesson earns its place — a transferable… |
 | [`uds-site-changelog.mdc`](./rules/uds-site-changelog.mdc) | `2026-05-24T08:55:00Z` | Whenever you change anything inside uds-docs/, add a SITE_CHANGELOG entry to data/site-changelog.ts. The Voice and length section is what… |
 | [`uds-source-of-truth.mdc`](./rules/uds-source-of-truth.mdc) | `2026-05-24T08:55:00Z` | Figma is the source of truth for everything under uds-docs/uds/ — tokens, component CSS, specs, examples, schemas, all of it. Agents must… |
-| [`uds-token-architecture.mdc`](./rules/uds-token-architecture.mdc) | `2026-06-09T16:10:05Z` | Canonical UDS Tokens Figma variable architecture and CSS output contract. Direct Figma Variables reads are primary; ZIP exports are… |
+| [`uds-token-architecture.mdc`](./rules/uds-token-architecture.mdc) | `2026-06-23T16:23:57Z` | Canonical UDS Tokens Figma variable architecture and CSS output contract. Direct Figma Variables reads are primary; ZIP exports are… |
 | [`uds-token-first-css.mdc`](./rules/uds-token-first-css.mdc) | `2026-05-27T22:21:24Z` | Enforces UDS token usage in all CSS — no hardcoded colors, spacing, fonts, or radii. |
 
 ## Skills (10)
