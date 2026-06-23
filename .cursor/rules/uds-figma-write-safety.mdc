@@ -1,7 +1,7 @@
 ---
-description: Prevents accidental Figma mutations during UDS sync work. Read-only is the default; writes are explicitly scoped and summarized.
+description: Prevents accidental Figma mutations during UDS sync work. Read-only is the default; writes are explicitly scoped and summarized; component edits round-trip through the component contract and the current factory bar.
 alwaysApply: true
-lastUpdated: 2026-06-23T18:01:31Z
+lastUpdated: 2026-06-23T18:58:01Z
 ---
 
 # UDS Figma Write Safety
@@ -56,6 +56,88 @@ Required AFTER any node creation:
    An unauthorized-page write is a scope breach in the write summary even
    after relocation — report it, never silently fix it.
 
+## Component-edit preflight (before any write to a factory component)
+
+A UDS component carries its own spec and its own version stamp. Editing the
+COMPONENT — its variants, structure, or token bindings — is never a
+free-form design change, not even on a `{Cursor}` draft.
+
+This preflight governs editing an EXISTING component. Two things it does NOT
+gate: a NEW component built from scratch via the factory (scope #4) has no
+prior contract or stamp — the factory authors both at the current bar, so
+steps 1–3 don't apply; and benign instance overrides (setting a placed
+instance's text or picking a variant to assemble an example or demo) are
+normal consumption, not a component edit.
+
+Before the FIRST write to a `udc-*` / `_udc-*` component DEFINITION (a main
+set, a subpart set, or their variants / bindings / structure) in either UDS
+Figma file, you MUST:
+
+1. **Read the governing `<<UDS-FACTORY-CONTRACT>>` block.** It lives on the
+   `udc-<id>` MAIN component set. If you are editing a `_udc-*` subpart (e.g.
+   `_udc-stepper-step`), it carries NO contract of its own — its description
+   is empty. That emptiness is NOT "no rules": resolve the parent — the
+   `udc-*` set that INSTANCES this subpart (the nesting graph is
+   authoritative; the name is only a hint, since hyphenated ids make
+   name-parsing ambiguous) — and read THAT contract. (This is the trap
+   behind the stepper miss — the edits went to `_udc-stepper-step`, whose
+   empty description hid the `udc-stepper` contract that recorded
+   `display-only` and focus `notApplicable`.) If neither the subpart nor its
+   parent carries a contract — a pre-versioning draft — there's no recorded
+   decision to honor; steps 2–5 still apply, and step 5 authors the contract
+   on first touch. Decisions recorded in the contract — `display-only`, a
+   `notApplicable` state, a token-tone binding, an axis convention — are
+   BINDING. A change that contradicts one is a PROPOSAL to the user, not a
+   free edit, even on a free-write draft. Stop and surface it; do not just
+   apply it.
+2. **Read the current factory bar** — `version` in
+   `.cursor/figma/state/factory-version.json`.
+3. **Read the component's stamped version** — the `factory_version` shared
+   plugin data on the `udc-<id>` main set (and its `Factory-version:`
+   contract line) — and compare it to the bar:
+   - **At bar** — proceed with the scoped edit.
+   - **Behind bar** — the edit is a MAINTENANCE UPGRADE governed by
+     `.cursor/rules/uds-factory-versioning.mdc`, NOT a free design session. A
+     newer bar is not a license to change everything. Pause and give the user
+     the scope fork: **(A)** make ONLY the change they asked for, leave the
+     component at its old version, keep it flagged behind, and report what a
+     full upgrade to the bar would entail; or **(B)** fold the change into a
+     full to-bar upgrade (inspect → diff → propose every change → per-change
+     approval). Do NOT auto-pick B. Do NOT sweep bar-upgrade work into a
+     change the user scoped narrowly.
+4. **Edit through the factory's own flow** — the
+   `generate-uds-figma-component` factory skill (build mode for a draft,
+   maintenance mode for a live component) and the named sync skills encode
+   the contract round-trip. The hazard isn't the `use_figma` tool itself;
+   it's making a component change OUTSIDE the preflight + contract-
+   regeneration + honest-stamp discipline.
+
+Required AFTER any write to a component:
+
+5. **Regenerate the WHOLE contract block** on the `udc-<id>` main set from
+   the component's current anatomy (never patch a single line). Then keep the
+   version stamp HONEST. The stamp records the bar the component MEETS
+   (`uds-factory-versioning.mdc`), so never advance it to a bar the component
+   does not meet:
+   - A scoped fix that leaves the component behind: regenerate the contract
+     (it's a derived view), but leave `Factory-version:` and the
+     `factory_version` plugin data at the old version and report it still
+     behind.
+   - A full to-bar upgrade: re-stamp to the new bar, per
+     `uds-factory-versioning.mdc` (which owns the re-stamp discipline).
+
+   Re-stamping to a bar the component does not meet is PROHIBITED — it makes
+   the component claim a standard it fails. (This rule exists because a
+   stepper draft was edited yet left stamped `2026.06.08.1`, its contract
+   describing a component that no longer existed.)
+
+Page permission and component currency are independent. The `{Cursor}`
+standing write grant (scope #4) authorizes WHERE you may write; it never
+exempts you from this preflight. See
+`.cursor/rules/uds-factory-versioning.mdc` (the maintenance loop + re-stamp
+discipline) and `.cursor/rules/uds-figma-factory-quality.mdc` (the output bar
+each version encodes).
+
 ## Allowed write scopes
 
 The only routine Figma write scopes are:
@@ -92,6 +174,11 @@ The only routine Figma write scopes are:
      until the user removes the `{Cursor}` tag. Removing `{Cursor}`
      (the designer's rename) revokes the grant; after that the page is
      designer-owned and writes need explicit per-target direction.
+   - **Permission is not exemption.** The `{Cursor}` grant covers WHERE you
+     write, not freedom from the "Component-edit preflight" above: even on a
+     free-write draft you must read the component's contract + the current
+     factory bar, treat recorded decisions as binding, regenerate the
+     contract on any write, and keep the version stamp honest.
    - Writes outside that page (other component pages, the cover, the
      release-notes frame, `_support` / `📗 Cover` / `🎬 Demo` /
      `🛝 Playground` pages) are NOT covered by this scope and still
@@ -148,6 +235,22 @@ For every Figma write, return:
 - Rollback note: ...
 ```
 
+For any write to a `udc-*` / `_udc-*` component, ALSO return a
+factory-currency block. You cannot fill it honestly without having run the
+Component-edit preflight, so a blank or hand-waved one is the visible tell
+that the preflight was skipped:
+
+```markdown
+## Factory currency
+
+- Current factory bar: <YYYY.MM.DD.N from factory-version.json>
+- Component stamp before: <version>
+- Component stamp after: <version — unchanged unless the component now meets the bar>
+- Contract block regenerated: yes/no
+- Contract decisions: respected | changed-with-user-approval (<which>)
+- Still behind bar: yes/no (<what a later upgrade would entail, if behind>)
+```
+
 If a write fails halfway through, stop and report the exact last successful
 operation. Do not continue with more writes until the user reviews the state.
 
@@ -170,4 +273,8 @@ sync.
   (component drafts on `{Cursor}{Ignore}` pages) and scope #5 (gated
   upgrades to live components, per `.cursor/rules/uds-factory-versioning.mdc`)
 - `.cursor/rules/uds-factory-versioning.mdc` — defines the build version
-  whose drift triggers scope #5 maintenance upgrades
+  whose drift triggers scope #5 maintenance upgrades and the Component-edit
+  preflight's behind-bar path; owns the re-stamp + contract-regeneration
+  discipline
+- `.cursor/rules/uds-figma-factory-quality.mdc` — the per-version output bar
+  the Component-edit preflight checks a component against

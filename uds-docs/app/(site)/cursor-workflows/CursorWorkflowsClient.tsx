@@ -755,7 +755,7 @@ export function CursorWorkflowsClient() {
 
                 <DocsCard className="sg-cw-card">
                   <header className="sg-cw-card-head"><code className="sg-cw-card-name">uds-figma-write-safety</code><span className="sg-cw-pill sg-cw-pill--always"><span className="material-symbols-outlined">visibility</span>Always on</span></header>
-                  <p className="sg-cw-card-body">Figma writes are denied by default. Only five scopes ever apply: release-notes frames, status page prefixes, cover-page version text, component drafts on a <code>{'{Cursor}{Ignore}'}</code> page (free), and gated upgrades to a live component (each change needs explicit approval). Every write produces a before / after / rollback summary.</p>
+                  <p className="sg-cw-card-body">Figma writes are denied by default. Only five scopes ever apply: release-notes frames, status page prefixes, cover-page version text, component drafts on a <code>{'{Cursor}{Ignore}'}</code> page (free), and gated upgrades to a live component (each change needs explicit approval). Every write produces a before / after / rollback summary. Editing any existing component first reads its embedded contract and the current factory bar — recorded design decisions are binding, and a component edit can&apos;t claim a factory version it doesn&apos;t actually meet.</p>
                   <footer className="sg-cw-card-foot"><a className="sg-cw-card-link" href="https://github.com/sbajwa32/uds-docs/blob/main/.cursor/rules/uds-figma-write-safety.mdc" target="_blank" rel="noopener noreferrer">Open file<span className="material-symbols-outlined">open_in_new</span></a></footer>
                 </DocsCard>
 
