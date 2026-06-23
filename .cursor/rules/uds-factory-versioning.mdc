@@ -2,7 +2,7 @@
 description: When and how to bump the UDS factory build version, how it's stamped onto generated components, and how it carries into docs. The build version (YYYY.MM.DD.N, in .cursor/figma/state/factory-version.json) is the factory's OUTPUT vintage — distinct from per-file lastUpdated (every edit) and the contract-block format version (v1). Auto-attaches when a factory file is edited so the bump discipline is in front of you.
 globs: [".cursor/skills/generate-uds-figma-component/**", ".cursor/rules/uds-figma-factory-quality.mdc", ".cursor/rules/uds-figma-plugin-api-gotchas.mdc", ".cursor/rules/uds-design-language.mdc", ".cursor/rules/uds-naming-conventions.mdc"]
 alwaysApply: false
-lastUpdated: 2026-06-09T16:58:54Z
+lastUpdated: 2026-06-23T16:23:48Z
 ---
 
 # UDS Factory Versioning
