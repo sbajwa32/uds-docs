@@ -1,7 +1,7 @@
 ---
 description: Prevents accidental Figma mutations during UDS sync work. Read-only is the default; writes are explicitly scoped and summarized.
 alwaysApply: true
-lastUpdated: 2026-06-07T22:06:24Z
+lastUpdated: 2026-06-23T18:01:31Z
 ---
 
 # UDS Figma Write Safety
@@ -14,6 +14,47 @@ it after confirmation.
 
 Do not mutate Figma while discovering, auditing, inspecting, or diffing.
 Discovery agents are read-only.
+
+## Page-target safety (preflight + postflight for every write)
+
+`figma.currentPage` is NOT a safe write target. It persists from whatever
+page the last read or inspection touched, so it can silently point at a
+protected page (a `UDS Version: X.Y` page, a live component page, a
+`_support` / `📗 Cover` / `🎬 Demo` / `🛝 Playground` page) while you
+believe you're on the authorized draft. Creating nodes against
+`figma.currentPage` — or `page.appendChild(node)` where
+`page = figma.currentPage` — is how an in-scope task leaks an out-of-scope
+write. (This rule exists because a stepper-draft task created a proposal
+frame on the `UDS Version: 0.3` page: the build script used
+`figma.currentPage`, which was still pointing at the version page from an
+earlier version-detection read.)
+
+Required BEFORE any node creation or mutation:
+
+1. **Resolve the target page explicitly by name or ID — never read it from
+   `figma.currentPage`.** Fetch the page node
+   (`figma.root.children.find(p => p.name === '<exact name>')` or
+   `getNodeByIdAsync('<pageId>')`), then either
+   `await figma.setCurrentPageAsync(targetPage)` or append created nodes
+   directly to that resolved page node — not to `figma.currentPage`.
+2. **Assert the resolved page is in an allowed write scope before the first
+   write.** If the page name doesn't match the authorized scope (e.g. it
+   lacks `{Cursor}` for a scope #4 draft, or it's a `UDS Version: X.Y`
+   page outside a release workflow), STOP — do not write.
+
+Required AFTER any node creation:
+
+3. **Validate placement at the page level, not just the node.**
+   `node.screenshot()` and a node-scoped `get_screenshot` render the node
+   regardless of which page it lives on — a clean node screenshot proves
+   the node *renders*, NOT that it's on the right page. Confirm placement
+   by reading the created node's page (walk `node.parent` to its `PAGE`, or
+   screenshot the destination page) and checking it equals the authorized
+   target.
+4. **If a node landed on the wrong page, move it and report the slip.**
+   `correctPage.appendChild(node)` relocates it (it does not duplicate).
+   An unauthorized-page write is a scope breach in the write summary even
+   after relocation — report it, never silently fix it.
 
 ## Allowed write scopes
 

@@ -61,7 +61,7 @@ the manual fallback when the hook hasn't run.
 | [`uds-figma-plugin-api-gotchas.mdc`](./rules/uds-figma-plugin-api-gotchas.mdc) | `2026-06-16T16:30:05Z` | Plugin API gotchas learned from UDS factory and sync work. Local-file component identity, INSTANCE_SWAP default formats, hidden auto-layout… |
 | [`uds-figma-preflight.mdc`](./rules/uds-figma-preflight.mdc) | `2026-06-07T22:31:49Z` | Required preflight for any task that reads or writes UDS Figma files. |
 | [`uds-figma-sync-state.mdc`](./rules/uds-figma-sync-state.mdc) | `2026-05-12T18:41:50Z` | Defines tracked Figma sync snapshots and when agents may update them. |
-| [`uds-figma-write-safety.mdc`](./rules/uds-figma-write-safety.mdc) | `2026-06-07T22:06:24Z` | Prevents accidental Figma mutations during UDS sync work. Read-only is the default; writes are explicitly scoped and summarized. |
+| [`uds-figma-write-safety.mdc`](./rules/uds-figma-write-safety.mdc) | `2026-06-23T18:01:31Z` | Prevents accidental Figma mutations during UDS sync work. Read-only is the default; writes are explicitly scoped and summarized. |
 | [`uds-master-preflight.mdc`](./rules/uds-master-preflight.mdc) | `2026-05-27T22:21:24Z` | Master workflow rule — sync, source-of-truth check, change, finalize. Runs on every task that modifies uds-docs/. |
 | [`uds-naming-conventions.mdc`](./rules/uds-naming-conventions.mdc) | `2026-06-09T19:18:31Z` | The design-system-level naming framework for UDS. Locks the canonical vocabulary for states, sizes, tones, emphasis, parts of a component,… |
 | [`uds-release-workflow.mdc`](./rules/uds-release-workflow.mdc) | `2026-05-24T08:55:00Z` | UDS Design System release workflow -- detects Figma version bumps and guides the release process for the documentation site |
