@@ -2,7 +2,7 @@
 description: Process quality rules for any factory-style Figma build (generate-uds-figma-component, new-component, future factories). State design contract (specify visuals not just tokens), mandatory machine-verified audits, variant grid layout reflects axis semantics, visible anatomy by default, dependency manifest before write, inverse-surface foreground flip, per-Kind state coverage, recurring visual affordances baked into the component, and top-aligned icon-over-label cells. Design-system-agnostic — the specific UDS visual constructions live in uds-design-language.mdc.
 alwaysApply: false
 globs: [".cursor/skills/generate-uds-figma-component/**", ".cursor/skills/new-component/**", ".cursor/skills/figma-component-card/**"]
-lastUpdated: 2026-06-23T16:01:30Z
+lastUpdated: 2026-06-25T19:23:04Z
 ---
 
 # Figma Factory Quality
@@ -403,8 +403,11 @@ A read-only `use_figma` call that:
       `udc-*` missing from the list (or a listed `nested` dep no longer
       present) fails. The "opens in popover / reveals" relationships are
       author-supplied and not failed for absence.
-    - **Factory-version line.** The block's `Factory-version:` must equal
-      the `factory_version` plugin-data stamp on the component.
+    - **Factory-version line.** The line reads `Factory-version: F# (date)`
+      (F13+) or the legacy date-only `Factory-version: <date>`. The DATE in
+      it must equal the `factory_version` plugin-data stamp (the date is
+      the machine key); the leading `F#` is the derived display index and
+      is not separately stamped or verified in-Figma.
     - **Required new sections.** The block must contain `Summary:` and
       `Depends on:` (added in factory-version 2026.06.09.7) and
       `Exposed properties:` (added in 2026.06.09.8). Absence of any of

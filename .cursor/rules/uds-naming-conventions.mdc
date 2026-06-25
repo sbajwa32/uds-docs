@@ -2,7 +2,7 @@
 description: The design-system-level naming framework for UDS. Locks the canonical vocabulary for states, sizes, tones, emphasis, parts of a component, the state-vs-variant-vs-property meta-rule, casing and word choice, component names, subcomponents, and lifecycle status. Designer-voiced, concept-first. Companion to uds-design-language.mdc — design-language covers *how things look* per state, this rule covers *what we call them*. Factory, new-component, and the spec sync skills should pick names from this framework instead of guessing from siblings.
 alwaysApply: false
 globs: ["**/*"]
-lastUpdated: 2026-06-24T17:43:25Z
+lastUpdated: 2026-06-25T01:15:48Z
 ---
 
 # UDS Naming Framework

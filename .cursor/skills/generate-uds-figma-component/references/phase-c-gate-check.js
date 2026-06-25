@@ -162,14 +162,20 @@ const pageClutter = (page && page.type === 'PAGE') ? page.children.filter(n => n
 G.layerHygiene = { pass: !generic.length && !pageClutter.length, generic: generic.length, genericSample: generic.slice(0, 8), pageClutter };
 
 // G9 — contract block + version stamp. Delimiters present (literal `<<`, not
-// HTML-escaped — gotchas §10), and the stamp == the contract's Factory-version.
+// HTML-escaped — gotchas §10), and the DATE in the contract's Factory-version
+// line == the date plugin-data stamp. Tolerates BOTH the legacy
+// `Factory-version: <date>` and the F13+ `Factory-version: F# (<date>)` forms:
+// the date is the machine key, the F# is the derived display index (captured
+// for reporting, not separately verified — the changelog needed to map it
+// isn't readable in the Figma plugin context).
 const dm = set.descriptionMarkdown || '';
 const hasOpen = dm.indexOf('<<UDS-FACTORY-CONTRACT v1>>') >= 0;
 const hasClose = dm.indexOf('<<END-UDS-FACTORY-CONTRACT>>') >= 0;
 const fvStamp = set.getSharedPluginData('dsb', 'factory_version') || null;
-const fvLineMatch = dm.match(/Factory-version:\s*(\S+)/);
-const fvLine = fvLineMatch ? fvLineMatch[1] : null;
-G.contractAndStamp = { pass: hasOpen && hasClose && !!fvStamp && fvLine === fvStamp, hasOpen, hasClose, fvStamp, fvContractLine: fvLine };
+const fvLineRaw = (dm.match(/Factory-version:\s*([^\n]+)/) || [])[1] || null;
+const fvDate = fvLineRaw ? ((fvLineRaw.match(/\d{4}\.\d{2}\.\d{2}\.\d+/) || [])[0] || null) : null;
+const fvF = fvLineRaw ? ((fvLineRaw.match(/\bF(\d+)\b/) || [])[1] || null) : null;
+G.contractAndStamp = { pass: hasOpen && hasClose && !!fvStamp && fvDate === fvStamp, hasOpen, hasClose, fvStamp, fvContractDate: fvDate, fvContractF: fvF ? ('F' + fvF) : null };
 
 // G10 — proactive sealed-control scan. Host-owned nested instances that are
 // NEITHER exposed NOR hoisted are candidate sealed controls (gotcha §12 +

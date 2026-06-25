@@ -2,7 +2,7 @@
 name: figma-component-inspector
 description: Deep-inspects a single UDS component in the UDS Components Figma file by reading node trees, component sets, variants, layer details, token bindings, nested instances, and doc-site parity. Bidirectional — reports both Figma-side gaps (mismatches, missing) and doc-site surplus (artifacts with no Figma counterpart), plus a snapshot delta against the prior captured state to surface deletions and renames. Open Figma findings that need designer attention are surfaced as structured entries in uds/components/<id>/figmanotes.json (not free-text in spec.json knownIssues), classified by `kind` so they auto-prune on the next inspection when resolved. Read-only; never modifies files or Figma. Use when updating a component spec, investigating a component mismatch, or before syncing Figma component changes into docs.
 model: inherit
-lastUpdated: 2026-06-16T16:30:05Z
+lastUpdated: 2026-06-25T19:23:04Z
 ---
 
 # Figma Component Inspector
@@ -46,6 +46,11 @@ Read (every file is mandatory unless explicitly marked optional):
 - `uds-docs/packages/uds-react/src/index.tsx` (the matching wrapper export)
 - `.cursor/rules/uds-figma-component-inspection.mdc`
 - `.cursor/rules/uds-figma-change-classification.mdc`
+- `.cursor/rules/uds-factory-versioning.mdc` (the `affects[]` detector
+  table in §"How `affects[]` matching works" — used by the §3 drift pass)
+- `.cursor/figma/state/factory-version.json` (current `version` bar +
+  newest-first `changelog` + `labels` registry — the §3 drift pass reads
+  this to compute behind-by-N and relevance)
 - `.cursor/figma/state/components.snapshot.json` (MANDATORY — read BEFORE
   the Figma traversal and hold the component's entry as `priorSnapshot`
   for §7b. If the file is absent, emit `Prior snapshot present: no
@@ -171,17 +176,48 @@ block with its source noted as `factory-contract` so the sync step can
 apply it. If the block is malformed, report it as a finding and fall
 back to node-tree evidence only.
 
-**Read the factory build-version stamp.** The factory writes its build
-vintage in two places on the main component-set node: shared plugin data
-`getSharedPluginData('dsb','factory_version')` (and `built_at`), and a
-`Factory-version:` line in the contract block. Capture both and report
-the value in the §"Preflight" output. If the two disagree, report it as
-a finding (the plugin data is authoritative). This is what lets the sync
-step carry the vintage into `spec.json` `provenance` and lets drift
-detection tell whether the component is behind the current factory bar.
-A component with no stamp is pre-versioning — report it as such, not as
-an error. See
-[`uds-factory-versioning.mdc`](../rules/uds-factory-versioning.mdc).
+**Read the factory build-version stamp AND report drift.** The factory
+writes its build vintage in two places on the main component-set node:
+shared plugin data `getSharedPluginData('dsb','factory_version')` (and
+`built_at`), and a `Factory-version: F# (date)` line in the contract block
+(F13+; older drafts carry a date-only line). Capture both. The plugin-data
+date is authoritative — if the contract line's date disagrees with it, or
+its displayed `F#` doesn't match the F# you derive from that date via the
+changelog, report a finding.
+
+Then compute drift. **This is mandatory on EVERY inspection — draft or
+live, `{Cursor}` or accepted — because this report is the one place a
+designer is told a component is stale before work starts on it.** Do not
+print the stamp as a bare value and stop; always run the comparison:
+
+1. Read the current bar — `version`, `fVersion`, and the `changelog` —
+   from `.cursor/figma/state/factory-version.json`.
+2. Find the component's stamped date in the changelog and read that
+   entry's `f` (the built F#). Every entry with `f` greater than the
+   built F# is an intervening change; `behind = fVersion − builtF`. (The
+   node carries only the date string — F# is derived from it via the
+   changelog; see
+   [`uds-factory-versioning.mdc`](../rules/uds-factory-versioning.mdc)
+   §"The F# short key". Drift compares by changelog position, not string
+   math.)
+3. Keep an intervening entry only if one of its `affects[]` labels
+   matches THIS component's anatomy, evaluated with the label's detector
+   from [`uds-factory-versioning.mdc`](../rules/uds-factory-versioning.mdc)
+   §"How `affects[]` matching works" (the single detector table — match
+   against it, do not re-derive the detectors here). `all` always
+   matches. Call out `breaking: true` entries as the higher-risk ones.
+4. Report the verdict in the §"Preflight" drift block: built F# +
+   vintage, current F# + bar, behind-by-N, the relevance-filtered list of
+   what applies here, and what was filtered out as not-applicable (so the
+   relevance judgment is visible, not hidden).
+
+An unstamped component is **pre-versioning** — report it as `unstamped
+(pre-versioning)` and still list the changes that WOULD apply by anatomy,
+so the gap is visible; never report it as "current" or as an error. A
+`{Frozen}` / `{NoFactory}` page is reported as behind but marked
+hands-off. This verdict is what lets the sync step carry the vintage into
+`spec.json` `provenance.factoryVersion` and tells the designer whether
+the component is behind the current factory bar.
 
 ### 4. Extract anatomy and dependencies
 
@@ -378,7 +414,21 @@ when there are no proposals — say `No new notes proposed.` explicitly.
 - Components file version: X.Y
 - Site UDS_VERSION: X.Y
 - Mismatch: yes/no
-- Factory build version: YYYY.MM.DD.N (from the component-set stamp) | unstamped (pre-versioning)
+
+### Factory-version drift (mandatory — never omit)
+- Built at: F# (YYYY.MM.DD.N) | unstamped (pre-versioning)
+- Current bar: F# (YYYY.MM.DD.N)
+- Status: at current bar | behind by N (builtF→currentF) | unstamped (pre-versioning) | {Frozen} (hands-off)
+- Applicable changes since (affects[] matched to this component):
+
+| F# | version | breaking | summary (one line) |
+|---|---|---|---|
+
+- Not applicable (filtered out): <labels/versions skipped, one line, or "none">
+
+(If at the current bar, state "At current factory bar (F#)." If unstamped,
+still list the changes that WOULD apply by anatomy so the gap is visible.
+Never omit this block.)
 
 ## Confidence summary
 - Overall confidence: high | medium | low

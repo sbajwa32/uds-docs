@@ -2,7 +2,7 @@
 description: When and how to bump the UDS factory build version, how it's stamped onto generated components, and how it carries into docs. The build version (YYYY.MM.DD.N, in .cursor/figma/state/factory-version.json) is the factory's OUTPUT vintage — distinct from per-file lastUpdated (every edit) and the contract-block format version (v1). Auto-attaches when a factory file is edited so the bump discipline is in front of you.
 globs: [".cursor/skills/generate-uds-figma-component/**", ".cursor/rules/uds-figma-factory-quality.mdc", ".cursor/rules/uds-figma-plugin-api-gotchas.mdc", ".cursor/rules/uds-design-language.mdc", ".cursor/rules/uds-naming-conventions.mdc"]
 alwaysApply: false
-lastUpdated: 2026-06-23T16:23:48Z
+lastUpdated: 2026-06-25T19:23:04Z
 ---
 
 # UDS Factory Versioning
@@ -19,11 +19,40 @@ date (that's `built_at`).
 |---|---|---|
 | `lastUpdated` (per file) | each rule/skill/agent frontmatter | the file is edited at all |
 | Contract format version (`v1`) | the `<<UDS-FACTORY-CONTRACT>>` delimiter | the block's parsable shape changes |
-| **Factory build version** (`YYYY.MM.DD.N`) | `.cursor/figma/state/factory-version.json` | the factory's OUTPUT changes |
+| **Factory build version** (`YYYY.MM.DD.N`, indexed by `F#`) | `.cursor/figma/state/factory-version.json` | the factory's OUTPUT changes |
 
 Format-version (`v1`) policy: adding a contract-block section is additive
 (readers tolerate a missing section), so it stays `v1`; only a breaking
 re-shape bumps to `v2`.
+
+## The F# short key
+
+Each build-version entry also carries `f` — a stable integer, F1 = the
+first versioned factory, +1 per entry. `F#` is just `f` with an `F`
+prefix (`F12`). The top-level `fVersion` mirrors the newest entry's `f`
+(the current bar). The date version stays the human "when + what"; the
+F# is the **short ordering handle** and the **integer drift key**:
+
+- **Sayable / writable.** "built on F8" beats "built on 2026.06.09.6".
+- **Distance is arithmetic.** `behind = currentF − builtF`. No walking the
+  changelog to count steps — dates skip days and same-day bumps share a
+  date, so the date string alone can't tell you the distance.
+- **Assign-once, never reused or renumbered** — not even for a superseded
+  entry (F4 is the reverted 2026.06.09.2 and keeps its number).
+  Renumbering would break the guarantee that a given F# always names the
+  same vintage. Gaps are fine; reuse is not.
+
+**The machine key is the date; F# is derived and displayed.** Plugin
+data carries only the date string (`factory_version`) — that's the single
+machine source of truth, and drift math reads it, finds its changelog
+entry, and reads `f`. The F# is shown to humans in two derived places:
+the contract block's `Factory-version: F# (date)` line (F13+) and the
+inspector/inventory drift reports (`built F8 (2026.06.09.6), current F12,
+behind 4`). It is never separately stamped in plugin data — always derived
+from the date — so the two can't disagree. Components stamped before the
+F# notation carry a date-only `Factory-version:` line; they stay valid
+(the version-stamp gate matches on the date and tolerates both forms) and
+gain the `F# (date)` form on the next regenerate-on-touch.
 
 ## When to bump the build version
 
@@ -60,14 +89,20 @@ leaves factory output identical. These bump `lastUpdated` only.
 ## How to bump
 
 1. Set `version` in `.cursor/figma/state/factory-version.json` to a fresh
-   `YYYY.MM.DD.N` (date from `date -u +%Y.%m.%d`).
-2. Prepend a changelog entry (newest first): `version`, `date`
-   (`date -u +%Y-%m-%d`), `breaking` (true/false), `affects[]` (anatomy
-   tags, or `["all"]`), `summary` (plain-language, 1–2 sentences).
+   `YYYY.MM.DD.N` (date from `date -u +%Y.%m.%d`), and set `fVersion` to
+   the previous `fVersion + 1`.
+2. Prepend a changelog entry (newest first): `version`, `f` (the new
+   `fVersion` — previous max + 1, never reused even for a superseded
+   entry), `date` (`date -u +%Y-%m-%d`), `breaking` (true/false),
+   `affects[]` (anatomy tags, or `["all"]`), `summary` (plain-language,
+   1–2 sentences).
 3. If the entry uses a NEW `affects[]` label, add it to the `labels` map
-   (English meaning) AND add its detector to the drift pass.
-4. The factory reads `version` at build time and stamps it (plugin data
-   + contract-block `Factory-version:` line).
+   (English meaning) AND add a row to the detector table in §"How
+   `affects[]` matching works".
+4. The factory reads `version` + `fVersion` at build time, stamps the
+   DATE in plugin data, and writes the `Factory-version: F# (date)` line
+   into the contract block. Only the date is stamped — F# is derived from
+   it via the changelog (see §"The F# short key").
 
 ### Ordering: bump before you stamp
 
@@ -84,21 +119,46 @@ change then moved the bar, and all four had to be re-stamped to
 
 ## How `affects[]` matching works
 
-`affects[]` entries are named labels (`nests-button`, `tone-axis`,
-`all`, …). The `labels` map in `factory-version.json` is the
-human-readable registry — what each label means. The matching is done by
-the drift pass, which carries a real detector per label (keyed by name)
-that reads the component's actual anatomy as `figma-component-inspector`
-extracts it (nested instances, variant axes, states). Matching is exact,
-not fuzzy. Adding a label = the `labels` entry AND its detector.
+`affects[]` entries are named labels. Two artifacts back each label:
+
+1. **`factory-version.json` `labels`** — the human-readable registry
+   (what the label MEANS, one sentence each).
+2. **The detector table below** — the mechanical check the drift pass
+   runs against a component's anatomy as `figma-component-inspector`
+   extracts it (nested instances, variant axes/values, states).
+
+This table is the SINGLE definition of the detectors.
+[`figma-component-inspector`](../agents/figma-component-inspector.md) §3
+(single named component, drafts and live) and
+[`figma-inventory`](../agents/figma-inventory.md) step 8 (batch, live
+only) both match against it — neither carries its own copy. Matching is
+exact, not fuzzy.
+
+| Label | Matches when the inspected component… |
+|---|---|
+| `all` | always (every component) |
+| `nests-button` | nests any `udc-button*` instance |
+| `tone-axis` | has a `Tone` variant axis |
+| `focusable` | has a Focus / Focused state or a focus ring |
+| `labeled-field` | is a labeled field/control that nests a `udc-label` instance |
+| `iconized-states` | has content and/or control icons AND an Error / Disabled / Read-only state |
+| `field-popover` | opens a menu/listbox/popover (an Open/disclosure axis with an overlay) — combobox, select, dropdown, autocomplete, date-picker |
+| `form-control` | is a field or form control — text input, search, dropdown, combobox, text area, date picker, checkbox, radio, toggle |
+| `sealed-controls` | nests a control-bearing instance (a `udc-*` or `_udc-<id>_*` subpart with its own variant / editable-text / boolean / instance-swap props) |
+| `one-concern-axis` | has any variant axis (the compound-value smell test applies to every multi-axis component) |
+| `progress-axis` | has a progress / sequence-position axis (Upcoming · Current · Complete) |
+
+Adding a label = a new `labels` entry in `factory-version.json` AND a new
+row in this table.
 
 ## How it's stamped and carried
 
 - **Figma:** `setSharedPluginData('dsb','factory_version', <version>)` on
   the main component-set node (`udc-<id>`), plus a
-  `Factory-version: <version>` line in the `<<UDS-FACTORY-CONTRACT>>`
-  block. The stamp survives the designer's acceptance rename — it lives
-  on the node, not the page name.
+  `Factory-version: F# (<version>)` line in the `<<UDS-FACTORY-CONTRACT>>`
+  block (F13+; only the date is in plugin data — the F# in the line is the
+  derived display index). The stamp survives the designer's acceptance
+  rename — it lives on the node, not the page name.
 - **`built_at` vs `run_id`:** `built_at` is the date of the factory write
   that produced the current stamped state; `run_id` records the creation
   run (and is what cleanup tooling maps to). On a **stamp-only catch-up**

@@ -1,7 +1,7 @@
 ---
 name: generate-uds-figma-component
 description: UDS Component Factory. Drafts a token-bound UDS component set directly inside the UDS Components Figma file on a brand-new `🟠 <id> {Cursor}{Ignore}` page. Use when the user says "generate a UDS component for X", "factory me an Avatar", "draft a new UDS component called Y", "build a UDS component for Z in Figma", or "use the component factory to start <Title>". Stops at Figma — never writes to `uds-docs/uds/`. Docs landing is the existing `uds-updated` skill, run later by the designer.
-lastUpdated: 2026-06-16T16:30:05Z
+lastUpdated: 2026-06-25T19:23:04Z
 ---
 
 # UDS Component Factory — Generate UDS Figma Component
@@ -169,11 +169,29 @@ The component target is always the `UDS Components` file, file key
    state, not committed history.)
 7. **Read the current factory build version.** Open
    [`.cursor/figma/state/factory-version.json`](../../figma/state/factory-version.json)
-   and hold its `version` (e.g. `2026.06.07.1`). You stamp it onto the
+   and hold its `version` (e.g. `2026.06.07.1`) and `fVersion` (the
+   current F#, e.g. `12`). You stamp the DATE `version` onto the
    component set in Phase B (B.3.6) and write the matching
-   `Factory-version:` line into the contract block (B.3.5). This is the
-   factory's vintage, not today's date — see
-   [`uds-factory-versioning.mdc`](../../rules/uds-factory-versioning.mdc).
+   `Factory-version:` line into the contract block (B.3.5) — F# is NOT
+   stamped; it's derived from the date for drift reports (see
+   [`uds-factory-versioning.mdc`](../../rules/uds-factory-versioning.mdc)
+   §"The F# short key"). This is the factory's vintage, not today's date.
+8. **If the target component ALREADY EXISTS, surface its factory-version
+   drift BEFORE proposing any change.** Two cases hit this: step 5 found
+   an existing `<id> {Cursor}{Ignore}` draft to resume/extend, OR you're
+   entering maintenance mode on a live (accepted) component. In either,
+   run the
+   [`figma-component-inspector`](../../agents/figma-component-inspector.md)
+   §3 drift pass and report its §"Preflight" drift block FIRST — built
+   F# + vintage, current F# + bar, behind-by-N, and the relevance-filtered
+   list of what changed since that applies to THIS component (with the
+   not-applicable items shown too). This is **report-always**: drift is
+   surfaced every time you touch an existing component, draft or live —
+   not only when the user explicitly asks for an upgrade. Surfacing is
+   automatic; ACTING on it is not — it follows the mode's write rules
+   (free scoped fixes on a `{Cursor}` draft per scope #4, gated per-change
+   approval on a live component per scope #5). A brand-new component with
+   no existing page skips this step (nothing to be behind).
 
 ## Phase A — Brief to model (no Figma writes)
 
@@ -1088,12 +1106,15 @@ Rules:
   brand-new component (there's no Web Component source yet). If it's
   missing or malformed, those `spec.json` fields land empty on first
   sync.
-- **The `Factory-version:` line records the build vintage.** Copy the
-  value from `.cursor/figma/state/factory-version.json` `version` (read
-  in pre-flight step 7). It MUST match the `factory_version` plugin-data
-  stamp written in B.3.6 — same string, two places (human-readable line
-  + machine-readable plugin data). See
-  [`uds-factory-versioning.mdc`](../../rules/uds-factory-versioning.mdc).
+- **The `Factory-version:` line records the build vintage as
+  `F# (date)`** — e.g. `Factory-version: F12 (2026.06.24.1)`. The date is
+  `version` from `.cursor/figma/state/factory-version.json`, and the `F#`
+  is the current `fVersion` with an `F` prefix (both read in pre-flight
+  step 7). The DATE MUST match the `factory_version` plugin-data stamp
+  written in B.3.6 (the date is the machine key — two places); the `F#`
+  is the human-readable display index and is NOT separately stamped. See
+  [`uds-factory-versioning.mdc`](../../rules/uds-factory-versioning.mdc)
+  §"The F# short key".
 
 ### B.3.6 — Stamp the build version
 
@@ -1109,9 +1130,11 @@ componentSet.setSharedPluginData('dsb', 'built_at', '<YYYY-MM-DD>');  // today: 
 // run_id is already set per the figma-generate-library state ledger
 ```
 
-The `Factory-version:` line in the B.3.5 contract block carries the same
-`fv` string for humans. The stamp lives on the NODE, so it survives the
-designer's acceptance rename. `built_at` is the date of the factory
+The `Factory-version:` line in the B.3.5 contract block shows the same
+vintage for humans as `F# (date)` — `F<fVersion> (<fv>)`, e.g.
+`F12 (2026.06.24.1)`. Only the date (`fv`) is stamped in plugin data; the
+F# is derived. The stamp lives on the NODE, so it survives the designer's
+acceptance rename. `built_at` is the date of the factory
 write that produced the current stamped state — NOT the same as
 `factory_version` (the factory's vintage; a component built months after
 the factory last changed still carries the older vintage).
@@ -1217,10 +1240,12 @@ are NOT in the harness and stay a manual pass.
 - **Token bindings.** Raw color/fill/stroke values found: N. Unbound
  corner radii: N at `<nodeIds>`.
 - **Build version stamped.** The main component set's `factory_version`
- plugin data and the contract block's `Factory-version:` line both equal
- the current `.cursor/figma/state/factory-version.json` `version`.
- Missing or mismatched: fail. (`built_at` plugin data is also set to the
- build date.)
+ plugin data equals the current `.cursor/figma/state/factory-version.json`
+ `version` (date), and the contract block's `Factory-version: F# (date)`
+ line shows that same date (plus the current `fVersion` as `F#`). Missing
+ or date-mismatched: fail. The F# is the derived display index, not
+ separately stamped. (`built_at` plugin data is also set to the build
+ date.)
 - **Per-side spacing bindings.** Every auto-layout frame the factory
  created MUST have all five spacing properties (`paddingTop`,
  `paddingBottom`, `paddingLeft`, `paddingRight`, `itemSpacing`) bound
@@ -1521,8 +1546,9 @@ are NOT in the harness and stay a manual pass.
  metric-card `Hover` vs `Hovered` drift fails here); `States` baseline
  must cover the State axis options; `Parts` must name real regions;
  `Depends on` (nested half) must match the nested `udc-*` instances; the
- `Factory-version:` line must equal the `factory_version` plugin-data
- stamp. Any mismatch = stale contract = fail. The prose sections
+ date in the `Factory-version: F# (date)` line must equal the
+ `factory_version` plugin-data stamp (F# is the derived display index).
+ Any mismatch = stale contract = fail. The prose sections
  (Summary, behavioral Props, Events, Keyboard, Screen reader,
  Acceptance) can't be auto-verified — their currency rides on the
  "Regenerate the WHOLE block on ANY touch" rule in the contract section
@@ -1597,10 +1623,22 @@ Once a component is live (accepted: no `{Cursor}`, no `{Ignore}`), the
 factory can help keep it current as the factory's output bar moves. This
 is the consumer side of
 [`uds-factory-versioning.mdc`](../../rules/uds-factory-versioning.mdc).
-It is invoked deliberately — e.g. "upgrade metric-card to the current
-factory bar", or as a follow-up to a
-[`figma-inventory`](../../agents/figma-inventory.md) factory-version
-drift report — never automatically.
+
+Separate two things that get conflated: **surfacing** drift vs
+**applying** an upgrade.
+
+- **Surfacing is automatic.** Any time you inspect or are asked to work
+  on an existing component — this maintenance mode, OR resuming a
+  `{Cursor}` draft in the default mode — report its drift verdict first
+  (pre-flight step 8): built vintage, current bar, behind-by-N, the
+  relevance-filtered list of what applies. You don't wait to be asked
+  "is it stale?" — you say so up front, every time.
+- **Applying is deliberate and gated.** The UPGRADE itself is invoked on
+  purpose — e.g. "upgrade metric-card to the current factory bar", or as
+  a follow-up to a
+  [`figma-inventory`](../../agents/figma-inventory.md) factory-version
+  drift report — and nothing is written to a live component without
+  per-change approval. Surface always; apply only on the mode's terms.
 
 The loop reuses the existing inspect → classify → propose → approve
 pattern, pointed in the Figma-write direction:
