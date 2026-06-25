@@ -1,7 +1,14 @@
 {
   "$comment": "UDS factory build version — the factory's OUTPUT vintage, distinct from per-file lastUpdated and the contract-block format version (v1). See .cursor/rules/uds-factory-versioning.mdc. Version format YYYY.MM.DD.N; changelog newest-first; drift compares by changelog position, not string math. `labels` is the human-readable registry of affects[] tags; the drift pass carries a real detector per label.",
-  "version": "2026.06.23.1",
+  "version": "2026.06.24.1",
   "changelog": [
+    {
+      "version": "2026.06.24.1",
+      "date": "2026-06-24",
+      "breaking": false,
+      "affects": ["progress-axis"],
+      "summary": "Naming framework gains a reserved 'progress / sequence position' vocabulary (Upcoming · Current · Complete) for components that show a position in a sequence — Stepper steps, multi-step wizards, checkout progress. These name WHERE a step sits in a process, not how an element reacts to interaction, so they live on their own `progress` axis and never fold into the `State` axis; a step can carry both at once (a Current step with an Error, an Upcoming step that's Disabled). The Phase C naming-convention gate now accepts Upcoming/Current/Complete on a `progress` axis, and only there. The Stepper step subpart is the reference implementation: progress (Upcoming·Current·Complete) × state (Default·Error·Disabled), splitting the prior single `state` axis that had mushed progress and interaction states into one list. Additive — only components with a progress/sequence axis are affected; everything else is unchanged."
+    },
     {
       "version": "2026.06.23.1",
       "date": "2026-06-23",
@@ -91,6 +98,7 @@
     "field-popover": "component opens a menu/listbox/popover that must be an absolute overlay anchored to the field's bottom edge (combobox, select, dropdown, autocomplete, date-picker), never an in-flow sibling after the helper row",
     "form-control": "component is a field or form control (text input, search, dropdown, combobox, text area, date picker, checkbox, radio, toggle) that must conform to the design-language §10 field & control metrics contract — 48px alignment/touch container with the visible control centered, shared label/helper styles and gaps",
     "sealed-controls": "component nests a control-bearing instance (first-class udc-* or a _udc-<id>_* subpart with its own variant/text/boolean/instance-swap props) whose controls must be forwarded to the consumer via isExposedInstance or hoisted host props — never shipped sealed; the contract block's Exposed properties section records what forwards",
-    "one-concern-axis": "component has variant axes that must each encode exactly one concern (interaction State, Open/disclosure, content presence, Kind, Size, Tone) — no compound/hyphenated State values like Open-Empty"
+    "one-concern-axis": "component has variant axes that must each encode exactly one concern (interaction State, Open/disclosure, content presence, Kind, Size, Tone) — no compound/hyphenated State values like Open-Empty",
+    "progress-axis": "component has a progress / sequence-position axis with the reserved values Upcoming · Current · Complete (a Stepper step, multi-step wizard, or checkout progress indicator); progress names sequence position and lives on its own axis, never folded into State — a step can carry both a progress value and a State (Current+Error, Upcoming+Disabled)"
   }
 }

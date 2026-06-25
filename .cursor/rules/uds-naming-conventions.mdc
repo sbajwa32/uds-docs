@@ -2,7 +2,7 @@
 description: The design-system-level naming framework for UDS. Locks the canonical vocabulary for states, sizes, tones, emphasis, parts of a component, the state-vs-variant-vs-property meta-rule, casing and word choice, component names, subcomponents, and lifecycle status. Designer-voiced, concept-first. Companion to uds-design-language.mdc — design-language covers *how things look* per state, this rule covers *what we call them*. Factory, new-component, and the spec sync skills should pick names from this framework instead of guessing from siblings.
 alwaysApply: false
 globs: ["**/*"]
-lastUpdated: 2026-06-09T19:18:31Z
+lastUpdated: 2026-06-24T17:43:25Z
 ---
 
 # UDS Naming Framework
@@ -71,6 +71,31 @@ This split mirrors what the web platform already calls these things,
 so what designers write on a Figma variant and what shows up in code
 agree.
 
+### Progress / sequence position (Upcoming · Current · Complete)
+
+A small reserved set for components that show a position in a
+sequence — a Stepper's steps, a multi-step wizard, a checkout
+progress indicator. These describe **where a step sits in a
+process**, not how an element is reacting to interaction, so they
+live on their OWN axis (name it `progress`), never folded into the
+`State` axis:
+
+| Name | What it means |
+|---|---|
+| **Upcoming** | A step the user hasn't reached yet. |
+| **Current** | The step the user is on now. (Same word as the nav `Current` — the active one in a sequence.) |
+| **Complete** | A step the user has finished. |
+
+A step can *also* carry a real interaction or validity State at the
+same time — a `Current` step that has a validation `Error`, an
+`Upcoming` step that's `Disabled` in a linear flow. That's why the
+two are separate axes: `progress` answers "where in the sequence,"
+`State` answers "how is it reacting, is it valid." Don't fold
+`Error` / `Disabled` into the progress axis, and don't rename a
+progress value to an interaction state. The Stepper's step is the
+reference implementation — `progress` (Upcoming · Current · Complete)
+× `State` (Default · Error · Disabled).
+
 ### The adjective form ("state the element is in")
 
 State names use the past-participle / adjective form so every one reads
@@ -110,6 +135,12 @@ this flat set:
 `Default` · `Hovered` · `Focused` · `Pressed` · `Selected` · `Disabled`
 · `Loading` · `Error` · `Empty` · `Read-only` · `Dragged` ·
 `Indeterminate` · `Checked` · `Current`.
+
+A `progress` axis (sequence position, above) draws from its own small
+reserved set — `Upcoming` · `Current` · `Complete` — and the gate
+accepts those values on a `progress` axis. They are NOT valid on the
+`State` axis (and `State` values are not valid on `progress`): the
+two axes name different concerns.
 
 Common drift → fix, flagged automatically by the naming gate (per
 [`uds-figma-factory-quality.mdc`](./uds-figma-factory-quality.mdc) §2 and
