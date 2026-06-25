@@ -1,7 +1,7 @@
 ---
 name: uds-updated
 description: Orchestrate a full UDS Figma-to-docs sync from a simple prompt like "UDS updated" or "Figma updated". Reads Figma Tokens and Components, classifies changes (including surplus findings from the inspector's bidirectional pass that flag doc-side artifacts with no Figma counterpart), applies only high-confidence non-breaking updates, and falls back to dry-run/reporting for ambiguous, breaking, or removal changes.
-lastUpdated: 2026-05-27T22:21:24Z
+lastUpdated: 2026-06-25T21:03:47Z
 ---
 
 # UDS Updated
@@ -235,6 +235,10 @@ If there are safe updates and the run is not dry-run:
    - status → `sync-figma-component-status`
    - component spec → `sync-figma-component-spec`
    - node links → `link-figma-nodes`
+   - new component / family → `new-component` (ONE `uds/components/<stem>/`
+     folder per docs component; a **family** scaffolds ONE folder for the stem,
+     never one per member set — see
+     [`uds-naming-conventions.mdc`](../../rules/uds-naming-conventions.mdc) §8)
    - release notes → `sync-figma-release-notes`
 2. Add a SITE_CHANGELOG entry in `data/site-changelog.ts` per
    [`uds-site-changelog.mdc`](../../rules/uds-site-changelog.mdc).

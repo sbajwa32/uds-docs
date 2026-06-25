@@ -1,7 +1,7 @@
 ---
 name: link-figma-nodes
 description: Populate figmaNodeId and figmaPageNodeId fields in per-component spec.json files from canonical UDS Components Figma nodes. Use when Figma deep links are missing or stale.
-lastUpdated: 2026-05-27T22:21:24Z
+lastUpdated: 2026-06-25T21:03:47Z
 ---
 
 # Link Figma Nodes
@@ -55,6 +55,21 @@ Do not use:
   parent set exists. Pointing `figmaNodeId` at a sub-component sends docs
   users to the wrong place \u2014 this is the failure mode that motivated
   the nav-header re-sync (commit `c656da7`).
+
+## Families
+
+A family is one docs component (the stem id) whose page hosts several public
+`udc-<stem>...` member sets (`udc-data-field` + `udc-data-field-group`), per
+[`uds-naming-conventions.mdc`](../../rules/uds-naming-conventions.mdc) section 8.
+For a family:
+
+- Point `figmaNodeId` at the **primary** member set: the base `udc-<stem>` if it
+  exists (the `data-field` case), else the member the inspector/spec designates
+  as primary (the `accordion` case, where there is no bare `udc-accordion` set).
+- The other `udc-<stem>...` member sets are EXPECTED, not an ambiguous match. Do
+  not treat their presence as a reason to stop. They are still not the deep-link
+  target: there is one `figmaNodeId` per docs component.
+- `figmaPageNodeId` points at the one stem-named page that hosts the family.
 
 ## Workflow
 

@@ -2,7 +2,7 @@
 name: figma-spec-gap
 description: Read-only agent that compares UDS Components Figma coverage against the doc site's component JSON specs, sidebar pages, figmaNodeId fields, and Storybook links. Use when asking "what specs are missing from Figma?", "which components need Figma links?", or as part of the broader UDS updated workflow.
 model: inherit
-lastUpdated: 2026-05-27T22:21:24Z
+lastUpdated: 2026-06-25T21:03:47Z
 ---
 
 # Figma Spec Gap
@@ -46,10 +46,17 @@ write to Figma or repository files.
 For each component:
 
 - Normalize names to kebab-case.
+- Match is PAGE-keyed: compare the component PAGE name (the stem / docs id)
+  against `components.json`, not individual component sets.
 - Prefer exact `component` id matches.
 - Prefer stable `figmaNodeId` matches when present.
 - Treat one exact Figma page + one doc page as high confidence.
-- Treat multiple potential Figma nodes as low confidence.
+- Treat multiple potential Figma nodes as low confidence — EXCEPT a **family**,
+  whose page intentionally hosts several public `udc-<stem>...` member sets
+  (`udc-data-field` + `udc-data-field-group`) that are ONE docs component. Those
+  member sets are expected, not low-confidence ambiguity, and a secondary member
+  must NOT be reported as a "missing doc-site component." See
+  [`uds-naming-conventions.mdc`](../rules/uds-naming-conventions.mdc) §8.
 - Treat ignored Figma pages as absent for doc-site coverage; do not report
   ignored pages as missing docs, stale specs, or status mismatches.
 

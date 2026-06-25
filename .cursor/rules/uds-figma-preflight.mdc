@@ -2,7 +2,7 @@
 description: Required preflight for any task that reads or writes UDS Figma files.
 globs: ["**/*"]
 alwaysApply: false
-lastUpdated: 2026-06-07T22:31:49Z
+lastUpdated: 2026-06-25T21:03:47Z
 ---
 
 # UDS Figma Preflight
@@ -92,6 +92,18 @@ upgrades only**. Unlike `{Ignore}`, it is NOT removed from the system:
 The three page-name axes are independent: `{Cursor}` = permission (free
 write), `{Ignore}` = visibility (hidden from automation), `{Frozen}` =
 maintenance (factory proposes no upgrades). A page can carry any combination.
+
+## Component families (one page, multiple member sets)
+
+A non-ignored component page normally maps to exactly one docs component. A
+**family** page is still one docs component, but its page carries several
+public member component sets named `udc-<stem>...` (e.g. `udc-data-field` +
+`udc-data-field-group`). The page name is the stem; the extra member sets are
+not separate or missing components. See
+[`uds-naming-conventions.mdc`](./uds-naming-conventions.mdc) §8 and
+[`uds-figma-component-inspection.mdc`](./uds-figma-component-inspection.mdc)
+"Component families on one page". Status (the stoplight prefix) is per page,
+so every member of a family shares one status.
 
 ## Stoplight status mapping
 

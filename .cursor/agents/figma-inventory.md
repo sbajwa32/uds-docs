@@ -2,7 +2,7 @@
 name: figma-inventory
 description: Read-only inventory of UDS Figma files. Lists versions, component pages, statuses, new/missing components, node fingerprints, and doc-site coverage. Use for "what changed in Figma?", "status sync", "new components", or the first phase of "UDS updated".
 model: inherit
-lastUpdated: 2026-06-25T19:23:04Z
+lastUpdated: 2026-06-25T21:03:47Z
 ---
 
 # Figma Inventory
@@ -51,6 +51,12 @@ write to Figma or repository files.
    - list component pages and page IDs
    - parse stoplight prefix/status
    - identify component sets on each page
+   - recognize **families**: a page can host several public `udc-<stem>...`
+     member sets (`udc-data-field` + `udc-data-field-group`) that together are
+     ONE docs component (the page/stem), not separate components — see
+     [`uds-naming-conventions.mdc`](../rules/uds-naming-conventions.mdc) §8.
+     Report all member sets under the one component in variant coverage; do NOT
+     count secondary members as their own components.
    - extract a compact component-set variant summary for every component set:
      - component set name
      - variant property names
@@ -158,6 +164,10 @@ versioning isn't in use yet, state "Factory versioning not active.")
 ## Output rules
 
 - Be explicit about confidence for every mismatch.
+- New/missing is PAGE-keyed: compare page names (the stem / docs id) against
+  `uds-docs/uds/components.json`, not individual component sets. A family's
+  extra `udc-<stem>...` member sets are part of the one component and must not
+  be reported as "missing from docs."
 - A release inventory is incomplete unless it includes the
   `Component-set variant coverage` section for every non-ignored component
   page with at least one component set.

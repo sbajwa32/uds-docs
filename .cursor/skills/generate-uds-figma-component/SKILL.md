@@ -1,7 +1,7 @@
 ---
 name: generate-uds-figma-component
 description: UDS Component Factory. Drafts a token-bound UDS component set directly inside the UDS Components Figma file on a brand-new `🟠 <id> {Cursor}{Ignore}` page. Use when the user says "generate a UDS component for X", "factory me an Avatar", "draft a new UDS component called Y", "build a UDS component for Z in Figma", or "use the component factory to start <Title>". Stops at Figma — never writes to `uds-docs/uds/`. Docs landing is the existing `uds-updated` skill, run later by the designer.
-lastUpdated: 2026-06-25T19:23:04Z
+lastUpdated: 2026-06-25T21:03:47Z
 ---
 
 # UDS Component Factory — Generate UDS Figma Component
@@ -29,7 +29,10 @@ contract; the phases below are the operational implementation.
    Components pages like `badge`, `data-table`, `icon-wrapper`), then
    the `{Cursor}` designer label + `{Ignore}` exclusion marker.
    The `{Ignore}` does the filtering, so every UDS automation already
-   skips these pages — no rule changes required.
+   skips these pages — no rule changes required. For a **family**, `<id>`
+   is the family stem and the one page hosts every `udc-<stem>...` member
+   set (see Inputs `familyMembers` and
+   [`uds-naming-conventions.mdc`](../../rules/uds-naming-conventions.mdc) §8).
 2. **Existing-page collision.** If a `<id> {Cursor}{Ignore}` page
    already exists, the factory inspects it to decide whether to
    resume/extend or rebuild. Because the `{Cursor}` tag is a standing
@@ -40,7 +43,10 @@ contract; the phases below are the operational implementation.
    (in-progress). When the designer accepts and moves it to mainline,
    the rename drops `{Cursor}{Ignore}` and updates the stoplight —
    `🟠 avatar {Cursor}{Ignore}` becomes `🟡 avatar` (review) or
-   `🟢 avatar` (production). The factory never performs that rename.
+   `🟢 avatar` (production). The factory never performs that rename. For a
+   **family**, that single page rename accepts every member set at once, and
+   the family shares one status (the page prefix) — a consequence the user
+   accepted when choosing the one-page family model.
 4. **Write safety.** The factory's only write scope is scope #4 in
    [`uds-figma-write-safety.mdc`](../../rules/uds-figma-write-safety.mdc)
    — component drafts on a `{Cursor}{Ignore}` page in `UDS Components`.
@@ -123,7 +129,8 @@ from context:
 | Input | Required | Notes |
 |---|---|---|
 | `componentTitle` | Yes | Title Case (e.g. `Avatar`, `Banner`, `Stepper`). The human-facing title for `spec.json` / docs — NOT used for the Figma page or set name (those use `componentId`). |
-| `componentId` | Yes | kebab-case (e.g. `avatar`). Used for the Figma page name (`🟠 <id> {Cursor}{Ignore}`, matching mainline UDS Components pages) and the component-set node name (`udc-<id>`). Must NOT collide with an existing entry in [`uds-docs/uds/components.json`](../../../uds-docs/uds/components.json). |
+| `componentId` | Yes | kebab-case (e.g. `avatar`). Used for the Figma page name (`🟠 <id> {Cursor}{Ignore}`, matching mainline UDS Components pages) and the component-set node name (`udc-<id>`). Must NOT collide with an existing entry in [`uds-docs/uds/components.json`](../../../uds-docs/uds/components.json). For a **family** (multiple public member sets on one page), this is the family **stem** / docs id; list the other members in `familyMembers`. |
+| `familyMembers` | Optional | For a multi-set **family**, the additional public member set ids to build on the same stem page beyond the base — e.g. `["data-field-group"]` for the `data-field` family, or `["accordion-item", "accordion-group"]` when no bare `accordion` base exists. Each becomes a `udc-<member>` set; all fold into the ONE docs component whose id is `componentId` (the stem), sharing its folder, status, and changelog. Primary member (the `figmaNodeId` target) = `udc-<componentId>` if it is built, else the first listed member; the factory states which it chose. Subparts of any member stay `_udc-<member>_<sub>`. See [`uds-naming-conventions.mdc`](../../rules/uds-naming-conventions.mdc) §8. |
 | `brief` | Yes | Short prose describing purpose, when-to-use, when-not-to-use, and any non-obvious constraints. The factory expands this into the full model in Phase A. |
 | `siblings` | Optional | Up to 3 component IDs to use as anatomy/state/accessibility references. Default: factory picks the closest siblings from `components.json` based on the brief. |
 | `pageBaseline` | Default `🟠` | Stoplight prefix for the new page. Defaults to `🟠` (in-progress) per locked decision #3 above. |
@@ -277,12 +284,30 @@ Persist the proposed model to
      component (`step` of Stepper, `card` of Carousel, `item` of
      Breadcrumb, `avatar` of Avatar Group, `tab` of Tabs, `crumb` of
      Breadcrumb, `option` of Segmented Control, ...). Named
-     `_udc-<parent>-<sub>` with a **leading underscore** so Figma
+     `_udc-<parentId>_<subName>` with a **leading underscore** so Figma
      hides it from the asset picker (Figma's standard private-
-     component convention). Its anatomy, props, states, and
+     component convention). The `_` after the parent id is the
+     parent/sub boundary and `<subName>` is hyphenated when multi-word
+     (`_udc-stepper_step`, `_udc-data-field_example-longer`); see
+     [`uds-naming-conventions.mdc`](../../rules/uds-naming-conventions.mdc)
+     §9. Its anatomy, props, states, and
      accessibility live inside the parent component's `spec.json`,
      NOT a separate component entry. No standalone `status.json` /
      `changelog.json` / Storybook story.
+   - **Family member set** — a public `udc-<stem>...` set that belongs to
+     a multi-set **family**: a base plus a container/group that arranges
+     instances of it (`udc-data-field` + `udc-data-field-group`;
+     `udc-accordion-item` + `udc-accordion-group`). Visible in the asset
+     picker like a main component, but UNLIKE a standalone main component
+     the members do NOT each get their own docs entry — the whole family
+     folds into ONE docs component whose id is the family **stem**
+     (`data-field`, `accordion`), sharing one
+     `uds-docs/uds/components/<stem>/` folder, one `status.json`, one
+     `changelog.json`, and one `uds-docs/uds/components.json` entry. One
+     member is the **primary** — the `figmaNodeId` target: the base
+     `udc-<stem>` if it exists, else a designated member. See
+     [`uds-naming-conventions.mdc`](../../rules/uds-naming-conventions.mdc)
+     §8 "A family on one page."
 
    Default heuristic for "main vs subcomponent": if the component's
    variant axes only make sense in the context of a parent (e.g.
@@ -292,10 +317,15 @@ Persist the proposed model to
    subcomponent. When in doubt, default to subcomponent and surface
    the question in the model for designer approval.
 
-   Multi-set components are common: most container-of-N patterns are
-   **two component sets** — one main (the container with `count` and
-   the orchestration variants) and one subcomponent (the per-item
-   building block).
+   Multi-set components are common, in two distinct shapes. A
+   **container-of-N** is one main set (the container with `count` and the
+   orchestration variants) plus a `_udc-` subcomponent (the per-item
+   building block) — the per-item piece is meaningless on its own, so it
+   is a subcomponent. A **family** is two-or-more PUBLIC member sets — a
+   base plus its group/container, where the base is independently usable
+   (`udc-data-field` + `udc-data-field-group`). Decide per set with the §9
+   litmus test: independently usable → family member set; only-inside-parent
+   → subcomponent.
 - **Variant axes** — pick axis names and values from
  [`uds-naming-conventions.mdc`](../../rules/uds-naming-conventions.mdc).
  Section 2 covers Size (`Small` / `Medium` / `Large`), section 3
@@ -685,13 +715,27 @@ and you can re-run after fixing the cause.
 
 - Create each component set with the name agreed in the model:
   - **Main components:** `udc-<id>` (no underscore).
-  - **Subcomponents:** `_udc-<parent>-<sub>` with a **leading
-    underscore**. Figma's standard private-component convention
+  - **Subcomponents:** `_udc-<parentId>_<subName>` with a **leading
+    underscore** and a single `_` parent/sub boundary
+    (`_udc-stepper_step`, `_udc-data-field_example-longer`; the `_`
+    boundary keeps the name parseable when the parent id has hyphens —
+    [`uds-naming-conventions.mdc`](../../rules/uds-naming-conventions.mdc)
+    §9). Figma's standard private-component convention
     keeps the subcomponent out of the asset picker so designers
     don't accidentally pick the building block instead of the
     container. Parent components reference subcomponents via
     component KEY (stable across files), so the underscore prefix
     has no functional effect on parent → child instance binding.
+  - **Family member sets:** when the model declared a family (Phase A
+    "Family member set"), build EACH public `udc-<stem>...` member set on
+    the SAME stem page — `udc-data-field` and `udc-data-field-group` both
+    on the `data-field` page. Where the model says one member arranges the
+    other (a group/container of the base), nest the base member as
+    INSTANCES inside the container member and forward/expose its controls
+    (`isExposedInstance = true` or hoisted host props, per B.2.6). Each
+    member set is a real component set: it gets its own variant axes, its
+    own factory contract block (B.3.5), and its own version stamp (B.3.6).
+    Subparts of a member use `_udc-<member>_<sub>`.
 - Variant property names and values follow
   [`uds-naming-conventions.mdc`](../../rules/uds-naming-conventions.mdc)
   exactly — Title Case in Figma (section 7), canonical state /
@@ -1093,7 +1137,7 @@ Rules:
   [`uds-factory-versioning.mdc`](../../rules/uds-factory-versioning.mdc)
   "Touching a component regenerates its contract."
 - **Internal `_udc-<id>*` subparts don't carry their own block.** A
-  subcomponent that exists only inside one parent (the `_udc-calendar-day`
+  subcomponent that exists only inside one parent (the `_udc-calendar_day`
   cell set inside `udc-calendar`) is documented INSIDE the parent's
   contract — its variant axes/states go in the parent's `Parts` + `States`
   sections, as the calendar block does for the day cell. The subpart still
@@ -1199,7 +1243,10 @@ and the `figma-use` "always read IDs from the state ledger" rule:
    the version stamp, and a proactive sealed-control scan. `pass: false`
    STOPS the run. The harness output populates the Phase C "Tool-emitted
    gates" section directly — that section is no longer hand-assembled
-   from memory.
+   from memory. For a **family**, run the harness once per public
+   `udc-<stem>...` member set (set `SET_ID` to each in turn): each member
+   set has its own variant matrix, contract block, and version stamp, so
+   each must clear the gate independently.
 
    **The harness is necessary, not sufficient.** It clears only the
    mechanical, model-independent gates. It does NOT clear the judgment /

@@ -2,7 +2,7 @@
 description: The design-system-level naming framework for UDS. Locks the canonical vocabulary for states, sizes, tones, emphasis, parts of a component, the state-vs-variant-vs-property meta-rule, casing and word choice, component names, subcomponents, and lifecycle status. Designer-voiced, concept-first. Companion to uds-design-language.mdc — design-language covers *how things look* per state, this rule covers *what we call them*. Factory, new-component, and the spec sync skills should pick names from this framework instead of guessing from siblings.
 alwaysApply: false
 globs: ["**/*"]
-lastUpdated: 2026-06-25T01:15:48Z
+lastUpdated: 2026-06-25T21:03:47Z
 ---
 
 # UDS Naming Framework
@@ -461,6 +461,49 @@ hide more than it reveals.
 The rule: components are distinguished by *underlying behavior*, not
 visual difference. Visual differences are variants and properties.
 
+### A family on one page (a base plus its container)
+
+Some components travel together: a base component plus a container that
+arranges instances of it. A radio plus the radio-group that owns
+selection. A data-field plus the data-field-group that titles and frames
+a set of fields. An accordion's item plus the group that coordinates
+which one is open. These are a **family**.
+
+A family is **one docs component**, not several:
+
+- **One docs entry**, id = the family **stem** — `radio`, `data-field`,
+  `accordion`. That stem is the `components.json` id, the folder under
+  `uds-docs/uds/components/<stem>/`, the route, and the sidebar label.
+  It documents every member tag together, the way `radio` documents both
+  `<udc-radio>` and `<udc-radio-group>` in one spec.
+- **One Figma page**, named after the stem (`data-field`, `accordion`).
+- **One or more member component sets** on that page, each named
+  `udc-<stem>...` — the base `udc-data-field` plus `udc-data-field-group`;
+  or, when no bare base exists, `udc-accordion-item` + `udc-accordion-group`.
+  A component's member sets are every non-underscore `udc-` set on its
+  page whose name starts with `udc-<stem>` (followed by `-` or the end of
+  the name, so `udc-data-field` doesn't spuriously match `udc-data-fielding`).
+  The `figmaNodeId` deep link points at the **primary** member — the base
+  if there is one, else the member the designer designates — and there is
+  one deep link per docs component.
+
+A member set is a public part of the family's API: it is documented as
+its own tag. That is what separates it from a **subcomponent** (§9). A
+subcomponent (`_udc-<parentId>_<subName>`) is a private building block,
+only meaningful inside its parent, never documented as a standalone tag.
+Apply the §9 litmus test to each member: would a designer ever use this
+on its own? If yes, it is a public member set; if no, it is a
+subcomponent of one of the members.
+
+Two things this model deliberately avoids:
+
+- **Don't split a family across pages** to "future-proof" a possible
+  group or container. Related members share one stem page. Spinning up a
+  separate page (and docs entry) for every base-plus-group pair is the
+  sprawl this model exists to prevent.
+- **Don't make a separate docs entry per member.** The group folds into
+  the stem's one docs component, sharing its page, status, and changelog.
+
 ---
 
 ## 9. Subcomponents
@@ -469,15 +512,25 @@ When a piece of a component only exists in the context of its parent
 — a tab inside Tabs, a step inside Stepper, a crumb inside Breadcrumb,
 an option inside Dropdown — it's a **subcomponent**, and:
 
-- In Figma, the subcomponent set is named with the parent prefix:
- `Stepper / Step`, `Breadcrumb / Crumb`, `Dropdown / Option`,
- `Tabs / Tab`. The slash signals "this belongs to that parent."
-- A designer in the asset picker should only see the parent
- (`Stepper`) as a top-level entry. The subcomponent (`Step`) is
- reachable inside the parent's anatomy but not picked directly.
+- The subcomponent's Figma component-set node name — which is also its
+  code / CSS token — is `_udc-<parentId>_<subName>`:
+  - The leading `_` is Figma's private-component convention. It keeps
+    the subcomponent out of the asset picker, so a designer picks the
+    parent (`Stepper`), never the building block (`Step`), by accident.
+  - `udc-<parentId>` is the parent's full kebab id — `udc-stepper`,
+    `udc-data-field-group`.
+  - The single `_` after the parent id is the parent/sub boundary.
+  - `<subName>` is the sub-part's own name, hyphenated when it has more
+    than one word: `_udc-stepper_step`, `_udc-breadcrumb_crumb`,
+    `_udc-dropdown_option`, `_udc-data-field_example-longer`.
+  The underscore boundary is what keeps the name parseable when the
+  parent id itself contains hyphens: split on `_` and you always get
+  `['', 'udc-<parentId>', '<subName>']`. In prose we still say "Step of
+  Stepper" — `_udc-stepper_step` is the node/code name, not the spoken
+  name.
 - The subcomponent does not get its own page in the docs site, its
- own status, or its own changelog. Its anatomy, props, states, and
- accessibility live inside the parent component's spec.
+  own status, or its own changelog. Its anatomy, props, states, and
+  accessibility live inside the parent component's spec.
 
 ### The litmus test
 

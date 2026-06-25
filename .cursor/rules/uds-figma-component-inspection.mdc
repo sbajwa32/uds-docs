@@ -2,7 +2,7 @@
 description: Requires deep Figma node inspection for UDS Components; screenshots are supporting evidence only. Inspection is bidirectional — every doc-site artifact must be checked for a Figma counterpart, and every prior snapshot entry must be diffed against the new read.
 globs: ["uds-docs/**", ".cursor/**"]
 alwaysApply: false
-lastUpdated: 2026-06-16T16:30:05Z
+lastUpdated: 2026-06-25T21:03:47Z
 ---
 
 # UDS Figma Component Inspection
@@ -52,6 +52,27 @@ Figma, inspect the actual Figma node data:
    - `uds-docs/uds/components/<component>/<component>.css`
    - `uds-docs/uds/components/<component>/examples/*.html`
    - `uds-docs/uds/components/<component>/status.json` (the `current` field — replaces the legacy `COMPONENT_STATUS` table)
+
+## Component families on one page
+
+A Figma page can host a **family** — one docs component whose page carries
+several public member component sets, each named `udc-<stem>...`
+(`udc-data-field` + `udc-data-field-group`, or `udc-accordion-item` +
+`udc-accordion-group`). See
+[`uds-naming-conventions.mdc`](./uds-naming-conventions.mdc) §8 "A family on
+one page" for the model. When inspecting a family:
+
+- The member sets are every non-underscore `udc-` set on the page whose name
+  starts with `udc-<stem>` (followed by `-` or end-of-name). They are NOT
+  separate components and NOT an ambiguity — they are the one component's
+  member tags. Inspect and report each member's variant matrix.
+- `figmaNodeId` points at the **primary** member (the base `udc-<stem>` if it
+  exists, else the designated primary). When the stem has no exact `udc-<stem>`
+  set (the `accordion` case), resolve the primary from the designated member
+  rather than stopping on "no canonical set."
+- `_udc-<parentId>_<subName>` sub-component sets stay private subparts of
+  whichever member instances them (§9), documented inside that member's
+  contract — they are not member sets.
 
 ## Read strategy — metadata-first, inspect sets not assemblies
 
@@ -282,7 +303,9 @@ have Confidence + Risk + Reason + Default action populated.)
 
 Stop and report instead of guessing when:
 
-- multiple component sets match one component name
+- multiple component sets match one component name AND they are not the
+  member sets of a single family (a family's `udc-<stem>...` member sets are
+  expected, not an ambiguity — see "Component families on one page")
 - no stable canonical component-set node exists
 - variant properties conflict with current CSS attributes
 - Figma has hardcoded values where tokens are expected

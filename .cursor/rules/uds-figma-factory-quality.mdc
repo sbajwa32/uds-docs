@@ -2,7 +2,7 @@
 description: Process quality rules for any factory-style Figma build (generate-uds-figma-component, new-component, future factories). State design contract (specify visuals not just tokens), mandatory machine-verified audits, variant grid layout reflects axis semantics, visible anatomy by default, dependency manifest before write, inverse-surface foreground flip, per-Kind state coverage, recurring visual affordances baked into the component, and top-aligned icon-over-label cells. Design-system-agnostic — the specific UDS visual constructions live in uds-design-language.mdc.
 alwaysApply: false
 globs: [".cursor/skills/generate-uds-figma-component/**", ".cursor/skills/new-component/**", ".cursor/skills/figma-component-card/**"]
-lastUpdated: 2026-06-25T19:23:04Z
+lastUpdated: 2026-06-25T21:03:47Z
 ---
 
 # Figma Factory Quality
@@ -308,7 +308,7 @@ A read-only `use_figma` call that:
    - The ring's nearest non-absolute ancestor is the focused element box
      (the bordered field/trigger), not the variant wrapper.
    - **Grid-cell edge-ring exception.** A small cell tiled into a dense
-     repeating grid (the `_udc-calendar-day` cell, and analogous tiled
+     repeating grid (the `_udc-calendar_day` cell, and analogous tiled
      subcomponents) may instead carry the focus indicator as an **edge
      ring** — a stroke bound to `outline-focus-visible` on the focus
      variant's root box, no offset frame. Recognize that as a valid

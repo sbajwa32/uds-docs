@@ -2,7 +2,7 @@
 description: Canonical card layout for UDS Components Figma pages. Defines the seven-card structure, token bindings, and read-only contract against uds-docs/uds/components/<id>/spec.json. Loaded when the figma-component-card skill runs or the figma-component-card-audit subagent runs.
 alwaysApply: false
 globs: [".cursor/skills/figma-component-card/**", ".cursor/agents/figma-component-card-audit.md"]
-lastUpdated: 2026-05-21T16:08:00Z
+lastUpdated: 2026-06-25T21:03:47Z
 ---
 
 # UDS Figma Component Card
@@ -190,7 +190,7 @@ A status-tinted preview frame on the right of the HEADER inner row.
 | Width × Height | 720 × 380, FIXED both axes |
 | Fill | Linear gradient — two stops, both bound to `uds/color/surface/<status>-subtle` and `uds/color/surface/<status>` (deeper) |
 | Radius | `uds/border/radius/container-lg` (16px) |
-| Children (top to bottom, centered) | 4×16 dot pattern (5px ellipses, fill `border-<status>`, opacity 0.55, gap 28×28); ONE instance of the default variant of the primary/main component set; Geist Mono caption (e.g. `DEFAULT · PRIMARY · MEDIUM`) in `text-<status>` |
+| Children (top to bottom, centered) | 4×16 dot pattern (5px ellipses, fill `border-<status>`, opacity 0.55, gap 28×28); ONE instance of the default variant of the primary/main component set (for a **family**, the primary member named by spec `figmaNodeId` — the base `udc-<stem>` if present, else the designated member); Geist Mono caption (e.g. `DEFAULT · PRIMARY · MEDIUM`) in `text-<status>` |
 
 For placeholder pages with no inspectable component, the hero shows a "no component yet" treatment: skip the dot pattern and instance, fill the panel with `surface-subtle`, place a single mono label `PLACEHOLDER · COMPONENT NOT YET BUILT` centered.
 
@@ -266,7 +266,7 @@ All JSON fields below refer to keys in `uds-docs/uds/components/<id>/spec.json` 
 | HEADER | `title`, `description`, `dependencies.css`, `owner` | If `description` empty, omit the description text but keep the rest |
 | ANATOMY | An inspectable component set with named state variants (`State=Default/Hover/Active/Disabled` minimum) | If no states inspectable, OMIT the entire ANATOMY card. Don't fake states. |
 | VARIANTS | At least one `COMPONENT_SET` at the page top level | If none, OMIT the VARIANTS card |
-| SUB-COMPONENTS | Component sets named with leading underscore (e.g. `_udc-dialog_header`) OR explicit sub-set component sets like `udc-button-group-*` | If none, OMIT the SUB-COMPONENTS card |
+| SUB-COMPONENTS | Component sets named with leading underscore (e.g. `_udc-dialog_header`) OR explicit sub-set component sets like `udc-button-group-*`. A **family's** secondary public member sets (e.g. `udc-data-field-group`) are placed here too as related member sets — they are public members per [`uds-naming-conventions.mdc`](./uds-naming-conventions.mdc) §8, not private subcomponents, even though they share this card. | If none, OMIT the SUB-COMPONENTS card |
 | USAGE | `whenToUse` AND/OR `whenNotToUse` | If both empty, OMIT |
 | ACCESSIBILITY | `accessibility.keyboard` non-empty | If empty, OMIT (no point showing an empty table) |
 | META | Always shown — owners and links are universal |

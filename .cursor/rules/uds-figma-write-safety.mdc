@@ -1,7 +1,7 @@
 ---
 description: Prevents accidental Figma mutations during UDS sync work. Read-only is the default; writes are explicitly scoped and summarized; component edits round-trip through the component contract and the current factory bar.
 alwaysApply: true
-lastUpdated: 2026-06-23T18:58:01Z
+lastUpdated: 2026-06-25T21:03:47Z
 ---
 
 # UDS Figma Write Safety
@@ -75,12 +75,12 @@ Figma file, you MUST:
 
 1. **Read the governing `<<UDS-FACTORY-CONTRACT>>` block.** It lives on the
    `udc-<id>` MAIN component set. If you are editing a `_udc-*` subpart (e.g.
-   `_udc-stepper-step`), it carries NO contract of its own — its description
+   `_udc-stepper_step`), it carries NO contract of its own — its description
    is empty. That emptiness is NOT "no rules": resolve the parent — the
    `udc-*` set that INSTANCES this subpart (the nesting graph is
    authoritative; the name is only a hint, since hyphenated ids make
    name-parsing ambiguous) — and read THAT contract. (This is the trap
-   behind the stepper miss — the edits went to `_udc-stepper-step`, whose
+   behind the stepper miss — the edits went to `_udc-stepper_step`, whose
    empty description hid the `udc-stepper` contract that recorded
    `display-only` and focus `notApplicable`.) If neither the subpart nor its
    parent carries a contract — a pre-versioning draft — there's no recorded
@@ -168,6 +168,11 @@ The only routine Figma write scopes are:
      (new or existing). The `{Ignore}` marker takes the page out of
      every UDS automation per `.cursor/rules/uds-figma-preflight.mdc`;
      the `{Cursor}` label marks it as Cursor's working draft.
+   - A draft page may host a **family** — several public `udc-<stem>...`
+     member sets of one component on the one stem-named page (e.g.
+     `udc-data-field` + `udc-data-field-group`). That's expected, not a
+     scope breach: the whole `{Cursor}` page is the write target. See
+     `.cursor/rules/uds-naming-conventions.mdc` §8.
    - **The `{Cursor}` tag is a standing write grant.** Any page whose
      name contains `{Cursor}` is Cursor's to create, modify, rebuild,
      or delete nodes on — freely, without per-action permission —

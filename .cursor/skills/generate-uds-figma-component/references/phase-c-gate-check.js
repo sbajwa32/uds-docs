@@ -154,11 +154,13 @@ for (const fullKey of Object.keys(pdefs)) {
 G.propertyWiring = { pass: !deadProps.length && !partialProps.length, dead: deadProps, partial: partialProps };
 
 // G8 — layer hygiene + page clutter: no generic node names; nothing on the
-// page but the set (a leftover `_`-prefixed scratch node is tolerated).
+// page but the set (a leftover `_`-prefixed scratch node is tolerated, and
+// sibling `udc-`-prefixed COMPONENT_SETs are tolerated as family member sets —
+// a family page hosts several udc-<stem>* sets; see uds-naming-conventions §8).
 const generic = [];
 for (const v of variants) for (const n of ownNodes(v)) if (/^(Frame|Rectangle|Group|Component|Line|Vector|Ellipse) ?\d+$/.test(n.name)) generic.push(n.id + ':' + n.name);
 const page = set.parent;
-const pageClutter = (page && page.type === 'PAGE') ? page.children.filter(n => n.id !== set.id && !/^_/.test(n.name)).map(n => n.name) : [];
+const pageClutter = (page && page.type === 'PAGE') ? page.children.filter(n => n.id !== set.id && !/^_/.test(n.name) && !(n.type === 'COMPONENT_SET' && /^udc-/.test(n.name))).map(n => n.name) : [];
 G.layerHygiene = { pass: !generic.length && !pageClutter.length, generic: generic.length, genericSample: generic.slice(0, 8), pageClutter };
 
 // G9 — contract block + version stamp. Delimiters present (literal `<<`, not

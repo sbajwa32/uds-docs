@@ -1,7 +1,7 @@
 ---
 name: new-component
 description: Scaffold a new UDS component end to end. Creates uds/components/<id>/ with all required files (CSS stub, spec.json, status.json, changelog.json, examples/, playground.js), adds the sidebar link in components/site/SiteSidebar.tsx, and adds a SITE_CHANGELOG entry. Triggers on phrases like "add a component", "scaffold a new component", "new component called X", "set up a new component for Y".
-lastUpdated: 2026-05-27T22:21:24Z
+lastUpdated: 2026-06-25T21:03:47Z
 ---
 
 # New Component Scaffold
@@ -18,6 +18,30 @@ scaffolding is needed beyond the sidebar link and the `data/` entry.
 After the skill finishes, the component appears in the sidebar with a
 "Spec X/22" pill in red (placeholder status), ready for the designer to
 flesh out the spec and visual examples.
+
+## Families (one folder, multiple member tags)
+
+A **family** is ONE docs component (the stem id) whose Figma page hosts several
+public `udc-<stem>...` member sets — `udc-data-field` + `udc-data-field-group`,
+or `udc-accordion-item` + `udc-accordion-group` — documented together in one
+spec, the way `radio` documents `<udc-radio>` and `<udc-radio-group>`. See
+[`uds-naming-conventions.mdc`](../../rules/uds-naming-conventions.mdc) §8.
+
+A family scaffolds ONE `uds/components/<stem>/` folder and ONE sidebar link
+(the stem), but registers EVERY member tag. The shape to mirror is the live
+`radio` component: one spec, one nested example, and a Web Component file +
+React wrappers that define every member element. Where a step below has a
+**Family** note, follow it. Two rules hold throughout:
+
+- ONE folder, ONE sidebar link, ONE status, ONE changelog — never one per member.
+- The **primary** member is the base `udc-<stem>` if it exists (`data-field`),
+  else the member you designate (`accordion`, which has no bare `udc-accordion`).
+  `figmaNodeId` and the default example lead with the primary.
+
+The one current limit: the Code-tab API table (`data/component-api/<stem>.ts`)
+is built for a single tag, so a family starts with a stub there (same as
+`radio` today). Per-tag API tables are a separate docs-site enhancement, not a
+scaffolder job.
 
 ## Naming source of truth
 
@@ -65,7 +89,8 @@ Ask for these. Don't proceed until you have all of them.
 
 | Field | Format / example | Notes |
 |---|---|---|
-| `id` | kebab-case, no `udc-` prefix (e.g. `toggle-switch`) | Becomes the folder name `uds/components/<id>/`, the route segment, the `<udc-*>` tag suffix, and the `<id>.css` filename |
+| `id` | kebab-case, no `udc-` prefix (e.g. `toggle-switch`) | Becomes the folder name `uds/components/<id>/`, the route segment, the `<udc-*>` tag suffix, and the `<id>.css` filename. For a **family**, this is the stem (`data-field`, `accordion`). |
+| `familyMembers` | List of the OTHER member tags, kebab-case, no `udc-` prefix (e.g. `["data-field-group"]`) | Optional — present only for a **family**. Each becomes a `<udc-<member>>` tag + Web Component element + React wrapper under the one stem folder. Primary = `id` if it's a member, else the first `familyMembers` entry. |
 | `title` | Title Case (e.g. "Toggle Switch") | Sidebar label and `<h1>` page title |
 | `description` | One paragraph | Why this component exists. Goes into `description` field. |
 | `whenToUse` | 1-2 sentences | Goes into `whenToUse` field. |
@@ -130,6 +155,13 @@ other fields stay empty/null — the renderer hides empty sections.
 }
 ```
 
+**Family.** Keep ONE spec.json at the stem id. Add an `acceptanceCriteria`
+entry naming the public tags (mirror radio: `"Public API uses <udc-<stem>>,
+<udc-<stem>-group> Web Component tags."`) and merge each member's props /
+events / slots into the one list, naming the owning member in each `description`
+when it isn't obvious (the schema keeps props in one flat list — that's how
+radio does it). Point `figmaNodeId` at the primary member.
+
 ## Step 4 — Write `uds/components/<id>/status.json`
 
 ```json
@@ -191,6 +223,19 @@ And the manifest:
 `demoWeight: 0` excludes the placeholder from the Demo Builder until a real
 example is written.
 
+**Family.** Write ONE example that nests the members the way they're really
+used, mirroring `uds/components/radio/examples/web-component.html`:
+
+```html
+<udc-<stem>-group ...>
+  <udc-<stem> ...>Item</udc-<stem>>
+  <udc-<stem> ...>Item</udc-<stem>>
+</udc-<stem>-group>
+```
+
+Lead the default example with the primary member. (For `data-field`, the base
+field is a standalone member and the group wraps several.)
+
 ## Step 7 — Write `uds/components/<id>/playground.js`
 
 ```js
@@ -243,6 +288,10 @@ export const <camelId>Api: ComponentApi = {
 slots, events, and parts); it fails only when retained CSS-class rows
 disagree with the payload CSS.
 
+**Family.** One `data/component-api/<stem>.ts` for the stem. radio's is an empty
+stub, so starting that way is fine; per-tag attributes/events for each member
+are a later docs-site enhancement (the type is currently single-tag).
+
 ## Step 10 — Add the Web Component + React wrapper source
 
 Add the runtime implementation to:
@@ -256,6 +305,12 @@ Add the runtime implementation to:
 The initial Web Component can be a token-bound placeholder, but it must register
 the real `<udc-<id>>` tag and the React package must export a wrapper. Do not
 add a legacy per-component behavior file or revive `uds/uds.js`.
+
+**Family.** Define EVERY member element in
+`packages/uds-web-components/src/components/<stem>.ts` (mirror `radio.ts`, which
+defines both the radio and radio-group elements), register each `<udc-<member>>`
+tag in `register.ts` + `index.ts`, and export one React wrapper per member in
+`packages/uds-react/src/index.tsx` (mirror `UdsRadio` + `UdsRadioGroup`).
 
 ## Step 11 — SITE changelog entry
 

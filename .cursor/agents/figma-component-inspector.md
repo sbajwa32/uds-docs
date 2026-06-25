@@ -2,7 +2,7 @@
 name: figma-component-inspector
 description: Deep-inspects a single UDS component in the UDS Components Figma file by reading node trees, component sets, variants, layer details, token bindings, nested instances, and doc-site parity. Bidirectional — reports both Figma-side gaps (mismatches, missing) and doc-site surplus (artifacts with no Figma counterpart), plus a snapshot delta against the prior captured state to surface deletions and renames. Open Figma findings that need designer attention are surfaced as structured entries in uds/components/<id>/figmanotes.json (not free-text in spec.json knownIssues), classified by `kind` so they auto-prune on the next inspection when resolved. Read-only; never modifies files or Figma. Use when updating a component spec, investigating a component mismatch, or before syncing Figma component changes into docs.
 model: inherit
-lastUpdated: 2026-06-25T19:23:04Z
+lastUpdated: 2026-06-25T21:03:47Z
 ---
 
 # Figma Component Inspector
@@ -28,6 +28,10 @@ The caller should provide one component id or title, e.g.:
 - `nav-header`
 
 If the input is missing or ambiguous, ask the caller for one component name.
+
+A **family** id is the stem (`data-field`, `accordion`); inspecting it inspects
+every `udc-<stem>...` member set on that one page as the single docs component
+(see §1 "Families").
 
 ## Required files and Figma data
 
@@ -90,14 +94,27 @@ Read (every file is mandatory unless explicitly marked optional):
    stop without inspecting its nodes.
 5. Identify:
    - page node
-   - canonical component set
+   - canonical component set (the **primary** member — see "Families" below)
    - default variant
    - example frames
    - anatomy/spec frames
    - state matrix frames
+6. **Families.** A page can host a family — one docs component whose page
+   carries several public `udc-<stem>...` member sets (`udc-data-field` +
+   `udc-data-field-group`; `udc-accordion-item` + `udc-accordion-group`), per
+   [`uds-naming-conventions.mdc`](../rules/uds-naming-conventions.mdc) §8 and
+   [`uds-figma-component-inspection.mdc`](../rules/uds-figma-component-inspection.mdc)
+   "Component families on one page". When the page has multiple `udc-<stem>...`
+   member sets, that is NOT ambiguity:
+   - the canonical/primary set is the `figmaNodeId` target — the base
+     `udc-<stem>` if present, else the member the spec designates;
+   - inspect and report EACH member set's variant matrix, anatomy, and token
+     bindings (§2–§5), labeling each by its set name;
+   - `_udc-<parentId>_<subName>` subparts stay private subparts of whichever
+     member instances them, documented inside that member — not member sets.
 
-If multiple canonical nodes are plausible, stop and report ambiguity. Do not
-guess.
+If multiple canonical nodes are plausible AND they are not the member sets of
+one family, stop and report ambiguity. Do not guess.
 
 ### 2. Traverse node tree
 
@@ -138,6 +155,10 @@ For component sets:
 - list enum values for each property
 - list observed combinations
 - identify missing expected combinations, if any
+
+For a **family**, run this extraction for EACH `udc-<stem>...` member set and
+report them separately (labeled by set name); together the member sets describe
+the one docs component.
 
 Only call something a prop/state if it is supported by one of:
 

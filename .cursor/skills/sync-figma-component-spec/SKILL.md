@@ -1,7 +1,7 @@
 ---
 name: sync-figma-component-spec
 description: Update a UDS component's per-component artifacts (spec.json, CSS, examples, impl.json, playground.js, figmanotes.json) from a deep Figma component inspection. Bidirectional — consumes the inspector's `Doc-site surplus` + `Snapshot delta` sections to propose removals (deleted slots/events/states/CSS/JS/examples) as classified `potentially-breaking` or `destructive` findings that default to ask-user, AND consumes the inspector's `Figma Notes evaluation` section to update `figmanotes.json` (auto-prune resolved notes, add new ones). Use for prompts like "sync Button from Figma" or after figma-component-inspector reports high-confidence changes.
-lastUpdated: 2026-06-07T22:00:41Z
+lastUpdated: 2026-06-25T21:03:47Z
 ---
 
 # Sync Figma Component Spec
@@ -149,6 +149,16 @@ Map inspector output to schema fields in `uds-docs/uds/components/<id>/spec.json
 
 Do not overwrite non-empty fields with lower-confidence text. Additions are
 preferred over rewrites.
+
+**Families.** A family is ONE `uds/components/<stem>/spec.json` that documents
+every member tag together (the way `radio` documents `<udc-radio>` and
+`<udc-radio-group>`), per
+[`uds-naming-conventions.mdc`](../../rules/uds-naming-conventions.mdc) §8. Map
+EACH `udc-<stem>...` member set's inspector findings into that one spec, scoping
+each prop/event/slot/state to its member so the contract stays readable. Point
+`figmaNodeId` at the primary member (base `udc-<stem>` if present, else the
+designated member); `figmaPageNodeId` is the one stem page. Do not create a
+second folder for a secondary member.
 
 **Factory-contract source.** When the inspector reports fields sourced
 from a `factory-contract` block — the `generate-uds-figma-component`
